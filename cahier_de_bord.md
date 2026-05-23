@@ -32,8 +32,27 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 21 — preuve partielle L20.5, ⚠️ LACUNE RÉPARABLE)
+- **Dernière mise à jour** : 2026-05-23 (post-tour 21 — audit bibliographique + clôture du dépôt satellite Lean, voir notes ci-dessous)
 - **Nombre de tours effectués** : 21
+
+> **Audit bibliographique (mai 2026).** Vérification croisée des 8 théorèmes
+> ÉTABLIS (Tours 12-20) contre la littérature DNF-MIN. Verdict : les 7 résultats
+> testés sont **folklore ou classiques** (Quine 1952, McCluskey 1956,
+> Hammer-Kogan in Crama-Hammer 2011 ch.3, Hellerstein-Kletenik 2011). Seul L18
+> (IP) reste **statut incertain** (non trouvé dans les sources consultées, peut
+> être folklore obscur). Détail dans la note §3 « Audit bibliographique ». Les
+> 8 théorèmes restent valides comme corpus vérifié, mais leur statut épistémique
+> est désormais **« re-démonstration de classiques »**, pas « contribution
+> nouvelle ». L'affirmation initiale « pas de littérature à ce sujet » est
+> falsifiée.
+>
+> **Clôture du dépôt satellite Lean.** Le dépôt
+> [`Tanguy333/pvsnp-LeanAC0Profondeur2`](https://github.com/Tanguy333/pvsnp-LeanAC0Profondeur2)
+> est **fermé** post-audit (les théorèmes étant folklore, la valeur de leur
+> formalisation Lean était limitée à un exercice d'ingénierie sans rapport
+> avec P vs NP). Les architectures rédigées et `Basic.lean` prouvé restent
+> accessibles localement, sans poursuite. Aucun nouveau tour de cette
+> exploration P vs NP ne doit proposer de formalisation Lean.
 
 ---
 
@@ -285,6 +304,52 @@
 
   **Saut qualitatif réel ?** Partiel. Tour 20 sort de (α)/(β) mais reste dans le paradigme AC⁰ d=2. Pas de profondeur 3, pas de Lean, pas de Razborov. **Le Tour 21 doit faire un saut qualitatif vrai** (cf. directions infra).
 
+### 📚 Audit bibliographique des 8 ÉTABLIS (mai 2026 — post-clôture Lean)
+
+Vérification croisée systématique (Réfuteur, recherche web) des Tours 12-20
+contre la littérature DNF-MIN. Statut individuel :
+
+| Tour | Théorème | Verdict de l'audit | Référence(s) trouvées |
+|---|---|---|---|
+| 12 | `dnfMin(parity_n) = 2^(n−1)` | **Folklore** — exercice classique | UC Berkeley CS294-152 (Williams, Fall 2018) ; Stanford CS254 lecture 13 (Trevisan) ; Immerman *Lower Bounds* ch.13 |
+| 13 | Caractérisation IS-`Q_n` ⟺ DNF-MIN = `|f^{-1}(1)|` | **Folklore probable** | Hammer & Kogan, *Prime implicants and minimal DNFs*, ch.3 in Crama-Hammer 2011 |
+| 14 | `dnfMin(maj_n) = C(n, ⌈n/2⌉)` | **Folklore** — conséquence directe Sperner + monotonie | Boolean Zoo (Weizmann) ; ≥ années 1970, peut-être plus tôt |
+| 15 | `dnfMin(thr_{t,n}) = C(n, t)` | **Folklore** par extension L14 | Idem L14 |
+| 16 | `dnfMin(mod_{p,n}) = Σ_{k≡0 mod p} C(n,k)` | **Folklore** par extension L13 | Idem L13 |
+| 17 | `dnfMin(IP_{2n}) = (3^n − 1)/2` (empirique n=1..4) | **Statut incertain** | Non trouvé dans les sources consultées ; peut être folklore obscur ou inédit |
+| 18 | Preuve structurelle pour tout `n` de L17 | **Statut incertain** | Idem L17 |
+| 19 | `dnfMin(f) = |primes(f)|` ⟺ tous premiers ont témoin essentiel | **Folklore quasi-certain (sous forme duale)** | Hellerstein & Kletenik, *On the gap between ess(f) and cnf_size(f)*, arXiv:1106.4247 (2011) / *Discrete Applied Mathematics* (2015) ; concept d'essential prime implicant remontant à Quine 1952 |
+| 20 | Antipodales : `|primes| = n(n−1)`, `dnfMin = n`, défaut `n(n−2)` | **Probablement connu** comme exemple d'écart maximal | Non identifié précisément ; vraisemblablement dans Crama-Hammer 2011 ch.3 ou Hellerstein-Kletenik 2011 comme exemple |
+
+**Conséquences épistémiques** :
+
+1. Les 8 théorèmes **restent valides** comme corpus vérifié (preuves
+   combinatoires auditées, vérifications empiriques à n=4 OK).
+
+2. Mais leur statut épistémique passe de *« théorèmes ÉTABLIS pour P vs NP »*
+   à *« re-démonstration vérifiée de classiques DNF-MIN »*. La distinction est
+   significative :
+   - **Pas de novelty mathématique** sur 7/8 (L18 reste incertain).
+   - **Apport réel** = boucle Proposeur/Réfuteur a re-prouvé proprement,
+     pas découvert.
+
+3. **Le lien à P vs NP** revendiqué pour ces 8 théorèmes est *factuellement
+   correct mais marginal* : ils établissent `AC⁰ d=2 polynomial ⊊ P` (par
+   exemples explicites) — ce qui est de toute façon connu depuis FSS 1981.
+   Ils ne franchissent **aucune** des trois barrières (relativisation, RR,
+   algébrisation) au-delà de ce qui est nécessaire pour profondeur 2.
+
+4. **L'affirmation initiale** *« il n'y a pas de littérature scientifique à
+   ce sujet à ma connaissance »* (à l'origine de la duplication vers le dépôt
+   Lean) est **falsifiée**. La littérature existe mais était dispersée entre :
+   - Logique booléenne classique (Quine 1952).
+   - Théorie des fonctions monotones (Sperner, Korshunov).
+   - Complexité moderne, forme duale CNF (Hellerstein-Kletenik 2011).
+
+5. **Méthode d'audit à généraliser** : la condition `(q)` ajoutée au §5
+   (« audit bibliographique préemptif ») est la formalisation de cet
+   apprentissage. Le Tour 22 devra l'appliquer.
+
 ### ⚠️ Lacunes réparables récentes
 
 - **Piste 21 — preuve partielle de L20.5** (cf. [`tours/tour_21_l20_5_partiel.md`](tours/tour_21_l20_5_partiel.md) et [`checks/tour_21_l20_5_structural.py`](checks/tour_21_l20_5_structural.py)) : tentative de prouver L20.5 (unicité antipodale pour tout n) par décomposition selon `k = |f^{-1}(0)|`.
@@ -465,23 +530,72 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 22** : direction recommandée — **soit compléter L21.D**, soit faire un vrai saut. Le Tour 21 a fait un effort dans la bonne direction (option 2 prescrite) mais n'a pas livré la preuve complète. Les conditions (a)-(p) restent en vigueur.
+- **Tour 22** : **contrainte stricte** post-audit bibliographique de mai 2026.
 
-  Options pour le Tour 22 :
+  ### 🚫 Directions interdites pour le Tour 22 (recadrage utilisateur)
 
-  1. **Compléter L21.D** (k ≥ 3) : preuve par hitting sets ou autre argument combinatoire. Si réussi, transformerait Tour 21 en ✅ ÉTABLI complet (+1 objet, pas un nouveau théorème mais un théorème enfin fermé). Direction la plus naturelle pour boucler la chaîne Tour 17 → Tour 18 / Tour 20 → Tour 21.
+  1. **AC⁰ profondeur 2 / DNF-MIN** dans toute forme. Les 8 théorèmes ÉTABLIS
+     Tours 12-20 ont saturé ce paradigme, et l'audit bibliographique a établi
+     leur statut folklore (Quine 1952, Hammer-Kogan 2011, Hellerstein-Kletenik
+     2011). Aucune nouvelle caractérisation, application de L13/L19, complétion
+     de L21.D, ni variation de famille de fonctions (parity, majority, threshold,
+     mod_p, IP, antipodale, …) ne sera acceptée.
+  2. **Formalisation Lean** de tout théorème du dépôt. Le dépôt satellite est
+     fermé (cf. §0). Plus jamais de pivot Lean ici.
+  3. **Algèbre commutative pure** sans pont explicite à une borne de complexité
+     (Tours 6-9 ont déjà tué cette dérive ; le recadrage de fin Tour 9 reste
+     en vigueur).
 
-  2. **Profondeur 3** : entrer dans FSS-Håstad. Saut difficile mais réel.
+  ### ✅ Directions autorisées pour le Tour 22
 
-  3. **Razborov 1985 monotone CLIQUE** : nouvelle lignée distincte.
+  Le Proposeur doit choisir un saut **qualitatif** parmi :
 
-  **Directions traitées ailleurs ou écartées** :
-  - **Formalisation Lean** : en cours dans le dépôt satellite [`pvsnp-LeanAC0Profondeur2`](https://github.com/Tanguy333/pvsnp-LeanAC0Profondeur2) (autre discussion). **Ne plus proposer ici.**
-  - **Conjecture asymptotique de L19** (`|(α)/(β)| / 2^{2^n} → 0`) : écartée comme non centrale à P vs NP.
+  - **Profondeur ≥ 3** : FSS 1981 → Håstad 1986 (Switching Lemma) →
+    Razborov-Smolensky 1987. Toute borne de profondeur ≥ 3, même partielle ou
+    sur classe restreinte (ACC⁰, monotone, sparse), compte.
+  - **Circuits non-formules** : sortir du cadre formule monotone (Tour 7 a
+    établi son insuffisance). Cibles : circuits booléens généraux,
+    branching programs, communication complexity.
+  - **Méta-méthode Williams** : « algorithmic method + circuit lower bound »
+    (Williams 2011 NEXP ⊄ ACC⁰). Toute contribution algorithmique nouvelle
+    (CAPP non-trivial, derandomization, etc.) qui pourrait alimenter cette
+    méthode.
+  - **Méthode polynomiale modulaire** : Razborov-Smolensky 1987, GCT
+    (Mulmuley-Sohoni permanent vs déterminant) — sous réserve de ne pas
+    réintroduire des objets relativisants/algébrisants déjà éliminés.
+  - **Complexité descriptive non-triviale** : Gurevich, Dawar, Grohe — sous
+    réserve qu'on ne tombe pas dans le piège du Tour 5 (encodage trivialement
+    FO-définissable de SAT).
+  - **Fine-grained complexity** ou **hardness magnification** — sous réserve
+    de fournir un sous-théorème nouveau, pas un slogan.
 
-  **Direction interdite** : *toute* nouvelle caractérisation dans AC⁰ d=2 / DNF-MIN sans saut technique vers profondeur 3, ou nouvelle lignée méthodologique.
+  ### Nouvelle condition (q) — audit bibliographique préemptif
 
-  **Note méta** : le Tour 21 a illustré une nouvelle posture épistémique — **prouver partiellement et reconnaître la lacune**. C'est légitime et utile, mais ne ferme pas L20.5. Le dépôt accumule désormais ⚠️ « lacunes réparables récentes » à côté des ✅ ÉTABLIS. Si le Proposeur fait du Tour 22 une 2e itération sur L21.D, c'est aligné. Sinon, retour à profondeur 3 ou Razborov monotone.
+  À ajouter aux conditions (a)-(p) déjà en vigueur :
+
+  > **(q) Audit bibliographique préemptif.** Avant de soumettre une idée, le
+  > Proposeur doit explicitement vérifier (recherche web minimale, citation
+  > d'au moins une référence) que sa cible n'est pas un résultat classique
+  > déjà publié sous une formulation équivalente. Cette condition est rendue
+  > obligatoire par l'audit de mai 2026 qui a révélé que les 8 théorèmes
+  > Tours 12-20 étaient folklore non-identifié au moment de leur proposition.
+
+  ### Conjectures internes écartées
+
+  - **Compléter L21.D** (cas k ≥ 3 de l'unicité antipodale L20.5) : reste en
+    AC⁰ d=2, donc **interdit** par §🚫 ci-dessus, même si techniquement
+    « ouvert ». L20.5 reste conjecturale ; on l'accepte ainsi.
+  - **Conjecture asymptotique de L19** (`|(α)/(β)| / 2^{2^n} → 0`) : écartée.
+
+  ### Note méta-épistémique
+
+  Après 21 tours dont 8 ÉTABLIS désormais identifiés folklore + 1 dérive
+  algèbre commutative + 4 FAILLE FATALE + plusieurs LACUNE RÉPARABLE, le
+  dépôt n'a **pas encore franchi les trois barrières** (relativisation,
+  preuves naturelles, algébrisation). Le Tour 22 doit le tenter pour la
+  première fois. Le précédent unique reste Williams 2011. Si le Proposeur
+  ne peut pas se positionner par rapport à ces trois barrières *de manière
+  vérifiable*, il doit le dire et abandonner sa piste avant soumission.
 
 ---
 
