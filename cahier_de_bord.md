@@ -32,8 +32,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (post-tour 21 — audit bibliographique + clôture du dépôt satellite Lean, voir notes ci-dessous)
-- **Nombre de tours effectués** : 21
+- **Dernière mise à jour** : 2026-05-23 (post-tour 22 — réfutation de L20.5/L21.D par contre-exemple à n=5, vérifiée indépendamment par 2e algorithme ; acquis positif L22.A — voir notes ci-dessous)
+- **Nombre de tours effectués** : 22
 
 > **Audit bibliographique (mai 2026).** Vérification croisée des 8 théorèmes
 > ÉTABLIS (Tours 12-20) contre la littérature DNF-MIN. Verdict : les 7 résultats
@@ -94,8 +94,9 @@
 | 18 | Preuve structurelle de L17 pour tout n : classification des implicants premiers en 3 classes (A1, A2a, A2b) selon `(x_n, y_n)`, récurrence `a_{n+1} = 2a_n + b_n`, `b_{n+1} = a_n + 2b_n`, close-form `a_n = (3^n − 1)/2`, non-redondance par construction explicite du témoin. | Toutes (relativisation combinatoire ; RR : fonction unique ; algébrisation : pas d'arithmétisation) | L18.A (classification) preuve par cas exhaustifs auditée OK. L18.B (récurrence + close-form) par induction triviale, auditée OK. L18.C (non-redondance) esquissée par le Proposeur, **détaillée par le Réfuteur** : construction explicite du témoin `(x_0, x_n=0, y_n=1)` pour A2a, etc. Vérification empirique n=1..4 cohérente avec la récurrence (1, 4, 13, 40). Prédiction n=5: 121, n=6: 364 (non-vérifiables par énumération directe). | ✅ **ÉTABLI STRUCTURELLEMENT** — promeut Tour 17 d'empirique à structurel |
 | 19 | Théorème de caractérisation L19 : `DNF_min(f) = |primes(f)|` ⟺ chaque implicant premier admet un témoin essentiel. L13 ⊊ (α)/(β) strictement (témoin MAJ_3). | Toutes (relativisation combinatoire ; RR : *signal d'alarme* — propriété constructive et large à n=4 (36%), mais théorème ne dérive pas de borne inférieure générale, donc compatible ; algébrisation : sans objet) | L19.A et L19.B preuves combinatoires auditées (classiques Quine-McCluskey 1952-1956). Vérification empirique : 202/254 (n=3) et 23862/65534 (n=4) fonctions dans la classe. Unifie Tours 12-18 sous une caractérisation unique. Conjecture asymptotique « fraction → 0 » non démontrée (2 points). | ✅ **ÉTABLI** (7e objet) — théorème classique reformulé, unifie le paradigme |
 | 20 | Théorème L20 : fonctions antipodales `f_α(x) = 1 ⟺ x ∉ {α, ¬α}` ont `|primes| = n(n−1)`, `DNF_min = n`, défaut maximal `n(n−2)`. **Pôle extrême opposé à L19**. | Toutes (relativisation combinatoire ; RR : famille petite `2^(n-1)`, non-large ; algébrisation : sans objet) | (i)-(iv) prouvées combinatoirement pour tout n ≥ 3 et auditées (audit du Réfuteur : impl. premier ⟺ 1 positif + 1 négatif ; couverture cyclique ; borne par vecteurs unitaires). Vérification empirique exhaustive n=3 (4 antipodales, défaut 3), n=4 (8, défaut 8), n=5 (16, défaut 15). L20.5 (unicité antipodales = seules à défaut max) conjecturée, vérifiée n=3, 4 par énumération exhaustive. **Note importante** : lien P vs NP plus faible que revendiqué — sur les antipodales, DNF-MIN est facile (calculable en O(n)), pas un témoin de Σ₂^P-difficulté. | ✅ **ÉTABLI** (8e objet) sur (i)-(iv) ; L20.5 conjecturée pour n ≥ 5 |
-| 21 | Preuve partielle de L20.5 par cas sur k = \|f^{-1}(0)\|. L21.A (k=1) trivial, L21.B (k=2 antipodal) = Tour 20, L21.C (k=2 non-antipodal) prouvée rigoureusement (\|primes\|_max = d²−2d+n ≤ n²−3n+3 < n(n−2) pour n ≥ 4 ; n=3 direct), L21.D (k ≥ 3) reste **conjecturale**. | Toutes (combinatoire, non-large, pas d'arithmétisation) | L21.A, L21.B, L21.C prouvés rigoureusement (Réfuteur complète L21.C par calcul exact des implicants premiers). L21.D non prouvée structurellement — preuve combinatoire par hitting sets esquissée mais non développée. Vérification empirique n=4 confirme L20.5 pour tous les k mais ne couvre pas n ≥ 5. | ⚠️ **LACUNE RÉPARABLE** — L20.5 partiellement prouvée, cas k ≥ 3 reste ouvert |
-| 22 |  |  |  | *(à venir)* |
+| 21 | Preuve partielle de L20.5 par cas sur k = \|f^{-1}(0)\|. L21.A (k=1) trivial, L21.B (k=2 antipodal) = Tour 20, L21.C (k=2 non-antipodal) prouvée rigoureusement (\|primes\|_max = d²−2d+n ≤ n²−3n+3 < n(n−2) pour n ≥ 4 ; n=3 direct), L21.D (k ≥ 3) reste **conjecturale**. | Toutes (combinatoire, non-large, pas d'arithmétisation) | L21.A, L21.B, L21.C prouvés rigoureusement (Réfuteur complète L21.C par calcul exact des implicants premiers). **L21.D RÉFUTÉ Tour 22** (contre-exemple à n=5, k=5). | ❌ **FAILLE FATALE (post-Tour 22)** — L21.D faux pour k ≥ 3 ; L20.5 réfutée ; L21.A/B/C maintenus |
+| 22 | (a) Réfutation de L20.5 / L21.D par contre-exemple direct `Z = {0, 3, 5, 25, 30}` à n=5 : triplet (\|primes\|=25, DNF_min=8, défaut=17) > n(n−2)=15. (b) Acquis positif L22.A : si Z = f^{-1}(0) est coord-dégénéré sur position j, alors défaut(f) = défaut(g) ≤ (n−1)(n−3) < n(n−2). | Toutes (combinatoire ; pas de prétention à borne nouvelle pour P vs NP) | Triplet vérifié indépendamment par le Réfuteur (script distinct : énumération 3^5 ANDs + ILP PuLP/CBC). Distribution {2:2, 3:21, 4:2} — non-structure régulière. L22.A prouvée structurellement (audit des 7 sous-étapes a-g). Statistique Proposeur : 1280 contre-exemples à n=5 (0 coord-dégénérés, 0 antipodaux). | ✅ **TOUR RÉUSSI** par négation + acquis structurel L22.A. **Mais viole le recadrage §5 Tour 22** (reste en AC⁰ d=2 / DNF-MIN explicitement interdit). Apport méthodologique : 1er tour qui réfute un ÉTABLI partiel précédent. |
+| 23 |  |  |  | *(à venir)* |
 
 ---
 
@@ -292,7 +293,7 @@
   - (ii) M implicant ⟺ M(0...0)=0 et M(1...1)=0 ⟺ M contient au moins un positif et un négatif. Premier ⟺ exactement 1 positif + 1 négatif. Comptage n·(n−1).
   - (iii) ≤ : cycle `{x_i ∧ ~x_{(i+1) mod n}}`. Toute x ∈ f^{-1}(1) a au moins une transition cyclique 1→0, satisfaite par un implicant du cycle. ≥ : pour chaque e_i (Hamming weight 1), l'unique implicant le couvrant a forme `x_i ∧ ~x_j`. Donc ≥ n implicants requis.
 
-  **L20.5 (corollaire conjectural)** : seules les antipodales atteignent le défaut maximal n(n−2). Vérifié exhaustivement n=3 (4/4) et n=4 (8/8). Conjecturé pour n ≥ 5 (énumération de `2^{2^n}` infaisable).
+  **L20.5 (corollaire conjectural) — ❌ RÉFUTÉ Tour 22** : prétendait que seules les antipodales atteignent le défaut maximal n(n−2). Vérifié exhaustivement n=3 (4/4) et n=4 (8/8), mais **faux dès n=5** : contre-exemple `Z = {0, 3, 5, 25, 30}` non-antipodal, coord-non-dégénéré, avec triplet (|primes|, DNF_min, défaut) = (25, 8, 17), défaut > n(n−2) = 15. 1280 contre-exemples au total à n=5 selon statistique Proposeur. Voir §❌ Réfutés et `tours/tour_22_l20_5_refutee.md`. **L20 (i)-(iv) restent ÉTABLIS** ; seule l'extension conjecturale L20.5 tombe.
 
   **Vérification empirique** : n=3 → 4 antipodales (défaut 3 = 3·1), n=4 → 8 (défaut 8 = 4·2), n=5 → 16 (défaut 15 = 5·3). Tous conformes à la formule.
 
@@ -303,6 +304,27 @@
   **Risque (RR)** : famille petite (`2^{n-1}`), non-large. RR sans objet.
 
   **Saut qualitatif réel ?** Partiel. Tour 20 sort de (α)/(β) mais reste dans le paradigme AC⁰ d=2. Pas de profondeur 3, pas de Lean, pas de Razborov. **Le Tour 21 doit faire un saut qualitatif vrai** (cf. directions infra).
+
+- **Théorème du cas dégénéré L22.A** (Tour 22) : *si `Z = f^{-1}(0)` est coord-dégénéré sur une position `j` (toutes les affectations de Z ont la même valeur `b ∈ {0,1}` sur `j`), alors `défaut(f) = défaut(g) ≤ (n−1)(n−3) < n(n−2)`, où `g` est la fonction à n−1 variables obtenue en éliminant `j`.*
+
+  Cf. [`tours/tour_22_l20_5_refutee.md`](tours/tour_22_l20_5_refutee.md) et [`checks/tour_22_refuter_l20_5.py`](checks/tour_22_refuter_l20_5.py) (le check vérifie le contre-exemple à L20.5, pas L22.A elle-même).
+
+  **Preuve auditée** (WLOG j = n−1, b = 0) :
+  - (a) `ℓ = x_{n-1}` est implicant : pour tout x avec `x_{n-1} = 1`, `x ∉ Z`.
+  - (b) `ℓ` est premier : taille 1, irréductible.
+  - (c) Tout autre prime M ne contient ni `x_{n-1}` ni `~x_{n-1}` (les deux cas se réduisent ou rendent M non-premier).
+  - (d) Bijection `primes(f) \ {x_{n-1}} ↔ primes(g)` par restriction à `x_{n-1} = 0`.
+  - (e) `DNF_min(f) = 1 + DNF_min(g)` : `x_{n-1}` est nécessaire pour couvrir `(z', 1)` avec `z' ∈ Z_g`.
+  - (f) défaut(f) = `(1 + |primes(g)|) − (1 + DNF_min(g))` = défaut(g).
+  - (g) Par récurrence sur n : défaut(g) ≤ (n−1)(n−3). Or (n−1)(n−3) < n(n−2) pour `n ≥ 2`. ✓
+
+  **Conséquence** : les contre-exemples non-triviaux à L20.5 (Tour 22) doivent être *non-dégénérés* sur chaque position. Statistique Proposeur : 0 / 1280 contre-exemples sont coord-dégénérés, cohérent avec L22.A.
+
+  **Barrières** : combinatoire (non-relativisant), pas d'arithmétisation (non-algébrisant), RR sans objet (caractérise une réduction structurelle, pas une borne).
+
+  **Apport au dépôt** : 9e objet ÉTABLI, mais *modeste* — caractérise un cas particulier facile (réduction à n−1) plutôt qu'une vraie borne. Pas de gain pour P vs NP.
+
+  **Acquis méthodologique** : 1er tour qui **réfute un ÉTABLI partiel précédent** (L20.5 conjecturale au Tour 20). Confirme que l'extrapolation à partir de ≤ 2 points (n=3, n=4) est suspecte (déjà signalé §4 q.10, désormais formalisé en q.12).
 
 ### 📚 Audit bibliographique des 8 ÉTABLIS (mai 2026 — post-clôture Lean)
 
@@ -320,6 +342,7 @@ contre la littérature DNF-MIN. Statut individuel :
 | 18 | Preuve structurelle pour tout `n` de L17 | **Statut incertain** | Idem L17 |
 | 19 | `dnfMin(f) = |primes(f)|` ⟺ tous premiers ont témoin essentiel | **Folklore quasi-certain (sous forme duale)** | Hellerstein & Kletenik, *On the gap between ess(f) and cnf_size(f)*, arXiv:1106.4247 (2011) / *Discrete Applied Mathematics* (2015) ; concept d'essential prime implicant remontant à Quine 1952 |
 | 20 | Antipodales : `|primes| = n(n−1)`, `dnfMin = n`, défaut `n(n−2)` | **Probablement connu** comme exemple d'écart maximal | Non identifié précisément ; vraisemblablement dans Crama-Hammer 2011 ch.3 ou Hellerstein-Kletenik 2011 comme exemple |
+| 22 | L22.A (cas dégénéré) : Z coord-dégénéré sur j ⇒ défaut(f) = défaut(g) ≤ (n−1)(n−3) | **Folklore probable** | Réduction triviale par élimination de variable libre (Quine-McCluskey) ; mécanisme standard de simplification booléenne. |
 
 **Conséquences épistémiques** :
 
@@ -353,12 +376,12 @@ contre la littérature DNF-MIN. Statut individuel :
 ### ⚠️ Lacunes réparables récentes
 
 - **Piste 21 — preuve partielle de L20.5** (cf. [`tours/tour_21_l20_5_partiel.md`](tours/tour_21_l20_5_partiel.md) et [`checks/tour_21_l20_5_structural.py`](checks/tour_21_l20_5_structural.py)) : tentative de prouver L20.5 (unicité antipodale pour tout n) par décomposition selon `k = |f^{-1}(0)|`.
-  - **L21.A** (k=1) : prouvé trivialement (défaut = 0, n littéraux conflictuels).
+  - **L21.A** (k=1) : prouvé trivialement (défaut = 0, n littéraux conflictuels). ✅ Établi (intégré comme cas particulier de l'analyse résiduelle).
   - **L21.B** (k=2 antipodal) : = Tour 20, déjà ÉTABLI.
   - **L21.C** (k=2 non-antipodal) : **prouvé rigoureusement par le Réfuteur**. WLOG `α = 0^n`, `β = 1^d 0^{n-d}` avec `1 ≤ d ≤ n−1`. Implicants premiers : Cas 1 (taille 1, `n−d` éléments) et Cas 2 (taille 2 sur d positions, `d(d−1)` éléments). `|primes| = d² − 2d + n`, maximum à `d = n−1` : `n² − 3n + 3 < n(n−2)` pour `n ≥ 4`. Cas n=3 vérifié directement.
-  - **L21.D** (k ≥ 3) : **conjecturale**. Preuve par hitting sets esquissée par le Proposeur mais non développée. Vérification empirique seulement n=4.
+  - **L21.D** (k ≥ 3) : **❌ RÉFUTÉE Tour 22** par contre-exemple direct (k=5, n=5). Voir §❌ Réfutés.
 
-  Verdict : L20.5 partiellement prouvée. Le cas `k ≥ 3` reste ouvert structurellement. Tour 21 ne ferme pas la conjecture du Tour 20 pour tout n. Pour ✅ ÉTABLI complet, il faudrait compléter L21.D.
+  **Verdict révisé post-Tour 22** : L21 passe de ⚠️ LACUNE RÉPARABLE à ❌ FAILLE FATALE car son objectif initial (prouver L20.5 pour tout n) est désormais structurellement *impossible* — L20.5 elle-même étant réfutée. L21.A/B/C restent corrects comme sous-résultats indépendants, mais ils ne reconstituent pas un théorème.
 
 ### ❓ Conjecturaux pour P vs NP (plausibles mais non prouvés)
 - *(aucun retenu pour l'instant)*
@@ -505,6 +528,14 @@ contre la littérature DNF-MIN. Statut individuel :
 
   À NE JAMAIS réessayer sous cette forme. **Nuance honnête** : la complexité descriptive (Immerman, Vardi, Gurevich, Dawar, Grohe) est un programme actif et prometteur, avec des avancées récentes sur graphes structurés. Mais elle ne peut pas être empruntée par l'encodage trivial de SAT comme coloration de l'hypercube — il faut une structure relationnelle non-triviale.
 
+- **Conjecture L20.5 — « les antipodales sont les seules à atteindre le défaut maximal `n(n−2)` ».** Vérifié empiriquement n=3 (4/4) et n=4 (8/8), extrapolé comme corollaire structurel au Tour 20. **Faux dès n=5** : 1280 contre-exemples sur les 201 376 zero-sets de taille 5, dont 320 à défaut 17 (= 15 + 2) et 960 à défaut 16. Témoin canonique double-vérifié : `Z = {0, 3, 5, 25, 30}` (en décimal sur n=5) donne `(|primes|, DNF_min, défaut) = (25, 8, 17)`. Vérification croisée par 2 algorithmes distincts (hitting sets côté Proposeur, énumération 3^5 ANDs + ILP PuLP/CBC côté Réfuteur) — bug d'implémentation exclu. **À NE JAMAIS réessayer sous cette forme** : non seulement L20.5 est fausse, mais les contre-exemples forment une *famille substantielle* (≥ 1280) « anti-antipodale » à n=5. Voir [`tours/tour_22_l20_5_refutee.md`](tours/tour_22_l20_5_refutee.md) et [`checks/tour_22_refuter_l20_5.py`](checks/tour_22_refuter_l20_5.py).
+
+  **Cause structurelle de la chute** : la classe des contre-exemples est *coord-non-dégénérée* (cf. L22.A maintenu) et *anti-antipodale* (aucune paire `{z, ¬z}` dans Z). C'est une classe que ni le Tour 20 ni le Tour 21 n'avaient envisagée comme distincte.
+
+- **Lemme L21.D — « pour k = |f^{-1}(0)| ≥ 3, défaut(f) < n(n−2) ».** Conjecturé Tour 21 sur la base d'une vérification empirique n=4 seulement. **Faux dès n=5, k=5** par le même contre-exemple `Z = {0, 3, 5, 25, 30}` qui réfute L20.5 (défaut 17 > 15). La preuve par hitting sets esquissée par le Proposeur ne pouvait pas être complétée — elle est fausse. **À NE JAMAIS réessayer sous cette forme**. La lacune n'est pas réparable : Tour 21 (programme « prouver L20.5 par cas sur k ») s'effondre puisque L20.5 elle-même est fausse.
+
+  **Leçon transverse** : pattern « vraie à n=4, fausse à n=5 » réapparu au Tour 22 *malgré* l'avertissement explicite §4 q.10. La condition (q) audit bibliographique préemptif (introduite Tour 22 dans §5) ne suffit pas — il faut aussi la nouvelle condition (r) (voir §4 q.12 ci-dessous).
+
 ---
 
 ## 4. Questions ouvertes prioritaires
@@ -520,6 +551,8 @@ contre la littérature DNF-MIN. Statut individuel :
 9. **Le cadre formule monotone n'est pas suffisant pour P vs NP** : même un théorème inattaquable sur D_m (profondeur de formule monotone) ne donne pas de borne pour les **circuits** ou les **machines de Turing**, qui sont les objets de P vs NP. La sous-classe est trop restreinte.
 10. **Tout théorème asymptotique revendiqué doit être vérifié empiriquement à n=4 ou n=5 avant soumission.** Le Lemme 4 du Tour 8 prétendait à un théorème *inconditionnel pour tout n*, et il aurait été réfuté en 30 secondes par énumération à n=3 ou n=4. *(Pattern persistant sur 8 tours.)*
 11. **Question ouverte mathématique positive** : *quelle est la caractérisation exacte des fonctions monotones à résolution pure ?* Pas juste threshold (qui en est une sous-classe stricte), pas juste linéaire + principal (idée fausse), pas seulement « threshold à permutation près » (réfuté Tour 8 bis), mais quelque chose de structurel. Question intéressante en soi, indépendamment de P vs NP. **Donnée empirique acquise** : 95 fonctions sur 167 non-constantes monotones n=4 (cf. atlas tour 8). La caractérisation devra englober au minimum : OR_n, AND_n, MAJ_n, autres TH_t, sous-OR (fonctions linéaires sur k < n variables), sous-AND, paires d'arêtes disjointes (shifts non-consécutifs), et autres.
+
+12. **Toute extrapolation d'un théorème asymptotique à partir de ≤ 2 points est suspecte.** Le pattern « vraie à n=4, fausse à n=5 » a tué la C9 (Tour 9) et est réapparu avec L20.5 / L21.D (Tour 22, contre-exemple à n=5 trouvé après extrapolation depuis n=3, n=4). La condition (q) « audit bibliographique préemptif » n'est pas suffisante pour bloquer ce pattern. Nouvelle règle implicite à appliquer : **exiger systématiquement le test au point suivant `n+1`** *avant* de promouvoir une conjecture vérifiée empiriquement au statut « ÉTABLI structurellement ». Si le test n+1 est infaisable par énumération directe, alors le théorème doit rester ⚠️ Conjectural, pas ✅ Établi. Le Tour 20 a violé cette règle sur L20.5 (extrapolation n=3, n=4 → tout n) ; le Réfuteur n'a pas insisté assez. La condition de catalogage est désormais à appliquer rétroactivement à tout futur ÉTABLI.
 5. **Existe-t-il une obstruction non-locale et non-algébrique** qui survive aux sauts polynomiaux *et* à l'équivalence logique ? GCT (permanent vs déterminant) est la seule réponse sérieuse aujourd'hui, mais elle est au point mort depuis 2017 (Bürgisser-Ikenmeyer-Panova : pas d'obstruction par occurrences).
 6. Côté complexité descriptive : la conjecture de Gurevich (logique capturant P) offre-t-elle un angle non-relativisant **et** non-algébrisant exploitable ?
 7. Williams 2011 (NEXP ⊄ ACC⁰) reste l'unique précédent ayant franchi les trois barrières. La voie « algorithmic method + circuit lower bound » se généralise-t-elle à TC⁰ ? *(Question ouverte centrale de la complexité depuis 15 ans — invoquer cette voie n'est pas une piste, c'est rejoindre le front de la recherche.)*
@@ -530,23 +563,33 @@ contre la littérature DNF-MIN. Statut individuel :
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 22** : **contrainte stricte** post-audit bibliographique de mai 2026.
+- **Tour 23** : **contrainte stricte renforcée** post-Tour 22.
 
-  ### 🚫 Directions interdites pour le Tour 22 (recadrage utilisateur)
+  ### 📋 Note sur Tour 22
+
+  Le Tour 22 a *violé* le recadrage AC⁰ d=2 / DNF-MIN ci-dessous, en livrant
+  une réfutation par contre-exemple de L20.5 / L21.D (reste donc en AC⁰ d=2).
+  La réfutation est mathématiquement correcte et vérifiée indépendamment, et
+  l'acquis L22.A est valide. Mais le tour ne fait pas progresser sur le
+  recadrage « sortir du paradigme AC⁰ d=2 ». Le Tour 23 doit le faire enfin.
+
+  ### 🚫 Directions interdites pour le Tour 23 (recadrage maintenu)
 
   1. **AC⁰ profondeur 2 / DNF-MIN** dans toute forme. Les 8 théorèmes ÉTABLIS
      Tours 12-20 ont saturé ce paradigme, et l'audit bibliographique a établi
      leur statut folklore (Quine 1952, Hammer-Kogan 2011, Hellerstein-Kletenik
-     2011). Aucune nouvelle caractérisation, application de L13/L19, complétion
-     de L21.D, ni variation de famille de fonctions (parity, majority, threshold,
-     mod_p, IP, antipodale, …) ne sera acceptée.
+     2011). Le Tour 22 a montré que pousser plus loin (chercher de nouvelles
+     bornes sur le défaut) donne au mieux des contre-exemples à des conjectures
+     folkloriques — pas du progrès sur P vs NP. **Aucune nouvelle caractérisation
+     en AC⁰ d=2, application de L13/L19/L20, étude de classes de défaut, ni
+     extension de L22.A.**
   2. **Formalisation Lean** de tout théorème du dépôt. Le dépôt satellite est
      fermé (cf. §0). Plus jamais de pivot Lean ici.
   3. **Algèbre commutative pure** sans pont explicite à une borne de complexité
      (Tours 6-9 ont déjà tué cette dérive ; le recadrage de fin Tour 9 reste
      en vigueur).
 
-  ### ✅ Directions autorisées pour le Tour 22
+  ### ✅ Directions autorisées pour le Tour 23
 
   Le Proposeur doit choisir un saut **qualitatif** parmi :
 
@@ -569,33 +612,49 @@ contre la littérature DNF-MIN. Statut individuel :
   - **Fine-grained complexity** ou **hardness magnification** — sous réserve
     de fournir un sous-théorème nouveau, pas un slogan.
 
-  ### Nouvelle condition (q) — audit bibliographique préemptif
+  ### Conditions (a)-(r) en vigueur
 
-  À ajouter aux conditions (a)-(p) déjà en vigueur :
+  Toutes les conditions (a)-(p) restent actives. **Condition (q)** ajoutée
+  Tour 22 :
 
   > **(q) Audit bibliographique préemptif.** Avant de soumettre une idée, le
   > Proposeur doit explicitement vérifier (recherche web minimale, citation
   > d'au moins une référence) que sa cible n'est pas un résultat classique
-  > déjà publié sous une formulation équivalente. Cette condition est rendue
-  > obligatoire par l'audit de mai 2026 qui a révélé que les 8 théorèmes
-  > Tours 12-20 étaient folklore non-identifié au moment de leur proposition.
+  > déjà publié sous une formulation équivalente.
+
+  **Nouvelle condition (r) ajoutée post-Tour 22** :
+
+  > **(r) Test au point suivant pour toute conjecture asymptotique.** Si une
+  > conjecture asymptotique est vérifiée empiriquement à `n ∈ {n_0, n_0+1}`,
+  > elle ne peut être proposée comme ÉTABLI structurellement que (i) si une
+  > preuve structurelle pour tout n est fournie, OU (ii) si elle est vérifiée
+  > à `n_0 + 2` au minimum. Le pattern « vraie à n=4, fausse à n=5 » a tué C9
+  > (Tour 9) puis L20.5 / L21.D (Tour 22) ; la condition (r) bloque sa
+  > troisième apparition.
 
   ### Conjectures internes écartées
 
-  - **Compléter L21.D** (cas k ≥ 3 de l'unicité antipodale L20.5) : reste en
-    AC⁰ d=2, donc **interdit** par §🚫 ci-dessus, même si techniquement
-    « ouvert ». L20.5 reste conjecturale ; on l'accepte ainsi.
+  - **Compléter / réparer L20.5 ou L21.D** : impossible (L20.5 est fausse,
+    pas seulement non-prouvée). Et reste en AC⁰ d=2, donc doublement
+    **interdit**.
+  - **Caractérisation des fonctions à défaut maximal n(n−2) à n=5** : reste
+    en AC⁰ d=2, donc **interdit** (même si question ouverte légitime,
+    possiblement Σ₂^P-difficile).
   - **Conjecture asymptotique de L19** (`|(α)/(β)| / 2^{2^n} → 0`) : écartée.
 
   ### Note méta-épistémique
 
-  Après 21 tours dont 8 ÉTABLIS désormais identifiés folklore + 1 dérive
-  algèbre commutative + 4 FAILLE FATALE + plusieurs LACUNE RÉPARABLE, le
-  dépôt n'a **pas encore franchi les trois barrières** (relativisation,
-  preuves naturelles, algébrisation). Le Tour 22 doit le tenter pour la
-  première fois. Le précédent unique reste Williams 2011. Si le Proposeur
-  ne peut pas se positionner par rapport à ces trois barrières *de manière
-  vérifiable*, il doit le dire et abandonner sa piste avant soumission.
+  Après 22 tours dont 8 ÉTABLIS identifiés folklore + 1 acquis modeste L22.A +
+  1 dérive algèbre commutative + 5 FAILLE FATALE (dont la nouvelle L21
+  reclassée) + plusieurs LACUNE RÉPARABLE, le dépôt n'a **pas encore franchi
+  les trois barrières** (relativisation, preuves naturelles, algébrisation).
+  Le Tour 23 doit le tenter pour la première fois. Le précédent unique reste
+  Williams 2011. Si le Proposeur ne peut pas se positionner par rapport à ces
+  trois barrières *de manière vérifiable*, il doit le dire et abandonner sa
+  piste avant soumission.
+
+  **Le Tour 22 confirme** que rester en AC⁰ d=2 mène à des réfutations de
+  conjectures folkloriques, pas à du progrès sur P vs NP. Pivot **obligatoire**.
 
 ---
 
