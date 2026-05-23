@@ -32,8 +32,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (post-tour 24 — ❌ FAILLE FATALE complexité tropicale de SAT : encodage inversé vérifié exécutablement, borne L24.T trivialement atteinte, violation explicite de (q) — Jukna 2014 + Jerrum-Snir 1982 couvrent le sujet, barrière monotone Razborov-Tardos 1988 létale)
-- **Nombre de tours effectués** : 24
+- **Dernière mise à jour** : 2026-05-23 (post-tour 25 — ❌ FAILLE FATALE CFI-rigidification de 3-SAT : 100 % contre-exemples à L25.2 sur 20 formules random à n=3, construction équivalente à `(x_i, ¬x_i)` triviale, swap = flip = ne préserve pas SAT ; L25.5 conflate FPC/CPT/symmetric P. Aveux honnêtes du Proposeur mais (j) violée et (q) incomplète)
+- **Nombre de tours effectués** : 25
 
 > **Numérotation Tour 24.** Le Proposeur a titré sa proposition « Tour 23 » mais
 > Tour 23 (threshold polynomial complexity / `tcomp`) est déjà existant et clos
@@ -104,7 +104,8 @@
 | 22 | (a) Réfutation de L20.5 / L21.D par contre-exemple direct `Z = {0, 3, 5, 25, 30}` à n=5 : triplet (\|primes\|=25, DNF_min=8, défaut=17) > n(n−2)=15. (b) Acquis positif L22.A : si Z = f^{-1}(0) est coord-dégénéré sur position j, alors défaut(f) = défaut(g) ≤ (n−1)(n−3) < n(n−2). | Toutes (combinatoire ; pas de prétention à borne nouvelle pour P vs NP) | Triplet vérifié indépendamment par le Réfuteur (script distinct : énumération 3^5 ANDs + ILP PuLP/CBC). Distribution {2:2, 3:21, 4:2} — non-structure régulière. L22.A prouvée structurellement (audit des 7 sous-étapes a-g). Statistique Proposeur : 1280 contre-exemples à n=5 (0 coord-dégénérés, 0 antipodaux). | ✅ **TOUR RÉUSSI** par négation + acquis structurel L22.A. **Mais viole le recadrage §5 Tour 22** (reste en AC⁰ d=2 / DNF-MIN explicitement interdit). Apport méthodologique : 1er tour qui réfute un ÉTABLI partiel précédent. |
 | 23 | Threshold polynomial complexity `tcomp(f) = (d_min, m_min)` mesurée par ILP sur OR, AND, PARITY, MAJ, THR_t, MOD_p, IP_{2k} (n=4..8). Conjecture T23.1 : `tcomp(IP_{2k}) = (k, 2^{k-1})` vérifiée à 3 points (k=2,3,4). Pivot revendiqué vers programme Williams 2011 → TC⁰. | Toutes (relativisation combinatoire ILP ; non-large ; pas d'arithmétisation) | **13 chiffres confirmés sans divergence** par script Réfuteur indépendant (1er tour avec auto-vérification parfaite). MAIS : (a) `tcomp` confond max-magnitude L∞ et L1-weight de la littérature PTF, (b) T23.1 = vérification de folklore (conjecture d'Anthony sur PTF degree, Bruck-Smolensky 1992 sur magnitude exponentielle d'IP), (c) cible TC⁰ d=2 \ TC⁰ d=1 non explorée (9/13 tests en TC⁰ d=1, seul IP en d=2), (d) pont à Williams CAPP non construit (Beigel-Tarui utilise polynômes exacts mod 2^ℓ, pas PTF). | ⚠️ **LACUNE RÉPARABLE** avec acquis méthodologique fort (instrument ILP réutilisable, 1er tour à toutes conditions (a)-(r) honorées) |
 | 24 | Complexité tropicale de SAT : encoder 3-SAT comme polynôme tropical $P_\phi = \min_j \min(1, \sum_i \ell_{ji})$ et borner inférieurement $R(P_\phi) \geq 2^{n/2}$ régions linéaires pour $n \in \{4,5,6\}$ (Lemme L24.T) ; chaîne conjecturale tropical→boolean P vs NP | Les 3 (revendiquée), pas mentionnée Tardos | (1) **Encodage inversé** vérifié exécutable 0/16 cas (le Proposeur n'a pas calculé son propre encodage) ; (2) **Borne L24.T triviale** : un min de $m+1$ affines a $O(m^n)$ régions par Zaslavsky, donc $\geq 2^{n/2}$ atteint trivialement par n'importe quel polynôme tropical ; (3) **Violation explicite de (q)** : Jukna 2014 (arXiv:1406.3065) + Jerrum-Snir 1982 + Schnorr couvrent depuis 40 ans ; (4) **Barrière monotone Tardos 1988** non-mentionnée mais létale (tropical = monotone arith. par Jerrum-Snir) ; (5) chaîne tropical→boolean *purement conjecturale*, admise par le Proposeur ; (6) condition (k) violée (« années-lumière » de P vs NP) | ❌ **FAILLE FATALE** — barrière monotone létale + 5 failles indépendantes + (q) violée |
-| 25 |  |  |  | *(à venir)* |
+| 25 | CFI-rigidification de 3-SAT : pour chaque variable `x_i` de φ, jumelée `(x_i^0, x_i^1)` avec XOR `x_i^0 ⊕ x_i^1 = 1`, clauses jumelées en orientation arbitraire. Revendique G = (ℤ/2)^n automorphisme préservant SAT + borne inférieure exp pour circuits G-symétriques (L25.3) + pont à Gurevich 1988 / CPT (L25.4 + L25.5). | Toutes (combinatoire fini, non-large, sans arithmétisation) | (1) **L25.1 + L25.2 réfutés empiriquement à 100 %** sur 20 formules 3-SAT random à n=3 : la « jumelée » est équivalente à introduire `¬x_i` comme nouvelle variable, le « swap » est équivalent à flipper `x_i`, donc G ne préserve PAS SAT (testé à n=1 : 1 contre-exemple immédiat). (2) **L25.5 conflate FPC / CPT / symmetric P** : Anderson-Dawar 2017 caractérise FPC (⊊ P prouvé par CFI), pas P ; la vraie question est CPT (Blass-Gurevich-Shelah 1999), open. (3) **(q) violée** : Atserias-Bulatov-Dawar 2007 (CFI affine pour CSP) non cité, alors que c'est la VRAIE CFI moderne. (4) **(j) violée** : le Proposeur promet « calcul concret à n=3 » §5 aveu 5 mais NE LE LIVRE PAS — le Réfuteur l'a fait en 5 minutes, contre-exemples immédiats. | ❌ **FAILLE FATALE** sur L25.1 + L25.2 (construction incohérente) ; L25.3-L25.5 sans objet ; aveux honnêtes du Proposeur ne réparent pas la faille technique |
+| 26 |  |  |  | *(à venir)* |
 
 ---
 
@@ -560,6 +561,18 @@ contre la littérature DNF-MIN. Statut individuel :
 
   **À NE JAMAIS réessayer sous cette forme.** Toute piste « tropical / monotone arithmétique / min-plus » pour P vs NP est aspirée par Tardos 1988 (cf. §1 4e ligne). **Nuance honnête** : le programme tropical de Jukna est mathématiquement vivace (bornes exponentielles pour PERMANENT, CLIQUE en monotone), mais ne donne *pas* P vs NP. Confondre « bornes tropicales / monotones » et « bornes booléennes non-monotones » est l'erreur centrale de Tour 24.
 
+- **Piste 25 — « CFI-rigidification de 3-SAT » (gadget XOR-twist `(x_i^0, x_i^1)` avec `x_i^0 ⊕ x_i^1 = 1` + clauses jumelées + revendication d'automorphisme G = (ℤ/2)^n).** Cf. [`tours/tour_25_cfi_sat_refute.md`](tours/tour_25_cfi_sat_refute.md) et [`checks/tour_25_refuter_cfi_sat.py`](checks/tour_25_refuter_cfi_sat.py). **Faille fatale combinatoire vérifiée empiriquement à 100 %** sur 20 formules 3-SAT random à n=3.
+  1. **L25.1 + L25.2 incohérents.** La « jumelée » avec contrainte XOR est *équivalente* à introduire `y_i = ¬x_i` comme nouvelle variable. Le « swap » `(x_i^0, x_i^1) ↔ (x_i^1, x_i^0)` est donc *équivalent à flipper x_i*, ce qui ne préserve pas SAT en général. Vérifié : à n=1 sur `φ = x_1`, l'unique solution de φ̃ est `(1, 0)` ; après swap, `(0, 1)`, qui n'est pas solution de φ̃. Le « groupe d'automorphismes » revendiqué n'existe pas.
+  2. **Deux lectures syntaxiques possibles, aucune ne fonctionne** :
+     - Lecture A (orientation `x_i^0 = "x_i vrai"`) : syntaxiquement naturelle, brise la symétrie (vérifié 100 % de contre-exemples).
+     - Lecture B (clauses G-invariantes via `x_i^0 ∨ x_i^1`) : sous XOR, toujours TRUE, donc φ̃ devient tautologique et `SAT(φ) ⟺ SAT(φ̃)` échoue. Réduction triviale, perte du problème.
+  3. **L25.5 conflate FPC / CPT / symmetric P.** Anderson-Dawar 2017 caractérise **FPC** (fixed-point + counting), pas P. FPC ⊊ P est *déjà prouvé* via les CFI graphs. La vraie question « logique pour P sur structures non-ordonnées » est **CPT** (Choiceless Polynomial Time, Blass-Gurevich-Shelah 1999), strictement plus puissant que FPC, encore ouvert. Le pont L25.4 → L25.5 saute le niveau CPT et ne reconstitue pas la question de Gurevich 1988.
+  4. **(q) violée** : Atserias-Bulatov-Dawar 2007 (CFI affine pour CSP, encodage d'équations linéaires sur Z₂) non cité. C'est la *vraie* CFI moderne pour problèmes algébriques ; SAT n'étant pas naturellement affine sur Z₂, la transposition échoue précisément pour cette raison.
+  5. **(j) violée** : le Proposeur promet « calcul concret à livrer à n=3 » en §5 aveu 5, mais ne le livre pas. Le Réfuteur l'a écrit en 5 minutes et a obtenu un contre-exemple immédiat à n=1.
+  6. **Aveux honnêtes du Proposeur**, à valoriser : aveu 1 (« réduction entre deux problèmes ouverts ≠ progrès »), aveu 3 (audit biblio incomplet), aveu 5 (calcul non livré). La posture est correcte mais les aveux ne réparent pas la faille structurelle.
+
+  **À NE JAMAIS réessayer sous cette forme.** Transposer naïvement la construction CFI (faite pour graphes ou CSP avec parité globale) à SAT (qui n'a pas d'invariant de parité naturel) ne fonctionne pas. Pour viser CPT depuis SAT, il faudrait d'abord encoder SAT dans une structure relationnelle non-triviale (e.g. graphe, hypergraphe avec relations soigneusement choisies) — ce que le Tour 5 du dépôt avait déjà tenté et échoué. **Nuance honnête** : la complexité descriptive (CPT, FPC + rank, IFPC) reste une direction autorisée §5, mais demande une construction techniquement correcte ; le saut « CFI pour graphes → CFI pour SAT » via la construction L25.1 est faux.
+
 ---
 
 ## 4. Questions ouvertes prioritaires
@@ -581,6 +594,10 @@ contre la littérature DNF-MIN. Statut individuel :
 13. **Toute mesure de complexité polynomiale entière doit explicitement distinguer max-magnitude (L∞ = `max_S |c_S|`) et weight (L1 = `Σ_S |c_S|`).** Ces deux mesures peuvent diverger d'un facteur `O(n^d)` (nombre de monômes de degré ≤ d). C'est *weight* qui apparaît dans Krause-Pudlák 1998 et dans la méthode algorithmique de Williams 2011 (via Beigel-Tarui). Une fonction TC⁰ à magnitude polynomiale mais L1-weight exponentielle ne donne **pas** de CAPP non-trivial. Pattern apparu Tour 23 : le Proposeur utilise `mag = max |c_S|` sous le nom de « magnitude » et compare aux bornes de Krause-Pudlák qui portent sur *weight* — l'instrument reste valide pour ce qu'il mesure, mais l'interprétation revendiquée du résultat est erronée. Pour future utilisation de l'instrument `tcomp`, exiger deux colonnes (magnitude L∞, weight L1).
 
 14. **Toute piste relevant des circuits monotones / arithmétiques monotones / tropicaux / min-plus / max-plus doit passer le test Tardos 1988** : exhiber une fonction *dans P* à complexité super-polynomiale dans le cadre étudié. La fonction de Tardos (basée sur la θ-fonction de Lovász) a complexité monotone $\exp(\Omega(n^{1/6-o(1)}))$ ET est calculable en temps polynomial non-monotone. Donc toute borne inférieure dans le cadre monotone est silencieuse sur P vs NP. *Pattern apparu Tour 24 : tropical complexity revendiquée comme contournement des 3 barrières, sans mention de la barrière monotone.* Tout futur Tour invoquant ces cadres doit expliquer comment il franchit Tardos, sous peine de FAILLE FATALE automatique.
+
+15. **Avant d'invoquer la construction CFI (Cai-Fürer-Immerman 1992) ou tout autre gadget combinatoire connu pour les graphes / CSP / hypergraphes, vérifier explicitement que l'invariant central (parité globale XOR sur twists, comptage, isomorphisme structural) transporte au domaine cible.** La CFI repose sur une *parité globale* attachée à une famille de twists locaux ; cette parité distingue G_T (parité 0) de G_F (parité 1). Sur SAT, qui n'a pas d'invariant de parité naturel, la construction CFI ne se transpose pas (vérifié Tour 25 : la « jumelée » `(x_i^0, x_i^1)` avec contrainte XOR est triviale et le « swap » revient à flipper x_i, qui ne préserve pas SAT). Atserias-Bulatov-Dawar 2007 ont étendu CFI aux CSP *affines sur Z₂* (où l'invariant existe) ; SAT n'étant pas affine sur Z₂, l'extension naïve échoue. *Pattern apparu Tour 25 : usage du nom « CFI » sans vérifier que le mécanisme transporte.*
+
+16. **Avant d'invoquer FPC / fixed-point logic + counting comme niveau de complexité, distinguer FPC / CPT / P.** Anderson-Dawar 2017 caractérisent les circuits booléens symétriques comme exactement FPC ; FPC ⊊ P est *déjà prouvé* via CFI graphs. La vraie question « logique pour PTIME sur structures non-ordonnées » (Gurevich 1988) est résolue (négativement) pour FPC. Elle reste ouverte pour **CPT** (Choiceless Polynomial Time, Blass-Gurevich-Shelah 1999), strictement plus puissant. Toute proposition qui revendique « réduire P vs NP à Gurevich 1988 » via une borne inférieure FPC ne fait pas avancer P vs NP, puisque FPC ⊊ P n'implique pas P ≠ NP. *Pattern apparu Tour 25 : confusion FPC / CPT dans L25.5.*
 5. **Existe-t-il une obstruction non-locale et non-algébrique** qui survive aux sauts polynomiaux *et* à l'équivalence logique ? GCT (permanent vs déterminant) est la seule réponse sérieuse aujourd'hui, mais elle est au point mort depuis 2017 (Bürgisser-Ikenmeyer-Panova : pas d'obstruction par occurrences).
 6. Côté complexité descriptive : la conjecture de Gurevich (logique capturant P) offre-t-elle un angle non-relativisant **et** non-algébrisant exploitable ?
 7. Williams 2011 (NEXP ⊄ ACC⁰) reste l'unique précédent ayant franchi les trois barrières. La voie « algorithmic method + circuit lower bound » se généralise-t-elle à TC⁰ ? *(Question ouverte centrale de la complexité depuis 15 ans — invoquer cette voie n'est pas une piste, c'est rejoindre le front de la recherche.)*
@@ -591,39 +608,34 @@ contre la littérature DNF-MIN. Statut individuel :
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 25** : **prescription Tour 24 maintenue et non-honorée** (TC⁰ d=2 \ TC⁰ d=1 jamais exploré ; Tour 24 a pivoté vers complexité tropicale, ❌ FAILLE FATALE).
+- **Tour 26** : **prescription Tour 24 toujours maintenue et non-honorée après 2 tentatives** (Tours 24 + 25).
 
-  ### 📋 Notes sur Tours 23 et 24
+  ### 📋 Notes sur Tours 23, 24, 25
 
-  **Tour 23** a effectué le pivot AC⁰ d=2 → TC⁰ demandé par le recadrage Tour 22.
-  Premier tour à honorer toutes les conditions (a)-(r). Chiffres tous vérifiés.
-  Mais : (a) la mesure `tcomp` utilise max-magnitude L∞, pas la weight L1
-  standard ; (b) la cible TC⁰ d=2 \ TC⁰ d=1 reste non-explorée (sur 13 tests,
-  9 en TC⁰ d=1, 2 en AC⁰, seul IP en d=2) ; (c) le pont à Williams CAPP n'est
-  pas construit (Beigel-Tarui utilise polynômes exacts mod 2^ℓ, pas PTF).
-  Conjecture T23.1 = vérification de folklore (Bruck-Smolensky 1992, Anthony
-  PTF degree). Acquis méthodologique réel (instrument ILP réutilisable), mais
-  pas de théorème nouveau.
+  **Tour 23** a effectué le pivot AC⁰ d=2 → TC⁰. Premier tour à honorer toutes
+  les conditions (a)-(r). Chiffres tous vérifiés. Mais (a) `tcomp` confond
+  L∞/L1, (b) TC⁰ d=2 \ d=1 non exploré, (c) pont à Williams CAPP non construit.
+  ⚠️ LACUNE RÉPARABLE avec acquis méthodologique.
 
-  **Tour 24** a *violé* la prescription Tour 24 (extension `tcomp` à TC⁰ d=2 \ d=1)
-  en pivotant vers « complexité tropicale de SAT » — cadre **doublement
-  disqualifié** :
-  1. **Barrière monotone Razborov-Tardos** (1985-1988) : tropical = monotone
-     arithmétique par Jerrum-Snir 1982. Tardos exhibe une fonction dans P à
-     complexité monotone $\exp(\Omega(n^{1/6}))$. Toute borne tropicale est
-     silencieuse sur P vs NP. Ajout de la 4e barrière au §1.
-  2. **Audit (q) violé** : Jukna 2014 + Jerrum-Snir 1982 + Schnorr couvrent
-     ~40 ans le sujet revendiqué « personne n'a fait ». Le Proposeur reconnaît
-     son audit incomplet.
+  **Tour 24** (Qwen Max session parallèle) a *violé* la prescription Tour 24
+  en pivotant vers « complexité tropicale de SAT » — cadre disqualifié par
+  barrière monotone Tardos 1988 (4e barrière ajoutée §1) + audit (q) violé
+  (Jukna 2014). ❌ FAILLE FATALE. Voir [`tours/tour_24_tropical_refutee.md`](tours/tour_24_tropical_refutee.md).
 
-  Plus 4 failles techniques (encodage inversé vérifié 0/16, borne triviale,
-  chaîne conjecturale, traitement faux des 3 barrières). ❌ FAILLE FATALE.
-  Voir [`tours/tour_24_tropical_refutee.md`](tours/tour_24_tropical_refutee.md).
+  **Tour 25** (Claude auto-proposition) a *violé* la prescription en pivotant
+  vers « CFI-rigidification de 3-SAT ». Construction L25.1 + L25.2 réfutée
+  empiriquement à 100 % (le swap = flip de variable, qui ne préserve pas
+  SAT). L25.5 conflate FPC / CPT / symmetric P. ❌ FAILLE FATALE. Aveux
+  honnêtes du Proposeur en §5 mais (j) violée (calcul promis n=3 non livré ;
+  Réfuteur l'a fait, contre-exemple immédiat à n=1). Voir
+  [`tours/tour_25_cfi_sat_refute.md`](tours/tour_25_cfi_sat_refute.md).
 
-  **Conséquence** : la prescription Tour 24 (TC⁰ d=2 \ d=1) **reste valide
-  et non-honorée**. Tour 25 doit la reprendre.
+  **Conséquence** : la prescription Tour 24 (TC⁰ d=2 \ d=1 avec weight L1)
+  **reste valide et non-honorée après 2 tentatives qui ont pivoté ailleurs**.
+  Tour 26 doit soit la reprendre, soit justifier explicitement pourquoi pivoter
+  (et choisir un cadre qui ne tombe sur aucune des 4 barrières actives).
 
-  ### 🎯 Sous-but Tour 25 (= prescription Tour 24 reprise)
+  ### 🎯 Sous-but Tour 26 (= prescription Tour 24 reprise, 3e tentative)
 
   **Réparer Tour 23 sur ses lacunes (a) et (b)** :
 
@@ -648,9 +660,9 @@ contre la littérature DNF-MIN. Statut individuel :
   4. **Si la question 3 reste ouverte à n=5** : honnêteté empirique impose
      de le dire et de ne pas extrapoler (cf. q.12 §4).
 
-  ### 🚫 Directions interdites pour le Tour 25
+  ### 🚫 Directions interdites pour le Tour 26
 
-  Maintenues du recadrage cumulatif Tours 22-23-24 :
+  Maintenues du recadrage cumulatif Tours 22-25 :
 
   1. **Retour à AC⁰ d=2 / DNF-MIN** sous quelque forme que ce soit.
   2. **Formalisation Lean.**
@@ -667,9 +679,21 @@ contre la littérature DNF-MIN. Statut individuel :
      Tardos 1988) est désormais ACTIVE. Voir §4 q.14 (test Tardos obligatoire
      si proposition dans ces cadres).
   6. **Pivot non-aligné sur la prescription du tour courant** sans justification
-     mathématique explicite. Si le Proposeur change de cible (comme au Tour 24),
-     il doit dire *pourquoi* la cible prescrite est inappropriée — pas
-     l'ignorer silencieusement.
+     mathématique explicite. Si le Proposeur change de cible (comme aux Tours
+     24 et 25), il doit dire *pourquoi* la cible prescrite est inappropriée —
+     pas l'ignorer silencieusement.
+
+  Nouvelles post-Tour 25 :
+
+  7. **Transposition naïve de gadgets connus (CFI, twist, structures
+     d'isomorphisme) au domaine cible sans vérifier l'invariant central**.
+     Voir §4 q.15. La CFI nécessite une parité globale ; SAT n'en a pas. Pour
+     viser CPT depuis NP, encoder SAT dans une structure relationnelle
+     non-triviale (la condition (g) du cahier l'exige déjà depuis Tour 5).
+  8. **Borne inférieure FPC présentée comme « réduction à Gurevich 1988 »**.
+     FPC ⊊ P est *déjà prouvé* via CFI ; Gurevich 1988 portait initialement
+     sur la *définissabilité de PTIME* sur structures non-ordonnées (=
+     question CPT, ouverte). Voir §4 q.16. Confusion à éviter explicitement.
 
   ### ✅ Directions autorisées (générales, en cas de pivot Tour 24+)
 
@@ -735,12 +759,17 @@ contre la littérature DNF-MIN. Statut individuel :
   ne peut pas se positionner par rapport à ces trois barrières *de manière
   vérifiable*, il doit le dire et abandonner sa piste avant soumission.
 
-  **Tours 22-23 confirment** que (i) rester en AC⁰ d=2 mène à des
-  réfutations de conjectures folkloriques (Tour 22), et (ii) pivoter
+  **Tours 22-25 confirment** que (i) rester en AC⁰ d=2 mène à des
+  réfutations de conjectures folkloriques (Tour 22), (ii) pivoter
   superficiellement vers TC⁰ via une instrumentation empirique livre du
   folklore re-vérifié + un outil utile mais pas une borne nouvelle (Tour
-  23). Pour Tour 24 : viser explicitement une **zone non couverte par
-  bibliographie §7**.
+  23), (iii) pivoter vers tropical/monotone tombe sur la barrière #4
+  Razborov-Tardos (Tour 24), (iv) pivoter vers CFI/descriptive sans
+  vérifier que les gadgets transportent au domaine cible donne une
+  construction incohérente (Tour 25). Pour Tour 26 : viser explicitement
+  une **zone non couverte par bibliographie §7**, et **livrer le calcul
+  AVANT soumission** (cf. (j)) — le Réfuteur a livré 5 minutes de calcul
+  qui ont coulé le Tour 25, et 20 minutes qui ont coulé le Tour 24.
 
 ---
 
@@ -948,6 +977,60 @@ contre la littérature DNF-MIN. Statut individuel :
   PTF entière représentant IP_n. **Aucune représentation polynomiale dense
   pour IP n'évite la croissance exponentielle simultanément en degré et
   weight L1**, donc IP n'est pas une candidate à CAPP non-trivial via PTF.
+
+### 7.5ter Complexité descriptive — CFI, FPC, CPT, circuits symétriques
+
+- **Origine CFI** — J.-Y. Cai, M. Fürer, N. Immerman, *« An optimal lower
+  bound on the number of variables for graph identification »*,
+  Combinatorica 12(4), 1992, pp. 389-410.
+  [doi:10.1007/BF01305232](https://doi.org/10.1007/BF01305232).
+  Construction des graphes G_T (parité 0) et G_F (parité 1), indistinguables
+  par `k`-Weisfeiler-Leman pour tout `k` fixé mais distinguables en temps
+  polynomial. Repose sur une *parité globale* attachée à des gadgets locaux
+  de twist sur les arêtes. Référence centrale pour Tour 5 et Tour 25 du
+  dépôt.
+
+- **Extension CFI aux CSP affines sur Z_2** — A. Atserias, A. Bulatov, A.
+  Dawar, *« Affine systems of equations and counting infinitary logic »*,
+  Theoretical Computer Science 410(18), 2009, pp. 1666-1683 (ICALP 2007).
+  [PDF Dawar](https://www.cl.cam.ac.uk/~ad260/papers/abd-icalp07.pdf).
+  Réinterprète CFI comme un encodage de systèmes d'équations linéaires sur
+  Z_2 où chaque variable apparaît dans précisément deux équations. Établit
+  que pour les CSP « affines », FPC échoue. **Note critique pour Tour 25** :
+  SAT n'est pas naturellement affine sur Z_2, donc la transposition naïve
+  de CFI échoue. La condition q.15 du cahier (test transport de
+  l'invariant) cristallise cette leçon.
+
+- **Choiceless Polynomial Time (CPT)** — A. Blass, Y. Gurevich, S. Shelah,
+  *« Choiceless polynomial time »*, Annals of Pure and Applied Logic 100,
+  1999, pp. 141-187. Et *« On polynomial time computation over unordered
+  structures »*, J. Symbolic Logic 67(3), 2002, pp. 1093-1125.
+  [PDF Shelah 533](https://shelah.logic.at/files/180379/533.pdf).
+  Formalisation de la question de Gurevich 1988 (« logique pour PTIME sur
+  structures non-ordonnées ») via un modèle de calcul *choiceless* :
+  machines qui n'effectuent jamais de choix arbitraire mais peuvent
+  exécuter en parallèle sur tous les choix. CPT capture beaucoup plus que
+  FPC (par exemple les graphes CFI). **CPT = P sur structures
+  non-ordonnées ?** Ouvert depuis 1999.
+
+- **CPT et CFI** — A. Dawar, D. Richerby, B. Rossman, *« Choiceless polynomial
+  time, counting and the Cai-Fürer-Immerman graphs »*, Annals of Pure and
+  Applied Logic 152(1-3), 2008, pp. 31-50.
+  [PDF Rossman](https://users.cs.duke.edu/~br148/CPT-CFI.pdf).
+  CPT (avec compteurs) décide l'isomorphisme CFI, contrairement à FPC.
+  Précise donc que la stratification *FPC ⊊ CPT ⊆ P* est stricte au moins
+  sur la première inclusion.
+
+- **Symmetric circuits = FPC** — M. Anderson, A. Dawar, *« On symmetric
+  circuits and fixed-point logics »*, Theory of Computing Systems 60(3),
+  2017, pp. 521-551 (STACS 2014).
+  [arXiv:1401.1125](https://arxiv.org/abs/1401.1125).
+  *« Les requêtes définissables par familles uniformes de circuits booléens
+  symétriques (avec portes majority) sont exactement celles définissables
+  en FPC. »* Implication pour Tour 25 : toute borne inférieure sur les
+  circuits symétriques pour SAT ne sépare que FPC ⊊ P (déjà connu via CFI),
+  pas P vs NP. La vraie cible serait une borne sur les circuits **CPT** —
+  question ouverte.
 
 ### 7.6 Hardness magnification et méta-complexité (front actif 2018-)
 
