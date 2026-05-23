@@ -10,8 +10,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 3)
-- **Nombre de tours effectués** : 3
+- **Dernière mise à jour** : 2026-05-23 (fin tour 4)
+- **Nombre de tours effectués** : 4
 
 ---
 
@@ -34,7 +34,8 @@
 | 1 | Incompressibilité (Kt) des témoins SAT : P comprimerait les témoins, contredisant leur incompressibilité | Preuves naturelles (revendiqué) | Équivoque K(w) vs K(w\|x) ; argument relativisant | ❌ **FAILLE FATALE** |
 | 2 | Signature p-adique des témoins (Ax-Katz pour vérificateurs AC⁰) | Relativisation (revendiqué) | Arithmétisation exacte ≠ polylog ; Ax-Katz trivial sous contrainte booléenne ; technique algébrisante | ❌ **FAILLE FATALE** |
 | 3 | Obstruction topologique sur paysage d'énergie CSP (Morse discrète + Lusternik-Schnirelmann) | Relativisation + algébrisation (revendiqué) | Invariant non-invariant sous équivalence logique ; sauts polynomiaux effondrent les Betti | ❌ **FAILLE FATALE** |
-| 4 |  |  |  | *(à venir)* |
+| 4 | Compilation TC⁰ → tensor network à bond polynomiale + Williams + Hardness Magnification | Les 3 (revendiqué) | Lemme 1 faux : IP_n ∈ TC⁰ a bond dimension exponentielle (rang 2ⁿ−1 sur ℝ) ; parade F₂ détruit l'outillage analytique ; ce qui reste = reformulation du programme Williams ouvert | ❌ **FAILLE FATALE** sur le mécanisme |
+| 5 |  |  |  | *(à venir)* |
 
 ---
 
@@ -64,15 +65,26 @@
 
   À NE JAMAIS réessayer sous cette forme. **Nuance honnête** : le clustering topologique des CSP en phase RSB (Mézard-Parisi-Zecchina, Achlioptas et al.) borne effectivement les algorithmes **locaux** — pas P entier. Confondre « bornes pour algos locaux » et « bornes pour P » est l'erreur centrale.
 
+- **Piste 4 — « compilation TC⁰ → tensor network à bond polynomiale + Williams + hardness magnification ».** Première piste à cocher formellement les 5 conditions du sous-but ; les attaques portent donc sur le contenu technique. Faille fatale principale, vérifiée par calcul (cf. [`checks/tour_04_tensor_network_TC0.py`](checks/tour_04_tensor_network_TC0.py)) :
+  1. **Le Lemme 1 (« tout circuit TC⁰ de profondeur d et taille S compile en bond dimension χ = S^{O(d)} ») est faux.** Contre-exemple direct : `IP_n(x,y) = (x · y) mod 2`, calculable par un circuit TC⁰ de profondeur 2 et taille polynomiale (Hajnal-Maass-Pudlák-Szegedy 1993). Sa matrice de communication à la coupe `x|y` a un rang sur ℝ valant exactement `2ⁿ − 1` (essentiellement la matrice de Hadamard à un facteur près). Bond dimension = `2ⁿ − 1`, exponentielle, calculée pour `n ∈ [1, 8]`.
+  2. **La parade « passer à F₂ »** (où le rang chute à `n`) **détruit l'outillage**. Le mécanisme proposé (SVD adaptative, décroissance des valeurs singulières, troncation analytique) est intrinsèquement analytique sur ℝ/ℂ — pas de SVD ni de norme L² sur F₂. De plus, un rang `n` sur F₂ représente `n × 2ⁿ` bits, sans gain sur la table de vérité.
+  3. **Confusion structurelle :** le Proposeur conflate « TC⁰ est petit en circuit » et « TC⁰ a faible intrication ». Or TC⁰ peut calculer IP_n donc atteindre la complexité de communication maximale `Θ(n)`. Les techniques de rang/discrépance/communication, qui marchent pour AC⁰, **échouent toutes pour TC⁰** depuis 1993 — exactement la raison pour laquelle les bornes inférieures pour TC⁰ restent ouvertes.
+  4. **Sans le Lemme 1**, l'idée se réduit à « trouver un algorithme CAPP non-trivial pour TC⁰ et appliquer Williams ». C'est le programme de recherche actif de la communauté depuis 2010 (Williams, Murray, Chen, Tamaki, Servedio, Tal...) — pas une contribution.
+  5. **Bonus** : la hardness magnification (utilisée pour passer de NEXP à NP) a ses propres barrières internes connues (Chen-Hirahara-Oliveira-Pich-Rajgopal-Santhanam 2019, « Beyond Natural Proofs »).
+
+  À NE JAMAIS réessayer sous cette forme spécifique. **Nuance honnête** : la *direction générale* (Williams pour TC⁰) reste la plus prometteuse aujourd'hui — mais sans algorithme nouveau, ce n'est pas une piste exploitable dans notre boucle adverse. Le Proposeur a entendu le feedback (cible adéquate, conditions formelles cochées) mais n'a apporté aucune contribution technique au-delà de la stratégie globale.
+
 ---
 
 ## 4. Questions ouvertes prioritaires
 
-1. **Tout invariant proposé doit être explicitement invariant sous équivalence logique** des présentations du problème. C'est un test de bon sens préalable à toute analyse fine — la piste 3 a échoué là-dessus.
-2. **Tout argument du type « tout algorithme P est contraint par X » doit démontrer que X survit aux sauts polynomiaux**, i.e. à l'extension du graphe Hamming-1 vers `G_{n^c}` (graphe avec arêtes ≤ `n^c` bits modifiés). La piste 3 a échoué sur ce test aussi.
-3. **Existe-t-il une obstruction non-locale et non-algébrique** qui survive aux sauts polynomiaux *et* à l'équivalence logique ? GCT (permanent vs déterminant) est la seule réponse sérieuse aujourd'hui, mais elle est au point mort depuis 2017 (Bürgisser-Ikenmeyer-Panova : pas d'obstruction par occurrences).
-4. Côté complexité descriptive : la question « existe-t-il une logique capturant exactement P ? » (conjecture de Gurevich) offre-t-elle un angle non-relativisant **et** non-algébrisant exploitable ?
-5. Williams 2011 (NEXP ⊄ ACC⁰) reste l'unique précédent ayant franchi les trois barrières — analyser quel ingrédient spécifique (algorithmic method + circuit lower bound + amplification) a permis ce franchissement, et si la recette se généralise à P vs NP.
+1. **Tout invariant proposé doit être explicitement invariant sous équivalence logique** des présentations du problème. *(Piste 3 a échoué là-dessus.)*
+2. **Tout argument « tout algo P est contraint par X » doit démontrer que X survit aux sauts polynomiaux**, i.e. à l'extension `Hamming-1 → G_{n^c}`. *(Piste 3 a échoué là aussi.)*
+3. **Tout argument « low-X pour TC⁰ » (low-rank, low-bond-dim, low-degree) doit d'abord exhiber un test positif sur IP_n**, où toutes ces quantités sont exponentielles. *(Piste 4 a échoué sur ce test.)*
+4. **Toute piste doit apporter une contribution technique concrète**, pas seulement une stratégie globale ou un cadre à explorer. Pointer vers Williams 2011 ne suffit pas — il faut un sous-théorème prouvable, un calcul vérifiable, ou un ingrédient algorithmique nouveau.
+5. **Existe-t-il une obstruction non-locale et non-algébrique** qui survive aux sauts polynomiaux *et* à l'équivalence logique ? GCT (permanent vs déterminant) est la seule réponse sérieuse aujourd'hui, mais elle est au point mort depuis 2017 (Bürgisser-Ikenmeyer-Panova : pas d'obstruction par occurrences).
+6. Côté complexité descriptive : la conjecture de Gurevich (logique capturant P) offre-t-elle un angle non-relativisant **et** non-algébrisant exploitable ?
+7. Williams 2011 (NEXP ⊄ ACC⁰) reste l'unique précédent ayant franchi les trois barrières. La voie « algorithmic method + circuit lower bound » se généralise-t-elle à TC⁰ ? *(Question ouverte centrale de la complexité depuis 15 ans — invoquer cette voie n'est pas une piste, c'est rejoindre le front de la recherche.)*
 
 ---
 
@@ -80,14 +92,10 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 4** : le Proposeur doit livrer une idée qui satisfait simultanément :
-  - (a) **classe restreinte** concrète (et bien définie au niveau des fonctions, pas des présentations) ;
-  - (b) **non-relativisant** (démontré) ;
-  - (c) **non-algébrisant** (démontré par exhibition d'un oracle algébrique séparateur, ou argument équivalent à la Williams 2011) ;
-  - (d) **invariance sous équivalence logique** : l'invariant proposé doit être une fonction de la fonction booléenne calculée, pas de sa présentation syntaxique — sinon il sort du cadre P vs NP ;
-  - (e) **robustesse aux sauts polynomiaux** : si l'argument repose sur une géométrie locale (graphe, complexe simplicial), il doit survivre à l'extension `Hamming-1 → Hamming-≤n^c` qui modélise une MT polynomiale.
+- **Tour 5** : les 5 conditions formelles du Tour 4 restent en vigueur ((a) classe restreinte, (b) non-relativisant, (c) non-algébrisant, (d) invariance logique, (e) sauts polynomiaux). Une **6ème condition** s'ajoute :
+  - (f) **Contribution technique concrète** : un sous-théorème prouvable (par énumération ou Lean), un calcul vérifiable qui fait progresser une borne, ou un ingrédient algorithmique nouveau. Pointer vers Williams 2011 ou GCT ne suffit pas — il faut faire avancer quelque chose, même de très peu, plutôt que reformuler le programme général.
 
-  Conseil de direction : viser **GCT** (permanent vs déterminant, théorie des représentations) ou un cadre type Williams 2011 (algorithmic method + lower bound), où (d) et (e) sont structurellement assurés par construction.
+  Conseil de direction : abandonner la grande stratégie ; viser un **micro-progrès vérifiable** sur une sous-classe encore plus restreinte (TC⁰ de profondeur 2, monotone, ACC⁰ de profondeur 3...) avec un argument que je peux *exécuter* numériquement pour valider. Si l'idée n'est pas vérifiable à petite taille, c'est probablement qu'elle reproduit un programme de recherche existant.
 
 ---
 
