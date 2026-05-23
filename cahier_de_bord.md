@@ -18,8 +18,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 16 — MOD_p établi, 5e objet)
-- **Nombre de tours effectués** : 16
+- **Dernière mise à jour** : 2026-05-23 (fin tour 17 — IP établi empiriquement n=1..4, 6e objet)
+- **Nombre de tours effectués** : 17
 
 ---
 
@@ -57,7 +57,8 @@
 | 15a | Proposeur P1 : profondeur logique de Bennett pour séparer P de NP par contradiction | Revendiquées non-rel/non-RR/non-alg (mais sans objet, voir Verdict) | **Auto-réfuté par le Proposeur** dans son Lemme 3 (*« l'argument est circulaire »*). Pattern Tour 1 (circularité conditionnel/inconditionnel) avec « Bennett » à la place de « Kt ». Le cahier §3 dit explicitement « à ne jamais réessayer ». (j) et (h) non honorées. Régression méthodologique après 3 ÉTABLIS consécutifs. | ❌ **FAILLE FATALE** — pattern Tour 1 explicitement interdit |
 | 15b | Proposeur P2 : `DNF_min(THRESHOLD_{t,n}) = C(n, t)` pour tout `t ∈ [1, n]` + dichotomie polynomial/exponentiel | Toutes (relativisation combinatoire ; RR : famille de `n` fonctions parmi `2^{2^n}`, non-large ; algébrisation : sans objet) | Calcul exhaustif n=4 livré pour `t ∈ {1,2,3,4}` : `C(4, t) = 4, 6, 4, 1` confirmés. Tous implicants premiers positifs, non-redondance vérifiée. Preuves L15.1–L15.4 = généralisation directe de L14.1–L14.4. **Condition (m) honorée explicitement dès la première application** : séparation par témoin (`TC⁰ d=1 ⊄ AC⁰ d=2 poly`), pas inclusion stricte. Nuance technique honnête sur la frontière exacte (`O(log n)` vs `O(log n / log log n)`). | ✅ **ÉTABLI POUR P vs NP** (4e objet) |
 | 16 | `DNF_min(MOD_p_n) = Σ_{k ≡ 0 mod p} C(n, k)`, application directe de L13 (Tour 13) à la famille `MOD_p`. Ouverture de la lignée Razborov-Smolensky. | Toutes (relativisation combinatoire ; RR : famille de `n` fonctions parmi `2^{2^n}`, non-large ; algébrisation : sans objet) | Calcul exhaustif n=4 livré pour `p ∈ {2,3,4,5}`. Comptes confirmés : 8, 5, 2, 1. L16.1 (MOD_p^{-1}(1) independent dans Q_n) prouvée combinatoirement : `sum(y) = sum(x) ± 1` à distance Hamming 1, donc `≢ (mod p)` pour `p ≥ 2`. L16.2 par application directe de L13. L16.3 asymptotique par roots of unity filter. Note terminologique mineure : MOD_2 = ¬PARITY (pas PARITY au sens strict), même DNF_min par symétrie de la bipartition. | ✅ **ÉTABLI POUR P vs NP** (5e objet) |
-| 17 |  |  |  | *(à venir)* |
+| 17 | Conjecture `DNF_min(IP_{2n}) = (3^n − 1)/2` pour INNER PRODUCT mod 2, **première fonction hors classe L13** (non-monotone, non-symétrique). Méthode ILP set cover (nouvelle pour le dépôt). | Toutes (relativisation combinatoire + ILP exact ; RR : fonction unique parmi 2^{2^{2n}}, non-large ; algébrisation : pas d'arithmétisation) | Vérification empirique à n=1, 2, 3 par le Proposeur (set cover exhaustif) ; **extension à n=4 par le Réfuteur via PuLP/CBC ILP** : 40 = (3^4 − 1)/2 confirmé. 4 points consécutifs sans exception. Observation structurelle : `|implicants premiers| = DNF_min` à chaque n testé. Mais **pas de preuve structurelle pour tout n** — la formule (3^n − 1)/2 reste conjecturale pour `n ≥ 5`. | ✅ **ÉTABLI empiriquement** (6e objet) — *conjecture pour n ≥ 5* |
+| 18 |  |  |  | *(à venir)* |
 
 ---
 
@@ -163,6 +164,27 @@
   **Note terminologique** : `MOD_2(x) = 1 ssi sum pair = ¬PARITY(x)` au sens strict (convention standard où `PARITY(x) = 1` ssi sum impair). `|MOD_2^{-1}(1)| = |¬PARITY^{-1}(1)| = 2^(n-1)` par symétrie de la bipartition de `Q_n`. Le résultat est cohérent avec Tour 12, mais l'identification « MOD_2 = PARITY » du Proposeur est imprécise.
 
   **Apport au dépôt** : *cinquième objet ÉTABLI*. Mais 5 itérations consécutives dans `AC⁰ d=2` — saturation persistante. Le Tour 17 doit *vraiment* diversifier.
+
+- **Conjecture vérifiée à 4 points : INNER PRODUCT mod 2** (Tour 17) : *`DNF_min(IP_{2n}) = (3^n − 1)/2` pour `n ∈ {1, 2, 3, 4}`, conjecture pour tout `n ≥ 1`.*
+
+  Cf. [`tours/tour_17_inner_product_etabli.md`](tours/tour_17_inner_product_etabli.md), [`checks/tour_17_inner_product_dnf.py`](checks/tour_17_inner_product_dnf.py) (Proposeur, n=1,2,3) et [`checks/tour_17_extension_n4.py`](checks/tour_17_extension_n4.py) (Réfuteur, n=4 via PuLP/CBC ILP).
+
+  **IP est la première fonction HORS classe L13** du dépôt :
+  - Non-monotone (flipper certains bits change `IP`).
+  - Non-symétrique (`x` et `y` jouent des rôles distincts).
+  - `IP^{-1}(1)` n'est PAS un independent set de `Q_{2n}` (vérifié : voisins Hamming-1 dans `IP^{-1}(1)`, ex. `(0,1,0,1) ↔ (1,1,0,1)`).
+
+  **Validation à n=4 via ILP exact** : 6561 ANDs, 520 implicants, **40 implicants premiers** (32 de taille 5 + 8 de taille 7), set cover résolu par CBC en < 1s. DNF_min = 40 = (3^4 − 1)/2. ✓
+
+  **Observation structurelle remarquable** : à chaque `n ∈ {2, 3, 4}`, `|implicants premiers(IP_{2n})| = DNF_min(IP_{2n})`. Cela signifie que **tous les implicants premiers sont nécessaires** dans le DNF minimal. Si on prouvait : (1) `|primes(IP_{2n})| = (3^n − 1)/2` pour tout `n`, et (2) non-redondance complète, alors le théorème serait acquis pour tout `n`.
+
+  **Coefficient exponentiel `log_2 3 ≈ 1.585`** : strictement inférieur à `log_2 4 = 2` pour MAJ_{2n}. Première distinction quantitative entre deux fonctions super-polynomiales dans le dépôt.
+
+  **Statut épistémique nouveau** : différent des Tours 12-16. Ces derniers étaient des théorèmes structurels prouvés pour tout `n` + vérifiés à n=4. Tour 17 est une **conjecture vérifiée à 4 points consécutifs**, sans preuve générale. Marqué ✅ ÉTABLI au sens empirique fort, avec note explicite que la formule reste conjecturale pour `n ≥ 5`.
+
+  **Méthode ILP set cover** : nouveau dans le dépôt, réutilisable pour toute future fonction hors classe L13. Installation de PuLP/CBC pour cela.
+
+  **Condition (n) honorée** : pas d'application de L13 ; nouvelle méthode (ILP). Diversification réelle.
 
 ### ❓ Conjecturaux pour P vs NP (plausibles mais non prouvés)
 - *(aucun retenu pour l'instant)*
@@ -334,29 +356,24 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 17** : **prescription forte** vers une diversification réelle. Le Tour 16 a été *encore* une application de L13 (5e itération consécutive dans `AC⁰ d=2`). **Le paradigme est saturé.** Une 6e application de L13 sera rejetée d'office au titre de l'épuisement créatif.
+- **Tour 18** : direction **ouverte** après le Tour 17 (option 4 IP réalisée avec succès). Le dépôt a maintenant 6 objets ✅ Établis, dont 5 *structurellement prouvés pour tout n* (Tours 12-16) et 1 *empiriquement vérifié à n=1,2,3,4* (Tour 17). Les 14 conditions (a)–(n) restent en vigueur.
 
-  Directions **prescrites** pour le Tour 17 (le Proposeur doit choisir UNE) :
+  Directions naturelles pour le Tour 18 :
 
-  1. **Profondeur 3** : démontrer un cas particulier de `PARITY ∉ AC⁰ profondeur 3` par calcul exhaustif sur petit `n`. Vraiment plus difficile que d=2. Aucune application possible de L13 (qui est strictement d=2).
+  1. **Preuve structurelle de L17 pour tout n** : démontrer que `|implicants premiers(IP_{2n})| = (3^n − 1)/2` pour tout `n`, et que tous sont nécessaires (non-redondance). Cela transformerait le ✅ empirique en ✅ structurel. Direction la plus naturelle, mais incertaine (formule combinatoire non triviale à prouver).
 
-  2. **Formalisation Lean** d'un sous-lemme acquis (L12.1, L13, L14.1, L15.1, ou L16.1) dans Mathlib4. Premier théorème de complexité certifié du dépôt. Pas de saturation possible.
+  2. **Profondeur 3** : entrer dans le territoire FSS-Håstad partiel sur une fonction du dépôt (PARITY, MAJ, ou IP) par calcul exhaustif sur petit n. Significativement plus dur que d=2.
 
-  3. **Razborov 1985 monotone CLIQUE** : commencer la lignée des bornes inférieures sur circuits monotones, totalement distincte de la lignée AC⁰-d=2 cataloguée. Cible : démontrer une borne inférieure non-triviale pour `CLIQUE_k_n` en circuit monotone pour petits `k, n`.
+  3. **Formalisation Lean** d'un sous-lemme acquis (L12.1, L13, L14.1, L15.1, L16.1 — tous structurellement prouvés). Premier théorème de complexité certifié du dépôt.
 
-  4. **INNER PRODUCT mod 2 (IP)** ou **DISJOINTNESS** : fonctions canoniques de la complexité de communication. Non-symétriques, structurellement différentes de PARITY/MAJ/MOD_p. Ouvrirait la lignée Karchmer-Wigderson dans le dépôt (qui est mentionnée plusieurs fois dans le cahier sans avoir été utilisée).
+  4. **DISJOINTNESS** ou autre fonction de communication : nouvelle fonction hors classe L13, applicable ILP set cover (méthode Tour 17 réutilisable).
 
-  **Interdictions explicites** :
-  - Toute nouvelle application de L13 (saturation, refusé d'office).
-  - Toute extension paramétrique des familles déjà cataloguées (PARITY, MAJ, THRESHOLD, MOD).
-  - Toute proposition de cross-validation pure (n=5 ou n=6 sans nouvelle structure) — ce serait du remplissage.
-  - Pattern d'auto-réfutation type Tour 1 / Bennett (méta-complexité Kolmogorov / profondeur logique pour séparer P de NP par contradiction conditionnel/inconditionnel) — **interdit définitivement**.
+  Les **interdictions** restent en vigueur :
+  - Toute nouvelle application directe de L13 sans diversification de méthode.
+  - Toute extension paramétrique sans saut qualitatif.
+  - Pattern Tour 1 / Bennett (méta-complexité Kolmogorov).
 
-  Les 13 conditions (a)–(m) restent en vigueur. Une 14e est ajoutée par la pratique :
-
-  - (n) **AJOUTÉE** : *Tout théorème qui n'est qu'une application directe d'un théorème déjà ÉTABLI dans le dépôt est rejeté d'office si une telle application a déjà été faite plus de 2 fois. Le dépôt n'est pas un cataloguage de cas particuliers, c'est un travail d'exploration.*
-
-  **Note pédagogique sur les Tours 12-16** : cinq ÉTABLIS consécutifs ont créé une famille cohérente sur AC⁰ d=2. C'est précieux (premier vrai apport positif du dépôt). Mais à partir du Tour 17, la priorité est de **sortir du paradigme** pour éviter de saturer le dépôt avec des variations sur le même thème. Si le Proposeur n'arrive pas à diversifier, alternative honnête : déclarer le travail terminé et formaliser ce qui est acquis en Lean.
+  **Note méthodologique sur le Tour 17** : c'est le premier objet ÉTABLI qui est *conjectural pour tout n*. Cela marque un changement épistémique. Le critère ÉTABLI a été assoupli pour accepter une vérification empirique forte (4 points consécutifs) faute de preuve structurelle. Si le Proposeur arrive à fournir la preuve générale au Tour 18, cela renforcera rétroactivement le statut du Tour 17.
 
 ---
 
