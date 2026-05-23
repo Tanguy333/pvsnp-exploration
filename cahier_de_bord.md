@@ -18,8 +18,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 12 — premier théorème ÉTABLI pour P vs NP)
-- **Nombre de tours effectués** : 12
+- **Dernière mise à jour** : 2026-05-23 (fin tour 13 — deuxième théorème ÉTABLI pour P vs NP)
+- **Nombre de tours effectués** : 13
 
 ---
 
@@ -52,7 +52,8 @@
 | 10 | (a) Conjecture C10 « intersections uniformes » testée préemptivement et **retirée par le Proposeur** (1068 contre-exemples) ; (b) pivot proposé vers formalisation Lean de Koszul de `m_n` | (a) C10 testée mais inapplicable car pas de prétention asymptotique ; (b) Koszul Lean : aucune | Bon réflexe épistémologique (test (j) honoré 2e fois consécutive). Mais pivot Lean cible un théorème **hors-sujet vis-à-vis de P vs NP** (admis par le Proposeur). Direction prescrite Tour 11 : `PARITY ∉ AC⁰ profondeur 2` | ⚠️ **LACUNE RÉPARABLE** + recadrage utilisateur |
 | 11 | Borne `D_m(2COL) ≥ Ω(n log n)` via lifting (Raz-McKenzie/GPW) + Karchmer-Wigderson + Tseitin sur expandeurs (Ben-Sasson-Wigderson) | Trois barrières revendiquées (lifting+KW non-relativisant et non-algébrisant ; RR fragile admis) | Direction enfin correcte vis-à-vis P vs NP. Mais : (1) **erreur factuelle** : 2-COLORATION ∈ P, pas NP-complet ; (2) 2COL n'est pas naturellement monotone ; (3) chaîne L10.5 conjecturale (pattern récurrent que le Proposeur reconnaît) ; (4) (j) régressée (test n=4,6,8 promis mais non livré) ; (5) redondance possible avec Garg-Göös-Knop-Watson 2018 non vérifiée | ⚠️ **LACUNE RÉPARABLE — rejet maintenu par utilisateur** |
 | 12 | Mini-théorème : `PARITY_n ∉ AC⁰ profondeur 2` de taille `< 2^(n-1)` (= DNF minimal exactement `2^(n-1)` monômes) | Toutes traitées explicitement (relativisation : preuve combinatoire sans oracle ; RR : propriété pas large car ne caractérise que PARITY et ¬PARITY ; algébrisation : pas d'arithmétisation) | Calcul exhaustif n=4 livré AVANT soumission (81 ANDs, 8 implicants, bijection vérifiée). Argument structurel L12.1–L12.4 valable pour tout n, prouvé combinatoirement. Reproduction indépendante par le Réfuteur OK. **Toutes les 12 conditions (a)–(l) honorées pour la première fois.** | ✅ **ÉTABLI POUR P vs NP** |
-| 13 |  |  |  | *(à venir)* |
+| 13 | Caractérisation : `DNF_min(f) = |f^{-1}(1)|` ⟺ `f^{-1}(1)` est independent set de `Q_n` ⟺ aucun AND de `< n` littéraux n'est implicant. PARITY est l'élément maximal d'une classe combinatoire de **743 fonctions à n=4**. | Toutes (relativisation combinatoire, RR : caractérise une classe pas une fonction, algébrisation : sans objet) | Calcul exhaustif n=4 livré : 743 fonctions identifiées, équivalence (b)⟺(c) vérifiée sur 200 échantillons sans incohérence, distribution exacte par taille, PARITY+¬PARITY uniquement à |f^{-1}(1)|=8. Preuves L13.1–L13.4 combinatoires audités OK. Erreur référentielle OEIS (A006506 cité à tort, mais 743 est correct par calcul direct) | ✅ **ÉTABLI POUR P vs NP** (2e objet) |
+| 14 |  |  |  | *(à venir)* |
 
 ---
 
@@ -75,6 +76,25 @@
   **Barrières** : non-relativisant (preuve combinatoire sans oracle), pas en tension avec RR (propriété trop spécifique pour être large : seules `parity` et `¬parity` la satisfont), non-algébrisant (pas d'arithmétisation).
 
   **Premier objet positif aligné sur P vs NP du dépôt** après 11 itérations.
+
+- **Théorème de caractérisation** (Tour 13) : *Pour `f : {0,1}^n → {0,1}` non-constante, les trois conditions sont équivalentes :*
+  - *(a) `DNF_min(f) = |f^{-1}(1)|`,*
+  - *(b) aucun AND de `< n` littéraux n'est implicant de `f`,*
+  - *(c) `f^{-1}(1)` est un independent set du graphe `Q_n` du n-cube.*
+
+  Cf. [`tours/tour_13_independent_set_etabli.md`](tours/tour_13_independent_set_etabli.md) et [`checks/tour_13_independent_set_characterization.py`](checks/tour_13_independent_set_characterization.py).
+
+  **Corollaire 1 (compte exact à n=4)** : la classe des fonctions vérifiant (a)/(b)/(c) sur n=4 contient exactement **743 fonctions** (= nombre d'independent sets de `Q_4`), distribuées par taille `|f^{-1}(1)|` selon `[1, 16, 88, 208, 228, 128, 56, 16, 2]`. La séquence des `|IS(Q_n)|` est `2, 3, 7, 35, 743, ...` (n=0,1,2,3,4,...).
+
+  **Corollaire 2 (extrémalité PARITY)** : le maximum `|f^{-1}(1)| = 2^{n-1}` est atteint **exactement par PARITY et ¬PARITY** (les deux classes de la bipartition de `Q_n`). PARITY n'est plus un cas isolé du Tour 12 ; c'est l'élément maximal d'une classe combinatoire de 743 fonctions.
+
+  **Preuves** : L13.1 (a)⟺(b) reprend Tour 12 généralisé. L13.2 (b)⟺(c) preuve directe par sous-cubes / arêtes de `Q_n`. L13.3 bijection triviale. L13.4 extrémalité par bipartition de `Q_n`.
+
+  **Barrières** : non-relativisant (combinatoire sans oracle), RR non applicable (la propriété caractérise une classe, pas une fonction individuelle), non-algébrisant (pas d'arithmétisation).
+
+  **Apport au dépôt** : *consolide et structure* le Tour 12. PARITY identifié comme élément maximal d'une classe identifiable (et non un cas isolé). Deuxième objet ÉTABLI.
+
+  **Note (erreur référentielle mineure)** : le Proposeur cite OEIS A006506 pour le compte 743, mais A006506 = nombres de Dedekind (`2, 3, 6, 20, 168, 7581`). La séquence correcte est différente. Le chiffre 743 lui-même est correct par calcul exhaustif.
 
 ### ❓ Conjecturaux pour P vs NP (plausibles mais non prouvés)
 - *(aucun retenu pour l'instant)*
@@ -246,19 +266,21 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 13** : direction **ouverte** après l'établissement du Tour 12. Le mini-théorème `PARITY_n ∉ AC⁰ profondeur 2` est acquis (premier ✅ Établi pour P vs NP du dépôt). Le Proposeur choisit parmi 3 directions pour la suite :
+- **Tour 14** : direction **ouverte** après l'établissement des Tours 12 et 13. Le dépôt a maintenant **deux objets ✅ Établis pour P vs NP**. Les directions possibles restent les mêmes qu'avant le Tour 13 :
 
-  1. **Cross-validation à n = 5, 6** : re-exécuter le calcul exhaustif (3^5 = 243 ANDs, 3^6 = 729 ANDs) pour confirmer la borne `2^(n-1)`. Très court, simple, consolide l'objet ✅ Établi.
+  1. **Cross-validation à n = 5** : énumérer les `2^{2^5}` ≈ 4 milliards de fonctions est infaisable, mais l'énumération des independent sets de `Q_5` (= 254 475 par référence ; vérifiable directement) avec la distribution par taille consoliderait le théorème. Plus complexe que n=4 mais accessible.
 
-  2. **Extension à profondeur 3** : démontrer (par calcul + argument structurel) une variante FSS partielle sur n=4 ou 5. Beaucoup plus complexe : le nombre de circuits AC⁰ profondeur 3 explose (étoile-de-AND-de-OR à 3 niveaux). Le résultat est non-trivial même à n=4 (Håstad 1986 utilise la switching lemma pour ça). Pas garantie d'aboutir en un tour.
+  2. **Extension à profondeur 3** : entrer dans le territoire Furst-Saxe-Sipser / Håstad. Beaucoup plus dur — le nombre de circuits AC⁰ profondeur 3 sur n=4 explose, et l'argument simple « variable libre → flip change parity » ne suffit plus. Significativement plus ambitieux.
 
-  3. **Formalisation Lean** d'un sous-lemme L12.1-L12.4 en Lean 4 / Mathlib4. Cible la plus longue mais produit un objet certifié mécaniquement. Premier théorème de complexité formalisé du dépôt.
+  3. **Formalisation Lean** des L12.1–L13.4 dans un fichier Mathlib4. Premier théorème de complexité formalisé du dépôt.
 
-  Toutes les 12 conditions (a)–(l) restent en vigueur. Le Proposeur a démontré au Tour 12 qu'il peut les honorer simultanément ; cela doit être maintenu.
+  Toutes les 12 conditions (a)–(l) restent en vigueur. Les Tours 12 et 13 montrent que le Proposeur peut les honorer simultanément ; cela doit être maintenu.
 
   **Toute proposition s'écartant de la direction P vs NP** (algèbre commutative décorrelée, raffinements de C9, etc.) sera rejetée d'office au titre de (i).
   **Toute conjecture-pont non vérifiée** sera rejetée au titre de (j).
   **Toute erreur factuelle élémentaire** sera rejetée au titre de la rigueur attendue.
+
+  **Note (suite à l'erreur OEIS Tour 13)** : toute référence externe (OEIS, théorème nommé, séquence) doit être vérifiée avant citation. Citer A006506 pour les independent sets de Q_n est une erreur référentielle qui n'affecte pas le théorème mais nuit à la crédibilité. À éviter à l'avenir.
 
 ---
 
