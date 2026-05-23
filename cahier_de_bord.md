@@ -10,8 +10,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 7)
-- **Nombre de tours effectués** : 7
+- **Dernière mise à jour** : 2026-05-23 (fin tour 8)
+- **Nombre de tours effectués** : 8
 
 ---
 
@@ -38,7 +38,9 @@
 | 5 | Indistinguabilité CPT+C des hypercubes colorés `H_f` (jeux de pavage bijectifs + canonisation Dawar) | Les 3 + (d) + (e) (revendiqué) | Lemme 3 trivialement impossible : `∃ x. f(x)` est FO ⊂ CPT+C et distingue toute paire SAT/UNSAT ; Lemme 1 invoque un théorème de Dawar qui n'existe pas sous cette forme ; (f) non satisfaite (feuille de route admise) | ❌ **FAILLE FATALE** |
 | 6 | Gap homologique sémantique pour circuits monotones Σ Π fan-in borné (Stanley-Reisner) | Les 7 (revendiqué) | Lemme 2 réfuté empiriquement (52/168 contre-exemples sur n=4) ; Lemme 1 confond complexe et idéal de Stanley-Reisner ; calcul promis non livré | ⚠️ **LACUNE RÉPARABLE** (direction légitime, mais réparation déplace hors cadre) |
 | 7 | Obstruction homologique duale (résolutions libres + dualité d'Alexander) pour profondeur de formule monotone | Les 8 (revendiqué) | Chiffres C_4, K_4 corrects ; mais Lemme 2 (D_m ≥ Ω(pd)) réfuté par OR_n : pd(I_{OR_n}) = n−1 alors que D_m = 1 ; cadre limité aux formules (pas circuits) | ⚠️ **LACUNE RÉPARABLE** |
-| 8 |  |  |  | *(à venir)* |
+| 8 | Atlas de Boij-Söderberg des fonctions monotones n=4 (renoncement à P vs NP) | Inapplicables (objet fini) | Mouvement stratégique correct ; mais Lemme 4 (OR/AND = seuls à résolution pure) massivement faux (95/167 contre-exemples) ; atlas livré par le Réfuteur | ⚠️ **LACUNE RÉPARABLE** + objet positif livré |
+| 8 bis | Révision du Proposeur : « résolution pure ssi threshold » | Inapplicables | Mini-théorème révisé encore faux (4 thresholds prédits sur n=4, mais 95 fonctions pures ; ex : f = x_0 et f = (x_0∧x_1)∨(x_0∧x_2) sont pures et non-threshold) ; **violation immédiate de (j)** que le Réfuteur venait d'ajouter | ⚠️ **LACUNE RÉPARABLE** |
+| 9 |  |  |  | *(à venir)* |
 
 ---
 
@@ -49,6 +51,10 @@
 
 ### ❓ Conjecturaux (plausibles mais non prouvés)
 - *(aucun retenu pour l'instant)*
+
+### ✅ Établis (vérifiés par calcul exhaustif)
+
+- **Atlas des 95 fonctions monotones n=4 à résolution pure** (Tour 8, cf. [`checks/tour_08_atlas_boij_soderberg.py`](checks/tour_08_atlas_boij_soderberg.py)) — sur les 168 fonctions monotones non-constantes sur n=4 variables, exactement **95** ont un idéal de Stanley-Reisner à résolution libre minimale pure (au sens Boij-Söderberg : un seul shift par index homologique). La distribution par taille d'implicants + nombre d'implicants est tabulée dans le tour 8. **Premier objet positif acquis par le dépôt.**
 
 ### ⚠️ Lacunes réparables (direction légitime mais énoncé spécifique faux)
 
@@ -70,6 +76,24 @@
   Le Proposeur lui-même admet (Aveu 1) que L2 est conjectural, et (Aveu 2) que le cadre se limite aux formules monotones — pas aux circuits, donc même un L2 valide ne donnerait pas P vs NP.
 
   **Verdict ⚠️ LACUNE RÉPARABLE** (meilleur tour à ce stade) : direction techniquement saine, chiffres corrects, (h) honorée. La lacune précise est l'**invariant algébrique manquant** : `pd` ne capture pas `D_m`. Toute proposition future doit passer le test OR_n (où pd explose mais D_m reste petit).
+
+- **Piste 8 — « Atlas de Boij-Söderberg des fonctions monotones n=4 ».** Premier tour à abandonner explicitement la prétention à P vs NP (condition (i) honorée) au profit d'un objet de catalogage fini. Mouvement stratégique correct. Mais le Lemme 4 (« OR_n et AND_n sont les seules fonctions monotones à résolution pure, prouvable inconditionnellement pour tout n ») est **massivement faux** (cf. [`checks/tour_08_atlas_boij_soderberg.py`](checks/tour_08_atlas_boij_soderberg.py)) :
+  - Faux dès n=3 : `MAJ_3 = I(K_3) = (x_0 x_1, x_0 x_2, x_1 x_2)` a Betti(I) = (3, 2) à shifts (2, 3) — résolution pure (r=1), pourtant ni OR_3 ni AND_3.
+  - Sur n=4 : **95 fonctions monotones sur 167 non-constantes** ont des résolutions pures, pas 2. Erreur d'un facteur ~47. La 4-classe des fonctions threshold (OR_4, MAJ_4, THRESHOLD_3, AND_4) est pure (par Veronese squarefree), plus de nombreuses autres : OR de littéraux, paires d'arêtes disjointes (shifts non-consécutifs (2,4)), AND simples, etc.
+  - Justification mathématique invoquée (Herzog-Kühl) mal interprétée : HK 1984 donne des contraintes sur Betti pour résolutions pures, pas une caractérisation binaire « linéaire ou principal ».
+  - (h) toujours non honorée : aucun script livré, aucun CSV, aucun calcul. Le Réfuteur effectue le travail à sa place.
+
+  **Atlas livré (sous-produit positif) :** classification des 95 fonctions monotones n=4 à résolution pure, avec mintermes et shift sequences. C'est le **premier objet mathématique positif** du dépôt, au-delà des réfutations. Reproductible via `checks/tour_08_atlas_boij_soderberg.py`.
+
+  **Verdict ⚠️ LACUNE RÉPARABLE (3e consécutive)** : posture stratégique correcte, direction valide, atlas utile produit ; mais l'unique théorème revendiqué est faux. Pattern persistant sur 8 tours : le Proposeur corrige le défaut tour précédent mais introduit une nouvelle conjecture qui se révèle fausse à l'examen.
+
+- **Piste 8 bis — Révision du Proposeur** (réponse au verdict ci-dessus). Admission honnête de l'erreur du Lemme 4, retrait, et révision en : *« I_f a résolution pure ssi f est une fonction threshold TH_t, à permutation près »*. **Encore faux** :
+  - Prédit 4 fonctions threshold pures sur n=4. Réalité (mon atlas) : 95.
+  - 4 contre-exemples concrets dans l'atlas même : `f = x_0` (1 minterme, pas threshold), `f = x_0 ∨ x_1` (2 mintermes, pas threshold), `f = (x_0∧x_1) ∨ (x_0∧x_2)` (2 mintermes de taille 2, mais TH_2 = MAJ_4 en a 6), `f = (x_0∧x_1∧x_2) ∨ (x_0∧x_1∧x_3)`.
+  - Plus précisément : les sous-OR et sous-AND (fonctions dépendant de < n variables) ont toutes des résolutions pures et ne sont pas thresholds.
+  - **Violation immédiate de (j)** : le Proposeur a soumis ce mini-théorème révisé sans avoir vérifié contre l'atlas n=4 que je venais de produire et publier. C'est exactement la condition (j) que (j) cherchait à empêcher, violée en temps réel.
+
+  Pattern désormais établi sur 9 itérations (8 tours + 1 révision) : le Proposeur articule des théorèmes asymptotiques sans calcul empirique préalable, même quand la condition est explicitement énoncée. La boucle adverse (Réfuteur exécutant les calculs) est apparemment **nécessaire en permanence** pour catalyser une rigueur empirique que le Proposeur seul ne maintient pas.
 
 ### ❌ Réfutés (faux — et pourquoi, pour ne pas y revenir)
 - **Piste 1 — « contradiction de compressibilité des témoins ».** Le sophisme central : la confrontation oppose un Kt **inconditionnel** (Lemme 1, incompressibilité Ω(n)) à un Kt qui n'est petit que **conditionnellement à x** (Lemme 2, vrai sous la forme K(w|x)=O(1), pas K(w)=O(log n) — la description doit embarquer x, de taille poly(n)). En unifiant les deux quantités, la contradiction disparaît : soit Lemme 2 redevient faux (inconditionnel), soit Lemme 1 redevient faux (conditionnel, car le témoin lex-premier est déterminé par x). Le fossé entre conditionnel et inconditionnel **est** P vs NP → circularité.
@@ -119,6 +143,8 @@
 7. **L'invariant topologique « β_i(Δ_f) > 0 » est constructif et large** — il tombe sous Razborov-Rudich (preuves naturelles) si on prétendait en tirer une vraie borne inférieure. Tout invariant calculable en temps polynomial sur la table de vérité et vrai pour ≥ 2^{-n} des fonctions doit être traité comme suspect.
 8. **Tout invariant algébrique conjecturé borner `D_m(f)` doit passer le test OR_n** : la fonction OR_n a `pd(I_{OR_n}) = n − 1`, `reg = 1`, Scarf défaut 0, mais `D_m = 1`. Tout invariant qui ne distingue pas ce cas extrême du cas générique est inutilement large.
 9. **Le cadre formule monotone n'est pas suffisant pour P vs NP** : même un théorème inattaquable sur D_m (profondeur de formule monotone) ne donne pas de borne pour les **circuits** ou les **machines de Turing**, qui sont les objets de P vs NP. La sous-classe est trop restreinte.
+10. **Tout théorème asymptotique revendiqué doit être vérifié empiriquement à n=4 ou n=5 avant soumission.** Le Lemme 4 du Tour 8 prétendait à un théorème *inconditionnel pour tout n*, et il aurait été réfuté en 30 secondes par énumération à n=3 ou n=4. *(Pattern persistant sur 8 tours.)*
+11. **Question ouverte mathématique positive** : *quelle est la caractérisation exacte des fonctions monotones à résolution pure ?* Pas juste threshold (qui en est une sous-classe stricte), pas juste linéaire + principal (idée fausse), pas seulement « threshold à permutation près » (réfuté Tour 8 bis), mais quelque chose de structurel. Question intéressante en soi, indépendamment de P vs NP. **Donnée empirique acquise** : 95 fonctions sur 167 non-constantes monotones n=4 (cf. atlas tour 8). La caractérisation devra englober au minimum : OR_n, AND_n, MAJ_n, autres TH_t, sous-OR (fonctions linéaires sur k < n variables), sous-AND, paires d'arêtes disjointes (shifts non-consécutifs), et autres.
 5. **Existe-t-il une obstruction non-locale et non-algébrique** qui survive aux sauts polynomiaux *et* à l'équivalence logique ? GCT (permanent vs déterminant) est la seule réponse sérieuse aujourd'hui, mais elle est au point mort depuis 2017 (Bürgisser-Ikenmeyer-Panova : pas d'obstruction par occurrences).
 6. Côté complexité descriptive : la conjecture de Gurevich (logique capturant P) offre-t-elle un angle non-relativisant **et** non-algébrisant exploitable ?
 7. Williams 2011 (NEXP ⊄ ACC⁰) reste l'unique précédent ayant franchi les trois barrières. La voie « algorithmic method + circuit lower bound » se généralise-t-elle à TC⁰ ? *(Question ouverte centrale de la complexité depuis 15 ans — invoquer cette voie n'est pas une piste, c'est rejoindre le front de la recherche.)*
@@ -129,14 +155,15 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 8** : les 8 conditions du Tour 7 restent en vigueur. La logique évolue : le Tour 7 a apporté un vrai progrès (chiffres corrects, direction saine), mais a échoué sur la **conjecture pont** L2 (pd → D_m). Le Tour 8 doit donc :
-  - (i) **Ne pas proposer une nouvelle conjecture supplémentaire**. Le Proposeur a tendance à accumuler les conjectures non démontrées (un Lemme « conjectural » par tour). Cela ne fait pas progresser le projet. Soit fournir un **mini-théorème prouvable** (par énumération exhaustive sur petits cas, ou par formalisation Lean), soit explicitement **abandonner la prétention à P vs NP** pour produire un objet certifié dans le sous-domaine.
+- **Tour 9** : les 9 conditions du Tour 8 restent en vigueur. Le Tour 8 a montré un mouvement stratégique correct (renoncement à P vs NP, focus catalogage) **mais** a livré un Lemme 4 immédiatement réfutable. Une **10ème condition** s'ajoute :
+  - (j) **Tout théorème asymptotique revendiqué doit être vérifié empiriquement à n=4 ou n=5 par le Proposeur avant soumission.** Affirmer un résultat « prouvable inconditionnellement pour tout n » sans avoir énuméré n=3 ou n=4 est inacceptable après 8 tours.
 
-  Conseil de direction renforcé : à ce stade, après 7 tours, il est probable qu'aucune piste nouvelle ne sépare P de NP dans le cadre de la boucle adverse. **Le tour 8 devrait viser la production d'un objet définitivement acquis :**
-  - une vérification empirique sur les 168 fonctions monotones n=4 ou les 7581 sur n=5 qui exhibe une propriété mathématique non triviale (e.g., distribution des invariants algébriques, corrélations entre pd et D_m, etc.) ;
-  - OU une formalisation Lean d'un mini-lemme classique (hiérarchie de temps, Cook-Levin, AC⁰ ne calcule pas PARITY) ;
-  - OU un résultat de tabulation/cataloguage des classes restreintes étudiées qui aide la communauté.
-  Si le Proposeur insiste sur une nouvelle « grande idée pour P vs NP », le Réfuteur réfutera à nouveau. La boucle adverse a démontré sa robustesse — elle peut maintenant servir d'outil pédagogique pour catalyser un travail vérifiable, plutôt qu'une quête de plus en plus stérile.
+  Voies constructives suggérées pour le Tour 9 :
+  - Caractériser exactement la classe des fonctions monotones à résolution pure (problème ouvert mathématique réel, calculable sur n=4 et n=5) ;
+  - Implémenter la décomposition Boij-Söderberg complète pour les 72 fonctions non-pures n=4 (le travail que le Proposeur a *promis* au Tour 8 mais n'a pas fait) ;
+  - Formaliser en Lean un mini-théorème (e.g. la résolution Koszul de m = (x_1, ..., x_n), Auslander-Buchsbaum sur n=4) pour produire un objet certifié.
+
+  Si le Proposeur insiste sur une nouvelle « grande idée pour P vs NP », le Réfuteur réfutera à nouveau. La boucle adverse a démontré sa robustesse sur 8 tours ; elle peut maintenant servir d'outil pédagogique pour catalyser un travail vérifiable.
 
 ---
 
