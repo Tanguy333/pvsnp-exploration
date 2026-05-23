@@ -18,8 +18,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 14 — troisième théorème ÉTABLI, avec correction de formulation)
-- **Nombre de tours effectués** : 14
+- **Dernière mise à jour** : 2026-05-23 (fin tour 15 — Bennett rejeté + THRESHOLD_t établi)
+- **Nombre de tours effectués** : 15
 
 ---
 
@@ -54,7 +54,9 @@
 | 12 | Mini-théorème : `PARITY_n ∉ AC⁰ profondeur 2` de taille `< 2^(n-1)` (= DNF minimal exactement `2^(n-1)` monômes) | Toutes traitées explicitement (relativisation : preuve combinatoire sans oracle ; RR : propriété pas large car ne caractérise que PARITY et ¬PARITY ; algébrisation : pas d'arithmétisation) | Calcul exhaustif n=4 livré AVANT soumission (81 ANDs, 8 implicants, bijection vérifiée). Argument structurel L12.1–L12.4 valable pour tout n, prouvé combinatoirement. Reproduction indépendante par le Réfuteur OK. **Toutes les 12 conditions (a)–(l) honorées pour la première fois.** | ✅ **ÉTABLI POUR P vs NP** |
 | 13 | Caractérisation : `DNF_min(f) = |f^{-1}(1)|` ⟺ `f^{-1}(1)` est independent set de `Q_n` ⟺ aucun AND de `< n` littéraux n'est implicant. PARITY est l'élément maximal d'une classe combinatoire de **743 fonctions à n=4**. | Toutes (relativisation combinatoire, RR : caractérise une classe pas une fonction, algébrisation : sans objet) | Calcul exhaustif n=4 livré : 743 fonctions identifiées, équivalence (b)⟺(c) vérifiée sur 200 échantillons sans incohérence, distribution exacte par taille, PARITY+¬PARITY uniquement à |f^{-1}(1)|=8. Preuves L13.1–L13.4 combinatoires audités OK. Erreur référentielle OEIS (A006506 cité à tort, mais 743 est correct par calcul direct) | ✅ **ÉTABLI POUR P vs NP** (2e objet) |
 | 14 | Mini-théorème : `DNF_min(MAJ_n) = C(n, ⌈n/2⌉) ~ 2^n/√n`, donc `MAJ_n ∉ AC⁰ d=2 polynomial`. Première apparition de TC⁰ dans le dépôt. | Toutes (relativisation combinatoire ; RR : « f=MAJ_n » caractérise une fonction unique, non-large ; algébrisation : sans objet) | Calcul exhaustif n=4 livré : 81 ANDs, 33 implicants, **6 implicants premiers** (= C(4,2)), tous positifs taille 2, non-redondance vérifiée. L14.1 initial buggé, **bug détecté et corrigé par le Proposeur via (j)** avant soumission. Preuves L14.1–L14.4 auditées correctes. | ✅ **ÉTABLI POUR P vs NP** (3e objet) — avec **correction de formulation** : la séparation est `TC⁰ d=1 ⊄ AC⁰ d=2 poly` (par témoin), pas l'inclusion stricte `AC⁰ d=2 poly ⊊ TC⁰ d=1 poly` revendiquée. Les deux classes sont en fait incomparables (contre-exemple : DISJ_n ∈ AC⁰ d=2 poly \ TC⁰ d=1). |
-| 15 |  |  |  | *(à venir)* |
+| 15a | Proposeur P1 : profondeur logique de Bennett pour séparer P de NP par contradiction | Revendiquées non-rel/non-RR/non-alg (mais sans objet, voir Verdict) | **Auto-réfuté par le Proposeur** dans son Lemme 3 (*« l'argument est circulaire »*). Pattern Tour 1 (circularité conditionnel/inconditionnel) avec « Bennett » à la place de « Kt ». Le cahier §3 dit explicitement « à ne jamais réessayer ». (j) et (h) non honorées. Régression méthodologique après 3 ÉTABLIS consécutifs. | ❌ **FAILLE FATALE** — pattern Tour 1 explicitement interdit |
+| 15b | Proposeur P2 : `DNF_min(THRESHOLD_{t,n}) = C(n, t)` pour tout `t ∈ [1, n]` + dichotomie polynomial/exponentiel | Toutes (relativisation combinatoire ; RR : famille de `n` fonctions parmi `2^{2^n}`, non-large ; algébrisation : sans objet) | Calcul exhaustif n=4 livré pour `t ∈ {1,2,3,4}` : `C(4, t) = 4, 6, 4, 1` confirmés. Tous implicants premiers positifs, non-redondance vérifiée. Preuves L15.1–L15.4 = généralisation directe de L14.1–L14.4. **Condition (m) honorée explicitement dès la première application** : séparation par témoin (`TC⁰ d=1 ⊄ AC⁰ d=2 poly`), pas inclusion stricte. Nuance technique honnête sur la frontière exacte (`O(log n)` vs `O(log n / log log n)`). | ✅ **ÉTABLI POUR P vs NP** (4e objet) |
+| 16 |  |  |  | *(à venir)* |
 
 ---
 
@@ -116,6 +118,29 @@
   **Barrières** : relativisation (preuve combinatoire sans oracle), RR (la propriété « f=MAJ_n » est unique parmi `2^{2^n}`, non-large), algébrisation (pas d'arithmétisation). ✓
 
   **Apport au dépôt** : *troisième objet ÉTABLI*, sur une fonction nouvelle (MAJ ≠ PARITY), avec borne sub-exponentielle `~ 2^n/√n` (pas exponentielle comme Tour 12). Première apparition de `TC⁰` dans la lignée FSS → Williams 2011. PARITY (Tour 12) et MAJ (Tour 14) constituent les deux fonctions canoniques séparant respectivement AC⁰ de classes plus puissantes.
+
+- **Théorème de la famille seuil** (Tour 15-B) : *Pour tout `t ∈ [1, n]`, `DNF_min(THRESHOLD_{t, n}) = C(n, t)`. Par conséquent, `THRESHOLD_{t, n} ∉ AC⁰ d=2 polynomial` ssi `t = Θ(n)` (avec ratio strict).*
+
+  Cf. [`tours/tour_15b_threshold_etabli.md`](tours/tour_15b_threshold_etabli.md) et [`checks/tour_15_threshold_dichotomy.py`](checks/tour_15_threshold_dichotomy.py).
+
+  **Preuves** : L15.1–L15.4 sont la généralisation directe de L14.1–L14.4 (Tour 14) avec `t` quelconque en place de `⌈n/2⌉`. Tous les arguments restent valides.
+
+  **Vérification exhaustive n=4** : pour `t ∈ {1, 2, 3, 4}`, comptes `C(4, t) = 4, 6, 4, 1` confirmés. Implicants premiers tous positifs, non-redondance vérifiée.
+
+  **Dichotomie qualitative** : `C(n, t)` polynomial en `n` ssi `t` est constant ou (sub-)logarithmique (et symétriquement `n − t`). Pour `t = Θ(n)`, `C(n, t) ~ 2^n/√n` super-polynomial. Frontière exacte (nuance technique honnêtement notée par le Proposeur) : `t = O(log n / log log n)`, pas exactement `O(log n)`.
+
+  **Cas particuliers unifiés** :
+  - `t = 1` : `OR_n`, `C(n, 1) = n` polynomial → OR ∈ AC⁰ d=2 polynomial.
+  - `t = ⌈n/2⌉` : `MAJ_n` (Tour 14), `C(n, ⌈n/2⌉) ~ 2^n/√n` non-polynomial.
+  - `t = n` : `AND_n`, `C(n, n) = 1` trivial.
+
+  **Condition (m) honorée explicitement** dès le premier tour suivant son ajout : séparation `TC⁰ d=1 ⊄ AC⁰ d=2 polynomial` par témoin (tout `THRESHOLD_{Θ(n)}`), pas inclusion stricte. Bon réflexe.
+
+  **Barrières** : relativisation (preuve combinatoire), RR (famille de `n` fonctions parmi `2^{2^n}`, non-large), algébrisation (pas d'arithmétisation). ✓
+
+  **Apport au dépôt** : *quatrième objet ÉTABLI*, première vraie **unification paramétrique**. Tours 12 (PARITY, `t = ?`), 14 (MAJ_n = THRESHOLD_{⌈n/2⌉}), 15 (THRESHOLD_t pour tout `t`) forment désormais une famille cohérente. La dichotomie polynomial/exponentiel comme fonction de `t` est un fait paramétrique nouveau pour le dépôt.
+
+  **Risque noté** : 4 itérations dans la même veine (FSS profondeur 2). Le Tour 16 devrait diversifier (profondeur 3, ou Lean, ou autre famille de fonctions) pour ne pas saturer le paradigme.
 
 ### ❓ Conjecturaux pour P vs NP (plausibles mais non prouvés)
 - *(aucun retenu pour l'instant)*
@@ -287,23 +312,23 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 15** : direction **ouverte** après les Tours 12, 13, 14 (trois objets ✅ Établis pour P vs NP). Les 12 conditions (a)–(l) restent en vigueur, et une 13e est ajoutée par la pratique du Tour 14 :
+- **Tour 16** : direction **ouverte** après quatre ✅ Établis consécutifs (Tours 12-15-B). **Risque de saturation explicitement noté** : 4 tours dans le même paradigme « AC⁰ d=2 vs classes plus puissantes via fonctions explicites ». Les 13 conditions (a)–(m) restent en vigueur.
 
-  - (m) **AJOUTÉE** : *toute affirmation d'inclusion entre classes doit distinguer `⊊` (inclusion stricte) de `⊄` (incomparabilité par témoin). Une séparation par témoin de la forme « `f ∈ A \ B` » établit `A ⊄ B`, jamais `B ⊊ A`. Pour `B ⊊ A`, il faut deux pas séparés : `B ⊆ A` ET `B ⊋ A`.*
+  Directions recommandées pour diversifier, classées par accessibilité et apport :
 
-  Directions possibles pour le Tour 15, classées par accessibilité et apport :
+  1. **Extension à profondeur 3** : entrer dans le territoire Furst-Saxe-Sipser / Håstad « original » (FSS prouvait `PARITY ∉ AC⁰` toute profondeur via switching lemma). Le nombre de circuits AC⁰ d=3 sur n=4 explose et les arguments combinatoires simples ne suffisent plus. **Direction la plus naturelle pour sortir de la saturation.**
 
-  1. **Extension naturelle** : `DNF_min(THRESHOLD_t) = C(n, t)` pour `t` quelconque. Analogue direct du Tour 14 (MAJ = THRESHOLD_{⌈n/2⌉}), preuve quasi-identique en remplaçant `⌈n/2⌉` par `t`. Ajoute toute la famille des fonctions seuil au paysage des fonctions à DNF non-polynomial. Très accessible.
+  2. **Cross-validation à n = 5 ou 6** des théorèmes Tours 12, 14, 15-B. Très simple (vérifier C(5, 3) = 10 etc.). N'apporte rien de nouveau structurellement mais consolide.
 
-  2. **Cross-validation à n = 5 ou 6** : vérifier la formule `DNF_min(MAJ_n) = C(n, ⌈n/2⌉)` pour n=5 (3^5 = 243 ANDs, C(5,3) = 10) ou n=6 (3^6 = 729 ANDs, C(6,3) = 20). Très simple.
+  3. **Formalisation Lean** d'un sous-lemme (L12.1, L14.1, ou L15.1) dans Mathlib4. Premier théorème de complexité certifié du dépôt.
 
-  3. **Extension à profondeur 3** : entrer dans le territoire Furst-Saxe-Sipser / Håstad. Beaucoup plus dur — le nombre de circuits AC⁰ profondeur 3 sur n=4 explose, et les arguments combinatoires simples ne suffisent plus.
+  4. **Diversifier la famille de fonctions** : passer des THRESHOLD/PARITY à `MOD_p` (modulo p), `INNER PRODUCT mod 2`, ou d'autres fonctions canoniques de la lignée FSS → Razborov-Smolensky.
 
-  4. **Formalisation Lean** des L12.1–L14.4 dans un fichier Mathlib4. Premier théorème de complexité formalisé du dépôt.
+  5. **Direction Razborov 1985 (monotone CLIQUE)** : commencer le programme des bornes inférieures sur circuits monotones, qui est une lignée différente de FSS-AC⁰. La méthode d'approximation de Razborov est non-relativisante et a sa propre dynamique vers TC⁰.
 
-  Toute proposition continuera à être évaluée selon (a)–(m). Toute proposition s'écartant de P vs NP : rejet au titre de (i). Toute conjecture-pont non vérifiée : rejet au titre de (j). Toute erreur factuelle ou logique élémentaire (incluant confusion `⊊` vs `⊄` désormais) : rejet ou correction notée selon la gravité.
+  Toute proposition continuera à être évaluée selon (a)–(m). **Pattern d'auto-réfutation type Tour 1 / Bennett (proposition 15-A) interdit** : le cahier §3 le marque explicitement « à ne jamais réessayer ». Toute reformulation de méta-complexité Kolmogorov / Bennett / profondeur logique pour séparer P de NP par contradiction conditionnel/inconditionnel sera rejetée d'office.
 
-  **Note (suite à l'erreur OEIS Tour 13 et l'erreur classes Tour 14)** : les *erreurs de haut niveau* (référentielles, logiques, ou de typage) sont distinctes des *erreurs de calcul*. Les calculs sont fiables (vérifiables par script) ; les énoncés et formulations le sont moins. À surveiller particulièrement.
+  **Note pédagogique sur le Tour 15** : le Proposeur a livré simultanément deux propositions (Bennett ❌ et THRESHOLD_t ✅), illustrant que **même avec 3 ÉTABLIS consécutifs précédents, la régression vers le spéculatif reste possible si on lui laisse trop de liberté de direction**. Le contraste entre les deux propositions du même tour est un exemple méthodologique précieux. Le sous-but Tour 16 doit donc rester **strict** sur les directions acceptables.
 
 ---
 
