@@ -10,8 +10,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 2)
-- **Nombre de tours effectués** : 2
+- **Dernière mise à jour** : 2026-05-23 (fin tour 3)
+- **Nombre de tours effectués** : 3
 
 ---
 
@@ -33,7 +33,8 @@
 |---|---|---|---|---|
 | 1 | Incompressibilité (Kt) des témoins SAT : P comprimerait les témoins, contredisant leur incompressibilité | Preuves naturelles (revendiqué) | Équivoque K(w) vs K(w\|x) ; argument relativisant | ❌ **FAILLE FATALE** |
 | 2 | Signature p-adique des témoins (Ax-Katz pour vérificateurs AC⁰) | Relativisation (revendiqué) | Arithmétisation exacte ≠ polylog ; Ax-Katz trivial sous contrainte booléenne ; technique algébrisante | ❌ **FAILLE FATALE** |
-| 3 |  |  |  | *(à venir)* |
+| 3 | Obstruction topologique sur paysage d'énergie CSP (Morse discrète + Lusternik-Schnirelmann) | Relativisation + algébrisation (revendiqué) | Invariant non-invariant sous équivalence logique ; sauts polynomiaux effondrent les Betti | ❌ **FAILLE FATALE** |
+| 4 |  |  |  | *(à venir)* |
 
 ---
 
@@ -57,13 +58,21 @@
 
   À NE JAMAIS réessayer sous cette forme. **Nuance honnête** : le programme algébrique-géométrique en complexité existe (GCT, permanent vs déterminant), mais il n'utilise pas Ax-Katz pour les raisons ci-dessus. Confondre comptage algébrique (Ax-Katz) et existence booléenne (P vs NP) est l'erreur centrale.
 
+- **Piste 3 — « obstruction topologique sur le paysage d'énergie d'un CSP ».** Deux failles fatales indépendantes, vérifiées par calcul (cf. [`checks/tour_03_topologie_morse.py`](checks/tour_03_topologie_morse.py)) :
+  1. **L'invariant `Σ β_i(L_k(φ))` n'est pas une fonction de la fonction booléenne, mais de sa présentation syntaxique.** Le Proposeur l'admet (« deux formules équivalentes peuvent avoir des paysages différents ») sans en mesurer la conséquence. Démontré numériquement : pour ψ = (x_0∨x_1) ∧ (x_2∨x_3) ∧ (x_4∨x_5) et ψ' = ψ avec chaque clause triplée (mêmes 27 témoins, fonction booléenne identique), `Σ β_i(L_1)` vaut **92 pour ψ et 29 pour ψ'** (facteur 3) ; à `k=2`, **125 vs 29** (facteur 4). Conséquence : un algorithme P pour SAT peut préprocesser toute CNF en forme canonique en temps poly avant de décider — toute borne inférieure dérivée d'un invariant variant sous équivalence logique s'évanouit. `P` et `NP` étant des classes de fonctions/langages, un tel invariant ne peut structurellement pas les séparer. Ce n'est pas RR, c'est plus grave : on sort du cadre P vs NP.
+  2. **Le Lemme 3 (MT modélisée comme champ de vecteurs à sauts bornés) est faux.** Une MT en temps `n^c` peut modifier `n^c` bits par étape ; le graphe pertinent est `G_{n^c}` = cube avec arêtes Hamming ≤ `n^c`. Dès `r = 2`, les Betti s'effondrent. Démontré sur CSP `x_i = x_{i+3}` (8 témoins sur la diagonale) : `β_0 = 8` à `r = 1`, mais `β_0 = 1` dès `r = 2`. La théorie de Morse discrète (Forman 1998) est strictement à 1-saut ; sa généralisation aux sauts polynomiaux trivialise l'obstruction. *Sans* Lemme 3, le Lemme 4 ne se prouve pas.
+
+  À NE JAMAIS réessayer sous cette forme. **Nuance honnête** : le clustering topologique des CSP en phase RSB (Mézard-Parisi-Zecchina, Achlioptas et al.) borne effectivement les algorithmes **locaux** — pas P entier. Confondre « bornes pour algos locaux » et « bornes pour P » est l'erreur centrale.
+
 ---
 
 ## 4. Questions ouvertes prioritaires
 
-1. **Existe-t-il un invariant booléen *intrinsèque* (non-algébrique)** — par exemple une notion de rang booléen, de cohomologie d'un complexe simplicial attaché à la formule, ou de complexité topologique du graphe d'implication — qui survive à la restriction au cube `{0,1}^m` *sans* passer par un détour `F_p` ? Toutes les tentatives algébrisantes butent sur Aaronson-Wigderson.
-2. Côté complexité descriptive : la question « existe-t-il une logique capturant exactement P ? » (conjecture de Gurevich) offre-t-elle un angle non-relativisant **et** non-algébrisant exploitable ?
-3. Sur quelle **classe restreinte** concrète (monotone, ACC⁰, ou modèle algébrique type permanent vs déterminant via GCT) concentrer l'effort ? Williams 2011 (NEXP ⊄ ACC⁰) reste l'unique précédent ayant franchi les trois barrières — analyser quelle ingrédient spécifique a permis ce franchissement (algorithmic method + circuit lower bound + amplification).
+1. **Tout invariant proposé doit être explicitement invariant sous équivalence logique** des présentations du problème. C'est un test de bon sens préalable à toute analyse fine — la piste 3 a échoué là-dessus.
+2. **Tout argument du type « tout algorithme P est contraint par X » doit démontrer que X survit aux sauts polynomiaux**, i.e. à l'extension du graphe Hamming-1 vers `G_{n^c}` (graphe avec arêtes ≤ `n^c` bits modifiés). La piste 3 a échoué sur ce test aussi.
+3. **Existe-t-il une obstruction non-locale et non-algébrique** qui survive aux sauts polynomiaux *et* à l'équivalence logique ? GCT (permanent vs déterminant) est la seule réponse sérieuse aujourd'hui, mais elle est au point mort depuis 2017 (Bürgisser-Ikenmeyer-Panova : pas d'obstruction par occurrences).
+4. Côté complexité descriptive : la question « existe-t-il une logique capturant exactement P ? » (conjecture de Gurevich) offre-t-elle un angle non-relativisant **et** non-algébrisant exploitable ?
+5. Williams 2011 (NEXP ⊄ ACC⁰) reste l'unique précédent ayant franchi les trois barrières — analyser quel ingrédient spécifique (algorithmic method + circuit lower bound + amplification) a permis ce franchissement, et si la recette se généralise à P vs NP.
 
 ---
 
@@ -71,7 +80,14 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 3** : le Proposeur doit livrer une idée qui (a) cible une classe restreinte concrète, (b) démontre son caractère **non-relativisant**, ET (c) démontre son caractère **non-algébrisant** — c'est-à-dire qu'il doit *exhiber* (ou esquisser) un oracle algébrique `Õ` relativement auquel l'invariant proposé sépare bien P de NP. Sans ce dernier point, l'idée est tuée d'avance par Aaronson-Wigderson. Toute arithmétisation exacte est suspecte par défaut.
+- **Tour 4** : le Proposeur doit livrer une idée qui satisfait simultanément :
+  - (a) **classe restreinte** concrète (et bien définie au niveau des fonctions, pas des présentations) ;
+  - (b) **non-relativisant** (démontré) ;
+  - (c) **non-algébrisant** (démontré par exhibition d'un oracle algébrique séparateur, ou argument équivalent à la Williams 2011) ;
+  - (d) **invariance sous équivalence logique** : l'invariant proposé doit être une fonction de la fonction booléenne calculée, pas de sa présentation syntaxique — sinon il sort du cadre P vs NP ;
+  - (e) **robustesse aux sauts polynomiaux** : si l'argument repose sur une géométrie locale (graphe, complexe simplicial), il doit survivre à l'extension `Hamming-1 → Hamming-≤n^c` qui modélise une MT polynomiale.
+
+  Conseil de direction : viser **GCT** (permanent vs déterminant, théorie des représentations) ou un cadre type Williams 2011 (algorithmic method + lower bound), où (d) et (e) sont structurellement assurés par construction.
 
 ---
 
