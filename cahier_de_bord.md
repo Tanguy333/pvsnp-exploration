@@ -18,8 +18,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 15 — Bennett rejeté + THRESHOLD_t établi)
-- **Nombre de tours effectués** : 15
+- **Dernière mise à jour** : 2026-05-23 (fin tour 16 — MOD_p établi, 5e objet)
+- **Nombre de tours effectués** : 16
 
 ---
 
@@ -56,7 +56,8 @@
 | 14 | Mini-théorème : `DNF_min(MAJ_n) = C(n, ⌈n/2⌉) ~ 2^n/√n`, donc `MAJ_n ∉ AC⁰ d=2 polynomial`. Première apparition de TC⁰ dans le dépôt. | Toutes (relativisation combinatoire ; RR : « f=MAJ_n » caractérise une fonction unique, non-large ; algébrisation : sans objet) | Calcul exhaustif n=4 livré : 81 ANDs, 33 implicants, **6 implicants premiers** (= C(4,2)), tous positifs taille 2, non-redondance vérifiée. L14.1 initial buggé, **bug détecté et corrigé par le Proposeur via (j)** avant soumission. Preuves L14.1–L14.4 auditées correctes. | ✅ **ÉTABLI POUR P vs NP** (3e objet) — avec **correction de formulation** : la séparation est `TC⁰ d=1 ⊄ AC⁰ d=2 poly` (par témoin), pas l'inclusion stricte `AC⁰ d=2 poly ⊊ TC⁰ d=1 poly` revendiquée. Les deux classes sont en fait incomparables (contre-exemple : DISJ_n ∈ AC⁰ d=2 poly \ TC⁰ d=1). |
 | 15a | Proposeur P1 : profondeur logique de Bennett pour séparer P de NP par contradiction | Revendiquées non-rel/non-RR/non-alg (mais sans objet, voir Verdict) | **Auto-réfuté par le Proposeur** dans son Lemme 3 (*« l'argument est circulaire »*). Pattern Tour 1 (circularité conditionnel/inconditionnel) avec « Bennett » à la place de « Kt ». Le cahier §3 dit explicitement « à ne jamais réessayer ». (j) et (h) non honorées. Régression méthodologique après 3 ÉTABLIS consécutifs. | ❌ **FAILLE FATALE** — pattern Tour 1 explicitement interdit |
 | 15b | Proposeur P2 : `DNF_min(THRESHOLD_{t,n}) = C(n, t)` pour tout `t ∈ [1, n]` + dichotomie polynomial/exponentiel | Toutes (relativisation combinatoire ; RR : famille de `n` fonctions parmi `2^{2^n}`, non-large ; algébrisation : sans objet) | Calcul exhaustif n=4 livré pour `t ∈ {1,2,3,4}` : `C(4, t) = 4, 6, 4, 1` confirmés. Tous implicants premiers positifs, non-redondance vérifiée. Preuves L15.1–L15.4 = généralisation directe de L14.1–L14.4. **Condition (m) honorée explicitement dès la première application** : séparation par témoin (`TC⁰ d=1 ⊄ AC⁰ d=2 poly`), pas inclusion stricte. Nuance technique honnête sur la frontière exacte (`O(log n)` vs `O(log n / log log n)`). | ✅ **ÉTABLI POUR P vs NP** (4e objet) |
-| 16 |  |  |  | *(à venir)* |
+| 16 | `DNF_min(MOD_p_n) = Σ_{k ≡ 0 mod p} C(n, k)`, application directe de L13 (Tour 13) à la famille `MOD_p`. Ouverture de la lignée Razborov-Smolensky. | Toutes (relativisation combinatoire ; RR : famille de `n` fonctions parmi `2^{2^n}`, non-large ; algébrisation : sans objet) | Calcul exhaustif n=4 livré pour `p ∈ {2,3,4,5}`. Comptes confirmés : 8, 5, 2, 1. L16.1 (MOD_p^{-1}(1) independent dans Q_n) prouvée combinatoirement : `sum(y) = sum(x) ± 1` à distance Hamming 1, donc `≢ (mod p)` pour `p ≥ 2`. L16.2 par application directe de L13. L16.3 asymptotique par roots of unity filter. Note terminologique mineure : MOD_2 = ¬PARITY (pas PARITY au sens strict), même DNF_min par symétrie de la bipartition. | ✅ **ÉTABLI POUR P vs NP** (5e objet) |
+| 17 |  |  |  | *(à venir)* |
 
 ---
 
@@ -141,6 +142,27 @@
   **Apport au dépôt** : *quatrième objet ÉTABLI*, première vraie **unification paramétrique**. Tours 12 (PARITY, `t = ?`), 14 (MAJ_n = THRESHOLD_{⌈n/2⌉}), 15 (THRESHOLD_t pour tout `t`) forment désormais une famille cohérente. La dichotomie polynomial/exponentiel comme fonction de `t` est un fait paramétrique nouveau pour le dépôt.
 
   **Risque noté** : 4 itérations dans la même veine (FSS profondeur 2). Le Tour 16 devrait diversifier (profondeur 3, ou Lean, ou autre famille de fonctions) pour ne pas saturer le paradigme.
+
+- **Théorème de la famille MOD_p** (Tour 16) : *Pour tout `p ≥ 2` et tout `n`, `DNF_min(MOD_p_n) = |MOD_p^{-1}(1)| = Σ_{0 ≤ k ≤ n, k ≡ 0 (mod p)} C(n, k)`.*
+
+  Cf. [`tours/tour_16_mod_p_etabli.md`](tours/tour_16_mod_p_etabli.md) et [`checks/tour_16_mod_p_dnf.py`](checks/tour_16_mod_p_dnf.py).
+
+  **Preuves** :
+  - L16.1 : `MOD_p^{-1}(1)` est independent set de `Q_n`. Argument : `dist_H(x, y) = 1` implique `sum(y) = sum(x) ± 1`, donc `sum(y) ≢ sum(x) (mod p)` pour `p ≥ 2`. Donc `x ∈ MOD_p^{-1}(1) ⇒ y ∉ MOD_p^{-1}(1)`.
+  - L16.2 : application directe de L13 (Tour 13) — la condition « `f^{-1}(1)` independent dans `Q_n` » est satisfaite par L16.1, donc `DNF_min(f) = |f^{-1}(1)|`.
+  - L16.3 : asymptotique par roots of unity filter — `|MOD_p^{-1}(1)| ~ 2^n/p`, super-polynomial pour `p` fixé.
+
+  **Vérification exhaustive n=4** : pour `p ∈ {2,3,4,5}`, comptes `8, 5, 2, 1` confirmés. Independent set vérifié (distance Hamming minimale ≥ 2).
+
+  **Diversification réussie** : sortie partielle du paradigme THRESHOLD. La famille `MOD_p` est **non-monotone** (flipper un bit change `sum mod p`), distincte de la famille THRESHOLD (monotone). Ouvre la lignée Razborov-Smolensky 1987 (qui prouve `MOD_p ∉ AC⁰[q]` à profondeur arbitraire pour `p ≠ q` premiers, par méthode polynomiale modulaire). Tour 16 traite seulement le cas profondeur 2 par application combinatoire de L13.
+
+  **Apport au théorème L13** : Tour 13 n'avait été appliqué explicitement qu'à PARITY. Tour 16 utilise L13 comme **outil de production** pour identifier une nouvelle famille canonique. Le théorème de caractérisation gagne en valeur a posteriori.
+
+  **Condition (m) honorée** : séparation par témoin (`MOD_p ∈ P \ AC⁰ d=2 poly`), pas d'affirmation d'inclusion stricte.
+
+  **Note terminologique** : `MOD_2(x) = 1 ssi sum pair = ¬PARITY(x)` au sens strict (convention standard où `PARITY(x) = 1` ssi sum impair). `|MOD_2^{-1}(1)| = |¬PARITY^{-1}(1)| = 2^(n-1)` par symétrie de la bipartition de `Q_n`. Le résultat est cohérent avec Tour 12, mais l'identification « MOD_2 = PARITY » du Proposeur est imprécise.
+
+  **Apport au dépôt** : *cinquième objet ÉTABLI*. Mais 5 itérations consécutives dans `AC⁰ d=2` — saturation persistante. Le Tour 17 doit *vraiment* diversifier.
 
 ### ❓ Conjecturaux pour P vs NP (plausibles mais non prouvés)
 - *(aucun retenu pour l'instant)*
@@ -312,23 +334,29 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 16** : direction **ouverte** après quatre ✅ Établis consécutifs (Tours 12-15-B). **Risque de saturation explicitement noté** : 4 tours dans le même paradigme « AC⁰ d=2 vs classes plus puissantes via fonctions explicites ». Les 13 conditions (a)–(m) restent en vigueur.
+- **Tour 17** : **prescription forte** vers une diversification réelle. Le Tour 16 a été *encore* une application de L13 (5e itération consécutive dans `AC⁰ d=2`). **Le paradigme est saturé.** Une 6e application de L13 sera rejetée d'office au titre de l'épuisement créatif.
 
-  Directions recommandées pour diversifier, classées par accessibilité et apport :
+  Directions **prescrites** pour le Tour 17 (le Proposeur doit choisir UNE) :
 
-  1. **Extension à profondeur 3** : entrer dans le territoire Furst-Saxe-Sipser / Håstad « original » (FSS prouvait `PARITY ∉ AC⁰` toute profondeur via switching lemma). Le nombre de circuits AC⁰ d=3 sur n=4 explose et les arguments combinatoires simples ne suffisent plus. **Direction la plus naturelle pour sortir de la saturation.**
+  1. **Profondeur 3** : démontrer un cas particulier de `PARITY ∉ AC⁰ profondeur 3` par calcul exhaustif sur petit `n`. Vraiment plus difficile que d=2. Aucune application possible de L13 (qui est strictement d=2).
 
-  2. **Cross-validation à n = 5 ou 6** des théorèmes Tours 12, 14, 15-B. Très simple (vérifier C(5, 3) = 10 etc.). N'apporte rien de nouveau structurellement mais consolide.
+  2. **Formalisation Lean** d'un sous-lemme acquis (L12.1, L13, L14.1, L15.1, ou L16.1) dans Mathlib4. Premier théorème de complexité certifié du dépôt. Pas de saturation possible.
 
-  3. **Formalisation Lean** d'un sous-lemme (L12.1, L14.1, ou L15.1) dans Mathlib4. Premier théorème de complexité certifié du dépôt.
+  3. **Razborov 1985 monotone CLIQUE** : commencer la lignée des bornes inférieures sur circuits monotones, totalement distincte de la lignée AC⁰-d=2 cataloguée. Cible : démontrer une borne inférieure non-triviale pour `CLIQUE_k_n` en circuit monotone pour petits `k, n`.
 
-  4. **Diversifier la famille de fonctions** : passer des THRESHOLD/PARITY à `MOD_p` (modulo p), `INNER PRODUCT mod 2`, ou d'autres fonctions canoniques de la lignée FSS → Razborov-Smolensky.
+  4. **INNER PRODUCT mod 2 (IP)** ou **DISJOINTNESS** : fonctions canoniques de la complexité de communication. Non-symétriques, structurellement différentes de PARITY/MAJ/MOD_p. Ouvrirait la lignée Karchmer-Wigderson dans le dépôt (qui est mentionnée plusieurs fois dans le cahier sans avoir été utilisée).
 
-  5. **Direction Razborov 1985 (monotone CLIQUE)** : commencer le programme des bornes inférieures sur circuits monotones, qui est une lignée différente de FSS-AC⁰. La méthode d'approximation de Razborov est non-relativisante et a sa propre dynamique vers TC⁰.
+  **Interdictions explicites** :
+  - Toute nouvelle application de L13 (saturation, refusé d'office).
+  - Toute extension paramétrique des familles déjà cataloguées (PARITY, MAJ, THRESHOLD, MOD).
+  - Toute proposition de cross-validation pure (n=5 ou n=6 sans nouvelle structure) — ce serait du remplissage.
+  - Pattern d'auto-réfutation type Tour 1 / Bennett (méta-complexité Kolmogorov / profondeur logique pour séparer P de NP par contradiction conditionnel/inconditionnel) — **interdit définitivement**.
 
-  Toute proposition continuera à être évaluée selon (a)–(m). **Pattern d'auto-réfutation type Tour 1 / Bennett (proposition 15-A) interdit** : le cahier §3 le marque explicitement « à ne jamais réessayer ». Toute reformulation de méta-complexité Kolmogorov / Bennett / profondeur logique pour séparer P de NP par contradiction conditionnel/inconditionnel sera rejetée d'office.
+  Les 13 conditions (a)–(m) restent en vigueur. Une 14e est ajoutée par la pratique :
 
-  **Note pédagogique sur le Tour 15** : le Proposeur a livré simultanément deux propositions (Bennett ❌ et THRESHOLD_t ✅), illustrant que **même avec 3 ÉTABLIS consécutifs précédents, la régression vers le spéculatif reste possible si on lui laisse trop de liberté de direction**. Le contraste entre les deux propositions du même tour est un exemple méthodologique précieux. Le sous-but Tour 16 doit donc rester **strict** sur les directions acceptables.
+  - (n) **AJOUTÉE** : *Tout théorème qui n'est qu'une application directe d'un théorème déjà ÉTABLI dans le dépôt est rejeté d'office si une telle application a déjà été faite plus de 2 fois. Le dépôt n'est pas un cataloguage de cas particuliers, c'est un travail d'exploration.*
+
+  **Note pédagogique sur les Tours 12-16** : cinq ÉTABLIS consécutifs ont créé une famille cohérente sur AC⁰ d=2. C'est précieux (premier vrai apport positif du dépôt). Mais à partir du Tour 17, la priorité est de **sortir du paradigme** pour éviter de saturer le dépôt avec des variations sur le même thème. Si le Proposeur n'arrive pas à diversifier, alternative honnête : déclarer le travail terminé et formaliser ce qui est acquis en Lean.
 
 ---
 
