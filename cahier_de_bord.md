@@ -662,6 +662,245 @@ contre la littérature DNF-MIN. Statut individuel :
 
 - [ ] Proposeur : générer une idée pour le sous-but ci-dessus (non-relativisante + classe restreinte)
 - [ ] Réfuteur : attaquer l'idée, vérifier en priorité relativisation ET algébrisation
-- [ ] Confronter à la littérature réelle (recherche web) : l'idée correspond-elle à une tentative déjà publiée/écartée ?
+- [ ] Confronter à la littérature réelle (cf. §7 Bibliographie + recherche web) : l'idée correspond-elle à une tentative déjà publiée/écartée ?
 - [ ] Si « survit » : isoler un sous-lemme vérifiable / tenter une formalisation (Lean)
 - [ ] Consigner le résultat (succès **ou** échec documenté) dans les sections 2 et 3
+
+---
+
+## 7. Bibliographie sur P vs NP
+
+> **But de cette section.** Centraliser les références qui *encadrent* l'exploration :
+> les trois barrières, la lignée des bornes inférieures de circuit, les surveys, et
+> les classiques de complexité booléenne sur lesquels les Tours 12-22 reposent.
+> Toute idée future du Proposeur doit être positionnable par rapport à cette
+> bibliographie (cf. condition (q) §5 — audit bibliographique préemptif).
+
+### 7.1 Les trois barrières (à franchir simultanément pour séparer P de NP)
+
+- **Relativisation** — T. Baker, J. Gill, R. Solovay, *« Relativizations of the
+  P =? NP question »*, SIAM Journal on Computing, vol. 4, no. 4, 1975, pp.
+  431-442. [doi:10.1137/0204037](https://doi.org/10.1137/0204037).
+  Construit deux oracles `A`, `B` tels que `P^A = NP^A` et `P^B ≠ NP^B`. Toute
+  preuve qui relativise (i.e. qui traite la machine comme une boîte noire) ne
+  peut donc trancher P vs NP. Pertinent pour Tours 1, 2 du dépôt.
+
+- **Preuves naturelles** — A. Razborov, S. Rudich, *« Natural proofs »*, Journal
+  of Computer and System Sciences, vol. 55, no. 1, 1997, pp. 24-35 (version
+  conférence STOC 1994). Prix Gödel 2007.
+  [doi:10.1006/jcss.1997.1494](https://doi.org/10.1006/jcss.1997.1494).
+  Sous l'hypothèse que les fonctions pseudo-aléatoires « one-way »
+  existent, aucune *preuve naturelle* (i.e. constructive et large)
+  ne peut donner de borne super-polynomiale sur la complexité de circuit.
+  Pertinent pour Tours 6, 19 du dépôt (signaux d'alarme RR explicitement notés).
+
+- **Algébrisation** — S. Aaronson, A. Wigderson, *« Algebrization: A new barrier
+  in complexity theory »*, ACM Transactions on Computation Theory, vol. 1, no.
+  1, 2009 (version conférence STOC 2008, pp. 731-740).
+  [doi:10.1145/1490270.1490272](https://doi.org/10.1145/1490270.1490272).
+  [PDF auteur](https://www.scottaaronson.com/papers/alg.pdf).
+  Étend la relativisation aux extensions polynomiales basse-degré sur corps
+  finis. Toute technique fondée sur l'arithmétisation à la Shamir/IP=PSPACE
+  algébrise et ne peut donc séparer P de NP. Pertinent pour Tours 2, 4 du dépôt.
+
+### 7.2 Lignée AC⁰ → ACC⁰ → NEXP (Williams 2011)
+
+- **PARITY ∉ AC⁰** — M. Furst, J. B. Saxe, M. Sipser, *« Parity, circuits, and
+  the polynomial-time hierarchy »*, Mathematical Systems Theory, vol. 17, 1984,
+  pp. 13-27 (FOCS 1981).
+  [doi:10.1007/BF01744431](https://doi.org/10.1007/BF01744431).
+  Première borne super-polynomiale sur AC⁰. Résultat indépendamment prouvé par
+  M. Ajtai, *« Σ₁¹-formulae on finite structures »*, Annals of Pure and Applied
+  Logic, vol. 24, 1983, pp. 1-48. Pertinent pour Tour 12 (cas profondeur 2 de
+  la borne FSS).
+
+- **Switching Lemma de Håstad** — J. Håstad, *« Almost optimal lower bounds for
+  small depth circuits »*, dans *Randomness and Computation*, Advances in
+  Computing Research, vol. 5, JAI Press, 1989, pp. 143-170 (thèse MIT 1986).
+  Améliore FSS à `2^Ω(n^(1/(d−1)))` pour profondeur `d`. Outil canonique des
+  bornes inférieures AC⁰. Pertinent pour toute extension Tour 23 vers
+  profondeur ≥ 3.
+
+- **MOD_p ∉ AC⁰[MOD_q] (p ≠ q premiers)** — A. A. Razborov,
+  *« Lower bounds on the size of bounded depth circuits over a complete basis
+  with logical addition »* (en russe), Matematicheskie Zametki, vol. 41, no. 4,
+  1987, pp. 598-607. R. Smolensky, *« Algebraic methods in the theory of lower
+  bounds for Boolean circuit complexity »*, STOC 1987, pp. 77-82.
+  [doi:10.1145/28395.28404](https://doi.org/10.1145/28395.28404).
+  Méthode polynomiale modulaire : représenter AC⁰[MOD_p] par polynômes de bas
+  degré sur F_p. Atteint la barrière entre AC⁰[p] et ACC⁰. Pertinent pour Tour
+  16 et toute extension vers ACC⁰.
+
+- **NEXP ⊄ ACC⁰** — R. Williams, *« Nonuniform ACC circuit lower bounds »*,
+  Journal of the ACM, vol. 61, no. 1, 2014, art. 2 (CCC 2011).
+  [doi:10.1145/2559903](https://doi.org/10.1145/2559903).
+  [PDF auteur](https://people.csail.mit.edu/rrw/acc-lbs-ccc.pdf).
+  *Seul résultat à ce jour ayant franchi les trois barrières.* Méthode
+  « algorithmic method + circuit lower bound » : un algorithme CAPP
+  non-trivial pour ACC⁰ implique NEXP ⊄ ACC⁰. **Pertinent pour Tours 4, 23 du
+  dépôt** (toute piste prétendant à une borne non-relativisante et
+  non-algébrisante doit se positionner par rapport à cette méthode).
+
+### 7.3 Bornes inférieures monotones et Karchmer-Wigderson
+
+- **CLIQUE_k requiert circuit monotone super-polynomial** — A. A. Razborov,
+  *« Lower bounds on the monotone complexity of some Boolean functions »*,
+  Doklady Akademii Nauk SSSR, vol. 281, no. 4, 1985, pp. 798-801.
+  Méthode d'approximation par tournesols (Erdős-Rado). Premier exemple d'une
+  borne super-polynomiale sur une fonction NP-complète, *mais en cadre
+  monotone uniquement*.
+
+- **Amélioration exponentielle** — N. Alon, R. B. Boppana, *« The monotone
+  circuit complexity of Boolean functions »*, Combinatorica, vol. 7, no. 1,
+  1987, pp. 1-22. [doi:10.1007/BF02579196](https://doi.org/10.1007/BF02579196).
+  Renforce Razborov 1985 à `exp(Ω((n / log n)^{1/3}))` pour CLIQUE de taille
+  `(1/4)(n / log n)^{2/3}`.
+
+- **Equivalence profondeur ⟷ complexité de communication** — M. Karchmer, A.
+  Wigderson, *« Monotone circuits for connectivity require super-logarithmic
+  depth »*, SIAM J. Discrete Mathematics, vol. 3, no. 2, 1990, pp. 255-265.
+  [doi:10.1137/0403021](https://doi.org/10.1137/0403021).
+  Le jeu KW : Alice reçoit `x ∈ f^{-1}(1)`, Bob `y ∈ f^{-1}(0)`, ils
+  cherchent un `i` tel que `x_i ≠ y_i`. La complexité de communication
+  optimale = profondeur de formule en base de De Morgan. Outil-pivot pour
+  bornes inférieures de profondeur. Pertinent pour Tour 11 du dépôt (piste
+  rejetée car cible 2COL ∈ P, pas NP-complet).
+
+- **Théorèmes de lifting (query → communication)** — M. Göös, T. Pitassi, T.
+  Watson, *« Deterministic communication vs. partition number »*, SIAM J.
+  Computing, vol. 47, no. 6, 2018, pp. 2435-2450.
+  [doi:10.1137/16M1059369](https://doi.org/10.1137/16M1059369).
+  Avec une composition « gadget » (souvent index `IND` ou inner product),
+  toute borne sur la complexité d'arbre de décision se *lift* en borne sur
+  la complexité de communication. Combiné à Karchmer-Wigderson, donne des
+  bornes de profondeur. Pertinent pour Tour 11 du dépôt.
+
+### 7.4 GCT (Geometric Complexity Theory)
+
+- **Programme initial** — K. D. Mulmuley, M. Sohoni, *« Geometric complexity
+  theory I: An approach to the P vs. NP and related problems »*, SIAM J.
+  Computing, vol. 31, no. 2, 2001, pp. 496-526.
+  [doi:10.1137/S009753970038715X](https://doi.org/10.1137/S009753970038715X).
+  Approche algébro-géométrique : étudier l'orbit closure du permanent et du
+  déterminant sous l'action de GL_N. Cible VP vs VNP (version algébrique de P
+  vs NP) plutôt que P vs NP directement.
+
+- **Obstacle aux obstructions par occurrences** — P. Bürgisser, C. Ikenmeyer, G.
+  Panova, *« No occurrence obstructions in geometric complexity theory »*,
+  Journal of the AMS, vol. 32, no. 1, 2019, pp. 163-193 (FOCS 2016).
+  [doi:10.1090/jams/908](https://doi.org/10.1090/jams/908).
+  Réfute le plan original de Mulmuley-Sohoni : aucune *occurrence obstruction*
+  (multiplicité = 0 dans le coordinate ring du permanent vs ≥ 1 dans celui du
+  déterminant) ne peut séparer ces variétés. GCT au point mort depuis. Cité en
+  §4 q.5 du cahier.
+
+### 7.5 DNF-MIN, implicants premiers, complexité Σ₂^P
+
+- **Origine du concept d'implicant premier** — W. V. Quine, *« The problem of
+  simplifying truth functions »*, American Mathematical Monthly, vol. 59, 1952,
+  pp. 521-531. Algorithme dual : E. J. McCluskey, *« Minimization of Boolean
+  functions »*, Bell System Technical Journal, vol. 35, 1956, pp. 1417-1444.
+  Cadre canonique du Tour 19 (essentialité) et de l'audit bibliographique de
+  mai 2026.
+
+- **Σ₂^P-complétude de DNF-MIN** — C. Umans, *« The minimum equivalent DNF
+  problem and shortest implicants »*, Journal of Computer and System Sciences,
+  vol. 63, no. 4, 2001, pp. 597-611 (FOCS 1999).
+  [doi:10.1006/jcss.2001.1775](https://doi.org/10.1006/jcss.2001.1775).
+  Résout la conjecture de Stockmeyer 1976. Lien fondamental entre DNF-MIN et
+  la hiérarchie polynomiale, cité au Tour 20 du dépôt.
+
+- **Synthèse moderne** — Y. Crama, P. L. Hammer (eds.), *Boolean Functions:
+  Theory, Algorithms, and Applications*, Encyclopedia of Mathematics and its
+  Applications, vol. 142, Cambridge University Press, 2011.
+  Chapitre 3, *« Prime implicants and minimal DNFs »* (par P. L. Hammer et A.
+  Kogan), couvre la majeure partie du folklore re-démontré aux Tours 12-20
+  (cf. audit bibliographique §3).
+
+- **Gap essentialité / taille CNF** — L. Hellerstein, D. Kletenik, *« On the
+  gap between ess(f) and cnf_size(f) »*, Discrete Applied Mathematics, vol.
+  187, 2015, pp. 92-101 (arXiv 2011, [arXiv:1106.4247](https://arxiv.org/abs/1106.4247)).
+  Référence directe pour le théorème de caractérisation Tour 19.
+
+### 7.6 Hardness magnification et méta-complexité (front actif 2018-)
+
+- **Hardness magnification** — I. C. Oliveira, J. Pich, R. Santhanam,
+  *« Hardness magnification near state-of-the-art lower bounds »*, CCC 2019.
+  [doi:10.4230/LIPIcs.CCC.2019.27](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.CCC.2019.27).
+  Stratégie : montrer qu'une borne *faible* sur un problème *spécifique*
+  (MCSP, MKtP) suffit à magnifier en NEXP ⊄ P/poly. Cité en §5 du cahier
+  comme direction autorisée Tour 23.
+
+- **Barrière interne à la magnification** — L. Chen, S. Hirahara, I. C.
+  Oliveira, J. Pich, N. Rajgopal, R. Santhanam, *« Beyond natural proofs:
+  Hardness magnification and locality »*, ITCS 2020.
+  [doi:10.4230/LIPIcs.ITCS.2020.70](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ITCS.2020.70).
+  Les théorèmes de magnification eux-mêmes butent sur une variante de RR :
+  une approche qui prouve une borne magnifiable doit éviter d'être *locale*.
+  Cité au Tour 4 du dépôt comme barrière supplémentaire.
+
+### 7.7 Manuels et surveys (à consulter en priorité)
+
+- **Manuel de référence** — S. Arora, B. Barak, *Computational Complexity: A
+  Modern Approach*, Cambridge University Press, 2009.
+  [Site officiel + PDF draft](https://theory.cs.princeton.edu/complexity/).
+  Couvre tout le matériau de cadrage : barrières, AC⁰, communication, PCP,
+  GCT. Référence-mère pour positionner toute idée nouvelle.
+
+- **Bornes inférieures booléennes en détail** — S. Jukna, *Boolean Function
+  Complexity: Advances and Frontiers*, Algorithms and Combinatorics, vol. 27,
+  Springer, 2012.
+  [Page auteur + draft](https://web.vu.lt/mif/s.jukna/boolean/index.html).
+  Compendium détaillé des techniques de bornes inférieures, des années 1940 à
+  ~2010. Inclut Razborov-Smolensky, Håstad, monotone, méthode probabiliste.
+
+- **Survey P vs NP de Aaronson** — S. Aaronson, *« P =? NP »*, dans *Open
+  Problems in Mathematics* (J. F. Nash Jr., M. T. Rassias, eds.), Springer,
+  2016, pp. 1-122.
+  [PDF auteur](https://www.scottaaronson.com/papers/pnp.pdf).
+  Survey accessible et opinionné couvrant barrières, GCT, méta-complexité,
+  derandomization. *« La vraie raison pour laquelle prouver P ≠ NP est dur,
+  c'est qu'il existe d'innombrables façons remarquables d'éviter la recherche
+  exhaustive »*. Lecture obligatoire avant toute nouvelle piste.
+
+- **Indépendance formelle ?** — S. Aaronson, *« Is P versus NP formally
+  independent? »*, Bulletin of the EATCS, vol. 81, 2003, pp. 109-136.
+  [PDF auteur](https://www.scottaaronson.com/papers/indep.pdf).
+  Examine l'hypothèse que P vs NP soit indépendant de ZFC ; conclut que peu
+  probable mais pas exclu.
+
+### 7.8 Outils annexes mobilisés dans le dépôt
+
+- **Ax-Katz (théorie p-adique des solutions de polynômes)** — J. Ax, *« Zeroes
+  of polynomials over finite fields »*, American Journal of Mathematics, vol.
+  86, no. 2, 1964, pp. 255-261. N. M. Katz, *« On a theorem of Ax »*, American
+  Journal of Mathematics, vol. 93, 1971, pp. 485-499.
+  Cité au Tour 2 du dépôt (réfuté : ne survit pas à la contrainte booléenne
+  `w_i² = w_i`).
+
+- **Morse discrète** — R. Forman, *« Morse theory for cell complexes »*,
+  Advances in Mathematics, vol. 134, no. 1, 1998, pp. 90-145.
+  Cité au Tour 3 du dépôt (réfuté : effondrement des Betti sous sauts
+  polynomiaux).
+
+- **Stanley-Reisner et résolutions libres** — E. Miller, B. Sturmfels,
+  *Combinatorial Commutative Algebra*, Graduate Texts in Mathematics, vol. 227,
+  Springer, 2005.
+  Référence-mère pour Tours 6, 7, 8, 9 (idéaux Stanley-Reisner, formule de
+  Hochster, dualité d'Alexander, Boij-Söderberg).
+
+- **Hardness amplification et méthode polynomiale** — A. R. Klivans, R. A.
+  Servedio, *« Toward attribute efficient learning of decision lists and
+  parities »*, Journal of Machine Learning Research, vol. 7, 2006, pp. 587-602.
+  Cité indirectement au Tour 4 du dépôt comme exemple de méthode polynomiale
+  appliquée à TC⁰.
+
+### 7.9 Note méta-bibliographique
+
+La condition (q) §5 (audit bibliographique préemptif, ajoutée Tour 22) impose
+au Proposeur de vérifier que toute idée n'est pas déjà couverte par cette
+bibliographie *avant* soumission. Pattern observé : sur les 8 ÉTABLIS Tours
+12-20, **7 sont folklore** identifiables dans cette bibliographie ; seul L18
+(IP, formule `(3^n − 1)/2`) reste de statut incertain. La condition (q)
+formalise la leçon : *toute proposition aurait dû citer au moins une référence
+de §7 ou justifier explicitement son absence*.
