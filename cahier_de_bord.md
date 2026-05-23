@@ -18,8 +18,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 11 — proposition rejetée)
-- **Nombre de tours effectués** : 11
+- **Dernière mise à jour** : 2026-05-23 (fin tour 12 — premier théorème ÉTABLI pour P vs NP)
+- **Nombre de tours effectués** : 12
 
 ---
 
@@ -51,14 +51,30 @@
 | 9 | Conjecture C9 : pure ⟺ equigenerated (caractérisation des résolutions pures pour fonctions monotones) | Inapplicables | (h) et (j) honorées pour la première fois par le Proposeur. Conjecture vérifiée n=4 (167 fonctions, tableau parfait 95/0/0/72). **Réfutée n=5** : 215 contre-exemples sur 7579. Contre-exemple minimal : `(x₁x₂x₃)∨(x₁x₂x₄)∨(x₀x₃x₄)` (equigenerated, mais Betti(I) a 2 shifts à l'index 1) | ⚠️ **LACUNE RÉPARABLE** (épistémologie correcte) |
 | 10 | (a) Conjecture C10 « intersections uniformes » testée préemptivement et **retirée par le Proposeur** (1068 contre-exemples) ; (b) pivot proposé vers formalisation Lean de Koszul de `m_n` | (a) C10 testée mais inapplicable car pas de prétention asymptotique ; (b) Koszul Lean : aucune | Bon réflexe épistémologique (test (j) honoré 2e fois consécutive). Mais pivot Lean cible un théorème **hors-sujet vis-à-vis de P vs NP** (admis par le Proposeur). Direction prescrite Tour 11 : `PARITY ∉ AC⁰ profondeur 2` | ⚠️ **LACUNE RÉPARABLE** + recadrage utilisateur |
 | 11 | Borne `D_m(2COL) ≥ Ω(n log n)` via lifting (Raz-McKenzie/GPW) + Karchmer-Wigderson + Tseitin sur expandeurs (Ben-Sasson-Wigderson) | Trois barrières revendiquées (lifting+KW non-relativisant et non-algébrisant ; RR fragile admis) | Direction enfin correcte vis-à-vis P vs NP. Mais : (1) **erreur factuelle** : 2-COLORATION ∈ P, pas NP-complet ; (2) 2COL n'est pas naturellement monotone ; (3) chaîne L10.5 conjecturale (pattern récurrent que le Proposeur reconnaît) ; (4) (j) régressée (test n=4,6,8 promis mais non livré) ; (5) redondance possible avec Garg-Göös-Knop-Watson 2018 non vérifiée | ⚠️ **LACUNE RÉPARABLE — rejet maintenu par utilisateur** |
-| 12 |  |  |  | *(à venir : prescription `PARITY ∉ AC⁰ profondeur 2` réaffirmée)* |
+| 12 | Mini-théorème : `PARITY_n ∉ AC⁰ profondeur 2` de taille `< 2^(n-1)` (= DNF minimal exactement `2^(n-1)` monômes) | Toutes traitées explicitement (relativisation : preuve combinatoire sans oracle ; RR : propriété pas large car ne caractérise que PARITY et ¬PARITY ; algébrisation : pas d'arithmétisation) | Calcul exhaustif n=4 livré AVANT soumission (81 ANDs, 8 implicants, bijection vérifiée). Argument structurel L12.1–L12.4 valable pour tout n, prouvé combinatoirement. Reproduction indépendante par le Réfuteur OK. **Toutes les 12 conditions (a)–(l) honorées pour la première fois.** | ✅ **ÉTABLI POUR P vs NP** |
+| 13 |  |  |  | *(à venir)* |
 
 ---
 
 ## 3. Lemmes et résultats
 
 ### ✅ Établis pour P vs NP (vérifiés / démontrés rigoureusement)
-- *(aucun pour l'instant — c'est l'enjeu du dépôt)*
+
+- **Mini-théorème** (Tour 12) : *`PARITY_n ∉ AC⁰ profondeur 2` de taille `< 2^(n-1)`*. Plus précisément : la taille minimale d'un DNF (OR de ANDs, fan-in arbitraire) calculant `parity_n(x) = x_0 ⊕ … ⊕ x_{n-1}` est **exactement `2^(n-1)`**. Cf. [`tours/tour_12_parity_ac0_etabli.md`](tours/tour_12_parity_ac0_etabli.md) et [`checks/tour_12_parity_ac0.py`](checks/tour_12_parity_ac0.py).
+
+  **Preuve structurelle** (valable tout n, 4 pas combinatoires) :
+  1. Tout AND de < n littéraux a une variable libre → admet satisfaisants de parités opposées → non-implicant.
+  2. Donc implicants premiers = mintermes complets correspondant aux 2^(n-1) affectations impaires.
+  3. Chaque minterm est satisfait par une unique affectation → tous requis dans tout DNF.
+  4. Borne inférieure 2^(n-1) atteinte par DNF canonique. ∎
+
+  **Vérification exhaustive n=4** : 81 ANDs énumérés, 8 implicants identifiés, bijection avec les 8 affectations impaires confirmée, DNF canonique de taille 8 calcule `parity_4`.
+
+  **Lien à P vs NP** : `parity_n ∈ P` (calculable en `O(n)`), donc l'impossibilité d'un DNF de taille polynomiale (puisque `2^(n-1)` est exponentiel) montre que **`AC⁰ profondeur 2 ⊊ P`**. Premier maillon de la chaîne FSS 1981 → Håstad 1986 → Razborov-Smolensky 1987 → Williams 2011 (NEXP ⊄ ACC⁰, seul résultat ayant franchi les trois barrières).
+
+  **Barrières** : non-relativisant (preuve combinatoire sans oracle), pas en tension avec RR (propriété trop spécifique pour être large : seules `parity` et `¬parity` la satisfont), non-algébrisant (pas d'arithmétisation).
+
+  **Premier objet positif aligné sur P vs NP du dépôt** après 11 itérations.
 
 ### ❓ Conjecturaux pour P vs NP (plausibles mais non prouvés)
 - *(aucun retenu pour l'instant)*
@@ -161,6 +177,15 @@
 
   **Note méthodologique** : c'est la 2e fois consécutive (Tours 10 et 11) que le Réfuteur doit *prescrire* la direction plutôt que réfuter une proposition cohérente. La boucle adverse à un Proposeur LLM, après 10 itérations, a épuisé l'espace des « grandes idées spéculatives » et doit se rabattre sur des cibles techniques précises et bornées.
 
+- **Piste 12 — Mini-théorème `PARITY_n ∉ AC⁰ profondeur 2` de taille `< 2^(n-1)`.** Le Proposeur accepte intégralement la prescription du recadrage, exécute le calcul *avant* soumission, livre le script `tour_12_parity_ac0.py` et les chiffres exacts. **Toutes les 12 conditions (a)–(l) honorées pour la première fois.**
+  - L'argument structurel L12.1–L12.4 est combinatoire élémentaire et valable pour tout n, prouvé.
+  - Vérification exhaustive n=4 : 81 ANDs énumérés, 8 implicants tous de taille 4, bijection avec les 8 affectations impaires, DNF canonique de taille 8 calcule `parity_4`. Reproduit indépendamment par le Réfuteur.
+  - Test des trois barrières confirmé : relativisation (preuve combinatoire sans oracle), preuves naturelles (propriété pas large : seules `parity` et `¬parity` ont implicants tous de taille n, donc `2/2^{2^n}` ≪ `2^{-O(n)}`), algébrisation (pas d'arithmétisation).
+  - **Premier objet ✅ ÉTABLI POUR P vs NP du dépôt.** Après 11 itérations dont 5 FAILLE FATALE et 6 LACUNE RÉPARABLE / rejets, le dépôt a enfin un théorème prouvé et aligné sur la question.
+  - *Novelty mathématique : zéro* (théorème de FSS 1981 profondeur 2, dans tout manuel). Mais *novelty épistémique pour le dépôt* : premier théorème réellement démontré et lié à P vs NP, ce qui n'avait jamais été fait dans les 11 tours précédents.
+
+  Cf. [`tours/tour_12_parity_ac0_etabli.md`](tours/tour_12_parity_ac0_etabli.md).
+
 ### ❌ Réfutés (faux — et pourquoi, pour ne pas y revenir)
 - **Piste 1 — « contradiction de compressibilité des témoins ».** Le sophisme central : la confrontation oppose un Kt **inconditionnel** (Lemme 1, incompressibilité Ω(n)) à un Kt qui n'est petit que **conditionnellement à x** (Lemme 2, vrai sous la forme K(w|x)=O(1), pas K(w)=O(log n) — la description doit embarquer x, de taille poly(n)). En unifiant les deux quantités, la contradiction disparaît : soit Lemme 2 redevient faux (inconditionnel), soit Lemme 1 redevient faux (conditionnel, car le témoin lex-premier est déterminé par x). Le fossé entre conditionnel et inconditionnel **est** P vs NP → circularité.
 - **De plus : la piste 1 relativise** (Kt, auto-réductibilité, recherche↔décision relativisent tous). Par BGS, elle ne peut donc structurellement pas séparer P de NP, même réparée. À NE JAMAIS réessayer sous cette forme.
@@ -221,30 +246,19 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 12** : **prescription PARITY ∉ AC⁰ RÉAFFIRMÉE** après deux propositions consécutives écartées (Tour 10 Koszul Lean, Tour 11 lifting+KW+2COL). Les 11 conditions précédentes restent en vigueur.
+- **Tour 13** : direction **ouverte** après l'établissement du Tour 12. Le mini-théorème `PARITY_n ∉ AC⁰ profondeur 2` est acquis (premier ✅ Établi pour P vs NP du dépôt). Le Proposeur choisit parmi 3 directions pour la suite :
 
-  **Cible prescrite pour le Tour 12 (identique à la prescription Tour 11) :**
+  1. **Cross-validation à n = 5, 6** : re-exécuter le calcul exhaustif (3^5 = 243 ANDs, 3^6 = 729 ANDs) pour confirmer la borne `2^(n-1)`. Très court, simple, consolide l'objet ✅ Établi.
 
-  > **Mini-théorème `PARITY_n ∉ AC⁰ profondeur 2`** pour `n = 4` (ou `n = 5` si faisable), démontré par **calcul exhaustif Python**.
+  2. **Extension à profondeur 3** : démontrer (par calcul + argument structurel) une variante FSS partielle sur n=4 ou 5. Beaucoup plus complexe : le nombre de circuits AC⁰ profondeur 3 explose (étoile-de-AND-de-OR à 3 niveaux). Le résultat est non-trivial même à n=4 (Håstad 1986 utilise la switching lemma pour ça). Pas garantie d'aboutir en un tour.
 
-  **Énoncé fini.** `parity_n(x_0, …, x_{n-1}) = x_0 ⊕ x_1 ⊕ … ⊕ x_{n-1}`. Un circuit AC⁰ profondeur 2 est une DNF (OR de ANDs) ou une CNF (AND de ORs), sans contrainte de fan-in. Énumérer (modulo symétries) tous les DNF de taille ≤ `N` sur n variables, et montrer qu'aucun ne calcule `parity_n`. Exhiber la taille minimale d'un DNF calculant `parity_n` (qui est `2^(n-1)` par construction directe : un monôme par assignation impaire).
+  3. **Formalisation Lean** d'un sous-lemme L12.1-L12.4 en Lean 4 / Mathlib4. Cible la plus longue mais produit un objet certifié mécaniquement. Premier théorème de complexité formalisé du dépôt.
 
-  **Lien à P vs NP** : `PARITY ∉ AC⁰` est le premier théorème non-trivial de borne inférieure de circuit (Furst-Saxe-Sipser 1981, renforcé par Håstad 1986 via switching lemma). C'est l'ancêtre direct du programme qui a culminé dans Williams 2011 (`NEXP ⊄ ACC⁰`), seul résultat ayant franchi les trois barrières. Les méthodes employées pour PARITY (random restrictions, approximation polynomiale modulaire) sont précisément les outils non-relativisants et non-algébrisants dont P vs NP a besoin.
+  Toutes les 12 conditions (a)–(l) restent en vigueur. Le Proposeur a démontré au Tour 12 qu'il peut les honorer simultanément ; cela doit être maintenu.
 
-  **Livrables attendus** :
-  1. `checks/tour_12_parity_ac0.py` : énumère DNF AC⁰ profondeur 2 de taille bornée sur `n = 4`, prouve par calcul exhaustif qu'aucun de taille `< 2^{n-1}` ne calcule `parity_n`, exhibe la borne exacte.
-  2. Phrase explicite (k) reliant le mini-théorème à P vs NP (modèle ci-dessus).
-  3. Vérification (h) : script effectivement exécuté avec résultat livré, pas promis.
-
-  **Tout écart sera rejeté d'office** :
-  - Toute proposition d'algèbre commutative décorrelée (raffinements de C9, Boij-Söderberg, Koszul Lean, etc.) : rejet au titre de (i) corrigée.
-  - Toute proposition de chaîne conjecturale type lifting+KW non vérifiée empiriquement : rejet au titre de (j).
-  - Toute proposition contenant une erreur factuelle élémentaire (type 2COL ∈ P) : rejet au titre de la rigueur attendue après 11 tours.
-
-  **Alternatives acceptables** (si le Proposeur ne veut absolument pas faire PARITY) :
-  - Théorème de Shannon (existence de fonctions à circuits exponentiels par comptage).
-  - Théorème de Razborov 1985 sur CLIQUE en monotone, vérifié à petit `k` et `n`.
-  - Mais ces alternatives doivent inclure (k), (h), (j) honorées effectivement.
+  **Toute proposition s'écartant de la direction P vs NP** (algèbre commutative décorrelée, raffinements de C9, etc.) sera rejetée d'office au titre de (i).
+  **Toute conjecture-pont non vérifiée** sera rejetée au titre de (j).
+  **Toute erreur factuelle élémentaire** sera rejetée au titre de la rigueur attendue.
 
 ---
 
