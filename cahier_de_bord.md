@@ -18,8 +18,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 13 — deuxième théorème ÉTABLI pour P vs NP)
-- **Nombre de tours effectués** : 13
+- **Dernière mise à jour** : 2026-05-23 (fin tour 14 — troisième théorème ÉTABLI, avec correction de formulation)
+- **Nombre de tours effectués** : 14
 
 ---
 
@@ -53,7 +53,8 @@
 | 11 | Borne `D_m(2COL) ≥ Ω(n log n)` via lifting (Raz-McKenzie/GPW) + Karchmer-Wigderson + Tseitin sur expandeurs (Ben-Sasson-Wigderson) | Trois barrières revendiquées (lifting+KW non-relativisant et non-algébrisant ; RR fragile admis) | Direction enfin correcte vis-à-vis P vs NP. Mais : (1) **erreur factuelle** : 2-COLORATION ∈ P, pas NP-complet ; (2) 2COL n'est pas naturellement monotone ; (3) chaîne L10.5 conjecturale (pattern récurrent que le Proposeur reconnaît) ; (4) (j) régressée (test n=4,6,8 promis mais non livré) ; (5) redondance possible avec Garg-Göös-Knop-Watson 2018 non vérifiée | ⚠️ **LACUNE RÉPARABLE — rejet maintenu par utilisateur** |
 | 12 | Mini-théorème : `PARITY_n ∉ AC⁰ profondeur 2` de taille `< 2^(n-1)` (= DNF minimal exactement `2^(n-1)` monômes) | Toutes traitées explicitement (relativisation : preuve combinatoire sans oracle ; RR : propriété pas large car ne caractérise que PARITY et ¬PARITY ; algébrisation : pas d'arithmétisation) | Calcul exhaustif n=4 livré AVANT soumission (81 ANDs, 8 implicants, bijection vérifiée). Argument structurel L12.1–L12.4 valable pour tout n, prouvé combinatoirement. Reproduction indépendante par le Réfuteur OK. **Toutes les 12 conditions (a)–(l) honorées pour la première fois.** | ✅ **ÉTABLI POUR P vs NP** |
 | 13 | Caractérisation : `DNF_min(f) = |f^{-1}(1)|` ⟺ `f^{-1}(1)` est independent set de `Q_n` ⟺ aucun AND de `< n` littéraux n'est implicant. PARITY est l'élément maximal d'une classe combinatoire de **743 fonctions à n=4**. | Toutes (relativisation combinatoire, RR : caractérise une classe pas une fonction, algébrisation : sans objet) | Calcul exhaustif n=4 livré : 743 fonctions identifiées, équivalence (b)⟺(c) vérifiée sur 200 échantillons sans incohérence, distribution exacte par taille, PARITY+¬PARITY uniquement à |f^{-1}(1)|=8. Preuves L13.1–L13.4 combinatoires audités OK. Erreur référentielle OEIS (A006506 cité à tort, mais 743 est correct par calcul direct) | ✅ **ÉTABLI POUR P vs NP** (2e objet) |
-| 14 |  |  |  | *(à venir)* |
+| 14 | Mini-théorème : `DNF_min(MAJ_n) = C(n, ⌈n/2⌉) ~ 2^n/√n`, donc `MAJ_n ∉ AC⁰ d=2 polynomial`. Première apparition de TC⁰ dans le dépôt. | Toutes (relativisation combinatoire ; RR : « f=MAJ_n » caractérise une fonction unique, non-large ; algébrisation : sans objet) | Calcul exhaustif n=4 livré : 81 ANDs, 33 implicants, **6 implicants premiers** (= C(4,2)), tous positifs taille 2, non-redondance vérifiée. L14.1 initial buggé, **bug détecté et corrigé par le Proposeur via (j)** avant soumission. Preuves L14.1–L14.4 auditées correctes. | ✅ **ÉTABLI POUR P vs NP** (3e objet) — avec **correction de formulation** : la séparation est `TC⁰ d=1 ⊄ AC⁰ d=2 poly` (par témoin), pas l'inclusion stricte `AC⁰ d=2 poly ⊊ TC⁰ d=1 poly` revendiquée. Les deux classes sont en fait incomparables (contre-exemple : DISJ_n ∈ AC⁰ d=2 poly \ TC⁰ d=1). |
+| 15 |  |  |  | *(à venir)* |
 
 ---
 
@@ -95,6 +96,26 @@
   **Apport au dépôt** : *consolide et structure* le Tour 12. PARITY identifié comme élément maximal d'une classe identifiable (et non un cas isolé). Deuxième objet ÉTABLI.
 
   **Note (erreur référentielle mineure)** : le Proposeur cite OEIS A006506 pour le compte 743, mais A006506 = nombres de Dedekind (`2, 3, 6, 20, 168, 7581`). La séquence correcte est différente. Le chiffre 743 lui-même est correct par calcul exhaustif.
+
+- **Théorème de la majorité** (Tour 14) : *`DNF_min(MAJ_n) = C(n, ⌈n/2⌉) ~ 2^n/√n`. Donc `MAJ_n ∉ AC⁰ d=2 polynomial`.*
+
+  Cf. [`tours/tour_14_majority_etabli.md`](tours/tour_14_majority_etabli.md) et [`checks/tour_14_majority_dnf_lower_bound.py`](checks/tour_14_majority_dnf_lower_bound.py).
+
+  **Preuves** :
+  - L14.1 : `M` implicant de `MAJ_n` ⟺ `pos(M) ≥ ⌈n/2⌉` (force libres à 0 → sum minimal = pos(M)).
+  - L14.2 : implicants premiers sans littéraux négatifs (suppression d'un `~x_i` préserve l'implication par L14.1).
+  - L14.3 : implicants premiers = ANDs positifs de taille exactement `⌈n/2⌉`. Nombre = `C(n, ⌈n/2⌉)`.
+  - L14.4 : pour chaque sous-ensemble `S` de taille `t = ⌈n/2⌉`, `χ_S` satisfait uniquement `M_S`. Donc tous les `C(n, t)` implicants premiers sont requis.
+
+  **Vérification exhaustive n=4** : 81 ANDs, 33 implicants (incluant non-premiers), 6 implicants premiers (= C(4,2)) tous positifs taille 2, non-redondance vérifiée, DNF canonique de taille 6 calcule `MAJ_4`.
+
+  **Note de bug corrigé** : la version initiale de L14.1 était erronée (« aucun implicant n'a de littéral négatif » — faux, 22 contre-exemples sur 81 ANDs). Le Proposeur a détecté le bug *via le calcul (j)* et corrigé en distinguant *implicant* / *implicant premier* avant soumission. Exemple parfait du rôle de la condition (j).
+
+  **⚠️ Correction de formulation sur la séparation entre classes**. Le Proposeur a écrit comme conclusion : *« AC⁰ d=2 polynomial ⊊ TC⁰ d=1 polynomial »*. **Cette inclusion stricte est mal énoncée**. Ce que le théorème établit *réellement* est `MAJ_n ∈ TC⁰ d=1 \ AC⁰ d=2 polynomial`, donc **`TC⁰ d=1 ⊄ AC⁰ d=2 polynomial`** (séparation par témoin). L'inclusion réciproque `AC⁰ d=2 polynomial ⊆ TC⁰ d=1` est **fausse** : contre-exemple `DISJ_n(x, y) = ⋁_i (x_i ∧ ¬y_i)`, qui est dans AC⁰ d=2 polynomial mais pas dans TC⁰ d=1 (complexité communication non-triviale). Les deux classes sont **incomparables**. Erreur logique sur les classes (similaire à 2COL ∈ P du Tour 11) mais sans toucher le théorème central.
+
+  **Barrières** : relativisation (preuve combinatoire sans oracle), RR (la propriété « f=MAJ_n » est unique parmi `2^{2^n}`, non-large), algébrisation (pas d'arithmétisation). ✓
+
+  **Apport au dépôt** : *troisième objet ÉTABLI*, sur une fonction nouvelle (MAJ ≠ PARITY), avec borne sub-exponentielle `~ 2^n/√n` (pas exponentielle comme Tour 12). Première apparition de `TC⁰` dans la lignée FSS → Williams 2011. PARITY (Tour 12) et MAJ (Tour 14) constituent les deux fonctions canoniques séparant respectivement AC⁰ de classes plus puissantes.
 
 ### ❓ Conjecturaux pour P vs NP (plausibles mais non prouvés)
 - *(aucun retenu pour l'instant)*
@@ -266,21 +287,23 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 14** : direction **ouverte** après l'établissement des Tours 12 et 13. Le dépôt a maintenant **deux objets ✅ Établis pour P vs NP**. Les directions possibles restent les mêmes qu'avant le Tour 13 :
+- **Tour 15** : direction **ouverte** après les Tours 12, 13, 14 (trois objets ✅ Établis pour P vs NP). Les 12 conditions (a)–(l) restent en vigueur, et une 13e est ajoutée par la pratique du Tour 14 :
 
-  1. **Cross-validation à n = 5** : énumérer les `2^{2^5}` ≈ 4 milliards de fonctions est infaisable, mais l'énumération des independent sets de `Q_5` (= 254 475 par référence ; vérifiable directement) avec la distribution par taille consoliderait le théorème. Plus complexe que n=4 mais accessible.
+  - (m) **AJOUTÉE** : *toute affirmation d'inclusion entre classes doit distinguer `⊊` (inclusion stricte) de `⊄` (incomparabilité par témoin). Une séparation par témoin de la forme « `f ∈ A \ B` » établit `A ⊄ B`, jamais `B ⊊ A`. Pour `B ⊊ A`, il faut deux pas séparés : `B ⊆ A` ET `B ⊋ A`.*
 
-  2. **Extension à profondeur 3** : entrer dans le territoire Furst-Saxe-Sipser / Håstad. Beaucoup plus dur — le nombre de circuits AC⁰ profondeur 3 sur n=4 explose, et l'argument simple « variable libre → flip change parity » ne suffit plus. Significativement plus ambitieux.
+  Directions possibles pour le Tour 15, classées par accessibilité et apport :
 
-  3. **Formalisation Lean** des L12.1–L13.4 dans un fichier Mathlib4. Premier théorème de complexité formalisé du dépôt.
+  1. **Extension naturelle** : `DNF_min(THRESHOLD_t) = C(n, t)` pour `t` quelconque. Analogue direct du Tour 14 (MAJ = THRESHOLD_{⌈n/2⌉}), preuve quasi-identique en remplaçant `⌈n/2⌉` par `t`. Ajoute toute la famille des fonctions seuil au paysage des fonctions à DNF non-polynomial. Très accessible.
 
-  Toutes les 12 conditions (a)–(l) restent en vigueur. Les Tours 12 et 13 montrent que le Proposeur peut les honorer simultanément ; cela doit être maintenu.
+  2. **Cross-validation à n = 5 ou 6** : vérifier la formule `DNF_min(MAJ_n) = C(n, ⌈n/2⌉)` pour n=5 (3^5 = 243 ANDs, C(5,3) = 10) ou n=6 (3^6 = 729 ANDs, C(6,3) = 20). Très simple.
 
-  **Toute proposition s'écartant de la direction P vs NP** (algèbre commutative décorrelée, raffinements de C9, etc.) sera rejetée d'office au titre de (i).
-  **Toute conjecture-pont non vérifiée** sera rejetée au titre de (j).
-  **Toute erreur factuelle élémentaire** sera rejetée au titre de la rigueur attendue.
+  3. **Extension à profondeur 3** : entrer dans le territoire Furst-Saxe-Sipser / Håstad. Beaucoup plus dur — le nombre de circuits AC⁰ profondeur 3 sur n=4 explose, et les arguments combinatoires simples ne suffisent plus.
 
-  **Note (suite à l'erreur OEIS Tour 13)** : toute référence externe (OEIS, théorème nommé, séquence) doit être vérifiée avant citation. Citer A006506 pour les independent sets de Q_n est une erreur référentielle qui n'affecte pas le théorème mais nuit à la crédibilité. À éviter à l'avenir.
+  4. **Formalisation Lean** des L12.1–L14.4 dans un fichier Mathlib4. Premier théorème de complexité formalisé du dépôt.
+
+  Toute proposition continuera à être évaluée selon (a)–(m). Toute proposition s'écartant de P vs NP : rejet au titre de (i). Toute conjecture-pont non vérifiée : rejet au titre de (j). Toute erreur factuelle ou logique élémentaire (incluant confusion `⊊` vs `⊄` désormais) : rejet ou correction notée selon la gravité.
+
+  **Note (suite à l'erreur OEIS Tour 13 et l'erreur classes Tour 14)** : les *erreurs de haut niveau* (référentielles, logiques, ou de typage) sont distinctes des *erreurs de calcul*. Les calculs sont fiables (vérifiables par script) ; les énoncés et formulations le sont moins. À surveiller particulièrement.
 
 ---
 
