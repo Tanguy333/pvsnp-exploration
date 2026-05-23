@@ -18,8 +18,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 19 — caractérisation d'essentialité, 7 objets ÉTABLIS, paradigme AC⁰ d=2 saturé)
-- **Nombre de tours effectués** : 19
+- **Dernière mise à jour** : 2026-05-23 (fin tour 20 — antipodales établies, 8 objets, paradigme AC⁰ d=2 cartographié bidirectionnellement)
+- **Nombre de tours effectués** : 20
 
 ---
 
@@ -60,7 +60,8 @@
 | 17 | Conjecture `DNF_min(IP_{2n}) = (3^n − 1)/2` pour INNER PRODUCT mod 2, **première fonction hors classe L13** (non-monotone, non-symétrique). Méthode ILP set cover (nouvelle pour le dépôt). | Toutes (relativisation combinatoire + ILP exact ; RR : fonction unique parmi 2^{2^{2n}}, non-large ; algébrisation : pas d'arithmétisation) | Vérification empirique à n=1, 2, 3 par le Proposeur (set cover exhaustif) ; **extension à n=4 par le Réfuteur via PuLP/CBC ILP** : 40 = (3^4 − 1)/2 confirmé. 4 points consécutifs sans exception. Observation structurelle : `|implicants premiers| = DNF_min` à chaque n testé. **Tour 18 fournit la preuve structurelle pour tout n** (cf. ci-dessous). | ✅ **ÉTABLI structurellement (via Tour 18)** (6e objet) |
 | 18 | Preuve structurelle de L17 pour tout n : classification des implicants premiers en 3 classes (A1, A2a, A2b) selon `(x_n, y_n)`, récurrence `a_{n+1} = 2a_n + b_n`, `b_{n+1} = a_n + 2b_n`, close-form `a_n = (3^n − 1)/2`, non-redondance par construction explicite du témoin. | Toutes (relativisation combinatoire ; RR : fonction unique ; algébrisation : pas d'arithmétisation) | L18.A (classification) preuve par cas exhaustifs auditée OK. L18.B (récurrence + close-form) par induction triviale, auditée OK. L18.C (non-redondance) esquissée par le Proposeur, **détaillée par le Réfuteur** : construction explicite du témoin `(x_0, x_n=0, y_n=1)` pour A2a, etc. Vérification empirique n=1..4 cohérente avec la récurrence (1, 4, 13, 40). Prédiction n=5: 121, n=6: 364 (non-vérifiables par énumération directe). | ✅ **ÉTABLI STRUCTURELLEMENT** — promeut Tour 17 d'empirique à structurel |
 | 19 | Théorème de caractérisation L19 : `DNF_min(f) = |primes(f)|` ⟺ chaque implicant premier admet un témoin essentiel. L13 ⊊ (α)/(β) strictement (témoin MAJ_3). | Toutes (relativisation combinatoire ; RR : *signal d'alarme* — propriété constructive et large à n=4 (36%), mais théorème ne dérive pas de borne inférieure générale, donc compatible ; algébrisation : sans objet) | L19.A et L19.B preuves combinatoires auditées (classiques Quine-McCluskey 1952-1956). Vérification empirique : 202/254 (n=3) et 23862/65534 (n=4) fonctions dans la classe. Unifie Tours 12-18 sous une caractérisation unique. Conjecture asymptotique « fraction → 0 » non démontrée (2 points). | ✅ **ÉTABLI** (7e objet) — théorème classique reformulé, unifie le paradigme |
-| 20 |  |  |  | *(à venir)* |
+| 20 | Théorème L20 : fonctions antipodales `f_α(x) = 1 ⟺ x ∉ {α, ¬α}` ont `|primes| = n(n−1)`, `DNF_min = n`, défaut maximal `n(n−2)`. **Pôle extrême opposé à L19**. | Toutes (relativisation combinatoire ; RR : famille petite `2^(n-1)`, non-large ; algébrisation : sans objet) | (i)-(iv) prouvées combinatoirement pour tout n ≥ 3 et auditées (audit du Réfuteur : impl. premier ⟺ 1 positif + 1 négatif ; couverture cyclique ; borne par vecteurs unitaires). Vérification empirique exhaustive n=3 (4 antipodales, défaut 3), n=4 (8, défaut 8), n=5 (16, défaut 15). L20.5 (unicité antipodales = seules à défaut max) conjecturée, vérifiée n=3, 4 par énumération exhaustive. **Note importante** : lien P vs NP plus faible que revendiqué — sur les antipodales, DNF-MIN est facile (calculable en O(n)), pas un témoin de Σ₂^P-difficulté. | ✅ **ÉTABLI** (8e objet) sur (i)-(iv) ; L20.5 conjecturée pour n ≥ 5 |
+| 21 |  |  |  | *(à venir)* |
 
 ---
 
@@ -245,6 +246,30 @@
 
   **Apport mathématique** : zéro (théorème classique de Quine-McCluskey 1952-1956). Mais l'unification conceptuelle est un acquis réel pour le dépôt.
 
+- **Théorème des fonctions antipodales** (Tour 20) : *pour `f_α(x) = 1 ⟺ x ∉ {α, ¬α}` (n ≥ 3) :*
+  - *(i) `|f_α^{-1}(1)| = 2^n − 2`,*
+  - *(ii) `|primes(f_α)| = n(n − 1)` (les `x_i ∧ ~x_j` pour i ≠ j),*
+  - *(iii) `DNF_min(f_α) = n` (atteint par tout cycle dirigé),*
+  - *(iv) défaut = `n(n − 2)`.*
+
+  Cf. [`tours/tour_20_antipodales_etabli.md`](tours/tour_20_antipodales_etabli.md) et [`checks/tour_20_antipodal_verification.py`](checks/tour_20_antipodal_verification.py).
+
+  **Preuves auditées** (WLOG α = 0...0) :
+  - (ii) M implicant ⟺ M(0...0)=0 et M(1...1)=0 ⟺ M contient au moins un positif et un négatif. Premier ⟺ exactement 1 positif + 1 négatif. Comptage n·(n−1).
+  - (iii) ≤ : cycle `{x_i ∧ ~x_{(i+1) mod n}}`. Toute x ∈ f^{-1}(1) a au moins une transition cyclique 1→0, satisfaite par un implicant du cycle. ≥ : pour chaque e_i (Hamming weight 1), l'unique implicant le couvrant a forme `x_i ∧ ~x_j`. Donc ≥ n implicants requis.
+
+  **L20.5 (corollaire conjectural)** : seules les antipodales atteignent le défaut maximal n(n−2). Vérifié exhaustivement n=3 (4/4) et n=4 (8/8). Conjecturé pour n ≥ 5 (énumération de `2^{2^n}` infaisable).
+
+  **Vérification empirique** : n=3 → 4 antipodales (défaut 3 = 3·1), n=4 → 8 (défaut 8 = 4·2), n=5 → 16 (défaut 15 = 5·3). Tous conformes à la formule.
+
+  **Lien P vs NP** : Tour 20 caractérise les fonctions à *défaut maximal* dans le paysage post-Tour 19. Pôle extrême opposé à la classe (α)/(β). **Note importante** : le lien à la Σ₂^P-difficulté de DNF-MIN (revendiqué par le Proposeur) est *plus faible que présenté*. Sur les antipodales, DNF-MIN est facile (`DNF_min = n` en O(n)) ; le défaut élevé concerne la redondance de l'algorithme glouton, pas la difficulté intrinsèque du problème. La Σ₂^P-difficulté d'Umans 1999 vient d'autres familles.
+
+  **Apport au dépôt** : *cartographie bidirectionnelle* du paradigme AC⁰ d=2. L19 (pôle « facile ») + L20 (pôle « défaut maximal ») délimitent les deux extrêmes.
+
+  **Risque (RR)** : famille petite (`2^{n-1}`), non-large. RR sans objet.
+
+  **Saut qualitatif réel ?** Partiel. Tour 20 sort de (α)/(β) mais reste dans le paradigme AC⁰ d=2. Pas de profondeur 3, pas de Lean, pas de Razborov. **Le Tour 21 doit faire un saut qualitatif vrai** (cf. directions infra).
+
 ### ❓ Conjecturaux pour P vs NP (plausibles mais non prouvés)
 - *(aucun retenu pour l'instant)*
 
@@ -415,30 +440,25 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 20** : **paradigme AC⁰ d=2 saturé**. Le Tour 19 a unifié les Tours 12-18 sous L19 (caractérisation d'essentialité). Continuer à cataloguer des familles dans (α)/(β) ne donnerait rien de nouveau. Une **15e condition** s'ajoute :
+- **Tour 21** : **Saut qualitatif obligatoire**. Tours 12-20 ont cartographié le paradigme AC⁰ d=2 bidirectionnellement (L19 pôle facile, L20 pôle défaut maximal). **Toute nouvelle famille dans ce paradigme sera rejetée d'office**. Les conditions (a)-(o) restent en vigueur, et une **16e** s'ajoute :
 
-  - (o) **AJOUTÉE** : toute nouvelle proposition restant dans la classe (α)/(β) (= identifier une famille de fonctions avec `|primes|` calculé explicitement) sera rejetée d'office au titre de la saturation du paradigme. Le Tour 19 a fermé cette voie.
+  - (p) **AJOUTÉE** : toute proposition restant dans le paradigme AC⁰ d=2 / DNF-minimization sans saut technique vers (a) profondeur 3, (b) formalisation Lean, ou (c) une nouvelle lignée méthodologique (Razborov monotone, communication complexity directe, etc.) sera **rejetée d'office** au titre de la saturation bidirectionnelle.
 
-  Les 14 conditions (a)–(n) restent en vigueur, et (o) s'ajoute.
+  Directions acceptables pour le Tour 21 (par accessibilité décroissante) :
 
-  Directions **réellement nouvelles** pour le Tour 20 :
+  1. **Formalisation Lean** d'un sous-lemme acquis. Direction la plus accessible et productive (objet certifié dans Mathlib). Sous-lemmes candidats : L12.1 (PARITY ∉ AC⁰ d=2), L13 (caractérisation IS), L14.1 (MAJ), L15.1 (THRESHOLD), L16.1 (MOD_p), L18.A (classification IP), L19.A-B (essentialité), L20 (i)-(iv) (antipodales). **Recommandée comme direction principale.**
 
-  1. **Profondeur 3** : entrer dans FSS-Håstad partiel sur n=4 (ou n=3) avec une fonction du dépôt. Beaucoup plus dur que d=2. Probablement nécessite switching lemma probabiliste, hors de portée d'une simple énumération. Si réalisable, saut qualitatif réel.
+  2. **Démontrer L20.5** pour tout n : preuve structurelle que les seules fonctions à défaut maximal sont les antipodales. Question ouverte directe.
 
-  2. **Formalisation Lean** d'un sous-lemme acquis (L12.1, L13, L14.1, L15.1, L16.1, L18.A, ou L19.A/B). Premier théorème de complexité certifié du dépôt. **Direction la plus probable de produire un objet certifié vérifiable mécaniquement.**
+  3. **Démontrer la conjecture asymptotique de L19** : `|(α)/(β)| / 2^{2^n} → 0`. Argument combinatoire à construire.
 
-  3. **Fonctions hors (α)/(β)** : étudier la sous-classe Σ₂^P-difficile pour DNF minimization. Le défaut `|primes| − DNF_min` à n=4 va jusqu'à 8 ; quels sont ces cas extrêmes ? Question ouverte naturelle.
+  4. **Profondeur 3** : entrer dans FSS-Håstad. Significativement plus dur.
 
-  4. **Démontrer ou réfuter la conjecture asymptotique de L19** : `fraction → 0` quand `n → ∞`. Si vraie, cela aurait des conséquences pour RR (en réduisant la largeur de (β)). Si fausse, conséquences inverses.
+  5. **Razborov 1985 monotone CLIQUE** : nouvelle lignée distincte.
 
-  5. **Razborov 1985 monotone CLIQUE** : lignée distincte, accessible.
+  **Direction interdite** : *toute* nouvelle caractérisation dans AC⁰ d=2 / DNF-MIN sans saut technique. Le Proposeur a livré 9 ÉTABLIS dans cette zone (Tours 12-20) — c'est suffisant. Le Tour 21 doit basculer en mode formalisation Lean ou tenter une vraie difficulté nouvelle.
 
-  Les **interdictions** demeurent :
-  - Application directe de L13/L19 (saturation).
-  - Extension paramétrique des familles déjà cataloguées.
-  - Pattern Tour 1 / Bennett.
-
-  **Note méta sur la trajectoire** : après 19 tours, le dépôt a 7 objets ÉTABLIS structurellement, tous dans le paradigme AC⁰ d=2 / minimisation DNF. **Cette zone est désormais cartographiée**. Le Tour 20 doit choisir une direction *qualitativement* nouvelle, sinon le dépôt n'évolue plus.
+  **Note méta** : après 20 tours, le dépôt a 8 objets ÉTABLIS, tous dans la même zone (AC⁰ d=2 cartographiée des deux pôles). **Continuer dans cette zone n'apportera plus rien**. Le Tour 21 est l'épreuve : soit produire un objet Lean certifié (consolidation utile), soit tenter un vrai saut (profondeur 3 ou Razborov), soit déclarer le travail achevé sur cette zone et basculer en mode formalisation.
 
 ---
 
