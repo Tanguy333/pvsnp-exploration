@@ -10,8 +10,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 4)
-- **Nombre de tours effectués** : 4
+- **Dernière mise à jour** : 2026-05-23 (fin tour 5)
+- **Nombre de tours effectués** : 5
 
 ---
 
@@ -35,7 +35,8 @@
 | 2 | Signature p-adique des témoins (Ax-Katz pour vérificateurs AC⁰) | Relativisation (revendiqué) | Arithmétisation exacte ≠ polylog ; Ax-Katz trivial sous contrainte booléenne ; technique algébrisante | ❌ **FAILLE FATALE** |
 | 3 | Obstruction topologique sur paysage d'énergie CSP (Morse discrète + Lusternik-Schnirelmann) | Relativisation + algébrisation (revendiqué) | Invariant non-invariant sous équivalence logique ; sauts polynomiaux effondrent les Betti | ❌ **FAILLE FATALE** |
 | 4 | Compilation TC⁰ → tensor network à bond polynomiale + Williams + Hardness Magnification | Les 3 (revendiqué) | Lemme 1 faux : IP_n ∈ TC⁰ a bond dimension exponentielle (rang 2ⁿ−1 sur ℝ) ; parade F₂ détruit l'outillage analytique ; ce qui reste = reformulation du programme Williams ouvert | ❌ **FAILLE FATALE** sur le mécanisme |
-| 5 |  |  |  | *(à venir)* |
+| 5 | Indistinguabilité CPT+C des hypercubes colorés `H_f` (jeux de pavage bijectifs + canonisation Dawar) | Les 3 + (d) + (e) (revendiqué) | Lemme 3 trivialement impossible : `∃ x. f(x)` est FO ⊂ CPT+C et distingue toute paire SAT/UNSAT ; Lemme 1 invoque un théorème de Dawar qui n'existe pas sous cette forme ; (f) non satisfaite (feuille de route admise) | ❌ **FAILLE FATALE** |
+| 6 |  |  |  | *(à venir)* |
 
 ---
 
@@ -74,6 +75,14 @@
 
   À NE JAMAIS réessayer sous cette forme spécifique. **Nuance honnête** : la *direction générale* (Williams pour TC⁰) reste la plus prometteuse aujourd'hui — mais sans algorithme nouveau, ce n'est pas une piste exploitable dans notre boucle adverse. Le Proposeur a entendu le feedback (cible adéquate, conditions formelles cochées) mais n'a apporté aucune contribution technique au-delà de la stratégie globale.
 
+- **Piste 5 — « indistinguabilité CPT+C des hypercubes colorés `H_f` (jeux de pavage bijectifs + canonisation Dawar) ».** Pivot vers la complexité descriptive. Triple faille (cf. [`checks/tour_05_cpt_jeux_pavage.py`](checks/tour_05_cpt_jeux_pavage.py)) :
+  1. **Lemme 3 trivialement impossible** : le Proposeur veut `H_f` (UNSAT) ≡_{CPT+C} `H_g` (SAT). Or la sentence FO `∃ x. f(x) = 1` distingue toute paire (UNSAT n'a aucun sommet colorié 1, SAT en a au moins un), et FO ⊂ FO+C ⊂ CPT+C. Le Spoiler gagne en 1 tour. Vérifié pour 3 paires explicites : multiset `(#col 0, #col 1)` toujours `(64, 0)` UNSAT vs `(<64, ≥1)` SAT.
+  2. **Mauvais encodage** : la propriété distinguante (SAT vs UNSAT) est encodée *en surface* (la coloration), donc trivialement FO-définissable. Une vraie construction CFI doit cacher la propriété dans la structure relationnelle (graphe, relations entre sommets), pas dans une coloration directe.
+  3. **Lemme 1 mal formulé** : le « théorème de Dawar » invoqué (« GI ∈ P ⇒ CPT+C capture NP sur les hypercubes ») n'existe pas. La conjecture Blass-Gurevich correcte (`CPT+C = P`) reste ouverte ; tout résultat est *conditionnel* à cette conjecture, donc jamais inconditionnel pour P vs NP.
+  4. **Condition (f) non satisfaite** : aveu explicite *« feuille de route »*, pas de contribution.
+
+  À NE JAMAIS réessayer sous cette forme. **Nuance honnête** : la complexité descriptive (Immerman, Vardi, Gurevich, Dawar, Grohe) est un programme actif et prometteur, avec des avancées récentes sur graphes structurés. Mais elle ne peut pas être empruntée par l'encodage trivial de SAT comme coloration de l'hypercube — il faut une structure relationnelle non-triviale.
+
 ---
 
 ## 4. Questions ouvertes prioritaires
@@ -81,7 +90,8 @@
 1. **Tout invariant proposé doit être explicitement invariant sous équivalence logique** des présentations du problème. *(Piste 3 a échoué là-dessus.)*
 2. **Tout argument « tout algo P est contraint par X » doit démontrer que X survit aux sauts polynomiaux**, i.e. à l'extension `Hamming-1 → G_{n^c}`. *(Piste 3 a échoué là aussi.)*
 3. **Tout argument « low-X pour TC⁰ » (low-rank, low-bond-dim, low-degree) doit d'abord exhiber un test positif sur IP_n**, où toutes ces quantités sont exponentielles. *(Piste 4 a échoué sur ce test.)*
-4. **Toute piste doit apporter une contribution technique concrète**, pas seulement une stratégie globale ou un cadre à explorer. Pointer vers Williams 2011 ne suffit pas — il faut un sous-théorème prouvable, un calcul vérifiable, ou un ingrédient algorithmique nouveau.
+4. **Toute piste doit apporter une contribution technique concrète**, pas seulement une stratégie globale ou un cadre à explorer. Pointer vers Williams 2011 ne suffit pas — il faut un sous-théorème prouvable, un calcul vérifiable, ou un ingrédient algorithmique nouveau. *(Pistes 4 et 5 ont échoué sur ce test.)*
+5. **Tout argument « encoder un problème NP sous forme X et invoquer une obstruction sur X »** doit d'abord vérifier que la propriété d'intérêt n'est pas trivialement définissable dans le langage des outils utilisés. Sanity-check préalable au cadre. *(Piste 5 a échoué dessus : SAT comme coloration → trivialement FO-définissable.)*
 5. **Existe-t-il une obstruction non-locale et non-algébrique** qui survive aux sauts polynomiaux *et* à l'équivalence logique ? GCT (permanent vs déterminant) est la seule réponse sérieuse aujourd'hui, mais elle est au point mort depuis 2017 (Bürgisser-Ikenmeyer-Panova : pas d'obstruction par occurrences).
 6. Côté complexité descriptive : la conjecture de Gurevich (logique capturant P) offre-t-elle un angle non-relativisant **et** non-algébrisant exploitable ?
 7. Williams 2011 (NEXP ⊄ ACC⁰) reste l'unique précédent ayant franchi les trois barrières. La voie « algorithmic method + circuit lower bound » se généralise-t-elle à TC⁰ ? *(Question ouverte centrale de la complexité depuis 15 ans — invoquer cette voie n'est pas une piste, c'est rejoindre le front de la recherche.)*
@@ -92,10 +102,14 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 5** : les 5 conditions formelles du Tour 4 restent en vigueur ((a) classe restreinte, (b) non-relativisant, (c) non-algébrisant, (d) invariance logique, (e) sauts polynomiaux). Une **6ème condition** s'ajoute :
-  - (f) **Contribution technique concrète** : un sous-théorème prouvable (par énumération ou Lean), un calcul vérifiable qui fait progresser une borne, ou un ingrédient algorithmique nouveau. Pointer vers Williams 2011 ou GCT ne suffit pas — il faut faire avancer quelque chose, même de très peu, plutôt que reformuler le programme général.
+- **Tour 6** : les 6 conditions du Tour 5 restent en vigueur ((a) classe restreinte, (b) non-relativisant, (c) non-algébrisant, (d) invariance logique, (e) sauts polynomiaux, (f) contribution technique concrète). Une **7ème condition** s'ajoute :
+  - (g) **L'encodage choisi ne doit pas trivialiser la propriété distinguante.** Si la stratégie est « encoder un problème NP comme un objet X (structure, graphe, complexe, tenseur, …) et invoquer une obstruction sur X », alors la propriété d'intérêt ne doit PAS être trivialement définissable dans le langage natif de X (e.g. FO si X est une structure relationnelle ; au premier ordre topologique si X est un complexe simplicial). Sinon le Spoiler / l'algorithme trivial gagne immédiatement.
 
-  Conseil de direction : abandonner la grande stratégie ; viser un **micro-progrès vérifiable** sur une sous-classe encore plus restreinte (TC⁰ de profondeur 2, monotone, ACC⁰ de profondeur 3...) avec un argument que je peux *exécuter* numériquement pour valider. Si l'idée n'est pas vérifiable à petite taille, c'est probablement qu'elle reproduit un programme de recherche existant.
+  Conseil de direction renforcé : abandonner les grandes stratégies (Williams, GCT, complexité descriptive — programmes actifs mais réservés aux chercheurs y travaillant à temps plein). Viser un **micro-progrès vérifiable** sur une **sous-classe ultra-restreinte** : par exemple,
+  - un théorème de borne inférieure pour un modèle de circuit *encore plus faible* qu'AC⁰ (e.g. circuits monotones de profondeur 2 avec fan-in borné) ;
+  - un calcul exhaustif sur petit `n` qui exhibe un phénomène à *expliquer* (et qui ne reproduit aucun résultat connu) ;
+  - une formalisation Lean d'un mini-lemme (e.g. un théorème de hiérarchie de temps déterministe sur 2-tape TM), pour s'assurer qu'on construit *quelque chose* de vérifiable.
+  Si l'idée ne tient pas sur 6 variables, elle ne tient sur rien.
 
 ---
 
