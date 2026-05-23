@@ -18,8 +18,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 18 — preuve structurelle de L17, 6 objets ÉTABLIS structurellement)
-- **Nombre de tours effectués** : 18
+- **Dernière mise à jour** : 2026-05-23 (fin tour 19 — caractérisation d'essentialité, 7 objets ÉTABLIS, paradigme AC⁰ d=2 saturé)
+- **Nombre de tours effectués** : 19
 
 ---
 
@@ -59,7 +59,8 @@
 | 16 | `DNF_min(MOD_p_n) = Σ_{k ≡ 0 mod p} C(n, k)`, application directe de L13 (Tour 13) à la famille `MOD_p`. Ouverture de la lignée Razborov-Smolensky. | Toutes (relativisation combinatoire ; RR : famille de `n` fonctions parmi `2^{2^n}`, non-large ; algébrisation : sans objet) | Calcul exhaustif n=4 livré pour `p ∈ {2,3,4,5}`. Comptes confirmés : 8, 5, 2, 1. L16.1 (MOD_p^{-1}(1) independent dans Q_n) prouvée combinatoirement : `sum(y) = sum(x) ± 1` à distance Hamming 1, donc `≢ (mod p)` pour `p ≥ 2`. L16.2 par application directe de L13. L16.3 asymptotique par roots of unity filter. Note terminologique mineure : MOD_2 = ¬PARITY (pas PARITY au sens strict), même DNF_min par symétrie de la bipartition. | ✅ **ÉTABLI POUR P vs NP** (5e objet) |
 | 17 | Conjecture `DNF_min(IP_{2n}) = (3^n − 1)/2` pour INNER PRODUCT mod 2, **première fonction hors classe L13** (non-monotone, non-symétrique). Méthode ILP set cover (nouvelle pour le dépôt). | Toutes (relativisation combinatoire + ILP exact ; RR : fonction unique parmi 2^{2^{2n}}, non-large ; algébrisation : pas d'arithmétisation) | Vérification empirique à n=1, 2, 3 par le Proposeur (set cover exhaustif) ; **extension à n=4 par le Réfuteur via PuLP/CBC ILP** : 40 = (3^4 − 1)/2 confirmé. 4 points consécutifs sans exception. Observation structurelle : `|implicants premiers| = DNF_min` à chaque n testé. **Tour 18 fournit la preuve structurelle pour tout n** (cf. ci-dessous). | ✅ **ÉTABLI structurellement (via Tour 18)** (6e objet) |
 | 18 | Preuve structurelle de L17 pour tout n : classification des implicants premiers en 3 classes (A1, A2a, A2b) selon `(x_n, y_n)`, récurrence `a_{n+1} = 2a_n + b_n`, `b_{n+1} = a_n + 2b_n`, close-form `a_n = (3^n − 1)/2`, non-redondance par construction explicite du témoin. | Toutes (relativisation combinatoire ; RR : fonction unique ; algébrisation : pas d'arithmétisation) | L18.A (classification) preuve par cas exhaustifs auditée OK. L18.B (récurrence + close-form) par induction triviale, auditée OK. L18.C (non-redondance) esquissée par le Proposeur, **détaillée par le Réfuteur** : construction explicite du témoin `(x_0, x_n=0, y_n=1)` pour A2a, etc. Vérification empirique n=1..4 cohérente avec la récurrence (1, 4, 13, 40). Prédiction n=5: 121, n=6: 364 (non-vérifiables par énumération directe). | ✅ **ÉTABLI STRUCTURELLEMENT** — promeut Tour 17 d'empirique à structurel |
-| 19 |  |  |  | *(à venir)* |
+| 19 | Théorème de caractérisation L19 : `DNF_min(f) = |primes(f)|` ⟺ chaque implicant premier admet un témoin essentiel. L13 ⊊ (α)/(β) strictement (témoin MAJ_3). | Toutes (relativisation combinatoire ; RR : *signal d'alarme* — propriété constructive et large à n=4 (36%), mais théorème ne dérive pas de borne inférieure générale, donc compatible ; algébrisation : sans objet) | L19.A et L19.B preuves combinatoires auditées (classiques Quine-McCluskey 1952-1956). Vérification empirique : 202/254 (n=3) et 23862/65534 (n=4) fonctions dans la classe. Unifie Tours 12-18 sous une caractérisation unique. Conjecture asymptotique « fraction → 0 » non démontrée (2 points). | ✅ **ÉTABLI** (7e objet) — théorème classique reformulé, unifie le paradigme |
+| 20 |  |  |  | *(à venir)* |
 
 ---
 
@@ -218,6 +219,31 @@
   **Note** : L18.C esquissée par le Proposeur, détaillée par le Réfuteur. La construction explicite du témoin pour chaque classe + vérification de couverture unique complète rigoureusement la preuve.
 
   **Conséquence** : le 6e objet ÉTABLI du dépôt passe d'« empirique n=1..4 + conjecture pour n ≥ 5 » à « théorème prouvé pour tout n ≥ 1 ». Tous les 6 objets sont désormais structurels.
+
+- **Théorème de caractérisation d'essentialité** (Tour 19) : *pour toute fonction booléenne non-constante `f`, `DNF_min(f) = |primes(f)|` ⟺ chaque implicant premier admet un témoin essentiel.*
+
+  Cf. [`tours/tour_19_essentialite_etabli.md`](tours/tour_19_essentialite_etabli.md) et [`checks/tour_19_primes_eq_dnfmin.py`](checks/tour_19_primes_eq_dnfmin.py).
+
+  **Définition** : *témoin essentiel* d'un implicant premier `M` = une affectation `x ∈ f^{-1}(1)` que `M` est l'unique implicant premier à satisfaire.
+
+  **Preuve** :
+  - L19.A : (α) ⇒ (β) par contrapositive (si M sans témoin essentiel, primes\{M} couvre f^{-1}(1), donc DNF_min < |primes|).
+  - L19.B : (β) ⇒ (α) (chaque M force son inclusion dans tout DNF minimal via son témoin essentiel).
+  - L19.D : L13 ⊊ (α)/(β) avec témoin MAJ_3 (dans (α)/(β) mais MAJ_3^{-1}(1) pas independent dans Q_3).
+
+  **Vérification empirique** : à n=3, 202/254 (79.5%) fonctions dans la classe ; à n=4, 23862/65534 (36.4%). Distribution du défaut `|primes| − DNF_min` à n=4 : 23408 fonctions à diff=1, 9856 à diff=2, …, 8 à diff=8.
+
+  **Unification des Tours 12-18** : tous les 6 théorèmes précédents deviennent des spécialisations de L19. Chaque famille (PARITY, MAJ, THRESHOLD_t, MOD_p, IP) est dans (α)/(β) et a `|primes|` calculé explicitement. L19 fournit le **théorème-cadre** qui caractérise pourquoi.
+
+  **Risque RR** : la propriété (β) est constructive (poly en `2^n`) et large à n=4 (36%). Si on prétendait dériver une borne inférieure générale, RR s'appliquerait. Le théorème actuel ne le fait pas — il caractérise une classe sans en tirer de borne universelle. Compatible avec RR dans son usage actuel.
+
+  **Conjecture asymptotique** : « la fraction `|(α)/(β)| / 2^{2^n}` tend vers 0 quand n → ∞ ». Suggérée par 79.5% (n=3) → 36.4% (n=4), mais non démontrée. Pas un théorème.
+
+  **Lien à P vs NP** : L19 caractérise précisément les fonctions où DNF minimization est en P (algo glouton optimal). Hors classe, le problème est Σ₂^P-difficile (Umans 1999). Lien indirect via la hiérarchie polynomiale.
+
+  **Apport au dépôt** : *unification conceptuelle*. Le paradigme « AC⁰ d=2 par essentialité » est désormais saturé : continuer à cataloguer des familles dans (α)/(β) ne donnerait rien de nouveau.
+
+  **Apport mathématique** : zéro (théorème classique de Quine-McCluskey 1952-1956). Mais l'unification conceptuelle est un acquis réel pour le dépôt.
 
 ### ❓ Conjecturaux pour P vs NP (plausibles mais non prouvés)
 - *(aucun retenu pour l'instant)*
@@ -389,26 +415,30 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 19** : direction **ouverte** après les 6 ÉTABLIS structurels (Tours 12-16 + 17+18). Le dépôt a maintenant **6 théorèmes structurellement prouvés pour tout n** + **1 pattern méthodologique nouveau** (vérifier → conjecturer → prouver, Tour 17 → Tour 18).
+- **Tour 20** : **paradigme AC⁰ d=2 saturé**. Le Tour 19 a unifié les Tours 12-18 sous L19 (caractérisation d'essentialité). Continuer à cataloguer des familles dans (α)/(β) ne donnerait rien de nouveau. Une **15e condition** s'ajoute :
 
-  Les 14 conditions (a)–(n) restent en vigueur.
+  - (o) **AJOUTÉE** : toute nouvelle proposition restant dans la classe (α)/(β) (= identifier une famille de fonctions avec `|primes|` calculé explicitement) sera rejetée d'office au titre de la saturation du paradigme. Le Tour 19 a fermé cette voie.
 
-  Directions naturelles pour le Tour 19 :
+  Les 14 conditions (a)–(n) restent en vigueur, et (o) s'ajoute.
 
-  1. **Profondeur 3** : entrer dans FSS-Håstad partiel sur n=4 avec une fonction du dépôt (PARITY, MAJ, IP). Beaucoup plus dur que d=2 (l'argument simple « variable libre → flip change parity » ne suffit plus, il faut switching lemmas).
+  Directions **réellement nouvelles** pour le Tour 20 :
 
-  2. **Formalisation Lean** d'un sous-lemme acquis (L12.1, L13, L14.1, L15.1, L16.1, L18.A — tous structurellement prouvés). Premier théorème de complexité certifié du dépôt.
+  1. **Profondeur 3** : entrer dans FSS-Håstad partiel sur n=4 (ou n=3) avec une fonction du dépôt. Beaucoup plus dur que d=2. Probablement nécessite switching lemma probabiliste, hors de portée d'une simple énumération. Si réalisable, saut qualitatif réel.
 
-  3. **DISJOINTNESS** ou autre fonction de communication via méthode ILP + récurrence du Tour 18. Réutilise le pattern empirique → structurel.
+  2. **Formalisation Lean** d'un sous-lemme acquis (L12.1, L13, L14.1, L15.1, L16.1, L18.A, ou L19.A/B). Premier théorème de complexité certifié du dépôt. **Direction la plus probable de produire un objet certifié vérifiable mécaniquement.**
 
-  4. **Caractérisation générale des fonctions à `|primes| = DNF_min`** : on a observé Tours 13 (classe L13), 14-16 (THRESHOLD/MOD), 17-18 (IP) que pour tous ces objets, le DNF minimal = nombre d'implicants premiers. Peut-on caractériser quelles fonctions ont cette propriété ? Direction théorique nouvelle.
+  3. **Fonctions hors (α)/(β)** : étudier la sous-classe Σ₂^P-difficile pour DNF minimization. Le défaut `|primes| − DNF_min` à n=4 va jusqu'à 8 ; quels sont ces cas extrêmes ? Question ouverte naturelle.
 
-  Les **interdictions** restent en vigueur :
-  - Application directe de L13 sans diversification de méthode.
-  - Extension paramétrique sans saut qualitatif.
-  - Pattern Tour 1 / Bennett (méta-complexité Kolmogorov).
+  4. **Démontrer ou réfuter la conjecture asymptotique de L19** : `fraction → 0` quand `n → ∞`. Si vraie, cela aurait des conséquences pour RR (en réduisant la largeur de (β)). Si fausse, conséquences inverses.
 
-  **Note méthodologique sur le Tour 18** : c'est le **premier tour de consolidation** du dépôt (résoudre un trou de preuve dans un tour antérieur). Pattern précieux. Si le Proposeur identifie une autre conjecture vérifiée empiriquement (passé ou futur) qu'il peut prouver structurellement, cette chaîne « vérifier → prouver » est légitimée.
+  5. **Razborov 1985 monotone CLIQUE** : lignée distincte, accessible.
+
+  Les **interdictions** demeurent :
+  - Application directe de L13/L19 (saturation).
+  - Extension paramétrique des familles déjà cataloguées.
+  - Pattern Tour 1 / Bennett.
+
+  **Note méta sur la trajectoire** : après 19 tours, le dépôt a 7 objets ÉTABLIS structurellement, tous dans le paradigme AC⁰ d=2 / minimisation DNF. **Cette zone est désormais cartographiée**. Le Tour 20 doit choisir une direction *qualitativement* nouvelle, sinon le dépôt n'évolue plus.
 
 ---
 
