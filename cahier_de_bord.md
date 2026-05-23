@@ -3,6 +3,14 @@
 > Document vivant. À joindre en contexte à **chaque** tour, pour le Proposeur comme pour le Réfuteur.
 > Règle d'or : on ne réexplore jamais une impasse déjà documentée. On mesure le progrès par la compréhension accumulée, pas par « a-t-on la preuve ».
 
+> **Recadrage (fin tour 9).** Le but du dépôt est **P vs NP**. Les Tours 8-9 ont
+> dérivé vers de l'algèbre commutative pure (catalogage Boij-Söderberg,
+> caractérisation des résolutions pures) — objets mathématiquement valables mais
+> **sans lien démontré à P vs NP**. Les objets « ✅ Établis » du §3 sont conservés
+> pour leur intérêt mathématique propre, mais **ne comptent pas comme progrès
+> sur P vs NP**. Toute idée future doit avoir un lien explicite à la question
+> originelle — voir conditions (i) corrigée et (k) ajoutée au §5.
+
 ---
 
 ## 0. Méta
@@ -10,7 +18,7 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 9)
+- **Dernière mise à jour** : 2026-05-23 (recadrage fin tour 9)
 - **Nombre de tours effectués** : 9
 
 ---
@@ -47,19 +55,27 @@
 
 ## 3. Lemmes et résultats
 
-### ✅ Établis (vérifiés / démontrés rigoureusement)
-- *(aucun pour l'instant)*
+### ✅ Établis pour P vs NP (vérifiés / démontrés rigoureusement)
+- *(aucun pour l'instant — c'est l'enjeu du dépôt)*
 
-### ❓ Conjecturaux (plausibles mais non prouvés)
+### ❓ Conjecturaux pour P vs NP (plausibles mais non prouvés)
 - *(aucun retenu pour l'instant)*
 
-### ✅ Établis (vérifiés par calcul exhaustif)
+### 📚 Acquis hors-but principal (objets mathématiques sans lien démontré à P vs NP)
 
-- **Atlas des 95 fonctions monotones n=4 à résolution pure** (Tour 8, cf. [`checks/tour_08_atlas_boij_soderberg.py`](checks/tour_08_atlas_boij_soderberg.py)) — sur les 168 fonctions monotones non-constantes sur n=4 variables, exactement **95** ont un idéal de Stanley-Reisner à résolution libre minimale pure (au sens Boij-Söderberg : un seul shift par index homologique). La distribution par taille d'implicants + nombre d'implicants est tabulée dans le tour 8. **Premier objet positif acquis par le dépôt.**
+> **Note de recadrage (fin tour 9).** Les objets ci-dessous sont mathématiquement
+> corrects et vérifiables, mais leur lien à P vs NP n'a pas été établi. Ils sont
+> conservés pour leur intérêt mathématique propre (algèbre commutative
+> computationnelle des fonctions monotones), mais ne comptent **pas** comme
+> progrès sur la question du dépôt. Pour qu'ils en deviennent un, il faudrait
+> exhiber un pont vers une borne de complexité — pont qui a échoué à chaque
+> tentative (cf. Tour 7 : pd ne capture pas D_m via le contre-exemple OR_n).
 
-- **Théorème L9.1** (Tour 9) : *pure ⇒ equigenerated*. Pour toute fonction monotone non-constante `f`, si `I_f` admet une résolution libre minimale pure alors tous ses implicants premiers ont la même taille. **Preuve triviale par contrapositive** : deux degrés différents `t_1 ≠ t_2` impliquent `β_{0,t_1}(I) > 0` et `β_{0,t_2}(I) > 0`, donc deux shifts à l'index 0, non-pure. Vérifié empiriquement sur n=4 (0 contre-exemple sur 167) et n=5 (0 contre-exemple sur 7579).
+- **Atlas des 95 fonctions monotones n=4 à résolution pure** (Tour 8, cf. [`checks/tour_08_atlas_boij_soderberg.py`](checks/tour_08_atlas_boij_soderberg.py)) — sur les 168 fonctions monotones non-constantes sur n=4 variables, exactement **95** ont un idéal de Stanley-Reisner à résolution libre minimale pure (au sens Boij-Söderberg : un seul shift par index homologique). La distribution par taille d'implicants + nombre d'implicants est tabulée dans le tour 8. *Lien à P vs NP : aucun démontré.*
 
-- **Fait empirique** (Tour 9, cf. [`checks/tour_09_extension_n5.py`](checks/tour_09_extension_n5.py)) : la réciproque *equigenerated ⇒ pure* est **vraie sur n=4** (167 fonctions sans exception) mais **fausse sur n=5** (215 contre-exemples sur 7579). Contre-exemple minimal canonique : `f = (x₁∧x₂∧x₃) ∨ (x₁∧x₂∧x₄) ∨ (x₀∧x₃∧x₄)` ; tous mintermes de taille 3 (equigenerated), mais `β_{0,3}(I)=3, β_{1,4}(I)=1, β_{1,5}(I)=1` (deux shifts à l'index 1, donc non-pure). Causé par hétérogénéité des syzygies linéaires (deg 4) et quadratiques (deg 5) à l'intérieur du même idéal.
+- **Théorème L9.1** (Tour 9) : *pure ⇒ equigenerated*. Pour toute fonction monotone non-constante `f`, si `I_f` admet une résolution libre minimale pure alors tous ses implicants premiers ont la même taille. **Preuve triviale par contrapositive** : deux degrés différents `t_1 ≠ t_2` impliquent `β_{0,t_1}(I) > 0` et `β_{0,t_2}(I) > 0`, donc deux shifts à l'index 0, non-pure. Vérifié empiriquement sur n=4 (0 contre-exemple sur 167) et n=5 (0 contre-exemple sur 7579). *Lien à P vs NP : aucun démontré.*
+
+- **Fait empirique** (Tour 9, cf. [`checks/tour_09_extension_n5.py`](checks/tour_09_extension_n5.py)) : la réciproque *equigenerated ⇒ pure* est **vraie sur n=4** (167 fonctions sans exception) mais **fausse sur n=5** (215 contre-exemples sur 7579). Contre-exemple minimal canonique : `f = (x₁∧x₂∧x₃) ∨ (x₁∧x₂∧x₄) ∨ (x₀∧x₃∧x₄)` ; tous mintermes de taille 3 (equigenerated), mais `β_{0,3}(I)=3, β_{1,4}(I)=1, β_{1,5}(I)=1` (deux shifts à l'index 1, donc non-pure). Causé par hétérogénéité des syzygies linéaires (deg 4) et quadratiques (deg 5) à l'intérieur du même idéal. *Lien à P vs NP : aucun démontré.*
 
 - **Tableau de contingence n=5** :
   ```
@@ -174,14 +190,25 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 10** : les 10 conditions du Tour 9 restent en vigueur. Le Tour 9 a montré un saut épistémologique (h, j, i honorées en parallèle). Direction recommandée :
-  - **Raffiner C9** : trouver une condition combinatoire supplémentaire qui distingue les 1894 cas pure-et-equigen des 215 cas equigen-mais-non-pure sur n=5. Le contre-exemple minimal (`(x₁x₂x₃)∨(x₁x₂x₄)∨(x₀x₃x₄)`) a deux caractéristiques structurelles à explorer :
-    1. Syzygies de degrés mélangés (linéaires deg 4 entre paires partageant 2 var, quadratiques deg 5 entre paires partageant 1 var).
-    2. Le complexe `Δ_f` n'est pas "shellable" ou n'a pas une propriété combinatoire similaire (à creuser).
-  - **OU** continuer vers la formalisation Lean du Lemme L9.4 (résolution Koszul de OR_n), pour produire un premier théorème certifié.
-  - **OU** chercher si la littérature (Bayer-Stillman, Reiner-Welker, Aramova-Herzog, Conca) a déjà identifié cette dichotomie et lui a donné un nom — peut-être que C9' réformulée correspond à un théorème connu.
+- **Tour 10** : **recadrage majeur**. Le but du dépôt est et reste **P vs NP**. Les Tours 8 et 9 ont produit des objets d'algèbre commutative valables (atlas Boij-Söderberg, théorème L9.1) mais sans lien démontré à P vs NP. La condition (i) telle que rédigée pour le Tour 8 (« renoncer à P vs NP pour produire un objet certifié ») était une mauvaise capitulation du Réfuteur ; elle est **révisée** ci-dessous.
 
-  Le Proposeur a démontré qu'il peut maintenir l'épistémologie. Si cela tient sur 2-3 tours de plus, la boucle adverse passera d'un outil de réfutation à un outil de **co-construction**.
+  **Conditions reformulées pour le Tour 10 (les 9 précédentes restent en vigueur, sauf (i) qui est remplacée et (k) qui est ajoutée) :**
+
+  - (i) **CORRIGÉE.** Le Proposeur ne peut pas renoncer à P vs NP au profit de mathématiques décorrelées. Tout sous-théorème, calcul ou formalisation doit s'inscrire dans une **stratégie identifiable** vers P vs NP. Exemples acceptables : (a) borne inférieure pour une classe restreinte qui se rapproche de P (AC⁰, ACC⁰, TC⁰, monotone) ; (b) analyse fine d'une des trois barrières (relativisation, naturelles, algébrisation) ; (c) résultat conditionnel (`P ≠ NP` sous hypothèse X) ; (d) méthode algorithmique pour SAT au sens de Williams ; (e) formalisation Lean d'un théorème de complexité reconnu (e.g. Cook-Levin, hiérarchie de temps, AC⁰ ne calcule pas PARITY).
+
+  - (k) **AJOUTÉE.** Toute piste doit fournir, dans son énoncé, une **phrase explicite** liant l'objet proposé à P vs NP. Forme acceptable : *« Cet objet, s'il s'avère vrai, donnerait/contribuerait à X, qui est lié à P vs NP de la manière Y. »* Sans cette phrase, la proposition est **hors sujet** et rejetée sans analyse technique. Les objets ✅ Établis des Tours 8-9 sont conservés pour leur intérêt mathématique mais **ne comptent pas comme progrès sur P vs NP**.
+
+  Direction recommandée pour le Tour 10 — choisir UNE :
+
+  1. **Revenir à une classe restreinte de complexité** étudiée par la littérature pour la séparation : `AC⁰` (PARITY hors d'AC⁰, Furst-Saxe-Sipser / Håstad), `ACC⁰` (Williams 2011), `TC⁰` (ouvert), `monotone` (Razborov 1985 sur CLIQUE). Proposer un micro-progrès vérifiable sur l'un de ces fronts.
+
+  2. **Étudier une barrière** : tester si une technique candidate franchit ou non l'algébrisation, en construisant explicitement un oracle algébrique relativement auquel l'argument tomberait.
+
+  3. **Formaliser en Lean** un théorème classique de complexité (hiérarchie de temps déterministe, Cook-Levin restreint, théorème de Furst-Saxe-Sipser sur AC⁰ et PARITY pour n petit). Ce serait une **vraie** contribution propédeutique à un futur formal proof effort sur P vs NP.
+
+  4. **Étudier la conjecture C9 raffinée** est **rejetée d'office** : aucun lien avec P vs NP n'a été établi. L'algèbre commutative des fonctions monotones est intéressante en soi, mais elle ne donne pas de borne de complexité tant qu'un pont (du type L9.2 du Tour 7, qui s'est avéré faux) n'est pas démontré. Persister dans cette direction serait reproduire le pattern Tours 7-9 sans avancer.
+
+  Le Proposeur a démontré qu'il peut maintenir l'épistémologie (Tour 9). Il doit maintenant la combiner avec la pertinence à P vs NP.
 
 ---
 
