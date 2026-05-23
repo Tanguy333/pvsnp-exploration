@@ -18,8 +18,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (recadrage fin tour 9)
-- **Nombre de tours effectués** : 9
+- **Dernière mise à jour** : 2026-05-23 (fin tour 10)
+- **Nombre de tours effectués** : 10
 
 ---
 
@@ -49,7 +49,8 @@
 | 8 | Atlas de Boij-Söderberg des fonctions monotones n=4 (renoncement à P vs NP) | Inapplicables (objet fini) | Mouvement stratégique correct ; mais Lemme 4 (OR/AND = seuls à résolution pure) massivement faux (95/167 contre-exemples) ; atlas livré par le Réfuteur | ⚠️ **LACUNE RÉPARABLE** + objet positif livré |
 | 8 bis | Révision du Proposeur : « résolution pure ssi threshold » | Inapplicables | Mini-théorème révisé encore faux (4 thresholds prédits sur n=4, mais 95 fonctions pures ; ex : f = x_0 et f = (x_0∧x_1)∨(x_0∧x_2) sont pures et non-threshold) ; **violation immédiate de (j)** que le Réfuteur venait d'ajouter | ⚠️ **LACUNE RÉPARABLE** |
 | 9 | Conjecture C9 : pure ⟺ equigenerated (caractérisation des résolutions pures pour fonctions monotones) | Inapplicables | (h) et (j) honorées pour la première fois par le Proposeur. Conjecture vérifiée n=4 (167 fonctions, tableau parfait 95/0/0/72). **Réfutée n=5** : 215 contre-exemples sur 7579. Contre-exemple minimal : `(x₁x₂x₃)∨(x₁x₂x₄)∨(x₀x₃x₄)` (equigenerated, mais Betti(I) a 2 shifts à l'index 1) | ⚠️ **LACUNE RÉPARABLE** (épistémologie correcte) |
-| 10 |  |  |  | *(à venir)* |
+| 10 | (a) Conjecture C10 « intersections uniformes » testée préemptivement et **retirée par le Proposeur** (1068 contre-exemples) ; (b) pivot proposé vers formalisation Lean de Koszul de `m_n` | (a) C10 testée mais inapplicable car pas de prétention asymptotique ; (b) Koszul Lean : aucune | Bon réflexe épistémologique (test (j) honoré 2e fois consécutive). Mais pivot Lean cible un théorème **hors-sujet vis-à-vis de P vs NP** (admis par le Proposeur). Direction prescrite Tour 11 : `PARITY ∉ AC⁰ profondeur 2` | ⚠️ **LACUNE RÉPARABLE** + recadrage utilisateur |
+| 11 |  |  |  | *(à venir)* |
 
 ---
 
@@ -83,6 +84,14 @@
   pure=True       |      1894 |          0
   pure=False      |       215 |       5470
   ```
+
+- **Fait empirique négatif sur la conjecture C10** (Tour 10, cf. [`checks/tour_10_intersection_uniform_conjecture.py`](checks/tour_10_intersection_uniform_conjecture.py)) : la caractérisation candidate *« pour `f` equigenerated, `I_f` pure ⟺ toutes les intersections non-vides entre paires de mintermes ont la même taille »* est **fausse dans les deux directions** sur n=5. Sur 2110 fonctions equigenerated non-constantes : **1068 contre-exemples** (893 cas pure-mais-non-uniform + 175 cas uniform-mais-non-pure). Cf. tableau :
+  ```
+                  | uniform=True | uniform=False
+  pure=True       |         1002 |           893
+  pure=False      |          175 |            40
+  ```
+  Le Proposeur a effectué ce test **avant** de soumettre la conjecture (condition (j) honorée pour la 2e fois consécutive) et a retiré C10 sans la proposer. *Lien à P vs NP : aucun démontré.*
 
 ### ⚠️ Lacunes réparables (direction légitime mais énoncé spécifique faux)
 
@@ -129,6 +138,14 @@
   - **Verdict ⚠️ LACUNE RÉPARABLE (4e consécutive)** avec note positive : la conjecture est réfutée, mais l'**épistémologie est correcte**. Le Proposeur a posé une conjecture testable et falsifiable, anticipé le risque, et apporté un script vérifiable. C'est le meilleur tour à ce stade.
 
   La conjecture raffinée (à venir, problème ouvert) : *quelles conditions combinatoires distinguent les 1894 cas où equigen ⇒ pure tient des 215 cas où elle échoue ?* Question d'algèbre commutative intéressante en soi.
+
+- **Piste 10 — Test préemptif de C10 + pivot Lean Koszul (rejeté).** Deux mouvements distincts :
+  - **(a) Excellente épistémologie** : le Proposeur a testé sa conjecture candidate C10 (« intersections uniformes ») sur les 2110 fonctions equigenerated n=5 *avant* de la soumettre. 1068 contre-exemples identifiés. **Conjecture retirée par le Proposeur lui-même.** (j) honorée pour la 2e fois consécutive. Pattern « conjecture spéculative → réfutation » enfin brisé.
+  - **(b) Pivot mal ciblé** : faute de C10, le Proposeur propose de formaliser en Lean la résolution de Koszul de `m_n = (x_1, …, x_n)`. **Bon mouvement stratégique** (sortir de la spéculation, viser certification mécanique) mais **mauvais théorème cible** : Koszul de `m_n` est hors-sujet vis-à-vis de P vs NP. Le Proposeur l'admet explicitement (*« Distance à P vs NP : maximale, assumée »*). Viole (i) corrigée et (k) ajoutée.
+
+  **Recadrage utilisateur** : direction prescrite pour Tour 11 = **mini-théorème `PARITY ∉ AC⁰` profondeur 2 sur n=4 ou n=5**. Calcul exhaustif Python (énumérer les DNF/CNF de taille bornée, vérifier qu'aucun ne calcule `parity_n`) + perspective formalisation Lean. Lié à P vs NP via la lignée Furst-Saxe-Sipser 1981 → Razborov-Smolensky 1987 → Williams 2011.
+
+  **Verdict ⚠️ LACUNE RÉPARABLE** : épistémologie excellente, mais direction à corriger.
 
 ### ❌ Réfutés (faux — et pourquoi, pour ne pas y revenir)
 - **Piste 1 — « contradiction de compressibilité des témoins ».** Le sophisme central : la confrontation oppose un Kt **inconditionnel** (Lemme 1, incompressibilité Ω(n)) à un Kt qui n'est petit que **conditionnellement à x** (Lemme 2, vrai sous la forme K(w|x)=O(1), pas K(w)=O(log n) — la description doit embarquer x, de taille poly(n)). En unifiant les deux quantités, la contradiction disparaît : soit Lemme 2 redevient faux (inconditionnel), soit Lemme 1 redevient faux (conditionnel, car le témoin lex-premier est déterminé par x). Le fossé entre conditionnel et inconditionnel **est** P vs NP → circularité.
@@ -190,25 +207,24 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 10** : **recadrage majeur**. Le but du dépôt est et reste **P vs NP**. Les Tours 8 et 9 ont produit des objets d'algèbre commutative valables (atlas Boij-Söderberg, théorème L9.1) mais sans lien démontré à P vs NP. La condition (i) telle que rédigée pour le Tour 8 (« renoncer à P vs NP pour produire un objet certifié ») était une mauvaise capitulation du Réfuteur ; elle est **révisée** ci-dessous.
+- **Tour 11** : direction **prescrite** par le Réfuteur après validation utilisateur. Les 10 conditions précédentes restent en vigueur, et une 11e est ajoutée par la pratique du Tour 10 :
 
-  **Conditions reformulées pour le Tour 10 (les 9 précédentes restent en vigueur, sauf (i) qui est remplacée et (k) qui est ajoutée) :**
+  - (l) **AJOUTÉE** : le Proposeur doit lire la **version la plus récente** du cahier avant de soumettre. Si le sous-but a été révisé (comme par le commit `2a3c292` entre Tours 9 et 10), il prévaut sur les anciennes formulations.
 
-  - (i) **CORRIGÉE.** Le Proposeur ne peut pas renoncer à P vs NP au profit de mathématiques décorrelées. Tout sous-théorème, calcul ou formalisation doit s'inscrire dans une **stratégie identifiable** vers P vs NP. Exemples acceptables : (a) borne inférieure pour une classe restreinte qui se rapproche de P (AC⁰, ACC⁰, TC⁰, monotone) ; (b) analyse fine d'une des trois barrières (relativisation, naturelles, algébrisation) ; (c) résultat conditionnel (`P ≠ NP` sous hypothèse X) ; (d) méthode algorithmique pour SAT au sens de Williams ; (e) formalisation Lean d'un théorème de complexité reconnu (e.g. Cook-Levin, hiérarchie de temps, AC⁰ ne calcule pas PARITY).
+  **Cible prescrite pour le Tour 11 :**
 
-  - (k) **AJOUTÉE.** Toute piste doit fournir, dans son énoncé, une **phrase explicite** liant l'objet proposé à P vs NP. Forme acceptable : *« Cet objet, s'il s'avère vrai, donnerait/contribuerait à X, qui est lié à P vs NP de la manière Y. »* Sans cette phrase, la proposition est **hors sujet** et rejetée sans analyse technique. Les objets ✅ Établis des Tours 8-9 sont conservés pour leur intérêt mathématique mais **ne comptent pas comme progrès sur P vs NP**.
+  > **Mini-théorème `PARITY_n ∉ AC⁰ profondeur 2`** pour `n = 4` (ou `n = 5` si faisable), démontré par **calcul exhaustif Python**.
 
-  Direction recommandée pour le Tour 10 — choisir UNE :
+  **Énoncé fini.** `parity_n(x_0, …, x_{n-1}) = x_0 ⊕ x_1 ⊕ … ⊕ x_{n-1}`. Un circuit AC⁰ profondeur 2 est une DNF (OR de ANDs) ou une CNF (AND de ORs), sans contrainte de fan-in. Énumérer (modulo symétries) tous les DNF de taille ≤ `N` sur n variables, et montrer qu'aucun ne calcule `parity_n`. Exhiber la taille minimale d'un DNF calculant `parity_n` (qui est `2^(n-1)` par construction directe : un monôme par assignation impaire).
 
-  1. **Revenir à une classe restreinte de complexité** étudiée par la littérature pour la séparation : `AC⁰` (PARITY hors d'AC⁰, Furst-Saxe-Sipser / Håstad), `ACC⁰` (Williams 2011), `TC⁰` (ouvert), `monotone` (Razborov 1985 sur CLIQUE). Proposer un micro-progrès vérifiable sur l'un de ces fronts.
+  **Lien à P vs NP** : `PARITY ∉ AC⁰` est le premier théorème non-trivial de borne inférieure de circuit (Furst-Saxe-Sipser 1981, renforcé par Håstad 1986 via switching lemma). C'est l'ancêtre direct du programme qui a culminé dans Williams 2011 (`NEXP ⊄ ACC⁰`), seul résultat ayant franchi les trois barrières. Les méthodes employées pour PARITY (random restrictions, approximation polynomiale modulaire) sont précisément les outils non-relativisants et non-algébrisants dont P vs NP a besoin.
 
-  2. **Étudier une barrière** : tester si une technique candidate franchit ou non l'algébrisation, en construisant explicitement un oracle algébrique relativement auquel l'argument tomberait.
+  **Livrables attendus** :
+  1. `checks/tour_11_parity_ac0.py` : énumère DNF AC⁰ profondeur 2 de taille bornée sur `n = 4`, prouve par calcul exhaustif qu'aucun de taille `< 2^{n-1}` ne calcule `parity_n`, exhibe la borne exacte.
+  2. Phrase explicite (k) reliant le mini-théorème à P vs NP (modèle ci-dessus).
+  3. Vérification (h) : script effectivement exécuté avec résultat livré.
 
-  3. **Formaliser en Lean** un théorème classique de complexité (hiérarchie de temps déterministe, Cook-Levin restreint, théorème de Furst-Saxe-Sipser sur AC⁰ et PARITY pour n petit). Ce serait une **vraie** contribution propédeutique à un futur formal proof effort sur P vs NP.
-
-  4. **Étudier la conjecture C9 raffinée** est **rejetée d'office** : aucun lien avec P vs NP n'a été établi. L'algèbre commutative des fonctions monotones est intéressante en soi, mais elle ne donne pas de borne de complexité tant qu'un pont (du type L9.2 du Tour 7, qui s'est avéré faux) n'est pas démontré. Persister dans cette direction serait reproduire le pattern Tours 7-9 sans avancer.
-
-  Le Proposeur a démontré qu'il peut maintenir l'épistémologie (Tour 9). Il doit maintenant la combiner avec la pertinence à P vs NP.
+  **Si le Proposeur veut s'écarter** de cette prescription, il doit fournir une **alternative explicitement liée à P vs NP** (théorème de Shannon, hiérarchie de temps, Cook-Levin restreint, Razborov 1985 monotone CLIQUE sur petit n, etc.) avec phrase (k) du même type. Toute proposition relevant de l'algèbre commutative décorrelée (raffinements de C9, Boij-Söderberg, etc.) sera rejetée d'office au titre de (i) corrigée.
 
 ---
 
