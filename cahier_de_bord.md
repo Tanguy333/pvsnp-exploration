@@ -10,8 +10,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 6)
-- **Nombre de tours effectués** : 6
+- **Dernière mise à jour** : 2026-05-23 (fin tour 7)
+- **Nombre de tours effectués** : 7
 
 ---
 
@@ -37,7 +37,8 @@
 | 4 | Compilation TC⁰ → tensor network à bond polynomiale + Williams + Hardness Magnification | Les 3 (revendiqué) | Lemme 1 faux : IP_n ∈ TC⁰ a bond dimension exponentielle (rang 2ⁿ−1 sur ℝ) ; parade F₂ détruit l'outillage analytique ; ce qui reste = reformulation du programme Williams ouvert | ❌ **FAILLE FATALE** sur le mécanisme |
 | 5 | Indistinguabilité CPT+C des hypercubes colorés `H_f` (jeux de pavage bijectifs + canonisation Dawar) | Les 3 + (d) + (e) (revendiqué) | Lemme 3 trivialement impossible : `∃ x. f(x)` est FO ⊂ CPT+C et distingue toute paire SAT/UNSAT ; Lemme 1 invoque un théorème de Dawar qui n'existe pas sous cette forme ; (f) non satisfaite (feuille de route admise) | ❌ **FAILLE FATALE** |
 | 6 | Gap homologique sémantique pour circuits monotones Σ Π fan-in borné (Stanley-Reisner) | Les 7 (revendiqué) | Lemme 2 réfuté empiriquement (52/168 contre-exemples sur n=4) ; Lemme 1 confond complexe et idéal de Stanley-Reisner ; calcul promis non livré | ⚠️ **LACUNE RÉPARABLE** (direction légitime, mais réparation déplace hors cadre) |
-| 7 |  |  |  | *(à venir)* |
+| 7 | Obstruction homologique duale (résolutions libres + dualité d'Alexander) pour profondeur de formule monotone | Les 8 (revendiqué) | Chiffres C_4, K_4 corrects ; mais Lemme 2 (D_m ≥ Ω(pd)) réfuté par OR_n : pd(I_{OR_n}) = n−1 alors que D_m = 1 ; cadre limité aux formules (pas circuits) | ⚠️ **LACUNE RÉPARABLE** |
+| 8 |  |  |  | *(à venir)* |
 
 ---
 
@@ -58,6 +59,17 @@
   - **Signe d'alarme RR** : l'invariant `β_i` est calculable en temps polynomial sur la table de vérité (constructif), et `β_1 > 0` est large (31 % à n=4). Si la borne marchait, elle serait *naturelle* au sens de Razborov-Rudich, donc condamnée par les preuves naturelles sous crypto standard.
 
   Pour réparer : reformuler en termes d'idéal de Stanley-Reisner et invoquer des invariants algébriques plus fins (régularité de Castelnuovo-Mumford, profondeur projective, Betti gradués / formule de Hochster). Mais alors la piste sort du cadre « calcul exhaustif sur n=5 » et entre dans l'algèbre commutative computationnelle — direction active mais bien plus difficile. La lacune est précise (énoncé à raffiner) mais sa réparation déplace hors du sous-but Tour 6.
+
+- **Piste 7 — « Obstruction homologique duale (résolutions libres + dualité d'Alexander) ».** Le Proposeur a fait le pivot exact suggéré au Tour 6 : `Δ_f` → idéal `I_f`, avec résolutions libres minimales et dualité d'Alexander/Eagon-Reiner. Premier tour à honorer **(h)** : chiffres livrés (`Betti(I_{C_4}) = (4,4,1,0)`, `Betti(I_{K_4}) = (6,8,3,0)`, pd = 2 pour les deux), vérifiés indépendamment par implémentation de Hochster (cf. [`checks/tour_07_resolutions_libres.py`](checks/tour_07_resolutions_libres.py)). Mais **le Lemme 2 conjectural (D_m(f) ≥ Ω(pd(I_f))) est réfuté par contre-exemple OR_n** :
+  - `I_{OR_n} = m = (x_1, …, x_n)`, résolution Koszul → pd(I) = n − 1.
+  - `D_m(OR_n) = 1` (un OR de fan-in n) ou `log_2 n` (binaire).
+  - Pour n = 3, 4, 5, 6 : pd(I) ∈ {2, 3, 4, 5}, D_m = 1 partout. Aucune constante c > 0 ne sauve L2.
+
+  **Raison structurelle profonde** : toute fonction monotone non-constante admet une DNF de profondeur 2, donc `D_m(f) ≤ 2` sans contrainte de taille. Aucune inégalité `D_m ≥ f(pd)` non-bornée ne peut tenir, OR_n étant le cas extrême. Même MAJ_n viole L2 pour n ≥ 7 (D_m=2, pd=⌊n/2⌋−1).
+
+  Le Proposeur lui-même admet (Aveu 1) que L2 est conjectural, et (Aveu 2) que le cadre se limite aux formules monotones — pas aux circuits, donc même un L2 valide ne donnerait pas P vs NP.
+
+  **Verdict ⚠️ LACUNE RÉPARABLE** (meilleur tour à ce stade) : direction techniquement saine, chiffres corrects, (h) honorée. La lacune précise est l'**invariant algébrique manquant** : `pd` ne capture pas `D_m`. Toute proposition future doit passer le test OR_n (où pd explose mais D_m reste petit).
 
 ### ❌ Réfutés (faux — et pourquoi, pour ne pas y revenir)
 - **Piste 1 — « contradiction de compressibilité des témoins ».** Le sophisme central : la confrontation oppose un Kt **inconditionnel** (Lemme 1, incompressibilité Ω(n)) à un Kt qui n'est petit que **conditionnellement à x** (Lemme 2, vrai sous la forme K(w|x)=O(1), pas K(w)=O(log n) — la description doit embarquer x, de taille poly(n)). En unifiant les deux quantités, la contradiction disparaît : soit Lemme 2 redevient faux (inconditionnel), soit Lemme 1 redevient faux (conditionnel, car le témoin lex-premier est déterminé par x). Le fossé entre conditionnel et inconditionnel **est** P vs NP → circularité.
@@ -105,6 +117,8 @@
 5. **Tout argument « encoder un problème NP sous forme X et invoquer une obstruction sur X »** doit d'abord vérifier que la propriété d'intérêt n'est pas trivialement définissable dans le langage des outils utilisés. Sanity-check préalable au cadre. *(Piste 5 a échoué dessus : SAT comme coloration → trivialement FO-définissable.)*
 6. **Toute conjecture topologique sur les circuits monotones doit être empiriquement testée sur les 168 fonctions monotones de `n = 4` avant publication**, faute de quoi des contre-exemples triviaux la réfutent. *(Piste 6 : 52 contre-exemples sur 168.)*
 7. **L'invariant topologique « β_i(Δ_f) > 0 » est constructif et large** — il tombe sous Razborov-Rudich (preuves naturelles) si on prétendait en tirer une vraie borne inférieure. Tout invariant calculable en temps polynomial sur la table de vérité et vrai pour ≥ 2^{-n} des fonctions doit être traité comme suspect.
+8. **Tout invariant algébrique conjecturé borner `D_m(f)` doit passer le test OR_n** : la fonction OR_n a `pd(I_{OR_n}) = n − 1`, `reg = 1`, Scarf défaut 0, mais `D_m = 1`. Tout invariant qui ne distingue pas ce cas extrême du cas générique est inutilement large.
+9. **Le cadre formule monotone n'est pas suffisant pour P vs NP** : même un théorème inattaquable sur D_m (profondeur de formule monotone) ne donne pas de borne pour les **circuits** ou les **machines de Turing**, qui sont les objets de P vs NP. La sous-classe est trop restreinte.
 5. **Existe-t-il une obstruction non-locale et non-algébrique** qui survive aux sauts polynomiaux *et* à l'équivalence logique ? GCT (permanent vs déterminant) est la seule réponse sérieuse aujourd'hui, mais elle est au point mort depuis 2017 (Bürgisser-Ikenmeyer-Panova : pas d'obstruction par occurrences).
 6. Côté complexité descriptive : la conjecture de Gurevich (logique capturant P) offre-t-elle un angle non-relativisant **et** non-algébrisant exploitable ?
 7. Williams 2011 (NEXP ⊄ ACC⁰) reste l'unique précédent ayant franchi les trois barrières. La voie « algorithmic method + circuit lower bound » se généralise-t-elle à TC⁰ ? *(Question ouverte centrale de la complexité depuis 15 ans — invoquer cette voie n'est pas une piste, c'est rejoindre le front de la recherche.)*
@@ -115,12 +129,14 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 7** : les 7 conditions du Tour 6 restent en vigueur. Une **8ème condition** s'ajoute :
-  - (h) **Le calcul vérificateur doit être effectivement exécuté par le Proposeur** avant soumission, avec résultat numérique livré dans la proposition. Pas de promesse (« je m'engage à concevoir le script ») — un résultat. Sinon le Réfuteur effectue le travail à sa place et réfute trivialement la conjecture.
+- **Tour 8** : les 8 conditions du Tour 7 restent en vigueur. La logique évolue : le Tour 7 a apporté un vrai progrès (chiffres corrects, direction saine), mais a échoué sur la **conjecture pont** L2 (pd → D_m). Le Tour 8 doit donc :
+  - (i) **Ne pas proposer une nouvelle conjecture supplémentaire**. Le Proposeur a tendance à accumuler les conjectures non démontrées (un Lemme « conjectural » par tour). Cela ne fait pas progresser le projet. Soit fournir un **mini-théorème prouvable** (par énumération exhaustive sur petits cas, ou par formalisation Lean), soit explicitement **abandonner la prétention à P vs NP** pour produire un objet certifié dans le sous-domaine.
 
-  Le Tour 6 a montré que la direction (topologie/algèbre commutative pour fonctions monotones) est légitime ; mais la formulation spécifique tombait sur des contre-exemples triviaux que le Proposeur aurait identifiés en exécutant ses propres scripts. C'est un gain d'efficacité majeur pour la boucle.
-
-  Conseil de direction : continuer dans la veine du Tour 6 (micro-progrès vérifiable sur classe ultra-restreinte) mais en garantissant la livraison du calcul. Alternativement, viser une **formalisation Lean** d'un sous-lemme déjà connu (e.g. théorème de hiérarchie de temps), pour produire au moins un objet certifié, même non original.
+  Conseil de direction renforcé : à ce stade, après 7 tours, il est probable qu'aucune piste nouvelle ne sépare P de NP dans le cadre de la boucle adverse. **Le tour 8 devrait viser la production d'un objet définitivement acquis :**
+  - une vérification empirique sur les 168 fonctions monotones n=4 ou les 7581 sur n=5 qui exhibe une propriété mathématique non triviale (e.g., distribution des invariants algébriques, corrélations entre pd et D_m, etc.) ;
+  - OU une formalisation Lean d'un mini-lemme classique (hiérarchie de temps, Cook-Levin, AC⁰ ne calcule pas PARITY) ;
+  - OU un résultat de tabulation/cataloguage des classes restreintes étudiées qui aide la communauté.
+  Si le Proposeur insiste sur une nouvelle « grande idée pour P vs NP », le Réfuteur réfutera à nouveau. La boucle adverse a démontré sa robustesse — elle peut maintenant servir d'outil pédagogique pour catalyser un travail vérifiable, plutôt qu'une quête de plus en plus stérile.
 
 ---
 
