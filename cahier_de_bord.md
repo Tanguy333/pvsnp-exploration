@@ -11,6 +11,20 @@
 > sur P vs NP**. Toute idée future doit avoir un lien explicite à la question
 > originelle — voir conditions (i) corrigée et (k) ajoutée au §5.
 
+## Dépôts satellites
+
+- **[Tanguy333/pvsnp-LeanAC0Profondeur2](https://github.com/Tanguy333/pvsnp-LeanAC0Profondeur2)** *(privé)* —
+  Formalisation Lean 4 des 8 théorèmes ✅ ÉTABLIS du présent dépôt (Tours 12-20,
+  bornes inférieures combinatoires sur AC⁰ profondeur 2). Travaillé dans une
+  **discussion séparée** par Claude en rôle de *Formaliseur Lean 4* (pas de boucle
+  adverse). Ici, dans `pvsnp-exploration`, on conserve uniquement le rôle de
+  **Réfuteur** ; les théorèmes établis sont l'*input* du dépôt Lean, jamais
+  modifiés depuis le dépôt satellite.
+
+  Cible à long terme : PR mathlib4 si la qualité le permet. Théorèmes ciblés :
+  L12 (PARITY), L13 (IS(Q_n)), L14 (MAJ), L15 (THRESHOLD), L16 (MOD_p), L18 (IP),
+  L19 (essentialité), L20 (antipodales).
+
 ---
 
 ## 0. Méta
