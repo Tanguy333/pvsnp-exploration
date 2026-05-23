@@ -18,8 +18,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 17 — IP établi empiriquement n=1..4, 6e objet)
-- **Nombre de tours effectués** : 17
+- **Dernière mise à jour** : 2026-05-23 (fin tour 18 — preuve structurelle de L17, 6 objets ÉTABLIS structurellement)
+- **Nombre de tours effectués** : 18
 
 ---
 
@@ -57,8 +57,9 @@
 | 15a | Proposeur P1 : profondeur logique de Bennett pour séparer P de NP par contradiction | Revendiquées non-rel/non-RR/non-alg (mais sans objet, voir Verdict) | **Auto-réfuté par le Proposeur** dans son Lemme 3 (*« l'argument est circulaire »*). Pattern Tour 1 (circularité conditionnel/inconditionnel) avec « Bennett » à la place de « Kt ». Le cahier §3 dit explicitement « à ne jamais réessayer ». (j) et (h) non honorées. Régression méthodologique après 3 ÉTABLIS consécutifs. | ❌ **FAILLE FATALE** — pattern Tour 1 explicitement interdit |
 | 15b | Proposeur P2 : `DNF_min(THRESHOLD_{t,n}) = C(n, t)` pour tout `t ∈ [1, n]` + dichotomie polynomial/exponentiel | Toutes (relativisation combinatoire ; RR : famille de `n` fonctions parmi `2^{2^n}`, non-large ; algébrisation : sans objet) | Calcul exhaustif n=4 livré pour `t ∈ {1,2,3,4}` : `C(4, t) = 4, 6, 4, 1` confirmés. Tous implicants premiers positifs, non-redondance vérifiée. Preuves L15.1–L15.4 = généralisation directe de L14.1–L14.4. **Condition (m) honorée explicitement dès la première application** : séparation par témoin (`TC⁰ d=1 ⊄ AC⁰ d=2 poly`), pas inclusion stricte. Nuance technique honnête sur la frontière exacte (`O(log n)` vs `O(log n / log log n)`). | ✅ **ÉTABLI POUR P vs NP** (4e objet) |
 | 16 | `DNF_min(MOD_p_n) = Σ_{k ≡ 0 mod p} C(n, k)`, application directe de L13 (Tour 13) à la famille `MOD_p`. Ouverture de la lignée Razborov-Smolensky. | Toutes (relativisation combinatoire ; RR : famille de `n` fonctions parmi `2^{2^n}`, non-large ; algébrisation : sans objet) | Calcul exhaustif n=4 livré pour `p ∈ {2,3,4,5}`. Comptes confirmés : 8, 5, 2, 1. L16.1 (MOD_p^{-1}(1) independent dans Q_n) prouvée combinatoirement : `sum(y) = sum(x) ± 1` à distance Hamming 1, donc `≢ (mod p)` pour `p ≥ 2`. L16.2 par application directe de L13. L16.3 asymptotique par roots of unity filter. Note terminologique mineure : MOD_2 = ¬PARITY (pas PARITY au sens strict), même DNF_min par symétrie de la bipartition. | ✅ **ÉTABLI POUR P vs NP** (5e objet) |
-| 17 | Conjecture `DNF_min(IP_{2n}) = (3^n − 1)/2` pour INNER PRODUCT mod 2, **première fonction hors classe L13** (non-monotone, non-symétrique). Méthode ILP set cover (nouvelle pour le dépôt). | Toutes (relativisation combinatoire + ILP exact ; RR : fonction unique parmi 2^{2^{2n}}, non-large ; algébrisation : pas d'arithmétisation) | Vérification empirique à n=1, 2, 3 par le Proposeur (set cover exhaustif) ; **extension à n=4 par le Réfuteur via PuLP/CBC ILP** : 40 = (3^4 − 1)/2 confirmé. 4 points consécutifs sans exception. Observation structurelle : `|implicants premiers| = DNF_min` à chaque n testé. Mais **pas de preuve structurelle pour tout n** — la formule (3^n − 1)/2 reste conjecturale pour `n ≥ 5`. | ✅ **ÉTABLI empiriquement** (6e objet) — *conjecture pour n ≥ 5* |
-| 18 |  |  |  | *(à venir)* |
+| 17 | Conjecture `DNF_min(IP_{2n}) = (3^n − 1)/2` pour INNER PRODUCT mod 2, **première fonction hors classe L13** (non-monotone, non-symétrique). Méthode ILP set cover (nouvelle pour le dépôt). | Toutes (relativisation combinatoire + ILP exact ; RR : fonction unique parmi 2^{2^{2n}}, non-large ; algébrisation : pas d'arithmétisation) | Vérification empirique à n=1, 2, 3 par le Proposeur (set cover exhaustif) ; **extension à n=4 par le Réfuteur via PuLP/CBC ILP** : 40 = (3^4 − 1)/2 confirmé. 4 points consécutifs sans exception. Observation structurelle : `|implicants premiers| = DNF_min` à chaque n testé. **Tour 18 fournit la preuve structurelle pour tout n** (cf. ci-dessous). | ✅ **ÉTABLI structurellement (via Tour 18)** (6e objet) |
+| 18 | Preuve structurelle de L17 pour tout n : classification des implicants premiers en 3 classes (A1, A2a, A2b) selon `(x_n, y_n)`, récurrence `a_{n+1} = 2a_n + b_n`, `b_{n+1} = a_n + 2b_n`, close-form `a_n = (3^n − 1)/2`, non-redondance par construction explicite du témoin. | Toutes (relativisation combinatoire ; RR : fonction unique ; algébrisation : pas d'arithmétisation) | L18.A (classification) preuve par cas exhaustifs auditée OK. L18.B (récurrence + close-form) par induction triviale, auditée OK. L18.C (non-redondance) esquissée par le Proposeur, **détaillée par le Réfuteur** : construction explicite du témoin `(x_0, x_n=0, y_n=1)` pour A2a, etc. Vérification empirique n=1..4 cohérente avec la récurrence (1, 4, 13, 40). Prédiction n=5: 121, n=6: 364 (non-vérifiables par énumération directe). | ✅ **ÉTABLI STRUCTURELLEMENT** — promeut Tour 17 d'empirique à structurel |
+| 19 |  |  |  | *(à venir)* |
 
 ---
 
@@ -180,11 +181,43 @@
 
   **Coefficient exponentiel `log_2 3 ≈ 1.585`** : strictement inférieur à `log_2 4 = 2` pour MAJ_{2n}. Première distinction quantitative entre deux fonctions super-polynomiales dans le dépôt.
 
-  **Statut épistémique nouveau** : différent des Tours 12-16. Ces derniers étaient des théorèmes structurels prouvés pour tout `n` + vérifiés à n=4. Tour 17 est une **conjecture vérifiée à 4 points consécutifs**, sans preuve générale. Marqué ✅ ÉTABLI au sens empirique fort, avec note explicite que la formule reste conjecturale pour `n ≥ 5`.
+  **Statut épistémique nouveau** : différent des Tours 12-16. Ces derniers étaient des théorèmes structurels prouvés pour tout `n` + vérifiés à n=4. Tour 17 était initialement une **conjecture vérifiée à 4 points consécutifs**, sans preuve générale. **Promotion au Tour 18** : la conjecture est désormais prouvée structurellement pour tout n.
 
   **Méthode ILP set cover** : nouveau dans le dépôt, réutilisable pour toute future fonction hors classe L13. Installation de PuLP/CBC pour cela.
 
   **Condition (n) honorée** : pas d'application de L13 ; nouvelle méthode (ILP). Diversification réelle.
+
+- **Preuve structurelle de L17** (Tour 18) : *`DNF_min(IP_{2n}) = (3^n − 1)/2` prouvé pour tout n ≥ 1 par récurrence combinatoire.*
+
+  Cf. [`tours/tour_18_ip_recurrence_etabli.md`](tours/tour_18_ip_recurrence_etabli.md) et [`checks/tour_18_ip_recurrence_proof.py`](checks/tour_18_ip_recurrence_proof.py).
+
+  **Décomposition fondamentale** : `IP_{2(n+1)}(x_0..x_n, y_0..y_n) = x_n · y_n ⊕ IP_{2n}(x_0..x_{n-1}, y_0..y_{n-1})`. Cette décomposition permet la récurrence sur n.
+
+  **L18.A (classification)** : par cas exhaustifs sur `(x_n, y_n)`, tout implicant premier de `IP_{2(n+1)}` appartient à exactement l'une des trois classes :
+  - **A1** : `x_n ∧ y_n ∧ M_0` où M_0 est implicant premier de `¬IP_{2n}`.
+  - **A2a** : `~x_n ∧ M_0` où M_0 est implicant premier de `IP_{2n}`.
+  - **A2b** : `~y_n ∧ M_0` où M_0 est implicant premier de `IP_{2n}`.
+
+  Tous les autres cas sont soit impossibles (paire libre forcerait IP_{2n} = ¬IP_{2n}), soit non-premiers (e.g. `~x_n ∧ ~y_n ∧ M_0` se simplifie en `~x_n ∧ M_0` ou `~y_n ∧ M_0`).
+
+  **L18.B (récurrence + close-form)** : par L18.A, `a_{n+1} = 2a_n + b_n` et `b_{n+1} = a_n + 2b_n` (où `a_n = |primes(IP_{2n})|`, `b_n = |primes(¬IP_{2n})|`). Conditions initiales `a_1 = 1, b_1 = 2`. Close-form `a_n = (3^n − 1)/2, b_n = (3^n + 1)/2` par induction triviale.
+
+  **L18.C (non-redondance)** : pour chaque implicant premier `M`, construction explicite du témoin unique :
+  - A2a : `x = (x_0, x_n=0, y_n=1)` où x_0 est témoin unique de M_0 dans IP_{2n}^{-1}(1).
+  - A2b : `x = (x_0, x_n=1, y_n=0)`.
+  - A1 : `x = (x_0, x_n=1, y_n=1)` où x_0 est témoin unique de M_0 dans ¬IP_{2n}^{-1}(1).
+
+  Vérification de couverture unique par cas (les autres classes ne couvrent pas le témoin à cause des fixations x_n/y_n). Par récurrence, tous les implicants premiers ont un témoin unique. ✓
+
+  **Conclusion** : `DNF_min(IP_{2n}) = a_n = (3^n − 1)/2` pour tout n ≥ 1.
+
+  **Vérification empirique** : récurrence et énumération directe coïncident pour n=1, 2, 3, 4. Prédiction récurrence pour n=5 (121), n=6 (364).
+
+  **Apport méthodologique nouveau** : *premier tour qui consolide un tour précédent* en bouchant un trou dans sa preuve. Chaîne Tour 17 (empirique) → Tour 18 (structurel) illustre la suite « vérifier → identifier le pattern → prouver ». Pattern précieux pour d'autres conjectures potentielles.
+
+  **Note** : L18.C esquissée par le Proposeur, détaillée par le Réfuteur. La construction explicite du témoin pour chaque classe + vérification de couverture unique complète rigoureusement la preuve.
+
+  **Conséquence** : le 6e objet ÉTABLI du dépôt passe d'« empirique n=1..4 + conjecture pour n ≥ 5 » à « théorème prouvé pour tout n ≥ 1 ». Tous les 6 objets sont désormais structurels.
 
 ### ❓ Conjecturaux pour P vs NP (plausibles mais non prouvés)
 - *(aucun retenu pour l'instant)*
@@ -356,24 +389,26 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 18** : direction **ouverte** après le Tour 17 (option 4 IP réalisée avec succès). Le dépôt a maintenant 6 objets ✅ Établis, dont 5 *structurellement prouvés pour tout n* (Tours 12-16) et 1 *empiriquement vérifié à n=1,2,3,4* (Tour 17). Les 14 conditions (a)–(n) restent en vigueur.
+- **Tour 19** : direction **ouverte** après les 6 ÉTABLIS structurels (Tours 12-16 + 17+18). Le dépôt a maintenant **6 théorèmes structurellement prouvés pour tout n** + **1 pattern méthodologique nouveau** (vérifier → conjecturer → prouver, Tour 17 → Tour 18).
 
-  Directions naturelles pour le Tour 18 :
+  Les 14 conditions (a)–(n) restent en vigueur.
 
-  1. **Preuve structurelle de L17 pour tout n** : démontrer que `|implicants premiers(IP_{2n})| = (3^n − 1)/2` pour tout `n`, et que tous sont nécessaires (non-redondance). Cela transformerait le ✅ empirique en ✅ structurel. Direction la plus naturelle, mais incertaine (formule combinatoire non triviale à prouver).
+  Directions naturelles pour le Tour 19 :
 
-  2. **Profondeur 3** : entrer dans le territoire FSS-Håstad partiel sur une fonction du dépôt (PARITY, MAJ, ou IP) par calcul exhaustif sur petit n. Significativement plus dur que d=2.
+  1. **Profondeur 3** : entrer dans FSS-Håstad partiel sur n=4 avec une fonction du dépôt (PARITY, MAJ, IP). Beaucoup plus dur que d=2 (l'argument simple « variable libre → flip change parity » ne suffit plus, il faut switching lemmas).
 
-  3. **Formalisation Lean** d'un sous-lemme acquis (L12.1, L13, L14.1, L15.1, L16.1 — tous structurellement prouvés). Premier théorème de complexité certifié du dépôt.
+  2. **Formalisation Lean** d'un sous-lemme acquis (L12.1, L13, L14.1, L15.1, L16.1, L18.A — tous structurellement prouvés). Premier théorème de complexité certifié du dépôt.
 
-  4. **DISJOINTNESS** ou autre fonction de communication : nouvelle fonction hors classe L13, applicable ILP set cover (méthode Tour 17 réutilisable).
+  3. **DISJOINTNESS** ou autre fonction de communication via méthode ILP + récurrence du Tour 18. Réutilise le pattern empirique → structurel.
+
+  4. **Caractérisation générale des fonctions à `|primes| = DNF_min`** : on a observé Tours 13 (classe L13), 14-16 (THRESHOLD/MOD), 17-18 (IP) que pour tous ces objets, le DNF minimal = nombre d'implicants premiers. Peut-on caractériser quelles fonctions ont cette propriété ? Direction théorique nouvelle.
 
   Les **interdictions** restent en vigueur :
-  - Toute nouvelle application directe de L13 sans diversification de méthode.
-  - Toute extension paramétrique sans saut qualitatif.
+  - Application directe de L13 sans diversification de méthode.
+  - Extension paramétrique sans saut qualitatif.
   - Pattern Tour 1 / Bennett (méta-complexité Kolmogorov).
 
-  **Note méthodologique sur le Tour 17** : c'est le premier objet ÉTABLI qui est *conjectural pour tout n*. Cela marque un changement épistémique. Le critère ÉTABLI a été assoupli pour accepter une vérification empirique forte (4 points consécutifs) faute de preuve structurelle. Si le Proposeur arrive à fournir la preuve générale au Tour 18, cela renforcera rétroactivement le statut du Tour 17.
+  **Note méthodologique sur le Tour 18** : c'est le **premier tour de consolidation** du dépôt (résoudre un trou de preuve dans un tour antérieur). Pattern précieux. Si le Proposeur identifie une autre conjecture vérifiée empiriquement (passé ou futur) qu'il peut prouver structurellement, cette chaîne « vérifier → prouver » est légitimée.
 
 ---
 
