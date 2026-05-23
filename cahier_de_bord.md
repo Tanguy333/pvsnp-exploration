@@ -18,8 +18,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 10)
-- **Nombre de tours effectués** : 10
+- **Dernière mise à jour** : 2026-05-23 (fin tour 11 — proposition rejetée)
+- **Nombre de tours effectués** : 11
 
 ---
 
@@ -50,7 +50,8 @@
 | 8 bis | Révision du Proposeur : « résolution pure ssi threshold » | Inapplicables | Mini-théorème révisé encore faux (4 thresholds prédits sur n=4, mais 95 fonctions pures ; ex : f = x_0 et f = (x_0∧x_1)∨(x_0∧x_2) sont pures et non-threshold) ; **violation immédiate de (j)** que le Réfuteur venait d'ajouter | ⚠️ **LACUNE RÉPARABLE** |
 | 9 | Conjecture C9 : pure ⟺ equigenerated (caractérisation des résolutions pures pour fonctions monotones) | Inapplicables | (h) et (j) honorées pour la première fois par le Proposeur. Conjecture vérifiée n=4 (167 fonctions, tableau parfait 95/0/0/72). **Réfutée n=5** : 215 contre-exemples sur 7579. Contre-exemple minimal : `(x₁x₂x₃)∨(x₁x₂x₄)∨(x₀x₃x₄)` (equigenerated, mais Betti(I) a 2 shifts à l'index 1) | ⚠️ **LACUNE RÉPARABLE** (épistémologie correcte) |
 | 10 | (a) Conjecture C10 « intersections uniformes » testée préemptivement et **retirée par le Proposeur** (1068 contre-exemples) ; (b) pivot proposé vers formalisation Lean de Koszul de `m_n` | (a) C10 testée mais inapplicable car pas de prétention asymptotique ; (b) Koszul Lean : aucune | Bon réflexe épistémologique (test (j) honoré 2e fois consécutive). Mais pivot Lean cible un théorème **hors-sujet vis-à-vis de P vs NP** (admis par le Proposeur). Direction prescrite Tour 11 : `PARITY ∉ AC⁰ profondeur 2` | ⚠️ **LACUNE RÉPARABLE** + recadrage utilisateur |
-| 11 |  |  |  | *(à venir)* |
+| 11 | Borne `D_m(2COL) ≥ Ω(n log n)` via lifting (Raz-McKenzie/GPW) + Karchmer-Wigderson + Tseitin sur expandeurs (Ben-Sasson-Wigderson) | Trois barrières revendiquées (lifting+KW non-relativisant et non-algébrisant ; RR fragile admis) | Direction enfin correcte vis-à-vis P vs NP. Mais : (1) **erreur factuelle** : 2-COLORATION ∈ P, pas NP-complet ; (2) 2COL n'est pas naturellement monotone ; (3) chaîne L10.5 conjecturale (pattern récurrent que le Proposeur reconnaît) ; (4) (j) régressée (test n=4,6,8 promis mais non livré) ; (5) redondance possible avec Garg-Göös-Knop-Watson 2018 non vérifiée | ⚠️ **LACUNE RÉPARABLE — rejet maintenu par utilisateur** |
+| 12 |  |  |  | *(à venir : prescription `PARITY ∉ AC⁰ profondeur 2` réaffirmée)* |
 
 ---
 
@@ -147,6 +148,19 @@
 
   **Verdict ⚠️ LACUNE RÉPARABLE** : épistémologie excellente, mais direction à corriger.
 
+- **Piste 11 — Lifting (Raz-McKenzie / GPW) + Karchmer-Wigderson + Tseitin sur expandeur → `D_m(2COL_G) ≥ Ω(n log n)`.** Première proposition recentrée sur P vs NP après le recadrage. Cadre théorique réel (Ben-Sasson-Wigderson 2001, Raz-McKenzie 1999, Göös-Pitassi-Watson 2018, Karchmer-Wigderson 1990). Conditions (i), (k), (l) honorées. **Mais** :
+  - **Erreur factuelle décisive** : 2-COLORATION = test de bipartiteness, **dans P** (BFS/DFS linéaire), **pas NP-complet**. Toute la motivation revendiquée (« fonction monotone NP ») s'effondre. 3-COL est NP-complète, CLIQUE_k aussi ; 2COL ne l'est pas. Erreur de niveau cours de licence en complexité.
+  - **Erreur de cadre** : 2COL n'est pas naturellement monotone (ni en coloration ni en arêtes). Karchmer-Wigderson exige une fonction monotone identifiée, ce qui n'est pas le cas.
+  - **Chaîne L10.5 conjecturale** : la transposition « lifted Tseitin → 2COL via KW » est admise non prouvée par le Proposeur (Aveu 2). Pattern récurrent qui a tué les Tours 4, 7, 9.
+  - **(j) régressée** : test empirique sur n=4, 6, 8 promis mais aucun script livré, aucun résultat numérique. Régression par rapport aux Tours 9 et 10 où (j) avait été honorée.
+  - **Redondance possible** avec Garg-Göös-Knop-Watson 2018 non vérifiée bibliographiquement.
+
+  Réparations possibles : remplacer 2COL par **CLIQUE_k** (monotone et NP-complète, exactement Razborov 1985), livrer le test empirique, vérifier GGKW 2018 et la chaîne L10.5. Mais ces réparations sont substantielles et le pattern conjecture-pont persiste.
+
+  **Décision utilisateur (option 1)** : rejet maintenu, prescription Tour 12 = prescription Tour 11 du recadrage réaffirmée = **`PARITY_n ∉ AC⁰ profondeur 2` sur n=4 par calcul exhaustif Python**.
+
+  **Note méthodologique** : c'est la 2e fois consécutive (Tours 10 et 11) que le Réfuteur doit *prescrire* la direction plutôt que réfuter une proposition cohérente. La boucle adverse à un Proposeur LLM, après 10 itérations, a épuisé l'espace des « grandes idées spéculatives » et doit se rabattre sur des cibles techniques précises et bornées.
+
 ### ❌ Réfutés (faux — et pourquoi, pour ne pas y revenir)
 - **Piste 1 — « contradiction de compressibilité des témoins ».** Le sophisme central : la confrontation oppose un Kt **inconditionnel** (Lemme 1, incompressibilité Ω(n)) à un Kt qui n'est petit que **conditionnellement à x** (Lemme 2, vrai sous la forme K(w|x)=O(1), pas K(w)=O(log n) — la description doit embarquer x, de taille poly(n)). En unifiant les deux quantités, la contradiction disparaît : soit Lemme 2 redevient faux (inconditionnel), soit Lemme 1 redevient faux (conditionnel, car le témoin lex-premier est déterminé par x). Le fossé entre conditionnel et inconditionnel **est** P vs NP → circularité.
 - **De plus : la piste 1 relativise** (Kt, auto-réductibilité, recherche↔décision relativisent tous). Par BGS, elle ne peut donc structurellement pas séparer P de NP, même réparée. À NE JAMAIS réessayer sous cette forme.
@@ -207,11 +221,9 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 11** : direction **prescrite** par le Réfuteur après validation utilisateur. Les 10 conditions précédentes restent en vigueur, et une 11e est ajoutée par la pratique du Tour 10 :
+- **Tour 12** : **prescription PARITY ∉ AC⁰ RÉAFFIRMÉE** après deux propositions consécutives écartées (Tour 10 Koszul Lean, Tour 11 lifting+KW+2COL). Les 11 conditions précédentes restent en vigueur.
 
-  - (l) **AJOUTÉE** : le Proposeur doit lire la **version la plus récente** du cahier avant de soumettre. Si le sous-but a été révisé (comme par le commit `2a3c292` entre Tours 9 et 10), il prévaut sur les anciennes formulations.
-
-  **Cible prescrite pour le Tour 11 :**
+  **Cible prescrite pour le Tour 12 (identique à la prescription Tour 11) :**
 
   > **Mini-théorème `PARITY_n ∉ AC⁰ profondeur 2`** pour `n = 4` (ou `n = 5` si faisable), démontré par **calcul exhaustif Python**.
 
@@ -220,11 +232,19 @@
   **Lien à P vs NP** : `PARITY ∉ AC⁰` est le premier théorème non-trivial de borne inférieure de circuit (Furst-Saxe-Sipser 1981, renforcé par Håstad 1986 via switching lemma). C'est l'ancêtre direct du programme qui a culminé dans Williams 2011 (`NEXP ⊄ ACC⁰`), seul résultat ayant franchi les trois barrières. Les méthodes employées pour PARITY (random restrictions, approximation polynomiale modulaire) sont précisément les outils non-relativisants et non-algébrisants dont P vs NP a besoin.
 
   **Livrables attendus** :
-  1. `checks/tour_11_parity_ac0.py` : énumère DNF AC⁰ profondeur 2 de taille bornée sur `n = 4`, prouve par calcul exhaustif qu'aucun de taille `< 2^{n-1}` ne calcule `parity_n`, exhibe la borne exacte.
+  1. `checks/tour_12_parity_ac0.py` : énumère DNF AC⁰ profondeur 2 de taille bornée sur `n = 4`, prouve par calcul exhaustif qu'aucun de taille `< 2^{n-1}` ne calcule `parity_n`, exhibe la borne exacte.
   2. Phrase explicite (k) reliant le mini-théorème à P vs NP (modèle ci-dessus).
-  3. Vérification (h) : script effectivement exécuté avec résultat livré.
+  3. Vérification (h) : script effectivement exécuté avec résultat livré, pas promis.
 
-  **Si le Proposeur veut s'écarter** de cette prescription, il doit fournir une **alternative explicitement liée à P vs NP** (théorème de Shannon, hiérarchie de temps, Cook-Levin restreint, Razborov 1985 monotone CLIQUE sur petit n, etc.) avec phrase (k) du même type. Toute proposition relevant de l'algèbre commutative décorrelée (raffinements de C9, Boij-Söderberg, etc.) sera rejetée d'office au titre de (i) corrigée.
+  **Tout écart sera rejeté d'office** :
+  - Toute proposition d'algèbre commutative décorrelée (raffinements de C9, Boij-Söderberg, Koszul Lean, etc.) : rejet au titre de (i) corrigée.
+  - Toute proposition de chaîne conjecturale type lifting+KW non vérifiée empiriquement : rejet au titre de (j).
+  - Toute proposition contenant une erreur factuelle élémentaire (type 2COL ∈ P) : rejet au titre de la rigueur attendue après 11 tours.
+
+  **Alternatives acceptables** (si le Proposeur ne veut absolument pas faire PARITY) :
+  - Théorème de Shannon (existence de fonctions à circuits exponentiels par comptage).
+  - Théorème de Razborov 1985 sur CLIQUE en monotone, vérifié à petit `k` et `n`.
+  - Mais ces alternatives doivent inclure (k), (h), (j) honorées effectivement.
 
 ---
 
