@@ -10,8 +10,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 8)
-- **Nombre de tours effectués** : 8
+- **Dernière mise à jour** : 2026-05-23 (fin tour 9)
+- **Nombre de tours effectués** : 9
 
 ---
 
@@ -40,7 +40,8 @@
 | 7 | Obstruction homologique duale (résolutions libres + dualité d'Alexander) pour profondeur de formule monotone | Les 8 (revendiqué) | Chiffres C_4, K_4 corrects ; mais Lemme 2 (D_m ≥ Ω(pd)) réfuté par OR_n : pd(I_{OR_n}) = n−1 alors que D_m = 1 ; cadre limité aux formules (pas circuits) | ⚠️ **LACUNE RÉPARABLE** |
 | 8 | Atlas de Boij-Söderberg des fonctions monotones n=4 (renoncement à P vs NP) | Inapplicables (objet fini) | Mouvement stratégique correct ; mais Lemme 4 (OR/AND = seuls à résolution pure) massivement faux (95/167 contre-exemples) ; atlas livré par le Réfuteur | ⚠️ **LACUNE RÉPARABLE** + objet positif livré |
 | 8 bis | Révision du Proposeur : « résolution pure ssi threshold » | Inapplicables | Mini-théorème révisé encore faux (4 thresholds prédits sur n=4, mais 95 fonctions pures ; ex : f = x_0 et f = (x_0∧x_1)∨(x_0∧x_2) sont pures et non-threshold) ; **violation immédiate de (j)** que le Réfuteur venait d'ajouter | ⚠️ **LACUNE RÉPARABLE** |
-| 9 |  |  |  | *(à venir)* |
+| 9 | Conjecture C9 : pure ⟺ equigenerated (caractérisation des résolutions pures pour fonctions monotones) | Inapplicables | (h) et (j) honorées pour la première fois par le Proposeur. Conjecture vérifiée n=4 (167 fonctions, tableau parfait 95/0/0/72). **Réfutée n=5** : 215 contre-exemples sur 7579. Contre-exemple minimal : `(x₁x₂x₃)∨(x₁x₂x₄)∨(x₀x₃x₄)` (equigenerated, mais Betti(I) a 2 shifts à l'index 1) | ⚠️ **LACUNE RÉPARABLE** (épistémologie correcte) |
+| 10 |  |  |  | *(à venir)* |
 
 ---
 
@@ -55,6 +56,17 @@
 ### ✅ Établis (vérifiés par calcul exhaustif)
 
 - **Atlas des 95 fonctions monotones n=4 à résolution pure** (Tour 8, cf. [`checks/tour_08_atlas_boij_soderberg.py`](checks/tour_08_atlas_boij_soderberg.py)) — sur les 168 fonctions monotones non-constantes sur n=4 variables, exactement **95** ont un idéal de Stanley-Reisner à résolution libre minimale pure (au sens Boij-Söderberg : un seul shift par index homologique). La distribution par taille d'implicants + nombre d'implicants est tabulée dans le tour 8. **Premier objet positif acquis par le dépôt.**
+
+- **Théorème L9.1** (Tour 9) : *pure ⇒ equigenerated*. Pour toute fonction monotone non-constante `f`, si `I_f` admet une résolution libre minimale pure alors tous ses implicants premiers ont la même taille. **Preuve triviale par contrapositive** : deux degrés différents `t_1 ≠ t_2` impliquent `β_{0,t_1}(I) > 0` et `β_{0,t_2}(I) > 0`, donc deux shifts à l'index 0, non-pure. Vérifié empiriquement sur n=4 (0 contre-exemple sur 167) et n=5 (0 contre-exemple sur 7579).
+
+- **Fait empirique** (Tour 9, cf. [`checks/tour_09_extension_n5.py`](checks/tour_09_extension_n5.py)) : la réciproque *equigenerated ⇒ pure* est **vraie sur n=4** (167 fonctions sans exception) mais **fausse sur n=5** (215 contre-exemples sur 7579). Contre-exemple minimal canonique : `f = (x₁∧x₂∧x₃) ∨ (x₁∧x₂∧x₄) ∨ (x₀∧x₃∧x₄)` ; tous mintermes de taille 3 (equigenerated), mais `β_{0,3}(I)=3, β_{1,4}(I)=1, β_{1,5}(I)=1` (deux shifts à l'index 1, donc non-pure). Causé par hétérogénéité des syzygies linéaires (deg 4) et quadratiques (deg 5) à l'intérieur du même idéal.
+
+- **Tableau de contingence n=5** :
+  ```
+                  | equi=True | equi=False
+  pure=True       |      1894 |          0
+  pure=False      |       215 |       5470
+  ```
 
 ### ⚠️ Lacunes réparables (direction légitime mais énoncé spécifique faux)
 
@@ -94,6 +106,13 @@
   - **Violation immédiate de (j)** : le Proposeur a soumis ce mini-théorème révisé sans avoir vérifié contre l'atlas n=4 que je venais de produire et publier. C'est exactement la condition (j) que (j) cherchait à empêcher, violée en temps réel.
 
   Pattern désormais établi sur 9 itérations (8 tours + 1 révision) : le Proposeur articule des théorèmes asymptotiques sans calcul empirique préalable, même quand la condition est explicitement énoncée. La boucle adverse (Réfuteur exécutant les calculs) est apparemment **nécessaire en permanence** pour catalyser une rigueur empirique que le Proposeur seul ne maintient pas.
+
+- **Piste 9 — « Conjecture C9 : pure ⟺ equigenerated ».** Premier tour où le Proposeur honore vraiment (h) et (j) : il livre le script `checks/tour_09_equigeneration_conjecture.py` qui vérifie sa conjecture à n=4 (tableau parfait 95/0/0/72) avant soumission. Il anticipe explicitement le risque de réfutation à n=5 (Aveu 1). C'est un saut épistémologique réel.
+  - **L9.1 (pure ⇒ equigen)** : triviale par contrapositive, confirmée. ✓ Établi.
+  - **L9.2 (equigen ⇒ pure)** : vraie sur n=4 mais **fausse sur n=5**. J'ai écrit `tour_09_extension_n5.py` qui énumère les 7581 fonctions monotones n=5 via récursion de Dedekind, identifie 215 contre-exemples. Contre-exemple minimal : `(x₁x₂x₃) ∨ (x₁x₂x₄) ∨ (x₀x₃x₄)`, equigenerated mais avec deux shifts (4 et 5) à l'index 1 — due à coexistence de syzygies linéaires (deg 4, paires partageant 2 var) et quadratiques (deg 5, paires partageant 1 var).
+  - **Verdict ⚠️ LACUNE RÉPARABLE (4e consécutive)** avec note positive : la conjecture est réfutée, mais l'**épistémologie est correcte**. Le Proposeur a posé une conjecture testable et falsifiable, anticipé le risque, et apporté un script vérifiable. C'est le meilleur tour à ce stade.
+
+  La conjecture raffinée (à venir, problème ouvert) : *quelles conditions combinatoires distinguent les 1894 cas où equigen ⇒ pure tient des 215 cas où elle échoue ?* Question d'algèbre commutative intéressante en soi.
 
 ### ❌ Réfutés (faux — et pourquoi, pour ne pas y revenir)
 - **Piste 1 — « contradiction de compressibilité des témoins ».** Le sophisme central : la confrontation oppose un Kt **inconditionnel** (Lemme 1, incompressibilité Ω(n)) à un Kt qui n'est petit que **conditionnellement à x** (Lemme 2, vrai sous la forme K(w|x)=O(1), pas K(w)=O(log n) — la description doit embarquer x, de taille poly(n)). En unifiant les deux quantités, la contradiction disparaît : soit Lemme 2 redevient faux (inconditionnel), soit Lemme 1 redevient faux (conditionnel, car le témoin lex-premier est déterminé par x). Le fossé entre conditionnel et inconditionnel **est** P vs NP → circularité.
@@ -155,15 +174,14 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 9** : les 9 conditions du Tour 8 restent en vigueur. Le Tour 8 a montré un mouvement stratégique correct (renoncement à P vs NP, focus catalogage) **mais** a livré un Lemme 4 immédiatement réfutable. Une **10ème condition** s'ajoute :
-  - (j) **Tout théorème asymptotique revendiqué doit être vérifié empiriquement à n=4 ou n=5 par le Proposeur avant soumission.** Affirmer un résultat « prouvable inconditionnellement pour tout n » sans avoir énuméré n=3 ou n=4 est inacceptable après 8 tours.
+- **Tour 10** : les 10 conditions du Tour 9 restent en vigueur. Le Tour 9 a montré un saut épistémologique (h, j, i honorées en parallèle). Direction recommandée :
+  - **Raffiner C9** : trouver une condition combinatoire supplémentaire qui distingue les 1894 cas pure-et-equigen des 215 cas equigen-mais-non-pure sur n=5. Le contre-exemple minimal (`(x₁x₂x₃)∨(x₁x₂x₄)∨(x₀x₃x₄)`) a deux caractéristiques structurelles à explorer :
+    1. Syzygies de degrés mélangés (linéaires deg 4 entre paires partageant 2 var, quadratiques deg 5 entre paires partageant 1 var).
+    2. Le complexe `Δ_f` n'est pas "shellable" ou n'a pas une propriété combinatoire similaire (à creuser).
+  - **OU** continuer vers la formalisation Lean du Lemme L9.4 (résolution Koszul de OR_n), pour produire un premier théorème certifié.
+  - **OU** chercher si la littérature (Bayer-Stillman, Reiner-Welker, Aramova-Herzog, Conca) a déjà identifié cette dichotomie et lui a donné un nom — peut-être que C9' réformulée correspond à un théorème connu.
 
-  Voies constructives suggérées pour le Tour 9 :
-  - Caractériser exactement la classe des fonctions monotones à résolution pure (problème ouvert mathématique réel, calculable sur n=4 et n=5) ;
-  - Implémenter la décomposition Boij-Söderberg complète pour les 72 fonctions non-pures n=4 (le travail que le Proposeur a *promis* au Tour 8 mais n'a pas fait) ;
-  - Formaliser en Lean un mini-théorème (e.g. la résolution Koszul de m = (x_1, ..., x_n), Auslander-Buchsbaum sur n=4) pour produire un objet certifié.
-
-  Si le Proposeur insiste sur une nouvelle « grande idée pour P vs NP », le Réfuteur réfutera à nouveau. La boucle adverse a démontré sa robustesse sur 8 tours ; elle peut maintenant servir d'outil pédagogique pour catalyser un travail vérifiable.
+  Le Proposeur a démontré qu'il peut maintenir l'épistémologie. Si cela tient sur 2-3 tours de plus, la boucle adverse passera d'un outil de réfutation à un outil de **co-construction**.
 
 ---
 
