@@ -32,8 +32,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 20 — antipodales établies, 8 objets, paradigme AC⁰ d=2 cartographié bidirectionnellement)
-- **Nombre de tours effectués** : 20
+- **Dernière mise à jour** : 2026-05-23 (fin tour 21 — preuve partielle L20.5, ⚠️ LACUNE RÉPARABLE)
+- **Nombre de tours effectués** : 21
 
 ---
 
@@ -75,7 +75,8 @@
 | 18 | Preuve structurelle de L17 pour tout n : classification des implicants premiers en 3 classes (A1, A2a, A2b) selon `(x_n, y_n)`, récurrence `a_{n+1} = 2a_n + b_n`, `b_{n+1} = a_n + 2b_n`, close-form `a_n = (3^n − 1)/2`, non-redondance par construction explicite du témoin. | Toutes (relativisation combinatoire ; RR : fonction unique ; algébrisation : pas d'arithmétisation) | L18.A (classification) preuve par cas exhaustifs auditée OK. L18.B (récurrence + close-form) par induction triviale, auditée OK. L18.C (non-redondance) esquissée par le Proposeur, **détaillée par le Réfuteur** : construction explicite du témoin `(x_0, x_n=0, y_n=1)` pour A2a, etc. Vérification empirique n=1..4 cohérente avec la récurrence (1, 4, 13, 40). Prédiction n=5: 121, n=6: 364 (non-vérifiables par énumération directe). | ✅ **ÉTABLI STRUCTURELLEMENT** — promeut Tour 17 d'empirique à structurel |
 | 19 | Théorème de caractérisation L19 : `DNF_min(f) = |primes(f)|` ⟺ chaque implicant premier admet un témoin essentiel. L13 ⊊ (α)/(β) strictement (témoin MAJ_3). | Toutes (relativisation combinatoire ; RR : *signal d'alarme* — propriété constructive et large à n=4 (36%), mais théorème ne dérive pas de borne inférieure générale, donc compatible ; algébrisation : sans objet) | L19.A et L19.B preuves combinatoires auditées (classiques Quine-McCluskey 1952-1956). Vérification empirique : 202/254 (n=3) et 23862/65534 (n=4) fonctions dans la classe. Unifie Tours 12-18 sous une caractérisation unique. Conjecture asymptotique « fraction → 0 » non démontrée (2 points). | ✅ **ÉTABLI** (7e objet) — théorème classique reformulé, unifie le paradigme |
 | 20 | Théorème L20 : fonctions antipodales `f_α(x) = 1 ⟺ x ∉ {α, ¬α}` ont `|primes| = n(n−1)`, `DNF_min = n`, défaut maximal `n(n−2)`. **Pôle extrême opposé à L19**. | Toutes (relativisation combinatoire ; RR : famille petite `2^(n-1)`, non-large ; algébrisation : sans objet) | (i)-(iv) prouvées combinatoirement pour tout n ≥ 3 et auditées (audit du Réfuteur : impl. premier ⟺ 1 positif + 1 négatif ; couverture cyclique ; borne par vecteurs unitaires). Vérification empirique exhaustive n=3 (4 antipodales, défaut 3), n=4 (8, défaut 8), n=5 (16, défaut 15). L20.5 (unicité antipodales = seules à défaut max) conjecturée, vérifiée n=3, 4 par énumération exhaustive. **Note importante** : lien P vs NP plus faible que revendiqué — sur les antipodales, DNF-MIN est facile (calculable en O(n)), pas un témoin de Σ₂^P-difficulté. | ✅ **ÉTABLI** (8e objet) sur (i)-(iv) ; L20.5 conjecturée pour n ≥ 5 |
-| 21 |  |  |  | *(à venir)* |
+| 21 | Preuve partielle de L20.5 par cas sur k = \|f^{-1}(0)\|. L21.A (k=1) trivial, L21.B (k=2 antipodal) = Tour 20, L21.C (k=2 non-antipodal) prouvée rigoureusement (\|primes\|_max = d²−2d+n ≤ n²−3n+3 < n(n−2) pour n ≥ 4 ; n=3 direct), L21.D (k ≥ 3) reste **conjecturale**. | Toutes (combinatoire, non-large, pas d'arithmétisation) | L21.A, L21.B, L21.C prouvés rigoureusement (Réfuteur complète L21.C par calcul exact des implicants premiers). L21.D non prouvée structurellement — preuve combinatoire par hitting sets esquissée mais non développée. Vérification empirique n=4 confirme L20.5 pour tous les k mais ne couvre pas n ≥ 5. | ⚠️ **LACUNE RÉPARABLE** — L20.5 partiellement prouvée, cas k ≥ 3 reste ouvert |
+| 22 |  |  |  | *(à venir)* |
 
 ---
 
@@ -284,6 +285,16 @@
 
   **Saut qualitatif réel ?** Partiel. Tour 20 sort de (α)/(β) mais reste dans le paradigme AC⁰ d=2. Pas de profondeur 3, pas de Lean, pas de Razborov. **Le Tour 21 doit faire un saut qualitatif vrai** (cf. directions infra).
 
+### ⚠️ Lacunes réparables récentes
+
+- **Piste 21 — preuve partielle de L20.5** (cf. [`tours/tour_21_l20_5_partiel.md`](tours/tour_21_l20_5_partiel.md) et [`checks/tour_21_l20_5_structural.py`](checks/tour_21_l20_5_structural.py)) : tentative de prouver L20.5 (unicité antipodale pour tout n) par décomposition selon `k = |f^{-1}(0)|`.
+  - **L21.A** (k=1) : prouvé trivialement (défaut = 0, n littéraux conflictuels).
+  - **L21.B** (k=2 antipodal) : = Tour 20, déjà ÉTABLI.
+  - **L21.C** (k=2 non-antipodal) : **prouvé rigoureusement par le Réfuteur**. WLOG `α = 0^n`, `β = 1^d 0^{n-d}` avec `1 ≤ d ≤ n−1`. Implicants premiers : Cas 1 (taille 1, `n−d` éléments) et Cas 2 (taille 2 sur d positions, `d(d−1)` éléments). `|primes| = d² − 2d + n`, maximum à `d = n−1` : `n² − 3n + 3 < n(n−2)` pour `n ≥ 4`. Cas n=3 vérifié directement.
+  - **L21.D** (k ≥ 3) : **conjecturale**. Preuve par hitting sets esquissée par le Proposeur mais non développée. Vérification empirique seulement n=4.
+
+  Verdict : L20.5 partiellement prouvée. Le cas `k ≥ 3` reste ouvert structurellement. Tour 21 ne ferme pas la conjecture du Tour 20 pour tout n. Pour ✅ ÉTABLI complet, il faudrait compléter L21.D.
+
 ### ❓ Conjecturaux pour P vs NP (plausibles mais non prouvés)
 - *(aucun retenu pour l'instant)*
 
@@ -454,25 +465,23 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 21** : **Saut qualitatif obligatoire**. Tours 12-20 ont cartographié le paradigme AC⁰ d=2 bidirectionnellement (L19 pôle facile, L20 pôle défaut maximal). **Toute nouvelle famille dans ce paradigme sera rejetée d'office**. Les conditions (a)-(o) restent en vigueur, et une **16e** s'ajoute :
+- **Tour 22** : direction recommandée — **soit compléter L21.D**, soit faire un vrai saut. Le Tour 21 a fait un effort dans la bonne direction (option 2 prescrite) mais n'a pas livré la preuve complète. Les conditions (a)-(p) restent en vigueur.
 
-  - (p) **AJOUTÉE** : toute proposition restant dans le paradigme AC⁰ d=2 / DNF-minimization sans saut technique vers (a) profondeur 3, (b) formalisation Lean, ou (c) une nouvelle lignée méthodologique (Razborov monotone, communication complexity directe, etc.) sera **rejetée d'office** au titre de la saturation bidirectionnelle.
+  Options pour le Tour 22 :
 
-  Directions acceptables pour le Tour 21 (par accessibilité décroissante) :
+  1. **Compléter L21.D** (k ≥ 3) : preuve par hitting sets ou autre argument combinatoire. Si réussi, transformerait Tour 21 en ✅ ÉTABLI complet (+1 objet, pas un nouveau théorème mais un théorème enfin fermé). Direction la plus naturelle pour boucler la chaîne Tour 17 → Tour 18 / Tour 20 → Tour 21.
 
-  1. **Formalisation Lean** d'un sous-lemme acquis. Direction la plus accessible et productive (objet certifié dans Mathlib). Sous-lemmes candidats : L12.1 (PARITY ∉ AC⁰ d=2), L13 (caractérisation IS), L14.1 (MAJ), L15.1 (THRESHOLD), L16.1 (MOD_p), L18.A (classification IP), L19.A-B (essentialité), L20 (i)-(iv) (antipodales). **Recommandée comme direction principale.**
+  2. **Profondeur 3** : entrer dans FSS-Håstad. Saut difficile mais réel.
 
-  2. **Démontrer L20.5** pour tout n : preuve structurelle que les seules fonctions à défaut maximal sont les antipodales. Question ouverte directe.
+  3. **Razborov 1985 monotone CLIQUE** : nouvelle lignée distincte.
 
-  3. **Démontrer la conjecture asymptotique de L19** : `|(α)/(β)| / 2^{2^n} → 0`. Argument combinatoire à construire.
+  **Directions traitées ailleurs ou écartées** :
+  - **Formalisation Lean** : en cours dans le dépôt satellite [`pvsnp-LeanAC0Profondeur2`](https://github.com/Tanguy333/pvsnp-LeanAC0Profondeur2) (autre discussion). **Ne plus proposer ici.**
+  - **Conjecture asymptotique de L19** (`|(α)/(β)| / 2^{2^n} → 0`) : écartée comme non centrale à P vs NP.
 
-  4. **Profondeur 3** : entrer dans FSS-Håstad. Significativement plus dur.
+  **Direction interdite** : *toute* nouvelle caractérisation dans AC⁰ d=2 / DNF-MIN sans saut technique vers profondeur 3, ou nouvelle lignée méthodologique.
 
-  5. **Razborov 1985 monotone CLIQUE** : nouvelle lignée distincte.
-
-  **Direction interdite** : *toute* nouvelle caractérisation dans AC⁰ d=2 / DNF-MIN sans saut technique. Le Proposeur a livré 9 ÉTABLIS dans cette zone (Tours 12-20) — c'est suffisant. Le Tour 21 doit basculer en mode formalisation Lean ou tenter une vraie difficulté nouvelle.
-
-  **Note méta** : après 20 tours, le dépôt a 8 objets ÉTABLIS, tous dans la même zone (AC⁰ d=2 cartographiée des deux pôles). **Continuer dans cette zone n'apportera plus rien**. Le Tour 21 est l'épreuve : soit produire un objet Lean certifié (consolidation utile), soit tenter un vrai saut (profondeur 3 ou Razborov), soit déclarer le travail achevé sur cette zone et basculer en mode formalisation.
+  **Note méta** : le Tour 21 a illustré une nouvelle posture épistémique — **prouver partiellement et reconnaître la lacune**. C'est légitime et utile, mais ne ferme pas L20.5. Le dépôt accumule désormais ⚠️ « lacunes réparables récentes » à côté des ✅ ÉTABLIS. Si le Proposeur fait du Tour 22 une 2e itération sur L21.D, c'est aligné. Sinon, retour à profondeur 3 ou Razborov monotone.
 
 ---
 
