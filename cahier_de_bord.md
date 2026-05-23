@@ -32,8 +32,13 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (post-tour 22 — réfutation de L20.5/L21.D par contre-exemple à n=5, vérifiée indépendamment par 2e algorithme ; acquis positif L22.A — voir notes ci-dessous)
-- **Nombre de tours effectués** : 22
+- **Dernière mise à jour** : 2026-05-23 (post-tour 24 — ❌ FAILLE FATALE complexité tropicale de SAT : encodage inversé vérifié exécutablement, borne L24.T trivialement atteinte, violation explicite de (q) — Jukna 2014 + Jerrum-Snir 1982 couvrent le sujet, barrière monotone Razborov-Tardos 1988 létale)
+- **Nombre de tours effectués** : 24
+
+> **Numérotation Tour 24.** Le Proposeur a titré sa proposition « Tour 23 » mais
+> Tour 23 (threshold polynomial complexity / `tcomp`) est déjà existant et clos
+> en ⚠️ LACUNE RÉPARABLE. La proposition « complexité tropicale » est donc
+> archivée comme **Tour 24** ; voir [`tours/tour_24_tropical_refutee.md`](tours/tour_24_tropical_refutee.md).
 
 > **Audit bibliographique (mai 2026).** Vérification croisée des 8 théorèmes
 > ÉTABLIS (Tours 12-20) contre la littérature DNF-MIN. Verdict : les 7 résultats
@@ -63,6 +68,7 @@
 | Relativisation (Baker–Gill–Solovay) | Une preuve qui « relativise » ne peut pas trancher P vs NP. | **ACTIVE** — a tué la piste 1. Tout outil relativisant (Kt, auto-réductibilité, recherche↔décision) est suspect. Exiger des techniques non-relativisantes (ex. arithmétisation à la Williams). |
 | Preuves naturelles (Razborov–Rudich) | Les bornes inférieures « naturelles » échouent sous hypothèses cryptographiques standard. | Pertinente uniquement pour les arguments de type table de vérité / circuit. Ne s'applique pas aux arguments purement informationnels — donc « l'éviter » ne prouve rien en soi. |
 | Algébrisation (Aaronson–Wigderson) | Généralise la relativisation aux techniques algébriques. | **ACTIVE** — a tué la piste 2. Toute technique mobilisant l'arithmétisation doit démontrer son caractère non-algébrisant (exhiber un oracle algébrique relativement auquel l'invariant proposé sépare P de NP). |
+| **Barrière monotone (Razborov 1985 / Tardos 1988)** | Une borne inférieure exponentielle sur la complexité **monotone** (booléenne, arithmétique monotone, ou tropicale par Jerrum-Snir 1982) **n'implique pas** de borne sur la complexité non-monotone. Tardos 1988 exhibe une fonction *dans P* à complexité monotone $\exp(\Omega(n^{1/6-o(1)}))$. | **ACTIVE** — a tué la piste 24. Toute technique sur circuits monotones / arithmétique monotone / tropicaux / min-plus doit démontrer comment elle passe au cadre non-monotone, sous peine de récolter Tardos 1988 comme contre-exemple structurel. |
 
 > Toute idée nouvelle DOIT dire laquelle de ces barrières elle prétend franchir, et comment. **Et explicitement traiter la relativisation.**
 
@@ -96,7 +102,9 @@
 | 20 | Théorème L20 : fonctions antipodales `f_α(x) = 1 ⟺ x ∉ {α, ¬α}` ont `|primes| = n(n−1)`, `DNF_min = n`, défaut maximal `n(n−2)`. **Pôle extrême opposé à L19**. | Toutes (relativisation combinatoire ; RR : famille petite `2^(n-1)`, non-large ; algébrisation : sans objet) | (i)-(iv) prouvées combinatoirement pour tout n ≥ 3 et auditées (audit du Réfuteur : impl. premier ⟺ 1 positif + 1 négatif ; couverture cyclique ; borne par vecteurs unitaires). Vérification empirique exhaustive n=3 (4 antipodales, défaut 3), n=4 (8, défaut 8), n=5 (16, défaut 15). L20.5 (unicité antipodales = seules à défaut max) conjecturée, vérifiée n=3, 4 par énumération exhaustive. **Note importante** : lien P vs NP plus faible que revendiqué — sur les antipodales, DNF-MIN est facile (calculable en O(n)), pas un témoin de Σ₂^P-difficulté. | ✅ **ÉTABLI** (8e objet) sur (i)-(iv) ; L20.5 conjecturée pour n ≥ 5 |
 | 21 | Preuve partielle de L20.5 par cas sur k = \|f^{-1}(0)\|. L21.A (k=1) trivial, L21.B (k=2 antipodal) = Tour 20, L21.C (k=2 non-antipodal) prouvée rigoureusement (\|primes\|_max = d²−2d+n ≤ n²−3n+3 < n(n−2) pour n ≥ 4 ; n=3 direct), L21.D (k ≥ 3) reste **conjecturale**. | Toutes (combinatoire, non-large, pas d'arithmétisation) | L21.A, L21.B, L21.C prouvés rigoureusement (Réfuteur complète L21.C par calcul exact des implicants premiers). **L21.D RÉFUTÉ Tour 22** (contre-exemple à n=5, k=5). | ❌ **FAILLE FATALE (post-Tour 22)** — L21.D faux pour k ≥ 3 ; L20.5 réfutée ; L21.A/B/C maintenus |
 | 22 | (a) Réfutation de L20.5 / L21.D par contre-exemple direct `Z = {0, 3, 5, 25, 30}` à n=5 : triplet (\|primes\|=25, DNF_min=8, défaut=17) > n(n−2)=15. (b) Acquis positif L22.A : si Z = f^{-1}(0) est coord-dégénéré sur position j, alors défaut(f) = défaut(g) ≤ (n−1)(n−3) < n(n−2). | Toutes (combinatoire ; pas de prétention à borne nouvelle pour P vs NP) | Triplet vérifié indépendamment par le Réfuteur (script distinct : énumération 3^5 ANDs + ILP PuLP/CBC). Distribution {2:2, 3:21, 4:2} — non-structure régulière. L22.A prouvée structurellement (audit des 7 sous-étapes a-g). Statistique Proposeur : 1280 contre-exemples à n=5 (0 coord-dégénérés, 0 antipodaux). | ✅ **TOUR RÉUSSI** par négation + acquis structurel L22.A. **Mais viole le recadrage §5 Tour 22** (reste en AC⁰ d=2 / DNF-MIN explicitement interdit). Apport méthodologique : 1er tour qui réfute un ÉTABLI partiel précédent. |
-| 23 |  |  |  | *(à venir)* |
+| 23 | Threshold polynomial complexity `tcomp(f) = (d_min, m_min)` mesurée par ILP sur OR, AND, PARITY, MAJ, THR_t, MOD_p, IP_{2k} (n=4..8). Conjecture T23.1 : `tcomp(IP_{2k}) = (k, 2^{k-1})` vérifiée à 3 points (k=2,3,4). Pivot revendiqué vers programme Williams 2011 → TC⁰. | Toutes (relativisation combinatoire ILP ; non-large ; pas d'arithmétisation) | **13 chiffres confirmés sans divergence** par script Réfuteur indépendant (1er tour avec auto-vérification parfaite). MAIS : (a) `tcomp` confond max-magnitude L∞ et L1-weight de la littérature PTF, (b) T23.1 = vérification de folklore (conjecture d'Anthony sur PTF degree, Bruck-Smolensky 1992 sur magnitude exponentielle d'IP), (c) cible TC⁰ d=2 \ TC⁰ d=1 non explorée (9/13 tests en TC⁰ d=1, seul IP en d=2), (d) pont à Williams CAPP non construit (Beigel-Tarui utilise polynômes exacts mod 2^ℓ, pas PTF). | ⚠️ **LACUNE RÉPARABLE** avec acquis méthodologique fort (instrument ILP réutilisable, 1er tour à toutes conditions (a)-(r) honorées) |
+| 24 | Complexité tropicale de SAT : encoder 3-SAT comme polynôme tropical $P_\phi = \min_j \min(1, \sum_i \ell_{ji})$ et borner inférieurement $R(P_\phi) \geq 2^{n/2}$ régions linéaires pour $n \in \{4,5,6\}$ (Lemme L24.T) ; chaîne conjecturale tropical→boolean P vs NP | Les 3 (revendiquée), pas mentionnée Tardos | (1) **Encodage inversé** vérifié exécutable 0/16 cas (le Proposeur n'a pas calculé son propre encodage) ; (2) **Borne L24.T triviale** : un min de $m+1$ affines a $O(m^n)$ régions par Zaslavsky, donc $\geq 2^{n/2}$ atteint trivialement par n'importe quel polynôme tropical ; (3) **Violation explicite de (q)** : Jukna 2014 (arXiv:1406.3065) + Jerrum-Snir 1982 + Schnorr couvrent depuis 40 ans ; (4) **Barrière monotone Tardos 1988** non-mentionnée mais létale (tropical = monotone arith. par Jerrum-Snir) ; (5) chaîne tropical→boolean *purement conjecturale*, admise par le Proposeur ; (6) condition (k) violée (« années-lumière » de P vs NP) | ❌ **FAILLE FATALE** — barrière monotone létale + 5 failles indépendantes + (q) violée |
+| 25 |  |  |  | *(à venir)* |
 
 ---
 
@@ -375,6 +383,12 @@ contre la littérature DNF-MIN. Statut individuel :
 
 ### ⚠️ Lacunes réparables récentes
 
+- **Piste 23 — threshold polynomial complexity `tcomp` pour TC⁰** (cf. [`tours/tour_23_tcomp_tc0_lacune.md`](tours/tour_23_tcomp_tc0_lacune.md) et [`checks/tour_23_refuter_tcomp.py`](checks/tour_23_refuter_tcomp.py)).
+  - Mesure empirique via ILP de `(deg_min, mag_min)` pour 13 fonctions à n=4..8. Conjecture T23.1 : `tcomp(IP_{2k}) = (k, 2^{k-1})` confirmée à 3 points.
+  - **Acquis méthodologique** : 1er tour avec auto-vérification indépendante sans divergence (13/13 chiffres confirmés). 1er tour à honorer toutes les conditions (a)-(r). Instrument ILP réutilisable pour Tour 24+.
+  - **Lacunes** : (a) `tcomp` confond max-magnitude L∞ et L1-weight standard (Krause-Pudlák utilise L1) ; (b) T23.1 = vérification de folklore (Bruck-Smolensky 1992, conjecture d'Anthony sur PTF degree) ; (c) cible TC⁰ d=2 \ TC⁰ d=1 non explorée (seul IP testé en d=2) ; (d) pont à Williams CAPP non démontré (Beigel-Tarui utilise polynômes exacts mod 2^ℓ, pas PTF entiers).
+  - Réparations : reformuler `tcomp` avec weight L1, étendre à compositions MAJ ∘ MAJ ou THR ∘ THR, construire pont algorithmique explicite. Voir §5 Tour 24.
+
 - **Piste 21 — preuve partielle de L20.5** (cf. [`tours/tour_21_l20_5_partiel.md`](tours/tour_21_l20_5_partiel.md) et [`checks/tour_21_l20_5_structural.py`](checks/tour_21_l20_5_structural.py)) : tentative de prouver L20.5 (unicité antipodale pour tout n) par décomposition selon `k = |f^{-1}(0)|`.
   - **L21.A** (k=1) : prouvé trivialement (défaut = 0, n littéraux conflictuels). ✅ Établi (intégré comme cas particulier de l'analyse résiduelle).
   - **L21.B** (k=2 antipodal) : = Tour 20, déjà ÉTABLI.
@@ -536,6 +550,16 @@ contre la littérature DNF-MIN. Statut individuel :
 
   **Leçon transverse** : pattern « vraie à n=4, fausse à n=5 » réapparu au Tour 22 *malgré* l'avertissement explicite §4 q.10. La condition (q) audit bibliographique préemptif (introduite Tour 22 dans §5) ne suffit pas — il faut aussi la nouvelle condition (r) (voir §4 q.12 ci-dessous).
 
+- **Piste 24 — « complexité tropicale de SAT » (encodage $P_\phi = \min_j \min(1, \sum_i \ell_{ji})$, borne $R(P_\phi) \geq 2^{n/2}$ régions linéaires).** Cinq failles indépendantes + une barrière non-mentionnée, chacune suffisante. Cf. [`tours/tour_24_tropical_refutee.md`](tours/tour_24_tropical_refutee.md).
+  1. **L'encodage est INVERSÉ.** Le Proposeur affirme « $P_\phi(x) = 0$ ssi $x$ satisfait $\phi$ ». Vérifié exécutable (n=4, 5 clauses aléatoires, seed 42) : 0/16 cas honorent l'affirmation. La réalité : $T_j(x) = \min(1, \sum_i \ell_{ji}) = 1$ si $C_j$ satisfaite, $= 0$ sinon ; donc $P_\phi = \min_j T_j = 1$ ssi $\phi$ satisfaite. Erreur corrigeable mais signe que le Proposeur n'a pas calculé son propre encodage.
+  2. **La borne $R(P_\phi) \geq 2^{n/2}$ est trivialement satisfaite.** Le nombre de cellules de l'arrangement de $k$ hyperplans en dim $n$ est borné par $O(k^n)$ (Zaslavsky). Pour $n=4, m \approx 17$ clauses, majorant $\binom{18}{5} = 8568 \gg 4 = 2^{n/2}$. Un polynôme tropical de complexité polynomiale dépasse trivialement la cible. Le Lemme L24.T ne dit donc *rien* sur la dureté de SAT.
+  3. **Violation explicite de (q) audit bibliographique préemptif.** Le Proposeur écrit « personne n'a appliqué la géométrie tropicale à la complexité de circuit booléen ». FAUX : Jukna 2014 *Lower Bounds for Tropical Circuits and Dynamic Programs* (arXiv:1406.3065) est un papier entier sur le sujet. Jerrum-Snir 1982 ont prouvé que la complexité tropicale = complexité arithmétique monotone pour polynômes homogènes. Schnorr a des bornes pour CLIQUE. ~40 ans de littérature ignorée. Le Proposeur reconnaît son audit incomplet (« je n'ai pas identifié ») — admission de violation.
+  4. **Barrière monotone Razborov-Tardos non-mentionnée mais LÉTALE.** Tropical = monotone arithmétique (Jerrum-Snir). Tardos 1988 exhibe une fonction *dans P* dont la complexité monotone est $\exp(\Omega(n^{1/6-o(1)}))$. Donc *même* une borne exponentielle sur $R(P_\phi)$ ou sur la complexité tropicale de $P_\phi$ ne dirait rien sur SAT ∉ P. La proposition était morte avant d'être écrite (mort depuis 1988).
+  5. **Les 3 barrières classiques mal traitées.** Relativisation : un argument tropical *qui généraliserait* au booléen relativiserait au sens BGS ; s'il ne généralise pas, pas de P vs NP. Même dilemme que Razborov 1985 CLIQUE monotone. Preuves naturelles : $R \geq 2^{n/2}$ trivialement large, donc RR s'applique pleinement. Algébrisation : techniquement contournée mais sans valeur (barrière monotone domine).
+  6. **Chaîne à P vs NP purement conjecturale.** Le Proposeur admet textuellement « cette chaîne est purement conjecturale », « cette piste est à des années-lumière de P vs NP ». Viole (k) au sens du fond (lien à P vs NP doit être substantif, pas verbal).
+
+  **À NE JAMAIS réessayer sous cette forme.** Toute piste « tropical / monotone arithmétique / min-plus » pour P vs NP est aspirée par Tardos 1988 (cf. §1 4e ligne). **Nuance honnête** : le programme tropical de Jukna est mathématiquement vivace (bornes exponentielles pour PERMANENT, CLIQUE en monotone), mais ne donne *pas* P vs NP. Confondre « bornes tropicales / monotones » et « bornes booléennes non-monotones » est l'erreur centrale de Tour 24.
+
 ---
 
 ## 4. Questions ouvertes prioritaires
@@ -553,6 +577,10 @@ contre la littérature DNF-MIN. Statut individuel :
 11. **Question ouverte mathématique positive** : *quelle est la caractérisation exacte des fonctions monotones à résolution pure ?* Pas juste threshold (qui en est une sous-classe stricte), pas juste linéaire + principal (idée fausse), pas seulement « threshold à permutation près » (réfuté Tour 8 bis), mais quelque chose de structurel. Question intéressante en soi, indépendamment de P vs NP. **Donnée empirique acquise** : 95 fonctions sur 167 non-constantes monotones n=4 (cf. atlas tour 8). La caractérisation devra englober au minimum : OR_n, AND_n, MAJ_n, autres TH_t, sous-OR (fonctions linéaires sur k < n variables), sous-AND, paires d'arêtes disjointes (shifts non-consécutifs), et autres.
 
 12. **Toute extrapolation d'un théorème asymptotique à partir de ≤ 2 points est suspecte.** Le pattern « vraie à n=4, fausse à n=5 » a tué la C9 (Tour 9) et est réapparu avec L20.5 / L21.D (Tour 22, contre-exemple à n=5 trouvé après extrapolation depuis n=3, n=4). La condition (q) « audit bibliographique préemptif » n'est pas suffisante pour bloquer ce pattern. Nouvelle règle implicite à appliquer : **exiger systématiquement le test au point suivant `n+1`** *avant* de promouvoir une conjecture vérifiée empiriquement au statut « ÉTABLI structurellement ». Si le test n+1 est infaisable par énumération directe, alors le théorème doit rester ⚠️ Conjectural, pas ✅ Établi. Le Tour 20 a violé cette règle sur L20.5 (extrapolation n=3, n=4 → tout n) ; le Réfuteur n'a pas insisté assez. La condition de catalogage est désormais à appliquer rétroactivement à tout futur ÉTABLI.
+
+13. **Toute mesure de complexité polynomiale entière doit explicitement distinguer max-magnitude (L∞ = `max_S |c_S|`) et weight (L1 = `Σ_S |c_S|`).** Ces deux mesures peuvent diverger d'un facteur `O(n^d)` (nombre de monômes de degré ≤ d). C'est *weight* qui apparaît dans Krause-Pudlák 1998 et dans la méthode algorithmique de Williams 2011 (via Beigel-Tarui). Une fonction TC⁰ à magnitude polynomiale mais L1-weight exponentielle ne donne **pas** de CAPP non-trivial. Pattern apparu Tour 23 : le Proposeur utilise `mag = max |c_S|` sous le nom de « magnitude » et compare aux bornes de Krause-Pudlák qui portent sur *weight* — l'instrument reste valide pour ce qu'il mesure, mais l'interprétation revendiquée du résultat est erronée. Pour future utilisation de l'instrument `tcomp`, exiger deux colonnes (magnitude L∞, weight L1).
+
+14. **Toute piste relevant des circuits monotones / arithmétiques monotones / tropicaux / min-plus / max-plus doit passer le test Tardos 1988** : exhiber une fonction *dans P* à complexité super-polynomiale dans le cadre étudié. La fonction de Tardos (basée sur la θ-fonction de Lovász) a complexité monotone $\exp(\Omega(n^{1/6-o(1)}))$ ET est calculable en temps polynomial non-monotone. Donc toute borne inférieure dans le cadre monotone est silencieuse sur P vs NP. *Pattern apparu Tour 24 : tropical complexity revendiquée comme contournement des 3 barrières, sans mention de la barrière monotone.* Tout futur Tour invoquant ces cadres doit expliquer comment il franchit Tardos, sous peine de FAILLE FATALE automatique.
 5. **Existe-t-il une obstruction non-locale et non-algébrique** qui survive aux sauts polynomiaux *et* à l'équivalence logique ? GCT (permanent vs déterminant) est la seule réponse sérieuse aujourd'hui, mais elle est au point mort depuis 2017 (Bürgisser-Ikenmeyer-Panova : pas d'obstruction par occurrences).
 6. Côté complexité descriptive : la conjecture de Gurevich (logique capturant P) offre-t-elle un angle non-relativisant **et** non-algébrisant exploitable ?
 7. Williams 2011 (NEXP ⊄ ACC⁰) reste l'unique précédent ayant franchi les trois barrières. La voie « algorithmic method + circuit lower bound » se généralise-t-elle à TC⁰ ? *(Question ouverte centrale de la complexité depuis 15 ans — invoquer cette voie n'est pas une piste, c'est rejoindre le front de la recherche.)*
@@ -563,35 +591,90 @@ contre la littérature DNF-MIN. Statut individuel :
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 23** : **contrainte stricte renforcée** post-Tour 22.
+- **Tour 25** : **prescription Tour 24 maintenue et non-honorée** (TC⁰ d=2 \ TC⁰ d=1 jamais exploré ; Tour 24 a pivoté vers complexité tropicale, ❌ FAILLE FATALE).
 
-  ### 📋 Note sur Tour 22
+  ### 📋 Notes sur Tours 23 et 24
 
-  Le Tour 22 a *violé* le recadrage AC⁰ d=2 / DNF-MIN ci-dessous, en livrant
-  une réfutation par contre-exemple de L20.5 / L21.D (reste donc en AC⁰ d=2).
-  La réfutation est mathématiquement correcte et vérifiée indépendamment, et
-  l'acquis L22.A est valide. Mais le tour ne fait pas progresser sur le
-  recadrage « sortir du paradigme AC⁰ d=2 ». Le Tour 23 doit le faire enfin.
+  **Tour 23** a effectué le pivot AC⁰ d=2 → TC⁰ demandé par le recadrage Tour 22.
+  Premier tour à honorer toutes les conditions (a)-(r). Chiffres tous vérifiés.
+  Mais : (a) la mesure `tcomp` utilise max-magnitude L∞, pas la weight L1
+  standard ; (b) la cible TC⁰ d=2 \ TC⁰ d=1 reste non-explorée (sur 13 tests,
+  9 en TC⁰ d=1, 2 en AC⁰, seul IP en d=2) ; (c) le pont à Williams CAPP n'est
+  pas construit (Beigel-Tarui utilise polynômes exacts mod 2^ℓ, pas PTF).
+  Conjecture T23.1 = vérification de folklore (Bruck-Smolensky 1992, Anthony
+  PTF degree). Acquis méthodologique réel (instrument ILP réutilisable), mais
+  pas de théorème nouveau.
 
-  ### 🚫 Directions interdites pour le Tour 23 (recadrage maintenu)
+  **Tour 24** a *violé* la prescription Tour 24 (extension `tcomp` à TC⁰ d=2 \ d=1)
+  en pivotant vers « complexité tropicale de SAT » — cadre **doublement
+  disqualifié** :
+  1. **Barrière monotone Razborov-Tardos** (1985-1988) : tropical = monotone
+     arithmétique par Jerrum-Snir 1982. Tardos exhibe une fonction dans P à
+     complexité monotone $\exp(\Omega(n^{1/6}))$. Toute borne tropicale est
+     silencieuse sur P vs NP. Ajout de la 4e barrière au §1.
+  2. **Audit (q) violé** : Jukna 2014 + Jerrum-Snir 1982 + Schnorr couvrent
+     ~40 ans le sujet revendiqué « personne n'a fait ». Le Proposeur reconnaît
+     son audit incomplet.
 
-  1. **AC⁰ profondeur 2 / DNF-MIN** dans toute forme. Les 8 théorèmes ÉTABLIS
-     Tours 12-20 ont saturé ce paradigme, et l'audit bibliographique a établi
-     leur statut folklore (Quine 1952, Hammer-Kogan 2011, Hellerstein-Kletenik
-     2011). Le Tour 22 a montré que pousser plus loin (chercher de nouvelles
-     bornes sur le défaut) donne au mieux des contre-exemples à des conjectures
-     folkloriques — pas du progrès sur P vs NP. **Aucune nouvelle caractérisation
-     en AC⁰ d=2, application de L13/L19/L20, étude de classes de défaut, ni
-     extension de L22.A.**
-  2. **Formalisation Lean** de tout théorème du dépôt. Le dépôt satellite est
-     fermé (cf. §0). Plus jamais de pivot Lean ici.
-  3. **Algèbre commutative pure** sans pont explicite à une borne de complexité
-     (Tours 6-9 ont déjà tué cette dérive ; le recadrage de fin Tour 9 reste
-     en vigueur).
+  Plus 4 failles techniques (encodage inversé vérifié 0/16, borne triviale,
+  chaîne conjecturale, traitement faux des 3 barrières). ❌ FAILLE FATALE.
+  Voir [`tours/tour_24_tropical_refutee.md`](tours/tour_24_tropical_refutee.md).
 
-  ### ✅ Directions autorisées pour le Tour 23
+  **Conséquence** : la prescription Tour 24 (TC⁰ d=2 \ d=1) **reste valide
+  et non-honorée**. Tour 25 doit la reprendre.
 
-  Le Proposeur doit choisir un saut **qualitatif** parmi :
+  ### 🎯 Sous-but Tour 25 (= prescription Tour 24 reprise)
+
+  **Réparer Tour 23 sur ses lacunes (a) et (b)** :
+
+  1. Étendre `tcomp` pour rapporter *deux* mesures simultanément :
+     - magnitude L∞ = `max_S |c_S|`
+     - weight L1 = `Σ_S |c_S|` (la mesure de Krause-Pudlák)
+     Et tabuler les deux pour les fonctions du Tour 23.
+
+  2. Tester des fonctions **TC⁰ profondeur 2 \ TC⁰ profondeur 1** :
+     - `MAJ_n ∘ XOR_n` (parity-of-majorities, ou inverse).
+     - `THR_t ∘ THR_s` avec des seuils variés.
+     - Compositions à deux étages avec poids non-uniformes.
+     - Quelques fonctions sparse choisies aléatoirement dans TC⁰ d=2.
+
+  3. **Question cible** : existe-t-il une fonction `f ∈ TC⁰ d=2 \ TC⁰ d=1`
+     avec **weight polynomial** (pas seulement magnitude polynomiale) ?
+     - Si oui : candidate pour CAPP non-trivial par méthode Williams.
+     - Si non : confirmation empirique que `weight_TC⁰_d=2 = exp(Ω(n))` (la
+       barrière Krause-Pudlák) — ce qui éclaire empiriquement pourquoi
+       Williams 2011 n'a pas pu être étendu à TC⁰ depuis 15 ans.
+
+  4. **Si la question 3 reste ouverte à n=5** : honnêteté empirique impose
+     de le dire et de ne pas extrapoler (cf. q.12 §4).
+
+  ### 🚫 Directions interdites pour le Tour 25
+
+  Maintenues du recadrage cumulatif Tours 22-23-24 :
+
+  1. **Retour à AC⁰ d=2 / DNF-MIN** sous quelque forme que ce soit.
+  2. **Formalisation Lean.**
+  3. **Algèbre commutative sans pont à P vs NP.**
+  4. **Re-démonstration empirique d'un résultat déjà cité dans §7.** Si le
+     Proposeur réplique numériquement Bruck-Smolensky ou Anthony, c'est de la
+     pédagogie, pas du progrès. Toute proposition doit cibler une *zone non
+     couverte* par la bibliographie §7.
+
+  Nouvelles post-Tour 24 :
+
+  5. **Tout cadre monotone / arithmétique monotone / tropical / min-plus /
+     max-plus** comme passerelle vers P vs NP. La barrière #4 (Razborov 1985 /
+     Tardos 1988) est désormais ACTIVE. Voir §4 q.14 (test Tardos obligatoire
+     si proposition dans ces cadres).
+  6. **Pivot non-aligné sur la prescription du tour courant** sans justification
+     mathématique explicite. Si le Proposeur change de cible (comme au Tour 24),
+     il doit dire *pourquoi* la cible prescrite est inappropriée — pas
+     l'ignorer silencieusement.
+
+  ### ✅ Directions autorisées (générales, en cas de pivot Tour 24+)
+
+  Si le sous-but TC⁰ d=2 \ d=1 ci-dessus s'avère trop difficile ou stérile,
+  le Proposeur peut choisir un autre saut **qualitatif** parmi :
 
   - **Profondeur ≥ 3** : FSS 1981 → Håstad 1986 (Switching Lemma) →
     Razborov-Smolensky 1987. Toute borne de profondeur ≥ 3, même partielle ou
@@ -644,17 +727,20 @@ contre la littérature DNF-MIN. Statut individuel :
 
   ### Note méta-épistémique
 
-  Après 22 tours dont 8 ÉTABLIS identifiés folklore + 1 acquis modeste L22.A +
-  1 dérive algèbre commutative + 5 FAILLE FATALE (dont la nouvelle L21
-  reclassée) + plusieurs LACUNE RÉPARABLE, le dépôt n'a **pas encore franchi
-  les trois barrières** (relativisation, preuves naturelles, algébrisation).
-  Le Tour 23 doit le tenter pour la première fois. Le précédent unique reste
-  Williams 2011. Si le Proposeur ne peut pas se positionner par rapport à ces
-  trois barrières *de manière vérifiable*, il doit le dire et abandonner sa
-  piste avant soumission.
+  Après 23 tours dont 8 ÉTABLIS identifiés folklore + 2 acquis modestes
+  (L22.A + instrument `tcomp` Tour 23) + 1 dérive algèbre commutative + 5
+  FAILLE FATALE + plusieurs LACUNE RÉPARABLE, le dépôt n'a **pas encore
+  franchi les trois barrières** (relativisation, preuves naturelles,
+  algébrisation). Le précédent unique reste Williams 2011. Si le Proposeur
+  ne peut pas se positionner par rapport à ces trois barrières *de manière
+  vérifiable*, il doit le dire et abandonner sa piste avant soumission.
 
-  **Le Tour 22 confirme** que rester en AC⁰ d=2 mène à des réfutations de
-  conjectures folkloriques, pas à du progrès sur P vs NP. Pivot **obligatoire**.
+  **Tours 22-23 confirment** que (i) rester en AC⁰ d=2 mène à des
+  réfutations de conjectures folkloriques (Tour 22), et (ii) pivoter
+  superficiellement vers TC⁰ via une instrumentation empirique livre du
+  folklore re-vérifié + un outil utile mais pas une borne nouvelle (Tour
+  23). Pour Tour 24 : viser explicitement une **zone non couverte par
+  bibliographie §7**.
 
 ---
 
@@ -821,6 +907,47 @@ contre la littérature DNF-MIN. Statut individuel :
   gap between ess(f) and cnf_size(f) »*, Discrete Applied Mathematics, vol.
   187, 2015, pp. 92-101 (arXiv 2011, [arXiv:1106.4247](https://arxiv.org/abs/1106.4247)).
   Référence directe pour le théorème de caractérisation Tour 19.
+
+### 7.5bis Polynomial threshold functions (PTF) et complexité polynomiale entière
+
+- **PTF degree d'IP via norme spectrale** — J. Bruck, R. Smolensky,
+  *« Polynomial threshold functions, AC⁰ functions, and spectral norms »*,
+  SIAM J. Computing, vol. 21, no. 1, 1992, pp. 33-42.
+  [doi:10.1137/0221003](https://doi.org/10.1137/0221003).
+  Caractérisation : une fonction `f` est PTF de magnitude polynomiale **ssi**
+  sa norme spectrale `L1(f̂)` est polynomiale. Pour IP_n, `L1(f̂) = 2^n`
+  (Hadamard parfait), donc la magnitude PTF est exponentielle. **Référence
+  centrale pour Tour 23** : la conjecture T23.1 du Proposeur (`tcomp(IP_{2k})
+  = (k, 2^{k-1})`) est une vérification empirique de cette borne sur 3 points.
+
+- **PTF degree typique** — R. O'Donnell, R. A. Servedio, *« New degree bounds
+  for polynomial threshold functions »*, Combinatorica, vol. 30, no. 3, 2010,
+  pp. 327-358 (STOC 2003).
+  [PDF auteur](http://www.cs.columbia.edu/~rocco/Public/stoc03-ptfdb.pdf).
+  Borne supérieure `n/2 + O(√n log n)` sur le PTF degree de toute fonction
+  booléenne, complétant la conjecture d'Anthony (PTF degree ≈ ⌈n/2⌉ pour la
+  plupart des fonctions). Mon observation Tour 23 `deg(IP_{2k}) = k = n/2`
+  est conforme à cette borne (et représente le cas extrême « degré minimum
+  possible » selon Anthony-Alon).
+
+- **Weight vs magnitude PTF** — K. A. Hansen, V. V. Podolskii, *« Polynomial
+  threshold functions and Boolean threshold circuits »*, Information and
+  Computation, vol. 240, 2015, pp. 56-73 (ECCC TR13-021).
+  [PDF ECCC](https://eccc.weizmann.ac.il/report/2013/021/download/).
+  Survey unifiant degré, weight (L1 = `Σ |c_S|`), magnitude (L∞ = `max |c_S|`).
+  Référence pour la **distinction technique** soulignée Tour 23 §4 q.13 :
+  c'est *weight* (L1), pas *magnitude* (L∞), qui apparaît dans Krause-Pudlák
+  et dans la méthode algorithmique Beigel-Tarui → Williams.
+
+- **Weight bounds tight pour IP** — A. A. Sherstov, *« Algebraic methods in
+  the theory of lower bounds for Boolean circuit complexity »*, monographie /
+  habilitation, 2009-2011 ; et **A. A. Razborov**, *« On small depth threshold
+  circuits »*, Helsinki notes 1992.
+  [PDF Razborov](https://people.cs.uchicago.edu/~razborov/files/helsinki.pdf).
+  IP a `sign-rank = 2^{n/2}` (Forster 2002) ; tight `weight ≥ 2^n` pour toute
+  PTF entière représentant IP_n. **Aucune représentation polynomiale dense
+  pour IP n'évite la croissance exponentielle simultanément en degré et
+  weight L1**, donc IP n'est pas une candidate à CAPP non-trivial via PTF.
 
 ### 7.6 Hardness magnification et méta-complexité (front actif 2018-)
 
