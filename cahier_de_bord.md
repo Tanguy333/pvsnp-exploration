@@ -10,8 +10,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (fin tour 5)
-- **Nombre de tours effectués** : 5
+- **Dernière mise à jour** : 2026-05-23 (fin tour 6)
+- **Nombre de tours effectués** : 6
 
 ---
 
@@ -36,7 +36,8 @@
 | 3 | Obstruction topologique sur paysage d'énergie CSP (Morse discrète + Lusternik-Schnirelmann) | Relativisation + algébrisation (revendiqué) | Invariant non-invariant sous équivalence logique ; sauts polynomiaux effondrent les Betti | ❌ **FAILLE FATALE** |
 | 4 | Compilation TC⁰ → tensor network à bond polynomiale + Williams + Hardness Magnification | Les 3 (revendiqué) | Lemme 1 faux : IP_n ∈ TC⁰ a bond dimension exponentielle (rang 2ⁿ−1 sur ℝ) ; parade F₂ détruit l'outillage analytique ; ce qui reste = reformulation du programme Williams ouvert | ❌ **FAILLE FATALE** sur le mécanisme |
 | 5 | Indistinguabilité CPT+C des hypercubes colorés `H_f` (jeux de pavage bijectifs + canonisation Dawar) | Les 3 + (d) + (e) (revendiqué) | Lemme 3 trivialement impossible : `∃ x. f(x)` est FO ⊂ CPT+C et distingue toute paire SAT/UNSAT ; Lemme 1 invoque un théorème de Dawar qui n'existe pas sous cette forme ; (f) non satisfaite (feuille de route admise) | ❌ **FAILLE FATALE** |
-| 6 |  |  |  | *(à venir)* |
+| 6 | Gap homologique sémantique pour circuits monotones Σ Π fan-in borné (Stanley-Reisner) | Les 7 (revendiqué) | Lemme 2 réfuté empiriquement (52/168 contre-exemples sur n=4) ; Lemme 1 confond complexe et idéal de Stanley-Reisner ; calcul promis non livré | ⚠️ **LACUNE RÉPARABLE** (direction légitime, mais réparation déplace hors cadre) |
+| 7 |  |  |  | *(à venir)* |
 
 ---
 
@@ -47,6 +48,16 @@
 
 ### ❓ Conjecturaux (plausibles mais non prouvés)
 - *(aucun retenu pour l'instant)*
+
+### ⚠️ Lacunes réparables (direction légitime mais énoncé spécifique faux)
+
+- **Piste 6 — « Gap homologique sémantique sur Stanley-Reisner ».** Première piste à ne PAS être en faille fatale. Direction correcte (topologie sémantique pour fonctions monotones, lignée Razborov 1985 / Knill-Forman / Björner-Wachs / Reiner-Welker), mais énoncé du Proposeur faux :
+  - **Lemme 2 réfuté empiriquement** (cf. [`checks/tour_06_stanley_reisner.py`](checks/tour_06_stanley_reisner.py)) : sur les 168 fonctions monotones de `n = 4`, **52 ont `β_1(Δ_f) > 0`**, et **les 52 violent** la borne « taille > #faces maximales ». Contre-exemple canonique : `f = (x_0 ∧ x_2) ∨ (x_1 ∧ x_3)`, dont `Δ_f` est le complexe de drapeau du 4-cycle C_4 (β_1 = 1), mais taille de circuit = 2 < 4 = #faces maximales.
+  - **Lemme 1 imprécis** : confond le complexe `Δ_f` avec l'**idéal** `I_{Δ_f}` (engendré par les non-faces minimales). Les implicants premiers sont les générateurs de l'idéal, *pas* des faces de Δ_f. Reformulé correctement, L1 devient une tautologie définitionnelle.
+  - **(f) non satisfaite** : calcul promis (« je m'engage à concevoir un script SageMath ») non livré ; je l'ai effectué à la place, et il a réfuté la conjecture sous-jacente.
+  - **Signe d'alarme RR** : l'invariant `β_i` est calculable en temps polynomial sur la table de vérité (constructif), et `β_1 > 0` est large (31 % à n=4). Si la borne marchait, elle serait *naturelle* au sens de Razborov-Rudich, donc condamnée par les preuves naturelles sous crypto standard.
+
+  Pour réparer : reformuler en termes d'idéal de Stanley-Reisner et invoquer des invariants algébriques plus fins (régularité de Castelnuovo-Mumford, profondeur projective, Betti gradués / formule de Hochster). Mais alors la piste sort du cadre « calcul exhaustif sur n=5 » et entre dans l'algèbre commutative computationnelle — direction active mais bien plus difficile. La lacune est précise (énoncé à raffiner) mais sa réparation déplace hors du sous-but Tour 6.
 
 ### ❌ Réfutés (faux — et pourquoi, pour ne pas y revenir)
 - **Piste 1 — « contradiction de compressibilité des témoins ».** Le sophisme central : la confrontation oppose un Kt **inconditionnel** (Lemme 1, incompressibilité Ω(n)) à un Kt qui n'est petit que **conditionnellement à x** (Lemme 2, vrai sous la forme K(w|x)=O(1), pas K(w)=O(log n) — la description doit embarquer x, de taille poly(n)). En unifiant les deux quantités, la contradiction disparaît : soit Lemme 2 redevient faux (inconditionnel), soit Lemme 1 redevient faux (conditionnel, car le témoin lex-premier est déterminé par x). Le fossé entre conditionnel et inconditionnel **est** P vs NP → circularité.
@@ -92,6 +103,8 @@
 3. **Tout argument « low-X pour TC⁰ » (low-rank, low-bond-dim, low-degree) doit d'abord exhiber un test positif sur IP_n**, où toutes ces quantités sont exponentielles. *(Piste 4 a échoué sur ce test.)*
 4. **Toute piste doit apporter une contribution technique concrète**, pas seulement une stratégie globale ou un cadre à explorer. Pointer vers Williams 2011 ne suffit pas — il faut un sous-théorème prouvable, un calcul vérifiable, ou un ingrédient algorithmique nouveau. *(Pistes 4 et 5 ont échoué sur ce test.)*
 5. **Tout argument « encoder un problème NP sous forme X et invoquer une obstruction sur X »** doit d'abord vérifier que la propriété d'intérêt n'est pas trivialement définissable dans le langage des outils utilisés. Sanity-check préalable au cadre. *(Piste 5 a échoué dessus : SAT comme coloration → trivialement FO-définissable.)*
+6. **Toute conjecture topologique sur les circuits monotones doit être empiriquement testée sur les 168 fonctions monotones de `n = 4` avant publication**, faute de quoi des contre-exemples triviaux la réfutent. *(Piste 6 : 52 contre-exemples sur 168.)*
+7. **L'invariant topologique « β_i(Δ_f) > 0 » est constructif et large** — il tombe sous Razborov-Rudich (preuves naturelles) si on prétendait en tirer une vraie borne inférieure. Tout invariant calculable en temps polynomial sur la table de vérité et vrai pour ≥ 2^{-n} des fonctions doit être traité comme suspect.
 5. **Existe-t-il une obstruction non-locale et non-algébrique** qui survive aux sauts polynomiaux *et* à l'équivalence logique ? GCT (permanent vs déterminant) est la seule réponse sérieuse aujourd'hui, mais elle est au point mort depuis 2017 (Bürgisser-Ikenmeyer-Panova : pas d'obstruction par occurrences).
 6. Côté complexité descriptive : la conjecture de Gurevich (logique capturant P) offre-t-elle un angle non-relativisant **et** non-algébrisant exploitable ?
 7. Williams 2011 (NEXP ⊄ ACC⁰) reste l'unique précédent ayant franchi les trois barrières. La voie « algorithmic method + circuit lower bound » se généralise-t-elle à TC⁰ ? *(Question ouverte centrale de la complexité depuis 15 ans — invoquer cette voie n'est pas une piste, c'est rejoindre le front de la recherche.)*
@@ -102,14 +115,12 @@
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 6** : les 6 conditions du Tour 5 restent en vigueur ((a) classe restreinte, (b) non-relativisant, (c) non-algébrisant, (d) invariance logique, (e) sauts polynomiaux, (f) contribution technique concrète). Une **7ème condition** s'ajoute :
-  - (g) **L'encodage choisi ne doit pas trivialiser la propriété distinguante.** Si la stratégie est « encoder un problème NP comme un objet X (structure, graphe, complexe, tenseur, …) et invoquer une obstruction sur X », alors la propriété d'intérêt ne doit PAS être trivialement définissable dans le langage natif de X (e.g. FO si X est une structure relationnelle ; au premier ordre topologique si X est un complexe simplicial). Sinon le Spoiler / l'algorithme trivial gagne immédiatement.
+- **Tour 7** : les 7 conditions du Tour 6 restent en vigueur. Une **8ème condition** s'ajoute :
+  - (h) **Le calcul vérificateur doit être effectivement exécuté par le Proposeur** avant soumission, avec résultat numérique livré dans la proposition. Pas de promesse (« je m'engage à concevoir le script ») — un résultat. Sinon le Réfuteur effectue le travail à sa place et réfute trivialement la conjecture.
 
-  Conseil de direction renforcé : abandonner les grandes stratégies (Williams, GCT, complexité descriptive — programmes actifs mais réservés aux chercheurs y travaillant à temps plein). Viser un **micro-progrès vérifiable** sur une **sous-classe ultra-restreinte** : par exemple,
-  - un théorème de borne inférieure pour un modèle de circuit *encore plus faible* qu'AC⁰ (e.g. circuits monotones de profondeur 2 avec fan-in borné) ;
-  - un calcul exhaustif sur petit `n` qui exhibe un phénomène à *expliquer* (et qui ne reproduit aucun résultat connu) ;
-  - une formalisation Lean d'un mini-lemme (e.g. un théorème de hiérarchie de temps déterministe sur 2-tape TM), pour s'assurer qu'on construit *quelque chose* de vérifiable.
-  Si l'idée ne tient pas sur 6 variables, elle ne tient sur rien.
+  Le Tour 6 a montré que la direction (topologie/algèbre commutative pour fonctions monotones) est légitime ; mais la formulation spécifique tombait sur des contre-exemples triviaux que le Proposeur aurait identifiés en exécutant ses propres scripts. C'est un gain d'efficacité majeur pour la boucle.
+
+  Conseil de direction : continuer dans la veine du Tour 6 (micro-progrès vérifiable sur classe ultra-restreinte) mais en garantissant la livraison du calcul. Alternativement, viser une **formalisation Lean** d'un sous-lemme déjà connu (e.g. théorème de hiérarchie de temps), pour produire au moins un objet certifié, même non original.
 
 ---
 
