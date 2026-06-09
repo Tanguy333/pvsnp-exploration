@@ -51,7 +51,7 @@
 
 | ID | Tâche | Output | Statut |
 |---|---|---|---|
-| SYNTH-001 | Réécrire le README autour de l'Atlas : « pourquoi P vs NP résiste, pièce par pièce, avec code exécutable ». Dépend de ATLAS-001. | `README.md` révisé | pending (bloqué par ATLAS-001) |
+| SYNTH-001 | Réécrire le README autour de l'Atlas : « pourquoi P vs NP résiste, pièce par pièce, avec code exécutable ». Dépend de ATLAS-001. | `README.md` révisé | ✅ **done** (2026-06-09) — README réécrit : Atlas en livrable central, arborescence des pièces, récit des 2 phases (adverse → tâches atomiques), acquis avec statut honnête, règle de réouverture, avertissement renforcé. **LES 3 PHASES DU BACKLOG SONT COMPLÈTES.** |
 
 ---
 
