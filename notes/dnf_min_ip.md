@@ -59,7 +59,10 @@ classes. Tout DNF doit donc contenir chaque implicant premier : `DNF_min = a_n`.
 
 **Vérification exécutable** : énumération exhaustive + ILP set-cover exact
 (PuLP/CBC) confirment 1, 4, 13, 40 pour n = 1, 2, 3, 4
-(`checks/tour_17_inner_product_dnf.py`, `checks/tour_17_extension_n4.py`).
+(`checks/tour_17_inner_product_dnf.py`, `checks/tour_17_extension_n4.py`),
+**et 121 pour n = 5** (énumération des 3^10 ANDs par masques de bits +
+set cover ILP, `checks/task_f005b_verification_k4_k5.py`, 2026-06-09) —
+soit **5 points de vérification directe**.
 
 ## 3. Pourquoi ce n'est pas une conséquence directe des techniques standards
 
