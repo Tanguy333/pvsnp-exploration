@@ -71,6 +71,13 @@
 | B-005 | B | **(zone 2 de l'Atlas)** Répliquer la surprise Barrington-Beigel-Rudich : OR_n admet des représentations polynomiales de degré O(√n) **mod 6** (impossible mod premier). Mesurer les degrés exacts mod 2, 3, 6 à n = 4..12. | `checks/repli_bbr_mod6.py` + tableau | ✅ **done** (2026-06-09) — phénomène répliqué spectaculairement (n=144 : mod 6 → degré 9 ; n=18 : mod 2 → 18, mod 3 → 9, **mod 6 → 3**). Mécanisme 2^a·3^b visible mais pas exact (d=4 dès n=30, prédit 36) — l'écart Ω(log n)–O(√n) ouvert depuis 1994 est *visible dans les données*. Caveat symétrique documenté. Voir `tasks/done/B-005.md`. |
 | B-005-OBS | A | *(candidate, issue de B-005)* La table exacte des degrés faibles symétriques de OR mod 6 (1,1,1,1,1,2,2,2,3,…) ne semble pas tabulée (BBR/TB donnent l'asymptotique). Folklore-check puis note courte ou soumission OEIS. | verdict + éventuelle note | pending |
 
+## Piste A — suite T-F006 (cartographie de la correspondance)
+
+| ID | Type | Tâche | Output | Statut |
+|---|---|---|---|---|
+| F-007 | F | Cartographie exhaustive `W_L1` vs `DNF_min` à n=3, 4 (65 788 fonctions, HiGHS). Îlot ou continent pour T-F006 ? | `data/w_vs_dnfmin.csv` + stats | ✅ **done** (2026-06-10) — classe d'égalité **rare** (11.8 % → 0.9 %), inégalité dans les deux sens (générique : W > D à 99 %), égalité ⊅ essentialité (78 contre-ex à n=4), W < D expliqué par le terme constant (¬AND₃ : W=2 < 3), **W réelle peut être fractionnaire (4.5)**. Renforce la valeur de T-F006. Voir `tasks/done/F-007.md`. |
+| F-008 | F | *(candidate, issue de F-007)* Caractériser structurellement la classe d'égalité `W_L1 = DNF_min` (575 fonctions à n=4 en CSV) — l'analogue du théorème d'essentialité L19 pour la correspondance T-F006. | caractérisation ou échec honnête | pending |
+
 ## Post-plan — finalisation note L18
 
 | ID | Type | Tâche | Output | Statut |
