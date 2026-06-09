@@ -32,8 +32,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-05-23 (post-tour 25 — ❌ FAILLE FATALE CFI-rigidification de 3-SAT : 100 % contre-exemples à L25.2 sur 20 formules random à n=3, construction équivalente à `(x_i, ¬x_i)` triviale, swap = flip = ne préserve pas SAT ; L25.5 conflate FPC/CPT/symmetric P. Aveux honnêtes du Proposeur mais (j) violée et (q) incomplète)
-- **Nombre de tours effectués** : 25
+- **Dernière mise à jour** : 2026-06-09 (changement de mode opératoire post-Tour 25 : **tâches atomiques** — voir `tasks/backlog.md` et CLAUDE.md §8. Première tâche F-001 complétée : la prescription Tour 24 (weight L1 sur TC⁰ d=2 \ d=1) est enfin soldée — réponse OUI via EXACT_k (O(n²) structurel), mais IP échappe (640 à n=8) → poly-weight ⊊ TC⁰ d=2, pas d'analogue Beigel-Tarui pour TC⁰. Voir `tasks/done/F-001.md`)
+- **Nombre de tours effectués** : 25 (boucle adverse suspendue ; réouverture conditionnée à l'Atlas, cf. CLAUDE.md §8)
 
 > **Numérotation Tour 24.** Le Proposeur a titré sa proposition « Tour 23 » mais
 > Tour 23 (threshold polynomial complexity / `tcomp`) est déjà existant et clos
@@ -608,7 +608,19 @@ contre la littérature DNF-MIN. Statut individuel :
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-- **Tour 26** : **prescription Tour 24 toujours maintenue et non-honorée après 2 tentatives** (Tours 24 + 25).
+> **⚠️ Section gelée depuis 2026-06-09.** La boucle adverse par tours est
+> suspendue (4 régimes d'échec documentés sur 25 tours). Le mode opératoire
+> courant est le **workflow par tâches atomiques** : `tasks/backlog.md` +
+> règles CLAUDE.md §8. La prescription Tour 24 ci-dessous a été **soldée le
+> 2026-06-09 par la tâche F-001** (`tasks/done/F-001.md`) : OUI, il existe
+> f ∈ TC⁰ d=2 \ d=1 à weight L1 polynomiale (EXACT_k, O(n²) structurel,
+> ILP-optimal aux 3 points testés), mais IP_{2k} a une weight exponentielle
+> au degré minimal (20, 119, 640 pour n=4,6,8) → la sous-classe poly-weight
+> ne couvre pas TC⁰ d=2, pas d'analogue Beigel-Tarui direct pour TC⁰.
+> Un Tour 26 ne peut être rouvert que via une cellule vide de l'Atlas
+> (`atlas/matrice_barrieres.md`, à construire — Phase 2 du backlog).
+
+- **Tour 26** : ~~prescription Tour 24 toujours maintenue et non-honorée après 2 tentatives~~ (Tours 24 + 25) — **soldée par F-001**.
 
   ### 📋 Notes sur Tours 23, 24, 25
 

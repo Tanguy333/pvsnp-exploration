@@ -86,3 +86,37 @@ Tu peux exécuter du code — utilise-le pour transformer des arguments en preuv
 - Ne déclare jamais une idée « prometteuse » par politesse. Le rôle est adverse.
 - Ne prétends jamais que le problème est résolu, ni qu'une piste « pourrait » le résoudre sans réfutation passée.
 - Reste en français (langue du projet).
+
+## 8. Mode opératoire par tâches atomiques (en vigueur depuis 2026-06-09, post-Tour 25)
+
+> Après 25 tours, le mode « le Proposeur propose une idée » est **suspendu** :
+> il a produit 4 régimes d'échec documentés (spéculation tuée par les barrières,
+> dérive hors-sujet, re-démonstration de folklore, pivot d'esquive). Le dépôt
+> fonctionne désormais par **tâches atomiques** définies dans `tasks/backlog.md`.
+> Livrable final visé : l'**Atlas des impasses** (`atlas/matrice_barrieres.md`),
+> matrice barrières × approches avec témoins et code exécutable.
+
+### Règles anti-esquive (s'appliquent à toute session)
+
+1. **No proposition.** Tu n'as pas le droit de « proposer une idée ». Toute session
+   est initialisée par une tâche du backlog avec output spécifié à l'avance.
+2. **One task per session.** Une session = une tâche. Si tu détectes un sous-problème
+   intéressant en cours d'exécution, ajoute-le en une ligne à `tasks/backlog.md`
+   sans dévier de la tâche en cours.
+3. **Output filename is sacred.** Le nom du fichier output est fixé par la tâche.
+   Tu ne peux pas créer un fichier au nom différent « parce que c'est plus clair ».
+4. **No invention.** Toute information extraite d'un paper doit y être directement
+   vérifiable. Si une section obligatoire est introuvable, écris
+   `[NON TROUVÉ DANS LE PAPER]` — n'invente pas.
+5. **Honest failure.** Si la tâche est impossible (paper inaccessible, calcul
+   infaisable, solveur en timeout), livre `tasks/failed/TASK_ID.md` avec un
+   diagnostic précis. Pas de pivot vers une tâche connexe.
+6. **No new conditions.** Les conditions (a)-(r) du cahier sont gelées. Tu n'ajoutes
+   plus de conditions ; les templates de tâche les remplacent.
+
+### Réouverture d'un Tour adverse
+
+Un Tour 26+ (boucle Proposeur/Réfuteur) ne peut être ouvert que si une cellule de
+l'Atlas révèle un trou précis, ET la proposition cite cette cellule, ET le calcul
+de vérification est livré AVANT soumission. L'Atlas est le générateur de cibles,
+pas l'imagination du modèle.
