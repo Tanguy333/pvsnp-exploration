@@ -23,7 +23,7 @@
 
 | ID | Paper | Output | Statut |
 |---|---|---|---|
-| A-001 | Williams 2011, *Nonuniform ACC circuit lower bounds* (JACM 2014) | `bib/williams_2011.md` | pending |
+| A-001 | Williams 2011, *Nonuniform ACC circuit lower bounds* (JACM 2014) | `bib/williams_2011.md` | ✅ **done** (2026-06-09) — texte intégral CCC'11 greppé. Pièce maîtresse extraite verbatim : le « pourquoi » du franchissement des 3 barrières (diagonalisation pour RR + oracle d'Aaronson NEXP^A ⊂ ACC^A pour rel./alg.). Confirme Tour 23(d) : Lemma 4.1 = SYM+ (fonction symétrique de ANDs), pas PTF. |
 | A-002 | Beigel-Tarui 1994, *On ACC* | `bib/beigel_tarui_1994.md` | pending |
 | A-003 | Tardos 1988, *The gap between monotone and non-monotone circuit complexity is exponential* | `bib/tardos_1988.md` | pending |
 | A-004 | Razborov 1987 + Smolensky 1987 (méthode polynomiale modulaire) | `bib/razborov_smolensky_1987.md` | pending |
