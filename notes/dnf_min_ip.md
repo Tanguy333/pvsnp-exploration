@@ -77,21 +77,35 @@ soit **5 points de vérification directe**.
   théorème-cadre classique, mais le *comptage exact* `(3^n − 1)/2` demande
   la classification (A).
 
-## 4. La constante 3^{n/2} transversale aux modèles de profondeur 2
+## 4. Théorème de correspondance (T-F006, prouvé le 2026-06-09) : weight PTF = DNF_min
+
+> **Théorème.** Pour tout n ≥ 1, la weight L1 minimale d'une représentation
+> à seuil de `IP_{2n}` par polynôme **réel** (base monômiale 0/1 ;
+> p ≥ 1 sur IP⁻¹(1), p ≤ 0 sur IP⁻¹(0)) vaut exactement
+> `(3^n − 1)/2 = DNF_min(IP_{2n})`.
+
+**Borne sup** : le polynôme multilinéaire exact
+`p* = (1 − Π(1−2x_iy_i))/2`, de coefficients `(−1)^{|S|+1}2^{|S|−1}` sur les
+monômes appariés, a L1 = `Σ C(n,s)2^{s−1} = (3^n−1)/2`.
+
+**Borne inf** : certificat dual **diagonal** — la mesure signée
+`w(x,x) = (−1)^{|x|+1}2^{n−|x|}` (|x| ≥ 1), `w(0,0) = −(2^n−2)`, nulle hors
+diagonale. Tous ses moments de sous-cube valent ±1 (calcul d'une ligne :
+`(−1)^{s+1}2^{n−s−r}(2−1)^r` avec n−s−r = 0), sa masse positive vaut
+`Σ_{a impair} C(n,a)2^{n−a} = (3^n−1)/2`, et la dualité faible conclut.
+Détail : `tasks/done/F-006.md` ; vérification en arithmétique exacte
+k = 1..14 + force brute k ≤ 4 : `checks/task_f006b_certificate_proof.py`.
+
+**Esthétique** : le certificat vit sur la diagonale x = y, où IP se réduit
+à PARITY.
+
+### La constante 3^{n/2} transversale aux modèles de profondeur 2
 
 | Modèle | Quantité | Valeur | Source |
 |---|---|---|---|
-| DNF pur | `DNF_min(IP_{2n})` | `(3^n − 1)/2` | cette note (Tours 17-18) |
+| DNF pur | `DNF_min(IP_{2n})` | `(3^n − 1)/2` | cette note (Tours 17-18 ; vérifié directement n=1..5) |
 | 2-CNF consistantes | max # affectations satisfaisantes d'une 2-CNF consistante avec IP | `3^n` (tight, optimum unique) | Frankl-Gryaznov-Talebanfard, ITCS 2022 ([arXiv:2111.09671](https://arxiv.org/abs/2111.09671)) |
-| PTF entière, degré libre | `min_D W_{L1}(IP_{2n}, D)` | `(3^n − 1)/2` aux 3 points n = 2, 3, 4 (**conjecture**, tâche F-002) | tâche F-001 du dépôt |
-
-La coïncidence ligne 1 / ligne 3 — la weight L1 minimale d'une PTF entière à
-degré libre égale exactement le nombre de monômes du DNF minimal — est
-vérifiée à 3 points et **non prouvée**. Si elle se confirme structurellement,
-l'interprétation naturelle serait que le DNF minimal lui-même réalise la PTF
-optimale en L1 (chaque point de `IP^{-1}(1)` étant couvert, la somme des
-indicateurs des termes reste ≥ 1 — mais le coût L1 d'un indicateur de terme
-dépasse 1 en général : la coïncidence n'est PAS triviale).
+| PTF réelle, degré libre | `min W_{L1}(IP_{2n})` | `(3^n − 1)/2` — **THÉORÈME T-F006** (plus une conjecture) | cette note §4 |
 
 ## 5. Travaux liés (recherche bibliographique, 2 campagnes, cf. `bib/l18_status.md`)
 
