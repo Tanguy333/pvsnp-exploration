@@ -85,10 +85,19 @@ de monômes du DNF minimal — est la tâche candidate F-002 du backlog.
 1. **École russe (Yablonskii et coll., années 1960-70)** : la théorie des DNF
    minimales y a été développée en profondeur, en russe, mal indexée par les
    moteurs actuels. Le résultat pourrait y figurer. Non vérifiable d'ici.
-2. **Sasao-Butler inaccessibles** : 2 sources pertinentes (Fast Method ;
-   tutoriel cryptographie) n'ont pas pu être lues (403). La probabilité que la
-   formule exacte y figure n'est pas nulle — la bi-décomposition EXOR de IP est
-   exactement leur objet.
+2. ~~**Sasao-Butler inaccessibles**~~ — **RÉSERVE LEVÉE (mise à jour
+   2026-06-09, tâche L18-NOTE)**. Les deux sources ont été obtenues et
+   greppées en texte intégral :
+   - *On the Minimization of SOPs for Bi-Decomposable Functions* (ASP-DAC
+     2001, [PDF lsi-cad.com](http://www.lsi-cad.com/sasao/Papers/files/aspdac2001_butler.pdf)) :
+     traite les bi-décompositions **AND/OR** par distributivité (fonctions
+     « orthodox ») ; le XOR est structurellement hors cadre. Zéro occurrence
+     de EXOR/inner product/bent. Contient `MSOP(EXOR_n) = 2^{n−1}`
+     (= L12, folklore re-confirmé).
+   - *Logic Functions for Cryptography — A Tutorial* (Butler-Sasao, DTIC
+     ADA548052) : IP y figure comme « disjoint quadratic function »
+     (bent homogène) sous l'angle ANF/non-linéarité — **aucun résultat de
+     taille SOP/DNF**.
 3. Absence de preuve d'absence : « non recensé » ≠ « nouveau ».
 
 ## Recommandation
