@@ -13,7 +13,8 @@
 | ID | Type | Tâche | Output | Statut |
 |---|---|---|---|---|
 | F-001 | F | Mesurer la **weight L1** (vs magnitude L∞) des PTF pour fonctions TC⁰ d=2 \ d=1 : EXACT_k (n=4,5,6) et IP (n=4,6,8), avec sanity checks MAJ/PARITY. Question cible de la prescription Tour 24 : existe-t-il f ∈ TC⁰ d=2 \ d=1 à weight polynomiale ? | `data/weight_tc0_d2.csv` + `checks/task_f001_weight_tc0_d2.py` + `tasks/done/F-001.md` | ✅ **done** (2026-06-09) — réponse : OUI (EXACT_k, O(n²) structurel) mais IP échappe (640 à n=8) → poly-weight ⊊ TC⁰ d=2 |
-| F-002 | F | *(candidate, issue de F-001)* Tester l'observation `min_D W(IP_{2k}, D) = (3^k−1)/2 = DNF_min(IP_{2k})` au point suivant k=5 (n=10 : 1024 contraintes, prédiction 121) et chercher la construction explicite qui réalise cette weight. | `data/weight_ip_k5.csv` + verdict | pending |
+| F-002 | F | *(candidate, issue de F-001)* Tester l'observation `min_D W(IP_{2k}, D) = (3^k−1)/2 = DNF_min(IP_{2k})` au point suivant k=5 (n=10 : 1024 contraintes, prédiction 121) et chercher la construction explicite qui réalise cette weight. | `data/weight_ip_k5.csv` + verdict | ✅ **done** (2026-06-09) — **CONFIRMÉE et prouvée optimale** (CBC, 2.8 s) : 121 = (3^5−1)/2. Observation O-F002 à 4 points (4, 13, 40, 121). Profil : le min exige le degré plein (153 à D=9, 249 à D=8). Voir `tasks/done/F-002.md`. |
+| F-004 | F | *(candidate, issue de F-002)* Extraire les solutions L1-optimales de l'ILP à k=2, 3 et analyser leur structure (support, signes, lien aux implicants premiers) — chemin vers la preuve structurelle de O-F002. Si prouvée : théorème de correspondance weight-PTF ↔ DNF_min, à intégrer à la note L18. | `data/optimal_ptf_structure.csv` + analyse | pending |
 | L18-STATUS | A | Trancher le statut bibliographique de L18 (`DNF_min(IP_{2n}) = (3^n−1)/2`, Tour 18) : folklore obscur ou non-recensé ? Recherche systématique (DNF complexity of bent functions, inner product, Quine-McCluskey appliqué à IP). | `bib/l18_status.md` (verdict : référence trouvée OU « non trouvé après recherche de X sources listées ») | ✅ **done** (2026-06-09) — verdict : **NON RECENSÉ** après 10+ sources dont Jukna (587 p. greppées) et la lignée depth-3 2021-2026. Réserves : école russe Yablonskii + 2 sources Sasao-Butler inaccessibles (403). Plus proche parent : FGT22 (3^{n/2} côté 2-CNF). Candidat note courte. |
 | L18-NOTE | C | *(candidate, débloquée par L18-STATUS)* Vérifier les 2 sources Sasao-Butler inaccessibles (Fast Method MSOP decomposable ; tutoriel crypto DTIC), puis si toujours non recensé, rédiger une note courte (énoncé + preuve Tour 18 + observation 3^{n/2} transverse + lien FGT22). | `notes/dnf_min_ip.md` (brouillon de note) | ✅ **done** (2026-06-09) — 2 sources obtenues et greppées : formule ABSENTE des deux (ASP-DAC'01 = AND/OR seulement, XOR hors cadre ; tutoriel DTIC = angle ANF). Réserves Sasao-Butler levées dans `bib/l18_status.md`. Brouillon de note rédigé. Reste avant soumission : relecture experte + vérification école russe. |
 
@@ -46,6 +47,26 @@
 | ID | Tâche | Output | Statut |
 |---|---|---|---|
 | ATLAS-001 | Assembler la matrice barrières × approches : lignes = ~10 familles d'approches rencontrées aux Tours 1-25 + littérature, colonnes = 4 barrières (BGS, RR, AW, Tardos), chaque cellule = verdict + témoin + référence. Dépend de A-001..A-008 et D-001..D-004. | `atlas/matrice_barrieres.md` | ✅ **done** (2026-06-09) — matrice 12 lignes × 4 barrières + colonne « verrou réel ». 3 lectures : (1) seule la ligne Williams franchit tout, (2) les barrières classiques ne sont plus le front — chaque programme vivant a sa barrière interne, (3) les 25 tours se classent sans reste. 5 zones génératrices de cibles identifiées pour la règle d'ouverture Tour 26+. |
+
+## Stratégie 2026-06 (validée) — 3 pistes
+
+> **A — Fabrique à notes courtes** : pipeline répétable « mesure exacte → folklore-check → note si non recensé ». Candidats : F-002, fonctions bent au-delà d'IP.
+> **B — Atlas exécutable** : répliquer les résultats-clés en code (B-001 Håstad, B-002 Smolensky, B-005 BBR mod 6).
+> **C — Boucle adverse gelée** sauf zones 1-2 de l'Atlas, via F-003 (SYM∘AND) et mesures mod 6.
+> Cadence : alterner A et B ; C gelée tant que F-003 n'a pas parlé. Plafond réaliste assumé : notes IPL + atlas de référence.
+
+## Piste A/C — mesures en cours
+
+| ID | Type | Tâche | Output | Statut |
+|---|---|---|---|---|
+| F-003 | F | **(zone 1 de l'Atlas)** Mesurer par ILP/SAT la taille minimale d'une représentation **SYM∘AND exacte** (format Beigel-Tarui : fonction symétrique d'un multiset de ANDs) d'IP à n=4, 6, 8. Quantifie le verrou Williams→TC⁰ dans le bon format (F-001 le mesurait côté PTF). | `data/symand_ip.csv` + script + verdict | pending |
+| B-005 | B | **(zone 2 de l'Atlas)** Répliquer la surprise Barrington-Beigel-Rudich : OR_n admet des représentations polynomiales de degré O(√n) **mod 6** (impossible mod premier). Mesurer les degrés exacts mod 2, 3, 6 à n = 4..12. | `checks/repli_bbr_mod6.py` + tableau | pending |
+
+## Post-plan — finalisation note L18
+
+| ID | Type | Tâche | Output | Statut |
+|---|---|---|---|---|
+| L18-CHECK | A | Check communautaire : (0) vérifier qu'aucune question existante sur cstheory.SE ne couvre le sujet ; (1) préparer la question prête à poster + le mail à Göös ; (2) **Tanguy poste** (action sous son identité) ; (3) consigner le résultat. | `notes/folklore_check_drafts.md` + journal §3 du fichier | 🔶 **étapes 0-1 done** (2026-06-09 : aucune question existante ; 2 textes prêts). **Étapes 2-3 : à la main de Tanguy.** |
 
 ## Phase 3 — Synthèse publique
 
