@@ -1,0 +1,8 @@
+fonction,n,ones,poids,statut,temps_s
+"OR(THR,THR)",4,12,2,Optimal,0
+"AND(THR,THR)",4,4,1,Optimal,0
+"XOR(THR,THR)",4,8,2,Optimal,0
+"OR(THR3,THR3)",6,55,4,Optimal,0
+"XOR(THR3,THR3)",6,30,6,Optimal,1
+"MAJ3(THR,THR,THR)",6,32,3,Optimal,0
+IP_6 (calibration),6,28,3,Optimal,0
