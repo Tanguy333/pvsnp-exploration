@@ -32,8 +32,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-06-09 (changement de mode opératoire post-Tour 25 : **tâches atomiques** — voir `tasks/backlog.md` et CLAUDE.md §8. Première tâche F-001 complétée : la prescription Tour 24 (weight L1 sur TC⁰ d=2 \ d=1) est enfin soldée — réponse OUI via EXACT_k (O(n²) structurel), mais IP échappe (640 à n=8) → poly-weight ⊊ TC⁰ d=2, pas d'analogue Beigel-Tarui pour TC⁰. Voir `tasks/done/F-001.md`)
-- **Nombre de tours effectués** : 25 (boucle adverse suspendue ; réouverture conditionnée à l'Atlas, cf. CLAUDE.md §8)
+- **Dernière mise à jour** : 2026-06-09 (**l'Atlas des impasses est assemblé** : [`atlas/matrice_barrieres.md`](atlas/matrice_barrieres.md) — 12 familles d'approches × 4 barrières + verrous réels, adossé à 8 audits sur textes (`bib/`), 4 cellules détaillées (`barriers/`), 2 mesures exécutables et les 25 tours. Phases 1 et 2 du backlog complètes : F-001, L18-STATUS/NOTE, A-001..A-008, D-001..D-004, ATLAS-001. Reste SYNTH-001 (README). L18 = seul objet non recensé du dépôt, candidat note courte)
+- **Nombre de tours effectués** : 25 (boucle adverse suspendue ; réouverture conditionnée aux 5 zones génératrices de l'Atlas, cf. CLAUDE.md §8 et `atlas/matrice_barrieres.md` dernière section)
 
 > **Numérotation Tour 24.** Le Proposeur a titré sa proposition « Tour 23 » mais
 > Tour 23 (threshold polynomial complexity / `tcomp`) est déjà existant et clos
@@ -787,11 +787,13 @@ contre la littérature DNF-MIN. Statut individuel :
 
 ## 6. Prochaine action
 
-- [ ] Proposeur : générer une idée pour le sous-but ci-dessus (non-relativisante + classe restreinte)
-- [ ] Réfuteur : attaquer l'idée, vérifier en priorité relativisation ET algébrisation
-- [ ] Confronter à la littérature réelle (cf. §7 Bibliographie + recherche web) : l'idée correspond-elle à une tentative déjà publiée/écartée ?
-- [ ] Si « survit » : isoler un sous-lemme vérifiable / tenter une formalisation (Lean)
-- [ ] Consigner le résultat (succès **ou** échec documenté) dans les sections 2 et 3
+> **Mode tâches atomiques en vigueur** (CLAUDE.md §8, `tasks/backlog.md`).
+> L'ancienne boucle « Proposeur génère une idée » est suspendue.
+
+- [x] Phases 1 et 2 du backlog : F-001, L18-STATUS, L18-NOTE, A-001..A-008, D-001..D-004, ATLAS-001 — **complètes** (2026-06-09)
+- [ ] SYNTH-001 : réécrire le README autour de l'Atlas (`atlas/matrice_barrieres.md`)
+- [ ] Optionnel : F-002 (tester `min_D W(IP_{2k}) = (3^k−1)/2` à k=5, prédiction 121) ; finalisation de la note L18 (relecture experte + vérification école russe)
+- [ ] Tour 26 éventuel : uniquement via un sous-lemme vérifiable d'une des 5 zones génératrices de l'Atlas (dernière section de `atlas/matrice_barrieres.md`)
 
 ---
 

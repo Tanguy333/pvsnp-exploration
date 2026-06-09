@@ -45,7 +45,7 @@
 
 | ID | Tâche | Output | Statut |
 |---|---|---|---|
-| ATLAS-001 | Assembler la matrice barrières × approches : lignes = ~10 familles d'approches rencontrées aux Tours 1-25 + littérature, colonnes = 4 barrières (BGS, RR, AW, Tardos), chaque cellule = verdict + témoin + référence. Dépend de A-001..A-008 et D-001..D-004. | `atlas/matrice_barrieres.md` | pending (bloqué par Phase 2) |
+| ATLAS-001 | Assembler la matrice barrières × approches : lignes = ~10 familles d'approches rencontrées aux Tours 1-25 + littérature, colonnes = 4 barrières (BGS, RR, AW, Tardos), chaque cellule = verdict + témoin + référence. Dépend de A-001..A-008 et D-001..D-004. | `atlas/matrice_barrieres.md` | ✅ **done** (2026-06-09) — matrice 12 lignes × 4 barrières + colonne « verrou réel ». 3 lectures : (1) seule la ligne Williams franchit tout, (2) les barrières classiques ne sont plus le front — chaque programme vivant a sa barrière interne, (3) les 25 tours se classent sans reste. 5 zones génératrices de cibles identifiées pour la règle d'ouverture Tour 26+. |
 
 ## Phase 3 — Synthèse publique
 
