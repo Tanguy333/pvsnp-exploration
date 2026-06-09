@@ -36,10 +36,10 @@
 
 | ID | Cellule | Output | Statut |
 |---|---|---|---|
-| D-001 | Méthode Williams (algorithmic method) vs Razborov-Rudich : l'algorithme CAPP est-il « naturel » ? | `barriers/williams_vs_rr.md` | pending |
-| D-002 | GCT vs algébrisation Aaronson-Wigderson | `barriers/gct_vs_aw.md` | pending |
-| D-003 | CFI / CPT vs Razborov-Rudich | `barriers/cfi_vs_rr.md` | pending |
-| D-004 | Hardness magnification vs barrière de localité (CHOPRS 2020) | `barriers/magnif_vs_locality.md` | pending |
+| D-001 | Méthode Williams (algorithmic method) vs Razborov-Rudich : l'algorithme CAPP est-il « naturel » ? | `barriers/williams_vs_rr.md` | ✅ **done** (2026-06-09) — FRANCHISSEMENT par double sortie (diagonalisation = pas une propriété de tables ; ACC sans PRF). Réserve : argumenté fortement, pas démontré formellement (contrairement à rel./alg.). |
+| D-002 | GCT vs algébrisation Aaronson-Wigderson | `barriers/gct_vs_aw.md` | ✅ **done** (2026-06-09) — SANS OBJET structurel pour AW (pas d'oracle, symétries explicites) mais présumé, non démontré. La vraie barrière de GCT est INTERNE : BIP 2019 (verbatim arXiv) tue les occurrence obstructions ; multiplicity obstructions ouvertes sans technique. |
+| D-003 | CFI / CPT vs Razborov-Rudich | `barriers/cfi_vs_rr.md` | ✅ **done** (2026-06-09) — SANS OBJET pour FPC (pas une borne de circuit) ; mais l'immunité mesure la distance à P vs NP (les deux côtés dans P). L'immunité ne se transmet pas au programme complet (CPT ⊊ P ferait réapparaître RR). |
+| D-004 | Hardness magnification vs barrière de localité (CHOPRS 2020) | `barriers/magnif_vs_locality.md` | ✅ **done** (2026-06-09) — texte intégral CHOPRS (52 p.) greppé. Définition exacte extraite : les théorèmes de magnification produisent inconditionnellement des circuits-oracle small fan-in pour Q ; toutes les techniques connues « localisent » → FERMÉE pour adaptations directes. Réfute l'Anti-Checker Hypothesis. |
 
 ### Assemblage
 
