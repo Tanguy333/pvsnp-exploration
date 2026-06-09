@@ -131,6 +131,13 @@ k = 1..14 + force brute k ≤ 4 : `checks/task_f006b_certificate_proof.py`.
    Korshunov — *Diskretnaya Matematika* / *Problemy Kibernetiki*).
 2. **Relecture experte indépendante** de la preuve (A)-(C) — l'audit interne
    du dépôt (boucle adverse) ne remplace pas un referee.
+   - *Journal des relectures* : **2026-06-10 — relecture humaine par Tanguy
+     Le Mer (porteur du projet, formation maths/complexité prépa +
+     université de Poitiers) : preuves L18 et T-F006 relues.** Ne vaut pas
+     relecture par un expert indépendant du domaine, mais lève le verrou
+     « aucun humain n'a lu la preuve ».
+   - Folklore-check en cours : mail envoyé à M. Göös le 2026-06-09,
+     réponse attendue.
 3. La preuve devrait être étendue/vérifiée pour la version CNF
    (`CNF_min(IP_{2n}) = b_n = (3^n + 1)/2` ?) — non établie dans le dépôt,
    plausible par dualité mais NON prouvée (ne pas inclure sans preuve).
