@@ -62,7 +62,8 @@
 | ID | Type | Tâche | Output | Statut |
 |---|---|---|---|---|
 | F-003 | F | **(zone 1 de l'Atlas)** Mesurer par ILP/SAT la taille minimale d'une représentation **SYM∘AND exacte** (format Beigel-Tarui : fonction symétrique d'un multiset de ANDs) d'IP à n=4, 6, 8. Quantifie le verrou Williams→TC⁰ dans le bon format (F-001 le mesurait côté PTF). | `data/symand_ip.csv` + script + verdict | pending |
-| B-005 | B | **(zone 2 de l'Atlas)** Répliquer la surprise Barrington-Beigel-Rudich : OR_n admet des représentations polynomiales de degré O(√n) **mod 6** (impossible mod premier). Mesurer les degrés exacts mod 2, 3, 6 à n = 4..12. | `checks/repli_bbr_mod6.py` + tableau | pending |
+| B-005 | B | **(zone 2 de l'Atlas)** Répliquer la surprise Barrington-Beigel-Rudich : OR_n admet des représentations polynomiales de degré O(√n) **mod 6** (impossible mod premier). Mesurer les degrés exacts mod 2, 3, 6 à n = 4..12. | `checks/repli_bbr_mod6.py` + tableau | ✅ **done** (2026-06-09) — phénomène répliqué spectaculairement (n=144 : mod 6 → degré 9 ; n=18 : mod 2 → 18, mod 3 → 9, **mod 6 → 3**). Mécanisme 2^a·3^b visible mais pas exact (d=4 dès n=30, prédit 36) — l'écart Ω(log n)–O(√n) ouvert depuis 1994 est *visible dans les données*. Caveat symétrique documenté. Voir `tasks/done/B-005.md`. |
+| B-005-OBS | A | *(candidate, issue de B-005)* La table exacte des degrés faibles symétriques de OR mod 6 (1,1,1,1,1,2,2,2,3,…) ne semble pas tabulée (BBR/TB donnent l'asymptotique). Folklore-check puis note courte ou soumission OEIS. | verdict + éventuelle note | pending |
 
 ## Post-plan — finalisation note L18
 
