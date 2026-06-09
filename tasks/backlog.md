@@ -60,7 +60,7 @@
 | ID | Type | Tâche | Output | Statut |
 |---|---|---|---|---|
 | B-001 | B | Répliquer le **Switching Lemma de Håstad** : Pr[DTdepth(f\|ρ) ≥ s] ≤ (5pk)^s sur k-DNF aléatoires + TRIBES, profondeur DT exacte, 800k restrictions. | `checks/repli_hastad_switching.py` + tableau | ✅ **done** (2026-06-10) — borne respectée sur 4 configs. Tribes : décroissance géométrique visible, taux ≈ 1.3·pk (vs constante 5 de la borne). DNF aléatoires : borne très lâche. Voir `tasks/done/B-001.md`. |
-| B-002 | B | Répliquer l'**approximation de Smolensky** : polynômes probabilistes bas degré sur F₃ pour MOD₂, mesurer l'erreur d'approximation empirique vs théorie à n=6..12. | `checks/repli_smolensky.py` + tableau | pending |
+| B-002 | B | Répliquer l'**approximation de Smolensky** : polynômes probabilistes bas degré sur F₃ pour MOD₂, mesurer l'erreur d'approximation empirique vs théorie à n=6..12. | `checks/repli_smolensky.py` + tableau | ✅ **done** (2026-06-10) — Pas 1 : erreur OR suit (1/3)^ℓ fidèlement. Pas 2 : accord max EXACT degré-d/PARITY par énumération du code (jusqu'à 3^16 mots) ≤ borne de comptage partout, serrée à d=2 ; fraction → 1/2. Bonus : à d=1, accord max = somme des 2 couches binomiales centrales (4 points). **Les 3 moteurs de la lignée AC⁰/ACC⁰ sont répliqués** (B-001, B-002, B-005). Voir `tasks/done/B-002.md`. |
 
 ## Piste A/C — mesures en cours
 
