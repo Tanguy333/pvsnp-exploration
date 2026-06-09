@@ -71,7 +71,19 @@
 | B-005 | B | **(zone 2 de l'Atlas)** Répliquer la surprise Barrington-Beigel-Rudich : OR_n admet des représentations polynomiales de degré O(√n) **mod 6** (impossible mod premier). Mesurer les degrés exacts mod 2, 3, 6 à n = 4..12. | `checks/repli_bbr_mod6.py` + tableau | ✅ **done** (2026-06-09) — phénomène répliqué spectaculairement (n=144 : mod 6 → degré 9 ; n=18 : mod 2 → 18, mod 3 → 9, **mod 6 → 3**). Mécanisme 2^a·3^b visible mais pas exact (d=4 dès n=30, prédit 36) — l'écart Ω(log n)–O(√n) ouvert depuis 1994 est *visible dans les données*. Caveat symétrique documenté. Voir `tasks/done/B-005.md`. |
 | B-005-OBS | A | *(candidate, issue de B-005)* La table exacte des degrés faibles symétriques de OR mod 6 (1,1,1,1,1,2,2,2,3,…) ne semble pas tabulée (BBR/TB donnent l'asymptotique). Folklore-check puis note courte ou soumission OEIS. | verdict + éventuelle note | pending |
 
-## Piste A — suite T-F006 (cartographie de la correspondance)
+## ⚠ Recadrage 2026-06-10 (utilisateur) : rester sur l'objectif P vs NP
+
+> La piste A (notes de combinatoire booléenne) est **gelée** au-delà de la
+> finalisation L18/T-F006 (attente externe Göös uniquement). Le travail
+> actif = **les zones de l'Atlas**, seuls fronts P vs NP. F-008 gelée.
+
+| ID | Type | Tâche | Output | Statut |
+|---|---|---|---|---|
+| F-009 | F | **(zone 2)** Degrés faibles symétriques de **MAJORITY mod 2/3/6** — la fonction de la conjecture ouverte de 1987. La magie composite opère-t-elle sur MAJ comme sur OR ? | `checks/task_f009_maj_mod6.py` + tableau | ✅ **done** (2026-06-10) — **NON** : MAJ mod 6 croît linéairement (16 à n=20-30 vs OR = 3-4), suit min(mod 2, mod 3) avec économies marginales. Mécanisme visible : ⌈n/2⌉ zéros forcés écrasent le noyau binomial (OR n'en force qu'un). Cohérent avec la conjecture MAJ ∉ AC⁰[6] au niveau polynomial faible. Voir `tasks/done/F-009.md`. |
+| F-010 | F | *(candidate, zone 2)* Transition THR_t mod 6 quand t croît de 1 (OR, avantage composite ~√n) à ⌈n/2⌉ (MAJ, avantage mort) : **où l'avantage composite meurt-il ?** Courbe deg₆(THR_t,n) en fonction de t. | tableau + transition | pending |
+| B-006 | B | **(zone 1)** Répliquer l'algorithme de Williams en exécutable : évaluation rapide d'un SYM∘AND (programmation dynamique) battant la force brute 2^n sur instances jouets — le cœur opérationnel de la seule méthode ayant franchi les 3 barrières. | `checks/repli_williams_eval.py` + benchmark | pending |
+
+## Piste A — suite T-F006 (cartographie de la correspondance) — GELÉE (recadrage)
 
 | ID | Type | Tâche | Output | Statut |
 |---|---|---|---|---|
