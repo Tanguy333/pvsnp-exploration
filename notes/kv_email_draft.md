@@ -48,6 +48,19 @@ bumps (motifs like (−1, 2, −1) spread along the window), with the
 shift-invariance of the stencil lattice clearly visible among the
 minimizers.
 
+**A possibly useful reformulation.** Using two elementary symmetries of
+L(B) — shift invariance (a vector with a zero prefix can be shifted
+left, by lower-triangularity of B) and reversal (γ_i ↦ γ_{n−i} maps
+L(B) to itself, since the alternating binomial stencil is (anti)symmetric)
+— one gets a five-line equivalence: your Conjecture 5 holds iff some
+shortest vector has its FIRST nonzero coordinate equal to ±1; by
+triangularity this first coordinate is exactly the leading lattice
+coefficient a_{k₀}. So Conjecture 5 is equivalent to a statement about
+the leading coefficient of shortest vectors. Empirically the picture is
+even stronger: in every cell I tested (n ≤ 20, d ≤ 9), EVERY shortest
+vector has its first nonzero coordinate equal to ±1 — so any argument
+about any single shortest vector would suffice.
+
 **A small quantitative observation.** The minimal squared norms are much
 smaller than the single-stencil value C(2d+2, d+1): for instance 18
 versus 924 at (n, d) = (16, 5), and 1716 versus 12870 at (10, 7). Integer
