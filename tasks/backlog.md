@@ -97,6 +97,14 @@
 | F-011-e20 | F | *(candidates)* (a) décision exacte de la plate à n = 10 (recherche jointe (u,v), SAT/ILP ?) ; (b) le modèle intermédiaire (valeurs prescrites partielles / approximations probabilistes mod 6 — le vrai Pas-1 manquant) ; (c) note de synthèse §modèle général. | — | ⚠ **(a) NON CONCLU** (2026-06-10) — recuit joint cale (coût 27, 35,5 M itér.) ET ILP timeout (420 s) : soupçon sérieux que deg₆(MAJ_10) ≥ 6 (plate fausse hors points spéciaux), **sans preuve**. Instance documentée comme problème ouvert exécutable (252+252 vars, 638 contraintes). Pistes : SAT/CryptoMiniSat, ILP long, comptage par strates. (b)(c) restent. Voir `tasks/done/F-011-etape20.md`. |
 | F-011-SYNTH | — | Synthèse du fil : note structurée des 7 théorèmes + 2 conjectures + réfutation + questions ouvertes | `notes/front_composite.md` | ✅ **done** (2026-06-10) — note de référence du fil rédigée (théorèmes A-D + Lemmes 1-3 avec preuves, statut épistémique explicite, folklore-check dédié requis avant diffusion). |
 
+## 🔭 Veille probabiliste 2026-06-11 (demande utilisateur) → 2 tâches
+
+| ID | Type | Tâche | Output | Statut |
+|---|---|---|---|---|
+| VEILLE-P | — | Veille « nouvelles méthodes probabilistes » : 4 fronts examinés (toriques, méta-complexité, probas conditionnelles, OGP) | `bib/veille_probabilistes_2026.md` | ✅ **done** (2026-06-11) — pépite : **polynômes toriques** (BHLR 2019 + Krishan 2024) = notre « modèle intermédiaire » avec formulation LP ; méta-complexité = ligne Atlas manquante ; dérandomisation et OGP : hors-cible documenté. |
+| V-001 | F | **Polynômes toriques de MAJ aux petits n** : mesurer le degré torique (sym vs général) par LP exacts + duaux ; répliquer numériquement la borne symétrique BHLR ; sonder si l'asymétrie aide (notre gabarit e17). | données + réplication | pending |
+| A-009 | A | **Audit méta-complexité** (Hirahara 2018-23, MCSP, non-boîte-noire) + nouvelle ligne Atlas + statut barrières sur textes | `bib/meta_complexite.md` + ligne Atlas | pending |
+
 ## ⚠ Recadrage 2026-06-10 (utilisateur) : rester sur l'objectif P vs NP
 
 > La piste A (notes de combinatoire booléenne) est **gelée** au-delà de la
