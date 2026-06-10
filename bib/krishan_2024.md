@@ -56,6 +56,22 @@ symétrisation WLOG est *fausse* en général sur le tore — KV le prouvent).
 Nos mesures MAJ complètent leur séparation Δ_w : les deux ensemble
 dessinent la frontière exacte de là où l'asymétrie mord.
 
+## La conjecture exacte (extraite le 2026-06-11, V-003)
+
+> « The main hurdle we encounter in proving this is that, while Lemma 3.9
+> gives us an upper bound on the ℓ1 norm of the shortest vector, we are
+> not able to argue about which position in the shortest vector must
+> contain an odd entry. If we can prove that the last entry in the
+> shortest vector is one, then by using an argument similar to Lemma 3.8,
+> we can prove the lower bound for all ∆w functions. Hence, we conjecture
+> that the last entry is indeed one.
+> **Conjecture 5. Consider the basis B for any n, d. There exists a
+> vector γ ∈ L(B) with the smallest ℓ2 norm such that γ_n = 1.** »
+
+C'est un énoncé de **réseau euclidien** (plus court vecteur d'un réseau
+binomial avec contrainte sur la dernière coordonnée) — directement
+calculable aux petits (n, d) : candidat V-004.
+
 ## Ouverture exécutable (V-003 candidate)
 
 Leur machinerie duale = nos certificats duaux (F-005/F-006). Sonder
