@@ -97,13 +97,19 @@ degrés.*
 
 ## 6. Le cas mod 3 : périodicité et descente
 
-**Théorème D (= T-F011c, périodicité).** *Pour toute puissance
-P = 3^b ≤ n − t + 1 : `deg₃^sym(THR_{t,n}) ≥ P`.*
+**Théorème D (= T-F011c, périodicité) — [CONNU : BBR 1994, Thm 2.2].**
+*Pour toute puissance P = 3^b ≤ n − t + 1 : `deg₃^sym(THR_{t,n}) ≥ P`.*
 
 *Preuve.* Lucas donne `C(P,k) ≡ 0 (mod 3)` pour 0 < k < P, et P impair,
 donc **`Δ^P = S^P − id`** sur F₃ (S = décalage). Si deg < P, alors
 Δ^P S ≡ 0 : la suite des valeurs est P-périodique — mais S(t−1) = 0 et
 S(t−1+P) ∈ {1,2} : contradiction. ∎
+
+> **Attribution (audit 2026-06-10, `bib/bbr_1994.md`)** : c'est l'argument
+> de BBR Théorème 2.2 (« a symmetric polynomial modulo m is also periodic
+> […] f(j) ≡ f(0) and cannot represent the OR function »), spécialisé à
+> m = 3 et étendu trivialement au préfixe THR_t. Requalifié : réplication,
+> pas un théorème du dépôt.
 
 **Lemme 3 (descente).** *Si deg(g) ≤ d et P = 3^b ≤ d+1, alors
 `G := g(·+P) − g` a un degré ≤ d − P sur [0, n−P].*
@@ -118,15 +124,20 @@ S(t−1+P) ∈ {1,2} : contradiction. ∎
   cas la puissance suivante. *(La borne ≥ des cas d'anomalie est prouvée —
   Théorème B ; il manque les bornes ≤ générales et l'exclusion des valeurs
   intermédiaires hors anomalies.)*
-- **Loi OR mod 3 — borne inférieure désormais PROUVÉE (Théorème E,
-  étape 7)** : `deg₃^sym(OR_n) ≥ max(3^⌊log₃n⌋, n − 3^⌊log₃n⌋)` pour tout
-  n. *Preuve de la rampe : descente (Lemme 3) → périodicité de G → paires
-  interdites sur {1,2} (la récurrence g(j+2P) = 2g(j+P) − g(j) interdit
-  (1,2) et (2,1), donc G ≡ 0 sur [1, n−2P] avec G(0) ≠ 0) → interpolation
-  de Mahler (Σ(−1)^iC(D+1,i) = (−1)^D force G(D+1) ≠ 0 : contradiction).*
-  L'égalité est vérifiée sur toutes les cellules calculées (26/26) ; seule
-  la borne supérieure générale (constructions pour tout n) reste à
-  prouver.
+- **Loi OR mod 3 — THÉORÈME EXACT COMPLET (étapes 7-9)** :
+  > `deg₃^sym(OR_n) = max(3^⌊log₃n⌋, n − 3^⌊log₃n⌋)` pour tout n ≥ 1.
+
+  *Borne inférieure (Théorèmes D + E)* : périodicité (Δ^P = S^P − id) pour
+  le terme 3^b ; pour la rampe : descente (Lemme 3) → périodicité de G →
+  paires interdites sur {1,2} (G ≡ 0 sur [1, n−2P], G(0) ≠ 0) →
+  interpolation de Mahler (Σ(−1)^iC(D+1,i) = (−1)^D : contradiction).
+  *Borne supérieure (Théorèmes F + G)* : régime 1 par la suite explicite
+  `(0, 1^P, 2^{n−P})` (h ≡ 1 constante) ; rampe par
+  `h = c(−1)^r C(w−1, r)` — la périodicité automatique des fonctions de
+  degré < P rend les contraintes de compatibilité équivalentes aux
+  propriétés de h, et *l'objet de l'obstruction de la borne inf devient la
+  construction de la borne sup*. Vérification : 26/26 constructions
+  explicites + égalité loi = construction = DP partout.
 - **C-F011d (réfutée)** : le critère de blocage mono-poids n'est PAS exact
   en fenêtre longue (150 contre-exemples) — il existe des obstructions
   collectives, dont le mod-2 (unicité de l'échelon) est l'exemple résolu.
@@ -149,8 +160,22 @@ preuve écrite ET une vérification exécutable indépendante (identités sur
 échantillons massifs, croisements DP/solveur, certificats en entiers
 exacts). Une conjecture intermédiaire (C-F011d) a été réfutée par les
 données le jour de sa formulation — le processus fonctionne dans les deux
-sens. **Aucune relecture externe** ; nouveauté non vérifiée contre la
-littérature (les techniques — Mahler, Lucas, Kummer — sont classiques ;
-les énoncés exacts sur deg_m^sym(THR) ne figurent pas dans les sources
-consultées aux audits A-004/B-005, mais un folklore-check dédié serait
-nécessaire avant toute diffusion).
+sens. **Aucune relecture externe.**
+
+## 9bis. Confrontation à la littérature (audit du 2026-06-10, `bib/bbr_1994.md`)
+
+BBR 1994 lu en texte intégral ; Canteaut-Videau 2005 identifié. Verdict :
+
+| Énoncé | Statut littérature |
+|---|---|
+| Lemmes 1-2 (Mahler, fenêtre) | **Folklore** (BBR ont la base par période ; différences finies standard) |
+| Théorème D (périodicité) | **CONNU = BBR Thm 2.2** (requalifié réplication) |
+| Théorème A (mod 2 exact, THR) | Probablement connu/dérivable (Canteaut-Videau 2005 : lien périodicité-degré F₂ par Lucas) |
+| Asymptotique symétrique OR mod 6 (Θ(√n), cf. B-005) | **CONNU = BBR Thms 2.1-2.2** |
+| Théorème E (rampe exacte n−3^b) | **Non trouvé** — strictement plus fin que le Ω de BBR |
+| Théorèmes F-G + loi exacte max(3^b, n−3^b) | **Non trouvés** (BBR : constantes lâches, pas de valeurs exactes) |
+| Théorèmes B-C (fenêtres mod 6, MAJ_32 = 27, mécanisme C(2q,q)) + C-F011 | **Non trouvés** |
+
+**Réserve** : « non trouvé » ≠ « nouveau » — la littérature post-1994 sur
+les degrés MOD_m exacts des fonctions symétriques n'a pas été balayée
+exhaustivement. Folklore-check dédié requis avant toute diffusion.
