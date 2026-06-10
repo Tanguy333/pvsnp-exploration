@@ -71,6 +71,14 @@
 | B-005 | B | **(zone 2 de l'Atlas)** Répliquer la surprise Barrington-Beigel-Rudich : OR_n admet des représentations polynomiales de degré O(√n) **mod 6** (impossible mod premier). Mesurer les degrés exacts mod 2, 3, 6 à n = 4..12. | `checks/repli_bbr_mod6.py` + tableau | ✅ **done** (2026-06-09) — phénomène répliqué spectaculairement (n=144 : mod 6 → degré 9 ; n=18 : mod 2 → 18, mod 3 → 9, **mod 6 → 3**). Mécanisme 2^a·3^b visible mais pas exact (d=4 dès n=30, prédit 36) — l'écart Ω(log n)–O(√n) ouvert depuis 1994 est *visible dans les données*. Caveat symétrique documenté. Voir `tasks/done/B-005.md`. |
 | B-005-OBS | A | *(candidate, issue de B-005)* La table exacte des degrés faibles symétriques de OR mod 6 (1,1,1,1,1,2,2,2,3,…) ne semble pas tabulée (BBR/TB donnent l'asymptotique). Folklore-check puis note courte ou soumission OEIS. | verdict + éventuelle note | pending |
 
+## 🎯 Fil actif — F-011 : vers un théorème sur le front composite (zone 2)
+
+| ID | Type | Tâche | Output | Statut |
+|---|---|---|---|---|
+| F-011-e1 | F | Cerner la loi de `deg₆^sym(MAJ_n)` (données n=1..44, anomalies, mécanisme) | conjecture | ✅ **done** (2026-06-10) — **C-F011 formulée** : L1(t) = plus petite puissance de 2 ou 3 ≥ t, sauf si q=2^a, n ≥ 2q et C(2q,q) ≡ 0 mod 3 (mécanisme vérifié 3/3 ; 40/42 points). **Prédiction falsifiable : deg₆^sym(MAJ_32) = 27.** Voir `tasks/done/F-011-etape1.md`. |
+| F-011-e2 | F | Tester la prédiction MAJ_32 = 27 (caps élargis) + sonder les autres puissances critiques (t = 32 : C(64,32) mod 3 ?) | verdict prédiction | pending |
+| F-011-e3 | F | **Prouver C-F011** : borne sup par constructions e_q + corrections noyau ; borne inf par infaisabilité des combinaisons (Lucas, pipeline T-F006 sur les certificats). Si succès : 1re borne inférieure du dépôt sur le front composite (classe symétrique). | théorème ou échec honnête | pending |
+
 ## ⚠ Recadrage 2026-06-10 (utilisateur) : rester sur l'objectif P vs NP
 
 > La piste A (notes de combinatoire booléenne) est **gelée** au-delà de la
