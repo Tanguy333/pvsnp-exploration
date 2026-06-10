@@ -1,10 +1,11 @@
 # Degrés faibles symétriques des fonctions seuil modulo 6 — synthèse du fil F-011
 
-> **Statut : note interne de synthèse** (2026-06-10, fil F-011 étapes 1-6 du
-> dépôt). Tous les énoncés « Théorème/Lemme » ci-dessous ont des preuves
+> **Statut : note interne de synthèse** (2026-06-10, fil F-011 étapes 1-15
+> du dépôt). Tous les énoncés « Théorème/Lemme » ci-dessous ont des preuves
 > complètes ET une vérification exécutable (scripts `checks/task_f011*.py`).
 > Aucune relecture par un expert externe à ce stade. Les conjectures sont
-> étiquetées comme telles.
+> étiquetées comme telles ; les quatre conjectures réfutées en cours de
+> route sont documentées (§7).
 
 ## 1. Cadre et motivation
 
@@ -116,6 +117,26 @@ S(t−1+P) ∈ {1,2} : contradiction. ∎
 
 *Preuve.* `Δ^{d+1−P}G = Δ^{d+1−P}(S^P − id)g = Δ^{d+1}g ≡ 0`. ∎
 
+### Le cas t général (étapes 13-14)
+
+**Théorème F-gen (borne sup, chaînes).** *Pour P = 3^b ≥ t et
+n < 2P + t : `deg₃^sym(THR_{t,n}) ≤ P`* — suite `(0^t, 1^P, 2^{reste})`,
+chaînes de résidus 0→1→2 (préfixe) et 1→2 (fenêtre), h ≡ 1 constante.
+
+**Théorème E-gen (rampe).** *Pour P ≤ deg < 2P et n ≥ 2P + t :
+`deg₃^sym(THR_{t,n}) ≥ n − P − t + 1`* — la chaîne descente → paires
+interdites → interpolation passe au t général via l'invariance du degré
+de Mahler par décalage (G ≠ 0 sur tout [0,t), nulle sur [t, n−2P]).
+
+**Borne récursive CAND2 (95 % exacte, 0 violation).** Au 2e étage, les
+obstructions de G sont l'interpolation ET les **témoins de multiples**
+(z₁ non-nul, z₂ nul, Q | z₂−z₁ ⟹ deg(G) ≥ Q). La borne
+`max(t, blocage, min(2P, P + X_P))` coïncide avec l'exact sur 204/215
+cellules (table exacte complète : `task_f011e14_recursion.py`). Les 11
+cellules restantes relèvent de l'interpolation à valeurs contraintes ±1.
+**La loi exacte est l'automate (Lemme 2) ; sa forme close complète est
+ouverte.**
+
 ## 7. Conjectures (étayées, non prouvées) et réfutation
 
 - **C-F011 (loi MAJ mod 6) — PROUVÉE sur n ∈ [2, 40], puis RÉFUTÉE à
@@ -145,17 +166,35 @@ S(t−1+P) ∈ {1,2} : contradiction. ∎
   propriétés de h, et *l'objet de l'obstruction de la borne inf devient la
   construction de la borne sup*. Vérification : 26/26 constructions
   explicites + égalité loi = construction = DP partout.
-- **C-F011d (réfutée)** : le critère de blocage mono-poids n'est PAS exact
-  en fenêtre longue (150 contre-exemples) — il existe des obstructions
-  collectives, dont le mod-2 (unicité de l'échelon) est l'exemple résolu.
+- **Les quatre conjectures réfutées du fil** (chacune le jour de sa
+  formulation, par test exécutable ciblé) :
+  1. *C-F011d* (blocage mono-poids exact) — 150 contre-exemples en
+     fenêtre longue : il existe des obstructions collectives.
+  2. *C-F011* (loi MAJ = puissances) — `deg₆^sym(MAJ_65) = 40 ≠ 64` :
+     artefact du domaine d'ajustement n ≤ 44.
+  3. *Loi mod 3 à un étage* — les écarts (12 = 9+3, 15) ont révélé la
+     récursion de descentes.
+  4. *H-v2* (zone v2 = sous-problème à trou) — 0/10 : la couverture
+     jointe de la fenêtre basse contribue (+1 à +8).
+
+## 7ter. La zone v2 (t = 33..40) : cartographie d'une question ouverte
+
+Mesures exactes (énumération CRT complète) : t = 28..31 → 32 ; t = 32 →
+**36 = 27+9** (l'extrapolation d'anomalie « puissance suivante » meurt) ;
+t = 33..35 → **40 = (3⁴−1)/2** (répunit base 3) ; t = 36 → 44 ; t = 37 →
+46 ; t ≥ 38 → > 50 (cap). Mécanisme qualitatif prouvé : pour d < 64, U
+est morte par périodicité sur [64, n] — la couverture du trou repose sur
+V (mod 3) seule, MAIS avec les mêmes coefficients qui doivent aussi
+couvrir [t, 63] conjointement avec U (réfutation de H-v2). Bornes des
+deux côtés : `m3gap ≤ deg₆ ≤ L1` (Théorème H). Forme close : **ouverte**.
 
 ## 8. Questions ouvertes du fil
 
-1. **La rampe** (C-F011e, borne fine) : caractériser le problème réduit de
-   la descente, ou exploiter la structure d'automate (Lemme 2) pour une
-   preuve par périodicité des langages.
-2. **La loi mod 3 complète** (valeurs 2·3^b observées pour MAJ).
-3. **La synthèse mod 6** (loi complète C-F011).
+1. **La forme close de la zone v2** : structure base-3 du coût du
+   couplage joint (écarts +4/+8/+1 vs m3gap).
+2. **Les 11 cellules de CAND2** : interpolation à valeurs contraintes ±1.
+3. **La loi mod 6 générale** (toute la famille THR) — les briques mod 2
+   (exacte) et mod 3 (95 %) existent ; la composition est le problème.
 4. **Lever la restriction symétrique** — la marche vers le modèle général,
    puis vers les circuits : chaque étage rapproche du vrai mur de 1987.
 
