@@ -118,12 +118,19 @@ S(t−1+P) ∈ {1,2} : contradiction. ∎
 
 ## 7. Conjectures (étayées, non prouvées) et réfutation
 
-- **C-F011 (loi MAJ mod 6, 47/47 points dont une prédiction a priori)** :
-  `deg₆^sym(MAJ_n) = L1(t)` (plus petite puissance de 2 ou 3 ≥ t), sauf si
-  `L1(t) = 2^a`, `n ≥ 2^{a+1}` et `C(2^{a+1}, 2^a) ≡ 0 (mod 3)`, auquel
-  cas la puissance suivante. *(La borne ≥ des cas d'anomalie est prouvée —
-  Théorème B ; il manque les bornes ≤ générales et l'exclusion des valeurs
-  intermédiaires hors anomalies.)*
+- **C-F011 (loi MAJ mod 6) — PROUVÉE sur n ∈ [2, 40], puis RÉFUTÉE à
+  n = 65 (étapes 10-11)**. Sur [2, 40] : *Théorème H* (≤ L1, général :
+  e_q + glouton triangulaire, 36/36 certificats) ; *Théorème I* (≥,
+  n ≥ max(q₂,q₃) : double périodicité BBR) ; *Théorème J* (≥, régime
+  résiduel : argument **mixte** — mort mod 2 par périodicité + témoin
+  Lucas-mort mod 3, w = 18 = (2,0,0)₃). **Mais** le lemme d'existence du
+  témoin J est faux pour t = 33..40 (tout w ∈ [64, 80] a 54 comme
+  sous-ensemble de Lucas), et le sondage de ce régime jamais mesuré a
+  tué la loi : **`deg₆^sym(MAJ_65) = 40 = (3⁴−1)/2`** (exact, énumération
+  complète des deux côtés), pas 64. La vraie loi fait intervenir des
+  **demi-sommes de puissances de 3** (répunits base 3) — structure plus
+  riche, question rouverte. H, I, J et les anomalies (3, 9, 27) restent
+  des théorèmes valides sur leurs domaines.
 - **Loi OR mod 3 — THÉORÈME EXACT COMPLET (étapes 7-9)** :
   > `deg₃^sym(OR_n) = max(3^⌊log₃n⌋, n − 3^⌊log₃n⌋)` pour tout n ≥ 1.
 
