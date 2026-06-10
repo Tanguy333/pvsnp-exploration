@@ -102,7 +102,8 @@
 | ID | Type | Tâche | Output | Statut |
 |---|---|---|---|---|
 | VEILLE-P | — | Veille « nouvelles méthodes probabilistes » : 4 fronts examinés (toriques, méta-complexité, probas conditionnelles, OGP) | `bib/veille_probabilistes_2026.md` | ✅ **done** (2026-06-11) — pépite : **polynômes toriques** (BHLR 2019 + Krishan 2024) = notre « modèle intermédiaire » avec formulation LP ; méta-complexité = ligne Atlas manquante ; dérandomisation et OGP : hors-cible documenté. |
-| V-001 | F | **Polynômes toriques de MAJ aux petits n** : mesurer le degré torique (sym vs général) par LP exacts + duaux ; répliquer numériquement la borne symétrique BHLR ; sonder si l'asymétrie aide (notre gabarit e17). | données + réplication | pending |
+| V-001 | F | **Polynômes toriques de MAJ aux petits n** : mesurer le degré torique (sym vs général) par LP exacts + duaux ; répliquer numériquement la borne symétrique BHLR ; sonder si l'asymétrie aide (notre gabarit e17). | données + réplication | ✅ **done** (2026-06-11) — MILP exacts : croissance ≈ linéaire du degré symétrique (d\* = 3,4,5,7 pour ε≤1/8 à n=8..20 ; ≈ n/2 pour ε≤1/(2n)) = **réplication BHLR** ; et **contraste structurel** : sur le tore, l'asymétrie n'aide PAS à n=3,4 (égalité exacte) — là où elle battait l'anomalie en mod 6 faible (e17). Le modèle torique est robuste là où le faible s'effondre — cohérent avec le choix de BHLR. Incident v1 (k±50, B&B explosif) consigné. Voir `tasks/done/V-001.md`. |
+| V-002 | F | *(candidates)* (a) sym = général sur le tore à n = 5, 6 ? (donnée empirique pour la question ouverte BHLR) ; (b) sonder numériquement la famille de LP de Krishan 2024. | données | pending |
 | A-009 | A | **Audit méta-complexité** (Hirahara 2018-23, MCSP, non-boîte-noire) + nouvelle ligne Atlas + statut barrières sur textes | `bib/meta_complexite.md` + ligne Atlas | pending |
 
 ## ⚠ Recadrage 2026-06-10 (utilisateur) : rester sur l'objectif P vs NP
