@@ -118,11 +118,15 @@ S(t−1+P) ∈ {1,2} : contradiction. ∎
   cas la puissance suivante. *(La borne ≥ des cas d'anomalie est prouvée —
   Théorème B ; il manque les bornes ≤ générales et l'exclusion des valeurs
   intermédiaires hors anomalies.)*
-- **C-F011e (rampe OR mod 3, 26/26)** :
-  `deg₃^sym(OR_n) = max(3^⌊log₃n⌋, n − 3^⌊log₃n⌋)`. *(Le premier terme est
-  prouvé — Théorème D ; la rampe n − 3^b est ouverte : la descente
-  (Lemme 3) réduit le problème à des fonctions F₃ générales qui perdent la
-  structure ±1.)*
+- **Loi OR mod 3 — borne inférieure désormais PROUVÉE (Théorème E,
+  étape 7)** : `deg₃^sym(OR_n) ≥ max(3^⌊log₃n⌋, n − 3^⌊log₃n⌋)` pour tout
+  n. *Preuve de la rampe : descente (Lemme 3) → périodicité de G → paires
+  interdites sur {1,2} (la récurrence g(j+2P) = 2g(j+P) − g(j) interdit
+  (1,2) et (2,1), donc G ≡ 0 sur [1, n−2P] avec G(0) ≠ 0) → interpolation
+  de Mahler (Σ(−1)^iC(D+1,i) = (−1)^D force G(D+1) ≠ 0 : contradiction).*
+  L'égalité est vérifiée sur toutes les cellules calculées (26/26) ; seule
+  la borne supérieure générale (constructions pour tout n) reste à
+  prouver.
 - **C-F011d (réfutée)** : le critère de blocage mono-poids n'est PAS exact
   en fenêtre longue (150 contre-exemples) — il existe des obstructions
   collectives, dont le mod-2 (unicité de l'échelon) est l'exemple résolu.
