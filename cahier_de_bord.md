@@ -32,7 +32,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-06-09 (**l'Atlas des impasses est assemblé** : [`atlas/matrice_barrieres.md`](atlas/matrice_barrieres.md) — 12 familles d'approches × 4 barrières + verrous réels, adossé à 8 audits sur textes (`bib/`), 4 cellules détaillées (`barriers/`), 2 mesures exécutables et les 25 tours. Phases 1 et 2 du backlog complètes : F-001, L18-STATUS/NOTE, A-001..A-008, D-001..D-004, ATLAS-001. Reste SYNTH-001 (README). L18 = seul objet non recensé du dépôt, candidat note courte)
+- **Dernière mise à jour** : 2026-06-11 (**deux fils atomiques majeurs clos** : ① **F-011**, 20 étapes — le modèle polynomial symétrique mod 6 (zone 2 de l'Atlas) cartographié et largement prouvé : ~13 théorèmes (loi OR mod 3 exacte complète, lois MAJ, anomalies, récursion base 3), 5 conjectures traitées dont 4 réfutées le jour même, photographie des trois modèles fort/faible-général/faible-symétrique — synthèse [`notes/front_composite.md`](notes/front_composite.md). ② **Fil V**, 12 tâches, issu de la veille probabiliste — la **Conjecture 5 de Krishan-Vishwanathan 2024** (réseau, route BHLR vers MAJ ∉ ACC) reformulée en problème **PTE-ℓ₂** et **prouvée en régime stable pour d ≤ 9 et d = 11** (Théorème V11, Newton 10 lignes), adossée au problème PTE idéal de 1851 — synthèse [`notes/kv_note.md`](notes/kv_note.md). L'Atlas passe à **13 lignes** (méta-complexité, A-009). Audit anti-redécouverte BBR 1994 fait (Théorème D requalifié réplication). **Attentes externes** : Göös (notes L18/composite) ; email envoyé à KV le 2026-06-11, second email avec théorèmes prêt dans `notes/kv_note.md`.)
+- **Mise à jour précédente** : 2026-06-09 (Atlas assemblé : 12 familles × 4 barrières, 8 audits `bib/`, 4 cellules `barriers/`, phases 1-2 complètes, SYNTH-001 README fait)
 - **Nombre de tours effectués** : 25 (boucle adverse suspendue ; réouverture conditionnée aux 5 zones génératrices de l'Atlas, cf. CLAUDE.md §8 et `atlas/matrice_barrieres.md` dernière section)
 
 > **Numérotation Tour 24.** Le Proposeur a titré sa proposition « Tour 23 » mais
@@ -106,6 +107,14 @@
 | 24 | Complexité tropicale de SAT : encoder 3-SAT comme polynôme tropical $P_\phi = \min_j \min(1, \sum_i \ell_{ji})$ et borner inférieurement $R(P_\phi) \geq 2^{n/2}$ régions linéaires pour $n \in \{4,5,6\}$ (Lemme L24.T) ; chaîne conjecturale tropical→boolean P vs NP | Les 3 (revendiquée), pas mentionnée Tardos | (1) **Encodage inversé** vérifié exécutable 0/16 cas (le Proposeur n'a pas calculé son propre encodage) ; (2) **Borne L24.T triviale** : un min de $m+1$ affines a $O(m^n)$ régions par Zaslavsky, donc $\geq 2^{n/2}$ atteint trivialement par n'importe quel polynôme tropical ; (3) **Violation explicite de (q)** : Jukna 2014 (arXiv:1406.3065) + Jerrum-Snir 1982 + Schnorr couvrent depuis 40 ans ; (4) **Barrière monotone Tardos 1988** non-mentionnée mais létale (tropical = monotone arith. par Jerrum-Snir) ; (5) chaîne tropical→boolean *purement conjecturale*, admise par le Proposeur ; (6) condition (k) violée (« années-lumière » de P vs NP) | ❌ **FAILLE FATALE** — barrière monotone létale + 5 failles indépendantes + (q) violée |
 | 25 | CFI-rigidification de 3-SAT : pour chaque variable `x_i` de φ, jumelée `(x_i^0, x_i^1)` avec XOR `x_i^0 ⊕ x_i^1 = 1`, clauses jumelées en orientation arbitraire. Revendique G = (ℤ/2)^n automorphisme préservant SAT + borne inférieure exp pour circuits G-symétriques (L25.3) + pont à Gurevich 1988 / CPT (L25.4 + L25.5). | Toutes (combinatoire fini, non-large, sans arithmétisation) | (1) **L25.1 + L25.2 réfutés empiriquement à 100 %** sur 20 formules 3-SAT random à n=3 : la « jumelée » est équivalente à introduire `¬x_i` comme nouvelle variable, le « swap » est équivalent à flipper `x_i`, donc G ne préserve PAS SAT (testé à n=1 : 1 contre-exemple immédiat). (2) **L25.5 conflate FPC / CPT / symmetric P** : Anderson-Dawar 2017 caractérise FPC (⊊ P prouvé par CFI), pas P ; la vraie question est CPT (Blass-Gurevich-Shelah 1999), open. (3) **(q) violée** : Atserias-Bulatov-Dawar 2007 (CFI affine pour CSP) non cité, alors que c'est la VRAIE CFI moderne. (4) **(j) violée** : le Proposeur promet « calcul concret à n=3 » §5 aveu 5 mais NE LE LIVRE PAS — le Réfuteur l'a fait en 5 minutes, contre-exemples immédiats. | ❌ **FAILLE FATALE** sur L25.1 + L25.2 (construction incohérente) ; L25.3-L25.5 sans objet ; aveux honnêtes du Proposeur ne réparent pas la faille technique |
 | 26 |  |  |  | *(à venir)* |
+
+### 2 bis. Fils de tâches atomiques (post-Tour 25, mode CLAUDE.md §8)
+
+| Fil | Contenu | Acquis | Synthèse |
+|---|---|---|---|
+| **F-011** (20 étapes, 2026-06-10) | Le modèle polynomial symétrique faible mod 6 (zone 2 de l'Atlas — le mur composite de 1987), puis les modèles général et fort | ~13 théorèmes prouvés et vérifiés : loi exacte complète `deg₃^sym(OR_n) = max(3^b, n−3^b)` ; forme close mod 2 (famille THR) ; lois MAJ (H/I/J) ; anomalies 3/9/27 ; valeurs exactes MAJ_32 = 27, MAJ_65 = 40 ; récursion de descentes base 3 (CAND2, 95 %) ; **Théorème K** (les anomalies sont des artefacts de symétrie — le modèle général est plat aux points testés) ; **Théorème L** (modèle fort = max(deg₂, deg₃), chutes réelles). 5 conjectures traitées dont **4 réfutées le jour même** (C-F011d, C-F011, loi-à-un-étage, H-v2). Audit BBR 1994 intégral (Théorème D requalifié réplication). | [`notes/front_composite.md`](notes/front_composite.md) |
+| **V** (12 tâches, 2026-06-11) | Issu de la veille probabiliste (demande utilisateur) : polynômes toriques BHLR 2019 → **Conjecture 5 de Krishan-Vishwanathan 2024** (ECCC TR24-074, route vers MAJ ∉ ACC) | Conjecture 5 **testée 109/109** (LLL + Fincke-Pohst exact), **reformulée** (⟺ coefficient dominant ±1 ⟺ queue du problème **PTE-ℓ₂**) et **prouvée en régime stable pour d ≤ 9 et d = 11** (Théorème V11 : ‖f‖² ≥ 2(d+1), égalité ⟺ PTE idéale de taille d+1 — Newton, 10 lignes). Transitions du réseau = degrés PTE minimaux de 1851. 2 hypothèses explicatives réfutées (Tchebychev, cyclotomie) + 1 artefact corrigé. Email envoyé aux auteurs ; second email avec théorèmes prêt. | [`notes/kv_note.md`](notes/kv_note.md) |
+| VEILLE-P + A-009 (2026-06-11) | Méthodes probabilistes récentes (4 fronts) + audit méta-complexité | Toriques = cible exécutable (→ fil V) ; **ligne 13 de l'Atlas** (méta-complexité moderne : non-boîte-noire ✓, MCSP = l'objet de RR, verrou = NP-complétude ouverte depuis Levin) ; dérandomisation et OGP : hors-cible documenté | [`bib/veille_probabilistes_2026.md`](bib/veille_probabilistes_2026.md), [`bib/meta_complexite.md`](bib/meta_complexite.md) |
 
 ---
 
@@ -790,10 +799,12 @@ contre la littérature DNF-MIN. Statut individuel :
 > **Mode tâches atomiques en vigueur** (CLAUDE.md §8, `tasks/backlog.md`).
 > L'ancienne boucle « Proposeur génère une idée » est suspendue.
 
-- [x] Phases 1 et 2 du backlog : F-001, L18-STATUS, L18-NOTE, A-001..A-008, D-001..D-004, ATLAS-001 — **complètes** (2026-06-09)
-- [ ] SYNTH-001 : réécrire le README autour de l'Atlas (`atlas/matrice_barrieres.md`)
-- [ ] Optionnel : F-002 (tester `min_D W(IP_{2k}) = (3^k−1)/2` à k=5, prédiction 121) ; finalisation de la note L18 (relecture experte + vérification école russe)
-- [ ] Tour 26 éventuel : uniquement via un sous-lemme vérifiable d'une des 5 zones génératrices de l'Atlas (dernière section de `atlas/matrice_barrieres.md`)
+- [x] Phases 1-2 + SYNTH-001 + fils F-001..F-010, B-001..B-006 — complets (2026-06-09/10)
+- [x] **Fil F-011** (20 étapes) — clos, synthèse `notes/front_composite.md` (2026-06-10)
+- [x] **Fil V** (12 tâches) + VEILLE-P + A-009 — clos, synthèse `notes/kv_note.md` (2026-06-11)
+- [ ] **Attentes externes** : réponse de Göös (notes L18 + composite) ; réponse de KV (email du 2026-06-11) ; décision d'envoi du **second email KV** (brouillon dans `notes/kv_note.md`)
+- [ ] **Fronts candidats** (au choix de l'utilisateur) : zone dure petit-n de la Conjecture 5 (minima non plats) ; fils dormants du composite (couplage joint zone v2, plate à n=10, 11 cellules ±1) ; d = 10 / d ≥ 12 via PTE
+- [ ] Tour 26 éventuel : uniquement via un sous-lemme vérifiable d'une cellule de l'Atlas (13 lignes désormais)
 
 ---
 
@@ -1062,6 +1073,44 @@ contre la littérature DNF-MIN. Statut individuel :
   Les théorèmes de magnification eux-mêmes butent sur une variante de RR :
   une approche qui prouve une borne magnifiable doit éviter d'être *locale*.
   Cité au Tour 4 du dépôt comme barrière supplémentaire.
+
+### 7.6bis Modèles polynomiaux composites, toriques et PTE (fils F-011 et V, 2026-06)
+
+- **Représentations faibles mod m** — D. A. M. Barrington, R. Beigel,
+  S. Rudich, *« Representing Boolean functions as polynomials modulo
+  composite numbers »*, Comput. Complexity 4 (1994). **Lu en texte
+  intégral** ([`bib/bbr_1994.md`](bib/bbr_1994.md)) : Thm 2.1 (OR mod m en
+  O(N^{1/r})), Thm 2.2 (borne inf symétrique par périodicité — notre
+  Théorème D requalifié réplication), base des symétriques par période.
+- **Polynômes toriques** — A. Bhrushundi, K. Hosseini, S. Lovett,
+  S. Rao, *« Torus polynomials: an algebraic approach to ACC lower
+  bounds »*, ITCS 2019, [arXiv:1804.08176](https://arxiv.org/abs/1804.08176).
+  MAJ ∉ ACC réduit aux bornes toriques ; cas symétrique prouvé, général
+  ouvert (Conjecture 5 de leur papier = notre cible du fil V via KV).
+- **Réduction réseau/LP** — V. Krishan, S. Vishwanathan, *« Towards ACC
+  Lower Bounds using Torus Polynomials »*,
+  [ECCC TR24-074 (2024)](https://eccc.weizmann.ac.il/report/2024/074/).
+  **Lu en texte intégral** ([`bib/krishan_2024.md`](bib/krishan_2024.md)) :
+  méthode des polynômes duaux étendue au tore, famille de LP par parties
+  entières, Conjecture 5 (plus court vecteur à γ_n = 1) — **reformulée et
+  prouvée en régime stable d ≤ 9, d = 11 par le fil V**
+  ([`notes/kv_note.md`](notes/kv_note.md)).
+- **Prouhet-Tarry-Escott / produits purs** — Erdős-Szekeres 1959 (voir
+  [arXiv:1509.08411](https://arxiv.org/abs/1509.08411) pour l'historique) ;
+  R. Maltby, *« Pure product polynomials and the Prouhet-Tarry-Escott
+  problem »*, Math. Comp. 66 (1997). Le problème PTE-ℓ₂ = la forme
+  polynomiale exacte du réseau de KV (Théorème P du fil V) ; les
+  solutions PTE **idéales** (ouvertes depuis 1851 pour les grandes
+  tailles, connues ≤ 10 et 12) sont les minimiseurs au seuil.
+- **Méta-complexité moderne** — S. Hirahara (FOCS 2018, réduction
+  non-boîte-noire) ; Y. Huang, R. Ilango, H. Ren,
+  *« NP-Hardness of Approximating Meta-Complexity »*, STOC 2023. **Lu en
+  intégral** ([`bib/meta_complexite.md`](bib/meta_complexite.md)) —
+  ligne 13 de l'Atlas.
+- **Veille probabiliste 2026** —
+  [`bib/veille_probabilistes_2026.md`](bib/veille_probabilistes_2026.md)
+  (toriques ★, méta-complexité, dérandomisation/« free lunch » CCC 2025,
+  OGP : hors-cible documenté).
 
 ### 7.7 Manuels et surveys (à consulter en priorité)
 
