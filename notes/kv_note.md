@@ -188,6 +188,27 @@ no such structure is known at 11, yet there is no local obstruction
 (ideal solutions exist mod p) and CMSV found symmetric solutions with
 just 2 quadratic irrationals -- the integral obstruction is thin.
 
+## 6quater. A COUNTEREXAMPLE to Conjecture 5 as stated (2026-06-11)
+
+At (d = 21, n = 30), the shortest vector of L(B) is unique up to sign:
+a palindrome of squared norm 517,673,216 whose last coordinate is
+gamma_30 = -2. No shortest vector has gamma_n = +-1. Hence Conjecture 5,
+as stated ("for any n, d"), is FALSE.
+
+Verification stack (all replayable, checks/task_v018_contre_exemple.py):
+exact-rational SVP (Fincke-Pohst over Fractions, no floats; sane
+witnesses pass), symbolic lattice membership ((1-x)^22 | v, sympy), and
+an independent constrained enumeration in the raw stencil basis showing
+the gamma_n = +-1 minimum is strictly larger. Twelve further refuting
+cells confirmed exactly at d = 22..29 (first failures at n-d = 6, 9).
+
+SCOPE -- the essential nuance: the regime your ACC application needs
+(d much smaller than n) is NOT touched. All ~290 cells we verified at
+d <= 16 with wider windows SUPPORT the conjecture. The data locates the
+frontier: failures appear only at d >= 21 and very tight windows
+(n - d <= 9). The conjecture likely needs a hypothesis n >= f(d) -- and
+our cells give the first quantitative picture of f.
+
 ## 7. Epistemic note
 
 This work was carried out in an AI-assisted exploration loop
