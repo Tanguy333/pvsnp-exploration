@@ -223,6 +223,32 @@ application needs, and which all our ~290 cells at d <= 16 support.
 The statement needs a hypothesis n >= f(d); our map gives the first
 quantitative picture of f.
 
+## 6quinquies. The window law, PROVED — the corrected conjecture in closed form (night of 2026-06-11)
+
+Master formula (verified exactly): ||(1-x)^D (1+x)^j||^2 = P_j(D) =
+(2D)!(2j)!/(D! j! (D+j)!). On the unit circle |Phi_3|^2 = (1+u)^2 and
+|2Phi_3 + x|^2 = (3+2u)^2 (perfect squares, u = 2cos theta), hence
+N_phi = P_{a+2} - 2P_{a+1} + P_a and N_core = 4P_{a+2} - 4P_{a+1} + P_a.
+
+THEOREM (window law). Within the dressed family
+{(1+x)^{a+2}, (1+x)^a Phi_3, (1+x)^a (2Phi_3+x)}:
+(i) the core beats the Phi_3-dressing iff D >= 5a+8 (one line);
+(ii) the core beats the pure product iff Q_a(D) > 0, where
+Q_a(D) = -(D+a+1)(D+a+2) + 8(2a+1)(D+a+2) - 12(2a+1)(2a+3),
+a downward quadratic: a FINITE window between explicit roots.
+The strict window for a = 3 is D in [23, 30], i.e. d in [22, 29] --
+the observed staircase step, to the integer. The edge ties are the
+INTEGER ROOTS of these forms (D = 31 = root of Q_3: exact tie with
+(1+x)^5; D = 22 = 5a+7: exact tie with (1+x)^3 Phi_3) -- verified by
+full enumeration. Across hundreds of enumerated cells, every minimum
+ever observed belongs to this dressed family: the theory is closed on
+all observations.
+
+For your purposes this gives the corrected statement candidate: the
+conjecture holds for n - d <= 4 (proved, all d, via the Jacobi bound),
+fails on the proven windows above, and is supported beyond them only
+in the PTE-witness regime n >> d.
+
 ## 7. Epistemic note
 
 This work was carried out in an AI-assisted exploration loop
