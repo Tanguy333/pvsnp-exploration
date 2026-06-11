@@ -56,3 +56,34 @@ toutes des formes.
   taille 12.
 - Nouvelles idéales dans les corps quadratiques imaginaires (Gauss :
   tailles 10, 12 ; Z[i√2] : 9 ; Eisenstein : 9, 12).
+
+## Complément — survey Chen Shuwen et al. 2025 (arXiv:2506.11429, 368 p.)
+
+Lu par extraction (2026-06-11), vérification du statut « premier
+certificat inconditionnel » de V-016. Verbatims clés :
+
+> « *ideal non-symmetric solutions have only been discovered for PTE of
+> degrees n ≤ 7* » (= tailles ≤ 8 ; convention du survey : degré =
+> taille − 1) — même aux tailles 9, 10, 12, toutes les idéales connues
+> sont symétriques.
+
+> « *[formula (2.167)] is useful for searching for ideal non-symmetric
+> solutions of PTE of degree 10. Based on (2.167), we have searched for
+> **more than 6 years with several computers**, but still have not found
+> such a solution **within the range of 1600**.* »
+
+**Analyse** : la recherche non symétrique de Chen Shuwen (taille 11,
+6 ans-machines, range 1600) passe par une **famille paramétrique à
+4 paramètres** — pas une exhaustion sur toutes les solutions. Paysage
+final des certificats taille 11 :
+
+| Certificat | hypothèse | portée |
+|---|---|---|
+| CMSV 2023 | symétrique | hauteur ≤ 3500, exhaustif |
+| Chen Shuwen 2025 | famille (2.167) non sym. | range 1600 |
+| **V-016 (nous)** | **aucune** | support ⊆ [0, 70], exhaustif |
+
+→ **V-016 confirmé comme seul certificat inconditionnel** (toutes les
+solutions, aucune hypothèse de forme) — borne plus petite mais portée
+non couverte ailleurs. Vérifié contre le survey de 368 pages, le plus
+récent de la littérature (juin 2025).
