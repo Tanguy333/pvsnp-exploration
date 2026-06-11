@@ -32,8 +32,8 @@
 - **Question** : tout problème dont une solution candidate est vérifiable en temps polynomial est-il aussi résoluble en temps polynomial ? (P vs NP)
 - **Direction choisie** : séparation **P ≠ NP**, via une classe restreinte à structure algébrique/géométrique ; cadre principal = complexité descriptive, ouverture GCT ; outils encouragés = méta-complexité / Kolmogorov.
 - **Démarré le** : 2026-05-23
-- **Dernière mise à jour** : 2026-06-11 (**deux fils atomiques majeurs clos** : ① **F-011**, 20 étapes — le modèle polynomial symétrique mod 6 (zone 2 de l'Atlas) cartographié et largement prouvé : ~13 théorèmes (loi OR mod 3 exacte complète, lois MAJ, anomalies, récursion base 3), 5 conjectures traitées dont 4 réfutées le jour même, photographie des trois modèles fort/faible-général/faible-symétrique — synthèse [`notes/front_composite.md`](notes/front_composite.md). ② **Fil V**, 12 tâches, issu de la veille probabiliste — la **Conjecture 5 de Krishan-Vishwanathan 2024** (réseau, route BHLR vers MAJ ∉ ACC) reformulée en problème **PTE-ℓ₂** et **prouvée en régime stable pour d ≤ 9 et d = 11** (Théorème V11, Newton 10 lignes), adossée au problème PTE idéal de 1851 — synthèse [`notes/kv_note.md`](notes/kv_note.md). L'Atlas passe à **13 lignes** (méta-complexité, A-009). Audit anti-redécouverte BBR 1994 fait (Théorème D requalifié réplication). **Attentes externes** : Göös (notes L18/composite) ; email envoyé à KV le 2026-06-11, second email avec théorèmes prêt dans `notes/kv_note.md`.)
-- **Mise à jour précédente** : 2026-06-09 (Atlas assemblé : 12 familles × 4 barrières, 8 audits `bib/`, 4 cellules `barriers/`, phases 1-2 complètes, SYNTH-001 README fait)
+- **Dernière mise à jour** : 2026-06-11 soir (**journée des théorèmes** : ① **F-011 e24-e33** — le modèle faible **général** mod 6 dompté : hypothèse plate `deg₆(MAJ_n) = ⌈n/2⌉` confirmée sur n = 4..25, 29, 31, 32 (les cellules n = 12, 13 qui résistaient à 4,5 h de SAT tombent en 0 s par **ansätze d'orbites de sous-groupes** — leçon de méthode majeure) ; **trois familles infinies prouvées** : Théorème **K** (t = 2^a), **K′** (t = 2·3^k, e_t + correction équilibrée pure mod 3, 3 lemmes de Lucas), **K″** (t = 3^k, e_t pur mod 3, 1 ligne) ; **classification complète de la frontière bipartite** (t ≤ 27 ∪ {36} : solubles = les 3 familles + sporadiques isolés {5, 12} à formes closes — mosaïques de Lucas mixtes) ; 3 conjectures de plus réfutées le jour même (3-lisse, 3-lisse ∪ {5}, K′ naïf) ; MaxSAT/RC2 pour certificats canoniques. ② **Fil V : V-014 + V-015** — **Conjecture 5 de KV close pour d = 7, TOUT n, sans trou** (Théorème V15 ; le réseau redécouvre Tarry 1913 à n*(7) = 50 et **certifie sa minimalité**) ; d = 6 quasi clos (exhaustif n ≤ 81, témoin d'Escott 1910 vérifié exact ferme n ≥ 102, trou résiduel [82, 101]) ; suite des transitions non monotone certifiée. ③ **Audit A-010** (demande utilisateur) : BGL 2003 lu en texte complet par **lecture visuelle** (polices bitmap contournées) — notre cadre CRT/digits = leur lentille protocoles, borne linéaire symétrique MAJ mod 6 = leur Thm 4.9 ; nos lois exactes + tout le modèle général/bloc-symétrique = couche candidate délimitée (`bib/bgl_2003_sun_2020.md`). Synthèses à jour : [`notes/front_composite.md`](notes/front_composite.md) §10-10bis.)
+- **Mise à jour précédente** : 2026-06-11 matin (clôture F-011 e1-20 symétrique + fil V V-001..013 : Conjecture 5 close d ≤ 5, Théorème V11, 109/109, emails KV/Göös envoyés ; Atlas à 13 lignes)
 - **Nombre de tours effectués** : 25 (boucle adverse suspendue ; réouverture conditionnée aux 5 zones génératrices de l'Atlas, cf. CLAUDE.md §8 et `atlas/matrice_barrieres.md` dernière section)
 
 > **Numérotation Tour 24.** Le Proposeur a titré sa proposition « Tour 23 » mais
@@ -112,8 +112,8 @@
 
 | Fil | Contenu | Acquis | Synthèse |
 |---|---|---|---|
-| **F-011** (20 étapes, 2026-06-10) | Le modèle polynomial symétrique faible mod 6 (zone 2 de l'Atlas — le mur composite de 1987), puis les modèles général et fort | ~13 théorèmes prouvés et vérifiés : loi exacte complète `deg₃^sym(OR_n) = max(3^b, n−3^b)` ; forme close mod 2 (famille THR) ; lois MAJ (H/I/J) ; anomalies 3/9/27 ; valeurs exactes MAJ_32 = 27, MAJ_65 = 40 ; récursion de descentes base 3 (CAND2, 95 %) ; **Théorème K** (les anomalies sont des artefacts de symétrie — le modèle général est plat aux points testés) ; **Théorème L** (modèle fort = max(deg₂, deg₃), chutes réelles). 5 conjectures traitées dont **4 réfutées le jour même** (C-F011d, C-F011, loi-à-un-étage, H-v2). Audit BBR 1994 intégral (Théorème D requalifié réplication). | [`notes/front_composite.md`](notes/front_composite.md) |
-| **V** (12 tâches, 2026-06-11) | Issu de la veille probabiliste (demande utilisateur) : polynômes toriques BHLR 2019 → **Conjecture 5 de Krishan-Vishwanathan 2024** (ECCC TR24-074, route vers MAJ ∉ ACC) | Conjecture 5 **testée 109/109** (LLL + Fincke-Pohst exact), **reformulée** (⟺ coefficient dominant ±1 ⟺ queue du problème **PTE-ℓ₂**) et **prouvée en régime stable pour d ≤ 9 et d = 11** (Théorème V11 : ‖f‖² ≥ 2(d+1), égalité ⟺ PTE idéale de taille d+1 — Newton, 10 lignes). Transitions du réseau = degrés PTE minimaux de 1851. 2 hypothèses explicatives réfutées (Tchebychev, cyclotomie) + 1 artefact corrigé. Email envoyé aux auteurs ; second email avec théorèmes prêt. | [`notes/kv_note.md`](notes/kv_note.md) |
+| **F-011** (33 étapes, 2026-06-10/11) | Le modèle polynomial faible mod 6 (zone 2 de l'Atlas — le mur composite de 1987) : symétrique (e1-16), puis **général/bloc-symétrique** (e17-33), plus le modèle fort | **Symétrique** : ~13 théorèmes (loi exacte complète `deg₃^sym(OR_n) = max(3^b, n−3^b)`, lois MAJ H/I/J, anomalies, récursion base 3) ; **Général** : hypothèse plate `deg₆(MAJ_n) = ⌈n/2⌉` confirmée n = 4..25, 29, 31, 32 ; **trois familles infinies prouvées** — Théorèmes **K** (2^a), **K′** (2·3^k), **K″** (3^k) ; **classification complète de la frontière bipartite** (3 familles + sporadiques isolés {5, 12} à formes closes) ; **Théorème L** (modèle fort) ; méthode : ansätze d'orbites (0 s là où 4,5 h de SAT échouent) + MaxSAT canonique. **7 conjectures réfutées le jour même**. Audits BBR 1994 + **BGL 2003/TR04-022** (A-010, lecture visuelle) : cadre = BGL, lois exactes + modèle général = couche candidate. | [`notes/front_composite.md`](notes/front_composite.md) §1-10bis |
+| **V** (15 tâches, 2026-06-11) | Issu de la veille probabiliste (demande utilisateur) : polynômes toriques BHLR 2019 → **Conjecture 5 de Krishan-Vishwanathan 2024** (ECCC TR24-074, route vers MAJ ∉ ACC) | Conjecture 5 **reformulée** (⟺ coefficient dominant ±1 ⟺ queue du problème **PTE-ℓ₂**), testée 109/109, puis **CLOSE pour d ≤ 5 et d = 7 (tout n)** — Théorèmes V8-V11, **V13**, **V15** (le réseau redécouvre Tarry 1913 à n*(7) = 50 et certifie sa minimalité) ; **d = 6 quasi clos** (exhaustif n ≤ 81, Escott 1910 vérifié exact ferme n ≥ 102, trou [82, 101]) ; transitions du réseau = degrés PTE minimaux (suite non monotone certifiée : 6, 6, 11, 18, 23, (81,102], 50). Emails envoyés aux auteurs (×2). | [`notes/kv_note.md`](notes/kv_note.md) |
 | VEILLE-P + A-009 (2026-06-11) | Méthodes probabilistes récentes (4 fronts) + audit méta-complexité | Toriques = cible exécutable (→ fil V) ; **ligne 13 de l'Atlas** (méta-complexité moderne : non-boîte-noire ✓, MCSP = l'objet de RR, verrou = NP-complétude ouverte depuis Levin) ; dérandomisation et OGP : hors-cible documenté | [`bib/veille_probabilistes_2026.md`](bib/veille_probabilistes_2026.md), [`bib/meta_complexite.md`](bib/meta_complexite.md) |
 
 ---
@@ -800,11 +800,12 @@ contre la littérature DNF-MIN. Statut individuel :
 > L'ancienne boucle « Proposeur génère une idée » est suspendue.
 
 - [x] Phases 1-2 + SYNTH-001 + fils F-001..F-010, B-001..B-006 — complets (2026-06-09/10)
-- [x] **Fil F-011** (20 étapes) — clos, synthèse `notes/front_composite.md` (2026-06-10)
-- [x] **Fil V** (12 tâches) + VEILLE-P + A-009 — clos, synthèse `notes/kv_note.md` (2026-06-11)
-- [ ] **Attentes externes** : réponse de Göös (notes L18 + composite) ; réponse de KV (email du 2026-06-11) ; décision d'envoi du **second email KV** (brouillon dans `notes/kv_note.md`)
-- [ ] **Fronts candidats** (au choix de l'utilisateur) : zone dure petit-n de la Conjecture 5 (minima non plats) ; fils dormants du composite (couplage joint zone v2, plate à n=10, 11 cellules ±1) ; d = 10 / d ≥ 12 via PTE
-- [ ] Tour 26 éventuel : uniquement via un sous-lemme vérifiable d'une cellule de l'Atlas (13 lignes désormais)
+- [x] **Fil F-011** (33 étapes) — palier propre atteint : 3 familles infinies (K/K′/K″), classification bipartite complète, plate n ≤ 25 + 29, 31, 32, audits BBR + BGL — synthèse `notes/front_composite.md` §1-10bis (2026-06-11)
+- [x] **Fil V** (15 tâches) — Conjecture 5 close d ≤ 5 et d = 7, d = 6 quasi clos — synthèse `notes/kv_note.md` (2026-06-11)
+- [ ] **Attentes externes** : réponse de Göös (notes L18 + composite) ; réponses de KV (2 emails envoyés le 2026-06-11) — un suivi pourra mentionner V13/V15 (d ≤ 5 et 7 clos, Tarry certifié minimal)
+- [ ] **Fronts candidats** (au choix de l'utilisateur) : trou d = 6 [82, 101] (~heures/cellule) ; trous plate n ∈ {26, 27, 28, 30} (frontière d'outil, catalogue élargi) ; multipartites des t insolubles (7, 10, 11…) vers « plate partout » ; d = 8 sous-transition ; n*(6) exact ∈ (81, 102]
+- [ ] **Lecture humaine recommandée avant diffusion** : thèse Gopalan 2006 (PDF dans `bib/pdf/` + sources ECCC) — cf. table de requalification `bib/bgl_2003_sun_2020.md`
+- [ ] Tour 26 éventuel : uniquement via un sous-lemme vérifiable d'une cellule de l'Atlas (13 lignes)
 
 ---
 
@@ -1102,6 +1103,30 @@ contre la littérature DNF-MIN. Statut individuel :
   polynomiale exacte du réseau de KV (Théorème P du fil V) ; les
   solutions PTE **idéales** (ouvertes depuis 1851 pour les grandes
   tailles, connues ≤ 10 et 12) sont les minimiseurs au seuil.
+- **Polynômes symétriques sur Z_m / protocoles** — N. Bhatnagar,
+  P. Gopalan, R. J. Lipton, *« Symmetric polynomials over Z_m and
+  simultaneous communication protocols »*, FOCS 2003 / JCSS 2006,
+  [ECCC TR03-047](https://eccc.weizmann.ac.il/report/2003/047/). **Lu en
+  texte complet par lecture visuelle** (polices bitmap,
+  [`bib/bgl_2003_sun_2020.md`](bib/bgl_2003_sun_2020.md)) : équivalence
+  degré symétrique mod pq ⟺ protocoles simultanés sur digits (= notre
+  cadre CRT/Lucas) ; **Thm 4.9 : Ω(max(k, √n))** faible symétrique pour
+  T_k — la borne linéaire de MAJ mod 6 est à eux. Et N. Bhatnagar,
+  P. Gopalan, *« The Degree of Threshold mod 6 and Diophantine
+  Equations »*, [ECCC TR04-022](https://eccc.weizmann.ac.il/report/2004/022/)
+  (seuils à k constant, Filaseta/abc). Nos lois exactes + modèle
+  général/bloc-symétrique = couche candidate (table de requalification).
+- **Degré modulaire fort** — X. Sun, Y. Sun, J. Wang, K. Wu, Z. Xia,
+  Y. Zheng, *« On the Degree of Boolean Functions as Polynomials over
+  Z_m »*, [ICALP 2020](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ICALP.2020.100) :
+  deg_m(f sym) ≥ n/(2 + 1/(p−1) + 1/(q−1)) (= 2n/7 pour m = 6) — le
+  modèle fort est actif ; notre Théorème L à citer comme instance.
+- **Tables PTE** — Chen Shuwen, *« The Prouhet-Tarry-Escott Problem »*,
+  [eslpower.org/TarryPrb.htm](http://eslpower.org/TarryPrb.htm) :
+  premières/plus petites idéales connues par taille — Escott 1910
+  (taille 7, support [0, 102], vérifiée exacte par V-014c) ; Tarry 1913
+  (taille 8, support [0, 50], **redécouverte ET certifiée minimale par
+  notre réseau, V-015**).
 - **Méta-complexité moderne** — S. Hirahara (FOCS 2018, réduction
   non-boîte-noire) ; Y. Huang, R. Ilango, H. Ren,
   *« NP-Hardness of Approximating Meta-Complexity »*, STOC 2023. **Lu en
