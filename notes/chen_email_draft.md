@@ -1,5 +1,8 @@
 # Brouillon — email à Chen Shuwen (certificats PTE)
 
+**À : chen.shuwen@seekway.com** (confirmé par 2 sources : PDF du survey
+arXiv:2506.11429 + mailto sur eslpower.org)
+
 **Subject: Unconditional non-existence certificates for ideal PTE solutions (size 11 and beyond), via exact lattice enumeration**
 
 Dear Chen Shuwen,
