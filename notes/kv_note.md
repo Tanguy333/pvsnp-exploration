@@ -148,6 +148,46 @@ Consequences:
 4. Conversely, the lattice machinery certifies PTE non-existence on
    bounded supports (e.g. n*(6) > 81) — a tool usable on the PTE side.
 
+## 6ter. Where could a size-11 ideal solution live? (estimation, 2026-06-11)
+
+Our certified minimal spans split sharply by parity:
+
+| even sizes | 2 | 4 | 6 | 8 | law |
+|---|---|---|---|---|---|
+| minimal span | 6 | 11 | 22 | 50 | x ~2 per size (clean geometric) |
+
+| odd sizes | 3 | 5 | 7 | 9 | 11 |
+|---|---|---|---|---|---|
+| minimal span | 6 | 18 | ~92 (in (81,102]) | <= 197 (known, not certified) | ? |
+
+Extrapolations for size 11: geometric fit ~1,300; quadratic-in-size fit
+of log(span) ~12,000. But the hard constraint flips the picture: every
+known odd-size ideal solution is symmetric (we verified Escott is), and
+the symmetric case is excluded up to height 3500, i.e. span 7000
+(Coppersmith-Mossinghoff-Scheinerman-Vanderkam 2023, arXiv:2304.11254).
+Hence:
+
+- if size 11 follows its family pattern (symmetric): span > 7000,
+  plausibly ~10^4 (quadratic fit);
+- if a non-symmetric one exists, it could live much lower (our
+  unconditional certificate: span > 70, being extended towards ~110) --
+  but it would be the first non-symmetric ideal solution beyond size 8
+  (survey arXiv:2506.11429: non-symmetric known only for sizes <= 8).
+
+Either way, size 11 sits visibly OFF its own growth curve -- the naive
+extrapolation (~10^3) is already excluded in the symmetric scenario.
+This quantified outlier status is the signature of why the size has
+resisted since the 1910s, and why Conjecture 5 at d = 10 is the degree
+where the witness-closure route fails in principle. Caveat: 3 data
+points, one calibration (size 9) not certified minimal -- order of
+magnitude only. Whether size 11 admits ANY ideal solution is open in
+both directions: the counting heuristic is negative from size 6 onward
+(exponent 2s - s(s-1)/2 = -33 at s = 11) and only algebraic structure
+(symmetry + elliptic curves, as at sizes 10 and 12) ever beats it;
+no such structure is known at 11, yet there is no local obstruction
+(ideal solutions exist mod p) and CMSV found symmetric solutions with
+just 2 quadratic irrationals -- the integral obstruction is thin.
+
 ## 7. Epistemic note
 
 This work was carried out in an AI-assisted exploration loop
