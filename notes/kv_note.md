@@ -190,10 +190,15 @@ just 2 quadratic irrationals -- the integral obstruction is thin.
 
 ## 6quater. A COUNTEREXAMPLE to Conjecture 5 as stated (2026-06-11)
 
-At (d = 21, n = 30), the shortest vector of L(B) is unique up to sign:
-a palindrome of squared norm 517,673,216 whose last coordinate is
-gamma_30 = -2. No shortest vector has gamma_n = +-1. Hence Conjecture 5,
-as stated ("for any n, d"), is FALSE.
+The MINIMAL counterexample is (d = 17, n = 30): the shortest vector of
+L(B) is unique up to sign -- a palindrome of squared norm 1,217,928
+whose last coordinate is gamma_30 = +-2. No shortest vector has
+gamma_n = +-1. Hence Conjecture 5, as stated ("for any n, d"), is
+FALSE. A second cell, (d = 21, n = 30) (palindromic minimum, squared
+norm 517,673,216, gamma_30 = +-2), is independently double-verified as
+well. Both doubly-verified counterexamples are palindromes with
+gamma_n = +-2 -- a structure theorem for deep-subtransition minima
+(palindromicity) looks like a strong candidate.
 
 Verification stack (all replayable, checks/task_v018_contre_exemple.py):
 exact-rational SVP (Fincke-Pohst over Fractions, no floats; sane
@@ -203,9 +208,11 @@ the gamma_n = +-1 minimum is strictly larger. Twelve further refuting
 cells confirmed exactly at d = 22..29 (first failures at n-d = 6, 9).
 
 SCOPE -- the essential nuance, now MAPPED: the refuting region is not
-sporadic but a BAND. Offsets (n - d) in [2, 20] that refute, by d:
-d <= 16: none; d = 21: {9}; d = 30: {7,10,11,13,14,20}; d = 40: 7..20
-(except 19); d = 60: 9..20; d = 80: 10..20; d = 100: 11..20 -- all in
+sporadic but a BAND. Offsets (n - d) in [2, 20] that refute, by d (~930 exact cells):
+d <= 16: none; d = 17, 18, 19: {13}; d = 20: {15}; d = 21: {9};
+d = 22..28: {6, 9, 10, 16..20 vary}; d = 29..41: progressive filling;
+d = 42..49: full band [8, 20]; d = 60: 9..20; d = 80: 10..20;
+d = 100: 11..20 -- all in
 exact arithmetic, instantaneous (the small-window cost depends on the
 rank n-d, not d). For d >= 60 the band fills everything above a slowly
 growing threshold offset (~9 to 11 from d = 60 to 100) at least up to
