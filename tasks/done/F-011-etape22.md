@@ -31,8 +31,26 @@ Escalades restantes : run long (heures), BreakID complet, ou théorie
 (n = 12 = premier point 2t hors Théorème K : t = 6 n'est pas une
 puissance de 2, la couverture mod 2 de e₆ meurt sur [8, 11]).
 
-## Prochain pas (lancé)
+## Prochain pas (lancé) — et son issue (e23)
 
-Run CMS **4 h sur n = 12 seul** (la cellule décisive). Si toujours
-INDÉCIS : la cellule rejoint le statut « problème ouvert exécutable »
-(comme l'e20 avant le déblocage SAT) — et la voie redevient théorique.
+Run CMS **4 h sur n = 12 seul** lancé (e23,
+[`checks/task_f011e23_long_n12.py`](../../checks/task_f011e23_long_n12.py)).
+**Issue : interrompu sans verdict** — le processus est mort en cours de
+nuit (mise en veille machine / redémarrage de session), aucune ligne de
+résultat. Pas un verdict du solveur.
+
+## CLÔTURE DU FRONT DE CALCUL (2026-06-11)
+
+**n = 12 et n = 13 sont classés « problème ouvert exécutable »** du
+dépôt : `deg₆(MAJ_12) = 6 ?` et `deg₆(MAJ_13) = 7 ?` — instances
+documentées (scripts e21c/e22 reproduisibles, encodage XOR-natif +
+sym-break), résistantes à ~4 h cumulées sur 5 configurations.
+
+Relance possible par l'utilisateur (machine sans veille, nuit complète) :
+```
+cd checks && python -X utf8 task_f011e23_long_n12.py
+```
+Sinon, la voie est **théorique** : n = 12 est le premier point 2t hors
+Théorème K (t = 6 non puissance de 2 — la couverture mod 2 de e₆ meurt
+sur [8, 11]) ; un argument d'infaisabilité ou une construction ad hoc
+trancherait. Candidate de session future.
