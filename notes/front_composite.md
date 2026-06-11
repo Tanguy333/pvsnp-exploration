@@ -225,3 +225,51 @@ BBR 1994 lu en texte intégral ; Canteaut-Videau 2005 identifié. Verdict :
 **Réserve** : « non trouvé » ≠ « nouveau » — la littérature post-1994 sur
 les degrés MOD_m exacts des fonctions symétriques n'a pas été balayée
 exhaustivement. Folklore-check dédié requis avant toute diffusion.
+
+## 10. L'arc du modèle général (étapes 17-32, 2026-06-10/11)
+
+La restriction symétrique levée (§8.4) a livré en deux jours un tableau
+complet du modèle faible **général** mod 6 à n = 2t :
+
+**L'hypothèse plate.** `deg₆(MAJ_n) = ⌈n/2⌉` — la borne triviale
+(Lemme 5/Möbius) est ATTEINTE partout où testé : **n = 4..24 et 32**,
+certificats explicites, n = 12/13/14 doublement vérifiés. Le modèle
+général efface toutes les anomalies symétriques.
+
+**Trois familles infinies de théorèmes** (points n = 2t) :
+
+| Théorème | Famille | Construction | Preuve |
+|---|---|---|---|
+| **K** (e18) | t = 2^a | e_t mod 2 + un monôme mod 3 | Lucas |
+| **K′** (e26) | t = 2·3^k | e_t + e_{3^k}(A)e_{3^k}(B), pur mod 3 | 3 lemmes de Lucas |
+| **K″** (e32) | t = 3^k | e_t pur mod 3, symétrique | Lucas, 1 ligne |
+
+**Classification de la frontière bipartite (t ≤ 27, e29-e32)** :
+solubles = {2,3,4,5,6,8,9,12,16,18,27} = K ∪ K′ ∪ K″ ∪ {4 (joint),
+5, 12 (sporadiques à formes closes — mosaïques de Lucas mixtes, e29)} ;
+hiérarchie `symétrique ⊊ bipartite ⊊ multipartite` stricte ; en
+grandissant, être bipartite-soluble est l'exception. Les t insolubles
+(7, 10, 11, 13, 14, 15, 17, 19...) exigent des tri/quadripartitions
+(certificats trouvés jusqu'à n = 24, opaques même minimisés par MaxSAT).
+
+**Leçon de méthode (e20-e24)** : ~4,5 h de SAT brut (CaDiCaL, CMS+Gauss,
+sym-breaking) = INDÉCIS sur n = 12, 13 ; **ansatz par orbites de
+sous-groupes = 0 s** (la solution de n = 12 vit dans un espace invariant
+à 7 variables). Escalade documentée : recuit → ILP → SAT → ansatz →
+MaxSAT (certificats canoniques lisibles).
+
+**Conjectures tuées en route** (le pipeline s'auto-corrige) : 3-lisse
+(par t = 5), 3-lisses ∪ {5} (par t = 24) — 7 au total dans le fil.
+
+## 10bis. Confrontation littérature, 2e audit (2026-06-11, `bib/bgl_2003_sun_2020.md`)
+
+Bhatnagar-Gopalan-Lipton 2003 lu (lecture visuelle, polices bitmap
+contournées) : notre cadre CRT/digits = leur lentille « protocoles
+simultanés » ; la borne linéaire symétrique faible de MAJ mod 6 =
+**leur Théorème 4.9** (Ω(max(k,√n))). TR04-022 (2004) : seuils à k
+constant, liens diophantiens. ICALP 2020 : modèle fort actif
+(deg₆ ≥ 2n/7 symétrique). **Délimitation** : nos lois exactes
+symétriques ET tout le modèle général/bloc-symétrique (plate, K, K′,
+K″, classification) ne figurent dans aucun des textes lus — couche
+candidate, sous réserve d'une lecture humaine de la thèse de Gopalan
+(2006) avant diffusion.
