@@ -202,12 +202,19 @@ an independent constrained enumeration in the raw stencil basis showing
 the gamma_n = +-1 minimum is strictly larger. Twelve further refuting
 cells confirmed exactly at d = 22..29 (first failures at n-d = 6, 9).
 
-SCOPE -- the essential nuance: the regime your ACC application needs
-(d much smaller than n) is NOT touched. All ~290 cells we verified at
-d <= 16 with wider windows SUPPORT the conjecture. The data locates the
-frontier: failures appear only at d >= 21 and very tight windows
-(n - d <= 9). The conjecture likely needs a hypothesis n >= f(d) -- and
-our cells give the first quantitative picture of f.
+SCOPE -- the essential nuance, now MAPPED: the refuting region is not
+sporadic but a BAND. Offsets (n - d) in [2, 20] that refute, by d:
+d <= 16: none; d = 21: {9}; d = 30: {7,10,11,13,14,20}; d = 40: 7..20
+(except 19); d = 60: 9..20; d = 80: 10..20; d = 100: 11..20 -- all in
+exact arithmetic, instantaneous (the small-window cost depends on the
+rank n-d, not d). For d >= 60 the band fills everything above a slowly
+growing threshold offset (~9 to 11 from d = 60 to 100) at least up to
+offset 20. Offsets <= 6 always pass (rigid windows). What remains of
+the conjecture: the narrow initial band plus, presumably, the regime
+n >> d where PTE witnesses live -- which is the regime your ACC
+application needs, and which all our ~290 cells at d <= 16 support.
+The statement needs a hypothesis n >= f(d); our map gives the first
+quantitative picture of f.
 
 ## 7. Epistemic note
 
