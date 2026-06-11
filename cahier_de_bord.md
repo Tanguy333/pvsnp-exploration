@@ -804,6 +804,7 @@ contre la littérature DNF-MIN. Statut individuel :
 - [x] **Fil V** (15 tâches) — Conjecture 5 close d ≤ 5 et d = 7, d = 6 quasi clos — synthèse `notes/kv_note.md` (2026-06-11)
 - [ ] **Attentes externes** : réponse de Göös (notes L18 + composite) ; réponses de KV (2 emails envoyés le 2026-06-11) — un suivi pourra mentionner V13/V15 (d ≤ 5 et 7 clos, Tarry certifié minimal)
 - [ ] **Fronts candidats** (au choix de l'utilisateur) : trou d = 6 [82, 101] (~heures/cellule) ; trous plate n ∈ {26, 27, 28, 30} (frontière d'outil, catalogue élargi) ; multipartites des t insolubles (7, 10, 11…) vers « plate partout » ; d = 8 sous-transition ; n*(6) exact ∈ (81, 102]
+- [ ] **Mur structurel identifié (2026-06-11, `notes/kv_note.md` §6bis)** : les idéales PTE n'existent (connues) que pour les tailles 3..10 et 12 → **d = 10 est le premier degré où la clôture par témoin est impossible en principe** (idem d ≥ 12) ; si la route torique exige la Conjecture 5 pour d non borné, **elle hérite de la difficulté du problème PTE idéal, ouvert depuis 1851** — déclaration « pourquoi c'est dur » vérifiée par calcul des deux côtés ; la conjecture y reste plausible (plateau d = 6 : minima non idéaux, bouts ±1 tiennent)
 - [ ] **Lecture humaine recommandée avant diffusion** : thèse Gopalan 2006 (PDF dans `bib/pdf/` + sources ECCC) — cf. table de requalification `bib/bgl_2003_sun_2020.md`
 - [ ] Tour 26 éventuel : uniquement via un sous-lemme vérifiable d'une cellule de l'Atlas (13 lignes)
 

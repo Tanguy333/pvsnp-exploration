@@ -110,6 +110,44 @@ size-6 ideal solution having degree 23.
    19th century for large sizes. In this regime, Conjecture 5 and the
    ideal-PTE existence problem are intertwined.
 
+## 6bis. The size/degree map and the d = 10 wall (added 2026-06-11, after V-014/V-015)
+
+Ideal PTE solutions are known for sizes 3..10 and 12; none is known for
+size 11 nor for any size >= 13 (open since the 19th century). Through
+Theorem V11 this translates degree by degree:
+
+| known ideal sizes | degrees d closable in the stable regime |
+|---|---|
+| 3..10 | d = 2..9 |
+| 11 : none known | **d = 10 : no witness — the first true wall** |
+| 12 | d = 11 |
+| >= 13 : none known | d >= 12 |
+
+Status after V-013/V-014/V-015: Conjecture 5 is **closed for d <= 5 and
+d = 7 (all n)**; d = 6 is closed except n in [82, 101] (Escott 1910
+verified exactly closes n >= 102; our lattice exhaustion certifies that
+no size-7 ideal solution has support in [0, 81], so n*(6) in (81, 102]).
+At the transition n*(7) = 50 the lattice rediscovered Tarry 1913 and
+certified its minimality (no size-8 ideal solution has support <= 49).
+
+Consequences:
+
+1. **d = 10 is the first degree where the witness-shift closure is
+   impossible in principle** (not merely computationally): if no ideal
+   solution of size 11 exists, the lattice minimum stays > 22 for all n,
+   and the closure scheme has nothing to shift. The same holds for all
+   d >= 12.
+2. The conjecture may well survive there: on the d = 6 plateau
+   (n = 33..81) all minimizers are non-ideal (size-8) solutions and the
+   +-1-ends property holds throughout. So Conjecture 5 at d = 10 is
+   plausibly true but, by present means, verifiable only cell by cell.
+3. Cartographically: **if the torus-polynomial route needs Conjecture 5
+   for unbounded d, it inherits the difficulty of the ideal
+   Prouhet-Tarry-Escott existence problem, open since 1851.** This is
+   the precise sense in which this route to MAJ not in ACC is hard.
+4. Conversely, the lattice machinery certifies PTE non-existence on
+   bounded supports (e.g. n*(6) > 81) — a tool usable on the PTE side.
+
 ## 7. Epistemic note
 
 This work was carried out in an AI-assisted exploration loop
