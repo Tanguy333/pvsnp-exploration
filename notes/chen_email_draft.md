@@ -43,6 +43,20 @@ conditional on the symmetric form. Results:
    [97, 262143], the upper end being Prouhet's classical solution,
    which we reconstructed and verified coefficient-by-coefficient).
 
+One more observation related to your survey: your Conjecture 1
+(interlacing of normalized solutions) suggested to us a natural
+extension — that the lP-minimal MULTISET solutions in a bounded window
+(the shortest lattice vectors) might also interlace, i.e. have
+alternating signs. We tested this on 72 exactly-enumerated minimal
+vectors across 15 cells: only 4 alternate. So while your conjecture
+concerns ideal solutions (where interlacing is natural, by the
+constant-difference argument), the structure does NOT extend to the
+l2-minimal multiset solutions: their optima are palindromic (mirror-
+symmetric multisets) rather than interlacing, with multiplicities and,
+in deep windows, non-unit extreme coefficients. This delimits, we
+believe, the natural boundary of the interlacing phenomenon — the data
+is available if useful.
+
 All scripts are replayable in one command (Python, exact arithmetic),
 and I would be happy to share them, along with a short note. If any of
 these bounds duplicate something already known, I would be grateful for
