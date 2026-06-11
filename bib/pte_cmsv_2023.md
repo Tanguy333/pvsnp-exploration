@@ -87,3 +87,26 @@ final des certificats taille 11 :
 solutions, aucune hypothèse de forme) — borne plus petite mais portée
 non couverte ailleurs. Vérifié contre le survey de 368 pages, le plus
 récent de la littérature (juin 2025).
+
+## Relecture du survey POUR le dépôt (2026-06-11, demande utilisateur)
+
+Trois apports examinés :
+
+1. **Son P1 ouvert** (« degrees n = 10 and n ≥ 12 ») = notre mur d = 10
+   (`notes/kv_note.md` §6bis) — cartographies alignées.
+2. **Sa Conjecture 1 (entrelacement des solutions normalisées)** :
+   traduite en notre langage, elle suggérait « les vecteurs minimaux du
+   réseau ont des signes alternés », ce qui aurait attaqué les bouts ±1
+   (= la Conjecture 5) par une voie de structure. **TESTÉ et RÉFUTÉ en
+   30 s** : 4/72 minima alternent (échantillon de 15 cellules, d = 2..10,
+   y compris sous-transition, max|coef| jusqu'à 44). L'entrelacement
+   vaut pour les solutions idéales (différence constante de polynômes
+   unitaires — argument classique) mais ne s'étend PAS aux minima
+   généraux. Voie fermée, 8e hypothèse tuée le jour même.
+3. **Ses types GPTE ouverts les plus simples** (P2 : (k=5), (k=6),
+   (k=3,4)) sont attaquables par nos exhaustions (réseau ou
+   meet-in-the-middle) — mais HORS CIBLE P vs NP : consigné comme
+   quête latérale possible, non engagée (CLAUDE.md §8).
+
+Ses conjectures de bornes (2-4, problème normalisé) optimisent les
+recherches à grande hauteur (style D2) — peu transposables à notre SVP.
