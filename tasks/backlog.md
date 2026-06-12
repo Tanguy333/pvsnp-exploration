@@ -184,3 +184,4 @@ Un Tour adverse (Proposeur/Réfuteur) ne peut être rouvert que si :
 1. Une cellule de `atlas/matrice_barrieres.md` est marquée « zone vide » ou « sous-lemme non couvert », ET
 2. La proposition cite la cellule exacte qui la motive, ET
 3. Le calcul de vérification est livré AVANT la soumission (condition (j) stricte).
+- [V-040 candidat] Chasse au fantôme par l'ascenseur antipalindromique (V-039 C2) : paires plates taille 11 avec B = S−A, seules les 5 conditions impaires k=1,3,5,7,9 à imposer — moitié prix vs recherche brute ; si trouvée, c'est l'idéale taille 11.

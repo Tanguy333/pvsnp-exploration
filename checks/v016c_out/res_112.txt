@@ -1,0 +1,1 @@
+n=112 min=28 bouts=OUI t=663s

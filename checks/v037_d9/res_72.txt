@@ -1,0 +1,1 @@
+n=72 min=24 ends=True flat=True t=44s
