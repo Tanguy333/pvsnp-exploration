@@ -1,0 +1,1 @@
+a1=4 survivants=1 t=22.6s

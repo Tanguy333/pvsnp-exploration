@@ -1,0 +1,1 @@
+a1=35 survivants=9 t=22.7s

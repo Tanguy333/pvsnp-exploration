@@ -1,0 +1,1 @@
+a1=18 survivants=2 t=9.6s

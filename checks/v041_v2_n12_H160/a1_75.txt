@@ -1,0 +1,1 @@
+a1=75 survivants=2 t=8.2s

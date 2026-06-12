@@ -1,0 +1,1 @@
+a1=14 survivants=0 t=9.1s

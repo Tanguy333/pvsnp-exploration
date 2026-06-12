@@ -1,0 +1,1 @@
+a1=57 survivants=0 t=26.3s

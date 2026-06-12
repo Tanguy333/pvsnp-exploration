@@ -1,0 +1,1 @@
+a1=8 survivants=0 t=10.0s

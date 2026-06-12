@@ -1,0 +1,1 @@
+a1=5 survivants=0 t=23.5s
