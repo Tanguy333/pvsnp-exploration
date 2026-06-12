@@ -45,7 +45,31 @@ revendication), le certificat inconditionnel à petit support n'est pas
 dans la littérature — les méthodes de recherche classiques imposent
 toutes des formes.
 
-## Autres faits utiles extraits
+## Table 2 complète (extraite du PDF le 2026-06-12, V-040)
+
+PDF archivé : `bib/pdf/CMSV_2023_arxiv_2304.11254.pdf` (27 p.). Bornes
+exactes des recherches symétriques exhaustives (H0 = antériorité, H = eux) :
+
+| n | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 |
+|---|---|---|---|---|---|---|---|---|
+| H0 (avant eux) | 2000 | 1500 | 2000 | 1000 | — | — | — | — |
+| H (CMSV 2023) | 7000 | 2500 | **3500** | 1511 | **2000** | **900** | **1100** | **850** |
+| (p₁, p₂) | (23,19) | (29,23) | (31,29) | (31,29) | (41,37) | (37,31) | (47,43) | (53,43) |
+| Solutions | 2 | 2 | **0** | 2 | **0** | **0** | **0** | **0** |
+
+Verbatim (p. 14) : « *n = 11: We first look for symmetric ideal solutions
+that reduce mod 29 to a unit multiple of the lone local solution (16) at
+this prime, and then we use (p₁, p₂) = (31, 29) to search for integer
+solutions at this size with height at most 3500.* » ; « *n = 15: We find
+no integral solutions exist for n = 15 with height at most 1100.* »
+
+Conséquence pour notre ascenseur (V-040) : AUCUNE taille ≤ 16 n'offre de
+territoire neuf à un DFS nu (le plus bas plafond est 850, à n = 16) ; tout
+dépassement exigerait leur machinerie de congruences (p₁, p₂, q, r de la
+table). Les plus gros « headrooms » relatifs : n = 14 (900) et n = 16 (850),
+tailles PAIRES — machine différente (réduction classique : symétrique de
+taille 2m ⟺ idéale de taille m en carrés parfaits) — et elles aussi
+SANS idéale connue.
 
 - Kleiman 1975 : (n−1)! | Cₙ (constante des idéales) ; Rees-Smyth 1990 ;
   table des diviseurs requis de C′ₙ (Borwein et al. pour n = 11, 12, 13 ;
