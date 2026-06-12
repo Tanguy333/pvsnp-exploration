@@ -51,3 +51,14 @@ Aucun recouvrement détecté avec le cœur (Conjecture 5, contre-exemple,
 formes closes) ; proximité réelle sur les transitions idéales —
 **lecture humaine de BM 2000 requise avant diffusion** des claims
 n*(d)/minimalité, et cross-check d(m) par nos outils en candidate.
+
+## MISE À JOUR 2026-06-12 (V-046) — table lue, audit levé
+
+PDF récupéré (archive CECM, `bib/pdf/BM_2000_P153.pdf`) et Table 1 lue
+VISUELLEMENT (polices bitmap contournées, pymupdf 300 dpi, comme A-010).
+Valeurs exactes : d(m) = 1, 3, 6, 11, 15, 22, 30, 41, 48, 61 (m = 1..10) ;
+plus petits connus : 69 (m=11), 93 (12), 112 (13), 120 (14), 141 (15),
+159 (16), 185 (17), 207 (18), 245 (19), ABSENT (20), 294 (21).
+Réplication réseau (V-046) : identique m = 3..11 et 13 ; séparation à
+m = 12 (frontière de phase 99 > existence 93). La « lecture humaine
+requise » est faite ; le rang m = 20 manquant est une cible.
