@@ -249,6 +249,61 @@ conjecture holds for n - d <= 4 (proved, all d, via the Jacobi bound),
 fails on the proven windows above, and is supported beyond them only
 in the PTE-witness regime n >> d.
 
+## 6sexies. The phase map of the lattice, the forbidden-rung theorem, and a missing rank filled (2026-06-12)
+
+A day of structure results, all verified exactly (enumeration is exact
+integer arithmetic throughout; the engine is a certified compiled
+Schnorr–Euchner + LLL pipeline, cross-validated against the previous
+exact-rational implementation on every cell class).
+
+**(a) Symmetry lemmas.** The coefficient-reversal map is an isometry of
+every cell preserving the multiplicity at x = 1. Elementary lemmas: a
+palindromic (resp. antipalindromic) integer vector has even (resp. odd)
+multiplicity at 1; a flat (±1) vector with odd set-sizes is never
+palindromic. Census over 29,263 minima (162 cells, d = 2..11): not one
+violation; minima are always self-symmetric below a degree-dependent
+threshold n_asym(d) ≈ 2 × (span of the first symmetric witness of the
+current rung), and NO asymmetric minimum was ever observed for d ≥ 8 —
+matching the literature boundary (non-symmetric ideal solutions are
+known only up to size 8).
+
+**(b) Forbidden-rung theorem.** For odd d, any flat self-symmetric
+vector of norm 2(d+2) in L_d is necessarily an antipalindromic IDEAL
+solution of size d+2 (proof: parity of multiplicity + the cardinality
+obstruction + multiplicity ≤ size). Hence the orphan rungs of the
+odd-d lattices encode exactly the open odd-size ideal PTE problems
+(d = 9 ↔ size 11, d = 11 ↔ size 13, ...), and the closed degrees
+(d = 3, 5, 7) are precisely those whose odd ideal exists (sizes 5, 7, 9).
+
+**(c) Phase map.** Let d(m) be Borwein–Mossinghoff's minimal degree of a
+height-1 polynomial divisible by (1−x)^m, and φ(m) the smallest n at
+which the cell (m−1, n) has a FLAT minimum (a quantity only exhaustive
+lattice enumeration can compute). Measured: φ(m) = d(m) = 6, 11, 15,
+22, 30, 41, 48, 61, 69, —, 112 for m = 3..11, 13 (our lattice values
+reproduce the BM table exactly, by an independent method), with a
+single separation at m = 12: φ(12) = 99 > d(12) = 93. The anomaly is
+explained: at spans 86..98 the multiplicity-12 cyclotomic packing
+(x−1)^12 Φ₂⁴Φ₃³Φ₄²Φ₅Φ₆Φ₇Φ₈Φ₉Φ₁₁Φ₁₃Φ₁₇ (degree 86, height 2, norm 40)
+beats every flat; at n = 99 a flat of norm 40 (size 20, degree 11,
+palindromic, 40 terms vs 52 for the BM extremal) TIES it — a
+first-order-like coexistence at the boundary. Both curves grow like
+≈ 0.65 m²: the quantitative wall for the d ≪ n regime relevant to the
+ACC application.
+
+**(d) A missing rank of the BM table, filled.** The BM table (Exp.
+Math. 9 (2000), Table 1) has no entry at m = 20. We found the (unique,
+within ascending-transit ≤ 3 and degree ≤ 330) flat pure product with
+exactly 20 factors:
+
+  t = {1,2,3,4,5,7,8,9,11,12,13,15,17,19,21,23,27,29,31,50},
+  degree 307, multiplicity exactly 20 (verified by symbolic division).
+
+It requires transient height 3 along ascending prefixes (the BM
+extremals split into transit-2 ranks {≤14, 18, 19, 21} and transit-3
+ranks {15, 16, 17, 20} — a new invariant), and exhibits a
+non-monotonicity: 307 > 294 = the m = 21 entry. [Post-2000 literature
+check pending before any external claim.]
+
 ## 7. Epistemic note
 
 This work was carried out in an AI-assisted exploration loop
