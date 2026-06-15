@@ -62,3 +62,34 @@ plus petits connus : 69 (m=11), 93 (12), 112 (13), 120 (14), 141 (15),
 Réplication réseau (V-046) : identique m = 3..11 et 13 ; séparation à
 m = 12 (frontière de phase 99 > existence 93). La « lecture humaine
 requise » est faite ; le rang m = 20 manquant est une cible.
+
+## Antériorité du rang m=20 — recherche du 2026-06-12 (avant email Mossinghoff)
+
+Recherche web (WebSearch + WebFetch) : AUCUNE publication post-2000 d'une
+valeur d(20) trouvée. Référence standard = BM 2000 (la table omet m=20
+selon notre lecture visuelle ; descriptions web génériques « m <= 21 »).
+Pistes vérifiées sans résultat : AMS Math.Comp. 2003 (S0025-5718-02-01460-6),
+arXiv 1406.2560 (ordre d'annulation), DBLP Mossinghoff.
+DEUX TROUS non comblables par l'agent :
+  1. OEIS inaccessible (HTTP 403) — À VÉRIFIER MANUELLEMENT par Tanguy
+     (coller : 1,3,6,11,15,22,30,41,48,61,69,93,112,120,141,159,185,207,245).
+  2. Doute résiduel sur la lecture « ligne 20 absente » (rendu image) —
+     reconfirmer sur copie propre avant toute revendication externe.
+CONCLUSION : l'email à Mossinghoff (auteur de la table) EST le test
+d'antériorité définitif ; formulé en question, pas en revendication.
+
+### MAJ 2026-06-12 (copie propre relue)
+Doute n°2 LEVÉ : la copie propre (bib/pdf/BM_2000_copie_propre.pdf) confirme
+sans ambiguïté que la Table 1 passe de m=19 (d=245) directement à m=21 (d=294)
+— la ligne m=20 est RÉELLEMENT absente du papier original (2000). Reste le
+seul trou : antériorité post-2000 (OEIS à vérifier manuellement).
+
+### MAJ 2026-06-12 (OEIS vérifié — capture utilisateur)
+Recherche OEIS de la suite 1,3,6,11,15,22,30,41,48,61,69,93,112,120,141,159,185,207,245 :
+match = A059753 « Minimal degree of a height one multiple of (x-1)^n » = notre d(m).
+A059753 NE LISTE QUE jusqu'à d=120 (m=14) — donc PAS de valeur m=20 dans l'OEIS.
+(le recouvrement affiché s'arrête à 120 ; si 141+ y étaient, ils apparaîtraient.)
+=> Les DEUX trous d'antériorité sont LEVÉS : ni BM 2000 (table) ni OEIS A059753
+   n'ont de rang m=20. Nuance : A059753 s'arrête à m=14 car au-delà BM ne donnent
+   que des « smallest known » (bornes sup), pas des minima prouvés. Notre 307 est
+   du même type (borne sup) — contribution naturelle, formulée comme telle dans l'email.

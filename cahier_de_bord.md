@@ -1206,3 +1206,12 @@ bibliographie *avant* soumission. Pattern observé : sur les 8 ÉTABLIS Tours
 (IP, formule `(3^n − 1)/2`) reste de statut incertain. La condition (q)
 formalise la leçon : *toute proposition aurait dû citer au moins une référence
 de §7 ou justifier explicitement son absence*.
+
+### Échange externe — Mika Göös (2026-06-12)
+Réponse de Mika Göös à l'email (référence/antériorité) : « Sorry, I don't
+know any reference off the top of my head. These days you could also ask
+ChatGPT :) ». Lecture : accusé de réception courtois, non engagé (off-the-cuff)
+— indication FAIBLE que la question n'est pas un classique immédiat dans son
+aire, mais une seule réponse à froid, non creusée. Ne RIEN en conclure sur
+l'ouverture/nouveauté. Bons interlocuteurs ciblés restent : auteurs KV
+(Conjecture 5, déjà contactés) et Mossinghoff (fil d(m)/m=20, email prêt).
