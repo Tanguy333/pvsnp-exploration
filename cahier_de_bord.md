@@ -1215,3 +1215,29 @@ ChatGPT :) ». Lecture : accusé de réception courtois, non engagé (off-the-cu
 aire, mais une seule réponse à froid, non creusée. Ne RIEN en conclure sur
 l'ouverture/nouveauté. Bons interlocuteurs ciblés restent : auteurs KV
 (Conjecture 5, déjà contactés) et Mossinghoff (fil d(m)/m=20, email prêt).
+
+### Échange externe — Vaibhav Krishan (auteur KV), 2026-06-12 — VALIDATION
+Réponse de V. Krishan (co-auteur de TR24-074) à l'email de réfutation de
+la Conjecture 5 : « *It's indeed useful to know that the conjecture is false,
+and it rules out the shortest vector approach as stated in our paper toward
+proving an error-degree tradeoff for AND in the symmetric case. Would be happy
+to hear back if you have more thoughts.* »
+PORTÉE (confirmée par l'auteur) : notre contre-exemple (V-017b/c, V-018) +
+la théorie quantitative (loi des fenêtres V-032, cœurs 2Phi3+x, carte de
+phase V-046, seuil de découplage m*=15) FERME une voie de leur programme
+(SV-approach pour le tradeoff erreur-degré de AND, cas symétrique). C'est
+le résultat le plus fort du dépôt, désormais validé par un auteur. L'auteur
+invite une suite — réponse substantielle en préparation (notes/kv_reply_2_draft.md).
+
+### Échange externe — Chen Shuwen (référence mondiale PTE), 2026-06-12 — ANTÉRIORITÉ PRIMAIRE
+Données autoritaires (bib/chen_shuwen_2024_reponse.md) : recherches exhaustives
+d'idéales NON SYMÉTRIQUES — taille 8 jusqu'à 570 (trouvées, p.229) ; taille 9
+jusqu'à 592 (AUCUNE) ; taille 10 jusqu'à 530 (AUCUNE) ; taille 11 jusqu'à 1600
+(AUCUNE, p.52) ; taille 12 jusqu'à 500 (AUCUNE).
+RECALIBRATION (22e auto-correction) : notre span-96 (idéale taille 8 non sym.)
+= CONNU (Chen p.229) ; chasse d=8→idéale-9-non-sym FERMÉE (Chen ≤592) — cible
+abandonnée. Distinction clé : nos minima asym. de RÉSEAU (V-042, d≤7, non idéaux)
+≠ idéales non sym. de Chen. CORROBORATION : Chen confirme idéales symétriques
+tailles 9-12 large plage = soutient notre loi V-042 (cas idéal). Notre apport
+unique reste le certificat INCONDITIONNEL réseau (toutes formes, défectueux
+compris, par span) pour KV — pas la découverte d'idéales (verrou de Chen).
