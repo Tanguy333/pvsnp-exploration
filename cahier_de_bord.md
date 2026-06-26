@@ -1241,3 +1241,16 @@ abandonnée. Distinction clé : nos minima asym. de RÉSEAU (V-042, d≤7, non i
 tailles 9-12 large plage = soutient notre loi V-042 (cas idéal). Notre apport
 unique reste le certificat INCONDITIONNEL réseau (toutes formes, défectueux
 compris, par span) pour KV — pas la découverte d'idéales (verrou de Chen).
+
+### Échange externe — Michael Mossinghoff (auteur de la table BM 2000), 2026-06-12 — NOUVEAUTÉ CONFIRMÉE
+Réponse de M. Mossinghoff à l'email V-047 (rang m=20) : « *That is a very nice
+example, I do not believe another example with height 1 and multiplicity exactly
+20 has appeared before.* » — NOUVEAUTÉ de notre produit pur plat (degré 307, h=1,
+mult. exactement 20) CONFIRMÉE PAR L'AUTEUR de la table. Il valide aussi l'idée
+de borner la hauteur de transit (« promising space ») et note que le saut 31→50
+explique que leur méthode l'ait manqué. Pointeur d'antériorité fourni : Cipu 2004
+(LMS JCM) — produits purs MAIS minimise L₂, ses mult-20 ont hauteur 2 : adjacent,
+ne préempte pas (bib/cipu_2004_pointeur.md). « Please keep me posted. »
+STATUT : 1er objet du dépôt à nouveauté validée par l'autorité du domaine. Réel
+mais PÉRIPHÉRIQUE à P vs NP (théorie des nombres expérimentale). Soumission OEIS
+A059753 (rang 20) désormais bien fondée.
