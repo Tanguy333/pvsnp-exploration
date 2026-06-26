@@ -3,13 +3,28 @@
 Source : email de M. Mossinghoff à Tanguy. À VÉRIFIER sur le texte si une
 revendication formelle est faite ; ici on consigne ce que Mossinghoff en dit.
 
-- **Référence** : Mihai Cipu, LMS Journal of Computation and Mathematics
-  (LMS JCM), 2004. Sujet : polynômes produits purs (pure product polynomials).
-- **Différence clé** : Cipu **minimise d'autres quantités** que la hauteur
-  (max des coefficients) — typiquement la **norme L₂ des coefficients** ou
-  analogue. Ses exemples à **multiplicité 20 ont hauteur 2** (donc PAS
-  hauteur 1) — excellents pour le but L₂, mais ne répondent pas à la
-  question d(m) de Borwein–Mossinghoff (hauteur 1).
+- **Référence + PDF LUS EN ENTIER** (2026-06-27, PDF fourni par Tanguy) :
+  Mihai Cipu, **« Upper bounds for norms of products of binomials »**,
+  LMS J. Comput. Math. **7 (2004), 37–49**, DOI 10.1112/s1461157000001030.
+- **Définitions exactes (p.1, verbatim)** : binômes = X^u − X^v ; les
+  produits pertinents pour PTE sont les **produits purs** ∏(1−X^{a_i})
+  (condition iii). La quantité PRIMAIRE est la **length L(P) = norme ℓ₁**
+  (somme des |coefficients|). Il rapporte AUSSI la **norme euclidienne**.
+  → Donc « L2 » seul (mon brouillon initial) était INEXACT : c'est ℓ₁
+  (length) d'abord, ℓ₂ ensuite. (« 23e auto-correction ».)
+- **Table 1, ligne n = 20 — REPRODUITE EXACTEMENT** : exposants
+  {1–11, 13, 15, 17, 19, 21, 23, 25, 27, 31} (20 facteurs), degré 257,
+  **hauteur 2**, **length L = 116 = B1(20)**, **‖·‖₂² = 132 = B2(20)**,
+  multiplicité 20. → Cipu A un exemple mult-20 (B1=length ℓ₁, B2=ℓ₂²),
+  vérifié par reconstruction exacte. NE PAS dire « il n'avait rien ».
+- **Complémentarité avec V-047** : Cipu (degré 257, hauteur 2, optimise
+  length/ℓ₂) vs nous (degré 307, **hauteur 1**, optimise hauteur puis degré).
+  Objectifs distincts → notre nouveauté HAUTEUR 1 tient (confirmée
+  Mossinghoff : pas d'exemple hauteur-1 mult-20 antérieur).
+- **Lien P_j(D) RÉDUIT** : P_j(D) = ‖(1−x)^D(1+x)^j‖² = ‖(1−x)^{D−j}(1−x²)^j‖²
+  est une forme close pour la norme ℓ₂² d'un produit pur, MAIS à exposants
+  dans {1, 2} seulement — un cas très particulier de ses objets. Lien réel
+  mais MINEUR ; ne pas le survendre.
 - **Conséquence** : Cipu 2004 est ADJACENT mais NE PRÉEMPTE PAS notre
   résultat V-047 (produit pur plat = hauteur 1, multiplicité exactement 20,
   degré 307). Mossinghoff confirme explicitement : « *I do not believe
