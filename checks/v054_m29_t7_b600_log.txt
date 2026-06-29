@@ -1,0 +1,28 @@
+V-054 : d(29) -- transit <= 7, borne initiale ubound = 600 (degre cible < 600)
+  t1=  1: nodes=21,446,381,595  best=600  [1683s cumule]
+  t1=  2: nodes=1,285,517,551  best=600  [1798s cumule]
+  t1=  3: nodes=  165,068,381  best=600  [1808s cumule]
+  t1=  4: nodes=   44,875,604  best=600  [1811s cumule]
+  t1=  5: nodes=   13,047,060  best=600  [1811s cumule]
+  t1=  6: nodes=    4,782,864  best=600  [1812s cumule]
+  t1=  7: nodes=    1,803,352  best=600  [1812s cumule]
+  t1=  8: nodes=      766,537  best=600  [1812s cumule]
+  t1=  9: nodes=      339,959  best=600  [1812s cumule]
+  t1= 10: nodes=      158,754  best=600  [1812s cumule]
+  t1= 11: nodes=       76,843  best=600  [1812s cumule]
+  t1= 12: nodes=       37,548  best=600  [1812s cumule]
+  t1= 13: nodes=       17,205  best=600  [1812s cumule]
+  t1= 14: nodes=        7,567  best=600  [1812s cumule]
+  t1= 15: nodes=        3,381  best=600  [1812s cumule]
+  t1= 16: nodes=        1,504  best=600  [1812s cumule]
+  t1= 17: nodes=          568  best=600  [1812s cumule]
+  t1= 18: nodes=          157  best=600  [1812s cumule]
+  t1= 19: nodes=           34  best=600  [1812s cumule]
+  t1= 20: nodes=           10  best=600  [1812s cumule]
+
+TERMINE en 1812s  (22,962,886,474 noeuds, 0 ameliorations)
+AUCUN produit plat 29-facteurs transit<=7 de degre < 600.
+La borne triviale 599 tient ; d(29) exige transit >= 8 ou degre >= 600.
+noeuds=22962886474, temps=1812s
+
+resultat ecrit dans checks/v054_result.txt

@@ -1,0 +1,28 @@
+V-054 : d(24) -- transit <= 4, borne initiale ubound = 500 (degre cible < 500)
+  t1=  1: nodes=1,046,084,126  best=500  [52s cumule]
+  t1=  2: nodes=  143,838,559  best=500  [60s cumule]
+  t1=  3: nodes=   26,224,793  best=500  [61s cumule]
+  t1=  4: nodes=    9,000,403  best=500  [61s cumule]
+  t1=  5: nodes=    3,127,366  best=500  [62s cumule]
+  t1=  6: nodes=    1,334,432  best=500  [62s cumule]
+  t1=  7: nodes=      563,881  best=500  [62s cumule]
+  t1=  8: nodes=      267,261  best=500  [62s cumule]
+  t1=  9: nodes=      127,638  best=500  [62s cumule]
+  t1= 10: nodes=       63,900  best=500  [62s cumule]
+  t1= 11: nodes=       32,734  best=500  [62s cumule]
+  t1= 12: nodes=       16,999  best=500  [62s cumule]
+  t1= 13: nodes=        8,352  best=500  [62s cumule]
+  t1= 14: nodes=        3,878  best=500  [62s cumule]
+  t1= 15: nodes=        1,685  best=500  [62s cumule]
+  t1= 16: nodes=          777  best=500  [62s cumule]
+  t1= 17: nodes=          354  best=500  [62s cumule]
+  t1= 18: nodes=          137  best=500  [62s cumule]
+  t1= 19: nodes=           40  best=500  [62s cumule]
+  t1= 20: nodes=            8  best=500  [62s cumule]
+
+TERMINE en 62s  (1,230,697,323 noeuds, 0 ameliorations)
+AUCUN produit plat 24-facteurs transit<=4 de degre < 500.
+La borne triviale 499 tient ; d(24) exige transit >= 5 ou degre >= 500.
+noeuds=1230697323, temps=62s
+
+resultat ecrit dans checks/v054_result.txt

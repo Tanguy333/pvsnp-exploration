@@ -1,0 +1,1 @@
+V-054 : d(24) -- transit <= 8, borne initiale ubound = 480 (degre cible < 480)

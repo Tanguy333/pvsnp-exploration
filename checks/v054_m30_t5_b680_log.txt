@@ -1,0 +1,30 @@
+V-054 : d(30) -- transit <= 5, borne initiale ubound = 680 (degre cible < 680)
+  t1=  1: nodes=1,893,939,439  best=680  [125s cumule]
+  t1=  2: nodes=  423,096,446  best=680  [150s cumule]
+  t1=  3: nodes=  103,046,630  best=680  [156s cumule]
+  t1=  4: nodes=   35,691,320  best=680  [158s cumule]
+  t1=  5: nodes=   12,423,651  best=680  [158s cumule]
+  t1=  6: nodes=    5,193,469  best=680  [158s cumule]
+  t1=  7: nodes=    2,174,992  best=680  [158s cumule]
+  t1=  8: nodes=      997,479  best=680  [159s cumule]
+  t1=  9: nodes=      473,821  best=680  [159s cumule]
+  t1= 10: nodes=      234,492  best=680  [159s cumule]
+  t1= 11: nodes=      117,373  best=680  [159s cumule]
+  t1= 12: nodes=       59,783  best=680  [159s cumule]
+  t1= 13: nodes=       30,662  best=680  [159s cumule]
+  t1= 14: nodes=       15,350  best=680  [159s cumule]
+  t1= 15: nodes=        7,490  best=680  [159s cumule]
+  t1= 16: nodes=        3,615  best=680  [159s cumule]
+  t1= 17: nodes=        1,735  best=680  [159s cumule]
+  t1= 18: nodes=          751  best=680  [159s cumule]
+  t1= 19: nodes=          278  best=680  [159s cumule]
+  t1= 20: nodes=           71  best=680  [159s cumule]
+  t1= 21: nodes=           23  best=680  [159s cumule]
+  t1= 22: nodes=            8  best=680  [159s cumule]
+
+TERMINE en 159s  (2,477,508,878 noeuds, 0 ameliorations)
+AUCUN produit plat 30-facteurs transit<=5 de degre < 680.
+La borne triviale 679 tient ; d(30) exige transit >= 6 ou degre >= 680.
+noeuds=2477508878, temps=159s
+
+resultat ecrit dans checks/v054_result.txt

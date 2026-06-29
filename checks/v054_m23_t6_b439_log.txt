@@ -1,0 +1,27 @@
+V-054 : d(23) -- transit <= 6, borne initiale ubound = 439 (degre cible < 439)
+  t1=  1: nodes=31,567,042,125  best=439  [1100s cumule]
+  t1=  2: nodes=2,526,593,620  best=439  [1207s cumule]
+  t1=  3: nodes=   91,045,269  best=439  [1212s cumule]
+  t1=  4: nodes=   18,904,078  best=439  [1213s cumule]
+  t1=  5: nodes=    5,086,359  best=439  [1213s cumule]
+  t1=  6: nodes=    1,812,440  best=439  [1213s cumule]
+  t1=  7: nodes=      669,784  best=439  [1213s cumule]
+  t1=  8: nodes=      283,596  best=439  [1213s cumule]
+  t1=  9: nodes=      124,249  best=439  [1213s cumule]
+  t1= 10: nodes=       56,746  best=439  [1213s cumule]
+  t1= 11: nodes=       26,086  best=439  [1213s cumule]
+  t1= 12: nodes=       11,789  best=439  [1213s cumule]
+  t1= 13: nodes=        5,230  best=439  [1213s cumule]
+  t1= 14: nodes=        2,110  best=439  [1213s cumule]
+  t1= 15: nodes=          736  best=439  [1213s cumule]
+  t1= 16: nodes=          266  best=439  [1213s cumule]
+  t1= 17: nodes=          100  best=439  [1213s cumule]
+  t1= 18: nodes=           34  best=439  [1213s cumule]
+  t1= 19: nodes=           10  best=439  [1213s cumule]
+
+TERMINE en 1213s  (34,211,664,627 noeuds, 0 ameliorations)
+AUCUN produit plat 23-facteurs transit<=6 de degre < 439.
+La borne triviale 438 tient ; d(23) exige transit >= 7 ou degre >= 439.
+noeuds=34211664627, temps=1213s
+
+resultat ecrit dans checks/v054_result.txt

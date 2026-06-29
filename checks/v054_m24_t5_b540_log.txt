@@ -1,0 +1,30 @@
+V-054 : d(24) -- transit <= 5, borne initiale ubound = 540 (degre cible < 540)
+  t1=  1: nodes=48,188,455,065  best=540  [2171s cumule]
+  t1=  2: nodes=5,108,915,644  best=540  [2600s cumule]
+  t1=  3: nodes=  324,851,504  best=540  [2638s cumule]
+  t1=  4: nodes=   80,363,032  best=540  [2647s cumule]
+  t1=  5: nodes=   23,318,843  best=540  [2649s cumule]
+  t1=  6: nodes=    8,695,439  best=540  [2650s cumule]
+  t1=  7: nodes=    3,298,755  best=540  [2650s cumule]
+  t1=  8: nodes=    1,409,663  best=540  [2650s cumule]
+  t1=  9: nodes=      628,446  best=540  [2650s cumule]
+  t1= 10: nodes=      297,128  best=540  [2650s cumule]
+  t1= 11: nodes=      142,599  best=540  [2650s cumule]
+  t1= 12: nodes=       69,840  best=540  [2650s cumule]
+  t1= 13: nodes=       34,552  best=540  [2650s cumule]
+  t1= 14: nodes=       17,125  best=540  [2650s cumule]
+  t1= 15: nodes=        8,160  best=540  [2650s cumule]
+  t1= 16: nodes=        3,691  best=540  [2650s cumule]
+  t1= 17: nodes=        1,662  best=540  [2650s cumule]
+  t1= 18: nodes=          678  best=540  [2650s cumule]
+  t1= 19: nodes=          227  best=540  [2650s cumule]
+  t1= 20: nodes=           64  best=540  [2650s cumule]
+  t1= 21: nodes=           23  best=540  [2650s cumule]
+  t1= 22: nodes=            8  best=540  [2650s cumule]
+
+TERMINE en 2650s  (53,740,512,148 noeuds, 0 ameliorations)
+AUCUN produit plat 24-facteurs transit<=5 de degre < 540.
+La borne triviale 539 tient ; d(24) exige transit >= 6 ou degre >= 540.
+noeuds=53740512148, temps=2650s
+
+resultat ecrit dans checks/v054_result.txt

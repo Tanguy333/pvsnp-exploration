@@ -1,0 +1,29 @@
+V-054 : d(30) -- transit <= 6, borne initiale ubound = 660 (degre cible < 660)
+  t1=  1: nodes=7,468,728,040  best=660  [463s cumule]
+  t1=  2: nodes=  936,320,353  best=660  [523s cumule]
+  t1=  3: nodes=  180,178,770  best=660  [533s cumule]
+  t1=  4: nodes=   56,092,613  best=660  [536s cumule]
+  t1=  5: nodes=   18,076,314  best=660  [537s cumule]
+  t1=  6: nodes=    7,217,699  best=660  [538s cumule]
+  t1=  7: nodes=    2,907,962  best=660  [538s cumule]
+  t1=  8: nodes=    1,310,373  best=660  [538s cumule]
+  t1=  9: nodes=      609,437  best=660  [538s cumule]
+  t1= 10: nodes=      299,238  best=660  [538s cumule]
+  t1= 11: nodes=      150,502  best=660  [538s cumule]
+  t1= 12: nodes=       76,852  best=660  [538s cumule]
+  t1= 13: nodes=       38,506  best=660  [538s cumule]
+  t1= 14: nodes=       18,491  best=660  [538s cumule]
+  t1= 15: nodes=        8,568  best=660  [538s cumule]
+  t1= 16: nodes=        3,681  best=660  [538s cumule]
+  t1= 17: nodes=        1,522  best=660  [538s cumule]
+  t1= 18: nodes=          641  best=660  [538s cumule]
+  t1= 19: nodes=          266  best=660  [538s cumule]
+  t1= 20: nodes=          100  best=660  [538s cumule]
+  t1= 21: nodes=           34  best=660  [538s cumule]
+
+TERMINE en 538s  (8,672,039,962 noeuds, 0 ameliorations)
+AUCUN produit plat 30-facteurs transit<=6 de degre < 660.
+La borne triviale 659 tient ; d(30) exige transit >= 7 ou degre >= 660.
+noeuds=8672039962, temps=538s
+
+resultat ecrit dans checks/v054_result.txt

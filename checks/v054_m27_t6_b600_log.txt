@@ -1,0 +1,30 @@
+V-054 : d(27) -- transit <= 6, borne initiale ubound = 600 (degre cible < 600)
+  t1=  1: nodes=58,731,426,221  best=600  [3736s cumule]
+  t1=  2: nodes=4,253,678,881  best=600  [4238s cumule]
+  t1=  3: nodes=  373,404,126  best=600  [4279s cumule]
+  t1=  4: nodes=  100,142,309  best=600  [4289s cumule]
+  t1=  5: nodes=   29,515,122  best=600  [4292s cumule]
+  t1=  6: nodes=   11,164,664  best=600  [4293s cumule]
+  t1=  7: nodes=    4,284,820  best=600  [4293s cumule]
+  t1=  8: nodes=    1,865,284  best=600  [4293s cumule]
+  t1=  9: nodes=      839,863  best=600  [4293s cumule]
+  t1= 10: nodes=      404,898  best=600  [4293s cumule]
+  t1= 11: nodes=      199,108  best=600  [4293s cumule]
+  t1= 12: nodes=      100,608  best=600  [4293s cumule]
+  t1= 13: nodes=       50,177  best=600  [4293s cumule]
+  t1= 14: nodes=       23,935  best=600  [4293s cumule]
+  t1= 15: nodes=       11,284  best=600  [4293s cumule]
+  t1= 16: nodes=        5,187  best=600  [4293s cumule]
+  t1= 17: nodes=        2,110  best=600  [4293s cumule]
+  t1= 18: nodes=          736  best=600  [4293s cumule]
+  t1= 19: nodes=          266  best=600  [4293s cumule]
+  t1= 20: nodes=          100  best=600  [4293s cumule]
+  t1= 21: nodes=           34  best=600  [4293s cumule]
+  t1= 22: nodes=           10  best=600  [4293s cumule]
+
+TERMINE en 4293s  (63,507,119,743 noeuds, 0 ameliorations)
+AUCUN produit plat 27-facteurs transit<=6 de degre < 600.
+La borne triviale 599 tient ; d(27) exige transit >= 7 ou degre >= 600.
+noeuds=63507119743, temps=4293s
+
+resultat ecrit dans checks/v054_result.txt

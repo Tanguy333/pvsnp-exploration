@@ -1,0 +1,30 @@
+V-054 : d(25) -- transit <= 5, borne initiale ubound = 580 (degre cible < 580)  [reprise a t1=2]
+  t1=  2: nodes=4,726,339,708  best=580  [259s cumule]
+  t1=  3: nodes=  391,640,434  best=580  [282s cumule]
+  t1=  4: nodes=  106,292,047  best=580  [288s cumule]
+  t1=  5: nodes=   32,021,075  best=580  [289s cumule]
+  t1=  6: nodes=   12,179,483  best=580  [290s cumule]
+  t1=  7: nodes=    4,689,280  best=580  [290s cumule]
+  t1=  8: nodes=    2,033,422  best=580  [290s cumule]
+  t1=  9: nodes=      912,965  best=580  [290s cumule]
+  t1= 10: nodes=      439,054  best=580  [290s cumule]
+  t1= 11: nodes=      213,011  best=580  [290s cumule]
+  t1= 12: nodes=      106,109  best=580  [290s cumule]
+  t1= 13: nodes=       53,070  best=580  [290s cumule]
+  t1= 14: nodes=       26,726  best=580  [290s cumule]
+  t1= 15: nodes=       13,200  best=580  [290s cumule]
+  t1= 16: nodes=        6,423  best=580  [290s cumule]
+  t1= 17: nodes=        2,899  best=580  [290s cumule]
+  t1= 18: nodes=        1,137  best=580  [290s cumule]
+  t1= 19: nodes=          410  best=580  [290s cumule]
+  t1= 20: nodes=          163  best=580  [290s cumule]
+  t1= 21: nodes=           64  best=580  [290s cumule]
+  t1= 22: nodes=           23  best=580  [290s cumule]
+  t1= 23: nodes=            8  best=580  [290s cumule]
+
+TERMINE en 290s  (5,276,970,711 noeuds, 0 ameliorations)
+AUCUN produit plat 25-facteurs transit<=5 de degre < 580.
+La borne triviale 579 tient ; d(25) exige transit >= 6 ou degre >= 580.
+noeuds=5276970711, temps=290s
+
+resultat ecrit dans checks/v054_result.txt

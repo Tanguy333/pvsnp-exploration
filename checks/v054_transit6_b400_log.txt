@@ -1,0 +1,26 @@
+V-054 : d(22) -- transit <= 6, borne initiale ubound = 400 (degre cible < 400)
+  t1=  1: nodes=20,588,262,833  best=400  [934s cumule]
+  t1=  2: nodes=1,779,725,827  best=400  [1071s cumule]
+  t1=  3: nodes=   57,551,328  best=400  [1076s cumule]
+  t1=  4: nodes=   10,966,894  best=400  [1077s cumule]
+  t1=  5: nodes=    2,893,733  best=400  [1077s cumule]
+  t1=  6: nodes=    1,012,109  best=400  [1077s cumule]
+  t1=  7: nodes=      372,145  best=400  [1078s cumule]
+  t1=  8: nodes=      155,607  best=400  [1078s cumule]
+  t1=  9: nodes=       67,432  best=400  [1078s cumule]
+  t1= 10: nodes=       29,956  best=400  [1078s cumule]
+  t1= 11: nodes=       13,388  best=400  [1078s cumule]
+  t1= 12: nodes=        5,932  best=400  [1078s cumule]
+  t1= 13: nodes=        2,458  best=400  [1078s cumule]
+  t1= 14: nodes=          872  best=400  [1078s cumule]
+  t1= 15: nodes=          283  best=400  [1078s cumule]
+  t1= 16: nodes=          100  best=400  [1078s cumule]
+  t1= 17: nodes=           34  best=400  [1078s cumule]
+  t1= 18: nodes=           10  best=400  [1078s cumule]
+
+TERMINE en 1078s  (22,441,060,941 noeuds, 0 ameliorations)
+AUCUN produit plat 22-facteurs transit<=6 de degre < 400.
+La borne triviale 399 tient ; d(22) exige transit >= 7 ou degre >= 400.
+noeuds=22441060941, temps=1078s
+
+resultat ecrit dans checks/v054_result.txt

@@ -1,0 +1,30 @@
+V-054 : d(22) -- transit <= 5, borne initiale ubound = 474 (degre cible < 474)
+  t1=  1: nodes=62,576,443,301  best=473  <-- NOUVEAU champion degre 473  [2842s cumule]
+  t1=  2: nodes=8,388,783,584  best=473  [3210s cumule]
+  t1=  3: nodes=  388,397,469  best=473  [3233s cumule]
+  t1=  4: nodes=   64,378,130  best=473  [3237s cumule]
+  t1=  5: nodes=   16,635,799  best=473  [3237s cumule]
+  t1=  6: nodes=    5,852,982  best=473  [3238s cumule]
+  t1=  7: nodes=    2,128,699  best=473  [3238s cumule]
+  t1=  8: nodes=      879,779  best=473  [3238s cumule]
+  t1=  9: nodes=      382,788  best=473  [3238s cumule]
+  t1= 10: nodes=      175,306  best=473  [3238s cumule]
+  t1= 11: nodes=       81,734  best=473  [3238s cumule]
+  t1= 12: nodes=       38,862  best=473  [3238s cumule]
+  t1= 13: nodes=       18,915  best=473  [3238s cumule]
+  t1= 14: nodes=        8,990  best=473  [3238s cumule]
+  t1= 15: nodes=        3,987  best=473  [3238s cumule]
+  t1= 16: nodes=        1,720  best=473  [3238s cumule]
+  t1= 17: nodes=          715  best=473  [3238s cumule]
+  t1= 18: nodes=          252  best=473  [3238s cumule]
+  t1= 19: nodes=           65  best=473  [3238s cumule]
+  t1= 20: nodes=           23  best=473  [3238s cumule]
+  t1= 21: nodes=            8  best=473  [3238s cumule]
+
+TERMINE en 3238s  (71,444,213,108 noeuds, 1 ameliorations)
+d(22) <= 473  (transit<=5)
+exposants = [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 13, 15, 16, 17, 19, 21, 23, 25, 27, 29, 31, 179]
+verif independante : height=1, degre=473, multiplicite=22  -> OK
+noeuds=71444213108, temps=3238s
+
+resultat ecrit dans checks/v054_result.txt

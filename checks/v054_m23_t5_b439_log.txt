@@ -1,0 +1,27 @@
+V-054 : d(23) -- transit <= 5, borne initiale ubound = 439 (degre cible < 439)
+  t1=  1: nodes=4,387,780,931  best=439  [173s cumule]
+  t1=  2: nodes=  346,134,823  best=439  [190s cumule]
+  t1=  3: nodes=   27,632,300  best=439  [191s cumule]
+  t1=  4: nodes=    7,474,250  best=439  [192s cumule]
+  t1=  5: nodes=    2,252,428  best=439  [192s cumule]
+  t1=  6: nodes=      842,538  best=439  [192s cumule]
+  t1=  7: nodes=      325,397  best=439  [192s cumule]
+  t1=  8: nodes=      140,601  best=439  [192s cumule]
+  t1=  9: nodes=       61,833  best=439  [192s cumule]
+  t1= 10: nodes=       28,179  best=439  [192s cumule]
+  t1= 11: nodes=       13,310  best=439  [192s cumule]
+  t1= 12: nodes=        6,303  best=439  [192s cumule]
+  t1= 13: nodes=        2,773  best=439  [192s cumule]
+  t1= 14: nodes=        1,067  best=439  [192s cumule]
+  t1= 15: nodes=          398  best=439  [192s cumule]
+  t1= 16: nodes=          163  best=439  [192s cumule]
+  t1= 17: nodes=           64  best=439  [192s cumule]
+  t1= 18: nodes=           23  best=439  [192s cumule]
+  t1= 19: nodes=            8  best=439  [192s cumule]
+
+TERMINE en 192s  (4,772,697,389 noeuds, 0 ameliorations)
+AUCUN produit plat 23-facteurs transit<=5 de degre < 439.
+La borne triviale 438 tient ; d(23) exige transit >= 6 ou degre >= 439.
+noeuds=4772697389, temps=192s
+
+resultat ecrit dans checks/v054_result.txt
