@@ -186,3 +186,8 @@ Un Tour adverse (Proposeur/Réfuteur) ne peut être rouvert que si :
 3. Le calcul de vérification est livré AVANT la soumission (condition (j) stricte).
 - [V-040 candidat] Chasse au fantôme par l'ascenseur antipalindromique (V-039 C2) : paires plates taille 11 avec B = S−A, seules les 5 conditions impaires k=1,3,5,7,9 à imposer — moitié prix vs recherche brute ; si trouvée, c'est l'idéale taille 11.
 - [V-041 candidat] Territoire neuf le moins cher du secteur symetrique (Table 2 CMSV consignee le 12/06) : tailles PAIRES 14 (H=900) et 16 (H=850), elles aussi sans ideale connue ; reduction classique taille 2m symetrique <=> ideale taille m en CARRES PARFAITS -> notre DFS taille 7 (V-040, 16 s jusqu'a M=130) reconverti aux valeurs carrees pourrait depasser 900. Taille 11 : tout < 3500 = replication (table 2).
+
+## Reprise Atlas 2026-06-27 (recadrage utilisateur : retour au livrable)
+- [ATLAS-002 — fait 2026-06-27] Ligne 14 (polynomes toriques BHLR->KV) ajoutee a la matrice : seule cellule fermee PAR le depot (Conjecture 5 refutee, validee Krishan) ; zone generatrice 6 (borne asymetrique, sous-lemme : asymetrie vs MAJ a n=7,8) ; inventaire fil V.
+- [ATLAS-003 candidat] Sous-lemme zone 6 : MILP torique exact MAJ n=7 (asymetrie aide-t-elle ? V-002 s'arrete a n=6 ; n=7 = ~2h estimees, n=8 a chiffrer).
+- [ATLAS-004 candidat] Colonnes barrieres de la ligne 14 : auditer si l'approche torique relativise/algebrise (la chaine Beigel-Tarui ne relativise pas — statut a etablir sur texte BHLR, pas invente).
