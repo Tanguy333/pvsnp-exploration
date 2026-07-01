@@ -190,4 +190,4 @@ Un Tour adverse (Proposeur/Réfuteur) ne peut être rouvert que si :
 ## Reprise Atlas 2026-06-27 (recadrage utilisateur : retour au livrable)
 - [ATLAS-002 — fait 2026-06-27] Ligne 14 (polynomes toriques BHLR->KV) ajoutee a la matrice : seule cellule fermee PAR le depot (Conjecture 5 refutee, validee Krishan) ; zone generatrice 6 (borne asymetrique, sous-lemme : asymetrie vs MAJ a n=7,8) ; inventaire fil V.
 - [ATLAS-003 candidat] Sous-lemme zone 6 : MILP torique exact MAJ n=7 (asymetrie aide-t-elle ? V-002 s'arrete a n=6 ; n=7 = ~2h estimees, n=8 a chiffrer).
-- [ATLAS-004 candidat] Colonnes barrieres de la ligne 14 : auditer si l'approche torique relativise/algebrise (la chaine Beigel-Tarui ne relativise pas — statut a etablir sur texte BHLR, pas invente).
+- [ATLAS-004 — fait 2026-06-27] Colonnes barrieres ligne 14 auditees sur texte BHLR (arXiv:1804.08176, bib/bhlr_2019.md) : RR discute §1.5 (esquive par inutilite — PRG ∉ ACC⁰ cru ; constructivite de la propriete OUVERTE = leur Problem 1.9) ; relativisation/algebrisation NON discutees (0 occurrence, verifie) ; machinerie = lignee Yao/Toda/Beigel-Tarui/Green (cf. ligne 7).
