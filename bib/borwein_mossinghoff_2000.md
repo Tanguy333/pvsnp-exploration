@@ -93,3 +93,86 @@ A059753 NE LISTE QUE jusqu'à d=120 (m=14) — donc PAS de valeur m=20 dans l'OE
    n'ont de rang m=20. Nuance : A059753 s'arrête à m=14 car au-delà BM ne donnent
    que des « smallest known » (bornes sup), pas des minima prouvés. Notre 307 est
    du même type (borne sup) — contribution naturelle, formulée comme telle dans l'email.
+
+## MISE À JOUR 2026-06-29 — SECTIONS MÉTHODE LUES (pages 1-8, lecture visuelle)
+
+Lecture ciblée « comment ont-ils calculé » (question : de meilleurs moyens
+d'explorer ?). Rendu pymupdf 150 dpi, pages 1, 2, 3, 4, 5, 7, 8.
+
+### Leurs deux stratégies de recherche (§2, bornes SUP)
+
+1. **§2.1 Réduction de réseau (LLL, Maple)** sur les multiples RÉCIPROQUES :
+   base {f·g_k} avec g_k réciproques, vecteurs = demi-coefficients (dimension
+   divisée par 2 par symétrie) — c'est notre moteur symétrique/svp, réinventé
+   indépendamment (lignée confirmée). Plus un raffinement GLOUTON qu'on n'a
+   pas : chercher des multiples de hauteur moyenne, puis des multiples de CES
+   multiples (≤ 3 itérations). Hauteur 1 atteinte pour tout m ≤ 18 ainsi.
+   Le meilleur m=15 N'EST PAS un produit pur : produit pur [1..7,7,8..19]
+   (exposant 7 RÉPÉTÉ) × un polynôme NON-cyclotomique de degré 28.
+2. **§2.2 Recherche de produits purs À GABARIT** : ∏_{a∈A}(x^a−1)·∏_{c∈C}(x^c−1)
+   avec A = {1} ∪ {p premier ≤ m+1} FIXE et C ⊂ B, B = composites ≤ m+1 +
+   impairs de [m+2, 3(m+1)/2]. PAS de DFS exhaustif. « Despite several
+   variations... no examples were found for m = 20 or m > 21 » — le trou
+   m=20 vient du GABARIT : notre exposant 50 (pair, > 3·21/2 ≈ 31,5) est
+   hors de leur B. Cohérent avec la réponse de Mossinghoff (le saut 31→50).
+   => Notre DFS-transit-B&B (V-047/V-054) domine strictement leur §2.2.
+
+### Leur machinerie exacte (§3-4, bornes INF et d(m) exacts m ≤ 10)
+
+- **Théorème 3** : hauteur 1, zéro d'ordre m en 1, p ≤ m premier,
+  r = ⌊(m−1)/(p−1)⌋ ; si d ≤ p^{r+1} − p alors Φ_p | f.
+- **Théorème 4** : si d ≤ 2^{⌊(m+3)/2⌋} − 2 alors Φ₄ | f.
+- **Théorème 5** : table R(m) des Φ_n forcés à d ≤ d₀(m), m ≤ 12
+  (ex. R(12) = {2,3,4,5,7,11,13}).
+- **§4** : algorithme exact — écrire f = (x−1)^m · ∏_{n∈R(m)} Φ_n · g et
+  énumérer le cofacteur g contraint (+ analyses aux racines de l'unité,
+  vérifs Maple). C'est ainsi que d(m) est PROUVÉ pour m ≤ 10 (et 11-12
+  symétriques seulement).
+- Application à nos plages (calcul Théorèmes 3-4) : m=22, d ≤ 473 ⟹
+  Φ₂,Φ₃,Φ₄,Φ₅,Φ₇,Φ₁₁ | f ; produit pur ⟹ exposants contiennent des
+  multiples de 2,3,4,5,7,11 (champion 473 : ✓ tous). Idem m=24, d ≤ 640.
+
+### Contexte théorique (p.1-2) — corrige notre discours
+
+- **Bornes CONNUES : m² ≪ d(m) ≪ m² log m** (inf : Borwein-Erdélyi-Kós
+  1997 ; sup : Bloch-Pólya 1932). Le minorant QUADRATIQUE existe — notre
+  claim de session « seul le linéaire 2m−1 est prouvable » était FAUX
+  (conversation seulement, aucun doc committé ne le disait).
+- **Erdős-Szekeres 1959** : A(m) = min norme sup des produits purs à m
+  facteurs ; conjecture A(m) ≫ m^c pour tout c (OUVERTE) ; Belov-Konyagin
+  1996 : log A(m) ≪ log⁴ m. BM notent p.2 : hauteur 1 ⟹ ‖f‖_∞ ≤ deg+1,
+  donc la conjecture ⟹ **les extrémaux ne peuvent plus être des produits
+  purs pour m grand**. NOTRE mur des produits purs (m=24-30, V-054) est
+  exactement ce phénomène — d_produit(m) ≥ A(m) − 1 ; nos bornes basses
+  (640..760) sont des données EMPIRIQUES sur la croissance de A(m).
+- **Maltby 1998** : les produits purs ne résolvent pas PTE idéal pour
+  m ∈ {7,9,10,11} — antériorité de saveur « produits purs insuffisants ».
+
+### Meilleurs moyens — RECADRÉ par l'inventaire du dépôt (Tanguy, 2026-06-29)
+
+**Constat : sur 2 des 3 composants de BM, le dépôt a DÉJÀ fait mieux.**
+
+| composant BM 2000 | notre contrepartie | verdict |
+|---|---|---|
+| §2.1 LLL Maple heuristique, multiples réciproques (m ≤ 18) | svp_turbo (LLL certifié + énumération EXACTE, ×4000) + moteur symétrique (leur astuce réciproque = notre loi V-042 prouvée d ≥ 8) + **carte de phase φ(m)** (V-046/V-048 : coïncidence m ∈ {3..11,13,14}, décollements {12,15,16,17}, seuil m* = 15) | **dépôt strictement meilleur** |
+| §2.2 gabarit produits purs (a raté m=20) | DFS-transit-B&B (V-047/V-054) : m=20=307, m=22=473, m=23=439 certifiés | **dépôt strictement meilleur** |
+| §3-4 divisibilités forcées + d(m) exacts m ≤ 10 | V11 (plancher), Lemmes A/B parité, barreaux interdits — complémentaires, pas équivalents | **la seule pièce à importer** |
+
+**Pépite de l'inventaire : notre m* = 15 EXPLIQUE leur anomalie m = 15.**
+BM notent (p.3, sans explication) que leur meilleur m=15 n'est PAS un
+produit pur (produit pur × non-cyclotomique). Notre seuil de découplage
+m* = 15 (V-046 §4quater : dès m=15, les super-empilements cyclotomiques
+hauteur 2 à Φ_q répétés battent SYSTÉMATIQUEMENT les plats en L2 au degré
+d(m)) est l'explication structurelle de leur anomalie, 25 ans après.
+Candidat fort pour la réponse à Mossinghoff.
+
+Moyens restants, re-classés (seul le 1 est vraiment neuf) :
+1. **L'HYBRIDE** : leurs Théorèmes 3-5 × nos moteurs — (a) élagage du DFS
+   produits purs (multiples forcés) ; (b) réseau-QUOTIENT
+   f = (x−1)^m ∏Φ_n · g + turbo-LLL pour le d(m) GÉNÉRAL à m=22/23
+   (teste produit-pur = général, notre caveat central). Ni eux ni nous ne
+   l'avons fait ; nous apportons la moitié computationnelle forte.
+2. d(11)-d(13) exacts (leur §4 + notre calcul + V11/parité) — convertir
+   « plus petits connus » en minima PROUVÉS (antériorité à vérifier avant).
+3. Cadre A(m)/Erdős-Szekeres pour nommer le mur (documenté ci-dessus).
+4. Parallélisme (t1,t2) ; demander à Mossinghoff (gratuit).

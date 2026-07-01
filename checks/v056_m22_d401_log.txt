@@ -1,0 +1,4 @@
+V-056 hybride : m=22, D=401, forces Phi_[2, 3, 4, 5, 7, 11] (deg f0 = 47, max|f0| = 32894), rang reseau = 178
+LLL fait en 1s
+top 8 par hauteur (h, span, l1) : [(5, 389, 512), (6, 381, 544), (6, 397, 468), (6, 397, 476), (6, 397, 544), (6, 401, 476), (6, 401, 644), (7, 383, 556)]
+scan paires en 0s ; meilleure hauteur paire = 5

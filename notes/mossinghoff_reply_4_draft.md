@@ -70,6 +70,17 @@ height-1 degree for m = 22, 23 I have not separately verified -- so I'd
 state them as smallest known pure products, i.e. upper bounds, pending
 your view.)
 
+## Your Table 1 entries are minimal pure products (certified)
+
+A byproduct you may find satisfying: I ran complete branch-and-bound
+searches strictly below each of your Table 1 values for m = 11..21
+(pure products, transient height <= 4). None can be improved: every
+entry -- 69, 93, 112, 120, 141, 159, 185, 207, 245, (307,) 294 -- is in
+fact the exact minimum among pure products within that transient bound,
+not merely the smallest known. (The searches take seconds; the whole
+sweep is ~5 s on one core. Whether the overall height-1 minima coincide
+remains open beyond your proofs for m <= 10, of course.)
+
 ## A correction to my earlier transit data
 
 Re-auditing my records, I must correct something I wrote in my first two

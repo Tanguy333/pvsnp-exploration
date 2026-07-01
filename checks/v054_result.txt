@@ -1,3 +1,3 @@
-AUCUN produit plat 17-facteurs transit<=2 de degre < 186.
-La borne triviale 185 tient ; d(17) exige transit >= 3 ou degre >= 186.
-noeuds=47103, temps=0s
+AUCUN produit plat 21-facteurs transit<=4 de degre < 294.
+La borne triviale 293 tient ; d(21) exige transit >= 5 ou degre >= 294.
+noeuds=9711729, temps=1s
