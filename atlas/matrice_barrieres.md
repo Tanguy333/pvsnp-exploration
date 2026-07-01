@@ -89,11 +89,17 @@ précision du verrou :
 6. **Ligne 14, borne torique asymétrique (Conjecture 1.5 BHLR)** : la voie
    symétrique-SV est fermée (notre réfutation) ; le front est le degré
    asymétrique Ω(√n/log n) pour MAJ. Frontière mesurée ici : l'asymétrie
-   n'aide pas MAJ à **n ≤ 7** (V-002 + ATLAS-003, MILP **certifiés** —
-   ε\*(sym) = ε\*(général) à tous les degrés) mais aide prouvément Δ_w
-   (KV) — chaque point d'égalité soutient la plausibilité de la
-   Conjecture 1.5. Prochain point calculable : n = 8 (leçon ATLAS-003 :
-   exiger la certification, un incumbent ne prouve rien).
+   n'aide pas MAJ à **n ≤ 7** (V-002 + ATLAS-003, MILP certifiés) — MAIS
+   le contrôle positif ATLAS-005 montre que le gain asymétrique PROUVÉ
+   pour Δ_w (KV) n'est **pas visible non plus à n ≤ 7** : à ces tailles
+   rien ne montre de gain, donc **les égalités MAJ ne discriminent pas**
+   (la lecture « nos données soutiennent la conjecture » de V-002 est
+   recadrée). Le sous-lemme informatif n'est plus « étendre n » mais :
+   **où (w, ε, degré, n) la séparation prouvée de KV devient-elle
+   visible ?** — à extraire de leur preuve (ATLAS-006), puis y pointer
+   l'instrument. Leçons de méthode : certification obligatoire (un
+   incumbent ne prouve rien) ; tout instrument doit passer un contrôle
+   positif avant que ses négatifs aient valeur.
 
 Aucune de ces cibles n'est à la portée d'un tour LLM + vérification
 exécutable — ce sont des fronts de recherche. Le critère d'ouverture d'un
