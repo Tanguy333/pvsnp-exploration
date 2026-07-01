@@ -1,0 +1,40 @@
+[VALID] (n=3,d=1,w=2) : poids=1/8 vs full=1/8 OK
+[VALID] (n=3,d=2,w=2) : poids=0 vs full=0 OK
+[VALID] (n=4,d=1,w=2) : poids=19/64 vs full=19/64 OK
+[VALID] (n=4,d=2,w=2) : poids=5/64 vs full=5/64 OK
+[VALID] (n=4,d=3,w=2) : poids=1/64 vs full=1/64 OK
+[VALID] (n=5,d=1,w=1) : poids=13/64 vs full=13/64 OK
+[VALID] (n=5,d=1,w=2) : poids=19/32 vs full=19/32 OK
+[VALID] (n=5,d=1,w=3) : poids=19/32 vs full=19/32 OK
+[VALID] (n=5,d=1,w=4) : poids=19/32 vs full=19/32 OK
+[VALID] (n=5,d=1,w=5) : poids=13/64 vs full=13/64 OK
+[VALID] (n=5,d=2,w=1) : poids=1/8 vs full=1/8 OK
+[VALID] (n=5,d=2,w=2) : poids=9/32 vs full=9/32 OK
+[VALID] (n=5,d=2,w=3) : poids=5/32 vs full=5/32 OK
+[VALID] (n=5,d=2,w=4) : poids=9/32 vs full=9/32 OK
+[VALID] (n=5,d=2,w=5) : poids=1/8 vs full=1/8 OK
+[VALID] (n=5,d=3,w=1) : poids=3/64 vs full=3/64 OK
+[VALID] (n=5,d=3,w=2) : poids=1/32 vs full=1/32 OK
+[VALID] (n=5,d=3,w=3) : poids=1/32 vs full=1/32 OK
+[VALID] (n=5,d=3,w=4) : poids=1/32 vs full=1/32 OK
+[VALID] (n=5,d=3,w=5) : poids=3/64 vs full=3/64 OK
+[VALID] (n=7,d=2,w=1) : poids=99/512 vs full=99/512 OK
+[VALID] (n=7,d=2,w=4) : poids=7/8 vs full=7/8 OK
+[VALID] (n=7,d=2,w=6) : poids=93/128 vs full=93/128 OK
+[VALID] (n=7,d=3,w=1) : poids=1/8 vs full=1/8 OK
+[VALID] (n=7,d=3,w=2) : poids=23/64 vs full=23/64 OK
+[VALID] (n=7,d=3,w=3) : poids=7/32 vs full=7/32 OK
+[VALID] (n=7,d=3,w=4) : poids=1/8 vs full=1/8 OK
+[VALID] (n=7,d=4,w=4) : poids=0 vs full=0 OK
+[VALID] 28/28 concordances
+[COURBE d=3] n=9 : D=387/512 q=2^n-norm=387/262144 (=1.5117/1024)  (0s)
+[COURBE d=3] n=11 : D=63/16 q=2^n-norm=63/32768 (=1.9688/1024)  (0s)
+[COURBE d=3] n=13 : D=9749/512 q=2^n-norm=9749/4194304 (=2.3801/1024)  (2s)
+[COURBE d=3] n=15 : D=22837/256 q=2^n-norm=22837/8388608 (=2.7877/1024)  (52s)
+[COURBE d=3] n=17 : D=59248583/131072 q=2^n-norm=59248583/17179869184 (=3.5315/1024) CAP (56s)
+[COURBE d=3] n=19 : D=64771311/32768 q=2^n-norm=64771311/17179869184 (=3.8607/1024) CAP (56s)
+[COURBE d=3] n=21 : D=4609709621/524288 q=2^n-norm=4609709621/1099511627776 (=4.2931/1024) CAP (86s)
+[COURBE d=2] n=9 : D=2235/512 q=2^n-norm=2235/262144 (=8.7305/1024)  (0s)
+[COURBE d=2] n=11 : D=1287/64 q=2^n-norm=1287/131072 (=10.0547/1024)  (0s)
+[COURBE d=2] n=13 : D=183105/2048 q=2^n-norm=183105/16777216 (=11.1758/1024)  (4s)
+[COURBE d=2] n=15 : D=400039/1024 q=2^n-norm=400039/33554432 (=12.2082/1024) CAP (147s)

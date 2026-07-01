@@ -1,0 +1,21 @@
+=== (7,3,w=4) : D=1/8 (pred fibres 1/8, exces 0) [orthogonalite verifiee] (3s)
+  meilleure paire (0, 1) : exces=0 FACTORISATION EXACTE (fibres = optima libres)
+    fibre (0,0) -> THR_4 : ||R||^2=1/32 vs optimum libre 1/32 (delta 0)
+    fibre (0,1) -> THR_3 : ||R||^2=1/32 vs optimum libre 1/32 (delta 0)
+    fibre (1,0) -> THR_3 : ||R||^2=1/32 vs optimum libre 1/32 (delta 0)
+    fibre (1,1) -> THR_2 : ||R||^2=1/32 vs optimum libre 1/32 (delta 0)
+  exces identique sur les 21 paires ? OUI
+=== (7,3,w=3) : D=7/32 (pred fibres 9/64, exces 5/64) [orthogonalite verifiee] (1s)
+  meilleure paire (0, 1) : exces=5/64 
+    fibre (0,0) -> THR_3 : ||R||^2=21/512 vs optimum libre 1/32 (delta 5/512)
+    fibre (0,1) -> THR_2 : ||R||^2=21/512 vs optimum libre 1/32 (delta 5/512)
+    fibre (1,0) -> THR_2 : ||R||^2=21/512 vs optimum libre 1/32 (delta 5/512)
+    fibre (1,1) -> THR_1 : ||R||^2=49/512 vs optimum libre 3/64 (delta 25/512)
+  exces identique sur les 21 paires ? OUI
+=== (7,3,w=2) : D=23/64 (pred fibres 1/8, exces 15/64) [orthogonalite verifiee] (5s)
+  meilleure paire (0, 1) : exces=15/64 
+    fibre (0,0) -> THR_2 : ||R||^2=33/256 vs optimum libre 1/32 (delta 25/256)
+    fibre (0,1) -> THR_1 : ||R||^2=17/256 vs optimum libre 3/64 (delta 5/256)
+    fibre (1,0) -> THR_1 : ||R||^2=17/256 vs optimum libre 3/64 (delta 5/256)
+    fibre (1,1) -> THR_0 : ||R||^2=25/256 vs optimum libre 0 (delta 25/256)
+  exces identique sur les 21 paires ? OUI
