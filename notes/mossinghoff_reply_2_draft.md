@@ -17,20 +17,22 @@ so Cipu's L2-minimizing examples at multiplicity 20, being height 2, live
 in a different optimum. Good to know the adjacency precisely.
 
 On the transient-height idea, it turned into a small but clean invariant
-that may amuse you. Define τ(m) as the smallest transient height attained
-along the *ascending* partial products of an extremal (smallest-degree)
-height-1 example at multiplicity m. Computing this for your Table 1 plus
-m = 20:
+that may amuse you — with one correction to my first message. Define τ(m)
+as the smallest transient height attained along the *ascending* partial
+products of an extremal (smallest-degree) height-1 example at multiplicity
+m. Computing this for your Table 1 plus m = 20:
 
   m :  6  8  9 12 13 14 15 16 17 18 19 20 21
-  τ :  2  2  2  2  2  2  3  3  3  2  2  3  2
+  τ :  2  2  2  2  2  2  3  3  3  2  2  2  2
 
-So the extremals split into a transit-2 family and a transit-3 family
-{15, 16, 17, 20} — and m = 20 is precisely a transit-3 rank, which (as you
-suspected) is likely why an ascending search bounded near height 2 would
-miss it. The 31 → 50 jump is the signature of that: the degree-307 example
-needs that large gap to keep the full product flat while passing through a
-height-3 intermediate.
+The correction: I had written that the degree-307 example required
+transient height 3 — that was a search-budget artifact on my side. Direct
+computation shows its ascending partial products stay within height 2, so
+τ(20) = 2 and the transit-3 family is {15, 16, 17} only. This actually
+sharpens the question of why the 2000 search missed m = 20: the transient
+height is not the culprit there, which leaves the 31 → 50 gap in the
+exponents as the likely explanation — exactly as you suggested; a greedy
+or small-step ascending method would not make that jump.
 
 Two caveats I want to state plainly: (i) τ(m) is defined on the *ascending*
 order of exponents — a different traversal might realize a lower transient,
@@ -65,8 +67,12 @@ Tanguy
 ---
 
 ## Statut épistémique (hors email, pour Tanguy)
-- τ(m) table : MESURÉE exact (V-047/V-048). « transit défini sur l'ordre
-  croissant » = caveat honnête déjà inscrit.
+- τ(m) table : MESURÉE exact — **CORRIGÉE V-055** : τ(20) = 2 (préfixes
+  du 307 vérifiés directement : max hauteur transitoire 2 ; la valeur 3
+  initiale = artefact de budget, cf. erratum V-047 §6 et v054_result.txt).
+  L'email inclut désormais la correction explicitement (le 1er email
+  envoyé mentionnait « transit-3 requirement » — il FAUT la signaler).
+  « transit défini sur l'ordre croissant » = caveat honnête déjà inscrit.
 - 307 minimal sous (transit ≤ 6, degré ≤ 330) : MESURÉ (V-049). Caveat
   transit ≥ 7 inscrit.
 - **Forme close P_j(D) = ‖(1−x)^D(1+x)^j‖² : VÉRIFIÉE EXACTE** (convolution
