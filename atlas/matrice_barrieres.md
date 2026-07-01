@@ -86,12 +86,14 @@ précision du verrou :
 4. **Ligne 9, borne CPT** : au-delà du rang borné (DRR 2008).
 5. **Ligne 8, multiplicity obstructions** : techniques de calcul de
    multiplicités au-delà de BIP 2019.
-6. **Ligne 14, borne torique asymétrique (Conj. 3 BHLR)** : la voie
-   symétrique est fermée (notre réfutation) ; le front est le degré
+6. **Ligne 14, borne torique asymétrique (Conjecture 1.5 BHLR)** : la voie
+   symétrique-SV est fermée (notre réfutation) ; le front est le degré
    asymétrique Ω(√n/log n) pour MAJ. Frontière mesurée ici : l'asymétrie
-   n'aide pas MAJ à n ≤ 6 (V-002, MILP exacts) mais aide prouvément Δ_w
-   (KV) — le sous-lemme vérifiable est « où exactement l'asymétrie
-   commence-t-elle à aider MAJ ? » (n = 7, 8 calculables).
+   n'aide pas MAJ à **n ≤ 7** (V-002 + ATLAS-003, MILP **certifiés** —
+   ε\*(sym) = ε\*(général) à tous les degrés) mais aide prouvément Δ_w
+   (KV) — chaque point d'égalité soutient la plausibilité de la
+   Conjecture 1.5. Prochain point calculable : n = 8 (leçon ATLAS-003 :
+   exiger la certification, un incumbent ne prouve rien).
 
 Aucune de ces cibles n'est à la portée d'un tour LLM + vérification
 exécutable — ce sont des fronts de recherche. Le critère d'ouverture d'un
