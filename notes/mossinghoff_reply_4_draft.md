@@ -70,6 +70,21 @@ height-1 degree for m = 22, 23 I have not separately verified -- so I'd
 state them as smallest known pure products, i.e. upper bounds, pending
 your view.)
 
+## A correction to my earlier transit data
+
+Re-auditing my records, I must correct something I wrote in my first two
+messages: I claimed the m = 20 example requires transient height 3 and
+grouped it with {15, 16, 17}. That was wrong -- a confounded test on my
+side (my transient-height-2 run had used a degree budget of 299 < 307, so
+it could not have found the example at any height). In fact the m = 20
+champion's partial products never exceed height 2, and a height-2 search
+with an adequate budget finds it in under a second. The transit-3 family
+is {15, 16, 17} only (re-verified: no flat pure product with transient
+height <= 2 exists at degrees <= 141/159/185 for m = 15/16/17). So the
+reason the example was missed is not the transient height -- your own
+explanation, the outlying exponent 50 after the gap at 31, is the right
+one.
+
 ## Time as a function of degree, and the technical limit
 
 The wall is purely time (memory is flat ~0.1 GB throughout). The cost is
@@ -99,10 +114,13 @@ below the m=22 curve), so the table is a conservative upper bound.
 Since d(m) ~ 0.67 m^2 (m=33 -> ~730, m=35 -> ~820), a complete transit-<=5
 certificate on one core is practical to about **m = 33-35** for regular
 sizes, and much sooner for a "hard" size whose minimum jumps to a trivial
-degree ~800. An embarrassingly-parallel split over the first exponent
-across k cores buys one to two further values of m. The doubly-compounding
-growth -- exponential in the degree D, with D itself ~quadratic in m -- is
-the cap.
+degree ~800 -- though I should say that in my data every size from 24 to
+30 behaves as a hard size (nothing within reach of the 0.67 m^2 trend up
+to transient height 7 for m = 26..30), so compact champions may simply
+stop at m = 23. A parallel split over the first two exponents across k
+cores buys one to two further values of m. The doubly-compounding growth
+-- exponential in the degree D, with D itself ~quadratic in m -- is the
+cap.
 
 I'd be glad to record m = 20 (and, as upper bounds, m = 22, 23) in the
 OEIS if you think it appropriate. Thank you for the encouragement.
@@ -117,9 +135,16 @@ Tanguy
 - Croissance ×53/×26 par transit (m=22, budget 520), ×~5 par +40 budget,
   ~19M n/s, mémoire plate ~0,11 Go : mesuré.
 - m=22 = 473 minimal transit ≤5 (71,4 G nœuds), m=23 = 439 minimal
-  transit ≤6 (34,2 G nœuds) : prouvé ce jour. Non-monotone 439 < 473.
+  transit ≤6 (34,2 G nœuds) : prouvé. Non-monotone 439 < 473.
 - Caveat produit-pur vs d(m) général : maintenu (pour m≤21 coïncident car
   extrémaux BM sont des produits purs ; 22/23 non vérifié).
 - Temps/limite : loi temps-degré ancrée sur la série m=22 transit-4
   (×5 par +40 de degré, ~22M n/s) — chiffres fermes, plus de placeholder.
 - Section « Time to verify sizes beyond m=23 » : RETIRÉE (demande de Tanguy).
+- **Section correctif τ(20) AJOUTÉE (audit 2026-06-29, 26e auto-correction)** :
+  les emails 1-2 envoyés affirmaient « m=20 exige transit 3, famille
+  {15,16,17,20} » — FAUX pour 20 (τ=2, triple preuve, V-047 §6) ; les rangs
+  15-17 re-vérifiés transit-3. Le correctif est dû à Mossinghoff (il a reçu
+  la claim fausse 2×). L'explication du saut 31→50 (la sienne) tient.
+- Hedge ajouté sur la limite m=33-35 (« si des rangs réguliers existent
+  encore — m=24-30 sont tous durs »).

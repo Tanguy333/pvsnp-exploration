@@ -16,11 +16,10 @@ Table 1: a(15) <= 141, a(16) <= 159, a(17) <= 185, a(18) <= 207,
 a(19) <= 245, a(21) <= 294. The entry for n = 20 was absent from that
 table; a height-1 multiple of (x-1)^20 of degree 307 was found in 2026
 (T. Le Mer), giving a(20) <= 307. Note the non-monotonicity 307 > 294.
-The example for n = 20 requires a transient height 2 in the partial
-products taken in increasing order of exponent (unlike the n <= 14
-extremals, several of which stay within height 2 as well, but the large
-gap 31 -> 50 in the exponent set is what a height-bounded ascending
-search must reach).
+Built in increasing order of exponent, the partial products of the n = 20
+example transiently reach height 2 (never more), like most of the
+Borwein-Mossinghoff extremals; its distinctive feature is the outlying
+exponent 50 after the gap at 31, which pattern-based searches miss.
 
 ## EXAMPLE à ajouter (n = 20)
 

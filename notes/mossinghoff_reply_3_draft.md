@@ -1,5 +1,11 @@
 # Brouillon — réponse 3 à Michael Mossinghoff
 
+> ⚠️ **REMPLACÉ par `mossinghoff_reply_4_draft.md`** (version consolidée
+> avec les nouveaux polynômes m=22/23 et le correctif τ(20) de l'audit
+> 2026-06-29). Ne pas envoyer celui-ci. Sa phrase « A non-trivial n = 22
+> product seems to need H >= 4 » s'est avérée fausse (le minimum 473 est
+> de transit 2).
+
 > À envoyer par Tanguy. Répond à : (1) OEIS — oui ; (2) langage compilé —
 > déjà fait (Numba/LLVM), le mur est l'arbre, pas le langage ; + ce que
 > l'extension a atteint (table validée à m=21, m=22 à la frontière).
@@ -40,7 +46,7 @@ Tanguy
 - « déjà compilé via Numba/LLVM » : vrai (V-038).
 - « table validée à m=21 (294) » : vrai, reproduit ce jour.
 - « m=22..25 rien à transit<=3, degré<=420 » : vrai, mesuré ce jour.
-- CORRECTION (25e auto-correction, 2026-06-28) : l'« OOM exit 137 » était
+- CORRECTION (26e auto-correction, 2026-06-28 ; renumerotee apres V-055) : l'« OOM exit 137 » était
   un FAUX diagnostic. Mémoire mesurée PLATE à ~0,11 Go quel que soit le
   transit ; le exit 137 était un kill par dépassement du timeout d'outil.
   Le mur est le TEMPS, pas la mémoire. Noeuds m=22 : 0,75M / 39,6M / 1,05G
