@@ -53,10 +53,26 @@ the 2^n normalization exactly. With the certified base profile at n₀ = 5
 hence dist ≥ (√S_d/16)·2^{n/2}/n^{1/4} for all odd n — i.e. **your
 Conjecture 13 holds for every constant d ≤ 3** (the n^{1/4} loss is
 within your n^{O(1)}). We checked the bound against all our certified
-values: no violation, tight exactly at the two known centers. As far as
-we could verify, your §7 treats the Z = 0 (real polynomial) slice, and
-we found no asymptotic lower bound on min_Z in the paper — but you would
-know better than us whether this is folklore.
+values: no violation, tight exactly at the two known centers. This
+extends to a growing-degree slice: re-basing the same recursion at
+n₀ = 2d+1, where the exact-representability map of point 5 below gives
+the unconditional base D(2d+1, d, d+1) ≥ 1/2^{d+3} for EVERY d (the
+window [0,d] always contains r = 0), yields
+
+  D(n, d, (n+1)/2) ≥ C(n−2d−1, (n−2d−1)/2)/2^{d+3},
+  i.e. dist ≥ 2^{(n−3d)/2 − 2}/(2n)^{1/4} —
+
+so **Conjecture 13 holds unconditionally for all d ≤ (2K/3)·log₂ n,
+any constant K**, with polynomial loss n^{K+1/4}. (We verified every
+link numerically: the exact bases b_d for d = 2..7 — all ≥ 1/8 from
+d = 3 on, exactly 1/8 at Mersenne d = 3, 7 — and the assembled chain
+on five solver cells, no violation.) The 2^{3d/2} loss quantifies
+precisely where this padding route dies: beyond d ~ log n one must
+recover the ~4^d normalization gap, which is exactly the parity-coupling
+problem of point 7. As far as we could verify, your §7 treats the Z = 0
+(real polynomial) slice, and we found no asymptotic lower bound on
+min_Z in the paper — but you would know better than us whether any of
+this is folklore.
 
 **4. Two structural facts you may find useful.** (i) On all 28 cells
 where we could compare, the optimum over Z^{2^n} is attained by a
@@ -161,6 +177,8 @@ Tanguy
 - Valeurs n ≥ 9 : exactes SOUS l'hypothèse symétrique (28/28 vérifiée
   n ≤ 7) — dit explicitement dans l'email.
 - Lemme + théorème d ≤ 3 : PROUVÉS (AS-004/AS-008), contre-vérifiés 16/16.
+- Théorème d = O(log n) : PROUVÉ (AS-022 = AS-011 + AS-004 assemblés,
+  inconditionnel), maillons vérifiés (bases d=2..7 exactes, chaîne 5/5).
 - Antériorité : §6/§7 KV lus en entier ; réserve « folklore » laissée à
   Krishan — posture correcte.
 - (7,1) : ouvert, présenté comme tel.
