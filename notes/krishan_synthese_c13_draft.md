@@ -91,6 +91,57 @@ explains the d = 2^t condition in your Theorem 1.4: at (d, n, w) =
 impossible — while at n = 2d−1 it becomes possible, exactly for powers
 of two.
 
+**6. The Mersenne diagonal, and a parity ghost.** At n = 2d−1 the map
+above gives exact representability precisely at powers of two; at
+n = 2d+1 we find D = 1/8 exactly for d = 1, 3, 7 (certified) and, by an
+explicit witness, D ≤ 1/8 for every Mersenne d = 2^k − 1 (verified
+exactly up to d = 31). The closed form behind it: the optimal residual
+is the PARITY function, R_k = (−1)^k/2^{d+2} on Hamming levels — its
+B-orthogonality to degree ≤ d is just (1−x)^n divisible by (1−x)^{d+1},
+its stencil pairings are ±1/2 by the binomial theorem, and integer
+attainability of the half-alternating class is exactly Lucas' condition
+(all C(d, r) odd ⟺ d Mersenne). So at the Mersenne diagonal, the nearest
+torus point to MAJ/2 misses it by exactly a scaled parity vector — the
+classic hard function for these algebraic models appearing as the
+extremal direction of the majority problem. The matching lower bound
+(D = 1/8 exactly for all Mersenne d) is certified for d ≤ 7 and open
+beyond.
+
+**7. Where your conjecture lives: the parity couplings of a binary
+cascade.** Fixing one variable and minimizing jointly gives an EXACT
+identity: D_f(n+1, d) equals a parity-coupled min of two terms — the
+XOR-of-fibers class at degrees d and d−1. For MAJ the fiber-XOR is your
+Δ function, and iterating, the classes follow Pascal-mod-2 dynamics
+(Lucas rows). The decoupled bound D_f(n+1,d) ≥ ½D_h(n,d) + ½D_h(n,d−1)
+is tight at MAJ centers on all 7 cells we tested (exact equality in
+rationals) — but an exact dynamic-programming evaluation shows the
+decoupled cascade guarantee collapses geometrically (~(1/3)^d) at
+n ~ d², while the true value stays ~constant. Since the identity loses
+nothing except one parity constraint per step, this localizes
+Conjecture 13 completely: it is equivalent to the accumulated parity
+couplings recovering a ~3^d factor along the cascade. Parity seems to
+be the recurring actor here — it was also the mechanism refuting
+Conjecture 5 (the ±2 ends), and the extremal residual at the Mersenne
+diagonal. One more measurement worth reporting: the coupling gain is
+DISTRIBUTED across essentially all cascade levels (replacing the cascade
+by exact coupled values up to depth k recovers the truth only gradually,
+~3-5% per level near the top) — so no bounded-depth coupled lemma can
+close the gap; whatever proves your conjecture must control the parity
+interactions globally. The couplings themselves have a clean algebraic
+form: a cascade step is coupling-free iff optimal integer solutions of
+the two Δ subproblems have parity difference equal to the threshold
+offset modulo the REED-MULLER code RM(d, n) (the parity freedom of a
+class is exactly integer degree-≤d polynomials mod 2) — verified on the
+(5,2,3) decomposition. So your Conjecture 13 appears to be, at bottom, a
+statement about Reed-Muller compatibility of delta-CVP optima along
+Pascal-mod-2 dynamics. Unfolding one level further (S = pi + 2T), the
+couplings are themselves CVPs on QUARTER-integer classes, whose own
+couplings live on eighths, and so on: the analysis is self-similar
+across an infinite dyadic tower — which we believe is the structural
+reason no finite/local argument closes the gap. If anything proves the
+conjecture along these lines, it would seem to need a fixed-point or
+renormalization-type argument over this dyadic hierarchy.
+
 Caveats we want to state plainly: the n ≥ 9 curve values assume the
 symmetric-optimum reduction (verified exhaustively for n ≤ 7 only); the
 constant-d theorem is far from your regime d = o(√n/log n), where the
