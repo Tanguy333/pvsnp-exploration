@@ -158,11 +158,54 @@ reason no finite/local argument closes the gap. If anything proves the
 conjecture along these lines, it would seem to need a fixed-point or
 renormalization-type argument over this dyadic hierarchy.
 
+**8. The diagonal base, certified far beyond our theorems.** Write
+b_d = D(2d+1, d, d+1), the base your conjecture's padding transport
+starts from. An emptiness test at radius 1/8 (exact LLL on the quotient
+form — the enumeration trees collapse from ~10⁸ nodes to fewer than 20)
+certifies: **b_d ≥ 1/8 for every d ≤ 16, with equality exactly at the
+Mersenne d = 3, 7, 15** — in particular D(31, 15) = 1/8 exactly, the
+matching lower bound for the Mersenne witness of point 6, which we had
+only up to d = 7. Transference certificates (integer-pairing duals in
+the parity×polynomial complement) give explicit lower bounds up to
+d = 64, decreasing monotonically toward the Mersenne level 1/8 at
+powers of two (μ-values 2.20, 2.10, 2.05, 2.016 at d = 8, 16, 32, 64,
+each certified by exact enumeration — 261 nodes at dimension 33, 577 at
+dimension 65).
+
+**9. Where we currently believe your conjecture lives: a signed theta
+series.** By Poisson summation on the weight-space quotient lattice,
+the lower bound D ≥ (s²/4π)·ln(1/Θ(s)) holds for every s, with Θ a
+dual theta series whose phases are ±1 given by Lucas-type parities of
+the MAJ pairing. Three facts we verified about it: (i) the unsigned
+series is ≥ 1 always (the zero coset lives in the same lattice), so
+the bound is nontrivial ONLY through sign cancellation — and the
+homogeneous lattice has constant packing (λ₁ ≈ 4 across all our cells)
+while 4D grows like 2ⁿ/poly: your conjecture says the MAJ coset is a
+DEEP HOLE of relative depth 2ⁿ/poly in a dense lattice, a purely
+arithmetic property no lattice-geometric bound can see; (ii) the scale
+at which the theta bound retains ≥ 90% of the truth follows the clean
+law s²/4D = f(n−2d), the same for d = 2 and d = 3 (7 cells, predicted
+then verified out of sample), numerically ≈ Θ(1/(n−d)) — Banaszczyk's
+scale; (iii) the sign cancellation is hierarchical: grouping the dual
+sum by m mod 2 splits it into 2^r signed class masses, and the net sum
+is 25× (at n=9) then 2264× (at n=11) smaller than the total pairwise
+imbalance — the cancellation deepens with n across all scales, which
+matches the dyadic self-similarity of point 7 and suggests the right
+tool is an exponential-sum/Gauss-factorization analysis rather than
+any finite combinatorial lemma. The normalization is fully explicit:
+det of the quotient form = ∏_k C(n,k)/det(XᵀBX) with the binomial
+Hankel determinants in closed form (n·2^{2n−2}, n²(n−1)·2^{3n−7},
+n³(n−1)²(n−2)·2^{4n−14}/3 for d = 1, 2, 3; verified exactly on 15
+cells).
+
 Caveats we want to state plainly: the n ≥ 9 curve values assume the
 symmetric-optimum reduction (verified exhaustively for n ≤ 7 only); the
-constant-d theorem is far from your regime d = o(√n/log n), where the
-behavior of S_d as the base grows with d is the whole difficulty; and we
-have no claim there.
+log n theorem is still far from your regime d = o(√n/log n) — the
+4^d normalization loss at the base is geometric and no improvement of
+b_d moves that frontier; the theta-scale law is measured on 7 cells and
+extrapolation is a conjecture of curve; and we have no asymptotic claim
+about the signed series itself — isolating and instrumenting it is
+where our contribution stops.
 
 Happy to share the code (exact CVP with certified enumeration), the full
 tables, or the witnesses themselves if any of this is useful to you.
@@ -179,6 +222,18 @@ Tanguy
 - Lemme + théorème d ≤ 3 : PROUVÉS (AS-004/AS-008), contre-vérifiés 16/16.
 - Théorème d = O(log n) : PROUVÉ (AS-022 = AS-011 + AS-004 assemblés,
   inconditionnel), maillons vérifiés (bases d=2..7 exactes, chaîne 5/5).
+- Point 8 : loi b_d CERTIFIÉE d ≤ 16 (tests de vide exacts, AS-023) ;
+  D(31,15) = 1/8 certifié ; μ_32/μ_64 certifiés par énumération exacte
+  (AS-027/028).
+- Point 9 : obstruction et λ₁ ≈ 4 (AS-039), loi x₉₀ 7 points
+  (AS-037/040), formes closes des déterminants vérifiées 15/15
+  (AS-040), anatomie hiérarchique 2 cellules (AS-041 — tendance de
+  2 ordres de grandeur, d=2 non exécuté : dit « at n=9 / n=11 » sans
+  généralisation). Aucune revendication asymptotique sur S_± —
+  explicite dans l'email.
 - Antériorité : §6/§7 KV lus en entier ; réserve « folklore » laissée à
-  Krishan — posture correcte.
+  Krishan — posture correcte. [Les formulations coset/thêta/trou
+  profond n'ont pas d'équivalent dans les textes audités, SANS garantie
+  d'originalité — l'email les présente comme « where we currently
+  believe », pas comme des résultats de littérature.]
 - (7,1) : ouvert, présenté comme tel.
