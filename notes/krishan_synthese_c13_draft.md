@@ -17,9 +17,26 @@ that may interest you: exact data, a padding recursion, and a small
 unconditional theorem. Everything below is exact arithmetic (no floating
 point in the certified statements); code and tables are available.
 
-**1. Exact values.** Write D(n,d) = min_{Z∈Z^{2^n}} ‖P(n,d)(Z + MAJ_n/2)‖².
-Certified values (complete enumeration + exact verification), scaled as
-q = D/2^n, in units of 1/1024:
+**0. The statement, to fix notation.** Throughout, we mean your
+Conjecture 13 (ECCC TR24-074): with P(n,d) the projection onto the
+orthogonal complement of the evaluations of degree-≤d polynomials on
+{0,1}ⁿ, and MAJ_n the 0/1 majority vector,
+
+  min_{Z ∈ Z^{2^n}} ‖P(n,d)·(Z + MAJ_n/2)‖ ≥ 2^{n/2}/n^{O(1)}
+  for every d = o(√n / log n)
+
+— i.e. the nearest point of the integer-shift lattice to MAJ_n/2, after
+quotienting out real degree-≤d polynomials, stays at essentially the
+trivial distance scale. (This is the ℓ₂ torus-polynomial hardness of
+majority; via BHLR it feeds your Conjecture 3 and the MAJ ∉ ACC
+program.) We work with the SQUARED distance D(n,d) =
+min_Z ‖P(n,d)(Z + MAJ_n/2)‖², so your conjectured bound reads
+D(n,d) ≥ 2ⁿ/n^{O(1)}, and we also use the normalization q = D/2ⁿ
+(the conjecture: q ≥ 1/poly). For thresholds other than the central
+one we write D(n, d, t) with THR_t in place of MAJ.
+
+**1. Exact values.** Certified values (complete enumeration + exact
+verification), scaled as q = D/2^n, in units of 1/1024:
 
   d=1: 19/1024 (n=5) ... saturating ≈ 22.4/1024 by n≈23
   d=2: 5 (n=5), 7 (n=7), 8.73, 10.05, 11.18 (n=9,11,13)
@@ -192,7 +209,18 @@ is 25× (at n=9) then 2264× (at n=11) smaller than the total pairwise
 imbalance — the cancellation deepens with n across all scales, which
 matches the dyadic self-similarity of point 7 and suggests the right
 tool is an exponential-sum/Gauss-factorization analysis rather than
-any finite combinatorial lemma. The normalization is fully explicit:
+any finite combinatorial lemma. One more measurement, which is the
+single most direct piece of evidence we have for your conjecture:
+writing ρ(x) for the signed-to-unsigned ratio at scale x = s²/4D, we
+find ln(1/ρ) = π/x − c(n,d) with the SAME slope π on every cell we
+tested (six cells, fitted slopes 3.16-3.34), and the correction
+c(n,d) stays in the narrow band [0.7, 1.5] across a grid where the
+squared distance itself spans two orders of magnitude (4D from 3 to
+358; n = 9..13, d = 2, 3) — the cancellation profile is universal,
+c shows no growth, and your conjecture is exactly the statement that
+this scalar stays polylogarithmic. (Caveat: at three values of n a
+slow log-growth would be invisible, and all of this is still the
+regime n ≫ 2d.) The normalization is fully explicit:
 det of the quotient form = ∏_k C(n,k)/det(XᵀBX) with the binomial
 Hankel determinants in closed form (n·2^{2n−2}, n²(n−1)·2^{3n−7},
 n³(n−1)²(n−2)·2^{4n−14}/3 for d = 1, 2, 3; verified exactly on 15
@@ -230,7 +258,9 @@ Tanguy
   (AS-040), anatomie hiérarchique 2 cellules (AS-041 — tendance de
   2 ordres de grandeur, d=2 non exécuté : dit « at n=9 / n=11 » sans
   généralisation). Aucune revendication asymptotique sur S_± —
-  explicite dans l'email.
+  explicite dans l'email. Loi π/x + bande c ∈ [0,7 ; 1,5] : MESURÉ
+  6 cellules (AS-042/043), caveat log-croissance et régime n ≫ 2d dit
+  dans l'email.
 - Antériorité : §6/§7 KV lus en entier ; réserve « folklore » laissée à
   Krishan — posture correcte. [Les formulations coset/thêta/trou
   profond n'ont pas d'équivalent dans les textes audités, SANS garantie

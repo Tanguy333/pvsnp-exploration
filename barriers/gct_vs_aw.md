@@ -81,3 +81,10 @@ rapport à BIP 2019, pas par rapport aux 3 barrières.
 
 A-008 (`bib/aaronson_wigderson_2008.md`), BIP 2019 (arXiv:1604.06431,
 J. AMS 32(1):163-193), cahier §7.4, Tour 2 (algébrisation active).
+
+> **Mise à jour 2026-07-20 (A-011)** : audit complet sur textes livré —
+> voir `bib/gct.md` (Mulmuley §18 verbatim sur relativisation/RR, BIP
+> texte intégral avec le mécanisme du padding, état 2019→2026 des
+> multiplicity obstructions). Cette cellule reste valable pour l'axe AW
+> spécifiquement ; les cellules relativisation et RR de la ligne 8 sont
+> désormais documentées, plus seulement présumées.
