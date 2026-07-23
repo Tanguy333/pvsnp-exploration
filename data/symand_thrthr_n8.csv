@@ -1,0 +1,7 @@
+fonction,n,ones,poids,statut,temps_s
+"XOR(THR4,THR4)",8,110,0,Not Solved,148
+"OR(THR4,THR4)",8,231,6,Optimal,4
+"XOR(GT2,GT2)",8,120,0,Not Solved,89
+"OR(GT2,GT2)",8,156,0,Not Solved,101
+"AND(GT2,GT2)",8,36,0,Not Solved,92
+IP_8 (calibration),8,120,4,Optimal,59

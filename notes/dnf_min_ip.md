@@ -1,8 +1,9 @@
 # Note (brouillon) — La taille DNF minimale de la fonction inner product est (3^n − 1)/2
 
-> **Statut : BROUILLON interne** (tâche L18-NOTE, 2026-06-09). Version arXiv
-> éventuelle à rédiger en anglais. Préalables avant toute soumission : relecture
-> experte indépendante + vérification de la réserve « école russe » (§6).
+> **Statut : FINALISÉE côté dépôt** (NOTE-001, 2026-07-23 ; brouillon
+> L18-NOTE du 2026-06-09). Version anglaise prête pour arXiv :
+> `notes/dnf_min_ip_arxiv_en.md`. Réserve résiduelle unique avant
+> soumission : relecture experte indépendante (§6).
 
 ## 1. Énoncé
 
@@ -63,6 +64,32 @@ classes. Tout DNF doit donc contenir chaque implicant premier : `DNF_min = a_n`.
 **et 121 pour n = 5** (énumération des 3^10 ANDs par masques de bits +
 set cover ILP, `checks/task_f005b_verification_k4_k5.py`, 2026-06-09) —
 soit **5 points de vérification directe**.
+
+## 2bis. Version CNF (NOTE-001, prouvée le 2026-07-23)
+
+**Théorème.** `CNF_min(IP_{2n}) = (3^n + 1)/2 = b_n`.
+
+**Preuve.** Par De Morgan, `CNF_min(f) = DNF_min(¬f)`. L'observation clé
+est que la bi-décomposition XOR est **invariante par complémentation** :
+
+```
+¬IP_{2(n+1)} = ¬(IP_{2n} ⊕ (x_{n+1} ∧ y_{n+1})) = ¬IP_{2n} ⊕ (x_{n+1} ∧ y_{n+1}).
+```
+
+Le complément a donc exactement la même forme `g ⊕ (x ∧ y)` avec base
+`¬IP_{2n}`, et toute la machinerie de §2 se transfère verbatim en
+échangeant IP ↔ ¬IP : la classification (A) donne les premiers de
+`¬IP_{2(n+1)}` comme A1 (`x∧y∧M₀`, `M₀` premier de `IP_{2n}`) et
+A2a/A2b (`¬x∧M₀` / `¬y∧M₀`, `M₀` premier de `¬IP_{2n}`) — d'où la
+seconde moitié de la récurrence de (B), `b_{n+1} = a_n + 2b_n`, déjà
+établie — et la construction de témoins (C) donne l'essentialité de
+chaque premier de `¬IP` (base n = 1 : `¬IP_2 = ¬x₁ ∨ ¬y₁`, deux
+premiers, témoins (0,1) et (1,0)). Donc `DNF_min(¬IP_{2n}) = b_n`. ∎
+
+**Vérification exécutable** (`checks/task_note001_cnf_ip.py`,
+2026-07-23) : force brute n = 1..4 — `|primes(¬IP)|` = 2, 5, 14, 41 =
+`(3^n+1)/2`, **tous essentiels** (4/4 côtés IP re-confirmés au
+passage : 1, 4, 13, 40, tous essentiels).
 
 ## 3. Pourquoi ce n'est pas une conséquence directe des techniques standards
 
@@ -125,10 +152,16 @@ k = 1..14 + force brute k ≤ 4 : `checks/task_f006b_certificate_proof.py`.
 
 ## 6. Réserves restantes avant soumission
 
-1. **École russe (Yablonskii et coll., années 1960-70)** : la théorie des DNF
-   minimales y est développée en profondeur, mal indexée. Un russophone
-   devrait vérifier les surveys de l'école (Yablonskii, Vasil'ev, Glagolev,
-   Korshunov — *Diskretnaya Matematika* / *Problemy Kibernetiki*).
+1. **École russe (Yablonskii et coll., années 1960-70)** — réserve
+   RÉDUITE (NOTE-001, 2026-07-23) : recherche indexée complémentaire
+   effectuée en russe (Яблонский, ДНФ, простые импликанты, скалярное
+   произведение) et en anglais (Problemy Kibernetiki, prime implicants
+   exact count) — **rien trouvé** sur la fonction ou la formule ; page
+   de commentaires de Jukna vérifiée (Malyshev 1967, sans rapport).
+   Réserve résiduelle : les fonds non numérisés de *Problemy
+   Kibernetiki* — un russophone reste souhaitable, mais le niveau
+   accessible par index est épuisé (3 campagnes cumulées : juin ×2 +
+   juillet).
 2. **Relecture experte indépendante** de la preuve (A)-(C) — l'audit interne
    du dépôt (boucle adverse) ne remplace pas un referee.
    - *Journal des relectures* : **2026-06-10 — relecture humaine par Tanguy
@@ -136,11 +169,12 @@ k = 1..14 + force brute k ≤ 4 : `checks/task_f006b_certificate_proof.py`.
      université de Poitiers) : preuves L18 et T-F006 relues.** Ne vaut pas
      relecture par un expert indépendant du domaine, mais lève le verrou
      « aucun humain n'a lu la preuve ».
-   - Folklore-check en cours : mail envoyé à M. Göös le 2026-06-09,
-     réponse attendue.
-3. La preuve devrait être étendue/vérifiée pour la version CNF
-   (`CNF_min(IP_{2n}) = b_n = (3^n + 1)/2` ?) — non établie dans le dépôt,
-   plausible par dualité mais NON prouvée (ne pas inclure sans preuve).
+   - Folklore-check : mail envoyé à M. Göös le 2026-06-09 — **aucune
+     réponse consignée au dépôt au 2026-07-23** (6 semaines) ; le
+     silence ne vaut ni confirmation ni infirmation de nouveauté.
+3. ~~Version CNF non prouvée~~ — **LEVÉE** (NOTE-001) : théorème prouvé
+   (§2bis, invariance de la décomposition sous complément) + vérifié
+   n = 1..4 en force brute.
 
 ## 7. Distance à P vs NP
 
