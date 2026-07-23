@@ -93,15 +93,20 @@ précision du verrou :
    asymétrique Ω(√n/log n) pour MAJ. Frontière mesurée ici : l'asymétrie
    n'aide pas MAJ à **n ≤ 7** (V-002 + ATLAS-003, MILP certifiés) — MAIS
    le contrôle positif ATLAS-005 montre que le gain asymétrique PROUVÉ
-   pour Δ_w (KV) n'est **pas visible non plus à n ≤ 7** : à ces tailles
-   rien ne montre de gain, donc **les égalités MAJ ne discriminent pas**
-   (la lecture « nos données soutiennent la conjecture » de V-002 est
-   recadrée). Le sous-lemme informatif n'est plus « étendre n » mais :
-   **où (w, ε, degré, n) la séparation prouvée de KV devient-elle
-   visible ?** — à extraire de leur preuve (ATLAS-006), puis y pointer
-   l'instrument. Leçons de méthode : certification obligatoire (un
-   incumbent ne prouve rien) ; tout instrument doit passer un contrôle
-   positif avant que ses négatifs aient valeur.
+   pour Δ_w (KV) n'est **pas visible non plus à n ≤ 7**.
+   **ZONE FERMÉE (ATLAS-006, 2026-07-23)** : la preuve de KV est
+   EFFECTIVE (pigeonhole n^{(d+1)²} < 2^{⌈n/2⌉+1}, Lemme 3.7) et ses
+   seuils sont calculés — la borne symétrique est **VIDE pour tout
+   n ≤ 40** (ce qui explique structurellement ATLAS-005 : le théorème
+   ne dit rien à n ≤ 7), premier contenu à n = 41, et le **croisement
+   prouvé sym/asym n'apparaît qu'à n ≈ 4050** — trois ordres de
+   grandeur au-delà de l'instrument (n ≤ 8). Le no-man's land
+   8 ≤ n ≤ ~4000 n'est couvert ni par la preuve ni par la mesure ;
+   « pointer l'instrument sur la séparation prouvée » est impossible.
+   Détail : [bib/kv_asym_extraction.md](../bib/kv_asym_extraction.md).
+   Leçons de méthode : certification obligatoire (un incumbent ne
+   prouve rien) ; tout instrument doit passer un contrôle positif
+   avant que ses négatifs aient valeur.
 
 Aucune de ces cibles n'est à la portée d'un tour LLM + vérification
 exécutable — ce sont des fronts de recherche. Le critère d'ouverture d'un
