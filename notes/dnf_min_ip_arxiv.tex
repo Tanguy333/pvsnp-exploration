@@ -1,0 +1,241 @@
+% !TEX program = pdflatex
+% ------------------------------------------------------------------
+% The exact DNF complexity of the inner product function
+% LaTeX version of the Markdown master notes/dnf_min_ip_arxiv_en.md
+% (NOTE-001, 2026-07-23). Author: Tanguy Le Mer.
+% Gate before submission: independent expert proofreading (see the
+% French master note, reserve journal §6).
+% Citations are kept inline, faithful to the master; exact paper
+% titles to be completed by the author at proofreading time
+% (no bibliographic detail invented).
+% ------------------------------------------------------------------
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage[margin=1.1in]{geometry}
+\usepackage[colorlinks=true, linkcolor=blue!50!black,
+            urlcolor=blue!50!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem*{remark}{Remark}
+
+\newcommand{\IP}{\mathrm{IP}}
+\newcommand{\DNFmin}{\mathrm{DNF}_{\min}}
+\newcommand{\CNFmin}{\mathrm{CNF}_{\min}}
+\newcommand{\primes}{\mathrm{primes}}
+\newcommand{\WL}{W_{L_1}}
+
+\title{The exact DNF complexity of the inner product function}
+\author{Tanguy Le Mer}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\IP_{2n}(x,y)=\sum_{i=1}^{n} x_i y_i \bmod 2$ be the inner
+product function on $2n$ variables. We determine its exact DNF
+complexity: the minimum number of terms in a DNF (OR of ANDs of
+literals, unbounded fan-in) computing $\IP_{2n}$ is exactly
+$(3^n-1)/2$, and the minimum DNF is unique --- $\IP_{2n}$ has exactly
+$(3^n-1)/2$ prime implicants, each of which is essential. Dually,
+$\CNFmin(\IP_{2n})=(3^n+1)/2$. We further prove a correspondence
+theorem: the minimum $L_1$ weight of a real polynomial threshold
+representation of $\IP_{2n}$ (monomial basis over $\{0,1\}$) equals
+$(3^n-1)/2$ as well, with matching upper bound (the exact multilinear
+polynomial) and lower bound (an explicit diagonal dual certificate all
+of whose subcube moments are $\pm 1$). In terms of the total number of
+variables $N=2n$, the DNF size is $(3^{N/2}-1)/2 \approx 2^{0.7925N}$
+--- strictly between polynomial size and the generic $2^{N-1}$ of
+parity. After an extended literature search (detailed in
+Section~\ref{sec:related}) we believe the exact constant is not
+recorded; the result complements the active line of work on the
+depth-3 complexity of inner product by settling the depth-2 base case
+exactly. All statements are verified by exhaustive computation and
+exact-arithmetic certificates at small sizes.
+\end{abstract}
+
+\section{Statement}
+
+\begin{theorem}[DNF]\label{thm:dnf}
+$\DNFmin(\IP_{2n}) = (3^n-1)/2$. Moreover $\IP_{2n}$ has exactly
+$a_n = (3^n-1)/2$ prime implicants, each essential (each admits a
+witness point covered by it alone); the minimum DNF is therefore
+unique and equals the disjunction of all prime implicants. The
+companion count for the complement is
+$\lvert\primes(\lnot\IP_{2n})\rvert = b_n = (3^n+1)/2$.
+\end{theorem}
+
+\begin{theorem}[CNF]\label{thm:cnf}
+$\CNFmin(\IP_{2n}) = (3^n+1)/2$.
+\end{theorem}
+
+\begin{theorem}[weight-PTF correspondence]\label{thm:ptf}
+For every $n \ge 1$, the minimum $L_1$ coefficient weight of a real
+polynomial $p$ (monomial basis over $\{0,1\}^{2n}$, unbounded degree)
+with $p \ge 1$ on $\IP^{-1}(1)$ and $p \le 0$ on $\IP^{-1}(0)$ is
+exactly $(3^n-1)/2 = \DNFmin(\IP_{2n})$.
+\end{theorem}
+
+\section{Proof of Theorem~\ref{thm:dnf}}
+
+The engine is the disjoint XOR bi-decomposition
+\begin{equation}\label{eq:bidec}
+\IP_{2(n+1)}(x, y, x_{n+1}, y_{n+1})
+  = \IP_{2n}(x, y) \oplus (x_{n+1} \wedge y_{n+1}).
+\end{equation}
+
+\paragraph{(A) Classification of prime implicants.}
+Every prime implicant of $\IP_{2(n+1)}$ is of exactly one of three
+forms:
+\begin{itemize}
+\item \textbf{A1}: $x_{n+1} \wedge y_{n+1} \wedge M_0$, with $M_0$ a
+  prime implicant of $\lnot\IP_{2n}$;
+\item \textbf{A2a}: $\lnot x_{n+1} \wedge M_0$, with $M_0$ a prime
+  implicant of $\IP_{2n}$;
+\item \textbf{A2b}: $\lnot y_{n+1} \wedge M_0$, with $M_0$ a prime
+  implicant of $\IP_{2n}$.
+\end{itemize}
+Indeed, a term leaving the pair $(x_{n+1}, y_{n+1})$ free would force
+$\IP_{2n} = \lnot\IP_{2n}$ on its projection; and
+$\lnot x_{n+1} \wedge \lnot y_{n+1} \wedge M_0$ is never prime (it
+weakens to A2a or A2b).
+
+\paragraph{(B) Recurrence and closed form.}
+Writing $a_n = \lvert\primes(\IP_{2n})\rvert$ and
+$b_n = \lvert\primes(\lnot\IP_{2n})\rvert$, the classification gives
+\[
+a_{n+1} = 2a_n + b_n, \qquad b_{n+1} = a_n + 2b_n,
+\qquad (a_1, b_1) = (1, 2),
+\]
+whence $a_n + b_n = 3^n$ and $b_n - a_n = 1$ by induction, so
+$a_n = (3^n-1)/2$ and $b_n = (3^n+1)/2$.
+
+\paragraph{(C) Essentiality (lower bound).}
+For each prime implicant $M$ we construct a point covered by $M$ and
+by no other prime implicant, by induction. If
+$M = \lnot x_{n+1} \wedge M_0$ (class A2a), take the inductive witness
+$x_0$ of $M_0$ in $\IP_{2n}$ and append
+$(x_{n+1}, y_{n+1}) = (0, 1)$; the fixed pair excludes all A1 terms
+and all A2b terms with the mirrored coordinate, and the inductive
+property excludes competing A2a terms. Symmetrically for A2b with
+$(1, 0)$, and for A1 with $(1, 1)$ using the witness of $M_0$ in
+$\lnot\IP_{2n}$. Every DNF for $\IP_{2(n+1)}$ must therefore contain
+every prime implicant, so $\DNFmin = a_n$. \qed
+
+\section{Proof of Theorem~\ref{thm:cnf}}
+
+By De Morgan, $\CNFmin(f) = \DNFmin(\lnot f)$. The key observation is
+that the XOR bi-decomposition~\eqref{eq:bidec} is invariant under
+complementation:
+\[
+\lnot\IP_{2(n+1)} = \lnot\IP_{2n} \oplus (x_{n+1} \wedge y_{n+1}),
+\]
+i.e.\ the complement has exactly the same shape
+$g \oplus (x \wedge y)$ with base $\lnot\IP_{2n}$. The entire
+apparatus of the previous section transfers verbatim with
+$\IP \leftrightarrow \lnot\IP$ exchanged: the classification yields
+the second half of the recurrence ($b_{n+1} = a_n + 2b_n$), and the
+witness construction yields essentiality of every prime implicant of
+$\lnot\IP_{2n}$ (base case $n = 1$:
+$\lnot\IP_2 = \lnot x_1 \vee \lnot y_1$, two primes, witnesses
+$(0,1)$ and $(1,0)$). Hence
+$\DNFmin(\lnot\IP_{2n}) = b_n = (3^n+1)/2$. \qed
+
+\section{Proof of Theorem~\ref{thm:ptf}}
+
+\paragraph{Upper bound.}
+The exact multilinear polynomial
+$p^{*} = \bigl(1 - \prod_i (1 - 2 x_i y_i)\bigr)/2$ has coefficients
+$(-1)^{\lvert S\rvert + 1}\, 2^{\lvert S\rvert - 1}$ on the paired
+monomials $\prod_{i \in S} x_i y_i$, so its $L_1$ weight is
+$\sum_{s \ge 1} \binom{n}{s} 2^{s-1} = (3^n-1)/2$, and $p^{*}$ takes
+values exactly in $\{0, 1\}$, hence is a valid threshold
+representation ($p = p^{*}$ works since $p^{*} \in \{0,1\}$).
+
+\paragraph{Lower bound (diagonal dual certificate).}
+Consider the signed measure supported on the diagonal $x = y$:
+\[
+w(x, x) = (-1)^{\lvert x\rvert + 1}\, 2^{\,n - \lvert x\rvert}
+\quad \text{for } \lvert x\rvert \ge 1,
+\qquad w(0, 0) = -(2^n - 2),
+\]
+and $w = 0$ off the diagonal. A one-line computation shows every
+subcube moment of $w$ equals $\pm 1$ (the inner sum telescopes to
+$(-1)^{s+1}\, 2^{\,n-s-r}\, (2-1)^r$ with $n - s - r = 0$), and its
+positive mass is
+$\sum_{a \text{ odd}} \binom{n}{a} 2^{\,n-a} = (3^n-1)/2$. Weak LP
+duality then gives $\WL \ge (3^n-1)/2$ over the reals. \qed
+
+\medskip
+The certificate lives on the diagonal $x = y$ --- where $\IP$
+restricts to parity. Note the coincidence $\DNFmin = \WL$: a priori
+the two quantities are incomparable (neither bound implies the
+other); $\IP$ realizes both at the same value.
+
+\paragraph{A transversal constant.}
+Three depth-2-type quantities for $\IP$ land on the same scale
+$3^{n}$:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+Model & Quantity & Value \\
+\midrule
+DNF & $\DNFmin(\IP_{2n})$ & $(3^n-1)/2$ (Thm~\ref{thm:dnf}) \\
+CNF & $\CNFmin(\IP_{2n})$ & $(3^n+1)/2$ (Thm~\ref{thm:cnf}) \\
+Consistent 2-CNF & max satisfying assignments & $3^n$ (tight;
+  Frankl--Gryaznov--Talebanfard, ITCS 2022) \\
+Real PTF weight & $\min \WL(\IP_{2n})$ & $(3^n-1)/2$
+  (Thm~\ref{thm:ptf}) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Related work and novelty status}\label{sec:related}
+
+The active line on the \textbf{depth-3} complexity of $\IP$
+(Golovnev--Kulikov--Williams, ITCS 2021; Frankl--Gryaznov--%
+Talebanfard, ITCS 2022; G\"o\"os--Guan--Mosnoi, MFCS 2023 and
+Information \& Computation 2024,
+$\Sigma_2^3 \in [2^{0.847n},\, 2^{0.965n}]$; Amano, ISAAC 2023;
+Gurumukhani et al., 2026) never states the depth-2 case; this note
+supplies its exact base point. Standard covering bounds give only
+$\sim 2^n - 1$ (the essentiality of \emph{all} primes is what pushes
+to $3^n/2$). The switching-theory literature was checked at the
+source: Sasao--Butler (ASP-DAC 2001) handle AND/OR-orthodox
+bi-decompositions --- the XOR case of $\IP$ is outside their calculus
+(verified on the full text); the Butler--Sasao cryptographic tutorial
+treats $\IP$ as a bent function from the ANF angle, with no SOP size.
+Compendia (Jukna 2012; Crama--Hammer 2011) state the prime-implicant
+framework but not this count. A targeted search of the Russian school
+(Yablonskii and collaborators, \emph{Problemy Kibernetiki}), in
+Russian and English, found no trace of the function or the constant;
+non-digitized volumes remain the sole residual reserve. We therefore
+present the exact constant as, to the best of our knowledge,
+unrecorded --- and would welcome any earlier reference.
+
+\section{Computer verification}
+
+All claims are machine-verified in the accompanying repository:
+$\DNFmin = 1, 4, 13, 40, 121$ for $n = 1..5$ by exhaustive prime
+enumeration plus exact set-cover ILP (CBC); prime counts and
+essentiality on both $\IP$ and $\lnot\IP$ for $n = 1..4$ by brute
+force; the dual certificate of Theorem~\ref{thm:ptf} in exact
+rational arithmetic for $n = 1..14$ plus brute-force cross-check for
+$n \le 4$; the LP optimum $40/121$ at $n = 4, 5$ matched by the
+symmetrized dual to $10^{-8}$.
+
+\section{Disclosure}
+
+This note results from an AI-assisted exploration (Claude,
+Anthropic), with the adversarial-verification methodology of the
+repository \texttt{pvsnp-exploration}: every claim above is either
+proved in full in this note or backed by an executable
+exact-arithmetic check; the proofs were human-read by the author. AI
+assistance is disclosed per arXiv policy.
+
+\end{document}

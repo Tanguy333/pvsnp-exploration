@@ -93,3 +93,21 @@ indépendant), et contrôle positif cap 30 SAT re-vérifié par
 > ≥ 2 blocs**. Suite : span-2 complet (105 coefs), puis l'espace
 > entier (1023 monômes) par échelle de caps — chaque UNSAT y est
 > une borne inférieure neuve sur le vrai W(MAJ₅(OR2⁵)).
+
+## 6. Post-tour (T27-S2, Réfuteur) : LA CIBLE EST FERMÉE À k = 5
+
+Le jour même encore ([`tasks/done/T27-S2.md`](../tasks/done/T27-S2.md)) :
+le moteur canal de valeurs + lex-leader, généralisé à l'ESPACE
+ENTIER des 1023 monômes
+([`checks/tour_27_s2_espace_entier_cpsat.py`](../checks/tour_27_s2_espace_entier_cpsat.py)),
+a monté l'échelle complète : caps 19 (étalon Tour 26 reproduit),
+20, 21, ..., 29 — **onze UNSAT consécutifs** (58 s → 3517 s,
+~3 h 20 au total), contrôle positif cap 30 SAT énuméré.
+
+> **W(MAJ₅(OR2⁵)) = 30 = k(k+1), sur l'espace entier.** La cible de
+> ce tour — « décomposable ⇒ global, ou témoin < 30 » — qui n'était
+> « fermée dans aucun sens », est fermée dans le premier sens à
+> k = 5. C26 est certifiée en pleine généralité aux points
+> k = 3, 4, 5. Les fermetures de classes de ce tour (symétrique, A,
+> B) sont subsumées — elles furent l'échafaudage du moteur qui a
+> tout fermé.
