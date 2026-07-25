@@ -1,5 +1,88 @@
 # Backlog des tâches atomiques
 
+## ⚠️ FILS CLOS — recentrage du 2026-07-25 (décision utilisateur)
+
+> **Un fil clos n'est pas un échec. Documenter pourquoi une famille d'approches
+> n'aboutit pas EST la mission.** Ce qui serait un échec, c'est de laisser un
+> fil ouvert sans verdict, ou son acquis hors du livrable.
+> Compteurs de fils (règle 9 de CLAUDE.md, tenus à jour) :
+> `SYM∘AND : 18 tâches — cellule visée : ligne 7 — clos 2026-07-25` ;
+> `AS : 43 tâches — cellule visée : ligne 14 — clôture conditionnée à ATLAS-007` ;
+> `V (N.T.) : 20 tâches — satellite depuis 2026-07-25` ;
+> `F-011 : 33 étapes — cellule visée : ligne 4 — clos 2026-07-25 (ATLAS-011)`.
+
+**1. SYM∘AND, versant borne inférieure — CLOS** (F-012..022, T26-S1..S4,
+T27-S1..S3, `tours/tour_27_*`). *Apport conservé* : U26.1 (W(SYM_k(g^k)) =
+O_g(k²), témoin exécutable), la fenêtre ANF N(k,t) = 2^{k−1}−1, la calibration
+IP_8 = 4, et un instrument CP-SAT réutilisable (canal de valeurs + lex-leader,
+qui porte une frontière de décision de 7 à 30 à n = 10). *Motif d'arrêt* : la
+cible entière vit dans la bande **[Ω(k), O(k²)]**, fixée par U26.1 dès le Tour
+26 et écrite dans son archive §5 — polynomiale en n, donc à distance
+exponentielle du seuil quasi-polynomial 2^{polylog n} qui est le verrou réel de
+la ligne 7. **Aucune valeur exacte de W, à aucun k, ne peut changer une cellule
+de l'Atlas.** S'y ajoute une *correction de portée* (de nature différente, pas
+un second motif) : le modèle n'admet que des monômes positifs — voir
+[`../atlas/echelle_instrument.md`](../atlas/echelle_instrument.md) témoin 2 et
+la correction apportée à `notes/symand_synthese.md` §1. *Coût de la fermeture* :
+7 tâches aval, ~6 h de solveur, 4 commits, **0 cellule** — dont l'essentiel
+dépensé **après** que le Tour 26 eut écrit lui-même son diagnostic.
+**Ne pas rouvrir** : minima inégaux ∀k, petits seuils t < ⌈k/2⌉, « décomposable
+⇒ global » pour k ≥ 6, cible asymptotique k(k+1). Seule reprise recevable, et
+seulement dans un modèle à littéraux : fermer OR(GT2,GT2) et AND(GT2,GT2)
+(`tasks/done/F-017.md`), les seules instances du fil qui touchent les
+objets-frontière THR∘THR de la ligne 7.
+
+**2. Fil AS (Conjecture 13 de KV) — CLOS après écriture de sa cellule**
+(ATLAS-007). *Apport conservé* : AS-022 (C13 vraie inconditionnellement pour
+d ≤ K·log₂ n, la perte 2^{3d/2} localisant où meurt la route du padding) ;
+**AS-039, le meilleur produit du fil** — aucune estimée n'utilisant que la
+géométrie du réseau ne peut prouver C13, car le coset nul a la même géométrie :
+c'est une *barrière interne* ; AS-042 (C13 réduite au scalaire c(n,d)) ;
+instrument CVP certifié. *Motif d'arrêt* : la route vit à des échelles hors
+instrument — ATLAS-006 chiffre le croisement à **n ≈ 4050** contre un
+instrument à **n ≤ 8**, et l'a établi en une tâche de lecture, zéro calcul.
+
+**3. Fil V, phase théorie des nombres (V-037..V-056) — CLOS, archivé comme
+satellite** (`cahier_de_bord.md` §2 ter). Travail mathématiquement réel — m = 20
+= 307 confirmé nouveau par M. Mossinghoff — et travail sur une autre question.
+
+**4. Fil F-011 — CLOS le 2026-07-25, après câblage (ATLAS-011).** Ses 33 tâches
+(F-009, F-010 et 31 fiches `F-011-etape*` — les étapes 16 et 23 n'en ont pas)
+sont désormais portées par la [ligne 4 de l'Atlas](../atlas/matrice_barrieres.md),
+avec la partition écrite RÉPLIQUÉ (BBR 1994 ; BGL 2003 Thm 4.9) / PROUVÉ (loi
+exacte deg₃^sym(OR_n) ; familles infinies K, K′, K″ — antériorité du modèle
+GÉNÉRAL explicitement NON auditée) / MESURÉ (plate deg₆(MAJ_n) = ⌈n/2⌉,
+n = 4..25, 29, 31, 32, quatre trous). *Apport conservé* : la synthèse
+`notes/front_composite.md`, les deux audits d'antériorité qui ont requalifié une
+partie du fil en réplication, et 7 conjectures tuées par leurs propres données.
+***Motif d'arrêt — inconditionnel, il ne dépend d'aucune mesure*** : « polynôme
+unique ≠ circuit AC⁰[6] ». Le Pas 1 de Razborov-Smolensky est une
+**approximation probabiliste**, pas une représentation exacte ; aucune valeur
+exacte de degré, à aucun n, ne borne un circuit AC⁰[6], donc aucune ne peut
+changer la ligne 4. Le verrou de 1987 vit au niveau des **circuits**. *Motif
+d'appoint, étiqueté* : la plate mesurée et les trois familles prouvées
+**indiquent**, sans l'établir, que le modèle faible mod 6 n'offre aucun gain
+composite sur MAJ. **Ne pas rouvrir** : lois exactes du modèle symétrique
+(asymptotiques déjà chez BBR 1994 et BGL 2003), les 4 trous de plate (frontière
+d'outil, sans portée), la forme close de la zone v2. *Seule reprise recevable* :
+un modèle plus contraint — approximation probabiliste mod 6, représentation
+forte, ou passage aux circuits — avec test de plafond écrit d'avance.
+
+**5. Boucle adverse Proposeur/Réfuteur — SUSPENDUE** (CLAUDE.md §8, 5
+conditions de réouverture). Constat aggravant du Tour 27 : sa condition de
+recevabilité ne citait plus l'Atlas mais le dossier du Tour 26 — **un fil peut
+devenir son propre référent en un tour**.
+
+> **Ce qu'il ne faut PAS faire** : ne rien effacer. Les archives V et AS
+> gardent leur valeur documentaire (36 auto-corrections, une revendication
+> asymptotique fausse interceptée avant envoi à un auteur du domaine), et la
+> ligne 14 est le seul endroit où ce dépôt a fermé une cellule par lui-même.
+> **Le recentrage est un recentrage de comptabilité — écrire les cellules,
+> nommer les satellites, clore par écrit — pas une destruction.**
+
+---
+
+
 > Nouveau mode opératoire post-Tour 25 (validé utilisateur, 2026-06-09).
 > Une session = une tâche. L'output de chaque tâche est spécifié AVANT exécution.
 > Règles anti-esquive : voir CLAUDE.md §8. Taxonomie des types : voir bas de fichier.

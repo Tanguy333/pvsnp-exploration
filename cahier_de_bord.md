@@ -129,6 +129,29 @@
 
 ---
 
+### 2 ter. Registre satellite (hors mission P vs NP) — créé le 2026-07-25
+
+> Un item satellite peut être **terminé** — plusieurs sont à un cheveu de la
+> publication et les abandonner serait du gâchis — mais il **ne consomme plus
+> de créneau de tâche**, ne figure pas dans les acquis P vs NP, et passe en
+> « main de Tanguy ». La décision manquante est prise ici : le dépôt avait déjà
+> écrit trois fois que ce travail était « à part de P vs NP »
+> (`atlas/matrice_barrieres.md`, `tasks/done/V-054.md`, `tasks/done/V-056.md`)
+> sans en tirer la conséquence. Précédent interne appliqué : le recadrage
+> Boij-Söderberg de la fin du Tour 9.
+
+| Item | État | Note |
+|---|---|---|
+| Soumission OEIS n°1 — A397434, \|ANF(MAJ_n)\| (issue de F-018/F-019) | en revue | DATA étendues par un contributeur OEIS |
+| Soumission OEIS n°2 — degré minimal d'un produit pur plat (issue de V-054) | non soumise | — |
+| Note arXiv T-F006 (`notes/dnf_min_ip_arxiv_en.md`, `.tex`) | brouillon prêt, relecture experte requise | La note dit elle-même « Distance à P vs NP : nulle ». **Satellite = le canal de diffusion, jamais l'énoncé** : le théorème T-F006 reste cité par la ligne 7 et reste dans la mission |
+| Correspondance Mossinghoff (m = 20 = 307 confirmé nouveau) et Chen Shuwen | brouillons rédigés | Travail mathématiquement réel, sur une autre question |
+| Table BM / PTE, courbe d(m), phase du réseau (V-037..V-056) | clos | Rangs m = 22, 23 au-delà de la table publiée ; non-monotonie prouvée |
+
+**La correspondance Krishan-Vishwanathan n'est PAS satellite** : elle porte la
+ligne 14 de l'Atlas — la seule cellule que ce dépôt ait fermée par lui-même —
+et reste pleinement dans la mission.
+
 ## 3. Lemmes et résultats
 
 ### ✅ Établis pour P vs NP (vérifiés / démontrés rigoureusement)
@@ -628,7 +651,73 @@ contre la littérature DNF-MIN. Statut individuel :
 
 > Un seul objectif concret et, si possible, vérifiable.
 
-> **⚠️ Section gelée depuis 2026-06-09.** La boucle adverse par tours est
+---
+
+### ⚠️ RECENTRAGE DU 2026-07-25 (décision utilisateur) — ce qui suit prime sur tout l'historique de cette section
+
+**Le sous-but courant, en une phrase : recâbler le livrable sur ce que le dépôt
+a réellement produit, puis le rendre rejouable par un tiers.** Rien de neuf
+n'est à mesurer d'abord : les acquis existent, ils ne sont pas dans `atlas/`.
+
+**L'aune (à appliquer avant d'ouvrir une tâche).** Une tâche est ON-TARGET si
+elle fait progresser l'une de ces trois choses : **(a)** remplir une cellule de
+l'Atlas avec témoin — documenter *pourquoi* une famille d'approches échoue ;
+**(b)** tester une approche candidate contre les barrières (relativisation,
+preuves naturelles, algébrisation, monotone) ; **(c)** construire un instrument
+vérifiable **réutilisable** pour (a) ou (b). Elle est **hors cible** si elle
+produit des mathématiques autonomes dont l'énoncé ne mentionne plus de classe
+de complexité, si elle optimise un modèle jouet au-delà de ce que l'Atlas
+exige, ou si elle re-démontre du folklore.
+
+**L'état chiffré qui motive ce recentrage** (mesuré le 2026-07-25) :
+
+| Grandeur | Valeur |
+|---|---|
+| Tâches livrées dans `tasks/done/` | 169 |
+| Tâches ayant modifié `atlas/` | **9** (ATLAS-001..006, A-009, A-011, A-012) |
+| Tâches déclarées en échec (`tasks/failed/`) | **0** depuis 2026-06-09 |
+| Scripts `checks/` | 188 — dont **zéro** cité par une cellule du corps de la matrice |
+| Dernière modification de `atlas/` | 2026-07-23 — **4 commits de résultats postérieurs n'y sont pas entrés** |
+| Dernière modification de `CLAUDE.md` avant ce jour | 2026-06-09 — **aucun des 4 recadrages utilisateur ultérieurs n'y figurait** |
+| `prompts/proposeur.md`, `prompts/refuteur.md` | inchangés depuis 2026-05-23, alors qu'ils sont collés à Qwen à chaque tour |
+
+Avec `failed/` vide et 169 tâches toutes ✅, **le seul compteur du dépôt ne
+peut que monter** : la dérive était structurellement invisible de l'intérieur.
+Ce n'est pas la rigueur locale qui a manqué — 36 auto-corrections consignées,
+une revendication asymptotique fausse interceptée avant envoi à un auteur du
+domaine — c'est un dispositif qui mesure la distance à la question. Les règles
+7 à 10 de `CLAUDE.md` §8 le fournissent : les six règles anti-esquive
+existantes régulaient toutes la *forme* d'une tâche, **aucune ne régulait sa
+direction**.
+
+**Ce qui est clos** (phrases de clôture : §2 et §2 ter) : (1) SYM∘AND versant
+borne inférieure (F-012..022, T26-S*, T27-S*) ; (2) fil AS — clos *après*
+écriture de la ligne 14 ; (3) fil V phase théorie des nombres — registre
+satellite §2 ter ; (4) fil F-011 — clos *après* câblage de la ligne 4, et
+**inachevé tant que ce câblage n'est pas fait** ; (5) boucle adverse —
+suspendue.
+
+**Directions interdites ajoutées au 2026-07-25** (cumulatives avec celles des
+Tours 22-25) :
+9. **Toute nouvelle valeur exacte de W(MAJ_k(g^k)) ou variantes**, à quelque k
+   que ce soit — y compris minima inégaux ∀k, petits seuils, « décomposable ⇒
+   global » pour k ≥ 6, cible asymptotique k(k+1). Motif : famille plafonnée
+   polynomialement, refusée par le test de plafond (règle 7).
+10. **Toute campagne de mesure ouverte sans avoir écrit à quelle échelle le
+    phénomène visé commence** — voir [`atlas/echelle_instrument.md`](atlas/echelle_instrument.md).
+11. **Toute revendication de nouveauté ou de primauté sans folklore-check écrit.**
+12. **Toute tâche satellite** (OEIS, note T-F006, correspondance
+    Mossinghoff/Chen) : elle ne consomme plus de créneau. Registre §2 ter.
+
+**Ce qui compterait comme progrès, maintenant** : une cellule de la matrice
+enrichie ou fermée **avec témoin rejouable**. Rien d'autre. La leçon la plus
+dure des 169 tâches est chiffrée : ATLAS-006, une **tâche de lecture, zéro
+calcul**, a produit en une session le verdict de portée que **43 tâches de
+calcul** du fil AS n'avaient pas atteint.
+
+---
+
+> **⚠️ Historique ci-dessous — section gelée depuis 2026-06-09.** La boucle adverse par tours est
 > suspendue (4 régimes d'échec documentés sur 25 tours). Le mode opératoire
 > courant est le **workflow par tâches atomiques** : `tasks/backlog.md` +
 > règles CLAUDE.md §8. La prescription Tour 24 ci-dessous a été **soldée le
@@ -809,6 +898,33 @@ contre la littérature DNF-MIN. Statut individuel :
 
 > **Mode tâches atomiques en vigueur** (CLAUDE.md §8, `tasks/backlog.md`).
 > L'ancienne boucle « Proposeur génère une idée » est suspendue.
+
+> **⚠️ RECENTRAGE DU 2026-07-25.** Boucle adverse **suspendue** (§5). Ordre
+> imposé : la gouvernance d'abord, sinon la première tâche re-dérive.
+> **Aucune des tâches ci-dessous ne demande de solveur.**
+>
+> - [x] **GOUV-001 (fait ce jour)** — règles posées dans `CLAUDE.md` : arborescence
+>   réelle (§4), test des barrières non désactivable seul (§5.4), règles 7 à 10
+>   (rattachement + relecture à la clôture, test de distance non-grep, bilan de
+>   fil par cible, recadrages écrits dans CLAUDE.md), règle 2 durcie (un commit =
+>   une tâche, profondeur d'auto-génération ≤ 3), réouverture d'un Tour à 5
+>   conditions dont la recopie verbatim de la cellule.
+> - [x] **ATLAS-008 (fait ce jour)** — [`atlas/echelle_instrument.md`](atlas/echelle_instrument.md) :
+>   la note de dispositif, deux témoins chiffrés (n ≤ 8 contre n ≈ 4050 ;
+>   O(n²) contre 2^{polylog n}), et le test opératoire du contrôle positif.
+> - [ ] **ATLAS-007** — porter dans le livrable les 4 commits postérieurs au
+>   2026-07-23 et les 43 tâches du fil AS : lignes 7 et 14, chiffres d'en-tête.
+> - [ ] **ATLAS-010** — `atlas/temoins.md` : cellule → script → commande →
+>   sortie attendue → **durée** (le dépôt a un résultat à 3 h 20 et un à
+>   15 884 s : c'est une information de reproductibilité).
+> - [ ] **ATLAS-011** — écrire la ligne 4 avec le contenu mesuré de F-011, puis
+>   clore le fil. **Sans cette tâche, F-011 est inachevé, pas clos.**
+> - [ ] **PUB-001** — réécrire `README.md` : il annonce 12 familles (15),
+>   9 audits (22), ~30 scripts (188), 25 tours (27).
+> - [ ] **VEILLE-2026-2** — veille sur le modèle de `bib/veille_probabilistes_2026.md`,
+>   le format le plus rentable du dépôt (il a produit le fil V → ligne 14, et
+>   A-009 → ligne 13). **À exécuter AVANT toute tâche d'audit A-013+**, dont les
+>   références n'existent nulle part dans le dépôt.
 
 - [x] Phases 1-2 + SYNTH-001 + fils F-001..F-010, B-001..B-006 — complets (2026-06-09/10)
 - [x] **Fil F-011** (33 étapes) — palier propre atteint : 3 familles infinies (K/K′/K″), classification bipartite complète, plate n ≤ 25 + 29, 31, 32, audits BBR + BGL — synthèse `notes/front_composite.md` §1-10bis (2026-06-11)

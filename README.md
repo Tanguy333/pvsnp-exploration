@@ -3,9 +3,29 @@
 > **Cadrage honnête.** Ce dépôt n'est **pas** une prétention à résoudre P vs NP.
 > C'est une exploration assistée par IA dont le livrable est un **atlas
 > documenté de pourquoi chaque famille d'approches échoue** — adossé à des
-> audits sur textes, des contre-exemples exécutables, et 25 tours de
+> audits sur textes, des contre-exemples exécutables, et 27 tours de
 > réfutation adverse archivés. La valeur recherchée est la compréhension
 > accumulée et vérifiable, pas une preuve.
+
+### Ce que ce dépôt a établi (bilan au 2026-07-25)
+
+Une chose fermée : **la Conjecture 5 de Krishan-Vishwanathan est fausse** —
+mécanisme de parité prouvé, énumération exhaustive par cellule, confirmée par
+écrit par un des auteurs. Cela ferme **un ingrédient** d'une route vers
+MAJ ∉ ACC, pas MAJ ∉ ACC. **Vingt-deux audits sur textes intégraux**, avec le
+marqueur `[NON TROUVÉ]` là où la pièce manque — c'est le format où ce dépôt rend
+le plus. **Quatre instruments exacts certifiés**, dont on publie le plafond :
+n ≤ 7-8 pour le torique et le CVP, n = 10 pour le CP-SAT. Et **un négatif de
+dispositif**, rencontré deux fois par deux chemins indépendants et chiffré :
+l'écart entre ce que l'atelier mesure et l'échelle où le phénomène commence
+(n ≤ 8 contre n ≈ 4050 ; O(n²) contre 2^{polylog n}) —
+[`atlas/echelle_instrument.md`](atlas/echelle_instrument.md). Le reste — 169
+tâches, 188 scripts, 27 tours — est du coût, et il est présenté comme tel.
+**Rien ici ne fait progresser une preuve de P ≠ NP, et ce n'était pas le but** :
+le but est de documenter pourquoi chaque famille d'approches échoue, et la table
+des erreurs du dépôt (36 auto-corrections, dont une revendication asymptotique
+fausse interceptée avant envoi à un auteur du domaine) fait partie du livrable
+au même titre que les résultats.
 
 ## Le problème
 
@@ -17,12 +37,21 @@ pourquoi les grandes familles d'attaques connues ne peuvent pas la donner.
 
 ## Le livrable central : la matrice barrières × approches
 
-**[`atlas/matrice_barrieres.md`](atlas/matrice_barrieres.md)** — 12 familles
+**[`atlas/matrice_barrieres.md`](atlas/matrice_barrieres.md)** — 15 familles
 d'approches (de la diagonalisation à GCT, de la méthode polynomiale modulaire
-à la hardness magnification) croisées avec les 4 barrières connues
+à la hardness magnification, jusqu'à la méta-complexité moderne, aux polynômes
+toriques et à la complexité des preuves) croisées avec les 4 barrières connues
 (relativisation, preuves naturelles, algébrisation, monotone) plus une
 colonne « **verrou réel** » : ce qui bloque effectivement chaque approche
-aujourd'hui. Chaque cellule renvoie à sa pièce justificative dans le dépôt.
+aujourd'hui. Les cellules renvoient à leur pièce justificative — audit `bib/`
+ou fiche `tasks/done/` ; le câblage vers les scripts est en cours dans
+[`atlas/temoins.md`](atlas/temoins.md).
+
+**Portée des mesures** — [`atlas/echelle_instrument.md`](atlas/echelle_instrument.md).
+Les instruments de ce dépôt ont un plafond chiffré (n ≤ 7-8 pour le torique et
+le CVP, n = 10 pour le CP-SAT), et plusieurs fronts de la matrice ont une
+échelle caractéristique très supérieure. Le dépôt a payé cet écart deux fois,
+par deux chemins indépendants, avant de l'écrire.
 
 Les trois enseignements de la matrice :
 
@@ -42,10 +71,12 @@ Les trois enseignements de la matrice :
 .
 ├── README.md                  ← ce fichier
 ├── CLAUDE.md                  ← règles de l'agent (mode tâches + anti-esquive)
-├── cahier_de_bord.md          ← journal central : 25 pistes, lemmes, 16 questions, bibliographie
+├── cahier_de_bord.md          ← journal : pistes, lemmes, questions, registre satellite (§2 ter)
 ├── atlas/
-│   └── matrice_barrieres.md   ← LE livrable : matrice barrières × approches
-├── bib/                       ← 9 audits bibliographiques sur textes intégraux
+│   ├── matrice_barrieres.md   ← LE livrable : matrice barrières × approches (15 lignes)
+│   ├── temoins.md             ← cellule → script → commande → sortie → durée
+│   └── echelle_instrument.md  ← note de dispositif : le plafond de l'atelier
+├── bib/                       ← 22 audits bibliographiques sur textes intégraux
 │   ├── bgs_1975.md            ← relativisation (les 2 oracles, preuves)
 │   ├── razborov_rudich_1997.md← preuves naturelles (définitions verbatim)
 │   ├── aaronson_wigderson_2008.md ← algébrisation (définition asymétrique exacte)
@@ -56,12 +87,16 @@ Les trois enseignements de la matrice :
 │   ├── cfi_abd.md             ← CFI, FPC ⊊ P, CSP affines
 │   └── l18_status.md          ← le seul objet non recensé du dépôt
 ├── barriers/                  ← 4 cellules détaillées (approche × barrière)
-├── tours/                     ← archives des 25 tours adverses (idée + réfutation)
-├── checks/                    ← ~30 scripts de vérification exécutables
-├── data/                      ← mesures (weight L1 des PTF sur TC⁰ d=2…)
-├── notes/                     ← brouillon de note (DNF_min(IP) = (3^n−1)/2)
-└── tasks/                     ← backlog, tâches faites/échouées
+├── tours/                     ← archives des 27 tours adverses (idée + réfutation)
+├── checks/                    ← 188 scripts de vérification exécutables
+├── data/                      ← 12 jeux de mesures (weight L1 des PTF sur TC⁰ d=2…)
+├── notes/                     ← synthèses et brouillons (dont satellites, cf. cahier §2 ter)
+├── roadmap/                   ← ARCHIVE 2026-05-23, pas le programme du dépôt
+└── tasks/                     ← backlog (169 faites), hors_cible/, failed/
 ```
+
+*(Les chiffres ci-dessus sont des comptes réels au 2026-07-25, pas des
+estimations — le README précédent en annonçait 12, 9, ~30 et 25.)*
 
 ## Comment ce dépôt a été construit
 
@@ -76,6 +111,20 @@ folklore, pivot d'esquive).
 par des **tâches atomiques anti-esquive** (CLAUDE.md §8) : audits de papiers
 sur texte intégral, mesures ILP, cellules de matrice — chaque tâche avec
 output spécifié à l'avance, échec honnête autorisé, invention interdite.
+Deux tours adverses ont été rouverts (26 et 27) sur une cible née de l'Atlas ;
+le fil qui en est issu a été **clos le 2026-07-25**, et la boucle re-suspendue.
+
+**Recentrage (2026-07-25).** Un audit interne a mesuré que **160 des 169
+tâches livrées n'avaient jamais touché le livrable** : le travail était absorbé
+par le journal, pas par l'Atlas. Diagnostic : les six règles anti-esquive
+régulaient toutes la *forme* d'une tâche, **aucune ne régulait sa direction**.
+Quatre règles ont été ajoutées (CLAUDE.md §8, règles 7 à 10) : rattachement
+obligatoire à une cellule nommée et **relu à la clôture**, test de plafond
+(« à quelle échelle le phénomène commence-t-il, est-elle sous mon plafond ? »),
+bilan par fil défini par sa *cible*, et obligation que tout recadrage s'écrive
+dans les règles elles-mêmes. Le régime d'échec n°5 est ainsi documenté :
+**une dérive lente que la rigueur locale ne détecte pas** — chaque tâche
+irréprochable, la trajectoire hors sujet.
 
 ## Acquis vérifiables (et leur statut honnête)
 

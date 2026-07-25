@@ -14,11 +14,23 @@ p(z) = Σ_S a_S·m_S(z) à coefficients ENTIERS ≥ 0 sur les monômes
 positifs non vides, tels que les ensembles de valeurs {p(z) : f=1} et
 {p(z) : f=0} soient DISJOINTS (la porte symétrique lit p et décide).
 
-**Provenance** : c'est la mesure de poids du format SYM∘AND de
-Beigel-Tarui — le format d'évaluation rapide du moteur de Williams
-(lignes 7 de l'Atlas, A-001/A-002/B-006). L'extension de la méthode
-algorithmique d'ACC⁰ à TC⁰ bute précisément sur l'absence de
-transformation vers ce format pour les seuils à poids : nos objets
+**Provenance — ÉNONCÉ CORRIGÉ LE 2026-07-25 (recentrage).** C'est une mesure
+de poids **inspirée** du format SYM∘AND de Beigel-Tarui — le format
+d'évaluation rapide du moteur de Williams (ligne 7 de l'Atlas,
+A-001/A-002/B-006) — mais **ce n'est pas ce format** : le modèle ci-dessus
+n'admet que des monômes **positifs**. La question « le format Beigel-Tarui
+autorise-t-il les ∧ sur littéraux ? » est
+**[NON TROUVÉ DANS `bib/beigel_tarui_1994.md`]** (le Théorème 2 verbatim ne dit
+que « ∧ gates of fanin (log S)^{O(1)} ») et n'a pas été tranchée sur le texte
+primaire. Ce qui est mesuré, en revanche : **si** les littéraux négatifs sont
+autorisés, `p = Σᵢ(¬xᵢ ∧ ¬yᵢ)` sépare THR_t(OR2^k) au poids **k** pour tout
+k = 3..8 et tout seuil (énumération exhaustive), contre k(k+1) ici — un facteur
+6 dès k = 5. **Conséquence à retenir : les bornes SUPÉRIEURES de ce modèle
+transfèrent au format visé ; ses bornes INFÉRIEURES ne bornent rien à
+l'extérieur tant que la question de convention n'est pas tranchée.**
+Voir [`../atlas/echelle_instrument.md`](../atlas/echelle_instrument.md),
+témoin 2. L'extension de la méthode algorithmique d'ACC⁰ à TC⁰ bute sur
+l'absence de transformation vers le format pour les seuils à poids : nos objets
 (compositions de seuils, comparaisons) sont les objets-frontière.
 
 **Repères** : f symétrique ⟹ W ≤ n (p = Σz) ; encodage injectif ⟹
