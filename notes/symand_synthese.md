@@ -14,24 +14,35 @@ p(z) = Σ_S a_S·m_S(z) à coefficients ENTIERS ≥ 0 sur les monômes
 positifs non vides, tels que les ensembles de valeurs {p(z) : f=1} et
 {p(z) : f=0} soient DISJOINTS (la porte symétrique lit p et décide).
 
-**Provenance — ÉNONCÉ CORRIGÉ LE 2026-07-25 (recentrage).** C'est une mesure
-de poids **inspirée** du format SYM∘AND de Beigel-Tarui — le format
-d'évaluation rapide du moteur de Williams (ligne 7 de l'Atlas,
-A-001/A-002/B-006) — mais **ce n'est pas ce format** : le modèle ci-dessus
-n'admet que des monômes **positifs**. La question « le format Beigel-Tarui
-autorise-t-il les ∧ sur littéraux ? » est
-**[NON TROUVÉ DANS `bib/beigel_tarui_1994.md`]** (le Théorème 2 verbatim ne dit
-que « ∧ gates of fanin (log S)^{O(1)} ») et n'a pas été tranchée sur le texte
-primaire. Ce qui est mesuré, en revanche : **si** les littéraux négatifs sont
-autorisés, `p = Σᵢ(¬xᵢ ∧ ¬yᵢ)` sépare THR_t(OR2^k) au poids **k** pour tout
-k = 3..8 et tout seuil (énumération exhaustive), contre k(k+1) ici — un facteur
-6 dès k = 5. **Conséquence à retenir : les bornes SUPÉRIEURES de ce modèle
-transfèrent au format visé ; ses bornes INFÉRIEURES ne bornent rien à
-l'extérieur tant que la question de convention n'est pas tranchée.**
-Voir [`../atlas/echelle_instrument.md`](../atlas/echelle_instrument.md),
-témoin 2. L'extension de la méthode algorithmique d'ACC⁰ à TC⁰ bute sur
-l'absence de transformation vers le format pour les seuils à poids : nos objets
-(compositions de seuils, comparaisons) sont les objets-frontière.
+**Provenance — TRANCHÉE le 2026-07-25 (tâche A-013).** *Une version de ce
+paragraphe, écrite plus tôt le même jour, affirmait « ce n'est pas ce format ».
+Elle était FAUSSE et est rétractée ici.* Le modèle ci-dessus **est** le format
+SYM+ tel que Williams le définit — *Nonuniform ACC Circuit Lower Bounds*,
+J. ACM 61(1), art. 2, 2014, p. 2:6 : « *a depth-two circuit which computes some
+symmetric function at the output gate, and computes ANDs of input variables on
+the second layer* », et p. 2:15 : « *We stress that the transformation from ACC
+to SYM+ results in a circuit with no negated variables.* » Les négations sont
+consommées **avant** l'apparition des ∧ du bas (annexe A, Transformation 1 :
+les NOT deviennent des MOD_m). La contrainte « coefficients entiers ≥ 0 » n'est
+pas non plus une restriction : un coefficient y est une **multiplicité de
+portes ∧**, la réduction modulo p^k étant absorbée par la porte symétrique
+(Williams 2014, annexe A ; Buss 2017 p. 15 ; Green-Köbler-Regan-Schwentick-
+Torán, JCSS 50(3), 1995, cor. 6.4).
+
+> **Donc W(f) = le nombre minimal de portes ∧ d'un circuit SYM∘AND à variables
+> seules** — le format même qui alimente l'Evaluation Lemma de Williams.
+
+Réserves qui subsistent, nommées : le **texte primaire** de Beigel-Tarui reste
+illisible (PS 1995, polices bitmap) et ce que ses auteurs écrivent du format de
+leurs ∧ demeure **[NON TROUVÉ]** ; la convention **à littéraux** existe aussi
+dans la littérature (Williams l'atteste note 3 p. 2:6, et l'adopte lui-même en
+Theory of Computing 14(17), 2018) — les deux sont inter-convertibles à taille
+quasi-polynomiale préservée, **pas à nombre de portes** ; enfin les bornes
+supérieures d'ici ne nourrissent l'algorithme que si la porte symétrique est
+**évaluable rapidement**, ce que ce modèle n'exige pas. Écart de convention
+mesuré sur THR_t(OR2^k) : k contre k(k+1), soit un facteur **k+1, croissant**.
+Détail : [`../atlas/matrice_barrieres.md`](../atlas/matrice_barrieres.md)
+ligne 7 et [`../tasks/done/A-013.md`](../tasks/done/A-013.md).
 
 **Repères** : f symétrique ⟹ W ≤ n (p = Σz) ; encodage injectif ⟹
 W ≤ 2ⁿ−1 ; p est toujours MONOTONE et supermodulaire (coefficients ≥ 0).

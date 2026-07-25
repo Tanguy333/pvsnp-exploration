@@ -912,19 +912,33 @@ calcul** du fil AS n'avaient pas atteint.
 > - [x] **ATLAS-008 (fait ce jour)** — [`atlas/echelle_instrument.md`](atlas/echelle_instrument.md) :
 >   la note de dispositif, deux témoins chiffrés (n ≤ 8 contre n ≈ 4050 ;
 >   O(n²) contre 2^{polylog n}), et le test opératoire du contrôle positif.
-> - [ ] **ATLAS-007** — porter dans le livrable les 4 commits postérieurs au
->   2026-07-23 et les 43 tâches du fil AS : lignes 7 et 14, chiffres d'en-tête.
-> - [ ] **ATLAS-010** — `atlas/temoins.md` : cellule → script → commande →
->   sortie attendue → **durée** (le dépôt a un résultat à 3 h 20 et un à
->   15 884 s : c'est une information de reproductibilité).
-> - [ ] **ATLAS-011** — écrire la ligne 4 avec le contenu mesuré de F-011, puis
->   clore le fil. **Sans cette tâche, F-011 est inachevé, pas clos.**
-> - [ ] **PUB-001** — réécrire `README.md` : il annonce 12 familles (15),
->   9 audits (22), ~30 scripts (188), 25 tours (27).
-> - [ ] **VEILLE-2026-2** — veille sur le modèle de `bib/veille_probabilistes_2026.md`,
->   le format le plus rentable du dépôt (il a produit le fil V → ligne 14, et
->   A-009 → ligne 13). **À exécuter AVANT toute tâche d'audit A-013+**, dont les
->   références n'existent nulle part dans le dépôt.
+> - [x] **ATLAS-007 (fait)** — lignes 7 et 14 + en-tête recâblé : le fil SYM∘AND
+>   (18 tâches) et le fil AS (43 tâches) entrent dans le livrable.
+> - [x] **ATLAS-010 (fait)** — [`atlas/temoins.md`](atlas/temoins.md) :
+>   cellule → script → commande → sortie → durée, 17 scripts.
+> - [x] **ATLAS-011 (fait)** — ligne 4 écrite avec le contenu mesuré de F-011
+>   (partition RÉPLIQUÉ / PROUVÉ / MESURÉ) ; **fil F-011 CLOS** sur un motif
+>   inconditionnel (« polynôme unique ≠ circuit AC⁰[6] »).
+> - [x] **PUB-001 (fait)** — `README.md` : quatre chiffres faux corrigés, et le
+>   régime d'échec n°5 documenté.
+> - [x] **VEILLE-2026-2 (fait)** — [`bib/veille_2026_07.md`](bib/veille_2026_07.md),
+>   35 références vérifiées une par une par un contrôle adverse (zéro inventée).
+>   **Résultat majeur : le verrou de la ligne 7 était FAUX depuis 2014** — réécrit
+>   et sourcé (Williams STOC 2014 ; Limaye-Srinivasan-Srinivasan MFCS 2025 ;
+>   Chen-Tal-Wang ECCC TR26-039, 2026).
+> - [x] **ATLAS-012 (fait)** — recommandations de la veille portées dans la
+>   matrice : **ligne 16 créée** (range avoidance, double plafond AM ∩ coAM +
+>   relativisation), lignes 13 et 15 nuancées, note de bas de colonne 2 (la
+>   barrière RR a une version **inconditionnelle** pour distingueurs AC⁰,
+>   préprint). Ligne 10 : `[NON TROUVÉ]` assumé, rien de 2025-2026.
+>
+> **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
+> matrice signale lui-même deux passages restés au 2026-06-09 qui le
+> contredisent — « Inventaire des pièces » et « Les trois lectures » §3, dont
+> l'énumération omet les Tours 26 et 27 ; (b) la lecture 2 doit intégrer les
+> deux barrières internes neuves (AS-039 pour la ligne 14, AM ∩ coAM pour la
+> ligne 16) ; (c) retrouver la référence Lu-Santhanam-Tzameret, non portée faute
+> de fiche sourcée.
 
 - [x] Phases 1-2 + SYNTH-001 + fils F-001..F-010, B-001..B-006 — complets (2026-06-09/10)
 - [x] **Fil F-011** (33 étapes) — palier propre atteint : 3 familles infinies (K/K′/K″), classification bipartite complète, plate n ≤ 25 + 29, 31, 32, audits BBR + BGL — synthèse `notes/front_composite.md` §1-10bis (2026-06-11)

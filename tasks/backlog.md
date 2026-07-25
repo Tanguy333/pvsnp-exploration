@@ -91,6 +91,19 @@ devenir son propre référent en un tour**.
 > livrer l'output exact → validation utilisateur → `done/` (ou `failed/` avec
 > diagnostic honnête) → commit + push après validation.
 
+## Phase 4 — Recentrage : le livrable recâblé (2026-07-25)
+
+| ID | Rattachement | Tâche | Output | Statut |
+|---|---|---|---|---|
+| GOUV-001 | Gouvernance | Poser les règles qui manquaient : rattachement relu à la clôture, test de distance non-grep, bilan par fil, recadrages dans CLAUDE.md | `CLAUDE.md` | ✅ **done** (2026-07-25) |
+| ATLAS-008 | Instrument, toutes lignes | Note de dispositif : l'écart instrument/phénomène, deux témoins chiffrés | `atlas/echelle_instrument.md` | ✅ **done** |
+| ATLAS-007 | Atlas lignes 7, 14 + en-tête | Porter les fils SYM∘AND (18 tâches) et AS (43 tâches) dans le livrable | `atlas/matrice_barrieres.md` | ✅ **done** |
+| ATLAS-010 | Instrument, toutes lignes | Chaînage cellule → script → commande → sortie → durée | `atlas/temoins.md` | ✅ **done** (17 scripts) |
+| ATLAS-011 | Atlas ligne 4 | Écrire la ligne 4 avec le contenu mesuré de F-011, puis clore le fil | `atlas/matrice_barrieres.md` | ✅ **done** — fil F-011 CLOS |
+| PUB-001 | Diffusion | Corriger le README (4 chiffres faux) + documenter le régime d'échec n°5 | `README.md` | ✅ **done** |
+| VEILLE-2026-2 | Atlas lignes 7, 10, 13, 15 | Ce qui a bougé en 2025-2026, références vérifiables | `bib/veille_2026_07.md` | ✅ **done** — **le verrou de la ligne 7 était FAUX depuis 2014** ; 35 références contrôlées une par une, zéro inventée |
+| ATLAS-012 | Atlas ligne 16 (créée) + 13, 15 + colonne 2 | Porter les recommandations de la veille dans la matrice | `atlas/matrice_barrieres.md` + `tasks/done/ATLAS-012.md` | ✅ **done** — **ligne 16 créée** (range avoidance : double plafond, AM ∩ coAM démontré en 2025 + bornes relativisantes) ; ligne 13 nuancée (la NP-dureté se fractionne par type de réduction) ; ligne 15 corrigée (« auto-référentielle par essence » qualifiée) ; note de colonne 2 (barrière RR **inconditionnelle** pour distingueurs AC⁰, statut préprint) |
+
 ## Phase 1 — Solde des fils ouverts
 
 | ID | Type | Tâche | Output | Statut |

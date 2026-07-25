@@ -73,17 +73,24 @@ solveur** :
 | W, modèle du dépôt (positif), certifié | 12 | 20 | **30** | 42 | 56 | 72 |
 | W, monômes sur littéraux (borne sup) | 3 | 4 | **5** | 6 | 7 | 8 |
 
-*Réserve de sourçage, à ne pas escamoter* : la question « le format
-Beigel-Tarui autorise-t-il les ∧ sur littéraux ? » est
-**[NON TROUVÉ DANS [`../bib/beigel_tarui_1994.md`](../bib/beigel_tarui_1994.md)]**
-— le Théorème 2 verbatim ne dit que « ∧ gates of fanin (log S)^{O(1)} », et une
-source secondaire consultée le 2026-07-25 paraphrase au contraire « ANDs **of
-variables** », ce qui validerait le modèle du dépôt. **La question reste
-ouverte** et devrait être tranchée sur le texte primaire avant toute
-utilisation de ce paragraphe. Ce qui est affirmable sans elle, et qui suffit à
-la clôture du fil : la quantité mesurée est une restriction du problème dont le
-coût est un facteur ≥ 6 dès k = 5 ; et le motif de plafond ci-dessus est
-indépendant de ce point.
+*Mise à jour du 2026-07-25 (tâche A-013) — ce paragraphe était mal sourcé et
+sa conclusion était fausse.* Il invoquait « une source secondaire qui paraphrase
+ANDs **of variables** » **sans nommer cette source** : vérification faite, elle
+n'existait nulle part dans le dépôt (c'était une synthèse de moteur de
+recherche, pas un document). Violation de la règle 4, corrigée ici. La source
+réelle est **Williams, J. ACM 61(1), art. 2, 2014, p. 2:6** : « *a depth-two
+circuit which computes some symmetric function at the output gate, and computes
+ANDs of input variables on the second layer* », renforcé p. 2:15 par « *the
+transformation from ACC to SYM+ results in a circuit with no negated
+variables* ». **Conséquence : le modèle mesuré n'est PAS une restriction — c'est
+le format SYM+ de Williams lui-même**, et les valeurs du fil sont de vraies
+tailles de circuits. Ce qui reste [NON TROUVÉ] : ce que le **texte primaire** de
+Beigel-Tarui écrit de ses propres ∧ (PS 1995 illisible ; seul l'abstract a été
+relu). Corrigé aussi : l'écart de convention vaut **k+1 et croît** (4, 5, 6, 7,
+8, 9 pour k = 3..8) — l'ancien « facteur ≥ 6 dès k = 5 » était exact mais
+sous-estimait la tendance. **Le motif de plafond ci-dessus est indépendant de
+tout cela et reste inchangé** : c'est ce qui fait tenir la clôture du fil dans
+les deux conventions.
 
 Pièces : [`../tours/tour_26_indicateur_modulaire_survit.md`](../tours/tour_26_indicateur_modulaire_survit.md) §5,
 [`../tasks/done/T27-S2.md`](../tasks/done/T27-S2.md),
