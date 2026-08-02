@@ -1,0 +1,1549 @@
+===== PAGE 1 =====
+Noname manuscript No.
+(will be inserted by the editor)
+Uniform Proofs of ACC Representations
+Sam Buss
+the date of receipt and acceptance should be inserted later
+Abstract We give a uniform proof of the theorems of Yao and Beigel-Tarui
+representing ACC predicates as constant depth circuits with MOD m gates
+and a symmetric gate. The proof is based on a relativized, generalize d form
+of Toda’s theorem expressed in terms of closure properties of for mulas under
+bounded universal, existential and modular counting quantiﬁers. T his allows
+the main proofs to be expressed in terms of formula classes instead of Boolean
+circuits. The uniform version of the Beigel-Tarui theorem is then ob tained
+automatically via the Furst-Saxe-Sipser and Paris-Wilkie translation s. As a
+special case, we obtain a uniform version of Razborov and Smolensk y’s repre-
+sentation of AC 0[p] circuits. The paper is partly expository, but is also moti-
+vated by the desire to recast Toda’s theorem, the Beigel-Tarui th eorem, and
+their proofs into the language of bounded arithmetic. However, no knowledge
+of bounded arithmetic is needed.
+Keywords uniform circuits, constant depth circuits, modular counting, Toda
+Theorem, Biegel-Tarui Theorem
+Mathematics Subject Classiﬁcation (2000) 03D15,03D20,68Q15
+1 Introduction
+Yao [35] and Beigel-Tarui [7] proved a representation theorem for ACC showing
+that ACC circuits can be transformed into constant depth quasipo lynomial size
+Supported in part by NSF grants DMS-1101228 and CCR-1213151 , Simons Foundation
+Grant 306202 and Skolkovo Institute of Science and Technolo gy. Part of this work was
+performed during the Special Semester program in Complexit y in St. Petersburg, Russia.
+Sam Buss
+Department of Mathematics, University of California, San D iego, La Jolla, CA 92093-0112,
+USA
+E-mail: sbuss@ucsd.edu
+===== PAGE 2 =====
+2 Sam Buss
+circuits. The easiest version of their representation applies to prim e moduli m
+and states that any AC 0[m] circuit can be converted into a quasipolynomial
+size, depth three circuit with the bottom (input) gates being polylog arith-
+mic fanin ∧ gates, the middle level being MOD m gates, and the top level
+containing a symmetric gate as the output gate. A closely related, a lternate
+representation of AC 0[m] uses depth four circuits, by replacing the symmetric
+gate with a depth two layer of ∧ /∨ gates that perform approximate count-
+ing. The strongest version of the representation applies to arbitr arym ≥ 2; it
+eliminates the MOD m gates, and converts any ACC circuit into a quasipoly-
+nomial size, depth two circuit with the bottom gates being polylogarit hmic
+fanin ∧ gates, and the top gate a symmetric function.
+These ACC representations were inspired by an important theorem of
+Toda [31] on the containment of the polynomial time hierarchy (PH) in PPP. It
+was quickly realized that the Furst-Saxe-Sipser [13] method (or, e quivalently,
+the Paris-Wilkie method [23]) of translating PH predicates into circuits means
+that Toda’s theorem implies results about bounded depth circuits. T he ﬁrst
+step towards the ACC representations was by Allender [1], who tran slated
+Toda’s result into the setting of AC 0-circuits. After this, Yao [35] and Beigel-
+Tarui [7] formulated their representations for ACC. Further reﬁ nements were
+made by a number of researchers, including [3, 4, 8, 14, 18, 30, 32]. See also [29,
+15] for constructions expressing conjunctions and disjunctions with constant-
+depth modular counting circuits. In addition, see [11] for improveme nts in
+circuit sizes.
+We presume the reader is familiar with Boolean complexity, but as a re-
+minder, for ﬁxed m> 1, AC 0[m] is the class of Boolean predicates which can
+be computed by constant depth circuits using negation gates and u nbounded
+fanin ∧ , ∨ , and MOD m gates. ACC is the union of the classes AC 0[m] for
+m> 1. The size of a circuit is the number of wires in the circuit. For more in-
+formation, the reader may consult the papers cited in the previous paragraph,
+or the textbook [5].
+We next state two forms of the Beigel-Tarui theorem. The ﬁrst ve rsion
+(Theorem 1) is equivalent to the characterization of Razborov and Smolen-
+sky [24, 28], showing that for prime m, any AC 0[m] predicate can be repre-
+sented by a probabilistic low degree polynomial over Fm. At the end of the
+paper, we state a weaker form of Theorem 1 which has already foun d applica-
+tions via bounded arithmetic to propositional proof complexity [10].
+Theorem 1 Fix d ≥ 1 and a prime m ≥ 2. Suppose C is a depth d ACC
+circuit of size S which uses MOD m gates. (That is, C is an AC0[m] circuit.)
+Then there is an equivalent circuit C′ of size 2(log S)O(1)
+which has depth three.
+The ﬁrst (input) level of C′ contains ∧ gates of fanin (logS)O(1), the middle
+level contains MOD m gates, and the output gate is a symmetric gate. The
+output gate can be taken to be an approximate majority gate.
+Theorem 2 Fix d and m ≥ 2. Suppose C is a depth d ACC circuit of
+size S which uses MOD m gates. Then there is an equivalent circuit C′ of
+===== PAGE 3 =====
+Uniform Proofs of ACC Representations 3
+size 2(log S)O(1)
+of depth two. The ﬁrst level of C′ contains ∧ gates of fanin
+(logS)O(1) and the output gate is a symmetric gate.
+The constants implicit in the O(1) terms in the bounds on size and fanin
+are independent of S, but do depend on d andm. Note that C′ is quasipolyno-
+mial size, not polynomial, size. This is the usual situation for the Paris -Wilkie
+and Furst-Saxe-Sipser translations. Indeed, in the setting of cir cuit complexity,
+Barrington [6] argues that quasipolynomial size is more natural tha n polyno-
+mial size. Likewise, in the setting of bounded arithmetic, it is widely rec ognized
+that I∆ 0 + Ω 1 and the S i
+2 and T i
+2 fragments of bounded arithmetic correspond
+to bounded depth quasipolynomial size circuits. (Paris and Wilkie [23], h ow-
+ever, worked with the fragment I∆ 0, and obtained polynomial size circuits.)
+The output symmetric gate for Theorem 2 can be expressed as an a pprox-
+imate majority of iterated modular counting operators. For this, s ee Theo-
+rem 31 and Section 4.
+An important aspect of the Beigel-Tarui theorem is that the circuit C′ can
+be described uniformly in terms of the circuit C. Suppose uniform circuits
+are represented with the “direct connection” representation in w hich there is
+an algorithm which runs in time logarithmic in the size of the circuit, and
+identiﬁes indices i which are valid gate numbers, identiﬁes the type of gate i,
+and computes the index of the j-th input to gate i. The Beigel-Tarui theorem
+holds in a strongly uniform way: namely, there is a quasilogarithmic time
+(w.l.o.g., logarithmic time in the size of C′) algorithm, which, given access to
+the direct connection language for C, computes the direct connection language
+for C′.
+This paper gives a new proof of this strongly uniform version of the B eigel-
+Tarui theorem below. It should be noted there are already severa l versions of
+this result, including Barrington [6] and Allender-Gore [3] and more re cently
+Williams [34]. The novel aspects of our proof are threefold. First, we take a
+detour through formulas in the modular polynomial time hierarchy Mo dPH
+[2, 14]. The ModPH formulas are deﬁned to use modular counting quan tiﬁers
+over any prime modulus m. Counting over composite moduli m can be sim-
+ulated using by using multiple counting quantiﬁers with prime moduli. This
+means that ModPH is a uniform version of ACC. At the same time, we co n-
+sider the modular polynomial time hierarchy ModPH m in which only the ﬁxed
+prime value m may be used for modular counting quantiﬁers. ModPH m is a
+uniform version of AC 0[m]. Second, we do not directly prove the Beigel-Tarui
+theorem, nor do our main proofs deal with circuits. Instead, we us e uniform
+descriptions of ModPH and ModPH m predicates in terms of formulas. We deal
+with subclasses, ⊕ -ptime and 1 ⊕ m-ptime, of formulas which are expressed in
+a prenex form with modular counting quantiﬁers, but no universal o r existen-
+tial quantiﬁers. We also consider probabilistic versions of these clas ses, called
+BP·⊕-ptime and BP ·1⊕ m-ptime. Our main theorems prove closure proper-
+ties for these classes of formulas. Third, all our results about for mula classes
+relativize. Using these relativized results, we obtain the uniform Beig el-Tarui
+theorems in the forms of Theorems 1 and 2 as corollaries via the Furs t-Saxe-
+===== PAGE 4 =====
+4 Sam Buss
+Sipser and Paris-Wilkie translation. Prior proofs all used delicate, loc al trans-
+formations of circuits to obtain uniformity; our proof avoids these in favor of
+manipulations of ModPH and ModPH m formulas.
+Our underlying proof techniques are based closely on the earlier pro ofs of
+Toda’s theorem and the Beigel-Tarui theorem. The reader can con sult Arora
+and Barak [5] for the standard version of the proof of Toda’s theo rem. An-
+other simple proof has been given by [12]. In particular, our proof st ill uses
+the Valiant-Vazirani theorem. Similarly, we still use the modulus amplif ying
+polynomials of Toda, Yao, and Beigel-Tarui. Our use of the Paris-Wilkie, Furst-
+Saxe-Sipser translation is also standard; see for instance [19, 10].
+Chen and Papakonstantinou [11] have recently given improved size b ounds,
+showing in particular that the dependence of the “ O(1)” exponents in Theo-
+rems 1 and 2 can be reduced to only O(d). The present paper does not examine
+dependence on the depth, but our constructions do not achieve b ounds as small
+as those of [11]. It would be interesting to investigate whether they can be im-
+proved. It is a bit surprising where the growth rates appear in our p roofs: the
+quasipolynomial growth rate of Theorems 1 and 2 arises from the co nversion
+of ModPH formulas to BP ·⊕-ptime formulas; however, there is only polyno-
+mial size increase in going from BP ·⊕-ptime formulas to the representation of
+Theorem 2.
+Our motivations arise from expressibility and provability in bounded ar ith-
+metic, notably how results in computational complexity relate to bou nded
+arithmetic. The modular polynomial time hierarchy ModPH is equivalent to
+expressibility in the language ∆ 0 of bounded arithmetic augmented with mod-
+ular counting quantiﬁers and the smash function #. However, we do not use
+any constructions from bounded arithmetic. Provability in bounded arithmetic
+is the topic of another paper, joint by the present author, Lesze k Ko/suppress lodziejczyk,
+and Konrad Zdanowski [10], in which Toda’s theorem is proved within a f rag-
+ment of bounded arithmetic.
+We thank Eric Allender, Leszek Ko/suppress lodziejczyk, and Ryan Williams for
+helpful comments and discussions. We also thank the anonymous re feree for
+substantial helpful comments and especially for ﬁnding mistakes in t he proofs
+in the original draft of the paper.
+2 Modular counting and probabilistic classes
+Section 2.1 deﬁnes a version of the polynomial hierarchy augmented with
+modular counting quantiﬁers, called the “modular polynomial time hier ar-
+chy” ModPH. This hierarchy is well-known, see [2, 14] for instance. S ection 2.1
+also deﬁnes two prenex subclasses of the ModPH predicates called t he ⊕ -ptime
+predicates and the 1 ⊕ m-ptime predicates. It then proves some initial closure
+properties for the ⊕ -ptime and 1 ⊕ m-ptime predicates. Section 2.2 shows how
+numbers of satisfying assignments can be ampliﬁed by polynomials. Se ction 2.3
+deﬁnes general symmetric quantiﬁers, in particular, quantiﬁers w hich com-
+===== PAGE 5 =====
+Uniform Proofs of ACC Representations 5
+bine iterated modular counting with approximate majority. Section 2 .4 deﬁnes
+probabilistic versions of the classes of ⊕ -ptime and 1 ⊕ m-ptime predicates.
+2.1 The modular polynomial time hierarchy
+The predicates in ModPH are deﬁned from polynomial time predicates using
+bounded existential and universal quantiﬁers, and bounded modu lar counting
+quantiﬁers. The bounded modular counting quantiﬁers have the fo rm
+(⨁
+mx, |x|=p(|z|))ϕ (x, z)
+where m ≥ 2, and p(n) is a polynomial. By “polynomial”, we mean a poly-
+nomial with non-negative integer coeﬃcients. Variables such as x,z 1,...,z ℓ
+range over {0, 1}∗; we write |x| for the length of x, and z forz1,...,z ℓ and |z|
+for |z1|,..., |zℓ|. The intended meaning of the quantiﬁer is that the number of
+valuesx such that |x|=p(|z|) and ϕ (x) holds is congruent to zero modulo m.
+The relativized ModPH hierarchy, denoted ModPH Ω, also allows a unary pred-
+icate Ω to be used as part of ϕ . The predicate Ω is the same thing as an oracle,
+Ω ⊆ { 0, 1}∗.
+Deﬁnition 3 The (relativized) modular polynomial time hierarchy is deﬁned
+as the following set of predicates:
+a. Every polynomial time predicate ϕ (x) is in ModPH. Every predicate in P Ω,
+namely every predicate ϕ (x) which is polynomial time relative to Ω, is in
+ModPHΩ.
+b. If ϕ (x, z) is in ModPH or ModPH Ω, then so are ( ∃x, |x|=p(|z|))ϕ (x, z) and
+(∀x, |x|=p(|z|))ϕ (x, z).
+c. Let m be prime. Ifϕ (x, z) is in ModPH or ModPH Ω, then so is the predicate
+(⨁
+mx, |x|=p(|z|))ϕ (x, z).
+Now ﬁx a prime m. ModPH m and ModPH Ω
+m are the predicates in ModPH and
+ModPHΩ (respectively) which are deﬁned as above, but requiring the ﬁxed
+valuem as the modulus for the counting quantiﬁers.
+Deﬁnition 3 requires all ModPH formulas to be expressed in prenex fo rm.
+Nonetheless, ModPH is closed under conjunction, disjunction and n egation
+(that is, under intersection, union, and complementation); for th is see Theo-
+rem 17. Note that a ModPH formula may use multiple values for m in modular
+counting quantiﬁers; however, we require the moduli m be prime for conve-
+nience in our normal forms for ModPH. Nonetheless, as is well-known , ModPH
+can simulate modular counting over composite moduli m: for this, see Theo-
+rem 8(iii) and Lemma 16.
+Since all quantiﬁers have the form ( Qx, |x|=p(|z|)), every variable appear-
+ing in a ModPH or ModPH m has a known length. Indeed, we assume that
+in a formula ϕ (z), any quantiﬁer has the form ( Qx, |x|=p(|z|)). That is, the
+quantiﬁer bounds may w.l.o.g. depend on only the variables that occur free
+===== PAGE 6 =====
+6 Sam Buss
+in the formula and not on any of the other quantiﬁed variables. (For more on
+this, see Lemma 11.)
+Working with ﬁxed length strings makes G¨ odel sequence coding ver y sim-
+ple; namely, a sequence of binary strings is encoded by concatenat ing them
+into single string. Speciﬁcally, if y1,...,y ℓ are binary strings of length p(n),
+theny = ⟨y1,...,y ℓ⟩ denotes the string of length ℓ·p(n) obtained by concate-
+nating y1,...,y ℓ. We write ( y)i for yi. In addition, for x ∈ { 0, 1}∗, we write
+x[0] for the ﬁrst bit of x, and x[i:j] for the i-th through the j-th bits of x, a
+substring of length j − i + 1. Finally, we write x[i:] for x[i:|x|−1].
+The next deﬁnitions give restricted subclasses of prenex formulas in which
+there are no bounded existential or universal quantiﬁers at all. All our deﬁni-
+tions and results relativize, so we suppress mention of the Ω in the no tation.
+Deﬁnition 4 The ⊕ -ptime predicates are a subset of the ModPH (respec-
+tively, ModPHΩ) predicates, and are deﬁned inductively by
+a. Any polynomial time predicate (respectively, predicate in P Ω) is a ⊕ -ptime
+predicate.
+b. If ϕ (x, z) is a ⊕ -ptime formula, p is a polynomial, and m ≥ 2 is a prime,
+then ( ⨁
+mx, |x|=p(|z|))ϕ (x, z) is also a ⊕ -ptime predicate.
+A ⊕ -ptime predicate must be in prenex form, and may have multiple mod-
+ular counting quantiﬁers; the quantiﬁers may use diﬀerent (prime) moduli m.
+The rank of a ⊕ -ptime predicate ϕ is the number of modular quantiﬁers in
+the expression deﬁning the predicate. The matrix ofϕ is the subformula which
+is inside the modular counting quantiﬁers. Thus, a rank r ⊕ -ptime predicate
+consists of the r modular quantiﬁers in front of the matrix.
+The “1 ⊕ m” subclass is restricted to have a single modular quantiﬁer, that
+is, to have rank ≤ 1. The class 1 ⊕ 2-ptime is the same class as ⊕ P, deﬁned
+by [22]:
+Deﬁnition 5 Let m be prime. The 1 ⊕ m-ptime predicates are the ModPH m
+(respectively, ModPH Ω
+m) predicates which can be expressed in the form
+(⨁
+mx, |x|=p(|z|))ϕ (x, z)
+where p is a polynomial, and ϕ (x, z) is polynomial time computable (respec-
+tively, polynomial time relative to Ω).
+The next two theorems state closure properties for the classes o f ⊕ -ptime
+predicates and 1 ⊕ m-ptime formulas.
+Deﬁnition 6 A generalized modular counting quantiﬁer is a quantiﬁer of the
+form ( ⨁i
+mx, |x|=p(|z|)). The intended meaning of
+(⨁i
+mx, |x|=p(|z|))ϕ (x, z)
+is that the number of x’s such that |x|=p(|z|) and ϕ (x, z) holds is congruent
+to i modm. Thus ⨁0
+m is the same as ⨁
+m.
+===== PAGE 7 =====
+Uniform Proofs of ACC Representations 7
+The next deﬁnition is essentially equivalent to the notion of sharply bo unded
+quantiﬁers used in bounded arithmetic [9].
+Deﬁnition 7 Let x ∈ { 0, 1}∗ and i ∈ N. We write, respectively, x ≺ i, x ≼i
+or x ≈ i to mean that x is the binary representation (possibly with leading
+zeros) of an integer jx such that, jx <i , jx ≤ i, or jx =i. A sharply bounded
+quantiﬁer is a quantiﬁer of the form ( Qx≺p(|z|)) for p a polynomial. The
+intended meaning of ( ∃x≺p(|z|))ϕ (x, z) is the same as
+(∃x, |x|=p(|z|))(x≺p(|z|) ∧ ϕ (x, z)).
+The meanings of other bounded quantiﬁers are deﬁned similarly.
+It is somewhat wasteful of bits that we use p(n) bits for x to represent a
+number<p (n); but there is no harm is doing this, and it is convenient to have
+the convention that variables range over binary strings of known p olynomial
+length.
+We will not continue to mention it explicitly, but all the results below and
+throughout Section 3 relativize to the presence of an oracle Ω.
+Theorem 8 The class of ⊕ -ptime predicates is closed under:
+(i) Conjunction, disjunction, and negation.
+(ii) Sharply bounded existential and universal quantiﬁcation.
+(iii) Generalized modular counting quantiﬁcation of the form (⨁i
+mx, |x|=p(|z|)),
+for arbitrary m ≥ 2 (possiblym is composite).
+Theorem 9 Let m be a ﬁxed prime. The class of 1⊕ m-ptime predicates is
+closed under:
+(i) Conjunction, disjunction, and negation.
+(ii) Sharply bounded existential and universal quantiﬁcation.
+(iii) Generalized modular counting quantiﬁcation of the form (⨁i
+mx, |x|=p(|z|)).
+Theorems 8 and 9 are established by Lemmas 10-16. See Theorem 18 for
+another closure property.
+Lemma 10 The classes ⊕ -ptime and 1⊕ m-ptime are closed under taking a
+disjunction or conjunction with a polynomial time predicat e. These operations
+preserve rank: Suppose χ (z) is polynomial time and ϕ (z) is a ⊕ -ptime or
+1⊕ m-ptime predicate of rank r and let γ(y, z) be the matrix of ϕ (z). Then
+ϕ (z) ∨ χ (z) and ϕ (z) ∧ χ (z) are expressible with formulas of rank r. Indeed
+these formulas have exactly the same modular quantiﬁers as ϕ (z); and they
+have a matrix which is expressed as a Boolean combination of χ (z), of γ(y, z)
+and of polynomial time predicates.
+The lemma also holds in relativized form; for instance if χ (z) is polynomial
+time relative to an oracle.
+===== PAGE 8 =====
+8 Sam Buss
+Proof We use induction on the rank of formulas. The base case of rank zer o
+(no modular quantiﬁers) is trivial. For the induction step, suppose, a ⊕ -ptime
+(respectively, 1⊕ m-ptime) predicate ϕ (z) is deﬁned by the formula
+(⨁
+my, |y|=p(|z|))ψ (y, z), (1)
+where m is prime. Let χ (z) be a polynomial time predicate. The disjunction
+ϕ (z) ∨ χ (z) is equivalent to
+(⨁
+my, |y|=p(|z|))[ψ (y, z) ∧ ¬ χ (z)],
+and ϕ (z) ∧ χ (z) is equivalent to
+(⨁
+my, |y|=p(|z|))[(ψ (y, z) ∧ χ (z)) ∨ (y≈ 0 ∧ ¬ χ (z))].
+The induction hypothesis applied to the rank r− 1 formula ψ shows that these
+two formulas are both rank r. Note that the construction does not change
+the modular quantiﬁers. Likewise, the assertions about the matric es follow
+immediately from the inductive construction. ⊓ ⊔
+Lemma 11 The classes ⊕ -ptime and 1⊕ m-ptime are closed under substitution
+by polynomial time functions. If ϕ (z0, z) is a ⊕ -ptime or 1⊕ m-ptime predicate
+of rank r and f (x) is polynomial time, then ϕ (f (z), z) is also expressible with
+a formula of rank r.
+Proof The only reason that ϕ (f (z), z) may fail to be a 1 ⊕ m-ptime predicate of
+rankr is that it may contain quantiﬁers of the form ( ⨁
+mx, |x|=p(|f (z)|, |z|)),
+which is not permitted by our syntax. Let pf (n) be a polynomial such that
+|f (z)|<p f (|z|) always holds. Then, any subformula of the form
+(⨁
+mx, |x|=p(|f (z)|, |z|))ψ (x, z,... )
+can be equivalently expressed as
+(⨁
+mx, |x|=p(pf (|z|), |z|))[x[|f (z)|:]≈ 0 ∧ ψ (x[0:|f (z)|−1], z,... ) ].
+Since the predicate “ x[|f (z)|:]≈ 0” is polynomial time, Lemma 11 follows from
+Lemma 10. ⊓ ⊔
+Lemma 12 The classes ⊕ -ptime and 1⊕ m-ptime are closed under negation
+and sharply bounded quantiﬁcation, as well as biimplicatio n (equivalence) with
+a polynomial time predicate. Furthermore, these operation s preserve rank:
+(i) If ϕ (z) is a ⊕ -ptime or 1⊕ m-ptime predicate of rank r, then ¬ϕ (z) is
+expressible with a formula of rank r.
+(ii) If in addition, χ (z) is a polynomial time predicate, then ϕ (z) ↔ χ (z) is
+expressible with a formula of rank r.
+(iii) Ifϕ (x, z) is a ⊕ -ptime or 1⊕ m-ptime predicate of rankr, then the predicates
+(∃x≺q(|z|))ϕ (x, z) and (∀x≺q(|z|))ϕ (x, z) are expressible with formulas of
+rankr.
+===== PAGE 9 =====
+Uniform Proofs of ACC Representations 9
+Proof We prove (i)-(iii) simultaneously by induction on rank. The base case
+is clear. For closure under negation, suppose ϕ (z) is ( ⨁
+my, |y|=p(|z|))ψ (y, z).
+We use the variable w to quantify over binary strings of length ( m− 1)p(|z|)
+which encode a sequence of m− 1 values of y, and let δ(w, z) be the formula
+(∀x≺m− 1)ψ ((w)jx, z),
+where jx denotes the integer with binary representation given by x. If there
+are j many y’s satisfyingψ (y, z), then there are jm− 1 manyw’s satisfyingδ.
+By Fermat’s little theorem, jm− 1 modm ∈ { 0, 1}, and is congruent to zero iﬀ
+j ≡ 0 (mod m). Therefore, ϕ (z) is equivalent to
+(⨁
+mw, |w|=(m− 1)p(|z|))δ(w, z).
+By adding m− 1 many satisfying values to δ(−, − ) we can make the number
+of satisfying values be jm− 1+m− 1. This is done by letting w encode a one bit
+ﬂag, followed by m− 1 values for y as follows:
+(⨁
+mw, |w|=1+(m− 1)p(|z|))[(w[0]=1 ∧ δ(w[1:], z)) ∨ w≺m− 1]. (2)
+By inspection, (2) is equivalent to ¬ϕ (z). Since the rank of ψ is less than
+the rank r of ϕ , the induction hypothesis and Lemma 11 imply that δ is also
+expressible with rank < r. Lemma 10 then implies that (2) can be expressed
+as a formula of rank r. This establishes closure under negation.
+Closure under biimplication can be viewed as a closure under “condition al
+negation”; namely, the predicate is negated iﬀ χ (z) is false. The proof for (ii)
+is identical to the proof of (i), except that the formula (2) is replac ed with
+(⨁
+mw, |w|=1+(m− 1)p(|z|))[(w[0]=1 ∧ δ(w[1:], z)) ∨ (w≺m− 1 ∧ ¬ χ (z))].
+To handle sharply bounded existential quantiﬁcation, suppose ϕ (x, z) is
+(⨁
+my, |y|=p(|z|))ψ (x,y, z). Then, using w to encode q(|z|) many values for y,
+we claim that ( ∃x≺q(|z|))ϕ (x,y, z) is equivalent to
+(⨁
+mw, |w|=p(|z|)q(|z|))(∀x≺q(|z|))ψ (x, (w)jx, z). (3)
+To see this, note that the number of w’s satisfying the formula is the product
+of the numbers of y’s satisfyingψ (x,y, z) for x ≺ q(|z|). Since m is prime, this
+product is congruent to zero mod m iﬀ one of its factors is. Since the rank
+of ψ is < rby Lemma 11, the induction hypothesis applies to ( ∀x≺q(|z|))ψ ,
+and thus (3) is equivalent to a rank r formula. This proves the closure under
+sharply bounded existential quantiﬁcation.
+For sharply bounded universal quantiﬁcation, note that ( ∀x≺q(|z|))ϕ (x, z)
+is equivalent to ¬ (∃x≺q(|z|))¬ϕ (x, z). Since we already proved the rank r
+formulas are closed under negation and sharply bounded existentia l quantiﬁ-
+cation, it follows that ( ∀x≺q(|z|)|)ϕ (x, z) is equivalent to a rank r formula. ⊓ ⊔
+===== PAGE 10 =====
+10 Sam Buss
+Lemma 13 Let m > 1 and let Γ be a class closed under conjunction and
+disjunction with polynomial time predicates and under subs titution with poly-
+nomial time functions. (E.g., Γ is the rank r ⊕ -ptime or the 1⊕ m-ptime predi-
+cates.) Suppose also that for all ψ (y, z) in Γ , (⨁
+my, |y|=p(|z|))ψ (y, z) is in Γ .
+Then, for all ψ (y, z) in Γ and all i<m , (⨁i
+my, |y|=p(|z|))ψ (y, z) is in Γ .
+Proof The idea is to add m−i many satisfying values for the modular quanti-
+ﬁer, similar to the construction used for (2). Namely, ( ⨁i
+my, |y|=p(|z|))ψ (y, z)
+is equivalent to
+(⨁
+mw, |w|=1+p(|z|))[(w[0]=1 ∧ ψ (w[1:], z)) ∨ w≺m−i].
+By the hypotheses, this is a Γ predicate. ⊓ ⊔
+Lemma 14 If ϕ (x, z) is an 1⊕ m-ptime predicate, then so is the predicate
+(⨁i
+mx≺q(|z|))ϕ (x, z). When i = 0, this means 1⊕ m-ptime is closed under ⊕ m
+bounded quantiﬁcation.
+Proof Suppose ϕ (x, z) is ( ⨁
+my, |y|=p(|z|))ψ (x,y, z), where ψ is polynomial
+time. By Lemma 13, it suﬃces to show
+(⨁
+mx, |x|=q(|z|))(⨁
+my, |y|=p(|z|))ψ (x,y, z) (4)
+is in 1 ⊕ m-ptime (that is, with i = 0). Arguing similarly to the proof of
+Lemma 12, let δ(x,w, z) be ( ∀u≺m− 1)ψ (x, (w)ju, z). Consider the formula
+δ∗ (x,w, z) deﬁned as
+(w[0]=1 ∧ δ(x,w [1:], z)) ∨ w≺m− 1. (5)
+By Fermat’s little theorem, the number of w’s of length 1+(m− 1)p(|z|) which
+satisfy (5) equals either − 1 or 0 mod m depending on whether ϕ (x, z) is true
+or false, respectively. Let r(n) equal q(n)+1+(m− 1)p(n), and let a binary
+string v of length r(|z|) encode a value for x with its ﬁrst q(|z|) bits, and a
+value for w with its remaining bits. Then (4) is equivalent to
+(⨁
+mv, |v|=r(|z|))δ∗ (v[0:q(|z|)− 1],v [q(|z|):], z). (6)
+Note that δ and δ∗ are polynomial time, since ψ is. Therefore, (6) is in 1 ⊕ m-
+ptime as desired. ⊓ ⊔
+Lemma 15 The classes ⊕ -ptime and 1⊕ m-ptime are closed under disjunction
+and conjunction.
+Proof With closure under negation (Lemma 12), it suﬃces to show the class es
+are closed under disjunction. Let ϕ (z) and ψ (z) both be ⊕ -ptime predicates
+or 1 ⊕ m-ptime predicates. Let γ(y, z) be the (polynomial time) matrix of ϕ .
+The (relativized version of) Lemma 10 implies that ϕ (z) ∨ ψ (z) is equivalent
+to a formula χ (z) which consists of the modular quantiﬁers of ϕ in front
+of a formula γ ∗ (y, z), where γ ∗ (y, z) is a Boolean combination of ψ (z) and
+===== PAGE 11 =====
+Uniform Proofs of ACC Representations 11
+polynomial time predicates (since γ is polynomial time). Therefore, γ ∗ can be
+written in the form
+[γ1(y, z) ∧ ψ (z)] ∨ [γ2(y, z) ∧ ¬ ψ (z)]
+where γ1 and γ2 are polynomial time, and then equivalently in the form
+(γ1(y, z) ∧ γ2(y, z)) ∨ [(γ1(y, z) ∨ γ2(y, z)) ∧ (ψ (z) ↔ γ1(y, z))].
+By Lemmas 10 and 12, this last formula is a ⊕ -ptime predicate or a 1 ⊕ m-ptime
+predicate since ψ (z) is (respectively).
+For ϕ (z) and ψ (z) ⊕ -ptime predicates, it follows from the deﬁnition of
+⊕ -ptime that χ (z) is expressible as a ⊕ -ptime predicate. For ϕ (z) and ψ (z)
+1⊕ m-ptime predicates, Lemma 14 implies that χ (z) is also equivalent to a
+1⊕ m-ptime predicate. ⊓ ⊔
+Lemma 16 Let m ≥ 2 and 0 ≤ i < m, where m is not necessarily prime. If
+ϕ (y, z) is a ⊕ -ptime predicate, then so is (⨁i
+my, |y|=q(|z|))ψ (y, z).
+Proof The proof of Lemma 13 still applies for composite m, so it suﬃces to
+assume i = 0. Thus, we need to show that ( ⨁
+my, |y|=q(|z|))ψ (y, z) is in ⊕ -
+ptime. If m is prime, this is already in ⊕ -ptime. Otherwise, we use induction
+on m. Let m =m′p for p a prime. Consider the predicate
+(⨁
+m′u, |u|=q(|z|))[ϕ (u, z) ∧ (⨁
+px, |x|=q(|z|))(x⪯u ∧ ϕ (x, z))]
+∧ (⨁
+px, |x|=q(|z|))ϕ (x, z). (7)
+The subformula in square brackets is a ⊕ -ptime predicate by closure under
+conjuction (Lemmas 10 and especially 15). Thus, the whole formula is also in
+⊕ -ptime by the induction hypothesis (since m′<m ) and by Lemma 15 again.
+The subformula in square brackets picks out every p-th x satisfying ψ ; thus
+(7) is equivalent to ( ⨁
+my, |y|=q(|z|))ψ (y, z) as desired. ⊓ ⊔
+Theorems 8 and 9 follow immediately from Lemmas 10-16.
+Theorem 17 The classes ModPH and ModPHm are closed under negation,
+conjunction and disjunction.
+Proof (Sketch.) The proof is based on the methods of Lemmas 10, 12 and 1 5.
+The proofs are identical for ModPH and ModPH m, so we only discuss ModPH.
+For this proof, redeﬁne “rank” to mean the total number of modu lar, exis-
+tential and universal quantiﬁers (not counting sharply bounded q uantiﬁers
+appearing in the polynomial time matrix). The proof starts by estab lishing
+that ModPH is closed under disjunction and conjunction with a polyno mial
+time predicate, and more generally, that the complete statement o f Lemma 10
+holds for ModPH (now using the generalized notion of rank). The pro of of
+Lemma 10 still applies: the cases of universal and existential quant iﬁers are
+handled by prenex operations. Second, the proof shows that par ts (i) and (iii)
+of Lemma 12 holds for ModPH. The proof of this again proceeds by ind uction
+===== PAGE 12 =====
+12 Sam Buss
+on rank. For closure under negation, universal and existential qu antiﬁers are
+handled by moving the negation sign past the quantiﬁer. For closure under
+sharply bounded quantiﬁcation, modular bounded quantiﬁers are h andled as
+before, and the universal and existential bounded quantiﬁers ar e handled using
+the “replacement” principle from bounded arithmetic, namely that
+(∀x≺q(|z|))(∃y, |y|=p(|z|))ψ (x,y, z)
+↔ (∃w, |w|=p(|z|)q(|z|))(∀x≺q(|z|))ψ (x, (w)jx, z).
+Third, the proof shows that if a ModPH predicate ϕ (z) starts with a
+⊕ m bounded quantiﬁer, and if χ (z) is a polynomial time predicate, then
+ϕ (z) ↔ χ (z) is also a ModPH predicate. This is proved by exactly the same
+argument as was used for part (ii) of Lemma 12. (Note that there s eems to be
+no such direct proof when ϕ starts with an existential or universal bounded
+quantiﬁer.)
+Finally, the proof shows that if ϕ (z) and ψ (z) are both in ModPH, then
+ϕ (z) ∨ ψ (z) is in ModPH. This is was already proved if either formula is
+polynomial time. Otherwise, we use induction on rank. If either form ula starts
+with an existential or universal quantiﬁer, then a prenex operatio n can move
+that quantiﬁer to the front. Thus, w.l.o.g., both ϕ (z) and ψ (z) start with
+⊕ bounded quantiﬁers. But now, the proof of Lemma 15 applies, since the
+biimplication of a polynomial time predicate and the ModPH predicate ψ (z)
+is a ModPH predicate. ⊓ ⊔
+In the next theorem, Q(z, Ω) is a predicate computed by some Turing
+machine which has ordinary inputs z and oracle access to Ω, such that there is
+a polynomial p(|z|) which bounds the runtime of Q(z, Ω) for all z and Ω. Also,
+λx.ϕ denotes the oracle Ω such that Ω( x) returns the truth value of ϕ (x).
+Theorem 18 Suppose the predicate Q(z, Φ) is a polynomial time relative to
+the oracle Φ , and that ϕ (x) is a rank r ⊕ -ptime or 1⊕ m-ptime predicate. Then
+Q(z,λx.ϕ ) is also a rank r ⊕ -ptime or 1⊕ m-ptime predicate, respectively.
+Proof We claim that we may assume w.l.o.g. that Q(z, Φ) makes only ﬁxed
+length queries to the oracle Φ, namely that there is a polynomial q(n) so that
+Q(z, Φ) only queries Φ about strings of length q(|z|). The reason this can be
+assumed w.l.o.g. is that otherwise, letting q(|z|) be be greater than the length
+of any query made to Φ, we can deﬁne a new oracle Ψ( w) so that Ψ(1 i0w) is
+equal to Φ( w) for all i andw. Oracle queries to Φ can be replaced with queries
+to Ψ; and if ϕ is 1 ⊕ m-ptime or rank r ⊕ -ptime, so is a predicate ψ such that
+ψ (1i0w) equals ϕ (w) for all w.
+So assume Q(z, Φ) has runtime <p (|z|) and only makes queries of length
+q(|z|) to Φ. Using standard methods of encoding computations of Q(z, Φ), there
+is a polynomial r(n) so that any computation of Q(z, Φ) can be coded uniquely
+by a binary string w of length r(|z|). Furthermore, there are polynomial time
+functions Accept(z,w ), Query(i, z,w ) and Answer(i, z,w ) such that:
+===== PAGE 13 =====
+Uniform Proofs of ACC Representations 13
+(1) Accept(z,w ) determines whether w correctly encodes an accepting com-
+putation of Q(z, Φ) assuming the oracle answers as encoded in w are cor-
+rect.
+(2) Query(i, z,w ) is the query to Φ made in the i-th step of the computation
+coded by w, if any. Thus Query(i, z,w ) is a string of length q(|z|).
+(3) Answer(i, z,w ) is equal to 0 if no query was made in the i-th step, and
+otherwise is equal to 1 or 2 depending on whether the query answer was
+“Yes” or “No” (respectively).
+Fix m such that the outermost quantiﬁer of ϕ is a ⊕ m-quantiﬁer. Since w is
+unique, the condition Q(z,λx.ϕ ) can now be expressed as
+(⨁1
+mw, |w|=r(|z|))[Accept(z,w )∧ (8)
+(∀i≺p(|z|))(Answer(i, z,w )=0 ∨
+(Answer(i, z,w )=1 ↔ ϕ (Query(i, z,w )))) ].
+By Lemmas 10-12, the subformula in square brackets is a rank r ⊕ -ptime or
+1⊕ m-ptime predicate, the same as ϕ . Thus, by (the proof of) Lemma 14, (8) is
+also a rank r ⊕ -ptime or 1 ⊕ m-ptime predicate, respectively. ⊓ ⊔
+2.2 Closing satisﬁability counts under polynomials
+We write (#x, |x|=p(|z|))ϕ (x, z) for the number of x’s such that |x| = p(|z|)
+andϕ (x, z) holds. This section shows how to manipulate the number of satis-
+fying assignments by transforming them by a polynomial. Proposition 19 does
+this for a ﬁxed polynomial r. Proposition 20 does this for a varying polyno-
+mialr, which is given as part of the input. These constructions will be applie d
+to modulus amplifying polynomials.
+We have already a couple basic techniques for manipulating numbers o f
+satisfying assignments. The proofs of Lemmas 12 and 14 showed ho w to change
+the number of satisfying assignments from j to jm− 1 so as to apply Fermat’s
+little theorem. Exponents other than m− 1, can used; in fact, even changing j
+satisfying assignments to jq(|z|) can be done, for any polynomial q(n). Lemmas
+12-14 showed how to introduce a ﬁxed number of satisfying assignm ents: those
+lemmas added either m− 1 or m−i many satisfying assignments, but the same
+technique works to add an arbitrary number of satisfying assignme nts. As will
+be seen in the proof of Proposition 19 it is not hard to extend these t echniques
+to take sums or products of numbers of satisfying assignments.
+Proposition 19 Let Γ be the class of ⊕ -ptime predicates, the class of 1⊕ m-
+ptime predicates, or the class of polynomial time predicate s. Let ϕ (x, z) be a
+Γ predicate, and p(|z|) be a polynomial. Further let r(n) be a polynomial (as
+always, with non-negative integer coeﬃcients). Then there is a Γ predicate
+χ (w, z) and a polynomial q(|z|) so that
+(#w, |w|=q(|z|))χ (w, z) = r( (#x, |x|=p(|z|))ϕ (x, z) ).
+===== PAGE 14 =====
+14 Sam Buss
+Proof It suﬃces to show that it is possible to take the sum or the product o f
+numbers of satisfying values. LetNi equal (#x, |x|=pi(|z|))ϕ i(x, z), fori = 1, 2.
+To handle summation, deﬁne χ (w, z) to be
+[w[0] = 0 ∧ w[1:p2(|z|)]≈ 0 ∧ ϕ 1(w[p2(|z|)+1:], z)]
+∨ [w[0] = 1 ∧ w[1:p1(|z|)]≈ 0 ∧ ϕ 2(w[p1(|z|)+1:], z)].
+Then (#w, |w|=p1(|z|)+p2(|z|)+1)χ (w, z) = N1 +N2. To handle products,
+deﬁne γ(w, z) to be
+ϕ 1(w[0:p1(|z|)− 1], z) ∧ ϕ 2(w[p1(|z|):], z).
+Then (#w, |w|=p1(|z|)+p2(|z|))γ(w, z) = N1 ·N2. Using repeated summation
+and products, as well as the addition of a ﬁxed number of satisfying assign-
+ments, proves the proposition for an arbitrary ﬁxed polynomial r. ⊓ ⊔
+When working with modulus amplifying polynomials for the proof of the
+Toda and Beigel-Tarui theorems, it will be convenient to let the polyn omialr
+be speciﬁed as part of the input. For this, a degree d univariate polynomial
+r(t) = adtd + · · ·+a1t +a0 is represented by a binary string gn( r), called the
+G¨ odel numberof r, which encodes the sequence ⟨a0,a 1,...,a d⟩. The G¨ odel
+number gn(r) should have its length |gn(r)| polynomially bounded by d and
+maxi |ai|; in fact, using an eﬃcient encoding, |gn(r)| can be linearly bounded
+by d + ∑
+i |ai|. We require that |gn(r)|> d and |gn(r)| ≥ | ai|: this holds
+naturally, since gn(r) codes a sequence of length d + 1.
+Proposition 20 Let Γ ,ϕ (x, z) andp(|z|) be as in Proposition 19. Then there
+is a Γ predicateχ (x, z,g ) and a polynomial q(n,n ′) so that, for all polynomi-
+als r(t),
+(#w, |w|=q(|z|, |gn(r)|))χ (w, z, gn(r)) = r( (#x, |x|=p(|z|))ϕ (x, z) ). (9)
+Proof (Sketch) Let χ (w, z,g ) be a predicate expressing:
+“g is the G¨ odel number⟨a0,a 1,...,a d⟩ of a degree d polynomial r, and
+w encodes a sequence ⟨i,b,x 0,...,x i− 1⟩ such that i ≤ d andb<a i and
+(∀j<|w|)[j <i → | xj|=p(|z|) ∧ ϕ (xj, z)].”
+Choose an appropriate G¨ odel encoding method and a polynomialq(n,n ′) large
+enough so that every sequence ⟨i,b,x 0,...,x i− 1⟩ satisfying χ (w, z, gn(r)) can
+be uniquely encoded by a w of length |w|=q(|z|, |gn(r)|). By the construction
+ofχ , the equality (9) holds. There are polynomial time procedures for p arsing
+the G¨ odel numberg and the sequence w and extracting the values xi, and
+the quantiﬁer ( ∀j<|w|) is sharply bounded. In view of Theorems 8 and 9, it
+follows that χ is a Γ predicate. ⊓ ⊔
+Proposition 20 will be applied with modulus amplifying polynomials Pk.
+These polynomials have the property that, for all N ≥ 0 and all M ≥ 2 and
+for i = 0, 1,
+N ≡ i modM ⇒ Pk(N ) ≡ i modM k.
+===== PAGE 15 =====
+Uniform Proofs of ACC Representations 15
+There are various possible choices for Pk. Similarly to Toda’s original con-
+struction [31], one can form Pk by composing the function x ↦→ 4x3 − 3x4
+with itself O(logk) times. Yao [35] suggested composing 3 x2 − 2x3 with itself
+O(logk) times. Beigel and Tarui [7] suggested the optimal degree constr uction
+of
+Pk(t) = 1 − (1 − t)k
+k− 1∑
+j=0
+( k +j − 1
+j
+)
+tj.
+These last polynomials have degree 2k− 1 and their G¨ odel numbers gn(Pk) can
+be constructed in polynomial time. (Toda’s or Yao’s polynomials could a lso be
+used. They have degrees k2 andklog2 3.) Since we are only interested in values
+moduloM k, we adjust the coeﬃcients of Pk so that they are non-negative and
+<M k.
+ForM =m a prime, we will use a variation P ′
+k,m ofPk such thatP ′
+k,m (i) ≡
+1 mod mk for all i ≡ 0 mod m and such that P ′
+k,m (i) ≡ 0 mod mk for all
+i ̸≡ 0 mod m. Sincem is prime,R(x) = 1 − xm− 1 satisﬁes that R(i) ≡ 1 mod m
+for all i ≡ 0 mod m and that R(i) ≡ 0 mod m for all i ̸≡ 0 mod m. Then form
+P ′
+k as the composition P ′
+k = Pk ◦R, a polynomial of degree (2 k− 1)(m− 1),
+taking all coeﬃcients to be in {0,...,m k− 1}. The G¨ odel number gn(P ′
+k,m )
+can be constructed in time polynomial in k and m.
+For mk > 2, we will also use the polynomial P ′′
+k,m such that P ′′
+k,m (i) ≡
+− 1 mod mk for all i ≡ 0 mod m and such that P ′′
+k,m (i) ≡ 1 mod mk for all
+i ̸≡ 0 mod m. We form P ′′
+k,m as the composition Q ◦P ′
+k,m whereQ(t) = 1 − 2t,
+again adjusting the coeﬃcients to be in {0,...,m k− 1}. The degree of P ′′
+k,m
+is also (2k− 1)(m− 1). The G¨ odel number gn(P ′′
+k,m ) can also be constructed in
+time polynomial in k and m.
+2.3 Symmetric quantiﬁers
+A generalized bounded quantiﬁer “ Q” is called symmetric if the truth value of
+the quantiﬁer depends only on the cardinalities of the true and false instances.
+Speciﬁcally, Q is a symmetric bounded quantiﬁer if the truth value of
+(Qx, |x|=p(|z|))ϕ (x, z) (10)
+depends only on the number of x’s of length p(|z|) such that ϕ (x, z) is true.
+More formally, there is a function fQ : N2 → { True, False} so that the truth
+value of (10) is equal to fQ(N, 2p(|z|)) where N = (#x, |x|=p(|z|))ϕ (x, z).
+Following Beigel-Tarui, we are particularly interested in symmetric qua nti-
+ﬁers which consist of an approximate majority applied to iterated ap plications
+of modular counting. Let M1 <M 2< · · ·<M ℓ. The iterated modular count-
+ing function C[M1,M 2,...,M ℓ ](N ), or C[M](N ) for short, has the meaning
+C[M](N ) := (( · · ·((N modMℓ) mod Mℓ− 1) · · ·modM2) mod M1). (11)
+===== PAGE 16 =====
+16 Sam Buss
+Clearly C[M](N ) gives values in {0, 1,...,M 1− 1}. To compose this with an
+approximate majority function, deﬁne
+ApxMaj-C[M](N ) =
+{ True if C[M](N )> (3/ 4)M1
+False if C[M](N )< (1/ 4)M1.
+We can express this as a symmetric bounded quantiﬁer by deﬁning
+(ApxMaj-C[M]x, |x|=p(|z|))ϕ (x, z)
+to have truth value ApxMaj- C[M](N ) where N = (#x, |x|=p(|z|))ϕ (x, z).
+ApxMaj-C[M] may not be used unless it is impossible to have (1 / 4)M1 ≤
+C[M](N ) ≤ (3/ 4)M1. That is, we use ApxMaj- C[M] only when it is guaranteed
+to be well-deﬁned.
+2.4 Probabilistic classes
+We now deﬁne the well-known probabilistic versions of ⊕ -ptime predicates and
+1⊕ m-ptime predicates. The “BP ·” notation is from Sch¨ oning [26].
+Deﬁnition 21 The class of probabilistic ⊕ -ptime predicates, BP ·⊕-ptime,
+contains the predicates A(z) for which there are a ⊕ -ptime ϕ (z,r,u ) and a
+polynomial p(n,ℓ ) so that, for all z and u,
+A(z) is true = ⇒ (#r, |r|=p(|z|, |u|))ϕ (z,r,u )> 2p(|z|, |u|) ·(1 − 2−| u|)
+A(z) is false = ⇒ (#r, |r|=p(|z|, |u|))ϕ (z,r,u )< 2p(|z|, |u|) ·2−| u|.
+The point of Deﬁnition 21 is that when r is chosen at random, then the
+value of ϕ (z,r,u ) gives, with high probability, the correct value for the truth
+or falsity of A(z). The parameter u is used to control the probabilities. Only
+the length of u is important, and u can w.l.o.g. be set equal to 0 ℓ.
+Deﬁnition 22 Fix a prime m ≥ 2. The class of probabilistic 1 ⊕ m-ptime
+predicates, BP ·1⊕ m-ptime, is deﬁned exactly as in Deﬁnition 21 except that
+ϕ is a 1 ⊕ m-ptime predicate.
+The classes BP ·ModPH and BP ·ModPHm are deﬁned similarly, but with ϕ
+a ModPH or ModPH m predicate, respectively. By Sipser [27], an approximate
+counting quantiﬁer can be replaced with bounded quantiﬁers. This g ives the
+following inclusions:
+Theorem 23 The BP·ModPH predicates are contained in the ModPH pred-
+icates. For ﬁxed m > 1, the BP·ModPHm predicates are contained in the
+ModPHm predicates.
+As a corollary, BP ·⊕-ptime and BP ·1⊕ m-ptime are contained in ModPH and
+ModPHm, respectively. The converse of this holds also; see Theorem 27 and
+Corollaries 28 and 29 below.
+===== PAGE 17 =====
+Uniform Proofs of ACC Representations 17
+Proof (Sketch) We use the Lautemann [20] approximate counting constr uc-
+tion. Suppose the predicate A(z) satisﬁes the equations of Deﬁnition 21, but
+withϕ (|z|,r,u ) a ModPH or ModPH m predicate. Choose a polynomial ℓ(n) so
+thatp(|z|,ℓ (n))< 2ℓ(n) always holds. We will use u = 0 ℓ(|z|). Let a string w of
+length (p(|z|,ℓ (|z|)))2 encode p(|z|,ℓ (|z|)) many strings of length p(|z|,ℓ (|z|))
+each. Let ( w)i denote the i-th string encoded by w. For ( w)i and r both of
+length p(|z|,ℓ (|z|)), write r ⊕ (w)i for their bitwise exclusive-or. Then A(z) is
+true precisely when
+(∃w, |w|=(p(|z|,ℓ (z)))2)(∀r, |r|=p(|z|,ℓ (z))) (12)
+(∃i≺p(|z|,ℓ (z)))[ϕ (z,r ⊕ (w)i, 0ℓ(|z|))]
+holds. This equivalence is proved by the argument of [20]: When A(z) is true,
+mostr’s makeϕ (z,r, 0ℓ(|z|)) true, and a probabilistic argument shows there is
+a w so that every r has at least one translation r ⊕ (w)i that satisﬁes ϕ . On
+the other hand, when A is false, hardly any r’s makeϕ true, and a cardinality
+argument, using p(|z|,ℓ (n))< 2ℓ(n), shows that no such w can exist.
+By deﬁnition, (12) expresses A(z) as a ModPH or ModPH m predicate,
+respectively. ⊓ ⊔
+Remark on using probabilities of 1/ 4 and 3/ 4.As is usual with probabilistic
+classes (e.g., [26, 5]), Deﬁnitions 21 and 22 could equivalently be state d without
+the parameter u and using the fractions 3 / 4 and 1/ 4 in place of 1 − 2−| u| and
+2−| u|. The general idea is that probabilities can be ampliﬁed from 3 / 4 and
+1/ 4 to 1 − 2−| u| and 2 −| u| by working with a property ϕ (z,r ) and taking c · |u|
+many random samples of r for some constant c, and accepting if a majority of
+them satisfy ϕ (z,r ). The ampliﬁcation of probabilities follows from Chernoﬀ
+bounds.
+In more detail, suppose that
+A(z) is true = ⇒ (#r, |r|=p(|z|))ϕ (z,r )> 2p(|z|) ·(3/ 4)
+A(z) is false = ⇒ (#r, |r|=p(|z|))ϕ (z,r )< 2p(|z|) ·(1/ 4).
+Set p′(|z|, |u|) = 17 |u| ·p(|z|), so a string w with |w| =p′(|z|, |u|) codes 17 |u|
+many stringsr of lengthp(|z|); we write (w)i for thei-th such stringr. IfA(z) is
+true (respectively, false), then for randomly chosen w, Chernoﬀ bounds imply
+that with probability 1 − 2−| u| more than one half (respectively, less than one
+half) of the ( w)i’s satisfyϕ (z, (w)i). Let ψ (z,w ) express that at least one half
+of the ( w)i’s satisfyϕ (z, (w)i). By Lemma 18, ψ is a ⊕ -ptime or 1 ⊕ m-ptime
+predicate if ϕ is. Thus ψ with the polynomial p′(|z|, |u|) gives a BP ·⊕-ptime
+or BP ·1⊕ m-ptime (respectively) deﬁnition for A(z).
+3 Closure under bounded quantiﬁcation for probabilistic cl asses
+Theorems 8 and 9 gave basic closure properties for the ⊕ -ptime and the 1 ⊕ m-
+ptime predicates. It is open whether these two classes are also clos ed under
+===== PAGE 18 =====
+18 Sam Buss
+(non-sharply) bounded existential and universal quantiﬁcation. However, The-
+orem 27 and Corollaries 28 and 29 below show that the probabilistic ver sions
+BP·⊕-ptime and BP ·1⊕ m-ptime of these classes are closed under bounded
+existential and universal quantiﬁcation as well as bounded modular counting
+quantiﬁcation. These results — in particular, Corollary 29 — are the “ uniform
+version” of Theorem 1. Indeed, Section 4 will show that Theorem 1 f ollows from
+Corollary 29 by the Furst-Saxe-Sisper and Paris-Wilkie translations . Theorems
+30 and 31 of Section 3.3 are related in the same way to the uniform ver sion of
+Theorem 2.
+A primary proof technique for Theorem 27 is the Valiant-Vazirani th eorem,
+which we next state without proof.
+3.1 The Valiant-Vazirani theorem
+If x,y ∈ { 0, 1}n are binary strings x = x1x2 · · ·xn and y = y1y2 · · ·yn, the
+inner product mod 2 of x and y, denoted ⟨x,y ⟩ is equal to ∑
+ixiyi mod 2.
+In this section, we let w range over strings of length |w| = tn, where t > 0,
+and write (w)i to denote w[in:(i+1)n− 1]. That is, w codes t many strings of
+length n, and ( w)i denotes the i-th one. The next theorem is due to Valiant
+and Vazirani, and is stated in the way used by Toda [31].
+Theorem 24 (Valiant-Vazirani [33]) LetS ⊆ { 0, 1}n be nonempty. Then, for
+some i<n ,
+Pr
+w∈{ 0, 1} n2
+[
+(#x, |x|=n)((∀j≤i)(⟨x, (w)j ⟩=0) ∧ x ∈ S) = 1
+]
+≥ 1
+4.
+Furthermore, there is an i<n so that for all ℓ ≥ 1,
+Pr
+w∈{ 0, 1} 3ℓn 2
+[
+(∃k<3ℓ)[(#x, |x|=n)((∀j≤i)(⟨x, (w)kn+j ⟩=0) ∧ x∈S) = 1]
+]
+≥ 1 −
+( 3
+4
+) 3ℓ
+> 1 − 2− ℓ.
+For a proof, see for instance [5]. The second part of the theorem f ollows by iter-
+ating the ﬁrst part 3 ℓ times. Expressing the probability in terms of cardinality,
+and replacing the exact counting of x’s with modular counting, gives:
+Corollary 25 LetS ⊆ { 0, 1}n and let m ≥ 2. Let N equal
+(#w, |w|=3ℓn2)(∃i<n)(∃k<3ℓ)(⨁1
+mx, |x|=n)((∀j≤i)(⟨x, (w)kn+j ⟩=0) ∧ x∈S).
+If S ̸= ∅, then N ≥ 23ℓn2
+(1 − 2− ℓ). If S = ∅, then N = 0.
+From this, and Theorems 8 and 9, we get immediately:
+===== PAGE 19 =====
+Uniform Proofs of ACC Representations 19
+Corollary 26 Let Γ be either the set of ⊕ -ptime predicates or the set of 1⊕ m-
+ptime predicates. Let ϕ (x, z) be a Γ predicate and p(n) a polynomial. Then
+there is a Γ predicateψ (z,w,u ) and a polynomial q(n,ℓ ) such that the following
+holds. Let N (z,u ) = (#w, |w|=q(|z|, |u|))ψ (z,w,u ). For all values of z and u,
+(∃x, |x|=p(|z|))ϕ (x, z) =⇒ N (z,u ) ≥ 2q(|z|, |u|) ·(1 − 2−| u|)
+¬ (∃x, |x|=p(|z|))ϕ (x, z) =⇒ N (z,u ) = 0.
+Corollary 26 is proved by letting S be the set of x ∈ { 0, 1}p(|z|) satisfying
+ϕ (x, z), and taking q(|z|, |u|) = 3 |u| ·(p(|z|))2.
+3.2 Toda’s theorem
+The next theorem, especially Corollary 29, will be used for the proof of The-
+orem 1. (Theorem 2 will follow from Theorems 30 and 31.)
+Theorem 27 (a) BP ·⊕-ptime is closed under disjunction, conjunction, nega-
+tion, bounded existential quantiﬁcation, bounded univers al quantiﬁcation,
+and bounded ⨁
+m quantiﬁcation for arbitrary m ≥ 2.
+(b) Fix a prime m ≥ 2. BP·1⊕ m-ptime is closed under disjunction, conjunc-
+tion, negation, bounded existential quantiﬁcation, bound ed universal quan-
+tiﬁcation, and bounded ⨁
+m quantiﬁcation.
+Theorem 27 applies also to computation relative to an oracle Ω. As imme -
+diate corollaries to Theorems 23 and 27, we obtain:
+Corollary 28 ModPH is equal to BP·⊕-ptime. Likewise, ModPHΩ is equal
+to BP·⊕-ptime relative to Ω .
+Corollary 29 Fix a prime m ≥ 2. ModPHm is equal to BP·1⊕ m-ptime. Like-
+wise, ModPHΩ
+m is equal to BP·1⊕ m-ptime relative to Ω .
+Proof (Proof of Theorem 27) We prove (a) and (b) simultaneously. Let Γ be
+either the class of 1 ⊕ m-ptime predicates or the class of ⊕ -ptime predicates,
+so BP ·Γ denotes one of the classes BP ·1⊕ m-ptime or BP ·⊕-ptime. Closure
+of BP ·Γ under disjunction, conjunction and negation is straightforward with
+the aid of Theorems 8 and 9, and we omit their proofs. Instead, we p rove
+closure under bounded existential quantiﬁcation and ⨁
+m quantiﬁcation.
+LetA(x, z) be a BP ·Γ predicate. By Deﬁnition 21 or 22, there are a polyno-
+mialp1(n′, n,ℓ ) and a Γ predicate ϕ 1(x, z,r,u 1) such that, letting N1(x, z,u 1)
+equal
+(#r, |r|=p1(|x|, |z|, |u1|))ϕ 1(x, z,r,u 1),
+we have for all x, z,u 1 that
+A(x, z) is true = ⇒ N1(x, z,u 1)> 2p1(|x|, |z|, |u1|) ·(1 − 2−| u1|)
+A(x, z) is false = ⇒ N1(x, z,u 1)< 2p1(|x|, |z|, |u1|) ·2−| u1|.
+===== PAGE 20 =====
+20 Sam Buss
+It is helpful to ﬁrst show closure of BP ·Γ under sharply bounded universal
+quantiﬁcation. With negation, this also implies closure under sharply b ounded
+existential quantiﬁcation. Let B(z) be the predicate ( ∀x≺q(|z|))A(x, z).
+We use |u1|= |u|+q(|z|). Deﬁne p(|z|, |u|) = p1(q(|z|), |z|, |u|+q(|z|)), and
+deﬁne ϕ (z,r,u ) as
+(∀x≺q(|z|))ϕ 1(x, z,r,u 0q(|z|)).
+By Theorem 8 or 9, ϕ is in Γ. Let N (z,u ) equal
+(#r, |r|=p(|z|, |u|))ϕ (z,r,u ).
+We claim that p, ϕ and N deﬁne B(z) as a BP ·Γ predicate; that is:
+B(z) is true = ⇒ N (z,u )> 2p(|z|, |u|) ·(1 − 2−| u|)
+B(z) is false = ⇒ N (z,u )< 2p(|z|, |u|) ·2−| u|.
+To prove this, ﬁrst suppose B(z) is true and ﬁx u. By the union bound, the
+fraction of r’s falsifying ϕ (z,w,u ) is < q(|z|)2− (|u|+q(|z|)) < 2−| u|, as desired.
+Similarly, if B(z) is false, the fraction of r’s satisfyingϕ (z,w,u ) is < 2−| u|.
+We next show closure of BP ·Γ under bounded modular counting quantiﬁca-
+tion. Suppose B(z) is ( ⨁
+mx, |x|=q(|z|))A(x, z). Let the polynomial p(|z|, |u|)
+again be p1(q(|z|), |z|, |u|+q(|z|)), and let ϕ (z,r,u ) be the predicate
+(⨁
+mx, |x|=q(|z|))ϕ 1(x, z,r,u 0q(|z|)).
+Also let N (z,u ) equal
+(#r, |r|=p(|z|, |u|))ϕ (z,r,u ).
+Theorem 8 or 9 shows that ϕ is a Γ predicate. We claim that these p,ϕ , and N
+deﬁne B(z) as a BP ·Γ predicate. Fix lengths for the z ’s andu. Let u1 denote
+u0q(|z|). By choice of p1,N1 andϕ , if r of length p(|z|, |u|) is chosen at random,
+thenA(x, z) andϕ 1(x, z,r,u 1) have equal truth values with probability greater
+than 1 − 2−| u1|. There are 2 q(|z|) many values for x, and |u1| = q(|z|)+|u|.
+Thus by the union bound, for a randomly chosen value for r, the truth values
+of A(x, z) and ϕ 1(x, z,r,u 1) are equal for all values x with probability at
+least 1 − 2−| u|. Consequently, if B(z) is true, then N (z,r,u ) is greater than
+2p(|z|, |u|) ·(1 − 2−| u|). Similarly, if B(z) is false, then N (z,r,u ) is less than
+2p(|z|, |u|) ·2−| u|. This proves the claim, and shows that B(z) is in BP ·Γ.
+We ﬁnally show closure under bounded existential quantiﬁcation. Co n-
+sider the predicate B(z) deﬁned by ( ∃x, |x|=q(|z|))A(x, z). By Corollary 25 to
+the Valiant-Vazirani theorem, there is a polynomial p2(|u2|) so that, letting
+N2(z,u 2) equal
+(#w, |w|=p2(|u2|)q(|z|)2)[(∃i≺q(|z|))(∃k≺p2(|u2|)) (13)
+(⨁1
+mx, |x|=q(|z|))((∀j≤i)(⟨x, (w)kq(|z|)+j⟩=0) ∧ A(x, z))],
+===== PAGE 21 =====
+Uniform Proofs of ACC Representations 21
+we have
+B(z) is true = ⇒ N2(z,u 2)> 2p2(|u2|)q(|z|)2
+·(1 − 2−| u2|)
+B(z) is false = ⇒ N2(z,u 2)< 2p2(|u2|)q(|z|)2
+·2−| u2|.
+Let A2(z,w ) be the subformula of (13) in square brackets. By the clo-
+sure of BP ·Γ under conjunction, sharply bounded quantiﬁcation and bounded
+modular counting, there are a Γ predicate ϕ 3(z,w,r,u 3) and a polynomial
+p3(|z|, |w|, |u3|) so that, letting N3(z,w,u 3) equal
+(#r, |r|=p3(|z|, |w|, |u3|))ϕ 3(z,w,r,u 3),
+we have for all z,w,u 3 that
+A2(z,w ) is true = ⇒ N3(z,w,u 3)> 2p3(|z|, |w|, |u3|) ·(1 − 2−| u3|)
+A2(z,w ) is false = ⇒ N3(z,w,u 3)< 2p3(|z|, |w|, |u3|) ·2−| u3|
+We can now deﬁne p(|z|, |u|) and ϕ (z,v,u ). We let u2 = u3 = u0 so that
+|u2|= |u3|= |u|+ 1. The polynomial p is deﬁned to equal
+p(|z|, |u|) = p2(|u|+1)q(|z|)2 +p3(|z|, |u|+1).
+A string v ∈ { 0, 1}p(|z|, |u|) codes a string w of length p2(|u|+1)q(|z|)2 concate-
+nated with a string r of length p3(|z|, |u|+1), and we write ( v)w and (v)r for
+these two substrings of v. Let ϕ (z,v,u ) be equal to ϕ 3(z, (v)w, (v)r,u ). Deﬁne
+N (z,u ) to equal
+(#v, |v|=p(|z|, |u|))ϕ (z,v,u ).
+We claim that
+B(z) is true = ⇒ N (z,u )> 2p(|z|, |u|) ·(1 − 2−| u|)
+B(z) is false = ⇒ N (z,u )< 2p(|z|, |u|) ·2−| u|.
+To prove the ﬁrst assertion, note that if B(z) is true, then for all but frac-
+tion 2 −| u|− 1 of the values of w = (v)w, A2(z,w ) is true. And then, for these
+goodw’s, all but a fraction 2−| u|− 1 of the values forr = (v)r makeϕ 3(z,w,r,u )
+true. Thus by the union bound, less than a fraction 2 ·2−| u|− 1 = 2 −| u| of the
+values forv makeϕ (z,v,u ) false. A similar argument works when B(z) is false.
+Since ϕ 3 is a Γ predicate, ϕ is also in Γ. This shows that B is a BP ·Γ
+predicate, and completes the proof of Theorem 27. ⊓ ⊔
+3.3 A single symmetric quantiﬁer suﬃces
+An important component of the Beigel-Tarui theorem is that multiple modu-
+lar quantiﬁers can be replaced by a single symmetric quantiﬁer. For t his, we
+now prove that BP ·⊕-ptime and BP ·1⊕ m-ptime predicates can be expressed
+with a single symmetric quantiﬁer applied to a polynomial time predicate .
+Theorem 31 is the uniform version of Theorem 2. Theorem 30 is the sp ecial
+case of BP ·1⊕ m-ptime predicates:
+===== PAGE 22 =====
+22 Sam Buss
+Theorem 30 Let m ≥ 2 be a prime and A(z) be a BP·1⊕ m-ptime predicate
+(i.e., a ModPHm-predicate). Then A(z) can be expressed in the form
+(ApxMaj-C[M]x, |x|=q(|z|))χ (x, z)
+where [M ] denotes a sequence of length one with M = ms(|z|) for some poly-
+nomial s(|z|), where q is a polynomial, and where χ is a polynomial time
+predicate.
+Theorem 30 is the ℓ = 1 case of the next theorem. Assume A is a BP ·⊕-ptime
+predicate, so there are a ⊕ -ptime predicate ϕ and a polynomial p(|z|) such
+that for all z,
+(#r, |r|=p(|z|))ϕ (z,r ) (14)
+is either > 3
+4 2p(|z|) or < 1
+4 2p(|z|) depending on whether A(z) is true or false.
+The predicate ϕ can be expressed in the form
+(⨁
+m1x1, |x1|=p1(|z|)) · · ·(⨁
+mℓ
+xℓ, |xℓ|=pℓ(|z|))ψ (z,r,x 1,...,x ℓ) (15)
+for some polynomial time ψ (z,r, x), some polynomials p1(|z|),...,p ℓ(|z|), and
+some primes m1,...,m ℓ.
+Theorem 31 LetA(z) be a BP·⊕-ptime predicate (i.e., a ModPH-predicate)
+deﬁned as above by (14) and (15). Then A(z) can be expressed in the form
+(ApxMaj-C[M]y, |y|=q(|z|))χ (z,y ) (16)
+where [M] denotes a sequence M1,...,M ℓ, with each Mj =msj (|z|)
+j where the
+mj’s are the primes in the quantiﬁer preﬁx of ϕ (z,r ), where q and the sj’s are
+polynomials, and where χ is a polynomial time predicate.
+Proof We ﬁrst give the construction of q, the sj’s and χ , and then work
+on proving their properties. Deﬁne the polynomials sj = sj(|z|) by letting
+s1(|z|) = p(|z|) + 3 and s2(|z|) = 2s1(|z|)m1(p1(|z|)+1) and, for j ≥ 2,
+sj+1(|z|) = 2 jsj(|z|)2m2
+j (pj(|z|)+1)
+j− 1∏
+i=1
+si(|z|)mi.
+Then Mj =Mj(|z|) = msj (|z|)
+j . Let ψ j(z,r,x 1,...,x j) be the subformula
+(⨁
+mj+1xj+1, |xj+1|=pj+1(|z|)) · · ·(⨁
+mℓ
+xℓ, |xℓ|=pℓ(|z|))ψ (z,r,x 1,...,x ℓ).
+of (15).
+We inductively deﬁne polynomial time predicates χ j(z,r,x 1,...,x j,y ) and
+polynomials qj(|z|) for j =ℓ,..., 1, 0. For χ j, we always enforce |y|=qj(|z|).
+To start the inductive deﬁnition, χ ℓ is the same as ψ (z,r,x 1,...,x ℓ), and
+qℓ = 0 (that is, y is the empty string). Now let 1 ≤ j < ℓ, and recall the
+deﬁnition of P ′
+sj+1,m j+1 . Let aj+1,i denote the coeﬃcient of xi in P ′
+sj+1,m j+1 .
+Recalling the proof of Proposition 20, deﬁne χ j(z,r,x 1,...,x j,y ) to be:
+===== PAGE 23 =====
+Uniform Proofs of ACC Representations 23
+“y has the form ⟨i,b,y ′
+0,...,y ′
+i− 1⟩, where i ≤ degree(P ′
+sj+1 ,m j+1), and
+b<a j+1,i , and each y′
+t is a pair y′
+t = ⟨x′
+t,y ′′
+t ⟩ with |x′
+t|=pj+1(|z|) and
+|y′′
+t |=qj+1(|z|) so that
+χ j+1(z,r,x 1,...,x j,x ′
+t,y ′′
+t )
+is true.”
+Using a suitable method of encoding sequences, we deﬁne qj =qj(|z|) to be a
+suﬃciently large polynomial such that every y satisfyingχ j has length exactly
+qj (and so that each sequence y has a unique encoding).
+The predicate χ 0(z,r,y ) is deﬁned similarly, but using P ′′
+s1,m 1 instead of
+P ′
+s1,m 1, namely χ 0(z,r,y ) is deﬁned as:
+“y has the form ⟨i,b,y ′
+0,...,y ′
+i− 1⟩, where i ≤ degree(P ′′
+s1,m 1), b < a1,i ,
+and each y′
+t is a pair y′
+t = ⟨x′
+t,y ′′
+t ⟩ with |x′
+t|=p1(|z|) and |y′′
+t |=q1(|z|)
+so that
+χ 1(z,r,x ′
+t,y ′′
+t )
+is true.”
+Again, deﬁne q0 =q0(|z|) to be a suﬃciently large polynomial such that every
+y satisfying χ 0 has a unique encoding of length exactly q0.
+Finally, deﬁne q(|z|) = p(|z|) + q0(|z|), and deﬁne the polynomial time
+predicate χ (z,y ) by
+|y|=q(|z|) ∧ χ 0(z,y [0:p(|z|)− 1],y [p(|z|):]).
+That is, y encodes a pair of strings r,y ′ which satisfy χ 0(z,r,y ′).
+We claim that this χ and q satisfy the property (16) of the theorem. To
+prove this, we ﬁrst need to analyze how many y’s satisfy the formulasχ j andχ .
+Deﬁne values Nr,x 1,...,x j as follows. (We suppress the dependence of Nr,x 1,...,x j
+on z in the notation.) We implicitly require always that the values xi denote
+strings of length pi(|z|) and the value r is a string of length p(|z|); e.g., the
+summation over xj+1 means over xj+1’s of length pj+1(|z|).
+Nr,x 1,...,x ℓ =
+{ 1 if ψ (z,r,x 1,...,x ℓ) is true
+0 otherwise
+Nr,x 1,...,x j =P ′
+sj+1,m j+1
+( ∑
+xj+1
+Nr,x 1,...,x j,x j+1
+)
+for 1 ≤ j <ℓ
+Nr =P ′′
+s1,m 1
+( ∑
+x1
+Nr,x 1
+)
+N =
+∑
+r
+Nr.
+Claim 32 Let 0 ≤ j ≤ ℓ and let r,x 1,...,x j be strings of the appropri-
+ate lengths |r| = p(|z|) and |xi| = pi(|z|). The number of y’s which satisfy
+χ j(z,r,x 1,...,x j,y ) is equal to Nr,x 1,...,x j . The number of y’s which satisfy
+χ (z,y ) is equal to N .
+===== PAGE 24 =====
+24 Sam Buss
+The claim is proved by induction on j, descending from ℓ to 0. The base
+case, j = ℓ is trivial from the deﬁnitions. For the induction step, ﬁx 0 ≤
+j < ℓ and strings r,x 1,...,x j . The induction hypothesis states that, for
+each x′ of length pj+1(|z|), there are Nr,x 1,...,x j,x ′ many strings y′′ such that
+χ j+1(z,r,x 1,...,x j,x ′,y ′′). From this, there are ∑
+x′Nr,x 1,...,x j ,x ′ many pairs
+y′ = ⟨x′,y ′′⟩ satisfying this condition. From the deﬁnition of χ j and Proposi-
+tion 20, the number y’s satisfyingχ j(z,r,x 1,...,x j,y ) is equal to Nr,x 1,...,x j .
+The fact that N is the number of y’s which satisfy χ (z,y ) is now immediate
+from the deﬁnitions. This proves the claim. ✷
+Recall the iterated modular counting quantity C[M](· · ·) of (11).
+Claim 33 The value C[M](Nr) is equal to either M1− 1 or 1, depending on
+whether ϕ (z,r ) is true or false, respectively.
+Before embarking on the proof of this claim, we show that Claims 32 an d 33
+together imply Theorem 31. From Claim 33 and the deﬁnition of N , we have
+thatN is congruent modulo M1 to the number of r’s such thatϕ (z,r ) is false,
+minus the number of r’s such that ϕ (z,r ) is true. Since s1(|z|) = p(|z|) + 3,
+we have M1 > 4 ·2p(|z|). From these facts, it follows that, if A(x) is true
+then C[M](N ) is > 3
+4 2p(|z|), since more r’s make ϕ (z,r ) true than make it
+false. Likewise, if A(x) is false, then C[M](N ) is < 1
+4 2p(|z|). By Claim 32, N is
+the number of y’s such that χ (z,y ). In addition, since ψ is polynomial time
+computable, each χ j and hence χ is in polynomial time. This satisﬁes all the
+conditions of Theorem 31.
+As the ﬁrst step of proving Claim 33, deﬁne quantities N ∗
+r,x 1,...,x j by:
+N ∗
+r,x 1,...,x ℓ =Nr,x 1,...,x ℓ
+N ∗
+r,x 1,...,x j =P ′
+sj+1 ,m j+1
+( ∑
+xj+1
+N ∗
+r,x 1,...,x j ,x j+1
+)
+modMj+1 for 1 ≤ j <ℓ
+N ∗
+r =P ′′
+s1,m 1
+( ∑
+x1
+N ∗
+r,x 1
+)
+modM1
+We claim that, for each r,x 1,...,x j, where 1 ≤ j ≤ ℓ, the value N ∗
+r,x 1,...,x j is
+equal to either 1 or 0 depending on whether ψ j(z,r,x 1,...,x j) is true or false
+(respectively). This is proved by on induction on j, descending from ℓ to 1. The
+base case j = ℓ is true by deﬁnition. The induction step is immediate from
+the deﬁnitions of ψ j and P ′
+sj+1 ,m j+1. Similarly, N ∗
+r is equal to either M1− 1
+or 1, depending on whether ϕ (z,r ) (equivalently, ψ 0(z,r )) is true or false,
+respectively.
+Therefore, to prove Claim 33, we must prove that C[M](Nr) = N ∗
+r for all r.
+The diﬀerence between the deﬁnitions of C[M](Nr) and N ∗
+r is that modular op-
+erations are used in intermediate steps when computing N ∗
+r , but are used only
+at the end of the computation when computing C[M](Nr). To prove the quan-
+tities are equal, we need to “pull out” the modular operators in the d eﬁnition
+of N ∗
+r .
+===== PAGE 25 =====
+Uniform Proofs of ACC Representations 25
+Fix j ≥ 1. From its deﬁnition, Nr can be expressed as a polynomial Qj of
+the valuesNr,x 1,...x j . To write out Qj explicitly, letQ′
+j(yxj ) be the polynomial
+over the variables {yxj }|xj|=pj (|z|), deﬁned by
+Q′
+j = P ′
+sj ,m j (
+∑
+xj
+yxj )
+if j >1, and by Q′
+1 =P ′′
+s1,m 1 (∑
+x1yx1) if j = 1. Now let Qj(yx1,...,x j ) be the
+polynomial over variables {yx1,...,x j }x1,...,x j deﬁned by
+Qj(yx1,...,x j ) = Q′
+1(Q′
+2(· · ·Q′
+j− 1(Q′
+j(yx1,...,x j )) · · ·)).
+To be precise, Q1 isQ′
+1, and Qj+1(yx1,...,x j+1) is formed from Qj(yx1,...,x j ) by
+replacing each yx1,...,x j with Q′
+j+1({yx1,...,x j ,x j+1}xj+1). Thus, we have
+Nr = Qj(Nr,x 1,...,x j ) = Q′
+1(Q′
+2(· · ·Q′
+j− 1(Q′
+j(Nr,x 1,...,x j )) · · ·)).
+Claim 34 Suppose that each yx1,...,x j is congruent modulo Mj+1 to 0 or 1.
+Then
+Qj(yx1,...,x j modMj+1) = Qj(yx1,...,x j ) mod Mj+1. (17)
+In the lefthand side of (17), the notation yx1,...,x j modMj+1 means that, for
+each set of values for x1,...,x j , the corresponding argument of Qj is equal to
+yx1,...,x j modMj.
+Claim 33 follows easily from Claim 34. Namely, N ∗
+r is equal to
+Q′
+1(Q′
+2(Q′
+3(· · ·Q′
+ℓ(Nr,x 1,...,x ℓ ) mod Mℓ) · · ·) mod M3) mod M2) mod M1
+=Q′
+1(Q′
+2(Q′
+3(· · ·Q′
+ℓ(Nr,x 1,...,x ℓ ) mod Mℓ) · · ·) mod M3)) mod M2 modM1
+=Q′
+1(Q′
+2(Q′
+3(· · ·Q′
+ℓ(Nr,x 1,...,x ℓ ) mod Mℓ) · · ·))) mod M3 modM2 modM1
+· · ·
+=Q′
+1(Q′
+2(Q′
+3(· · ·Q′
+ℓ(Nr,x 1,...,x ℓ )) · · ·))) mod Mℓ · · ·modM3 modM2 modM1
+=Nr modMℓ · · ·modM3 modM2 modM1
+= C[M](Nr).
+The ﬁrst line is the deﬁnition of N ∗
+r . The ﬁnal two equalities follow from the
+deﬁnitions of Nr and C[M]. The remaining ℓ− 1 equalities follow from Claim 34.
+To apply Claim 34, we need Q′
+t(· · ·Q′
+ℓ(Nr,x 1,...,x ℓ ) · · ·) ∈ { 0, 1} for all t and
+all ﬁxed r,x 1,...,x t. This fact follows from the characterization of the values
+N ∗
+r,x 1,...,x t given after their deﬁnitions.
+It therefore suﬃces to prove Claim 34 to ﬁnish the proof of Theore m 31.
+The idea behind Claim 34 is that Mj is larger than the absolute value of the
+lefthand side of (17). The bound on the value of lefthand side will be in terms
+of the “norm” of Qj.
+The norm N (p) of a polynomial p is by deﬁnition the sum of the absolute
+values of the coeﬃcients of p.1 Our polynomials have only non-negative coef-
+ﬁcients; for these, N (p) is the same as the sum of the coeﬃcients of p. The
+next lemma gives simple properties of the norm.
+1 The term “norm” is due to Beigel-Tarui [7]; Yao [35] used “siz e”.
+===== PAGE 26 =====
+26 Sam Buss
+Lemma 35 Letp(n) and q(n) be polynomials.
+(a) For a ∈ {− 1, 0, 1}, −N (p) ≤ p(a) ≤ N (p).
+(b) N (p +q) ≤ N (p) + N (q).
+(c) N (p ·q) ≤ N (p) · N(q).
+(d) Let n have length ℓ, and qi(m) be polynomials with N (qi) ≤ N q for
+all i ≤ ℓ. Leth(m) = f (q1(m),...,q ℓ(m)). Then N (h) ≤ N (f )·(Nq)deg(f ).
+Another simple property that follows from (a) is:
+Lemma 36 Suppose p(n1,...,n t) is a polynomial (with non-negative coeﬃ-
+cients) and that N (p) < M. Further suppose ai modM ∈ { 0, 1} for all i.
+Then
+p(a1 modM, a2 modM,...,a t modM ) = p(a1,a 2,...,a t) mod M.
+In view of Lemma 36, Claim 34 follows once we prove that N (Qj) < Mj+1.
+First note that
+degree(Qj) = degree(P ′′
+s1,m 1)
+j∏
+i=2
+degree(P ′
+si,m i)
+=
+j∏
+i=1
+(2si − 1)(mi − 1) <
+j∏
+i=1
+2sim1.
+(We are suppressing the dependence of si and pi on |z| in the notation.) We
+prove that N (Qj)<M j+1 by induction on j. Forj = 1, Q1 isP ′′
+s1,m 1 ◦∑
+x1yx1.
+SinceP ′′
+s1,m 1 has degree (2s1− 1)(m− 1) and coeﬃcients <M 1 =ms1
+1 , its norm
+N (Ps1,m 1) is < ((2s1− 1)(m1− 1)+1)ms1
+1 . So, since the sums are taken over the
+2p1 many values for x1, Lemma 35(d) gives
+N (Q1) < ((2s1− 1)(m1− 1)+1)ms1
+1 (2p1 )(2s1− 1)(m1− 1) < 22s1m1(p1+1). (18)
+where the second inequality holds since s1,m 1,p 1 are positive integers. By
+deﬁnition, s2 = 2s1m1(p1+1), so M2 =m2s1m1(p1+1)
+2 . Thus N (Q1)<M 2.
+For the induction step, we have Qj =Qj− 1 ◦Q′
+j, and by the same compu-
+tation as for (18),
+N (Q′
+j )< ((2sj− 1)(mj− 1)+1)msj
+j (2pj )(2sj − 1)(mj − 1) < 22sj mj (pj +1)
+The induction hypothesis gives N (Qj− 1)<M j =msj
+j . By Lemma 35(d),
+N (Qj)<m sj
+j · N(Q′
+j)degree(Qj− 1) < 2sj mj (22sj mj (pj +1))
+∏j− 1
+i=1 2simi
+= 2 2js2
+j m2
+j (pj +1) ∏j− 1
+i=1 simi = 2 sj+1 ≤ msj+1
+j+1.
+Thus, N (Qj )<M j. This completes the proof of Claim 34, and thereby The-
+orem 31. ⊓ ⊔
+===== PAGE 27 =====
+Uniform Proofs of ACC Representations 27
+4 Proofs of Uniform Beigel-T arui Theorems
+We now prove Theorems 1 and 2. Fix values for d and m ≥ 2. Suppose a
+circuit C has depth d and size S and uses unbounded fanin ∧ , ∨ , and ⊕ m
+gates. We wish to constuct equivalent circuits that satisfy Theore ms 1 and 2.
+A high-level sketch of the proofs is as follows. We will encode the circ uitC
+in terms of its direct connection language using an oracle Ξ. A second oracle Ω
+is used to encode the values of the Boolean inputs to C. The circuit value
+problem for C is then expressible as a ModPH Ω, Ξ
+m predicate or a ModPH Ω, Ξ
+predicate. Corollary 29 or Theorem 31 expresses this predicate as a constant
+depth formula with a symmetric gate as output. The Furst-Saxe-S ipser, Paris-
+Wilkie translation then converts this into a constant-depth quasipo lynomial
+size circuit satisfying Theorem 1 or 2.
+We prove Theorem 1 ﬁrst; the proof for Theorem 2 is almost identica l. Let
+n be the least value such that 2 n ≥ S logm, so n =O(logS). Let x1,...,x i be
+the inputs to C, and G the number of gates in C. W.l.o.g., G + 2i< 2n. Thus,
+ann bit string z can be used to specify uniquely one of the G many gates or 2i
+many literals xj or
+xj. In addition, each gate has fewer than 2 n many inputs.
+As we explain next, this allows the oracle Ξ to encode the direct conne ction
+language of C by using its values Ξ( x) on binary strings x of length |x|= 3n.
+The oracle Ξ encodes enough information about the circuit C so that its
+direct connection language [25] can be computed in deterministic poly nomial
+time (in n) relative to Ξ on a multitape Turing machine. Speciﬁcally, the
+following properties of C can by computed quickly with the aid of Ξ: The gate
+type of thek-th gate inC, the input arity of the k-th gate, and the gate number
+or literal number of the ℓ-th input to to the k-th gate. One natural encoding
+for the direct connection language with the oracle Ξ is as follows. Firs t, let
+the value Ξ( x) = True for a triple x = (y, 0,g ) with |y| = n and g a code
+for one of the ﬁnitely many gate types such that y ∈ { 0, 1}n is the code for a
+gate of type g. Likewise, Ξ( x)’s value for a triple x = (y,ℓ, 0) can be used to
+indicate whether y designates a gate y with>ℓ many inputs (allowing binary
+search to compute the precise arity of gate y). Finally, let values z ∈ { 0, 1}n
+designate either one of the G many gates or one of the 2 i many literals. Then
+Ξ(x)’s value for a triple x = (y,ℓ,j ) can indicate whether the ( ℓ + 1)-st input
+to the gate y is designated by a z such that the j-th bit of z is a 1. This allows
+z to be computed from y and ℓ in polynomial time by querying its bits. Since
+y and ℓ can be encoded with n bits, g ranges over ﬁnitely many values, and
+j ranges over 1,...,n , all these triples can be uniquely encoded with binary
+strings of length 3 n. The truth values Ξ( x) on these 2 3n strings fully specify
+the direct connection language of C.
+The circuit C is, by hypothesis, of constant depth d. Without loss of gen-
+erality, we may also assume that C is leveled, alternating between levels of
+unbounded fanin ANDs, unbounded fanin ORs, and unbounded fanin ⊕ m
+gates for some ﬁxed m ≥ 2, and with all inputs at the bottom level being
+literalsxi orxi. By adding extra single-input gates, this can be achieved while
+at most tripling the depth of the circuit. Furthermore, we can assu me w.l.o.g.
+===== PAGE 28 =====
+28 Sam Buss
+that the strings y andz, designating gates or gate inputs, are suﬃciently uni-
+formly assigned so that there is a polynomial time algorithm to obtain f rom a
+valuey the depth of the gate y in the circuit.
+The circuit C has i inputs, x1,...,x i (and their complements x1,..., xi).
+We identify 1,...,i with the ﬁrst i binary strings in {0, 1}n and encode the
+Boolean truth values of the xj ’s with an oracle Ω. Namely, the value of Ω( j)
+speciﬁes the truth value of xj. Then, given Ξ and Ω, the circuit value problem
+for C is the problem of whether C, as described by Ξ and with inputs given
+by Ω outputs True.
+We claim that the circuit value problem for C is uniformly expressible by
+a ModPH Ω, Ξ
+m predicate. That is, there is a formula Val d,m (0n) in ModPH Ω, Ξ
+m
+which is true precisely when Ξ encodes the direct connection languag e for a
+leveled circuit of depth d and size ≤ 2n over the unbounded fanin connectives
+∧ , ∨ and ⊕ m such that circuit outputs True when its Boolean inputs are
+given by Ω. The fact that the formula Val d,m exists in ModPH Ω, Ξ
+m follows
+straightforwardly the fact that the circuit is leveled and constant depth: the
+formula Vald,m uses the appropriate universal, existential, and ⨁
+m quantiﬁers
+to talk about the truth of gates at each level in the circuit C. By design,
+Vald,m (0n) queries values of Ξ( x) only for |x|= 3n and queries values of Ω( x)
+only for |x|=n.
+We write “C accepts” to mean “C as encoded by Ξ with inputs as speciﬁed
+by Ω outputs True”. By deﬁnition, Val d,m (0n) expresses that C accepts. Since
+Vald,m is in ModPH Ω, Ξ
+m , Corollary 29 with |u| = 2, Deﬁnition 22, and the
+deﬁnition of 1 ⊕ m-ptime state there exists polynomials q(n) and s(n) and a
+predicate ψ which is polynomial time (relative to Ω , Ξ) so that
+C accepts ⇔ N (0n) ≥ 3
+4 2q(n)
+C rejects ⇔ N (0n) ≤ 1
+4 2q(n)
+where
+N (0n) = (#r, |r|=q(n))(⨁
+my, |y|=s(n))ψ (0n,r,y ). (19)
+Via the Paris-Wilkie, Furst-Saxe-Sipser translation, we can conver t Vald,m
+into a circuit D which evaluates whether C outputs True: The inputs to D
+are Boolean inputs ω j and ω j representing the values of Ω( j) for 1 ≤ j ≤ i,
+and Boolean inputs ξj and ξj representing the values of Ξ( j) for j ∈ { 0, 1}3n.
+The size of D will be 2 nO(1)
+. We initially construct D as a depth four circuit,
+but then collapse it to have depth three. The top gate of D is a majority gate
+(hence, a symmetric gate) with 2 q(n) many inputs, one for each value of r
+in (19). The second level contains ⊕ m gates, each with 2 s(n) many inputs;
+namely, each input corresponds to a particular value for y in (19). The ﬁnal
+two levels initially consist of disjunctions of conjunctions, one for ea ch pair
+r and y. The conjunctions all have size nO(1). For ﬁxed values of r and y,
+these conjunctions are chosen by considering all possible computa tions γ of
+ψ (0n,r,y ) over all possible oracles Ξ and Ω. (So we are thinking of Ξ and Ω as
+===== PAGE 29 =====
+Uniform Proofs of ACC Representations 29
+being unspeciﬁed.) Some of these computations γ are accepting; the rest are
+rejecting. For each computation γ which is accepting, form the conjunction Aγ
+of the literals ω j, ω j, ξj , ξj such that γ queries the value of Ω( j) or Ξ( j)
+and receives the corresponding answer of True or False. Since Ψ has runtime
+polynomially bounded in terms of n, each conjunction Aγ is polynomial size,
+nO(1). The condition that Ψ(0 n,r,y ) accepts is equivalent to
+⋁
+γ
+{Aγ :γ is an accepting computation for Ψ(0 n,r,y )}. (20)
+For any two distinct computations γ and γ ′, there must exist an oracle query
+for which γ and γ ′ receive diﬀerent answers. (Otherwise, the computations
+would not be diﬀerent.) Therefore, for any ﬁxed setting of the ω j’s andξj’s at
+most one conjunction Aγ can be true.
+The circuit D, as constructed so far, has size 2 nO(1)
+and depth four; namely
+a symmetric gate at the top, then a level of ⊕ m gates, then disjunctions of
+conjunctions of size nO(1). Since the disjunctions (20) of conjunctions are used
+as inputs to ⊕ m gates, the only important things is the count (mod m) of how
+many are true. Since each such disjunction has either exactly zero or exactly
+one true input, we can “bypass” the disjunctions, and feed the co njunctionsAγ
+directly into the ⊕ m gates without changing the value output byD. This makes
+D into a depth three circuit, with a majority gate, then a level of ⊕ m gates,
+and then conjunctions of small size O(nO(1)).
+The circuit D computes the circuit value problem for a circuit as described
+by Ξ. To ﬁnalize D, specializeD to use the oracle Ξ which correctly encodes the
+direct connection language for C, by replacing each Boolean input ξi with the
+appropriate (hardwired) constant True or False. Identifying the ω j’s with the
+inputsxj ,D now computes the same Boolean function as C. The size of D is
+2nO(1)
+. Since n =O(logS), D has size 2 (log S)O(1)
+and so is quasipolynomially
+bounded by the size of C. The bottom of level of conjunctions in D have
+size (log S)O(1), namely polylogarithmic in the size of C. This thus proves
+Theorem 1.
+The proof of Theorem 2 is similar. Val d,m is now a ModPH Ω, Ξ predicate.
+By Theorem 31, we can express “ C accepts” by
+C accepts ⇔ N ′(0n) ≥ 3
+4mq(n)
+C rejects ⇔ N ′(0n) ≤ 1
+4mq(n)
+where
+N ′(0n) = (ApxMaj- C[M]r, |r|=q(|z|))ψ ′(0n,r ),
+whereψ ′ is polynomial time (relative to Ω and Ξ), and q is a polynomial, and
+M is a ﬁxed sequence ms1(n)
+1 ,...,m sℓ (n)
+ℓ for primes mi and polynomials si(n).
+We build again a circuit D which evaluates whether C accepts. The inputs
+to D are again the ω j’s and ξj’s, and the size of D is 2 nO(1)
+. We form D as
+===== PAGE 30 =====
+30 Sam Buss
+a depth three circuit, and subsequently we collapse it to depth two. The top
+gate of D has 2 q(n) inputs, one for each value of r. This gate is symmetric,
+computing iterated mod-counting and then taking the approximate majority.
+The gates at the second level are initially disjunctions of the form
+⋁
+{Aγ :γ is accepting } (21)
+where γ now ranges over accepting computations of Ψ ′(0n,r ). Each Aγ is a
+conjunction of size nO(1). As before, for a ﬁxed value of r, at most one Aγ in
+the disjunction (21) can be true. Thus, we can replace each disjun ction (21)
+which is an input to the top gate of D by the set of inputs Aγ . This replaces
+each input to the top gate by up to 2 nO(1)
+many inputs, but does not change
+the value of the circuit (no matter what Ξ or Ω are). This also makes D
+have depth two. To ﬁnalize D we again replace the Boolean inputs ξi by
+the appropriate constants True or False which correctly encode the direct
+connection language for the circuit C. The resulting circuit D is equivalent
+to C with size quasipolynomially bounded by C. The size of D is 2 nO(1)
+;
+it is a depth two circuit with a symmetric gate as its output gate, and t he
+remaining gates are conjunctions with fanin nO(1). This completes the proof
+of Theorem 2. ✷
+In Theorem 1, the top gate is an approximate majority gate. By the fact [27,
+20] that BPP ∈ Σ p
+2 ∩ Π p
+2, similarly to Theorem 23, the majority gate can be re-
+placed by either a conjunction of disjunctions, or a disjunction of c onjunctions.
+This gives the following weaker form of the Beigel-Tarui theorem:
+Theorem 37 Fix d ≥ 1 and prime m ≥ 2. Suppose C is an ACC circuit of
+size S which uses MOD m gates. (That is, C is an AC0[m] circuit.) Then
+there is an equivalent circuit C′ of size 2(log S)O(1)
+which has depth four. The
+ﬁrst (input) level of C′ contains ∧ gates of size (logS)O(1), the second level
+contains MOD m gates, and the top two levels can be either a conjunction of
+disjunctions, or a disjunction of conjunctions.
+Buss, Ko/suppress lodziejczyk and Zdanowski [10] have shown that Theorem 37 can
+be proved in a version of bounded arithmetic that includes mod m quanti-
+ﬁers for m a prime, based on Jeˇ r´ abek’s bounded arithmetic theories for ap-
+proximate counting [16, 17]. They then used this to prove that cons tant-depth
+propositional proofs over the unbounded fanin connectives ∧ , ∨ and ⊕ p can be
+simulated by quasipolynomial size propositional proofs of depth fou r (over the
+same connectives). On a related note, earlier work by Maciel and Pit assi [21]
+established that constant depth propositional proofs over the c onnectives ∧ , ∨ ,
+and ⊕ pk can be simulated by depth three proofs if exact counting (thresho ld)
+gates are also permitted. It is likely that, analogously to [10], the simu lation
+of [21] can be “uniformized” by proving it in a version of bounded arith metic
+augmented with exact counting quantiﬁers and modular counting qu antiﬁers
+for prime moduli p ≥ 2.
+===== PAGE 31 =====
+Uniform Proofs of ACC Representations 31
+References
+1. Allender, E.: A note on the power of threshold circuits. In : Proceedings 30th IEEE
+Symp. on Foundations of Computer Science (FOCS), pp. 580–58 4 (1989)
+2. Allender, E.: The permanent requires large uniform thres hold circuits. Chicago Journal
+of Theoretical Computer Science p. article 7 (1999)
+3. Allender, E., Gore, V.: A uniform circuit lower bound for t he permanent. SIAM J. on
+Computing 23(5), 1026–1049 (1994)
+4. Allender, E., Hertrampf, U.: Depth reduction for circuit s of unbounded fan-in. Infor-
+mation and Computation 112, 217–238 (1994)
+5. Arora, S., Barak, B.: Computational Complexity: A Modern Approach. Cambridge
+University Press (2009)
+6. Barrington, D.A.M.: Quasipolynomial size circuit class es. In: Proc. 7th Structure in
+Complexity Conference, pp. 86–93 (1992)
+7. Beigel, R., Tarui, J.: On ACC. Computational Complexity 4, 350–366 (1994)
+8. Beigel, R., Tarui, J., Toda, S.: On probabilistic ACC circ uits with an exact-threshold
+output gate. In: Algorithms and Computation: Third Intl. Sy mp., ISAAC’92, Lecture
+Notes in Computer Science 650, pp. 420–429 (1992)
+9. Buss, S.R.: Bounded Arithmetic. Bibliopolis, Naples, It aly (1986). Revision of 1985
+Princeton University Ph.D. thesis
+10. Buss, S.R., Ko/suppress lodziejczyk, L.A., Zdanowski, K.: Collapsing modular counting in
+bounded arithmetic and constant depth propositional proof s. Transactions of the AMS
+367, 7517–7563 (2015)
+11. Chen, S., Papakonstantinou, P.A.: Depth-reduction for composites. In: Proc. of the 57th
+Annual IEEE Symposium on Foundations of Computer Science (F OCS’16), pp. 99–108.
+IEEE Computer Society (2016)
+12. Fortnow, L.: A simple proof of Toda’s theorem. Theory of C omputing 5, 135–140 (2009)
+13. Furst, M., Saxe, J.B., Sipser, M.: Parity, circuits and t he polynomial-time hierarchy.
+Math. Systems Theory 17, 13–27 (1984)
+14. Green, F., K¨ obler, J., Regan, K.W., Schwentick, T., Tor ´ an, J.: The power of the middle
+bit of a #P function. Journal of Computer and System Sciences 50, 456–467 (1995)
+15. Hansen, K.A., Kouck´ y, M.: A new characterization of ACC 0 and probabilistic CC 0.
+Conputational Complexity 19, 211–234 (2010)
+16. Jeˇ r´ abek, E.: Approximate counting in bounded arithme tic. Journal of Symbolic Logic
+72(3), 959–993 (2007)
+17. Jeˇ r´ abek, E.: Approximate counting by hashing in bounded arithmetic. Journal of Sym-
+bolic Logic 74(3), 829–860 (2009)
+18. Kannan, R., Venkateswaran, H., Vinay, V., Yao, A.C.: A ci rcuit-based proof of Toda’s
+theorem. Information and Computation 104(2), 271–276 (1993)
+19. Kraj ´ ıˇ cek, J.: Bounded Arithmetic, Propositional Cal culus and Complexity Theory.
+Cambridge University Press, Heidelberg (1995)
+20. Lautemann, C.: BPP and the polynomial hierarchy. Inform ation Processing Letters
+17(4), 215–217 (1983)
+21. Maciel, A., Pitassi, T.: Towards lower bounds for bounde d-depth Frege proofs with
+modular connectives. In: P.W. Beame, S.R. Buss (eds.) Proof Complexity and Feasible
+Arithmetics, pp. 195–227. American Mathematical Society ( 1998)
+22. Papadimitriou, C.H., Zachos, S.K.: Two remarks on the po wer of counting. In: Proc.
+6th Gesellschaft f¨ ur Informatik Conference on Theoretica l Computer Science, Lecture
+Notes in Computer Science 145, pp. 269–276. Springer-Verla g, Berlin (1983)
+23. Paris, J.B., Wilkie, A.J.: ∆0 sets and induction. In: W. Guzicki, W. Marek, A. Pelc,
+C. Rauszer (eds.) Open Days in Model Theory and Set Theory, pp . 237–248 (1981)
+24. Razborov, A.A.: Lower bounds on the size of bounded depth networks over a complete
+basis with logical addition. Matematicheskie Zametki 41, 598–607 (1987). English
+translation in Mathematical Notes of the Academy of Sciences of the USSR 41 (1987)
+333-338
+25. Ruzzo, W.L.: On uniform circuit complexity. J. Comput. S yst. Sci. 22, 365–383 (1981)
+26. Sch¨ oning, U.: Probabilistic complexity classes and lo wness. Journal of Computer and
+System Sciences 39, 84–100 (1989)
+===== PAGE 32 =====
+32 Sam Buss
+27. Sipser, M.: A complexity theoretic approach to randomne ss. In: Proceedings of the
+Fifteenth Annual ACM Symposium on Theory of Computing, pp. 3 30–335. ACM Press
+(1983)
+28. Smolensky, R.: Algebraic methods in the theory of lower b ounds for Boolean circuit
+complexity. In: Proceedings of the Nineteenth Annual ACM Sy mposium on the Theory
+of Computing, pp. 77–82. ACM Press (1987)
+29. Straubing, H., Th´ erien, D.: A note on M ODp-M ODm circuits. Theory of Computing
+Systems 39(5), 699–706 (2006)
+30. Tarui, J.: Probabilistic polynomials, AC 0 functions and the polynomial-time hierarchy.
+Theoretical Computer Science 113, 167–183 (1993)
+31. Toda, S.: PP is as hard as the polynomial-time hierarchy. SIAM Journal on Computing
+20(5), 865–877 (1991)
+32. Toda, S., Ogiwara, M.: Counting classes are at least as ha rd as the polynomial-time
+hierarchy. In: Proc. 6th Structure in Complexity Theory Con ference, pp. 2–12 (1991)
+33. Valiant, L.G., Vazirani, V.V.: NP is a easy as detecting u nique solutions. Theoretical
+Computer Science 47, 85–93 (1986)
+34. Williams, R.: Non-uniform ACC circuit lower bounds (201 1). To appear in Journal
+of the ACM . Shorter version appeared in 26th IEEE Conference on Computational
+Complexity (CCC), pp. 115-125, 2011
+35. Yao, A.C.C.: On ACC and threshold circuits. In: Proc. 31s t IEEE Symp. on Foundations
+of Computer Science (FOCS), pp. 619–627 (1990)

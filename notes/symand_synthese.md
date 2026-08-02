@@ -32,11 +32,13 @@ Torán, JCSS 50(3), 1995, cor. 6.4).
 > **Donc W(f) = le nombre minimal de portes ∧ d'un circuit SYM∘AND à variables
 > seules** — le format même qui alimente l'Evaluation Lemma de Williams.
 
-Réserves qui subsistent, nommées : le **texte primaire** de Beigel-Tarui reste
-illisible (PS 1995, polices bitmap) et ce que ses auteurs écrivent du format de
-leurs ∧ demeure **[NON TROUVÉ]** ; la convention **à littéraux** existe aussi
-dans la littérature (Williams l'atteste note 3 p. 2:6, et l'adopte lui-même en
-Theory of Computing 14(17), 2018) — les deux sont inter-convertibles à taille
+Réserves mises à jour le 2026-08-02 (A-002b — texte primaire OBTENU et lu,
+[../bib/pdf/beigel_tarui_1994_on_acc_ocr.txt](../bib/pdf/beigel_tarui_1994_on_acc_ocr.txt)) :
+le format d'ORIGINE de Beigel-Tarui est **polynomial à coefficients signés**
+(norme = somme des valeurs absolues) et sa forme circuit **admet les littéraux
+niés** (« *A NOT gate can appear in a circuit as a negated input literal* ») ;
+notre modèle est donc la **variante de Williams**, l'une des deux conventions
+qui coexistent (sa note 3 p. 2:6) — inter-convertibles à taille
 quasi-polynomiale préservée, **pas à nombre de portes** ; enfin les bornes
 supérieures d'ici ne nourrissent l'algorithme que si la porte symétrique est
 **évaluable rapidement**, ce que ce modèle n'exige pas. Écart de convention

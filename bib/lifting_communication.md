@@ -10,6 +10,26 @@
 > Un résumé de moteur de recherche n'est jamais une source. Ce qui n'a
 > pas été lu est marqué [NON TROUVÉ] et récapitulé en §9.
 >
+> **Troisième passe (2026-08-02, plus tard le même jour — A-015)** : pièce
+> ajoutée, fournie par l'utilisateur en texte intégral
+> ([pdf/hirahara_ilango_focs2025_texte.txt](pdf/hirahara_ilango_focs2025_texte.txt)) :
+> **Hirahara-Ilango-Loff, « Communication Complexity is NP-hard »,
+> arXiv:2507.10426, 14 juillet 2025, 7 p.** [V-primaire, texte intégral lu].
+> Calculer CC(f) d'une matrice donnée est NP-dur — la question de Yao 1979 —
+> via Jiang-Ravikumar 1993 (vertex cover → χ₁, le 1-partition number) plus
+> trois idées : protocole équilibré explicite, padding par matrice identité,
+> et l'observation CC(f) ≥ ⌈log χ₁(f)⌉ + 1 pour f non constante (preuve par
+> induction forte, §6 du papier). Réserves écrites par les auteurs : aucune
+> dureté d'approximation (même ±1 additif ouvert) ; la définition alternée
+> d'origine de Yao « *strictly speaking* » non résolue ; approximation ~1,1
+> cryptographiquement dure (Kushilevitz-Weinreb, STOC 2009) ; et l'implication
+> conditionnelle « dureté d'approximation à exposant constant arbitraire ⟹
+> réfutation de log-rank, si P ≠ NP ». **Attention homonymie** : ce papier
+> n'est PAS l'item « Hirahara-Ilango, FOCS 2025, p. 1648-1664 » de la ligne 13
+> ([veille_2026_07.md](veille_2026_07.md) §2 — *NP-Hardness of the Minimum
+> Circuit Size Problem from Well-Studied Assumptions*, 2 auteurs), dont le
+> contenu reste [NON TROUVÉ].
+>
 > **Seconde passe (2026-08-02, même jour)** : deux vérifications croisées
 > (chasse aux références ; survente/format/cohérence) ont été intégrées.
 > Corrections : TR25-073 (aucune revendication de primauté dans le texte,

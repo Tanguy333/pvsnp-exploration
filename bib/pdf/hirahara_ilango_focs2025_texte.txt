@@ -1,0 +1,253 @@
+===== PAGE 1 =====
+Communication Complexity is NP-hard
+Shuichi Hirahara /envel⌢pe
+National Institute of Informatics, Japan
+Rahul Ilango /envel⌢pe
+MIT, USA
+Bruno Loff /envel⌢pe
+LASIGE, Faculdade de Ciências, Universidade de Lisboa, Portugal
+1. In the paper where he first defined Communication Complexity [3], Yao asks:Is computing
+CC(f ) (the 2-way communication complexity of a given functionf) NP-complete? The
+problem of deciding whetherCC(f )≤k, when given the communication matrix forf and a
+numberk, is easily seen to be in NP. Kushilevitz and Weinreb have shown that this problem
+is cryptographically hard [2]. Here we show it is NP-hard.
+The proof consists of a small collection of observations, on top of a previous reduction
+by Jiang and Ravikumar [1] from vertex cover. They showed implicitly that it is NP-hard
+to computeχ1(f ), the 1-partition number (we will give a formal definition later) of a given
+function. We will begin by describing their reduction in the language of communication
+matrices. Using their reduction and a few additional tricks, we will conclude that the
+communication complexity off is NP-hard to compute exactly.
+2 Notation and definitions. Let f :X×Y →{0, 1}be a communication matrix. We let
+CC(f ) be deterministic communication complexity off, i.e., the smallest depth of abinary
+protocol tree for computingf.1
+A rectangle (of f :X×Y →{0, 1}) is a product setA×B where A⊆X and B⊆Y.
+We letχ1(f ) denote the 1-partition number, i.e., the smallest number of pairwise disjoint
+1-monochromatic rectangles needed to coverf−1(1). Because the 1-monochromatic leaves of
+any communication protocol forf form a partition off−1(1), we have:
+CC(f )≥⌈logχ1(f )⌉.
+3. We now describe a previous result by Jiang and Ravikumar [1], where they implicitly show
+that χ1 is NP-hard. The reduction is via the vertex cover problem. Recall, in the vertex
+cover problem, we are given as input an undirected graphG = ([n],E ), withE⊆
+([n]
+2
+)
+, and
+we wish to find the sizeκ(G) of a smallest-possible setC⊆[n] such that|e∩C|≥1 for all
+e∈E. GivenG, we will now describe a communication matrixfG :X×Y →{0, 1}, such
+that
+χ1(fG) = n + 4|E|+κ(G).
+The matrixfG and the proof thatχ1(f ) = n + 4|E|+κ(G) appears as Lemma 3.3. of Jiang
+and Ravikumar’s paper [1]. They actually showed this for thenormal set basis problem,
+which turns out to be equivalent toχ1, and here we translate their reduction to the language
+of communication complexity.
+The communication matrix offG consists of 2n + 4|E|rows, indexed by the set
+([n]×{0, 1})∪(E×[4]),
+1 It should be noted that the original definition appearing in Yao’s paper [3] requires the players to speak
+alternatingly. We here adopt the more modern, perhaps one could saycorrect, definition, which uses
+protocol trees.
+arXiv:2507.10426v1  [cs.CC]  14 Jul 2025
+===== PAGE 2 =====
+2 Communication Complexity is NP-hard
+and n + 5|E|columns, indexed by
+[n]∪(E×[5]).
+The communication matrix is given by the following picture. All missing entries are0, and
+some zeroes are included for emphasis.
+We now show thatχ1(fG) = n + 4|E|+κ(G). Let us start with the “≤” direction. Given
+a vertex coverC⊆[n] of sizek =|C|, we construct the following1-partition. ’ For each
+i /∈C, we include the single rectangle containing all the ones in thei column. If i∈C,
+we instead include two rectangles containing all the ones in the(i, 0) row and (i, 1) row
+respectively. Observe that, by construction, these rectangles will cover all the1s contained
+in the “upper left” rectangle
+([n]×{0, 1})×[n].
+===== PAGE 3 =====
+S.Hirahara, R.Ilango, and B.Loff 3
+Moreover, becauseC is a vertex cover, for every edge{i,j}, we must have already covered
+all the 1s in the(v, 0) and (v, 1) rows for somev∈{i,j}. It is then easy to see that we can
+use only 4 rectangles to cover all the remaining1s in the submatrix corresponding to that
+edge.2 This yields a1-partition withn−k + 2k + 4|E|=n + 4|E|+k rectangles.
+Next we show the “≥” direction. Fix a minimum-sized partition of the1s offG into
+1-monochromatic rectangles. We say a rectangle in the partition is anode rectangleif it
+covers ((i,b ),i ) for somei∈[n] and b∈{0, 1}. We form a vertex setC′⊆[n] by includingi
+inC′if and only if the entries((i, 0),i ) and ((i, 1),i ) are covered by different node rectangles
+in the partition. Observe that we must have at leastn +|C′|node rectangles.
+We first show that we may assume, without loss of generality, that the given smallest
+1-partition has the following property: ifi /∈C′, then there do not exist two edges{i,j}and
+{i,j′}such that the1 entries in the(i, 0) and (i, 1) rows of their gadgets share a rectangle.
+Indeed, suppose we have that three distinct indicesi,j,j′such that{i,j}and{i,j′}are
+edges ofG, ((i, 0), ({i,j}, 1)) and ((i, 0), ({i,j′}, 1)) are in the same rectangleR, and yet
+i /∈C′, meaning ((i, 0),i ) and ((i, 1),i ) are both in the same rectangleS. Then the rectangle
+R, being 1-monochromatic, cannot include any rows other than(i, 0). We may then remove
+the entry ((i, 0),i ) from the rectangleS it shares with ((i, 1),i ), and put it inR instead.
+The new 1-partition has the same size, but nowi∈C′is forced to hold. So we may assume
+without loss of generality that we are given a minimum-size1-partition, where additionally
+there are no suchi,j,j′.
+Now, there are two kinds of edges{i,j}: edges inE1 are such thati /∈C′and j /∈C′,
+and edges inE2 = E\E1 are such thati∈C′or j∈C′(or both). Edges inE1 cannot
+use the node rectangles to cover the1s in their gadget, and hence they require at least5
+rectangles. This follows by noting that the five1s outlined in the figure above form a fooling
+set. Edges inE2 of the second kind can use the node rectangles to cover the1s in the top
+part of their edge gadget, but they still need4 rectangles to cover the bottom part. All of
+the rectangles used to cover the top part must be disjoint, by our without-loss-of-generality
+assumption above. It follows thatχ1(fG)≥n +|C′|+ 5|E1|+ 4|E2|=n +|C′|+ 4|E|+|E1|.
+By adding one node toC′per edge inE1 we obtain a vertex cover of size|C′|+|E1|and so
+χ1(fG)≥n + 4|E|+κ(G), as required.
+NP-hardness of CC(f )
+We now show howNP-hardness of CC(f ) follows from the above, with a few tricks.
+4. We now observe that, for suchG, fG can be computed by anon-binary protocol πwhich
+is, informally speaking,fairly balanced. Indeed, let us define thebinary depthof a leafℓin
+a non-binary protocol tree as the sum, over every node in the path from the root toℓ, of
+the ceiling of the logarithm of the number of children of the node. Thebinary depthof a
+non-binary protocol, then, is the maximum binary depth among its leaves. Then, the binary
+depth of our non-binary protocol forfG will be at most:
+⌈log (n + 2|E|+κ(G))⌉+ 2.
+We are justified in calling this afairly balancedprotocol, sinceχ1(fG) = n + 4|E|+κ(G) is a
+lower-bound on the number of its leaves.
+2 Namely, the submatrix given by the rectangleA×B where A = ({i, j}×{0,1})∪({i, j}×[4]) and
+B ={i, j}×[5]
+===== PAGE 4 =====
+4 Communication Complexity is NP-hard
+The protocol proceeds as follows. LetC⊆[n] be a vertex cover forG. Bob, the column
+player, speaks first. He sends Alice a bit indicating whether he has a column in the set
+NFCV ={({i,j},c )∈E×[5]|i<j, and (i∈C∧c∈{3, 4})∨(i /∈C∧c∈{1, 2}}.
+NFCV stands for “Not First Cover Vertex”. Indeed, Bob tells Alice whether or not his column
+is one of the two edge-gadget columns (1 and 2, or 3 and 4) corresponding to a vertex which
+is not the smallest vertex inC. Meaning, Bob sends a1 to Alice if he has an edge column
+({i,j},c ) such thati<j , i∈C and c∈{3, 4}, or an edge column({i,j},c ) such thati<j ,
+i /∈C (hence j∈C because C is a vertex cover) andc∈{1, 2}. Otherwise, Bob sends a0.
+If he sent a1, meaning he has a column inNFCV, then Bob further tells Alice exactly
+which column (out of2|E|possibilities) he has, and Alice replies whether Bob’s column entry
+in Alice’s row is0 or 1. This sub-tree of the protocol has exactly4|E|leaves and binary
+depth≤1 +⌈log(2|E|)⌉+ 1≤⌈log(n + 2|E|+|C|)⌉+ 2.
+Now suppose Bob’s column is not inNFCV. Then Alice will tell Bob which of the following
+cases applies to her row:
+(1) She has row(i,r ) with i∈C, and in this case she sends(i,r ) to Bob;
+(2) She has a row(i,r ) with i /∈C, and in this case she sendsi to Bob;
+(3) She has a row({i,j},r ) with i∈C and r∈{1, 2}, or withi /∈C and r∈{1, 3}, and in
+this case she sends{i,j}to Bob;
+(4) She has a row({i,j},r ) with i∈C and r∈{3, 4}or withi /∈C and r∈{2, 4}, and in
+this case she sends{i,j}to Bob, also.
+After receiving this information, Bob can now tell Alice the value offG. Indeed, in case
+(1), Bob learns exactly which row Alice has. In case (2), Bob learns that Alice has one of
+two rows(i, 0) or (i, 1); buti /∈C, and Bob’s column is not inNFCV, and in the remaining
+columns, fG is constant in both of Alice’s rows. In case (3), Bob learns, for example, Alice’s
+row is either({i,j}, 1) or ({i,j}, 2) for somei∈C, and one can see from the figure that for
+the columns outside ofNFCV, fG is constant in both of Alice’s rows. Case (3) withi /∈C
+and both subcases of case (4) are similar.
+This sub-tree of the protocol has exactly2n + 4|E|+ 2|C|leaves: 4|C|for case (1),
+2(n−|C|) for case (2),2|E|for each of cases (3) and (4). The binary depth of the leaves in
+this sub-tree is1 +⌈log(n + 2|E|+|C|)⌉+ 1. This is illustrated in the following figure (we
+ignore the gray part, for now).
+...... ... ...
+5. Now we do a trick to make the protocol binary and balanced at the same time, where we
+may formally call a binary treebalancedif its depth equals the ceiling of the log of the number
+===== PAGE 5 =====
+S.Hirahara, R.Ilango, and B.Loff 5
+of leaves. First, notice the following. Let us convert the above protocol into binary, by
+encoding each message using⌈log(# of children)⌉bits at each node. In this binary protocol,
+Bob communicates the first bit, and then the two resulting sub-trees are balanced, with the
+left sub-tree having2n + 4|E|+ 2κ(G) useful leaves, and the right sub-tree having4|E|useful
+leaves, plus some extraunused leaves that are left dangling because of our conversion of the
+protocol into binary — these unused leaves will never be reached by any input to the protocol.
+Precisely half of the useful leaves are1-monochromatic, and half are0-monochromatic.
+Now suppose we are given a numberk, and we wish to distinguish whetherκ(G)≤k
+or κ(G)> k. Then letℓbe the natural number such that2ℓ−1 < n+ 2|E|+k≤2ℓ. Let
+d0 = 2 ℓ−n−2|E|−k, d1 = 2 ℓ−2|E|, andd =d0 +d1. In other words, for the case when
+κ(G) = k, d0 is the number of leaves that are missing from (the useful part of) the left
+sub-tree of the above nearly balanced protocol, so that it would haveexactly 2ℓleaves in
+this left sub-tree. Andd1 is the number of leaves missing from (the useful part of) the right
+sub-tree, so that it wouldalso have 2ℓleaves.
+Now consider the communication matrixf′
+G, given by
+f′
+G =
+(fG 0
+0 Idd
+)
+where Idd is thed×d identity matrix. It now follows thatχ1(f′
+G) = χ1(fG) +d, and so
+χ1(f′
+G) = 2 ℓ+1 +κ(G)−k.
+On the other hand, abinary protocol forf′
+G can proceed very similarly to a protocol forfG.
+Bob begins by saying whether he has a column inNFCV, or one of the lastd1-many extra
+columns. In that case, he says which, and Alice replies with the function value. Otherwise,
+Alice sends a message as before, with an extra case (5) if she has one of the firstd0-many
+extra rows, and in this case she says which row. Bob then replies with the function value as
+before. The difference between the old and new protocol is the gray part illustrated in the
+figure. This protocol has depth exactlyℓ+ 2 if k≤κ(G). And this protocol needs depth
+ℓ+ 3 if k > κ(G). All we are missing is a matching lower-bound, saying that there isno
+protocol that can solvef′
+G in depth less thanℓ+ 3, whenk>κ(G).
+6. Now observe that, for every non-constant communication matrixf,
+CC(f )≥⌈logχ1(f )⌉+ 1.
+The observation is trivial without the+1, but it is not immediately obvious with it.
+Let us prove this by strong induction onCC(f ). Becausef is non-constant, we have that
+CC(f )≥1. Our base case isCC(f ) = 1. In this case, it is easy to see thatχ1(f ) = 1 and
+thus the theorem holds.
+Now suppose thatCC(f ) = s> 1. Take any optimal protocol forf, and look at its left
+and right sub-trees. The left sub-tree computes some functionf0 and the right sub-tree
+computes some functionf1 over disjoint rectangles. SinceCC(f )> 1, we have that at least
+one off0 and f1 is non-constant. Finally, we can conclude that
+CC(f ) = 1 + max{CC(f0), CC(f1)}
+≥2 + max{⌈logχ1(f0)⌉,⌈logχ1(f1)⌉}
+≥1 +⌈log(2·max{χ1(f0),χ1(f1)})⌉
+≥1 +⌈log(χ1(f0) +χ1(f1)})⌉
+≥1 +⌈logχ1(f )⌉,
+===== PAGE 6 =====
+6 Communication Complexity is NP-hard
+where the first line uses that the protocol forf is optimal and the second line uses the
+inductive hypothesis and that at least one off0 and f1 is non-constant (and the fact that
+CC(f )≥1 +⌈logχ1(g)⌉for all non-constant functionsf and all constant functionsg).
+7. Finally, we may conclude the following:
+if k ≤κ(G), then CC(f′
+G) ≤ℓ+ 2 by the protocol of §4 and §5, andCC(f′
+G) ≥
+⌈log(χ1(f′
+G))⌉+ 1 = ℓ+ 2 by §5 and §6, soCC(f′
+G) = ℓ+ 2.
+if k>κ(G), however, we getCC(f′
+G)≥⌈log(χ1(f′
+G))⌉+ 1 = ℓ+ 3.
+And so it follows that communication complexityCC(f ) of a given functionf is NP-hard to
+compute exactly.
+8 Final remarks. It should be noted that the above result does not give usany hardness-
+of-approximation. It could well be thatCC(f ) is not NP-hard to compute for an additive
+error of 1! Do recall, however, that Kushilevitz and Weinreb have shown that approximating
+CC(f ) up to a factor of (roughly)1.1 is cryptographically hard[2], so we do expect that the
+problem ishard to approximate, just not necessarilyNP-hard to approximate.
+As we mentioned in footnote, we have proven NP-hardness of communication complexity,
+as defined by the smallest depth of a protocol tree, and not as per Yao’s original definition,
+of the smallest number of rounds in an alternating protocol. These two definitions of
+communication complexity are the same up to a constant factor of2, but our proof is
+not robust up to such a factor, hence, strictly speaking, Yao’s original question remains
+unanswered. We are currently working on this problem: it seems to require significantly new
+ideas.
+We should also remark that the reduction of Jiang and Ravikumar, together with the
+known hardness of approximation results for vertex cover, already show thatχ1(f ) is hard to
+approximate up to some constantγ >1. One would think that this would lead to a similar
+hardness-of-approximation forL(f ), the smallest number of leaves in a protocol forf, but it
+is unclear how to generalize the crucial observation of §6. The analogous conjecture to §6 for
+L, which would state thatL(f )≥2χ1(f ), is not true: certain functions with imbalanced
+protocols serve as a counter-example.
+As such our result, which does hold for the usual model of communication complexity,
+is not very robust. What one would ideally like is an NP-hardness of approximation result
+for CC(f ), up to a reasonably large constant factor (e.g.4 would be enough, but not2),
+since this would make the hardness robust up to rebalancing the protocol tree. This would
+require reducing from a different problem, such as graph coloring, since vertex cover can be
+approximated with a factor of 2, and so it cannot proveany hardness of approximation on
+CC(f ).
+In a very distant future one could even hope for hardness of approximation up to a small
+exponent. Proving hardness of approximation to an arbitrary constant exponent would
+disprove the log rank conjecture, assumingP̸= NP, and we have even wondered if this was a
+viable way to attack the log-rank conjecture.
+In summary: the question of whetherCC(f ) is hard to approximate is wide open, and an
+entirely new approach will have to be developed to attack this question.
+References
+1 Tao Jiang and Bala Ravikumar. Minimal NFA problems are hard.SIAM Journal on Computing ,
+22(6):1117–1141, 1993.
+2 Eyal Kushilevitz and Enav Weinreb. On the complexity of communication complexity. In
+Symposium on Theory of Computing (STOC), pages 465–474, 2009.
+===== PAGE 7 =====
+S.Hirahara, R.Ilango, and B.Loff 7
+3 Andrew Chi-Chih Yao. Some complexity questions related to distributive computing. In
+Symposium on Theory of Computing (STOC), page 209–213, 1979.

@@ -946,6 +946,16 @@ calcul** du fil AS n'avaient pas atteint.
 >   **17 familles**. Prise annexe : contradiction Göös interne au cahier
 >   corrigée (la réponse du 2026-06-12 était consignée, la ligne d'attente
 >   disait le contraire).
+> - [x] **A-002b (fait, 2026-08-02, main de Tanguy)** — le **texte primaire de
+>   Beigel-Tarui** enfin lu (OCR fourni, 2 lectures concordantes) : définition
+>   polynomiale à coefficients signés, littéraux niés admis ⟹ le modèle du
+>   dépôt est la **variante de Williams** ; la question TC⁰ posée dès 1994
+>   (Rem. 2.11). Le dernier [NON TROUVÉ] primaire de la ligne 7 est levé.
+> - [x] **A-015 (fait, 2026-08-02, main de Tanguy)** — pièce ajoutée à la
+>   ligne 17 : **« Communication Complexity is NP-hard »** (Hirahara-Ilango-
+>   Loff, arXiv:2507.10426, texte intégral) — la question de Yao 1979 ;
+>   homonymie levée : ce n'est pas l'item FOCS 2025 de la ligne 13, qui reste
+>   [NON TROUVÉ]. Buss 2017 conservé au dépôt, Théorème 2 re-vérifié.
 >
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le

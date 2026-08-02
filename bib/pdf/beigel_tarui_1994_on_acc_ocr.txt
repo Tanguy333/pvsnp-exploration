@@ -1,0 +1,707 @@
+ON ACC
+Richard Beigel and Jun Tarui
+Abstract. We show that every language L in the class ACC can
+be recognized by depth-two deterministic circuits with a symmetric
+function gate at the root and 2logO(1)n AND gates of fan-in logO(1)n at
+the leaves, or equivalently, there exist polynomials pn(x1;:::;xn) over
+Z of degree logO(1)n and with coe cients of magnitude 2logO(1)n and
+functions hn : Z ! f0;1g such that for each n and each x 2 f0;1gn,
+L(x) = hn(pn(x1;:::;xn)). This improves an earlier result of Yao
+(1985). We also analyze and improve modulus-amplifying polynomials
+constructed by Toda (1991) and Yao (1985).
+1. Introduction and Overview
+1.1. The ACC Problem. Strong lower bounds have been established for
+the size of constant-depth circuits that compute explicit Boolean functions in
+the case that the allowable gates are NOT, OR, AND, and MODq, where q is
+a xed prime power. (For Boolean variables y1;:::;y , MODm(y1;:::;y) = 1
+if
+Pyi 0 (mod m),and 0 otherwise.) A series of work by Furst et al. (1984),
+Ajtai (1983), Yao (1985), and Hastad (1986) has established a near-optimal ex
+ponential lower bound for the size of constant-depth circuits with NOT, OR,
+and AND gates that compute PARITY.Razborov (1987) and Smolensky(1987)
+have shown that to compute the MODq function, constant-depth circuits with
+NOT, OR, AND,and MODq0 
+gates require exponential size if q and q0 are pow
+ers of distinct primes. For more information about these results and this line
+of research including history, motivations, and applications, see Sipser (1992)
+and Boppana & Sipser (1990).
+It remains an open problem, however, to show a limitation of constant
+depth circuits with MODm gates, where m is a xed composite: The class ACC
+2
+Beigel & Tarui
+| de ned by Barrington (1989) and considered further by Barrington (1989),
+Barrington & Therien (1988), McKenzie & Therien (1989), and Yao (1985) |
+consists of languages recognized by a family of constant-depth polynomial-size
+circuits with NOT and unbounded fan-in OR, AND, and MODm gates, where
+mis xed for the family. It is an open problem to show some explicit language
+(e.g., a language in NP) is not in ACC.
+1.2. Boolean Functions and Polynomials. Considering representability
+(in several senses) of a Boolean function by a polynomial has provided many
+insights in the theory of shallow circuits. Work along this line can give (1) a pos
+itive result by showing that (a) predicates in a certain class can be represented
+in a certain sense by polynomials of some restricted type (e.g., polynomials of
+degree polylogarithmic in the number of variables) and that (b) such polyno
+mials can be simulated by certain circuits. It can also give (2) a negative result
+that some function f is outside a class C by showing, in addition to (a), that
+(c) function f cannot be represented by polynomials used for class C in (a).
+The work of Razborov (1987) and Smolensky(1987) mentioned above is a
+beautiful example of type (2). Celebrated work of Toda (1991) is of type (1):
+Although Toda's work is in the context of PH, the polynomial hierarchy, (for
+a de nition, see, e.g., Johnson (1990)), it can be translated into the context of
+shallow circuits because of the well-known connection established by Furst et
+al. (1984) between PH and AC0 (the class of languages recognized by constant
+depth polynomial-size circuits with NOT, OR, and ANDgates; moreaccurately,
+corresponding to PH is the class qAC0 obtained by taking the size bound to
+be quasipolynomial, i.e., 2logO(1)n). Indeed, corresponding results in terms of
+shallow circuits and their improvements have been shown in a series of sub
+sequent work by Allender(1989), Allender & Hertrampf (1994), Beigel et al.
+(1991), Kannan et al. (1993), Tarui (1993), and Toda & Ogiwara (1992). Many
+other results obtained by considering polynomial representations are explained
+by Beigel (1993).
+1.3. Results. Yao (1985) obtained the rst nontrivial upper bound on the
+computing power of ACC circuits. In this paper we simplify Yao's proof and
+improve his result (thus both contributions are of type (1) above).
+For a polynomial p(x1;:::;xn) over Z, the ring of integers, de ne the norm
+of p to be the sum of the absolute values of the coe cients of p. (Beigel & Tarui
+(1991) and respectively Yao (1985) use the word \size" to denote what we call
+norm and the logarithm of what we call norm.) De ne SYM+ to be the class of
+languages L for which there exist a family frn(x1;:::;xn)g of degree-logO(1)n
+On ACC
+3
+norm-2logO(1)n polynomials over Z and a family fhng of functions from Z to
+f0;1g such that for each n and each x 2 f0;1gn, L(x) = hn(rn(x1;:::;xn)),
+where L denotes the characteristic function of L. (Beigel & Tarui (1991)
+called the class SYM+ by the name SYMMC. Here we have adapted the no
+tation proposed by Beigel et al. (1991) and Barrington (1992).) By standard
+techniques of Beigel et al. (1994) it is immediate that a language L is in SYM+
+if and only if L can be recognized by depth-two size-2logO(1)n circuits with a
+symmetric-function gate at the root (top) and AND gates of fan-in logO(1)n
+at the leaves (bottom). (A symmetric-function gate computes some symmetric
+Boolean function, i.e., a Boolean function that only depends on the number
+of inputs that are 1. A NOT gate can appear in a circuit as a negated input
+literal xi.)
+Yao (1985) showed that ACC is contained in a probabilistic version of
+SYM+: If L is in ACC, there exist nite sets Sn of degree-logO(1)n norm
+2logO(1)n polynomials in n variables, \simple" probability distributions n on
+Sn, and functions hn : Z ! f0;1g such that for each n and each x 2 f0;1gn,
+when r 2 Sn is randomly chosen according to n, L(x) = hn(rn(x1;:::;xn))
+with high probability.
+In this paper we show that ACC is in fact contained in SYM+:
+Theorem 1.1.
+ACC SYM+:
+We can think of Yao's result and our improvement as exhibiting somewhat
+surprising representational power of low-degree polynomials or as raising the
+new problem of showing that some explicit language is outside SYM+ or some
+subclass of SYM+ by analyzing (maybe a restricted class of) low-degree poly
+nomials algebraically or combinatorially (i.e., showing (c) above for SYM+).
+In both senses it seems more useful to think of SYM+ in terms of low-degree
+polynomials as opposed to depth-two circuits (hence our de nition of SYM+
+above).
+Actually we obtain a \uniform" version of Theorem 1 by using the Valiant{
+Vazirani method due to Toda (1991) for probabilistic simulations of OR and
+AND. If we do not care about uniformity, we can instead use a simple noncon
+structive argument together with the Razborov{Smolensky method, and obtain
+polynomials of lower degree in the end. We include a full explanation of how
+to do this, and the paper is totally self-contained as to proving Theorem 1 as
+stated (without uniformity). (As for the proof of the uniform version, we refer
+the reader to the literature for a discussion of the Valiant{Vazirani method.)
+4
+Beigel & Tarui
+We also show the following extension of Theorem 1.1, in which we allow an
+output gate to be any symmetric-function gate, not just a MODm gate.
+Proposition 1.2. Let L be a language recognized by a family of constant
+depth size-2logO(1)n circuits having a symmetric-function gate at the root and
+NOT, OR, AND and MODm gates elsewhere, where m is xed for the family.
+Then L is in SYM+.
+We prove Theorem 1.1 by showing how one can convert an ACC circuit to
+an equivalent modular polynomial circuit in which each gate evaluates a low
+degree polynomial modulo some prime p, and showing how one can collapse
+such a modular polynomial circuit using modulus-amplifying polynomials. In
+this way, we can present all arguments explicitlyin terms of polynomials, which
+is the way that they are best seen.
+1.4. Modulus-Amplifying Polynomials. Say that an integer polynomial
+P(x) in one variable is k-modulus-amplifying if for all integers N and all integers
+m 2,
+N 0 (modm) =) P(N) 0 (modmk);
+N 1 (modm) =) P(N) 1 (modmk):
+Toda (1991) was the rst to discover a construction and an application of
+low-degree modulus-amplifying polynomials. Toda constructed a k-modulus
+amplifying polynomial of degree (k2) and used it in proving that BP P 
+P#P[1]. (The polynomials actually constructed by Toda have modulus-amplifying
+property of a slightly di erent kind as will be explained in Section 2.3.) Yao
+(1985) discovered a new application of modulus-amplifyingpolynomials and ob
+tained the result mentioned above; also he noted that a k-modulus-amplifying
+polynomial of degree (klog23) can be obtained by a slightly di erent con
+struction. Both Toda and Yao used a recursive construction. We put these
+polynomials that seem somewhat magical in better perspective and obtain a
+k-modulus-amplifying polynomial of degree 2k 1, which is optimal. Modulus
+amplifying polynomials of lower degree yield polynomials of lower degree in the
+proof of Theorem 1.1, but are not essential for the proof.
+2. Proof of Theorem 1.1
+As usual, we assume without loss of generality that NOT gates in a circuit
+only appear as negated input literals xi's. All polynomials in the paper are
+On ACC
+5
+over Z. We let Z[x1;:::;xl] denote the ring of polynomials over Z in variables
+x1;:::;xl.
+Throughout the paper we will be interested in producing low-degree small
+norm polynomials. It turns out that for polynomials that we deal with, the
+norm is always at most exponential in the degree, and that checking this is
+usually easy. Thus the reader may mostly pay attention to the degree.
+2.1. Representing MODpe, OR, and AND Modulo p. In this subsec
+tion we show how the MODpe function, where p is prime, and the OR/AND
+functions can be represented, modulo p, by low-degree small-norm polynomials
+over Z.
+2.1.1 MODpe
+We include our own proof of the following lemma, which seems to be folklore
+(the earliest use we can nd is due by Chandra et al. (1984)).
+Lemma 2.1. Let p be a prime and let e 1. Then, there is a polynomial
+r(x1;:::;xn) of degree pe 1 and norm nO(pe) such that for each x 2 f0;1gn,
+MODpe(x1;:::;xn) = r(x1;:::;xn) mod p:
+To prove the lemma, we use the following fact. A proof of this fact using
+Kummer's Theorem was given by Beigel & Gill(1992); a proof using Lucas's
+theorem was given by Beigel & Tarui (1991). Here we give a simple, direct
+proof.
+Fact 2.2. For a prime p, a positive integer e, and an integer x,
+x 0 (modpe) () 8i2f0;:::;e 1g x
+pi
+! 0 (modp):
+Proof. Write
+x
+pi
+! = x(x 1) (x pi+1)
+pi(pi 
+1)
+1
+:
+The factors in both numerator and denominator take the values 0;1;:::;pi 1
+modulo pi. Thus x
+pi
+0 (mod p) if and only if the unique factor in the
+numerator that is a multiple of pi is in fact a multiple of pi+1. From this the
+conclusion follows by a simple induction on i. 2
+6
+Beigel & Tarui
+Proof of Lemma 2.1. By Fermat's little theorem, for integers y1;:::;yk,
+k
+Y
+i=1
+(1 yp 1
+i
+1 (mod p) if 8i2f1;:::;kg yi 0 (mod p);
+) 
+0 (mod p) otherwise.
+From this and Fact 2.2, it is easy to see that the following polynomial satis es
+the conclusion.
+r(x1;:::;xn) =
+=
+2.1.2 OR and AND
+e 1
+Y
+i=0
+e 1
+Y
+i=0
+0
+@1
+ 
+0
+1 
+B
+@
+Pn
+j=1 xj
+pi
+0
+@
+!p 11 A
+X
+S f1;:::;ng;jSj=pi
+p 1
+xj
+Y
+j2S
+1
+A
+1
+C
+A
+: 2
+A probabilistic polynomial p(x1;:::;xn) is a random variable that is uniformly
+distributed over some nite multiset = fp1;:::;psg, where pi 2 Z[x1;:::;xn].
+The degree and the norm of a probabilistic polynomial p are, respectively, the
+maximum degree and the maximum norm of pi (1 i s).
+The Valiant{Vazirani method due to Toda (1991), as reinterpreted and ex
+tended by Allender (1989, Allender & Hertrampf (1994), Beigel et al. (1991),
+Kannan et al. (1993), and Tarui (1993), and Toda & Ogiwara (1992), yields the
+following. (For a proof of the particular version stated below, see Tarui (1993)
+or Beigel et al. (1991); the condition (2) below is a technical one that makes our
+subsequent proofs simpler and can easily be satis ed by raising a polynomial
+to the (p 1)-th power.)
+Lemma 2.3. Let p be a prime and let " > 0. Then there is a probabilistic
+polynomial r(x1;:::;xn) that has degree d = O(log(1=")logn), norm nO(d),
+and \easily" constructible sample space of size 2O(log(1=")log2n), and satis es the
+following: (1) For each x 2 f0;1gn, r(x) mod p = OR(x) with probability at
+least 1 ". (2) For each x 2 f0;1gn, r(x) mod p 2 f0;1g with probability 1. A
+similar probabilistic polynomial for AND also exists.
+Remark 2.4. To obtain \uniform" versions of our results we need \easy" con
+structibility of a sample space. If we do not care about uniformity, we can
+alternatively proceed as follows. Let
+=f(a1x1 + +anxn)p 1 : (a1;:::;an) 2 f0;:::;p 1gng:
+On ACC
+7
+If we take ` = O(log(1=")) large enough and let
+`
+=f1
+Y
+(1 qi) : (q1;:::;q`) 2 `g;
+i=1
+then for each x 2 f0;1gn, a randomly chosen r 2 satis es (r(x) mod p) =
+OR(x) with probability at least 1 1
+2
+" as was noted by Razborov (1987) and
+Smolensky(1987).
+By a simple probabilistic argument involving the Cherno bound, the ex
+istence of a small subset 
+that computes OR with probability at least
+1 "can be shown. Fix x 2 f0;1gn. For large enough N = O((1=") n), if
+we sample a polynomial from independently N times and obtain r1;:::;rN,
+then the probability that ri(x) 6 = OR(x) for more than "N ri's is less than 2 n
+by the Cherno bound on tail of Bernoulli trials. Thus, there exists a multiset
+of size N such that for every x 2 f0;1gn, (r(x) mod p) = OR(x) except
+for at most " fraction of r's in .
+The multiset considered as a probabilistic polynomial satis es the condi
+tions of Lemma 2.3 and has lower degree d = O(plog(1=")), norm nO(d), and
+smaller sample space of size O((1=") n). Lower degree and smaller sample
+space yield polynomials of lower degree in our subsequent proofs. Actually, to
+achieve low degree, using a Cherno-bound argument above at the later stage
+is more e ective as will be explained in Remark 2.6.
+2.2. Modular Polynomial Circuits. In what follows we denote a gate in
+a circuit by a lower-case letter, e.g., gi, and the Boolean function that a gate
+computes by the corresponding upper-case letter, e.g., Gi. For gates g1;:::;gl,
+we also consider a polynomial in variables g1;:::;gl, thus letting g1;:::;gl de
+note both gates and formal variables in a polynomial. We assume, without loss
+of generality for all our purposes, that between any pair of gates in a circuit,
+there is at most one edge. For a gate g in a circuit, input(g) denotes the set of
+gates gi such that there is an edge from gi to g.
+A modular polynomial circuit C for n Boolean variables is similar to a
+standard circuit except that each gate is labeled by a polynomial instead of
+AND,OR,etc. Each nonoutput gateg withinput(g)= fg1;:::;glg is associated
+with some polynomial r 2 Z[g1;:::;gl] and a positive integer m called its
+modulus. We require that each such pair of polynomial r and modulus m has
+the property that for each (g1;:::;gl) 2 f0;1gl, r(g1;:::;gl) mod m 2 f0;1g.
+Each such gate is interpreted to compute the Boolean function
+G(x1;:::;xn) = r(G1(x1;:::;xn);:::;Gl(x1;:::;xn)) mod m:
+8
+Beigel & Tarui
+An output gate g with input(g)= fg1;:::;glg is associated with some poly
+nomial r 2 Z[g1;:::;gl] and some function h : Z ! f0;1g (no modulus is
+associated with an output gate), and is interpreted to compute the Boolean
+function h(r(G1(x);:::;Gl(x))):
+A modular polynomial circuit C is strati ed if each wire in C is between
+gates of depth d and d+1 for some d and all the gates at depth i are associated
+with a common single modulus mi. For a modular polynomial circuit: the size
+and the depth are, as in a standard circuit, the number of vertices and the
+depth of its underlying graph respectively; the degree and the norm are the
+maximum degree and norm, respectively, over polynomials associated with its
+gates; its modulus size is the maximum of moduli associated with its gates.
+Lemma 2.5. Foranydepth-c size-s fAND;OR;MODmg circuitfor n variables,
+there exists an equivalent strati ed modular polynomial circuit of depth c0 =
+O(c), size s0 = 2O(log3s), degree d = O(mlog2s), norm t = sO(d), and modulus
+size 
+m. In particular, for s = 2logO(1)n and m = logO(1)n, we have s0 =
+2logO(1)n, d = logO(1)n, t = 2logO(1)n.
+Proof. Let C be a circuit as above and let m = pe1
+1 pe be the prime
+factorization of m. A MODm gate is equivalent to the AND of a MODpe1
+1 
+gate,
+: : :, a MODpe gate. Thus, by adding some \dummy" gates if necessary, and
+increasing size and depth by only a constant factor, we can convert C into an
+equivalent strati ed ACC circuit C0 in which all the MOD gates at the same
+depth i share a single modulus pei
+i .
+Fix depth i and let p = pi and e = ei. A gate at depth i is either an AND,
+an OR, or a MODpe gate. If there is no MOD gate at depth i, take p = 2. For
+each gate g with input(g) = fg1;:::;glg, associate a modulus p, and associate
+a polynomial r 2 Z[g1;:::;gl] as follows.
+Case 1: g is a MODpe gate. Associate the polynomial given in the proof
+of Lemma 2.1.
+Case 2: g is an OR gate or an AND gate. Associate a probabilis
+tic polynomial given in Lemma 2.3 (take " = 1=(3s)) that has degree
+d = O(plog2s), norm sO(d), and sample space of size s0 = 2O(log3s), and
+computes OR/AND on f0;1g` with probability at least 1 1=(3s). (Note
+that ` size(C0) = O(s).)
+(At the bottom level proceed similarly as above using (1 xi) for each negative
+literal xi.)
+On ACC
+9
+Now C0 has been transformed to a \modular probabilistic polynomial cir
+cuit" that, for each x, computes C0
+n with probability at least 2=3. We can
+assume that all probabilistic polynomials used have underlying sample space
+of the same size S = 2O(log3n) and that each sample space is indexed by the
+set f1;:::;Sg (i.e., 
+= frigS
+i=1). By xing i = 1;:::;S, thus \ xing" every
+probabilistic polynomial to each of the S ordinary polynomials in its sample
+space, obtain S modular (ordinary) polynomial circuits, and connect their S
+output gates g1;:::;gS to a new output gate g. Associate with g the linear
+polynomial g1 + 
++gS and the function h : Z ! f0;1g that computes the
+majority among gi's: h(y) = 1 if y dS=2e, and 0 otherwise. We have obtained
+a desired modular polynomial circuit. 2
+Remark 2.6. If we use appropriately ampli ed Razborov{Smolensky polyno
+mials (use in Remark 2.4) in Case 2 and apply a Cherno-bound argument
+as in Remark 2.4 to independent copies of C0 thus obtained, we can produce
+an equivalent modular polynomial circuit of size O(sn) and degree O(mlogs).
+2.3. Modulus-Amplifying Polynomials. Recall that a k-modulus
+amplifying polynomial Pk satis es the following conditions for all integers N:
+N 0 (modm) =) Pk(N) 0 (modmk);
+N 1 (modm) =) Pk(N) 1 (modmk):
+Toda (1991) constructed polynomials ^Pk that satisfy the following slightly dif
+ferent conditions and can be used for his applications (and for proving our
+theorem also) just as polynomials Pk:
+N 0 (modm) =) ^Pk(N) 0 (modmk);
+N 1 (modm) =) ^Pk(N) 1 (modmk):
+Toda obtained his polynomials by letting ^P2(x) = 3x4 + 4x3 and ^P2i
+(x) =
+^
+P2( ^P2i 1(x)) for i > 1. (For 2i 1 < k 2i, let ^Pk(x) = ^P2i
+(x).) Thus Toda's
+^
+Pk has degree (k2). Noting that positive coe cients are not necessary for his
+applications (In retrospect, positive coe cients are not necessary for Toda's
+applications either), Yao (1985) constructed k-modulus-amplifying polynomi
+als Pk starting with P2(x) = 3x2 2x3 and de ning P2i 
+by the same recurrence.
+Yao's Pk has degree (klog23). Now we put modulus-amplifying polynomials
+in better perspective and construct optimal-degree modulus-amplifying poly
+nomials.
+10
+Beigel & Tarui
+The conditions for Pk above are equivalent to the following congruences in
+Z[x], the ring of polynomials in one variable over Z.
+Pk(x) 
+Pk(x) 
+0 (mod xk);
+1 (mod (x 1)k):
+(2.1)
+(2.2)
+The polynomials xk and (x 1)k are relatively prime in Z[x]; i.e., there
+are polynomials f(x), g(x) 2 Z[x] such that f(x)xk + g(x)(x 1)k = 1. This
+follows from the solution we give below. (Alternatively we can argue as fol
+lows: In a commutative ring, two ideals (in our case (xk) and ((x 1)k) are
+relatively prime if and only if their radical ideals are relatively prime. (For
+a proof, see a textbook on commutative algebra, e.g., Atiyah & MacDonald
+(1969, Proposition 1.16., p.9).) But the radicals of (xk) and ((x 1)k) are (x)
+and (x 1)respectively, and are clearly relatively prime. In fact xk and (x+s)k
+are relatively prime in Z[x] if and only if s = 1 or 1.) Thus by the Chinese
+remainder theorem (applied for the ring Z[x]), the equations (2.1) and (2.2)
+have a unique solution in Z[x] modulo xk(x 1)k. We explicitly solve (2.1) and
+(2.2) and get a degree 2k 1 solution, thus achieving the optimal degree.
+Consider (1 x)k in Z[[x]], the ring of formal power series over Z. Since its
+constant term is 1, it is invertible in Z[[x]]; i.e., we can nd Rk 2 Z[[x]] such
+that (1 x)kRk = 1. Throw away all the terms in the power series Rk of degree
+k and higher, and obtain the polynomial Qk. Then 1 (1 x)kQk is a solution
+to (2.1) and (2.2). In fact,
+Rk = 1
+(1 x)k 
+=(1+x+x2+ )k =X
+Thus
+and
+Pk = ( 1)k+1(x 1)k
+k +j 1
+j 0
+k 1
+Qk =
+X
+j=0
+k +j 1
+j
+k 1
+0
+@
+X
+j=0
+! xj;
+k +j 1
+j
+j
+! xj
+1 A + 1
+! xj:
+is our solution. Note that the norm of Pk is 2O(k). In what follows, Pk denotes
+the polynomial constructed above. The e ect of using our Pk's instead of the
+polynomials constructed by Toda and Yao will be mentioned in Remark 2.9.
+On ACC
+11
+2.4. Collapse by Modulus Ampli cation. For an integer a and a positive
+integer m, de ne a mod m to be the unique integer in the range [ ; ] that
+is congruent to a modulo m, where = = m 1
+2 
+if m is odd; and = m
+2 
+1,
+= m
+2 
+if m is even. Note that a = a mod m if m 2jaj+1. Also note
+the following obvious property of the norm: If a polynomial p(x1;:::;xn) has
+norm N, then for any x 2 f0;1gn, N p(x) N.
+Fact 2.7. Suppose that a polynomial r(x1;:::;xl) has norm N and that posi
+tive integers m and k satisfy mk 2N +1. Let a1;:::;al be integers satisfying
+(ai mod m) 2 f0;1g (1 i l). Then,
+r(a1 mod m;:::;al mod m) = r(Pk(a1);:::;Pk(al)) mod mk:
+Proof.
+r(a1 mod m;:::;al mod m)
+= r(Pk(a1) mod mk;:::;Pk(al) mod mk)
+= r(Pk(a1) mod mk;:::;Pk(al) mod mk) mod mk
+= r(Pk(a1);:::;Pk(al)) mod mk: 2
+The following lemma says that we can \collapse" strati ed modular poly
+nomial circuits using modulus-amplifying polynomials Pk, and, combined with
+Lemma 2.5, lets us nish the proof that ACC SYM+. The lemma is stated
+in a bit more general setting than necessary: It allows moduli of order logO(1)n
+instead of O(1).
+Lemma 2.8. Let fCng be a family of strati ed modular polynomial circuits
+of depth O(1), size 2logO(1)n, degree logO(1)n and norm 2logO(1)n, and modulus
+size logO(1)n. Then, the language recognized by C is in SYM+, i.e., there
+exist a family frn(x1;:::;xn)g of degree-logO(1)n norm-2logO(1)n polynomials
+and a family fhng of functions from Z to f0;1g such that for each n and each
+x 2f0;1gn, Cn(x) = hn(rn(x1;:::;xn)).
+Proof. Let fCng be as above. Fix n and let d = depth(Cn). The proof is
+by induction on d. For the base case d = 1, the output gate of Cn is associated
+with a polynomial rn(x1;:::;xn) of degree logO(1)n and norm 2logO(1)n and a
+function hn : Z ! f0;1g, and there is nothing to prove since by de nition of
+modular polynomial circuit, Cn(x) = hn(rn(x)). For the case d 2:
+12
+Beigel & Tarui
+Let fg1;:::;glg be the set of gates at depth 1 and assume that the output
+gate g is associated with a polynomial r(g1;:::;gl) and a function h : Z !
+f0;1g.
+Let fy1;:::;yg be the set of gates at depth 2 and assume that
+the gates g1;:::;gl at depth 1 are associated with polynomials
+r1(y1; : ::;y);:::;rl(y1;:::;y) respectively and with a common modu
+lus m = logO(1)n. (ri may be a polynomial in the variables that form a
+proper subset of fy1;:::;yg; but such a polynomial can be regarded as
+a polynomial in y1;:::;y ; this simpli es notations below.)
+We show that we can collapse these top two levels. Take k = logO(1)n large
+enough so that mk 
+2norm(r) + 1. Recall that in a modular polynomial
+circuit, for each ~y = (y1;:::;y) 2 f0;1g , (ri(~y) mod m) 2 f0;1g; thus by
+Fact 2.7,
+Thus let
+r(r1(~y) mod m;:::;rl(~y) mod m)
+= r(Pk(r1(~y));:::;Pk(rl(~y))) mod mk:
+r0(~y) = r(Pk(r1(~y));:::;Pk(rl(~y)))
+and de ne h0 : Z ! f0;1g by
+h0(z) = h(z mod mk):
+Then for each ~y = (y1;:::;y ) 2 f0;1g ,
+h(r(r1(~y) mod m;:::;rl(~y) mod m))
+= h(r0(~y) mod mk)
+= h0(r0(~y)):
+It is not hard to see that the polynomial r0 has degree logO(1)n and norm
+2logO(1)n.
+Introduce a new output gate g0 and associate with g0 polynomial r0 and
+function h0. Let C0
+n be the new circuit thus obtained. Then C0
+n is equivalent
+to Cn and has depth d 1, size smaller than that of Cn, degree logO(1)n, and
+norm 2logO(1)n. The inductive step is complete, and we have proved the lemma.
+2
+Now the proof of Theorem 1.1 is complete.
+On ACC
+13
+Remark 2.9. Let denotethe degree of the polynomial obtained by our proof
+method. For a polynomial-size depth-d ACC circuit, = log2 (d) n and the
+norm of the polynomial is nlog2 (d) n. The degree and the norm correspond,
+respectively, to the bottom fan-in and the size of depth-two circuits that char
+acterize SYM+.
+More speci cally: Let C be a strati ed polynomial-size depth-d (assume
+d 
+2) circuit having only MOD gates and such that all the MOD gates at
+the same depth i are MODpi 
+gates for some prime pi of order O(1). Then
+= (log( +1)d 1 1n), where = 1 in our case, and would be log23 and 2 if
+one uses Yao's and Toda's modulus-amplifying polynomials respectively.
+Now consider a circuit that is similar to C, but has AND/OR gates in addi
+tion and assume that we use our degree 2k 1 modulus-amplifying polynomials
+Pk. (The analysis below remains valid as far as the degree is O(k).)
+In this case, = (log n), where = 2d+1 2 if one uses Razborov{
+Smolensky polynomials together with a nonconstructive argument as explained
+above, and = 2d+2 3 if one uses the Valiant{Vazirani method.
+Remark 2.10. The function hn : Z ! f0;1g obtained in the proof above has
+the following form.
+hn(N) =
+0 otherwise,
+(1 if ( ((N mod M1) mod M2) mod Mc) dS=2e;
+where each Mi is a power of prime. Recently, F.Green et al. (1992) have shown
+that hn can be taken to be a \Mid-Bit" function, whose value on an integer
+N is the t(n)-th least signi cant bit of the standard binary expansion of N for
+some t(n) = logO(1)n. Barrington's 1992 survey includes explanations of other
+recent work that is related to this paper.
+Remark 2.11. Theorem 1.1 still holds when we allow a modulus m of MOD
+gates to grow as far as m = logO(1)n and mhas only O(1) distinct primefactors.
+On the other hand, if we allow O(logn=loglogn) distinct prime moduli of
+magnitude O(log n), any symmetric Boolean function on n variables can be
+computed by a circuit of the form: an OR at the root, at most n ANDs of
+fan-in O(log n) at the next level, and O(log2n=loglogn) MODs at the bottom.
+Thus if a similar result holds in this case, then TC0 (the class of languages
+recognized by constant-depth polynomial-size threshold circuits) is contained
+in SYM+.
+14
+Beigel & Tarui
+3. Proof of Proposition 1.2
+We proceed as we did to prove ACC SYM+: Show that we can convert
+such circuits as in the proposition to equivalent low-degree small-norm modular
+polynomial circuits, and use Lemma 2.8 to nish the proof.
+Let C be a circuit of size N = 2logO(1)n with a fan-in F output gate g
+computing a symmetric function and F ACC subcircuits C1;:::;CF below
+g. The symmetric-function gate g computes some Boolean function that only
+depends on
+PF
+i=1 Ci(x). Thus we want a construction that can determine, for
+each x, the number of i's (1 i F) such that Ci(x) = 1. We proceed as
+follows:
+1. Using a probabilistic polynomial of sample size S = 2logO(1)n that com
+putes OR/AND with error probability at most 1=(3FN), convert each
+Ci (1 i F)to a strati ed modular probabilistic polynomial circuit
+that computes Ci with error probability at most " = 1=(3F).
+2. For each Ci, by xing a probabilistic polynomial to be each of the S
+ordinary polynomials in its sample space, create S strati ed modular
+(ordinary) polynomial circuits and let i = fg(1)
+i
+; : : : ;g(S)
+i
+g be the set of
+output gates of those S circuits. Clearly, for each input x and each set
+i
+, one of the following two cases holds:
+(a) At most "S g(j)
+i
+'s (1 j S)output 1.
+(b) At least (1 ")S g(j)
+i 's (1 j S)output 1.
+For a rational number r that is not of the form j + 1
+2 
+for some integer
+j, let nearest-int(r) denote the unique integer k that minimizes jr kj.
+It is easy to see that the number of sets i for which the case (b) holds
+equals
+nearest-int
+0
+@
+i
+PF
+i=1 PS
+j=1 g(j)
+S
+3. Connect the g(j)
+:
+1
+A
+i 's to a new output gate g0 and associate with g0 the linear
+polynomial
+PF
+i=1 PS
+j=1 g(j)
+i
+and the function h(y) = h(nearest-int(y=S)),
+whereh : f0;:::;Fg ! f0;1g isthefunction computedby the symmetric
+function output gate of C (as expressed in terms of the number of inputs
+that are 1).
+We have obtained an equivalent strati ed modular polynomial circuit of con
+stant depth, size 2logO(1)n, degree logO(1)n, and norm 2logO(1)n. We can use
+Lemma 2.8 to nish the proof. 2
+On ACC
+15
+Acknowledgements
+Thanks to Nick Reingold for helpful discussions, Andy Yao for describing his
+result to us, Uli Hertrampf for proving some neat facts about MODs, and
+Bill Gasarch for suggesting that we try to improve Yao's bounds. We also
+thank the anonymous referees for making many suggestions for improving the
+presentation of the paper.
+A preliminary version of this paper appeared as Beigel & Tarui (1991). The
+rst author gratefully acknowledges partial support from the U.S.A. National
+Science Foundation under grant CCR-8958528. The second author performed
+some of this work at the University of Rochester (where he was supported in
+part by NSF grant CDA-8822724) and at the University of Warwick (where he
+was supported in part by the ESPRIT II BRA Programme of the EC under
+contract # 7141 [ALCOM II]).
+References
+M. Ajtai, 1
+1 formulae on nite structures. Annals of Pure and Applied Logic 24
+(1983), 1{48.
+E. Allender, A note on the power of threshold circuits. In Proceedings of the 30th
+Ann. Symp. Found. Comput. Sci., 1989, 580{584.
+E. Allender and U. Hertrampf, Depth reduction for circuits of unbounded fan
+in. Inform. and Comput. 108 (1994). To appear.
+N. Atiyah and I. MacDonald, Introduction to Commutative Algebra. Addison
+Wesley, 1969.
+D. A. Barrington, Bounded-width polynomial-size branching programs recognize
+exactly those languages in NC1. J. Comput. System Sci. 38(1) (1989), 150{164.
+D. A. M. Barrington, Quasipolynomial size circuit classes. In Proceedings of the
+7th Ann. Conf. Structure in Complexity Theory. IEEE, 1992, 86{93.
+D. A. M. Barrington and D. Therien, Finite monoids and the ne structure of
+NC1. J. Assoc. Comput. Mach. 35(4) (1988), 941{952.
+R. Beigel, The polynomial method in circuit complexity. In Proceedings of the 8th
+Ann. Conf. Structure in Complexity Theory, 1993, 82{95.
+R. Beigel and J. Gill, Counting classes: Thresholds, parity, mods, and fewness.
+Theoret. Comput. Sci. 103(1) (1992), 3{23.
+16
+Beigel & Tarui
+R. Beigel and J. Tarui, On ACC. In Proceedings of the 32nd Ann. Symp. Found.
+Comput. Sci., 1991, 783{792.
+R. Beigel, N. Reingold, and D. Spielman, The perceptron strikes back. In
+Proceedings of the 6th Ann. Conf. Structure in Complexity Theory, 1991, 286{291.
+R. Beigel, N. Reingold, and D. Spielman, PP is closed under intersection. J.
+Comput. System Sci. 48 (1994). To appear.
+R. Boppana and M. Sipser, The complexity of nite functions. In Handbook of
+Theoretical Computer Science, Volume A: Algorithms and Complexity, ed. J. van
+Leeuwen, 757{804. MIT Press and Elsevier, The Netherlands, 1990.
+A. K. Chandra, L. Stockmeyer, and U. Vishkin, Constant depth reducibility.
+SIAM J. Comput. 13(2) (1984), 423{438.
+F.Green, J. K• obler, and J. Toran, The power of the middle bit. In Proceedings
+of the 7th Ann. Conf. Structure in Complexity Theory. IEEE, 1992, 111{117. An
+extended version has been drafted by Green, K•obler, Regan, Schwentick, and Toran.
+M. Furst, J. B. Saxe, and M. Sipser, Parity, circuits, and the polynomial-time
+hierarchy. Mathematical Systems Theory 17(1) (1984), 13{27.
+J. T. Hastad, Computational Limitations for Small-Depth Circuits. ACM Doctoral
+Dissertation Award. MIT Press, Cambridge, MA, 1986.
+D. Johnson, Acatalog of complexity classes. In Handbook of Theoretical Computer
+Science, Volume A: Algorithms and Complexity, 69{161. MIT Press and Elsevier,
+1990.
+R. Kannan, H. Venkateswaran, V. Vinay, and A. C. Yao, A circuit-based
+proof of Toda's theorem. Inform. and Comput. (1993). To appear.
+P. McKenzie and D. Therien, Automata theory meets circuit complexity. In
+Proceedings of the 16th ICALP. Springer-Verlag, 1989, 589{602. Lecture Notes in
+Computer Science 372.
+A. A. Razborov, Lower bounds for the size of circuits of bounded depth with basis
+f^; g. Math. notes of the Academy of Science of the USSR 41(4) (1987), 333{338.
+M. Sipser, The history and status of the P versus NP question. In Proceedings of
+the 24th Ann. ACM Symp. Theor. Comput., 1992, 603{618.
+R. Smolensky, Algebraic methods in the theory of lower bounds for Boolean circuit
+complexity. In Proceedings of the 19th Ann. ACM Symp. Theor. Comput., 1987, 77{
+82.
+On ACC
+17
+J. Tarui, Probabilistic polynomials, AC0 functions, and the polynomial-time hier
+archy. Theoret. Comput. Sci. 113 (1993), 167{183.
+S. Toda, PP is as hard as the polynomial-time hierarchy. SIAM J. Comput. 20(5)
+(1991), 865{877.
+S. Toda and M. Ogiwara, Countingclasses are at least as hard as the polynomial
+time hierarchy. SIAM J. Comput. 21(2) (1992), 316{328.
+A. C. Yao, Separating the polynomial-time hierarchy by oracles. In Proceedings of
+the 26th Ann. Symp. Found. Comput. Sci., 1985, 1{10.
+Manuscript received March 29, 1993
+Richard Beigel
+Dept. of Computer Science
+P.O. Box 208285
+New Haven, CT 06520-8285
+U.S.A.
+beigel-richard@cs.yale.edu
+Jun Tarui
+Department of Communications & Systems Engineering
+University of Electro-Communications
+Chofu, Tokyo, 182
+Japan
+jun@ttl.cas.uec.ac.j

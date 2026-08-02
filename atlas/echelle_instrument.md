@@ -84,9 +84,12 @@ ANDs of input variables on the second layer* », renforcé p. 2:15 par « *the
 transformation from ACC to SYM+ results in a circuit with no negated
 variables* ». **Conséquence : le modèle mesuré n'est PAS une restriction — c'est
 le format SYM+ de Williams lui-même**, et les valeurs du fil sont de vraies
-tailles de circuits. Ce qui reste [NON TROUVÉ] : ce que le **texte primaire** de
-Beigel-Tarui écrit de ses propres ∧ (PS 1995 illisible ; seul l'abstract a été
-relu). Corrigé aussi : l'écart de convention vaut **k+1 et croît** (4, 5, 6, 7,
+tailles de circuits. *Le [NON TROUVÉ] résiduel — ce que le texte primaire de
+Beigel-Tarui écrit de ses propres ∧ — a été **LEVÉ le 2026-08-02** (A-002b,
+texte obtenu par l'utilisateur et lu, deux lectures concordantes) : la forme
+d'origine de Beigel-Tarui admet les **littéraux niés** et des **coefficients
+signés** (définition polynomiale, norme L1) ; le modèle du dépôt est bien la
+variante de Williams, les deux conventions coexistent.* Corrigé aussi : l'écart de convention vaut **k+1 et croît** (4, 5, 6, 7,
 8, 9 pour k = 3..8) — l'ancien « facteur ≥ 6 dès k = 5 » était exact mais
 sous-estimait la tendance. **Le motif de plafond ci-dessus est indépendant de
 tout cela et reste inchangé** : c'est ce qui fait tenir la clôture du fil dans
