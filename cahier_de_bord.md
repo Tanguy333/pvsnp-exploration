@@ -956,6 +956,26 @@ calcul** du fil AS n'avaient pas atteint.
 >   Loff, arXiv:2507.10426, texte intégral) — la question de Yao 1979 ;
 >   homonymie levée : ce n'est pas l'item FOCS 2025 de la ligne 13, qui reste
 >   [NON TROUVÉ]. Buss 2017 conservé au dépôt, Théorème 2 re-vérifié.
+> - [x] **A-017 (fait, 2026-08-02)** — **audit de péremption des 12 verrous
+>   jamais relus** : 8 à jour, 3 périmés (ligne 1 : Williams STOC 2025,
+>   simulation non-relativisante ; ligne 9 : techniques CPT de Pago ;
+>   ligne 14 : **la Révision 1 de TR24-074 fait disparaître la Conjecture 5
+>   réfutée ET la Conjecture 13 cible du fil AS** — notre fermeture reste
+>   valide pour la v0 « as stated »), 1 resourcé (ligne 2). La matrice est
+>   entièrement relue contre 2026. **Décision utilisateur (2026-08-02) : PAS
+>   de requalification du fil AS** — il reste rattaché à l'énoncé v0,
+>   documenté comme tel dans la cellule 14 ; ses acquis sont des résultats
+>   sur l'énoncé v0 et sur l'instrument. *Correction de chronologie apportée
+>   au motif initialement envisagé (« notre contre-exemple a causé la
+>   correction ») : vérification ECCC à la source — l'unique révision date du
+>   2025-11-24, attribuée par les auteurs aux relecteurs ITCS 2026, soit six
+>   mois AVANT la création du dépôt (2026-05-23) et sept mois avant notre
+>   envoi (2026-06-11). Aucune causalité possible. Corollaire consigné : la
+>   validation de Krishan (2026-06-12, « as stated in our paper ») portait
+>   sur un énoncé déjà abandonné par la v1 ; les fils V et AS ont travaillé
+>   sur la v0 sans connaître la révision — LEÇON : tout audit de papier doit
+>   vérifier l'historique de révisions ECCC/arXiv à l'ouverture ET à la
+>   clôture.*
 > - [x] **A-016 (fait, 2026-08-02, main de Tanguy)** — **l'item FOCS 2025 de
 >   la ligne 13 enfin lu** : première NP-dureté conditionnelle de **MCSP
 >   total** (3 hypothèses bien étudiées, une seule crypto), réduction
