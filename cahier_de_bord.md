@@ -976,6 +976,16 @@ calcul** du fil AS n'avaient pas atteint.
 >   sur la v0 sans connaître la révision — LEÇON : tout audit de papier doit
 >   vérifier l'historique de révisions ECCC/arXiv à l'ouverture ET à la
 >   clôture.*
+> - [x] **D-005 (fait, 2026-08-02)** — **l'auto-test Razborov-Rudich**, le
+>   critère (b) enfin appliqué à nous-mêmes : la propriété « W(f) ≥ s » est
+>   **large par théorème de comptage** (médiane > 3, 13, 53 à n = 4, 6, 8) et
+>   c'est une vraie propriété de tables de vérité — le programme n'était pas
+>   barré contre ACC⁰ (pas de PRF dans la classe), mais **son extension à TC⁰
+>   rencontrerait RR de face**, unique échappatoire : la non-constructivité
+>   (dureté de calculer W, ouverte — motif MCSP). Question neuve au croisement
+>   des lignes 7/13/17 : la complexité de calculer W(f). 5ᵉ cellule barrière :
+>   `barriers/depot_vs_rr.md` (passe adverse partiellement levée par MC-001,
+>   voir plus bas ; §4-5 encore RÉDIGÉ-SOURCÉ).
 > - [x] **A-016 (fait, 2026-08-02, main de Tanguy)** — **l'item FOCS 2025 de
 >   la ligne 13 enfin lu** : première NP-dureté conditionnelle de **MCSP
 >   total** (3 hypothèses bien étudiées, une seule crypto), réduction
@@ -984,6 +994,34 @@ calcul** du fil AS n'avaient pas atteint.
 >   de réduction. Le verrou de la ligne 13 tient. **La liste des [NON TROUVÉ]
 >   actionnables est VIDE** — les quatre documents fournis par l'utilisateur
 >   en une journée.
+> - [x] **MC-001 (fait, 2026-08-02)** — **retour à l'exploration** (décision
+>   utilisateur : « reprenons les pistes de travail d'exploration ») sur la
+>   question engendrée par D-005 : la complexité de calculer W(f).
+>   **MinSYM+ ∈ NP, PROUVÉ inconditionnellement** (témoin injectif Σ 2^i·xᵢ
+>   ⟹ W ≤ N−1 pour toute f ; l'objectif borne lui-même les coefficients —
+>   le piège « coefficients » se dissout) : la question est exactement
+>   « NP-complet ? », **OUVERTE**, mais le paysage est démontré : deux
+>   variantes partielles **NP-complètes** (points listés B = {0} = Set Cover
+>   à valeur exacte ; prescrite-unilatérale-∗ = Min-DNF(∗) par rails
+>   doubles) ; **transposition directe de HIL morte** (les dimensions de la
+>   matrice JR ne sont jamais deux puissances de 2 ⟹ f(1^m) = 0, strata
+>   positifs vides ; W dépend de l'encodage quand χ₁ n'en dépend pas —
+>   aucun pont fonctionnel) ; **les trois constructivisations évidentes
+>   fermées par témoins** (15 invariants + uplet complet indécisifs à n = 4,
+>   témoin W = 4 vs 6 à invariants identiques ; LP vacueuse — diséquations ;
+>   W_ℝ(MAJ₄) = 3 < 4, contenu arithmétique irréductible ; pas de
+>   statistique suffisante). Fait neuf : **le zoo bat le couvert sur une
+>   MONOTONE dès n = 4** (THR2_4 : 4 < 6 — corrige « premier gain à n = 6 »
+>   de F-022 ; 3 passes indépendantes). Correction attrapée par la passe
+>   adverse : le stratum strict {0,1} est dégénéré — l'« analogue partition
+>   χ₁ » n'existe pas tel quel. Folklore-check : [NON TROUVÉ] (8 requêtes,
+>   non exhaustif — la case SYM∘AND de la méta-complexité profondeur-2 est
+>   vide). Voie suivante nommée : packing (Lemme 4, généralise F-020) contre
+>   échafaudage (Prop. 5, W(f_g) affine en dnf-size) — si la borne
+>   inférieure assortie tient, la NP-dureté TOTALE suit de Masek. Au
+>   passage : comptage D-005 étendu (médiane W > 211 à n = 10, > 843 à
+>   n = 12), distributions n ≤ 4 contre-validées par instrument indépendant.
+>   Fiche : `tasks/done/MC-001.md` (réserves F2-F6 contraignantes).
 >
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le
