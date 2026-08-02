@@ -956,6 +956,14 @@ calcul** du fil AS n'avaient pas atteint.
 >   Loff, arXiv:2507.10426, texte intégral) — la question de Yao 1979 ;
 >   homonymie levée : ce n'est pas l'item FOCS 2025 de la ligne 13, qui reste
 >   [NON TROUVÉ]. Buss 2017 conservé au dépôt, Théorème 2 re-vérifié.
+> - [x] **A-016 (fait, 2026-08-02, main de Tanguy)** — **l'item FOCS 2025 de
+>   la ligne 13 enfin lu** : première NP-dureté conditionnelle de **MCSP
+>   total** (3 hypothèses bien étudiées, une seule crypto), réduction
+>   déterministe quasi-poly non-adaptative **non-Levin « presque Levin »** —
+>   contournement de Mazor-Pass, versant positif du fractionnement par type
+>   de réduction. Le verrou de la ligne 13 tient. **La liste des [NON TROUVÉ]
+>   actionnables est VIDE** — les quatre documents fournis par l'utilisateur
+>   en une journée.
 >
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le
