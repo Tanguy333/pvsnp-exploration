@@ -931,6 +931,21 @@ calcul** du fil AS n'avaient pas atteint.
 >   relativisation), lignes 13 et 15 nuancées, note de bas de colonne 2 (la
 >   barrière RR a une version **inconditionnelle** pour distingueurs AC⁰,
 >   préprint). Ligne 10 : `[NON TROUVÉ]` assumé, rien de 2025-2026.
+> - [x] **A-013 (fait, 2026-08-02)** — la convention SYM∘AND **tranchée** : le
+>   modèle du dépôt EST le format SYM+ de Williams (verbatims J. ACM 2014) ;
+>   les 18 tâches du fil ont mesuré de vraies tailles de circuits. En chemin :
+>   la loi « écart ≤ n », exhaustive à n ≤ 4, réfutée à n = 5 (q.12 une fois de
+>   plus) ; transfert vers la convention à littéraux prouvé **logarithmique**
+>   seulement ; 3 défauts de sourçage du livrable corrigés.
+> - [x] **A-014 (fait, 2026-08-02)** — **LIGNE 17 CRÉÉE** : théorèmes de
+>   lifting / complexité de communication, la famille manquante (moteur des
+>   lignes 5 et 15). Audit `bib/lifting_communication.md` (30+ pièces
+>   vérifiées). Trois verrous nommés : taille de gadget (barrière interne
+>   Beame-Koroth), **conjecture KRW** (gelée à (3−o(1))·log n depuis 1998 ;
+>   même résolue ⟹ P ⊄ NC¹ seulement), plafond Tardos. La matrice a
+>   **17 familles**. Prise annexe : contradiction Göös interne au cahier
+>   corrigée (la réponse du 2026-06-12 était consignée, la ligne d'attente
+>   disait le contraire).
 >
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le
@@ -946,7 +961,7 @@ calcul** du fil AS n'avaient pas atteint.
 - [x] **Fil AS** (43 tâches) — Conjecture 13 : dossier complet, C13 réduite au scalaire c(n,d), synthèse ENVOYÉE à Krishan (2026-07-20)
 - [x] **Atlas 15 lignes toutes documentées sur textes** (A-011 GCT, A-012 complexité des preuves, 2026-07-20/23)
 - [x] **Fil F-012..022** — le barreau 1 (SYM∘AND) : dossier complet, 4 théorèmes, zoo des mécanismes démontré (2026-07-23)
-- [ ] **Attentes externes** : réponse de Krishan (synthèse C13, envoyée ~2026-07-20 — le brouillon du dépôt contient déjà la matière d'un complément : point 0, courbe c) ; Göös (mail 2026-06-09, sans réponse consignée — le silence ne vaut rien)
+- [ ] **Attentes externes** : réponse de Krishan (synthèse C13, envoyée ~2026-07-20 — le brouillon du dépôt contient déjà la matière d'un complément : point 0, courbe c). *(Correction 2026-08-02, attrapée par la relecture adverse d'A-014 : cette ligne disait « Göös, sans réponse consignée » — FAUX, la réponse du 2026-06-12 est consignée plus bas dans ce fichier, § « Échange externe — Mika Göös » : accusé courtois, non engagé, rien à en conclure. Fil clos, plus une attente.)*
 - [ ] **Main de Tanguy** : soumission note T-F006 (relecture experte → LaTeX → arXiv, `notes/dnf_min_ip_arxiv_en.md` prête) ; envois OEIS (m=20 ferme)
 - [ ] **Fronts candidats** (au choix de l'utilisateur) : ATLAS-006 (zone 6 — localiser où le gain asymétrique Δ_w de KV devient visible, la tâche que la matrice a elle-même définie) ; note de synthèse du fil SYM∘AND + antériorité des théorèmes (fenêtre ANF, alternance — candidats note externe) ; veille 2025-26 des lignes vivantes (ITCS 2026 : AC⁰[p]-Frege, range avoidance ; Panova 2025) ; cellule bounded arithmetic ligne 15 (PV1 ⊬ EF à la source) ; B-007 réplication DIP (ligne 8) ; fenêtres GT ([25,32], [21,38], runs nocturnes)
 - [ ] **Lecture humaine recommandée avant diffusion** : thèse Gopalan 2006 (PDF dans `bib/pdf/` + sources ECCC) — cf. table de requalification `bib/bgl_2003_sun_2020.md`
