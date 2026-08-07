@@ -104,6 +104,23 @@ MC-001 :
   propriété large facile pourrait impliquer les mêmes bornes (nuance
   standard du débat MCSP-naturalness). L'échappatoire resterait plaidable,
   pas acquise.
+- **Antériorité vérifiée (MC-002, 2026-08-07)** : la question totale est
+  VIERGE dans la littérature — vérification systématique quatre lignes,
+  documents ouverts (`bib/minsym_antecedents.md`) ; le plus proche est
+  HOS18 (OR∘AND∘MOD_m, tête OR, où la tête seuil reste une extension
+  spéculative), et le gabarit de l'étape manquante (partiel → total) est
+  leur Th.16.
+- **Première voie du cas total ÉLIMINÉE (MC-003, 2026-08-07)** : la voie
+  nommée par MC-001 (« packing contre échafaudage ») est réfutée par mesure
+  exhaustive n ≤ 3 (88 instances, zéro non-conclu) — le packing sature à
+  2n observé pendant que W croît, W(f_g) n'est pas fonction de dnf-size(g),
+  et la séparation stricte des plages casse dès n = 3 (W = 9 et W = 10
+  réalisés par deux valeurs de r chacune). Mécanisme : les uns de f_g
+  forment une antichaîne — les optima donnent aux uns une valeur commune
+  (régime « couvert à valeur exacte », tête ETHR de fait), découplé de la
+  structure DNF. Voies restantes en lice : le gabarit HOS18 Th.16 (MC-004)
+  et l'additivité de W sous somme disjointe (trou (b) de MC-001).
+  Pièces : `tasks/done/MC-003.md`, `data/mc003_rails_doubles.md`.
 
 - **Contre SYM+/ACC⁰ (le régime du fil)** : la sortie 2 de D-001 s'applique —
   Williams, verbatim (pièce du dépôt) : « *there is little evidence that ACC
