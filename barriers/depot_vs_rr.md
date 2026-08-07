@@ -275,6 +275,58 @@ MC-001 :
   l'assert-témoin. **Statut du bloc : CONTRE-VÉRIFIÉ** (résidu : les
   optima/INFEASIBLE ν ≥ 5 restent des assertions de solveur, chez les
   vérificateurs comme ici). Pièces : `tasks/done/VER-MC-1.md`.
+- **Le plafond est levé (MC-011, 2026-08-07) — les lois comparable et
+  (1,1) sont PROUVÉES POUR TOUT o** : une induction sur o remplace le
+  lemme de normalisation — trichotomie par extérieur l : lourd
+  (restriction x_l := 0 perd ω_l + μ_l ≥ 2), léger à μ_l ≥ 1 (perd
+  1 + μ_l ≥ 2), ou tous-légers-μ=0 (le théorème A de MC-010 conclut via
+  D_j ≥ o+1 et la convexité). Avec le **LEMME léger ⟹ singleton étendu à
+  TOUS les cœurs** (via les zéros u∪{l}, v∪{l} — généralise la
+  réparation VER-MC-1). **Sandwich fermé sans condition :
+  F(0, b, m, o) = b + 2o + [m ≥ 1] et F(1,1,0,o) = 2 + 2o, théorèmes
+  pour tous paramètres** — hors de portée de tout solveur ; le théorème B
+  de MC-010 (o ≤ 7, inégalité de recouvrement) est supplanté, la zone
+  d'échec (8,5) sort du chemin critique. Le lemme de normalisation
+  devient une observation (vraie sur tous les cas testés). **Reste
+  ouvert, resserré** : la base incomparable o = 0 (a ≥ 1 au-delà de
+  (1,1)) et la branche tous-légers de son induction ; puis fibres
+  composées et compression. Réserve : MC-011 est postérieure à VER-MC-1 —
+  ses preuves attendent la prochaine passe tierce. Pièces :
+  `tasks/done/MC-011.md`, `checks/mc011_induction_o.py`.
+- **La base linéaire est fermée au sol (MC-012, 2026-08-07) — THÉORÈME
+  F(1, b, 0, 0) = b + 2** : forçage d'égalité (si W ≤ b+1 : c = 1,
+  E_j = 1 partout, pas de hauts-B ; puis cascade — c = 1 interdit
+  a_j = 1, donc les paires portent tout, donc σ_B = 0, donc
+  P_B = 0 = p(∅), collision un/zéro). Corollaires : F(1, b, m, 0) via la
+  réduction M, et **b + 2 + o ≤ F(1, b, 0, o) ≤ b + 2 + 2o** par les
+  branches 1-2 de l'induction MC-011 — la fermeture complète attend
+  l'argument de bandes (deux valeurs protégées) de la branche
+  tous-légers. **La frontière ν = 8 franchie pour la première fois** :
+  (4,4), (3,5), (2,6) certifiés INFEASIBLE à loi − 1 et faisables à la
+  loi (35-58 s) — trois points neufs de C-MC009 au plafond absolu de
+  l'instrument ; la base a ≥ 2 reste OUVERTE (la collision-des-singletons
+  perd sa prise quand P_A ≥ 2). Les optima (1, b) réalisent exactement
+  la construction linéaire. Réserve : postérieure à VER-MC-1 (VER-MC-2 à
+  prévoir avec MC-011). Pièces : `tasks/done/MC-012.md`,
+  `checks/mc012_base_incomparable.py`.
+- **LA LOI LINÉAIRE COMPLÈTE (MC-013, 2026-08-07) — THÉORÈME :
+  F(1, b, m, o) = b + 2 + 2o pour tous b ≥ 2, m, o.** La branche
+  tous-légers fermée par l'ARGUMENT DES BANDES : en branche 3, les zéros
+  du cube {x₁}∪B évitent les deux bandes [c−o, c] et [P−o, P] — le zéro
+  ∅ force c, P ≥ o+1, la bande du haut force D_j ≥ o+1 partout, la
+  convexité et le comptage E_j donnent W_AB ≥ b + 2o + 1, confortablement
+  au-dessus du requis ; l'induction MC-011 + la base MC-012 assemblent.
+  **Troisième famille de fibres-points entièrement démontrée** (après
+  comparable et (1,1)). Lemme interne testé DIRECTEMENT au solveur
+  (bandes par domaines interdits) : 15/15, et fait de structure mesuré —
+  le minimum à bandes vaut b + 2 + 2o exactement (la bande simule le
+  dehors) ; certificats 8/8 INFEASIBLE jusqu'à ν = 8. **Il ne reste, côté
+  lois, que la base couronne (a ≥ 2)** — les forçages 1/3/4 du lemme sont
+  déjà généraux, seul le comptage du sol manque ; puis fibres composées
+  et compression. Réserve : MC-011/012/013 = trois tâches de preuve
+  postérieures à VER-MC-1 — le trou de contrôle est revenu au niveau qui
+  avait déclenché la première passe : VER-MC-2 recommandée AVANT la base
+  couronne. Pièces : `tasks/done/MC-013.md`, `checks/mc013_bandes.py`.
 
 - **Contre SYM+/ACC⁰ (le régime du fil)** : la sortie 2 de D-001 s'applique —
   Williams, verbatim (pièce du dépôt) : « *there is little evidence that ACC

@@ -1236,6 +1236,61 @@ calcul** du fil AS n'avaient pas atteint.
 >   sort renforcée. **Statut du bloc : CONTRE-VÉRIFIÉ** (résidu :
 >   assertions de solveur ν ≥ 5 ; une relecture humaine reste l'étalon
 >   supérieur). Fiche : `tasks/done/VER-MC-1.md`.
+> - [x] **MC-011 (fait, 2026-08-07)** — **LE PLAFOND EST LEVÉ : les lois
+>   comparable et (1,1) sont PROUVÉES POUR TOUT o.** L'induction sur o
+>   remplace le lemme de normalisation qu'on cherchait — trichotomie par
+>   extérieur : lourd (la restriction x_l := 0 perd ω_l + μ_l ≥ 2 et
+>   l'induction avale), léger à μ_l ≥ 1 (perte 1 + μ_l ≥ 2), ou
+>   tous-légers-μ=0 (le théorème A de MC-010 conclut). Avec le **lemme
+>   léger ⟹ singleton étendu à tous les cœurs** (via les zéros u∪{l} et
+>   v∪{l} — généralise la réparation VER-MC-1). **Sandwich fermé sans
+>   condition : F(0, b, m, o) = b + 2o + [m ≥ 1] et F(1,1,0,o) = 2 + 2o,
+>   théorèmes pour tous paramètres** — le théorème B de MC-010 (o ≤ 7)
+>   est supplanté, l'inégalité de recouvrement sort du chemin critique.
+>   Vérifications toutes vertes : trichotomie auditée sur les témoins
+>   (les optima comparables vivent en branche 3, les optima (1,1) en
+>   branche 1 — les deux régimes de la preuve réalisés) ; min{W : μ=0} =
+>   W sur 19 cœurs ; lemme singleton : 0 violation sur 1 140 séparateurs
+>   énumérés. Reste ouvert, resserré : la base incomparable o = 0 et la
+>   branche tous-légers de son induction ; puis fibres composées,
+>   compression. Réserve : postérieure à VER-MC-1 (VER-MC-2 à prévoir).
+>   Fiche : `tasks/done/MC-011.md` ; script :
+>   `checks/mc011_induction_o.py` ; cellule §3 bis mise à jour.
+> - [x] **MC-012 (fait, 2026-08-07)** — **la base incomparable :
+>   THÉORÈME F(1, b, 0, 0) = b + 2 — la branche linéaire fermée au sol.**
+>   Forçage d'égalité : W ≤ b+1 force c = 1, E_j = 1 partout, aucun
+>   monôme haut en B ; puis la cascade — c = 1 interdit a_j = 1 (le point
+>   {j} est un zéro), donc chaque paire {x₁, j} porte l'unité, donc
+>   σ_B = 0, donc P_B = 0 = p(∅) : un un partage la valeur d'un zéro,
+>   contradiction. Corollaires : F(1, b, m, 0) par la réduction M, et
+>   **b+2+o ≤ F(1,b,0,o) ≤ b+2+2o** par les branches 1-2 de MC-011 (la
+>   fermeture complète attend l'argument de bandes à deux valeurs
+>   protégées — nommé). **La frontière ν = 8 franchie pour la première
+>   fois** : (4,4), (3,5), (2,6) certifiés (INFEASIBLE à 9, faisables à
+>   10 = loi, 35-58 s) — trois points neufs de C-MC009 au plafond absolu
+>   de l'instrument. Audit : les optima (1, b) réalisent exactement la
+>   construction linéaire. Restent : base a ≥ 2, branche tous-légers,
+>   fibres composées, compression. Réserve : postérieure à VER-MC-1 →
+>   VER-MC-2 avec MC-011. Fiche : `tasks/done/MC-012.md` ; script :
+>   `checks/mc012_base_incomparable.py`.
+> - [x] **MC-013 (fait, 2026-08-07)** — **THÉORÈME : LA LOI LINÉAIRE
+>   COMPLÈTE — F(1, b, m, o) = b + 2 + 2o pour tous b ≥ 2, m, o.** La
+>   branche tous-légers fermée par l'ARGUMENT DES BANDES : les copies
+>   décalées interdisent aux zéros du cube les bandes [c−o, c] et
+>   [P−o, P] — le zéro ∅ force c, P ≥ o+1 ; la bande du haut force
+>   D_j ≥ o+1 partout ; convexité + comptage E_j donnent W_AB ≥ b+2o+1,
+>   confortablement au-dessus du requis ; l'induction MC-011 et la base
+>   MC-012 assemblent. **Troisième famille de fibres-points entièrement
+>   démontrée** (après comparable et (1,1) — il ne reste que la base
+>   couronne a ≥ 2, dont les forçages 1/3/4 sont déjà généraux).
+>   Vérifications : le lemme interne testé DIRECTEMENT au solveur
+>   (bandes par domaines interdits) — 15/15, avec un fait de structure
+>   mesuré : le minimum à bandes vaut b+2+2o exactement, la bande simule
+>   le dehors ; certificats 8/8 INFEASIBLE jusqu'à ν = 8 (≤ 7 s).
+>   Réserve : MC-011/012/013 = trois tâches de preuve post-VER-MC-1 — le
+>   trou de contrôle est revenu au niveau déclencheur : **VER-MC-2
+>   recommandée avant la base couronne.** Fiche : `tasks/done/MC-013.md` ;
+>   script : `checks/mc013_bandes.py`.
 >
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le
