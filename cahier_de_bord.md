@@ -1125,6 +1125,46 @@ calcul** du fil AS n'avaient pas atteint.
 >   tierce. Fiche (preuves complètes) : `tasks/done/MC-006.md` ; script :
 >   `checks/mc006_preuve_selecteur.py` ; cellule §3 bis et
 >   `atlas/temoins.md` mis à jour.
+> - [x] **MC-007 (fait, 2026-08-07)** — **la carte du partage en fibre
+>   partagée, COMPLÈTE à l'échelle de l'instrument** (l'espace était
+>   exhaustivement mesurable : base 1 bit + fibre s bits = toute fonction
+>   sur 1+s variables lue par tranches). **L'inconditionnel est mort** :
+>   34 % des paires de fibres distinctes partagent à s = 3 (exhaustif
+>   65 536, W des 1 992 classes S₄ en 62 s), et le partage atteint le
+>   plancher B2 (156 paires : W(h) = max, la fibre bon marché gratuite).
+>   **Le structuré vit** : marqueur quasi jamais absorbé (1/254) ; points
+>   épars à la HOS18 quasi additifs (g ∈ {−1 : 9, 0 : 40, +1 : 7}), leurs
+>   9 exceptions suivant une règle exacte — ~~l'emboîtement directionnel~~
+>   [**CORRIGÉ par MC-008 le jour même : le RECOUVREMENT descendant,
+>   g = |c₀\c₁| − 2 ; la formulation initiale était un sur-ajustement,
+>   3 contre-exemples**] ; disjoints ou incomparables :
+>   jamais de partage. **Condition : l'ANTICHAÎNE de supports, SUFFISANTE —
+>   l'obstacle de MC-003 devenu condition de la solution.** Base 2 bits :
+>   10/10 super-additifs. Cible suivante : le théorème conditionnel
+>   (MC-008 candidat — « supports non emboîtés ⟹ W = Σ + O(1) »).
+>   Réserves : q.12 (s ≤ 3, règle mesurée sur une famille structurée) ;
+>   la passe adverse tierce du bloc MC-003..007 reste à faire et le trou
+>   GRANDIT — recommandation maintenue. Fiche : `tasks/done/MC-007.md` ;
+>   données : `data/mc007_fibre_partagee.md`.
+> - [x] **MC-008 (fait, 2026-08-07)** — **les lois des fibres-points — et
+>   elles CORRIGENT MC-007.** (a) **Loi G PROUVÉE** : W([w = u]) =
+>   ν − |u| + 1 (u ≠ 0), ν (u = 0) — construction explicite + packing
+>   (Lemme 4, exact sur les points après avoir saturé sur les
+>   antichaînes) ; 0 écart exhaustif ν ≤ 4. (b) **Loi F** : constante sur
+>   les classes (a, b, m) — forme close C-MC008 en trois régimes, dont le
+>   recouvrement PROUVÉ ; 53/53 groupes conformes (exhaustif ν ≤ 4 + tous
+>   les groupes ν = 5) ; conjecture hors recouvrement (le packing sature
+>   sur l'incomparable — argument de valeurs requis). (c) **Le corollaire
+>   a réfuté la règle de MC-007** : 3 contre-exemples ((7,1), (7,2),
+>   (7,4) : emboîtées, g = 0) — la règle exacte est **g = |c₀\c₁| − 2
+>   pour c₁ ⊊ c₀ non vide : seul le RECOUVREMENT descendant partage** ;
+>   incomparables : g ≥ 0 toujours (l'antichaîne SUFFISANTE, désormais
+>   dérivée des lois). Prise q.12 INTERNE au fil — règle consignée la
+>   veille, réfutée par recalcul le lendemain ; les 5 fichiers porteurs
+>   corrigés avec renvoi. Suite : MC-009 (prouver C-MC008). La passe
+>   adverse tierce du bloc MC-003..008 devient PRESSANTE (2 preuves de
+>   session + 1 correction interne). Fiche : `tasks/done/MC-008.md` ;
+>   données : `data/mc008_lois_points.md`.
 >
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le

@@ -165,6 +165,41 @@ MC-001 :
   recouvrent : c'est le candidat MC-007, et la compression reste l'autre
   verrou. Réserve : preuve de session, falsifiée par batterie mais sans
   passe adverse tierce (trou de contrôle du fil).
+- **La carte de la fibre partagée (MC-007, 2026-08-07) — le verrou tranché
+  dans sa forme naïve, reformulé dans sa forme utile** : exhaustif complet
+  à s = 2, 3 (toute fonction sur 1+s variables lue par tranches). La
+  super-additivité INCONDITIONNELLE est morte — 34 % des paires de fibres
+  distinctes partagent à s = 3, et 156 paires atteignent le plancher B2
+  (W(h) = max : la fibre bon marché vient gratuitement). Mais le régime
+  STRUCTURÉ vit : le marqueur [y = 1^s] n'est presque jamais absorbé
+  (1/254), et les points épars — l'analogue du « scattered » de HOS18 —
+  sont quasi additifs (g ∈ {−1 : 9, 0 : 40, +1 : 7}), leurs 9 exceptions
+  obéissant à une règle exacte — ~~l'emboîtement directionnel~~
+  **CORRIGÉE par MC-008 : le RECOUVREMENT descendant** (g = |c₀\c₁| − 2
+  pour c₁ ⊊ c₀ non vide ; l'emboîtement profond ne partage pas — la
+  caractérisation initiale était un sur-ajustement, 3 contre-exemples).
+  **Condition de non-partage : l'antichaîne de supports, SUFFISANTE** —
+  l'obstacle de MC-003 devenu condition de la solution, désormais dérivée
+  des lois (MC-008). Base 2 bits : échantillon entièrement super-additif
+  (+3..+12). [q.12 : s ≤ 3]
+  Pièces : `tasks/done/MC-007.md`, `data/mc007_fibre_partagee.md`,
+  `checks/mc007_fibre_partagee.py`.
+- **Les lois des fibres-points (MC-008, 2026-08-07)** : loi G PROUVÉE —
+  W([w = u]) = ν − |u| + 1 (u ≠ 0), ν (u = 0) ; construction explicite +
+  packing (Lemme 4, exact sur les points après avoir saturé sur les
+  antichaînes). Loi F (deux points) : constante sur les classes
+  (a, b, m) comme la symétrie l'exige, forme close **C-MC008** en trois
+  régimes — recouvrement F = ν − m − [m = 0] (PROUVÉ), comparable
+  F = 2ν − b − 2m + [m ≥ 1], incomparable F = 2(ν − m) − max(2, a, b) —
+  53/53 groupes conformes (exhaustif ν ≤ 4 + tous les groupes ν = 5),
+  statut CONJECTURE hors recouvrement (le minorant incomparable exige un
+  argument de valeurs : le packing y sature). **Corollaire** : pour les
+  fibres-points à base 1 bit, g = |c₀\c₁| − 2 au recouvrement descendant,
+  g ≥ 0 partout ailleurs (incomparables : dérivé des lois) — la brique
+  « fibres sans partage certifiées » du schéma a ses lois. Cible suivante
+  (MC-009 candidat) : PROUVER C-MC008 (minorant incomparable). Pièces :
+  `tasks/done/MC-008.md`, `data/mc008_lois_points.md`,
+  `checks/mc008_lois_points.py`.
 
 - **Contre SYM+/ACC⁰ (le régime du fil)** : la sortie 2 de D-001 s'applique —
   Williams, verbatim (pièce du dépôt) : « *there is little evidence that ACC
