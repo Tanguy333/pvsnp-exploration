@@ -42,13 +42,23 @@ une seule valeur de W par groupe, sur tous les groupes.
 
 ### La forme close (CONJECTURE C-MC008, zéro exception sur 53 groupes)
 
+> **RÉFUTÉE (MC-009, 2026-08-07)** : la branche incomparable est fausse
+> dès a ≥ 3 — (3,3,0,0) : F = 8 ≠ 9 prédit (la plage d'ajustement ν ≤ 5
+> imposait a ≤ 2). Loi corrigée et majorants prouvés :
+> `data/mc009_preuve_F.md`. Les branches recouvrement et comparable
+> tiennent sur toute la donnée.
+
 - **Recouvrement** (a = 0, b = 1 — v couvre u) :
   **F = ν − m − [m = 0]** — CE CAS EST PROUVÉ (fiche §3).
 - **Comparable** (a = 0, b ≥ 2 — u ⊂ v à distance ≥ 2) :
   **F = 2ν − b − 2m + [m ≥ 1]**.
 - **Incomparable** (a ≥ 1) : **F = 2(ν − m) − max(2, a, b)**.
 
-### Contrôles ν = 5 (27 groupes, CP-SAT) — tous conformes à la conjecture
+### Contrôles ν = 5 (27 groupes testés sur 28 réalisables, CP-SAT) — tous conformes
+
+> [Précision VER-MC-1 : la boucle de `run_f5` bornait b ≤ 4, omettant le
+> groupe (0,5,0) — vérifié conforme (F = 5) par le vérificateur V3 ;
+> ν = 5 est donc couvert en entier, 28/28.]
 
 (0,1,·) : 4, 4, 3, 2, 1 ; (0,2,·) : 8, 7, 5, 3 ; (0,3,·) : 7, 6, 4 ;
 (0,4,·) : 6, 5 ; (1,1,·) : 8, 6, 4, 2 ; (1,2,·) : 8, 6, 4 ;
@@ -65,7 +75,10 @@ supp(c₁) ⊊ supp(c₀), c₁ ≠ 0 ») produit **trois contre-exemples** :
 (c₀ = 111, c₁ ∈ {001, 010, 100}) — emboîtés directionnels, g = 0.
 
 **La règle exacte, dérivée des lois** (pour c₁ ⊊ c₀, c₁ ≠ 0, en posant
-k = |c₀ \ c₁|) : **g = k − 2**. Seul le RECOUVREMENT descendant (k = 1)
+k = |c₀ \ c₁|) : ~~g = k − 2~~ **[CORRIGÉ par VER-MC-1 : g = k − max(k, 2)
+— identique sur le domaine mesuré s = 3 (k ≤ 2), mais « k − 2 » est
+fausse dès k ≥ 3 : contre-exemple vérifié à s = 4, (1111, 0001) →
+g = 0 ≠ 1]**. Seul le RECOUVREMENT descendant (k = 1)
 partage, et d'exactement 1 ; l'emboîtement profond (k ≥ 2) ne partage pas.
 Les 9 paires partageantes de MC-007 sont exactement les 9 recouvrements
 descendants — la règle « emboîtement » était un sur-ajustement (les 12

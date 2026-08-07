@@ -22,8 +22,9 @@ Campagnes :
         carte complète de g par catégorie (répétée / complémentaire /
         distinctes non constantes / avec tranche constante).
   s3  : exhaustif s = 3 — les 65 536 h sur 4 variables (W par CP-SAT sur
-        les 1992 classes S₄ + propagation par orbites + re-vérification
-        force brute sur 20 classes tirées au sort), même carte.
+        les 3 984 classes de S₄ seul — compte corrigé par VER-MC-1 : le
+        « 1 992 » initial était le compte S₄×complément d'A-013, recopié à
+        tort — propagé par orbites), même carte.
   struct : cas structurés — marqueur bon marché (φ, [y = 1^s]) pour toute
         φ ; points épars à la HOS18 ([y = c₀] vs [y = c₁], c₀ ≠ c₁) ;
         up-cubes disjoints vs emboîtés.
@@ -258,7 +259,11 @@ def run_struct(Wf2, Wf3, Wh3, Wh4):
 
 
 def run_t2(n_ech=10):
-    print("\n=== BASE 2 BITS (4 fibres partagées, s = 2, 6 variables) — échantillon ===")
+    """CORRIGÉ (VER-MC-1, 2026-08-07) : la version initiale déclarait 6
+    variables pour des points construits sur 4 bits (base 2 + fibre 2) —
+    48 zéros fantômes gonflaient W et la conclusion consignée
+    (« entièrement super-additif ») était un artefact d'encodage."""
+    print("\n=== BASE 2 BITS (4 fibres partagées, s = 2, 4 variables) — échantillon ===")
     rng = random.Random(20260807)
     Wf = table_W(2)
     t0 = time.time()
@@ -270,7 +275,7 @@ def run_t2(n_ech=10):
                 if phis[b] >> y & 1:
                     h_uns.append(b | (y << 2))
         somme = sum(Wf[p] for p in phis)
-        w, st = W_cpsat(h_uns, 6, 63, tl=600)
+        w, st = W_cpsat(h_uns, 4, 15, tl=600)
         if st != "OPTIMAL":
             print(f"  t2.{k} : NON CONCLU ({st})")
             continue

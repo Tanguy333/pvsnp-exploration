@@ -1130,17 +1130,20 @@ calcul** du fil AS n'avaient pas atteint.
 >   exhaustivement mesurable : base 1 bit + fibre s bits = toute fonction
 >   sur 1+s variables lue par tranches). **L'inconditionnel est mort** :
 >   34 % des paires de fibres distinctes partagent à s = 3 (exhaustif
->   65 536, W des 1 992 classes S₄ en 62 s), et le partage atteint le
+>   65 536, W des 3 984 classes de S₄ en 62 s [compte corrigé par
+>   VER-MC-1]), et le partage atteint le
 >   plancher B2 (156 paires : W(h) = max, la fibre bon marché gratuite).
 >   **Le structuré vit** : marqueur quasi jamais absorbé (1/254) ; points
 >   épars à la HOS18 quasi additifs (g ∈ {−1 : 9, 0 : 40, +1 : 7}), leurs
 >   9 exceptions suivant une règle exacte — ~~l'emboîtement directionnel~~
 >   [**CORRIGÉ par MC-008 le jour même : le RECOUVREMENT descendant,
->   g = |c₀\c₁| − 2 ; la formulation initiale était un sur-ajustement,
+>   g = d − max(d, 2) [formule re-corrigée par VER-MC-1, le « d − 2 »
+>   étant faux dès d ≥ 3] ; la formulation initiale était un sur-ajustement,
 >   3 contre-exemples**] ; disjoints ou incomparables :
 >   jamais de partage. **Condition : l'ANTICHAÎNE de supports, SUFFISANTE —
 >   l'obstacle de MC-003 devenu condition de la solution.** Base 2 bits :
->   10/10 super-additifs. Cible suivante : le théorème conditionnel
+>   ~~10/10 super-additifs~~ [CORRIGÉ par VER-MC-1 : bug d'encodage t2 —
+>   objet réel : 5/10 SOUS-additifs, min −4]. Cible suivante : le théorème conditionnel
 >   (MC-008 candidat — « supports non emboîtés ⟹ W = Σ + O(1) »).
 >   Réserves : q.12 (s ≤ 3, règle mesurée sur une famille structurée) ;
 >   la passe adverse tierce du bloc MC-003..007 reste à faire et le trou
@@ -1156,15 +1159,83 @@ calcul** du fil AS n'avaient pas atteint.
 >   les groupes ν = 5) ; conjecture hors recouvrement (le packing sature
 >   sur l'incomparable — argument de valeurs requis). (c) **Le corollaire
 >   a réfuté la règle de MC-007** : 3 contre-exemples ((7,1), (7,2),
->   (7,4) : emboîtées, g = 0) — la règle exacte est **g = |c₀\c₁| − 2
->   pour c₁ ⊊ c₀ non vide : seul le RECOUVREMENT descendant partage** ;
+>   (7,4) : emboîtées, g = 0) — la règle exacte est **g = d − max(d, 2)
+>   pour c₁ ⊊ c₀ non vide [re-corrigée par VER-MC-1, « d − 2 » faux dès
+>   d ≥ 3] : seul le RECOUVREMENT descendant partage** ;
 >   incomparables : g ≥ 0 toujours (l'antichaîne SUFFISANTE, désormais
 >   dérivée des lois). Prise q.12 INTERNE au fil — règle consignée la
 >   veille, réfutée par recalcul le lendemain ; les 5 fichiers porteurs
 >   corrigés avec renvoi. Suite : MC-009 (prouver C-MC008). La passe
 >   adverse tierce du bloc MC-003..008 devient PRESSANTE (2 preuves de
 >   session + 1 correction interne). Fiche : `tasks/done/MC-008.md` ;
->   données : `data/mc008_lois_points.md`.
+>   données : `data/mc008_lois_points.md`. **[Correction MC-009, même
+>   jour : la branche incomparable de C-MC008 est RÉFUTÉE dès a ≥ 3.]**
+> - [x] **MC-009 (fait, 2026-08-07)** — **la tâche a dû RÉFUTER ce
+>   qu'elle devait prouver, et en a tiré deux théorèmes.** (1) C-MC008
+>   (branche incomparable) RÉFUTÉE hors de sa plage d'ajustement (a ≤ 2) :
+>   (3,3,0,0) : F = 8 ≠ 9, (3,4,0,0) : 9 ≠ 10, (3,3,0,1) : 10 ≠ 11 —
+>   optima certifiés ; mécanisme : la COURONNE (a+b+2+2o) bat la branche
+>   linéaire dès a ≥ 3 ; 5ᵉ prise q.12 du fil, attrapée par l'extraction
+>   de témoins à ν = 6. (2) **RÉDUCTION M PROUVÉE** : tout (a,b,m,o) se
+>   ramène au cœur m = 0 sur ν − m variables ; le +1 comparable à
+>   m = 1 → 0 est le coefficient forcé du singleton m_i — la loi porte la
+>   trace de sa preuve ; 0 écart numérique sur ν ≤ 5. (3) **Loi corrigée
+>   C-MC009** (incomparable : 2(a+b+o) − max(b, 2, a+b−2)) : 7/7 points
+>   neufs conformes à ν = 6-7, dont 2 DISCRIMINANTS. (4) **MAJORANTS
+>   PROUVÉS PARTOUT** : trois constructions générales (comparable,
+>   linéaire, couronne), séparation démontrée + vérification par blocs
+>   (a, b ≤ 8, o ≤ 8) au poids exact — **la loi est en sandwich** : ≤
+>   prouvé, = certifié-solveur sur tout le domaine testé. (5) Minorants
+>   OUVERTS (le packing sature ; l'esquisse de cascade a un trou identifié
+>   et n'est PAS revendiquée — familles D_j non disjointes) → cible
+>   MC-010 : l'argument de valeurs. **La passe adverse tierce du bloc
+>   MC-003..009 est CRITIQUE** : 3 preuves de session, 2 réfutations
+>   internes successives, zéro relecture indépendante. Fiche :
+>   `tasks/done/MC-009.md` ; données : `data/mc009_preuve_F.md` ;
+>   scripts : `checks/mc009_preuve_F.py`, `checks/mc009_regles.py`.
+> - [x] **MC-010 (fait, 2026-08-07)** — **les minorants par l'argument des
+>   COPIES DÉCALÉES : la première tranche de F au-delà du recouvrement est
+>   un THÉORÈME en sandwich fermé.** Le mécanisme : un extérieur léger
+>   porte exactement son singleton, sa copie du cube intérieur est
+>   translatée de +1 — l'interdiction de retomber sur la valeur protégée P
+>   force D_j ≠ 1, puis D_j ≥ k+1 sous μ = 0, et la convexité
+>   Σ D_j = Σ|S|a_S convertit en poids. **(A)** comparable, μ = 0 :
+>   W ≥ b + 2o pour tout o ; **(B)** comparable INCONDITIONNEL pour
+>   o ≤ 7 — le cas médian paie par recouvrement des d-sous-ensembles,
+>   l'inégalité (d−1) + ⌈C(k,d)/C(k−2,d−2)⌉ ≥ k étant vraie pour k ≤ 7
+>   (cartographiée, premier échec (8,5)) ; **(C)** (1,1) : 2 + 2o pour
+>   o ≤ 2, tout o sous μ = 0. **Corollaire avec MC-009 : F(0,b,m,o) =
+>   b + 2o + [m ≥ 1] PROUVÉ pour tout b ≥ 2, tout m, tout o ≤ 7.**
+>   Audit : 10/10 témoins optimaux satisfont les inégalités de la preuve
+>   — et ont tous μ = 0 : le chaînon manquant du cas général est un
+>   LEMME DE NORMALISATION (MC-011 candidat). Certificats : 15/15
+>   INFEASIBLE au cap = loi − 1, y compris tous les cœurs incomparables
+>   testés (ν ≤ 7). Réserves : 6 preuves de session dans le bloc
+>   MC-003..010, zéro relecture tierce — CRITIQUE ; incomparable général
+>   et résidu o ≥ 8 ouverts. Fiche : `tasks/done/MC-010.md` ; données :
+>   `data/mc010_minorants.md` ; script : `checks/mc010_minorants.py`.
+> - [x] **VER-MC-1 (fait, 2026-08-07)** — **LA PASSE ADVERSE TIERCE du
+>   bloc MC-003..010 : le cœur TIENT, cinq prises corrigées le jour
+>   même.** Trois vérificateurs indépendants (instruments réécrits de
+>   zéro, consigne « présumer faux »). **Confirmé** : les 6 preuves de
+>   session re-dérivées sans faille de fond (~15 000 instances V1 ;
+>   réduction M, constructions, copies décalées V2) ; la réfutation de
+>   C-MC008 exacte (W(3,3,0,0) = 8 sous deux encodages neufs) ; C-MC009 à
+>   zéro écart contre la force brute exhaustive (148/148 paires ν ≤ 4,
+>   28/28 classes ν = 5) ; la carte s = 3 recalculée intégralement à
+>   l'identique. **Les prises** : (1) BUG t2 de MC-007 (6 variables pour
+>   4 bits) — seule donnée consignée invalide du bloc, conclusion
+>   INVERSÉE (5/10 sous-additifs sur l'objet réel) ; (2) le majorant
+>   (1,1) ne reposait sur rien — construction réparatrice de V2
+>   intégrée ; (3) lacune du Théorème C — lemme réparateur du léger
+>   inséré ; (4) g = d − 2 → g = d − max(d, 2) (faux dès d ≥ 3, signe
+>   inchangé) ; (5) trois comptes (3 984 classes, 28 groupes ν = 5,
+>   31 témoins). **Prise transverse** : bug ortools 9.15 isolé par V2
+>   (OPTIMAL faux sous Minimize + ≠ direct entre expressions liées) —
+>   les scripts du dépôt n'y sont pas exposés, la réserve T27-S2 §4 en
+>   sort renforcée. **Statut du bloc : CONTRE-VÉRIFIÉ** (résidu :
+>   assertions de solveur ν ≥ 5 ; une relecture humaine reste l'étalon
+>   supérieur). Fiche : `tasks/done/VER-MC-1.md`.
 >
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le

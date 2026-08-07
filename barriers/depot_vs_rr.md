@@ -175,13 +175,18 @@ MC-001 :
   (1/254), et les points épars — l'analogue du « scattered » de HOS18 —
   sont quasi additifs (g ∈ {−1 : 9, 0 : 40, +1 : 7}), leurs 9 exceptions
   obéissant à une règle exacte — ~~l'emboîtement directionnel~~
-  **CORRIGÉE par MC-008 : le RECOUVREMENT descendant** (g = |c₀\c₁| − 2
-  pour c₁ ⊊ c₀ non vide ; l'emboîtement profond ne partage pas — la
-  caractérisation initiale était un sur-ajustement, 3 contre-exemples).
+  **CORRIGÉE par MC-008 : le RECOUVREMENT descendant** (g = d − max(d, 2)
+  pour c₁ ⊊ c₀ non vide, d = |c₀\c₁| — formule re-corrigée par VER-MC-1,
+  le « d − 2 » initial étant faux dès d ≥ 3 ; l'emboîtement profond ne
+  partage pas — la caractérisation initiale était un sur-ajustement,
+  3 contre-exemples).
   **Condition de non-partage : l'antichaîne de supports, SUFFISANTE** —
   l'obstacle de MC-003 devenu condition de la solution, désormais dérivée
-  des lois (MC-008). Base 2 bits : échantillon entièrement super-additif
-  (+3..+12). [q.12 : s ≤ 3]
+  des lois (MC-008). Base 2 bits : ~~échantillon entièrement
+  super-additif~~ [CORRIGÉ par VER-MC-1 : bug d'encodage (6 variables
+  déclarées pour 4) — sur l'objet réel, 5/10 tirages SOUS-additifs,
+  min −4 : le partage est courant à base 2 bits aussi, la nécessité de
+  fibres structurées renforcée]. [q.12 : s ≤ 3]
   Pièces : `tasks/done/MC-007.md`, `data/mc007_fibre_partagee.md`,
   `checks/mc007_fibre_partagee.py`.
 - **Les lois des fibres-points (MC-008, 2026-08-07)** : loi G PROUVÉE —
@@ -194,12 +199,82 @@ MC-001 :
   53/53 groupes conformes (exhaustif ν ≤ 4 + tous les groupes ν = 5),
   statut CONJECTURE hors recouvrement (le minorant incomparable exige un
   argument de valeurs : le packing y sature). **Corollaire** : pour les
-  fibres-points à base 1 bit, g = |c₀\c₁| − 2 au recouvrement descendant,
+  fibres-points à base 1 bit, g = −1 au recouvrement descendant (d = 1 ;
+  formule générale g = d − max(d, 2), corrigée par VER-MC-1),
   g ≥ 0 partout ailleurs (incomparables : dérivé des lois) — la brique
   « fibres sans partage certifiées » du schéma a ses lois. Cible suivante
   (MC-009 candidat) : PROUVER C-MC008 (minorant incomparable). Pièces :
   `tasks/done/MC-008.md`, `data/mc008_lois_points.md`,
   `checks/mc008_lois_points.py`.
+  **[Correction MC-009, même jour : la branche incomparable de C-MC008
+  est RÉFUTÉE dès a ≥ 3 — voir le point suivant.]**
+- **C-MC008 réfutée, réduction M et majorants PROUVÉS (MC-009,
+  2026-08-07)** : la branche incomparable de C-MC008 meurt hors de sa
+  plage d'ajustement (a ≤ 2) — trois contre-exemples certifiés,
+  (3,3,0,0) : F = 8 ≠ 9, (3,4,0,0) : 9 ≠ 10, (3,3,0,1) : 10 ≠ 11 ;
+  mécanisme : la construction COURONNE (a+b+2+2o) bat la linéaire dès
+  a ≥ 3 — cinquième prise q.12 du fil, deuxième interne, attrapée par
+  l'extraction de témoins à ν = 6. **Acquis positifs** : (i) la
+  RÉDUCTION M est un THÉORÈME (x_i := 1 pour ≥ ; étiquetage par M pour
+  ≤ ; le +1 comparable = le coefficient forcé du singleton m_i) — tout se
+  ramène aux cœurs m = 0 ; (ii) loi corrigée **C-MC009** (comparable
+  b + 2o ; incomparable 2(a+b+o) − max(b, 2, a+b−2)) conforme à TOUTE la
+  donnée (7/7 points neufs ν ≤ 7, dont 2 discriminants) ; (iii) les
+  MAJORANTS de C-MC009 sont PROUVÉS partout par trois constructions
+  générales (comparable, linéaire, couronne — séparation démontrée,
+  vérification par blocs a, b ≤ 8, o ≤ 8) : la loi est en sandwich — ≤
+  prouvé, = certifié-solveur sur tout le domaine testé. **Reste OUVERT :
+  les minorants des cœurs** (le packing sature ; l'esquisse de cascade a
+  un trou identifié — familles D_j non disjointes — et n'est pas
+  revendiquée) : cible MC-010. La passe adverse tierce du bloc
+  MC-003..009 est CRITIQUE (3 preuves de session, 2 réfutations internes
+  successives). Pièces : `tasks/done/MC-009.md`, `data/mc009_preuve_F.md`,
+  `checks/mc009_preuve_F.py`, `checks/mc009_regles.py`.
+- **Les minorants (MC-010, 2026-08-07) — la première tranche de la loi F
+  au-delà du recouvrement devient un THÉORÈME complet** : par l'argument
+  des COPIES DÉCALÉES (chaque bit extérieur translate le cube intérieur ;
+  l'interdiction de retomber sur la valeur protégée P force la dichotomie
+  léger/lourd), trois théorèmes de minorants — (A) comparable, μ = 0 :
+  W ≥ b + 2o pour tout o ; (B) comparable INCONDITIONNEL pour o ≤ 7 (via
+  l'inégalité de recouvrement (d−1) + ⌈C(k,d)/C(k−2,d−2)⌉ ≥ k, vraie pour
+  k ≤ 7, premier échec (8,5) — zone résiduelle cartographiée) ; (C) cœur
+  (1,1) : 2 + 2o pour o ≤ 2, et tout o sous μ = 0. **Corollaire (avec les
+  majorants et la réduction M de MC-009) : F(0, b, m, o) = b + 2o + [m≥1]
+  est PROUVÉ pour tout b ≥ 2, m, et o ≤ 7.** Audit : les inégalités de la
+  preuve tiennent sur 10/10 témoins optimaux — qui ont TOUS μ = 0 : le
+  chaînon manquant du cas général est un LEMME DE NORMALISATION (« il
+  existe toujours un optimum sans monômes multi-extérieurs »), MC-011
+  candidat. Certificats hors preuve : 15/15 INFEASIBLE au cap = loi − 1
+  (dont tous les cœurs incomparables testés, ν ≤ 7). Réserve : 6 preuves
+  de session dans le bloc MC-003..010, zéro relecture tierce — CRITIQUE.
+  Pièces : `tasks/done/MC-010.md`, `data/mc010_minorants.md`,
+  `checks/mc010_minorants.py`.
+- **LA PASSE ADVERSE TIERCE EST FAITE (VER-MC-1, 2026-08-07)** — trois
+  vérificateurs indépendants (re-dérivation des 6 preuves de session ;
+  ré-implémentation de zéro des calculs décisifs ; audit des scripts et
+  consignations), consigne « présumer faux ». **Le cœur du bloc
+  MC-003..010 TIENT** : les 6 preuves re-dérivées sans faille de fond
+  (~15 000 instances numériques V1 ; 220 configs de constructions V2 ;
+  force brute exhaustive 148/148 et les 3 points de réfutation de C-MC008
+  reproduits sous 2 encodages neufs V3 ; la carte s = 3 de MC-007
+  recalculée intégralement à l'identique). **Prises de la passe,
+  corrigées le jour même** : (1) BUG t2 de MC-007 — 6 variables déclarées
+  pour 4, seule donnée consignée invalide du bloc : sur l'objet réel,
+  5/10 tirages sous-additifs (conclusion inversée, consignée) ;
+  (2) le majorant (1,1) n'était couvert par aucune construction —
+  construction réparatrice fournie par V2, intégrée et vérifiée ;
+  (3) lacune dans la preuve écrite du Théorème C (F1 inapplicable à
+  (1,1)) — lemme réparateur inséré ; (4) formule g = d − 2 fausse dès
+  d ≥ 3 — remplacée par g = d − max(d, 2), signe inchangé ; (5) trois
+  comptes corrigés (3 984 classes ; 28 groupes ν = 5 ; 31 témoins).
+  **Prise transverse** : bug ortools 9.15 isolé par V2 (OPTIMAL faux
+  sous Minimize + `!=` direct entre expressions liées) — les scripts du
+  dépôt n'y sont pas exposés (formulation par variables intermédiaires +
+  assert du témoin), mais la réserve T27-S2 §4 en sort renforcée : un
+  INFEASIBLE de solveur reste une assertion sans équivalent de
+  l'assert-témoin. **Statut du bloc : CONTRE-VÉRIFIÉ** (résidu : les
+  optima/INFEASIBLE ν ≥ 5 restent des assertions de solveur, chez les
+  vérificateurs comme ici). Pièces : `tasks/done/VER-MC-1.md`.
 
 - **Contre SYM+/ACC⁰ (le régime du fil)** : la sortie 2 de D-001 s'applique —
   Williams, verbatim (pièce du dépôt) : « *there is little evidence that ACC
