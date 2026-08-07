@@ -1,0 +1,2028 @@
+=== PAGE 1 ===
+NP-hardness of Minimum Circuit Size Problem for
+OR-AND-MOD Circuits
+Shuichi Hirahara 1
+Department of Computer Science, The University of Tokyo
+Tokyo, Japan
+hirahara@is.s.u-tokyo.ac.jp
+Igor C. Oliveira
+Department of Computer Science, University of Oxford
+Oxford, United Kingdom
+igor.carboni.oliveira@cs.ox.ac.uk
+Rahul Santhanam
+Department of Computer Science, University of Oxford
+Oxford, United Kingdom
+rahul.santhanam@cs.ox.ac.uk
+Abstract
+The Minimum Circuit Size Problem (MCSP) asks for the size of the smallest boolean circuit
+that computes a given truth table. It is a prominent problem in NP that is believed to be
+hard, but for which no proof of NP-hardness has been found. A signiﬁcant number of works
+have demonstrated the central role of this problem and its variations in diverse areas such as
+cryptography, derandomization, proof complexity, learning theory, and circuit lower bounds.
+The NP-hardness of computing the minimum numbers of terms in a DNF formula consistent
+with a given truth table was proved by W. Masek [31] in 1979. In this work, we make the
+ﬁrst progress in showing NP-hardness for more expressive classes of circuits, and establish an
+analogous result for the MCSP problem for depth-3 circuits of the form OR-AND-MOD2. Our
+techniques extend to an NP-hardness result for MODm gates at the bottom layer under inputs
+from (Z/mZ)n.
+2012 ACM Subject Classiﬁcation Theory of computation→ Problems, reductions and com-
+pleteness
+Keywords and phrasesNP-hardness, Minimum Circuit Size Problem, depth-3 circuits
+Digital Object Identiﬁer10.4230/LIPIcs.CCC.2018.5
+Acknowledgements Most of this work was done during a visit of the ﬁrst author to Oxford,
+supported by ACT-I, JST.
+1 Introduction
+1.1 The Minimum Circuit Size Problem
+In the Minimum Circuit Size Problem (MCSP), we are given the truth table of a Boolean
+function as input together with a positive integers, and the question is whether a circuit of
+size at mosts exists for the function represented by this truth table. It is easy to see that
+1 Supported by ACT-I, JST and JSPS KAKENHI Grant Numbers JP16J06743
+© Shuichi Hirahara, Igor C. Oliveira, and Rahul Santhanam;
+licensed under Creative Commons License CC-BY
+33rd Computational Complexity Conference (CCC 2018).
+Editor: Rocco A. Servedio; Article No.5; pp.5:1–5:31
+Leibniz International Proceedings in Informatics
+Schloss Dagstuhl – Leibniz-Zentrum für Informatik, Dagstuhl Publishing, Germany
+
+=== PAGE 2 ===
+5:2 NP-hardness of MCSP for OR-AND-MOD Circuits
+MCSP is inNP: simply guess a circuitC of size at mosts, and check thatC computes each
+entry of the truth table correctly.
+When solving MCSP deterministically, though, it is unclear how to avoid exhaustive search
+over the space of circuits of size at mosts. A natural question arises: is MCSPNP-complete?
+The answer to this problem remains far from clear. MCSP is one of the very few natural
+problems in NP for which we have no strong evidencefor or against NP-completeness. This
+is despite the fact that MCSP has long been recognized as a fundamental problem since
+the earliest research on complexity theory in the Soviet Union in the 1950s [41]. Indeed,
+it is reported in [8] that Levin delayed the publication of hisNP-completeness results for
+Satisﬁability because he was hoping to show similar results for MCSP.
+The diﬃculty of showing MCSP to beNP-hard was explicitly addressed in the work of
+Kabanets and Cai [27]. Roughly speaking, suppose we have a polynomial-time reductionf
+from Satisﬁability to MCSP that is “‘natural”, in the sense that the output length and output
+parameter depend only on the input length, and the input length is polynomially bounded
+in the output length – this is a property that all standard reductions have. Kabanets and
+Cai argued that by applyingf to a trivial family of unsatisﬁable formulas, we can show that
+the class E of problems solvable in linear exponential time requires superpolynomial circuit
+size. Given that the question of proving super-polynomial circuit lower bounds for explicit
+functions is a longstanding open question in complexity theory, this provides a signiﬁcant
+obstacle to showingNP-hardness of MCSP via natural reductions. Note, though, that the
+Kabanets-Cai result does not give any evidenceagainst NP-hardness of MCSP – it only
+suggests that NP-hardness might be hard toestablish. There has been a long sequence of
+works [7, 32, 24, 23, 6] building on this result to give further evidence of the diﬃculty of
+showing NP-hardness of MCSP.
+One way around the Kabanets-Cai obstacle is to study the complexity of MCSP for
+circuit classes for which strong circuit lower bounds arealready known. Given a classC of
+circuits, let C-MCSP be the problem where, given a truth table and a numbers, we wish to
+know if there is aC-circuit of sizes computing the given truth table.
+Studying C-MCSP for restricted classes C of circuits is independently motivated by
+algorithmic applications in circuit minimization, proof complexity [30, Chapter 30], learning
+theory (cf. [38, 5, 18, 11]), and cryptography and lower bounds [39] (see also [10]). It was
+shown already in 1979 by Masek [31] that DNF-MCSP is NP-hard.2 There have been
+diﬀerent proofs of this result [15, 5], and extensions to hardness of approximation [5, 18, 29].
+Nevertheless, almost four decades after Masek’s result, and despite the signiﬁcant attention
+that the MCSP problem has received (see also [2, 3, 4, 36]), NP-hardness of C-MCSP is
+still not known for any natural classC of circuits more expressive than DNFs. To quote
+Allender et al. [5], “Thus an important open question is to resolve the NP-hardness of both
+learnability results as well as function minimization results above for classes that are stronger
+than DNF.”
+1.2 Our Result
+The main contribution in this work is the ﬁrstNP-hardness result forC-MCSP for a class
+C of depth–3 circuits, namely the class of (unbounded fan-in)OR◦ AND◦ MODm circuits,
+where m is any integer.
+2 For a self-contained presentation of a proof ofNP-hardness of DNF-MCSP, see [5].
+
+=== PAGE 3 ===
+S. Hirahara, I.C. Oliveira, and R. Santhanam 5:3
+▶ Theorem 1(Main Result). For every m≥ 2, given the truth table of a functionf : Zn
+m→
+{0, 1}, where Zm = Z/mZ ={0, 1, . . . , m− 1}, it is NP-hard under polynomial-time determ-
+inistic many-one reductions to determine the size of the smallestOR◦ AND◦ MODm circuit
+C that computes f, where circuit size is measured as the top fan-in ofC.3
+A few comments are in order. First, we elaborate on our computational model and
+complexity measure. We work with circuits which have anOR gate at the top,AND gates
+at the middle level, andMODm gates at the bottom level. We refer to such circuits as
+OR-AND-MOD circuits, or equivalently, DNF-MOD circuits. Such circuits operate in a
+natural way on inputs fromZn
+m. We allow arbitrary constants fromZm to feed in to gates
+at the bottom layer, and insist that inputs to the middleAND layer are Boolean. In other
+words, a MODm gate outputs 1 if and only if its corresponding linear equation overZm is
+satisﬁed, and the computations beyond the ﬁrst layer are all Boolean. Form = 2, this is
+precisely the traditional model of DNF of Parities (cf. [14], [25], [26, Section 11.9], [1]).
+The complexity measure we use is the top fan-in of the circuit, i.e., fan-in to the top
+OR gate. The main reason we work with this measure is naturalness and convenience. As
+argued in [14], top fan-in is the preferred measure for OR-AND-MOD2 circuits because: (i)
+it measures the number of aﬃne subspaces required to cover the 1s of the function, and thus
+has a nice combinatorial meaning; (ii) the number of MOD2 gates feeding in to any middle
+layer AND gate can be assumed to be at mostn without loss of generality, by using basic
+linear algebra, and thus the top fan-in approximates the total number of gates to within a
+factor of n; and (iii) the size of a DNF is often measured by the number of terms in it, and
+analogously it makes sense to measure the size of a DNF of Parities by the top fan-in of the
+circuit.
+Our results are not however critically dependent on the complexity measure we use, and
+admit diﬀerent extensions. Indeed, we demonstrate the robustness of our techniques by
+adapting them to show a hardness result for computing the number of gates in OR-AND-
+MODp formulas, where p is prime (Appendix B). Moreover, we mention that our approach
+can be modiﬁed to show a hardness of approximation result (Appendix C).
+The strategy for the proof of Theorem 1 is explained in Section 1.3. In short, we
+reduce from a variant of the well-known set cover problem [28]. The reduction consists of
+two stages, and it is initially presented as a randomized reduction. As one ingredient in
+the derandomization of our approach, we show the existence of near-optimal (seed length
+O(log n + log 1/ε)) pseudorandom generators against AND◦ MODm circuits over Zn
+m of
+arbitrary size. This result might be of independent interest, and we refer to the discussion in
+Section 1.3 for more details.
+Before further exploring the ideas of our proof, we give some perspective on the result and
+the possibility of extending it to more expressive circuit classes. Using the Kabanets-Cai [27]
+connection between NP-hardness and circuit lower bounds mentioned before, it is not hard
+to show that our reduction yields a2Ω(n) lower bound on the size of DNF-MOD2 circuits for
+a function inE = DTIME[2O(n)]. Such strong exponential lower bounds for explicit functions
+have long been known for the model we consider (see e.g. [22], and also [13, 12]). On the
+other hand, extending theNP-hardness result even to slightly diﬀerent classes such as depth-3
+AC0 circuits might be a challenge. It is still unknown ifE requires depth-3 AC0 circuits of
+size 2Ω(n), and using the Kabanets-Cai connection, natural approaches to an NP-hardness
+result would imply such a lower bound.
+3 As stated, Theorem 1 refers to the complexity of the optimization problem of ﬁnding the smallest circuit
+size for a given truth table, rather than the MCSP decision problem as deﬁned. Note however that
+these two computational problems are easily seen to be polynomial-time equivalent to each other.
+CCC 2018
+
+=== PAGE 4 ===
+5:4 NP-hardness of MCSP for OR-AND-MOD Circuits
+What might be more feasible though is showingNP-hardness ofC-MCSP for other related
+classes C of circuits, and under weaker kinds of reductions, such as quasi-polynomial time
+reductions or non-uniform reductions. For instance, it might be possible to extend our
+techniques to classes such asTHR◦ AND◦ MOD and depth-3 AC0 circuits of small bottom
+fan-in. In these cases, exponential lower bounds of the form2Ω(n) have been obtained (cf. [22],
+[37]).
+More broadly, we believe that showingNP-hardness of MCSP for more expressive classes
+C is an important direction in betterunderstanding circuit classes from the perspective of
+meta-complexity, i.e., complexity questions about computational problems involving circuits
+and algorithms. There are various criteria for measuring our understanding of a circuit class,
+for example, (i) Can we design non-trivial satisﬁability algorithms for circuits in the class?
+(ii) Can we unconditionally construct pseudo-random generators secure against circuits in the
+class? (iii) Can we learn the class using membership queries under the uniform distribution?
+(iv) Can we prove lower bounds against proof systems whose lines are encoded by circuits in
+the class? We suggest that theNP-hardness of C-MCSP is another strong indication that we
+understand a circuit classC well.
+1.3 Overview of the Proof of Theorem 1
+The rest of the paper is dedicated to the proof of Theorem 1, which will be completed in
+Section 4. Here we provide a high-level description of the reduction. For simplicity, our
+exposition mostly focuses on the casem = 2. After that, we explain the main diﬃculties in
+extending the result to generalm, and how these are addressed in our proof.
+As mentioned above, Masek [31] was the ﬁrst to establish the NP-hardness of DNF
+minimization, and Theorem 1 can be interpreted as an extension of Masek’s result to the
+more expressive DNF-MOD circuits. The structure of our argument follows however a
+two-step reduction introduced by Gimpel (cf. Allender et al. [5]), brought to our attention
+thanks to an alternative proof of Masek’s result from [5]. More precisely, their work presents
+a new proof of the ﬁrst stage of Gimpel’s reduction, and provides a self-contained exposition
+of the entire argument.
+Our NP-hardness proof for DNF-MOD circuits heavily builds on ideas of Gimpel and
+[5], but the extension to depth-3 requires new ideas and makes the argument much more
+involved. Let (DNF◦ XOR)-MCSP be the computational problem described in Theorem 1
+when m = 2, and let(DNF◦ XOR)-MCSP∗ be its natural generalization topartial boolean
+functions. In other words, an input to(DNF◦ XOR)-MCSP∗ encodes the truth table of a
+function f :{0, 1}n→{ 0, 1,∗}, and we are interested in the size of the minimum(DNF◦XOR)-
+circuit that agrees withf on f−1({0, 1}). Let r∈ N be a large enough constant. Our proof
+reduces from the NP-complete problemr-Bounded Set Cover (cf. [19]): Given a set system
+S⊆
+(n
+≤r
+)
+that covers[n], determine the minimum numberℓ of sets S1, . . . , Sℓ∈S such that
+ℓ
+i=1 Si = [n]. (We refer to Section 2.2 for a precise formulation of these computational
+problems.)
+In a bit more detail, we present arandomized (2-approximate) reduction fromr-Bounded
+Set Cover to(DNF◦ XOR)-MCSP∗, and arandomized reduction from(DNF◦ XOR)-MCSP∗ to
+(DNF◦ XOR)-MCSP. These reductions are then eﬃciently derandomized using an appropriate
+pseudorandom generator. As opposed to previous works on the NP-hardness of DNF
+minimization, our proof crucially explores the fact thatr-Bounded Set Cover is NP-hard
+even toapproximate (by roughly aln r-factor), a result from [17, 42] (see Theorem 5, Section
+2.2).
+
+=== PAGE 5 ===
+S. Hirahara, I.C. Oliveira, and R. Santhanam 5:5
+We discuss each reduction in more detail now. Common to both of them is a convenient
+characterization of the setsC−1(1)⊆{ 0, 1}n of inputs that can be accepted by non-trivial
+AND◦ XOR circuits C. If m is prime, it is not hard to show that this is precisely the class
+of aﬃne subspaces of{0, 1}n. Consequently, for a non-trivial partial functionf :{0, 1}n→
+{0, 1,∗}, its correspondingDNFXOR(f) complexity is exactly the minimum numbert of aﬃne
+subspaces A1, . . . , At⊆{ 0, 1}n such that f−1(1)⊆t
+i=1 Ai andt
+i=1 Ai⊆ f−1({1,∗}) (see
+Section 2.1). The analysis of our polynomial-time reductions, which will not be covered in
+this section, relies on this characterization in fundamental ways.
+Step 1. A randomized reduction fromr-Bounded Set Cover to(DNF◦ XOR)-MCSP∗ (Sec-
+tion 3.1).
+Given a set-systemS⊆
+(n
+≤r
+)
+, we deﬁne a partial boolean functionf :{0, 1}t→{ 0, 1,∗},
+where t = O(r log n). This function is probabilistically constructed as follows. First, we
+associate to each i∈ [n] a random vector vi∈{ 0, 1}t. For S∈S , let vS ={vi| i∈ S}.
+Then, we letf be 1 on each inputvi, 0 on inputs that arenot in the linear span ofvS for
+every S∈S , and∗ elsewhere.
+Using this construction, we are able to show by a delicate analysis that ift is suﬃ-
+ciently large, the following holds with high probability: ifS admits a cover of sizeK, then
+DNFXOR(f)≤ K; moreover, ifDNFXOR(f)≤ K, thenS admits a cover of size≤ 2K. (We
+discuss the intuition for this claim in Section 3.1.) This construction and the hardness of
+approximation result forr-Bounded Set Cover imply that(DNF◦ XOR)-MCSP∗ is NP-hard
+under many-one randomized reductions.
+Step 2. A randomized reduction from(DNF◦ XOR)-MCSP∗ to (DNF◦ XOR)-MCSP (Sec-
+tion 3.2).
+Let f :{0, 1}t→{ 0, 1,∗} be an instance of(DNF◦ XOR)-MCSP∗. We probabilistically
+construct from f a related total function g :{0, 1}t×{ 0, 1}s→{ 0, 1}, where r = t + 2
+and s = O(r + t). In more detail, we encode for eachx∈{ 0, 1}t its corresponding value
+f(x)∈{ 0, 1,∗} as aboolean functiongx on a hypercube{0, 1}s. For an inputx such that
+f(x)∈{ 0, 1}, we letg(x0s) = gx(0s) = f(x), where gx(·) = 0 elsewhere. On the other hand,
+if f(x) =∗, we pick arandom linear subspace Lx⊆{ 0, 1}s of dimension r, and we encode
+f(x) as the characteristic function ofLx.
+Again, a careful argument allows us to establish the following connection between the
+partial function f and the total functiong: with high probability over the choice of the
+random linear subspaces(Lx)x∈f−1(∗), DNFXOR(g) = DNFXOR(f) +|f−1(∗)|. (We discuss the
+intuition for this claim in Section 3.2.) Consequently, it follows from this and the previous
+reduction that (DNF◦ XOR)-MCSP is NP-hard under many-one randomized reductions.
+Step 3. Eﬃcient derandomization of the reductions(Section 4.1).
+It is possible to prove that the ﬁrst reduction is always correct provided that the collection
+of random vectorsvi is nice with respect to the set-systemS (Deﬁnition 12). Similarly, we
+can prove that the second reduction is correct whenever the collection(Lx)x∈f−1(∗) of linear
+subspaces isscattered (Deﬁnition 18). It turns out that both conditions can be checked in
+polynomial time. This implies that the previously discussed reductions are in factzero-error
+reductions. Consequently, if we can eﬃciently construct nice vectors and scattered families
+of linear subspaces, the reductions can be made deterministic.
+In order to achieve this, we use in both cases a subtle derandomization argument that relies
+on (polynomial-time computable)ε-biased distributions [33]. Recall that such distributions
+CCC 2018
+
+=== PAGE 6 ===
+5:6 NP-hardness of MCSP for OR-AND-MOD Circuits
+can fool arbitrary linear tests. By a more careful analysis, it is also known that they fool
+AND◦ XOR circuits. We donot describe an AND◦ XOR circuit to check if a collection of
+vectors is nice, or to check if a collection of linear subspaces is scattered. Still, we are able
+to show that ifε < 2−s then some scattered collection of linear subspaces is encoded by a
+string in the support of anε-biased distribution, and that the same holds with respect to a
+nice collection of vectors ifε < 2−t. In particular, trying all possible seeds of anε-biased
+generator produces the combinatorial and algebraic objects that are suﬃcient to derandomize
+our reductions. (We refer to Section 4.1 for more details.)
+Overall, combining the (derandomized) reductions and using the hardness of approxima-
+tion result forr-Bounded Set Cover mentioned above, it follows that(DNF◦ XOR)-MCSP is
+NP-hard under many-one deterministic polynomial-time reductions.
+The argument for arbitrarym ≥ 2. Let (DNF◦MODm)-MCSPand (DNF◦MODm)-MCSP∗
+be the corresponding computational problems with respect to an arbitrarym≥ 2. (Recall
+that the input boolean functions in this case are deﬁned overZn
+m.) As we explain next,
+additional diﬃculties are present for generalm.
+An immediate challenge is that it is no longer clear if the analogous characterization (via
+aﬃne subspaces) of the class of subsets ofZn
+m accepted by non-trivialAND◦ MODm circuits
+holds, and this is crucially exploited whenm = 2. The main issue is that, while in the latter
+case the result can be established by elementary techniques using thatZn
+2 is avector space
+over Z2, for an arbitrarym the underlying structure might be just amodule. Without a
+basis, the result is less clear.
+Nevertheless, it is possible to prove that the analogous result forAND◦ MODm circuits
+holds (cf. Lemma 2). The alternative and more general argument relies on a property of
+double orthogonal complements inZn
+m (Appendix A), and we refer to Section 2.1 for more
+details. Armed with this characterization, the reductions discussed before can be adapted
+to arbitrary m. Finding the right generalization of each deﬁnition requires some work, but
+after that, therandomized reductions for m = 2 and arbitrary m≥ 2 can be presented in a
+uniﬁed and transparent way.
+In order to conclude the proof of Theorem 1, we need to derandomize the new reductions.
+For m = 2, the argument was based on an eﬃcient construction ofε-biased distributions
+supported over{0, 1}n, and the fact that such distributions are also able to foolAND◦ XOR
+circuits over{0, 1}n. Without going into further details, we mention that for arbitrarym
+it is suﬃcient to use a pseudorandom generator that foolsAND◦ MODm circuits over Zn
+m.
+However, a generator withnear-optimal dependency on n and ε is needed if we are hoping to
+obtain a polynomial-time reduction. We were not able to ﬁnd such a result in the literature.4
+We show in Section 4.2 that, for everym≥ 2, there is an eﬃcient pseudorandom generator
+Gn :{0, 1}O(log n+log 1/ε)→ Zn
+m that ε-fools AND◦ MODm circuits of arbitrary size. Our
+construction relies on the eﬃcient ε-biased generators for Zn
+m from [9], together with a
+proof of the following result: IfG is an ε-biased generator againstZn
+m, then G (mε)-fools
+AND◦ MODm circuits. Again, we cannot rely on a adaptation of the similar claim for
+m = 2, which requires a basis. Our proof proceeds instead by a careful analysis of certain
+exponential sums encoding the behaviour of the circuit, and that can be used to connect the
+distinguishing probability to the guarantees oﬀered by theε-biased generator. We refer to
+Section 4.2 for more details.
+4 Existing generators seem to generatebits only, or are restricted to prime modulus, or can handle larger
+classes of functions but are not eﬃcient enough for our purposes. We refer to [21] and the references
+therein for related results.
+
+=== PAGE 7 ===
+S. Hirahara, I.C. Oliveira, and R. Santhanam 5:7
+2 Preliminaries
+Notation. For an integern≥ 1, let [n] denote{1, . . . , n}.
+Some notions from group theory.Let m≥ 2 be a constant. LetZm := Z/mZ denote the
+integers modulom, where all operations on elements inZm =⟨+,{0, 1, . . . , m− 1}⟩ are taken
+mod m. For any integert≥ 1, we regard Zt
+m as an additive group with component-wise
+addition. A non-empty subset H ⊆ Zt
+m is called a linear subspace if H is a subgroup,
+that is, 0∈ H and x + y∈ H for any x, y∈ H. A subset A⊆ Zt
+m is called anaﬃne
+subspace if A is a coset, that is, there exista∈ Zt
+m and a linear subspaceH⊆ Zt
+m such that
+A = H + a :={ h + a| h∈ H}.
+We stress thatZt
+m gives rise to amodule and not to avector spacewhen m is a composite
+number; however, we borrow some standard notation; for example, for a scalarc∈ Zm and a
+“vector” v∈ Zt
+m, let cv denote the scalar multiplication. Let⟨x, y⟩ :=∑t
+i=1 xiyi (∈ Zm ) for
+any x, y∈ Zt
+m and t∈ N.
+2.1 Circuit Size Measure and Its Characterization
+For any integerm≥ 2, an OR◦ AND◦ MODm ( = DNF◦ MODm ) circuit is aDNF formula
+whose terms areAND◦ MODm circuits. Here, the MODm gate is a Boolean function such
+that MODm(x) = 1 if and only if∑n
+i=1 xi mod m = 0 on input x∈{ 0, 1}n. We allow
+multiple input wires and access to constant input bits in the circuit. Note that this allows
+for more general equations to be computed by a bottom-layer modular gate.
+The size of a circuit is usually deﬁned as the number of gates. However, for us it is
+important to deﬁne the size of aDNF◦ MODm circuit as the top fan-in of the circuit, or
+equivalently, its number ofAND◦ MODm terms. (Note that the same size measure was used
+in [14] in the casem = 2.) For a Boolean functionf :{0, 1}t→{ 0, 1}, deﬁne DNFMODm(f)
+as the minimum number of terms of aDNF◦ MODm circuit computing f, i.e., the fan-in of
+its OR gate.
+In order to present our results in a uniﬁed way for any integerm≥ 2, we extend the
+input{0, 1}t of a DNF◦ MODm circuit to the larger domainZt
+m in a natural way: that is,
+we regard the bottomMODm gate as a functionMODm : Z∗
+m→{ 0, 1} that outputs 1 if and
+only if the sum of its input elements is congruent to 0 modm. Again, more general equations
+can be obtained using multiple input wires and access to constants inZm.
+An AND◦ MODm circuit C accepts the set X⊆ Zt
+m if for anyx∈ Zt
+m, x∈ X if and only
+if C outputs 1 on x. There is a nice combinatorial characterization of the set of inputs that
+such circuits can accept.
+▶ Lemma 2 (Characterization of the power ofAND◦ MODm circuits). Let X⊆ Zt
+m be a
+nonempty set. Then, anAND◦MODm circuit acceptsX if and only ifX is an aﬃne subspace
+of Zt
+m.
+This is a standard fact whenm is a prime (cf. [14] for m = 2), in which caseZt
+m is a vector
+space. However, the same characterization holds whenm≥ 2 is an arbitrary composite
+number, as established below. The proof relies on the following fact about orthogonal
+complements in the more general context of modules.
+▶ Fact 3 (Double orthogonal complement). Let H ⊆ Zt
+m be a linear subspace, and let
+H⊥ :={ x∈ Zt
+m| ∑t
+i=1 xiyi = 0 for any y∈ H } be its orthogonal complement. Then,
+(H⊥)⊥ = H.
+CCC 2018
+
+=== PAGE 8 ===
+5:8 NP-hardness of MCSP for OR-AND-MOD Circuits
+For completeness, we include a proof of this result in Appendix A. Assuming Fact 3, we
+proceed to a proof of Lemma 2.
+Proof of Lemma 2.Let x := (x1, . . . , xt)∈ Zt
+m denote the input to the circuit.
+Suppose that anAND◦ MODm circuit K
+k=1 Ck accepts X, where eachCk is a MODm
+gate. Each MODm gate Ck in the circuit deﬁnes a linear equation over(x1, . . . , xt). That is,
+there are coeﬃcientsa1
+k, . . . , at
+k∈ Zm and an elementbk∈ Zm such that∑t
+i=1 ai
+kxi = bk if
+and only ifCk accepts the inputx. Therefore, the circuit K
+k=1 Ck accepts the intersection
+of such linear equations over Zm. Speciﬁcally, for a matrix A := ( ai
+k)k∈[K],i∈[t] and a
+vector b := ( bk)k∈[K], the circuit accepts all inputsx∈ Zt
+m such that Ax = b; namely,
+X ={ x∈ Zt
+m| Ax = b}. Since X is nonempty, we can take some elementx0∈ X. Now, we
+can rewrite X as
+X ={ x∈ Zt
+m| A(x− x0) = 0} ={ y∈ Zt
+m| Ay = 0} + x0,
+which is an aﬃne subspace ofZt
+m.
+For the converse direction, we use the notion of orthogonal complement. Suppose that
+X⊆ Zt
+m is an aﬃne subspace. By deﬁnition, we can decomposeX into a linear subspace
+H⊆ Zt
+m and a shifta∈ Zt
+m so that X = H + a.
+We ﬁrst claim thatH can be accepted by someAND◦ MODm circuit. To prove this, it is
+suﬃcient to show the existence of some matrixA∈ ZK×t
+m such thatH ={ x∈ Zt
+m| Ax = 0}.
+Since H is a linear subspace, by Fact 3, for anyx∈ Zt
+m,
+x∈ H if and only if
+t∑
+i=1
+xi· yi = 0 for every y∈ H⊥.
+That is, we can deﬁne a matrixA∈ Z|H⊥|×t
+m as (yi)y∈H⊥,i∈[t]. (In other words, for each
+y∈ H⊥, we add aMODm gate that checks if∑t
+i=1 xi· yi = 0, where each coeﬃcientyi is
+simulated using multiple input wires.)
+To accept X, we just need to shiftH by a. Indeed, for a vector b := Aa, we have
+X = H + a ={ x∈ Zt
+m| Ax = b}; thus we can construct anAND◦ MODm circuit accepting
+X by simulating the conditionAx = b. ◀
+As a consequence of Lemma 2, for a functionf : Zt
+m→{ 0, 1}, the minimum size of
+a DNF◦ MODm circuit computing f equals the minimum number S of aﬃne subspaces
+T1, . . . , TS⊆ Zt
+m such thatS
+i=1 Ti = f−1(1).
+2.2 Computational Problems
+The starting point of ourNP-hardness results is the set cover problem on instances where
+each set has size at mostr.
+▶ Deﬁnition 4 (r-Bounded Set Cover Problem). For an integerr∈ N, the r-Bounded Set
+Cover Problem is deﬁned as follows:
+Input. An integer n∈ N and a collectionS⊆ 2[n] of nonempty subsets of the universe
+[n] such that|S|≤ r for each S∈S , and
+S∈S S = [n].
+Output. The minimum numberℓ of subsets S1, . . . , Sℓ∈S such thatℓ
+i=1 Si = [n].
+For this problem, a tight inapproximability result based onNP-hardness is known.
+
+=== PAGE 9 ===
+S. Hirahara, I.C. Oliveira, and R. Santhanam 5:9
+▶ Theorem 5(Feige [17], Trevisan [42]). Let r be a suﬃciently large constant. It isNP-hard
+(under polynomial-time many-one reductions) to approximate the solution of ther-bounded
+set cover problem within a factor ofln r− O(ln lnr). That is, for any languageL∈ NP, there
+exists a polynomial-time machine that, on inputx, outputs a thresholdθ and an instanceS
+of the r-bounded set cover problem such that ifx∈ L thenS has a cover of size at mostθ,
+and if x̸∈ L thenS does not have a cover of size at mostθ· (ln r− O(ln lnr)).
+We stress that theinapproximability result is essential for us; we will present a reduction from
+a 2-factor approximation of ther-bounded set cover problem to the minimumDNF◦ MODm
+circuit minimization problem.
+▶ Deﬁnition 6(Minimum Circuit Size Problem forDNF◦ MODm). For an integerm≥ 2, the
+Minimum Circuit Size Problem forDNF◦ MODm, abbreviated as(DNF◦ MODm)-MCSP, is
+deﬁned as follows:
+Input. A Boolean functionf : Zt
+m→{ 0, 1}, represented as a truth table of lengthmt.
+Output. DNFMODm(f).
+While our ﬁnal theorem conﬁrms that (DNF◦ MODm)-MCSP is NP-hard, we will ﬁrst
+prove NP-hardness of the circuit minimization problem on instances of a partial function
+f : Zt
+m→{ 0, 1,∗}. That is, we regard any inputx∈ f−1(∗) as “undeﬁned.” For a partial
+function f : Zt
+m→{ 0, 1,∗}, we say that a circuitC computes f if C(x) = f(x) for any
+x∈ f−1({0, 1}). We extend the deﬁnition of DNFMODm(f) to the size of the minimum
+DNF◦ MODm circuit computing the partial function f : Zt
+m →{ 0, 1,∗}. The following
+problem is concerned with the circuit size of partial functions, and we distinguish it from the
+problem above by adding a superscript∗.
+▶ Deﬁnition 7(Minimum Circuit Size Problem for Partial Functions). For an integerm≥ 2,
+the Minimum Circuit Size Problem∗ for DNF◦MODm, abbreviated as(DNF◦MODm)-MCSP∗,
+is deﬁned as follows:
+Input. A Boolean functionf : Zt
+m→{ 0, 1,∗}, represented as a string of lengthmt over
+the alphabet{0, 1,∗}.
+Output. DNFMODm(f).
+3 Hardness of (DNF ◦ MODm)-MCSP Under Randomized Reductions
+3.1 Reduction from r-Bounded Set Cover to(DNF ◦ MODm)-MCSP∗
+This subsection is devoted to proving the following theorem.
+▶Theorem 8. (DNF◦MODm)-MCSP∗ is NP-hard under (zero-error) randomized polynomial-
+time many-one reductions.
+Let r be a large enough constant so that the approximation factor ofln r− O(ln lnr) in
+Theorem 5 is larger than2. We present a reduction from a 2-factor approximation of the
+r-bounded set cover problem to(DNF◦ MODm)-MCSP∗.
+Let us prepare some notation. LetS be an instance of ther-bounded set cover problem
+over the universe[n] (in particular,
+S∈S S = [n]). Let t∈ N be a parameter chosen later.
+For eachi∈ [n], pick vi∈R Zt
+m independently and uniformly at random. For anyS⊆ [n],
+let vS denote{ vi| i∈ S}. Let span(vS) :={∑
+i∈S ci· vi| ci∈ Zm for any i∈ S} denote
+the linear span ofvS. (Note thatspan(vS) is a linear subspace ofZt
+m whenever S̸= ∅.) In
+our reduction, an elementi∈ [n] is mapped to a random pointvi of Zt
+m, and a setS∈S
+corresponds to a linear subspacespan(vS).
+CCC 2018
+
+=== PAGE 10 ===
+5:10 NP-hardness of MCSP for OR-AND-MOD Circuits
+For any set cover instanceS, we deﬁne a functionf : Zt
+m→{ 0, 1,∗} as
+f(x) :=
+
+
+
+1 (if x = vi for some i∈ [n])
+0 (if x̸∈
+S∈S span(vS))
+∗ (otherwise)
+for any x∈ Zt
+m. The truth table off is the output of our reduction.
+It is not hard to see thatDNFMODm(f) is at most the minimum set cover size forS (Claim
+9 below). Of course, the diﬃculty is in proving a circuit lower bound forf (Claim 10 below).
+The idea is as follows: For simplicity of the exposition, let us focus on the case ofm = 2,
+and moreover let us ﬁrst consider the case of aDNF◦ MOD2 circuit C for f that accepts a
+union oflinear subspaces (instead of aﬃne subspaces). More precisely, letC−1(1) be a union
+of linear subspaces{Tk}k∈[K]. Then Tk is a subset ofC−1(1)⊆ f−1({1,∗}) =
+S∈S span(vS);
+furthermore, each span(vS) is a random linear subspace of small dimensionr; therefore, it is
+possible to show that, with high probability, the set{ i∈ [n]| vi∈ Tk} of points covered by
+Tk is contained in some legal setS∈S of the set cover instance; hence the circuit sizeK is
+at least the minimum set cover size.
+In the case that a circuitC accepts the union ofaﬃne subspaces, it is no longer true
+that, for any aﬃne subspace T such that T ⊆ 
+S∈S span(vS), the set{ i∈ [n]| vi ∈
+T} is covered by some legal set S ∈ S; indeed, for any two points vi and vj, the set
+{vi, vj}
+(
+= vi⊕{ 0, vi⊕ vj}
+)
+is an aﬃne subspace ofZt
+2, whereas{i, j} is not necessarily
+legal in the set cover instanceS. Nonetheless, we can still prove that, with high probability, the
+set{ i∈ [n]| vi∈ T} is covered by two legal setsS1, S2∈S . As a consequence, the minimum
+number of aﬃne subspaces needed to coverv1, . . . , vn gives us a2-factor approximation of
+the minimum set cover size forS. By Theorem 5, it follows that(DNF◦ XOR)-MCSP∗ is
+NP-hard under randomized reductions. Details follow.
+▶ Claim 9(Easy part). Suppose thatS has a set cover of sizeK. Then DNFMODm(f)≤ K.
+Proof. LetC⊆S be a set cover of sizeK. For each S∈C , by Lemma 2, there exists an
+AND◦ MODm circuit CS such that CS accepts span(vS). Deﬁne a DNF◦ MODm circuit
+C :=⋁
+S∈C CS. It is easy to see thatC computes f. ◀
+Conversely, we prove the following:
+▶ Claim 10(Hard part). For some parametert such that mt = (nm)O(r), the following holds
+with probability at least1
+2 (over the choice of(vi)i∈[n]):
+Let K := DNFMODm(f). ThenS has a set cover of size2K.
+The two claims above imply that2DNFMODm(f) is a 2-factor approximation for the set cover
+problem: indeed, letsbe the minimum set cover size forS; then we haves≤ 2DNFMODm(f)≤
+2s. It thus remains to prove Claim 10.
+To prove Claim 10, let us clarify the desired condition that random objects(vi)i∈[n]
+should satisfy. For anyI⊆ [n], deﬁne theaﬃne spanof vI as
+aﬃne-span(vI) :=
+{∑
+i∈I
+civi| ci∈ Zm for i∈ I and
+∑
+i∈I
+ci = 1
+}
+.
+The important property of the aﬃne span is that, if an aﬃne subspaceA covers the setvI of
+points in I⊆ [n], then its aﬃne span must also be covered byA.
+
+=== PAGE 11 ===
+S. Hirahara, I.C. Oliveira, and R. Santhanam 5:11
+▶ Claim 11(Property of the aﬃne span). For any aﬃne subspaceA of Zt
+m and any I⊆ [n],
+if vI⊆ A then aﬃne-span(vI)⊆ A.
+Proof. Let us writeA = H + a for some linear spaceH⊆ Zt
+m and vector a∈ Zt
+m. Since
+vi∈ vI⊆ A for each i∈ I, there exists some vectorhi∈ H such that vi = hi + a. Take any
+coeﬃcients (ci)i∈I such that ci∈ Zm and∑
+i∈I ci = 1. Then,
+∑
+i∈I
+civi =
+∑
+i∈I
+ci(hi + a) =
+∑
+i∈I
+cihi + a ∈ H + a. ◀
+By Lemma 2, the circuit size of f equals the minimum number of aﬃne subspaces
+A1, . . . , AK⊆ f−1({1,∗}) such thatK
+i=1 Ai⊇ f−1(1). Intuitively, we would like to require
+that, if the setvI (
+⊆ f−1(1)
+)
+of points is covered by some aﬃne subspaceA⊆ f−1({1,∗}),
+then there exist two legal setsS1, S2 of the set cover instanceS such that I⊆ S1∪ S2. In
+fact, one of these sets can be taken as a singleton:
+▶ Deﬁnition 12. We say that(vi)i∈[n] is nice (with respect toS) if, for anyI⊆ [n],
+aﬃne-span(vI)⊆
+
+S∈S
+span(vS) = ⇒ I⊆ SI∪{ iI} (1)
+for some SI∈S and iI∈ [n].
+We will prove that(vi)i∈[n] is nice with probability at least1
+2, and that for any nice(vi)i∈[n],
+the minimum size ofDNF◦ MODm is a 2-factor approximation of the minimum set cover
+size. We prove the latter ﬁrst:
+▶ Claim 13. Let (vi)i∈[n] be nice, andK := DNFMODm(f). ThenS has a set cover of size
+2K.
+Proof. Let C =⋁K
+k=1 Ck be a DNF◦ MODm circuit computing f, where eachCk∈ AND◦
+MODm is nontrivial. By Lemma 2,C−1
+k (1) is an aﬃne subspace ofZt
+m. For eachCk, we will
+choose 2 sets fromS so that the union of all these sets cover the universe[n].
+Fix any Ck and let Ik :={ i∈ [n]| Ck(vi) = 1} be the set of all points covered by
+Ck. Since C−1
+k (1) is an aﬃne subspace ofZt
+m and vIk⊆ C−1
+k (1), we haveaﬃne-span(vIk)⊆
+C−1
+k (1) by Claim 11. Since the circuitC computes f, C−1
+k (1)⊆ C−1(1)⊆ f−1({1,∗}) =
+S∈S span(vS). Thus we have aﬃne-span(vIk)⊆ 
+S∈S span(vS), which means that the
+hypothesis of niceness(1) is satisﬁed; hence there exist some subsetSk1∈S and some
+element ik∈ [n] such that Ik⊆ Sk1∪{ ik}. Take any setSk2∈S such that ik∈ Sk2 (such a
+set Sk2 must exist because we assumed
+S∈S S = [n]). Then Ik⊆ Sk1∪ Sk2.
+Now we claim thatK
+k=1 Sk1∪ Sk2 = [n] (and hence the set cover instanceS has a cover
+of size 2K). Indeed, for anyi∈ [n], we havef(vi) = 1 and hence C(vi) = 1, which means
+that there exists some subcircuitCk such that Ck(vi) = 1. Thus i∈ Ik⊆ Sk1∪ Sk2 for some
+k∈ [K]. ◀
+It remains to show that a random choice of(vi)i∈[n] is nice with high probability:
+▶ Claim 14. For each i∈ [n], pick vi∈R Zt
+m uniformly at random and independently. If
+t≥ r + ((r + 2) logn + log|S| + 1)/ log m, then (vi)i∈[n] is nice with probability at least1
+2.
+To prove Claim 14, we will use a union bound over all relevant subsetsI⊆ [n]; however,
+the deﬁnition of niceness(1) appears to suggest that we need to take a union bound over
+exponentially many subsetsI. The next claim shows that this is in factnot the case.
+CCC 2018
+
+=== PAGE 12 ===
+5:12 NP-hardness of MCSP for OR-AND-MOD Circuits
+▶ Claim 15(Characterization of niceness). (vi)i∈[n] is not nice (with respect toS) if and only
+if there exists some subsetI⊆ [n] such that all the following conditions hold:
+1. |I|≤ r + 2,
+2. I̸⊆ S∪{ i} for any S∈S and i∈ [n], and
+3. aﬃne-span(vI)⊆
+S∈S span(vS).
+In particular, there are at mostnr+2 subsets I⊆ [n] over which we need to take a union
+bound.
+Proof. By the deﬁnition of niceness,(vi)i∈[n] is not nice if and only if there exists some
+subset I⊆ [n] such that aﬃne-span(vI)⊆
+S∈S span(vS) whereas I̸⊆ S∪{ i} for any S∈S
+and i∈ [n]. Therefore, it is clear that the three conditions imply that(vi)i∈[n] is not nice;
+we prove below the converse direction (the “only if” part of Claim 15).
+A crucial observation is that, for any subsetI⊆ [n] of size at leastr + 2, the second
+condition always holds: Indeed, recall thatS is an instance of ther-bounded set cover
+instance; that is,|S|≤ r for any S ∈S . Hence, for any S ∈S and i∈ [n], we have
+|S∪{ i}|≤ r + 1; thus I cannot be a subset ofS∪{ i} simply because|I|≥ r + 2.
+Now suppose that there exists some subsetI ⊆ [n] satisfying the second and third
+conditions, but not the ﬁrst one, that is,|I| > r + 2. Take any subset I′⊆ I such that
+|I′| = r + 2. We claim thatI′ satisﬁes all three conditions: The ﬁrst condition (|I′|≤ r + 2)
+is obvious. The second condition holds because of the observation above. To see the third
+condition, by assumption, we haveaﬃne-span(vI)⊆
+S∈S span(vS); hence, we also have
+aﬃne-span(vI′
+)⊆ aﬃne-span(vI)⊆
+S∈S span(vS). ◀
+Now let us proceed to a proof of Claim 14.
+Proof of Claim 14.We will bound the probability that a random(vi)i∈[n] is not nice, by
+using the union bound over all the subsetsI⊆ [n] such that the ﬁrst and second conditions
+in Claim 15 hold. To this end, ﬁx any subsetI⊆ [n] such that|I|≤ r + 2and I̸⊆ S∪{ i} for
+any S∈S and i∈ [n] (in particular, I is not empty). We would like to bound the probability
+that the aﬃne subspace ofvI is a subset of
+S∈S span(vS).
+Take an arbitrary (e.g. the smallest) elementi0∈ I. Deﬁne coeﬃcients (ci)i∈I as follows:
+ci := 1∈ Zm for any i∈ I\ i0 and ci0 := (2−| I|) mod m∈ Zm. By this deﬁnition, we
+have∑
+i∈I ci = 1; hence,∑
+i∈I civi∈ aﬃne-span(vI). Therefore,
+Pr
+v1,...,vn
+)
+aﬃne-span(vI)⊆
+
+S∈S
+span(vS)
+[
+≤ Pr
+)∑
+i∈I
+civi∈
+
+S∈S
+span(vS)
+[
+≤
+∑
+S∈S
+Pr
+)∑
+i∈I
+civi∈ span(vS)
+[
+.
+By the assumption onI, we haveI̸⊆ S∪{ i0} for any S∈S ; that is, there exists some
+index jS∈ I\{i0}\ S. Note thatcjS = 1 because jS∈ I\{i0}. Therefore, the last probability
+is
+
+=== PAGE 13 ===
+S. Hirahara, I.C. Oliveira, and R. Santhanam 5:13
+∑
+S∈S
+Pr
+)∑
+i∈I
+civi∈ span(vS)
+[
+=
+∑
+S∈S
+Pr
+)
+vjS ∈ span(vS)−
+∑
+i∈I\{jS}
+civi
+
+
+=
+∑
+S∈S
+Pr
+)
+vjS =
+∑
+i∈S
+divi−
+∑
+i∈I\{jS}
+civi for some (di)i∈S
+
+
+=
+∑
+S∈S
+∑
+(di)i∈S
+Pr
+)
+vjS =
+∑
+i∈S
+divi−
+∑
+i∈I\{jS}
+civi
+
+
+≤|S|· mr· m−t,
+where the last inequality holds because the random vectorvjS does not appear in the right
+summations.
+Finally, by taking the union bound over allI such that|I|≤ r + 2 (and I̸⊆ S∪{ i} for
+any S∈S and i∈ [n]), the probability that(vi)i∈[n] is not nice is bounded from above by
+nr+2·|S|· mr−t≤ 1
+2. ◀
+Given these claims above, it is immediate to complete the whole proof.
+Proof of Claim 10.We may assume without loss of generality that|S|≤ nr sinceS is an
+instance of ther-bounded set cover problem. We sett∈ N to be the smallest integer such
+that t≥ r + ((r + 2)log n + log|S| + 1)/ log m; then t = O(r log(nm)/ log m). (Here theO
+notation hides only a universal constant.) Combining Claims 13 and 14, we immediately
+obtain Claim 10. ◀
+Proof of Theorem 8.The encoding of the functionf : Zt
+m→{ 0, 1,∗} is of size O(mt) =
+(nm)O(r), which is a polynomial in the input sizepoly(n,|S|).
+Moreover, it is possible to make the reduction zero-error: Indeed, the condition of the
+niceness can be checked in polynomial time, by using the characterization of Claim 15.
+Finally, recall that ther-bounded set cover problem isNP-hard to approximate within
+a factor of2 by Theorem 5 for a suﬃciently large constantr∈ N. Hence, NP-hardness of
+(DNF◦ MODm)-MCSP∗ follows from Claims 9 and 10. ◀
+3.2 Reduction from (DNF ◦ MODm)-MCSP∗ to (DNF ◦ MODm)-MCSP
+Next, we present a reduction for the minimum circuit size problem for partial functions to
+that for total functions:
+▶ Theorem 16. There is a (zero-error) randomized polynomial-time many-one reduction
+from (DNF◦ MODm)-MCSP∗ to (DNF◦ MODm)-MCSP.
+Let f : Zt
+m→{ 0, 1,∗} be an instance of(DNF◦ MODm)-MCSP∗. Let r := t + 2 and
+s :=⌈(2r + 2t) log m + 2⌉ =⌈4(t + 1)log m + 2⌉. We encode each valuef(x)∈{ 0, 1,∗} of
+the partial functionf as a function on a “hypercube”Zs
+m: namely, we construct a newtotal
+function g : Zt
+m× Zs
+m→{ 0, 1} such that f(x) corresponds to (g(x, y))y∈Zsm. Speciﬁcally,
+if f(x)̸=∗, then f(x) is encoded as a hypercube whose origin5 0s is assigned f(x) and
+5 0s denotes the zero ofZs
+m for any s∈ N.
+CCC 2018
+
+=== PAGE 14 ===
+5:14 NP-hardness of MCSP for OR-AND-MOD Circuits
+other points are assigned0; if f(x) =∗, then we pick a random linear subspaceLx⊆ Zs
+m of
+dimension r and we encodef(x) as the characteristic function ofLx.
+Formally, for eachx∈ f−1(∗), we pickv1
+x, . . . , vr
+x∈R Zs
+m uniformly and independently
+at random, and deﬁne a random linear subspaceLx := span(v1
+x, . . . , vr
+x). Then the output
+g : Zt
+m× Zs
+m→{ 0, 1} of our reduction is deﬁned as
+g(x, y) :=
+
+
+
+f(x) (if f(x)∈{ 0, 1} and y = 0s)
+1 (if f(x) =∗ and y∈ Lx)
+0 (otherwise)
+for any(x, y)∈ Zt
+m× Zs
+m.
+The idea is as follows: Let us imagine how a minimumDNF◦ MODm circuit C computing
+g looks like. We need to coverg−1(1) by as few aﬃne subspaces as possible. Note thatg−1(1)
+consists of two parts:{(x, 0s)} for each x∈ f−1(1), and{x}× Lx for each x∈ f−1(∗). In
+order to cover the latter one, it is likely that we need to use the aﬃne subspace{x}× Lx
+itself for each x∈ f−1(∗); indeed, since eachLx is a random linear subspace, under our
+constraints with high probability there is no aﬃne subspace which simultaneously covers (a
+large fraction of) two random aﬃne subspaces{x}× Lx and{x′}× Lx′ for x̸= x′∈ f−1(∗)
+(Claim 21 below). Therefore, the minimum circuitC should contain a subcircuit which
+accepts{x}× Lx for each x∈ f−1(∗). Now it remains to cover{(x, 0s)} for each x∈ f−1(1),
+but here we canoptionally cover{(x, 0s)} for each x∈ f−1(∗) (which has been already
+covered by{x}× Lx). This is exactly the same situation as(DNF◦ MODm)-MCSP∗; thus
+with high probability we haveDNFMODm(g) = DNFMODm(f) +|f−1(∗)|. Details follow.
+▶ Claim 17. DNFMODm(g)≤ DNFMODm(f) +|f−1(∗)|.
+Proof. Suppose that aDNF◦MODm circuit C =⋁K
+k=1 Ck computes f. For eachx∗∈ f−1(∗),
+take an AND◦ MODm formula Cx∗ such that C−1
+x∗ (1) ={x∗}× Lx∗ (by Lemma 2). Deﬁne
+C′(x, y) :=⋁K
+k=1(Ck(x)∧ (y1 = 0)∧···∧ (ys = 0))∨⋁
+x∗∈f−1(∗) Cx∗(x, y). It is easy to see
+that C′(x, y) = g(x, y) for any(x, y)∈ Zt
+m× Zs
+m. ◀
+In order to prove the other direction, let us clarify the desired condition for random
+linear spaces. We require that (Lx)x∈f−1(∗) is pairwise “disjoint” and that each Lx is
+nondegenerated.
+▶ Deﬁnition 18. We say that(Lx)x∈f−1(∗) is scattered if|Lx| = mr and Lx\ Lx′ ={0s}
+for any distinctx, x′∈ f−1(∗).
+It is easy to prove that the collection of random linear spaces satisﬁes the condition above.
+▶ Claim 19. (Lx)x∈f−1(∗) is scattered with probability at least1
+2, provided thats≥ (2r +
+2t) logm + 2.
+Proof. We ﬁrst bound the probability that(Lx)x∈f−1(∗) is not pairwise disjoint.
+Pr
+
+Lx\ Lx′̸={0s} for some distinctx, x′∈ f−1(∗)
+
+≤
+∑
+x̸=x′∈f−1(∗)
+Pr [Lx\ Lx′̸={0s}]
+≤
+∑
+x̸=x′∈f−1(∗)
+Pr
+) r∑
+i=1
+civi
+x =
+r∑
+i=1
+divi
+x′ for some nonzero(ci)i∈[r], (di)i∈[r]
+[
+< m 2t· m2r· 2−s ≤ 1
+4 ,
+
+=== PAGE 15 ===
+S. Hirahara, I.C. Oliveira, and R. Santhanam 5:15
+where, in the last line, we used the fact that the probability that∑r
+i=1 civi
+x =∑r
+i=1 divi
+x′ is
+at most 2−s for nonzero (i.e. ci̸= 0, dj̸= 0 for some i, j∈ [r]) coeﬃcients (ci)i∈[r], (di)i∈[r].6
+Next, we bound the probability that|Lx| < m r. Indeed,
+Pr
+
+|Lx| < m r for some x∈ f−1(∗)
+
+≤
+∑
+x∈f−1(∗)
+Pr
+) r∑
+i=1
+civi
+x = 0s for some nonzero(ci)i∈[r]
+[
+≤ mt· mr· 2−s ≤ 1
+4 .
+Overall, the probability that(Lx)x∈f−1(∗) is not scattered is less than1
+4 + 1
+4 = 1
+2. ◀
+Note that the condition of being scattered can be checked in polynomial time. Indeed, for
+each x∈ f−1(∗), one can enumerate all the elements ofLx, which are at most polynomially
+many in the input sizemO(t). Thus, our zero-error randomized reduction picks random linear
+subspaces (Lx)x∈f−1(∗) until we obtain a scattered collection of linear subspaces.
+In the rest of the proof, we can thus assume that(Lx)x∈f−1(∗) is scattered. The next
+claim gives the reverse inequality of Claim 17.
+▶ Claim 20. DNFMODm(g)≥ DNFMODm(f) +|f−1(∗)| if (Lx)x∈f−1(∗) is scattered.
+Let C = ⋁K
+k=1 Ck be a minimum DNF◦ MODm circuit computing g. (In particular,
+K = DNFMODm(g)≤ DNFMODm(f) +|f−1(∗)|≤ mt+1.) For each x∈ f−1(∗), we ﬁrst
+extract a subcircuitCl(x) that covers (a large fraction of) the random linear subspaceLx.
+Let l(x)∈ [K] be one of the indices such that|C−1
+l(x)(1)\ ({x}× Lx)| is maximized. That
+is, Cl(x) covers the largest fraction of the aﬃne subspace{x}× Lx; in particular, since
+k∈[K] C−1
+k (1)⊇{ x}× Lx, there are at least|Lx|/K
+(
+= mr/K≥ mr−t−1≥ 2
+)
+points in
+the set C−1
+l(x)(1)\ ({x}× Lx). Intuitively, the subcircuits{ Cl(x)| x∈ f−1(∗)} are supposed
+to cover random linear subspaces, and the rest of the subcircuits computesf.
+To make the intuition formal, we will prove the following two claims. The ﬁrst asserts
+that, under our constraints, no aﬃne subspace can cover a large fraction of two distinct
+random linear subspaces.
+▶ Claim 21. l: f−1(∗)→ [K] is injective.
+The second claim asserts that, if an aﬃne subspaceC−1
+l(x′)(1) covers a large fraction of
+{x′}× Lx′, then it cannot cover a point(x, 0s) such that f(x) = 1.
+▶ Claim 22. Cl(x′)(x, 0s) = 0 for any x∈ f−1(1) and x′∈ f−1(∗).
+Assuming these two claims, it is easy to prove Claim 20.
+Proof of Claim 20.For each k ∈ [K], deﬁne an AND◦ MODm circuit C′
+k as C′
+k(x) :=
+Ck(x, 0s) on input x∈ Zt
+m. Deﬁne a DNF◦ MODm circuit C′ :=⋁
+k∈ [K]\{ l(x)|f(x)=∗} C′
+k.
+By Claim 21, the number of subcircuits inC′ is K−| f−1(∗)|.
+We claim thatC′ computes f. Indeed, for anyx∈ f−1(1), we haveC(x, 0s) = g(x, 0s) =
+f(x) = 1; hence, there is somek∈ [K] such that Ck(x, 0s) = 1, which implies thatC′
+k(x) = 1
+by the deﬁnition ofC′
+k. Claim 22 impliesk̸∈{ l(x′)| f(x′) =∗}; thus C′(x) = 1. On the
+other hand, for anyx∈ f−1(0), we haveC(x, 0s) = g(x, 0s) = f(x) = 0; in particular, for
+any k∈ [K], Ck(x, 0s) = 0. Thus C′
+k(x) = 0 for any k∈ [K], which impliesC′(x) = 0. ◀
+6 Note that any equationax = b (mod m) with a̸= 0 is satisﬁed with probability≤ 1/2 over a random
+choice of x.
+CCC 2018
+
+=== PAGE 16 ===
+5:16 NP-hardness of MCSP for OR-AND-MOD Circuits
+It remains to prove Claims 21 and 22. We prove the latter ﬁst.
+Proof of Claim 22.Assume, by way of a contradiction, thatCl(x′)(x, 0s) = 1 for some
+x∈ f−1(1) and x′∈ f−1(∗). By the deﬁnition ofl(x′), there are at least 2 distinct points
+(x′, a) and (x′, b) in C−1
+l(x′)(1)\ ({x′}× Lx′). Since C−1
+l(x′)(1) is an aﬃne subspace, we have
+(x′, a)− (x′, b) + (x, 0s) = (x, a− b)∈ C−1
+l(x′)(1) (as in the proof of Claim 11). It follows that
+C(x, a− b) = 1. Since C computes g, we also haveg(x, a− b) = 1, which contradicts the fact
+that a− b̸= 0s and the deﬁnition ofg. ◀
+Proof of Claim 21.Assume that l(x1) = l(x2) =: k for distinct inputs x1, x2∈ f−1(∗).
+Take any 2 distinct points(x1, a) and (x1, b) from C−1
+k (1)\ ({x1}× Lx1) and any point
+(x2, c) from C−1
+k (1)\ ({x2}× Lx2). Since C−1
+k (1) is an aﬃne subspace, we have(x1, a)−
+(x1, b) + (x2, c) = (x2, a− b + c)∈ C−1
+k (1). We also have(x2, a− b + c)∈{ x2}× Lx2, since
+C−1
+k (1)\ ({x2}× Zs
+m)⊆ g−1(1)\ ({x2}× Zs
+m) ={x2}× Lx2. Therefore, a− b + c∈ Lx2.
+Since c∈ Lx2 and this is a linear subspace, it follows thata− b∈ Lx2. On the other hand,
+by the deﬁnition ofa and b, we have0s̸= a− b∈ Lx1. However, this is a contradiction
+because 0s̸= a− b∈ Lx1\ Lx2 ={0s}. ◀
+Proof of Theorem 16.By Claims 17 and 20, we obtainDNFMODm(g) = DNFMODm(f) +
+|f−1(∗)| for a scattered collection(Lx)x∈f−1(∗). Since s = O(t log m), the truth table ofg is
+of length mt+s = mO(t log m), which is a polynomial in the input length for every constant
+m≥ 2. Finally, since it is possible to check whether(Lx)x∈f−1(∗) is scattered in polynomial
+time, the reduction is zero-error. ◀
+On our proof strategy and the restriction to functions over boolean inputs ( m >
+2). The linear-algebraic and probabilistic techniques employed here naturally suggest to
+view a set of inputs for the input instancef as a subset of the algebraic structureZn
+m (a
+vector space or module, depending onm). In order to establish a similar NP-hardness result
+with respect to functions on the hypercube and AND-OR-MODm circuits, one is tempted
+to encode elements from the structureZn
+m as binary strings, and to consider a bijection
+ϕ: Zn
+m↔ Γ⊆{ 0, 1}∗ between vectors and binary strings. However, a binary encoding allows
+a bottom-layer modular gate to access individual bits of this encoding, and as a consequence,
+this gate might accept a setA⊆{ 0, 1}∗ that does not correspond underϕ to the set of
+solutions of a modular equation overZm. When this is the case, our argument no longer
+works.
+Another natural approach would be to restrict the input function to boolean inputs, and
+to directly view such inputs as elements in{0, 1}n⊆ Zn
+m. Here certain technical diﬃculties
+are transferred to our probabilistic analysis involving aﬃne subspaces ofZn
+m, and it is not
+immediately clear to us how to modify the argument in this case.
+For these reasons, whenm > 2 our techniques do not seem to be directly applicable
+to functions deﬁned over boolean inputs only, and a more complicated argument might be
+necessary. Note however that this does not exclude the existence of diﬀerent and potentially
+simpler reductions among these and other intermediary problems.
+4 Derandomization and Pseudorandom Generators for AND◦ MODm
+In this section, we present a uniﬁed way of eﬃciently derandomizing the zero-error reductions
+of Section 3. The crucial idea is that certainsubconditions of being nice or scattered can be
+checked byAND◦MODm circuits overZn
+m; hence, a pseudorandom generator forAND◦MODm
+circuits can be used to derandomize the reductions.
+
+=== PAGE 17 ===
+S. Hirahara, I.C. Oliveira, and R. Santhanam 5:17
+In order to achieve this, we show that there exists a quick pseudorandom generator with
+logarithmic seed length that fools anyAND◦ MODm circuit (regardless of its size), a result
+that might be of independent interest.
+▶ Theorem 23. For every ϵ = ϵ(n) > 0 and each m≥ 2, there exists a quick pseudorandom
+generator G ={Gn : [Γn]→ Zn
+m}n∈N that ϵ-fools any AND◦ MODm circuit over Zn
+m, where
+Γn = poly(n, 1/ϵ, m) is a positive integer.
+Here we say that, forϵ > 0 and an integer m≥ 2, a function Gn : [Γn]→ Zn
+m ϵ-fools
+AND◦ MODm circuits if| Eγ∈R[Γn][C(Gn(γ))]− Ev∈RZnm[C(v)]|≤ ϵ for every AND◦ MODm
+circuit C; such a function Gn is called an ϵ-pseudorandom generator for AND◦ MODm
+circuits. We say that a family{Gn}n∈N of pseudorandom generators isquick if Gn can be
+computed in poly(Γn) time. (Recall that[Γn] denotes the set{1, . . . ,Γn}, which means that
+the seed-length ofGn is logarithmic inn, m, and1/ε when its input elements are represented
+as binary strings.)
+4.1 Derandomizing the Reductions
+We defer a proof of Theorem 23 to the next subsection, and present its applications ﬁrst:
+The pseudorandom generator implies polynomial-time derandomizations of the reductions
+presented in Section 3.
+▶ Theorem 24 (Restatement of Theorem 1). (DNF◦ MODm)-MCSP is NP-hard under
+polynomial-time many-one reductions.
+Our basic strategy is as follows: Each reduction of Section 3 employs random variables
+that take value onZk
+m, for diﬀerent choices ofk. To derandomize the reductions, we simply
+replace these random variables by the output of the pseudorandom generator of Theorem 23;
+then we try all possibleΓn seeds of Gn, and check whether the generated random variables
+satisfy the desired condition (which can be done in polynomial time). Below we give details
+for each reduction, starting with the second.
+Derandomizing the second reduction. We start with the reduction from
+(DNF◦ MODm)-MCSP∗ to (DNF◦ MODm)-MCSP. The reduction required a scattered collec-
+tion of linear subspaces, which is provided by the probabilistic argument of Claim 19. Here
+we present a deterministic construction of such a collection.
+▶ Theorem 25. For any integer m≥ 2, there exists a deterministic algorithm that, on
+inputs t and r, outputs ascattered collection of r-dimensional linear subspaces(Lh)h∈[H] for
+H := mt. Speciﬁcally,
+1. Lh is a linear subspace ofZs
+m for s :=⌈(2r + 2t) logm + 2⌉,
+2. |Lh| = mr, and
+3. Lh\ Lh′ ={0s} for any distincth, h′∈ [H].
+The running time of the algorithm ismO((r+t) logm).
+In the proof of Theorem 16, we picked random vectorsv1
+x, . . . , vr
+x∈R Zs
+m and deﬁned
+Lx := span(v1
+x, . . . , vr
+x) for each x∈ f−1(∗)⊆ Zt
+m. We take a similar approach, but instead
+of generating vectors uniformly at random, we use the output of the pseudorandom generator
+as the source of randomness. Speciﬁcally, letγ∈ [ΓrsH] be a seed of the pseudorandom
+generator of GrsH; deﬁne vectors (v1
+h, . . . , vr
+h)h∈[H] := GrsH(γ) ∈ (Zrs
+m)H; then, deﬁne
+Lh := span(v1
+h, . . . , vr
+h) for each h∈ [H]. We show that the probabilistic argument of Claim
+19 still works even if the randomness is replaced in this way:
+CCC 2018
+
+=== PAGE 18 ===
+5:18 NP-hardness of MCSP for OR-AND-MOD Circuits
+▶ Claim 26. Let GrsH be the pseudorandom generator of Theorem 23 with error parameter
+ϵ = 2−s. Pick a seedγ∈R [ΓrsH] uniformly at random, and deﬁne a collection(Lh)h∈[H] of
+linear subspaces as above. Then,(Lh)h∈[H] is scattered with nonzero probability.
+Proof. Note that union bounds hold for any distribution; hence, by using the union bounds
+as in Claim 19, the probability that(Lh)h∈[H] is not pairwise disjoint is
+Pr [ Lh\ Lh′̸={0s} for some distincth, h′∈ [H] ]
+≤
+∑
+h̸=h′∈[H]
+∑
+(ci),(di)
+Pr
+) r∑
+i=1
+civi
+h =
+r∑
+i=1
+divi
+h′
+[
+, (2)
+where the second sum is taken over all nonzero coeﬃcient vectors(ci)i∈[r] and (di)i∈[r]
+with entries ci, di ∈ Zm. If the random vectors (vi
+h)h,i were uniformly distributed, the
+probability in(2) could be bounded by2−s as in Claim 19; Here the probability is taken
+over a random seedγ∈R [ΓrsH] of the pseudorandom generatorGrsH. The condition that∑r
+i=1 civi
+h =∑r
+i=1 divi
+h′ can be checked by someAND◦ MODm circuit that takes(vi
+h)h,i as
+input; thus the circuit isϵ-fooled by the pseudorandom generator; as a consequence, the
+probability (2) is strictly less thanm2t· m2r· (2−s + ϵ)≤ 1
+2.
+Similarly,
+Pr [|Lh| < m r for some h∈ [H] ]
+≤
+∑
+h∈[H]
+∑
+(ci)
+· Pr
+) r∑
+i=1
+civi
+h = 0s
+[
+< m t· mr· (2−s + ϵ) ≤ 1
+2 .
+Overall, the probability that(Lh)h∈[H] is not scattered is strictly less than1
+2 + 1
+2 = 1. ◀
+Proof of Theorem 25.By Claim 26, there exists some seed γ ∈ [ΓrsH] such that the
+output GrsH(γ) deﬁnes a scattered collection(Lh)h∈[H] of linear subspaces. By exhaustively
+searching all the seeds, one can enumerate all the outputs ofGrsH in time poly(ΓrsH) =
+poly(rsH, 2s, m). Moreover, one can check whetherGrsH(γ) deﬁnes a scattered collection
+for each γ∈ [ΓrsH] in time poly(H, ms). Overall, the running time of our construction is
+poly(ms) = mO((r+t) logm). ◀
+The randomized reduction of Theorem 16 can be now derandomized, using the determin-
+istic construction of Theorem 25 forr := t + 2.
+▶ Corollary 27.There is a polynomial-time(mO(t log m) time on input lengthO(mt)) many-
+one reduction from(DNF◦ MODm)-MCSP∗ to (DNF◦ MODm)-MCSP.
+Derandomizing the ﬁrst reduction. We now consider the reduction from ther-bounded
+set cover problem to(DNF◦ MODm)-MCSP∗. Let [n] be the universe, andS⊆
+([n]
+≤r
+)
+be an
+input to the set cover problem. Derandomizing the reduction amounts to a deterministic
+construction of anice collection (vi)i∈[n] of vectors. We generate the random vectors using
+the pseudorandom generator forAND◦ MODm circuits, and show that the probabilistic
+argument of Claim 14 still works.
+▶ Claim 28 (Revised Claim 14). Let Gtn be the pseudorandom generator of Theorem 23
+with error parameter ϵ < m −t. Pick a seed γ ∈R [Γtn] uniformly at random. Deﬁne
+(v1, . . . , vn) := Gtn(γ)∈ (Zt
+m)n. If t≥ r + ((r + 2)log n + log|S| + 1)/ log m, then (vi)i∈[n]
+is nice with nonzero probability.
+
+=== PAGE 19 ===
+S. Hirahara, I.C. Oliveira, and R. Santhanam 5:19
+Proof. By using union bounds as in Claim 14, it is suﬃcient to prove
+nr+2·|S|· mr· Pr
+)
+vjS =
+∑
+i∈S
+divi−
+∑
+i∈I\{jS}
+civi
+
+ < 1 (3)
+for coeﬃcients (ci)i∈I , (di)i∈S and jS∈ I\ S, where the probability is taken over a random
+seed γ.
+The condition vjS =∑
+i∈S divi−∑
+i∈I\{jS} civi can be checked by anAND◦ MODm
+circuit that takes(v1, . . . , vn)∈ Ztn
+m as input. By Theorem 23, we get
+Pr
+)
+vjS =
+∑
+i∈S
+divi−
+∑
+i∈I\{jS}
+civi
+
+≤ m−t + ϵ.
+Consequently, due to our choice oft and using ϵ < m−t, the left-hand side of(3) is strictly
+less than
+nr+2·|S|· mr· 2m−t≤ 1,
+which completes the proof. ◀
+In particular, there exists some seedγ∈ [Γtn] such that (v1, . . . , vn) = Gtn(γ) is nice.
+The number of seeds is at mostΓtn = poly(tn, 1/ϵ, m) = poly(n, mt) = (nm)O(r), which is
+a polynomial in the input length; hence, in polynomial time, one can try all possible seeds
+and ﬁnd a nice collection(vi)i∈[n] of vectors. Thus the reduction of Theorem 8 can be
+derandomized:
+▶ Corollary 29. (DNF◦ MODm)-MCSP∗ is NP-hard under polynomial-time many-one reduc-
+tions.
+Proof of Theorem 24.Immediate from Corollaries 29 and 27. ◀
+4.2 Near-Optimal Pseudorandom Generators for AND ◦ MODm
+This subsection contains a proof of Theorem 23. We assume basic familiarity with concepts
+from analysis of boolean functions [35]. For simplicity, we ﬁrst focus on the case ofm = 2,
+which admits a simpler proof.
+Proof form = 2. An ϵ-biased generator, introduced by Naor and Naor [34], is a pseudoran-
+dom generator forXOR functions. That is, we say that a functionG:{0, 1}s→{ 0, 1}n is an
+ϵ-biased generator if| Ex∈R{0,1}n[χS(x)]− Es∈R{0,1}s[χS(G(s))]|≤ ϵ for any S⊆ [n], where
+χS(x) :=⨁
+i∈S xi. While this deﬁnition only requires the generator to foolXOR functions,
+it can be shown that any Boolean function with smallℓ1 Fourier norm can be fooled by
+ϵ-biased generators.
+▶ Lemma 30(see e.g., [16, Lemma 2.5]). Every function f :{0, 1}n→{ 0, 1} can beϵˆ||fˆ||1
+fooled by anyϵ-biased generator. Here,ˆ||fˆ||1 :=∑
+S⊆[n]|f(S)|.
+Proof Sketch. Use the Fourier expansionf(x) =∑
+S⊆[n]
+f(S)χS(x), and apply the triangle
+inequality. ◀
+Moreover, it is known that anyAND◦ XOR circuit f has ˆ||fˆ||1 = 1.
+CCC 2018
+
+=== PAGE 20 ===
+5:20 NP-hardness of MCSP for OR-AND-MOD Circuits
+▶ Lemma 31(see e.g., [35, Proposition 3.12]). ˆ||fˆ||1 = 1 for any Boolean functionf :{0, 1}n
+→{ 0, 1} computable by a nontrivialAND◦ XOR circuit.
+Proof Sketch. Let H + a⊆{ 0, 1}n be the (nonempty) aﬃne subspace accepted byf. Take
+a basis ofH⊥. Write a characteristic function off using the basis, and expand it to obtain a
+Fourier expansion off. ◀
+Combining these two lemmas, anyϵ-biased generator foolsAND◦ XOR circuits. Moreover,
+Naor and Naor [34] gave an explicit construction of anϵ-biased generator of seed length
+O(log n + log(1/ϵ)), from which Theorem 23 follows whenm = 2.
+In the proof sketched above, we exploited the fact that{0, 1}n = Zn
+2 is a vector space:
+We took a basis of a linear subspace in the proof of Lemma 31. In order to generalize the
+result to the case ofm≥ 2, we need a more direct proof which does not rely on a basis.
+Proof for any m ≥ 2. Azar, Motwani and Naor [9] generalized the notion ofϵ-biased
+generator on{0, 1}n to Zn
+m for any integerm≥ 2, and gave an explicit construction. We
+review the generalized notion and their result below.
+▶Deﬁnition 32([9]). For a probability distributionD over Zn
+m and a vectora∈ Zn
+m, biasD(a)
+is deﬁned as follows: forg := gcd(a1, . . . , an, m),
+biasD(a) := 1
+g max
+0≤k<m/g
+⏐⏐⏐ Pr
+x∼D
+[⟨a, x⟩ = kg]− g
+m
+⏐⏐⏐ .
+We say that a distributionD is ϵ-biased if biasD(a)≤ ϵ for every a∈ Zn
+m. We say that a
+function G: [Γ]→ Zn
+m is an ϵ-biased generatorif the distributionG(γ) for a random seed
+γ∈R [Γ] is ϵ-biased.
+▶ Theorem 33 ([9, Theorem 6.1]). For m(n)≥ 2 and ϵ = ϵ(n) > 0, there exists a quick
+ϵ-biased generator G ={Gn : [Γn]→ Zn
+m}n∈N for some Γn = poly(n, 1/ϵ, m).
+We use the same pseudorandom generatorG as in Theorem 33. In what follows, we will
+show that anyϵ-biased generator mϵ-fools AND◦ MODm circuits, which completes the proof
+of Theorem 23.
+Deﬁne em : Zm→ C× as em(k) := exp(2π√−1· k/m) for k∈ Zm.
+▶ Lemma 34. For any distributionD on Zn
+m and any nonzero vectora∈ Zn
+m, we have
+⏐⏐⏐ E
+x∼D
+[em (⟨a, x⟩)]
+⏐⏐⏐≤ m· biasD(a).
+Proof. The proof follows the same approach of [9, Lemma 4.4]. Letg := gcd(a1, . . . , an, m).
+⏐⏐⏐ E
+x∼D
+[em (⟨a, x⟩)]
+⏐⏐⏐ =
+⏐⏐⏐⏐⏐⏐
+∑
+0≤k<m/g
+em(kg) Pr
+x∼D
+[⟨a, x⟩ = kg]
+⏐⏐⏐⏐⏐⏐
+=
+⏐⏐⏐⏐⏐⏐
+∑
+0≤k<m/g
+em(kg)
+(
+Pr
+x∼D
+[⟨a, x⟩ = kg]− g
+m
+)
+⏐⏐⏐⏐⏐⏐
+≤
+∑
+0≤k<m/g
+|em(kg)|·
+⏐⏐⏐ Pr
+x∼D
+[⟨a, x⟩ = kg]− g
+m
+⏐⏐⏐
+≤ m
+g · 1· g· biasD(a) = m· biasD(a),
+
+=== PAGE 21 ===
+S. Hirahara, I.C. Oliveira, and R. Santhanam 5:21
+where the ﬁrst equality follows from the fact that⟨a, x⟩ is a multiple ofg for any x∈ Zn
+m,
+and in the second equality we used that∑
+0≤k<m/g em(kg) = 0 for g < m, which is true if
+a̸= 0n. ◀
+As a consequence of the previous lemma, we can prove that any aﬃne function can be
+“fooled”:
+▶ Lemma 35. For any ϵ-biased probability distributionD on Zn
+m, any vectora∈ Zn
+m, and
+any scalar b∈ Zm,
+⏐⏐⏐⏐ E
+x∼D
+[em (⟨a, x⟩ + b)]− E
+x∈RZnm
+[em (⟨a, x⟩ + b)]
+⏐⏐⏐⏐≤ mϵ.
+Proof. When a = 0n, both expectations are constant, and hence the lemma follows. Other-
+wise, we haveEx∈RZnm [em (⟨a, x⟩)] = 0, since this expression can be written as a product of
+expectations, and one of them evaluates to zero. Using Lemma 34, we obtain
+⏐⏐⏐⏐ E
+x∼D
+[em (⟨a, x⟩ + b)]− E
+x∈RZnm
+[em (⟨a, x⟩ + b)]
+⏐⏐⏐⏐
+=|em(b)|·
+⏐⏐⏐⏐ E
+x∼D
+[em (⟨a, x⟩)]− E
+x∈RZn
+m
+[em (⟨a, x⟩)]
+⏐⏐⏐⏐ = 1 ·
+⏐⏐⏐ E
+x∼D
+[em (⟨a, x⟩)]
+⏐⏐⏐
+≤ m biasD(a) ≤ mϵ. ◀
+▶ Theorem 36. For any ϵ-biased probability distributionD on Zn
+m and any function f :
+Zn
+m→{ 0, 1} computable by someAND◦ MODm circuit,
+⏐⏐⏐⏐ E
+x∼D
+[f(x)]− E
+x∈RZnm
+[f(x)]
+⏐⏐⏐⏐≤ mϵ
+Proof. Suppose that anAND◦ MODm circuit computing f has K MODm gates, and, for
+each k∈ [K], let gk : Zn
+m→ Zm denote the aﬃne function that corresponds to the kth
+MODm gate. That is,gk(x) =⟨ak, x⟩ + bk for some vectorak∈ Zn
+m and some scalarbk∈ Zm;
+moreover, for any inputx∈ Zn
+m, f(x) = 1 if and only ifgk(x) = 0 for all k∈ [K].
+We employ the following construction. Letp(z) be the polynomial overC deﬁned as
+follows.
+p(z) := 1
+m
+
+α∈Zm\{0}
+(z− em(α)) (4)
+= 1
+m
+zm− 1
+z− 1 = 1
+m
+m−1∑
+i=0
+zi, (5)
+where the second equality holds because the roots of the polynomialzm− 1 are{ em(α)|
+α∈ Zm}. Useful properties of this polynomial are that, by(4), we havep(em(α)) = 0 for
+any α∈ Zm\{ 0}, and thatp(em(0)) = p(1) = 1 because of (5). Using the polynomial, we
+can write f as follows:
+CCC 2018
+
+=== PAGE 22 ===
+5:22 NP-hardness of MCSP for OR-AND-MOD Circuits
+f(x) =
+⋀
+k∈[K]
+[gk(x) = 0]
+=
+⋀
+k∈[K]
+[p(em(gk(x))) = 1]
+=
+
+k∈[K]
+p(em(gk(x)))
+=
+
+k∈[K]
+
+ 1
+m
+m−1∑
+j=0
+em(j· gk(x))
+(
+
+= 1
+mK
+
+k∈[K]
+∑
+αk∈Zm
+em(αkgk(x))
+= 1
+mK
+∑
+α∈ZKm
+em
+
+∑
+k∈[K]
+αkgk(x)
+(
+ .
+Now, by using Lemma 35, we obtain
+⏐⏐⏐⏐ E
+x∼D
+[f(x)]− E
+x∈RZnm
+[f(x)]
+⏐⏐⏐⏐
+≤ 1
+mK
+∑
+α∈ZKm
+⏐⏐⏐⏐⏐⏐
+E
+x∼D
+)
+em
+
+∑
+k∈[K]
+αkgk(x)
+(
+
+
+− E
+x∈RZnm
+)
+em
+
+∑
+k∈[K]
+αkgk(x)
+(
+
+
+
+⏐⏐⏐⏐⏐⏐
+≤ mϵ,
+where in the last inequality we used the fact that∑
+k∈[K] αkgk(x) is an aﬃne function. ◀
+Proof of Theorem 23.The result is immediate from Theorems 33 and 36. ◀
+References
+1 Adi Akavia, Andrej Bogdanov, Siyao Guo, Akshay Kamath, and Alon Rosen. Candidate
+weak pseudorandom functions in AC0 ◦ MOD2. In Moni Naor, editor, Innovations in
+Theoretical Computer Science, ITCS’14, Princeton, NJ, USA, January 12-14, 2014, pages
+251–260. ACM, 2014. doi:10.1145/2554797.2554821.
+2 Eric Allender, Harry Buhrman, Michal Koucký, Dieter van Melkebeek, and Detlef Ron-
+neburger. Power from random strings. SIAM J. Comput., 35(6):1467–1493, 2006. doi:
+10.1137/050628994.
+3 Eric Allender and Bireswar Das. Zero knowledge and circuit minimization. In Erzsébet
+Csuhaj-Varjú, Martin Dietzfelbinger, and Zoltán Ésik, editors,Mathematical Foundations
+of Computer Science 2014 - 39th International Symposium, MFCS 2014, Budapest, Hun-
+gary, August 25-29, 2014. Proceedings, Part II, volume 8635 ofLecture Notes in Computer
+Science, pages 25–32. Springer, 2014.doi:10.1007/978-3-662-44465-8_3.
+4 Eric Allender, Joshua A. Grochow, and Cristopher Moore. Graph isomorphism and circuit
+size. CoRR, abs/1511.08189, 2015. arXiv:1511.08189.
+5 Eric Allender, Lisa Hellerstein, Paul McCabe, Toniann Pitassi, and Michael E. Saks. Min-
+imizing disjunctive normal form formulas and AC0 circuits given a truth table.SIAM J.
+Comput., 38(1):63–84, 2008. URL:http://dblp.uni-trier.de/db/journals/siamcomp/
+siamcomp38.html#AllenderHMPS08.
+
+=== PAGE 23 ===
+S. Hirahara, I.C. Oliveira, and R. Santhanam 5:23
+6 Eric Allender and Shuichi Hirahara. New insights on the (non-)hardness of circuit min-
+imization and related problems. In Kim G. Larsen, Hans L. Bodlaender, and Jean-
+François Raskin, editors, 42nd International Symposium on Mathematical Foundations
+of Computer Science, MFCS 2017, August 21-25, 2017 - Aalborg, Denmark, volume 83
+of LIPIcs, pages 54:1–54:14. Schloss Dagstuhl - Leibniz-Zentrum fuer Informatik, 2017.
+doi:10.4230/LIPIcs.MFCS.2017.54.
+7 Eric Allender, Dhiraj Holden, and Valentine Kabanets. The minimum oracle circuit size
+problem. In Ernst W. Mayr and Nicolas Ollinger, editors,32nd International Symposium
+on Theoretical Aspects of Computer Science, STACS 2015, March 4-7, 2015, Garching,
+Germany, volume 30 of LIPIcs, pages 21–33. Schloss Dagstuhl - Leibniz-Zentrum fuer
+Informatik, 2015. doi:10.4230/LIPIcs.STACS.2015.21.
+8 Eric Allender, Michal Koucký, Detlef Ronneburger, and Sambuddha Roy. The pervasive
+reach of resource-bounded kolmogorov complexity in computational complexity theory.J.
+Comput. Syst. Sci., 77(1):14–40, 2011. doi:10.1016/j.jcss.2010.06.004.
+9 Yossi Azar, Rajeev Motwani, and Joseph Naor. Approximating probability distributions
+using small sample spaces.Combinatorica, 18(2):151–171, 1998.doi:10.1007/PL00009813.
+10 Andrej Bogdanov and Alon Rosen. Pseudorandom functions: Three decades later. In Ye-
+huda Lindell, editor,Tutorials on the Foundations of Cryptography., pages 79–158. Springer
+International Publishing, 2017.doi:10.1007/978-3-319-57048-8_3.
+11 Marco L. Carmosino, Russell Impagliazzo, Valentine Kabanets, and Antonina Kolokolova.
+Learning algorithms from natural proofs. In Ran Raz, editor,31st Conference on Com-
+putational Complexity, CCC 2016, May 29 to June 1, 2016, Tokyo, Japan, volume 50
+of LIPIcs, pages 10:1–10:24. Schloss Dagstuhl - Leibniz-Zentrum fuer Informatik, 2016.
+doi:10.4230/LIPIcs.CCC.2016.10.
+12 Arkadev Chattopadhyay and Shachar Lovett. Linear systems over ﬁnite abelian groups.
+In Proceedings of the 26th Annual IEEE Conference on Computational Complexity, CCC
+2011, San Jose, California, June 8-10, 2011, pages 300–308. IEEE Computer Society, 2011.
+doi:10.1109/CCC.2011.25.
+13 Arkadev Chattopadhyay and Avi Wigderson. Linear systems over composite moduli. In
+50th Annual IEEE Symposium on Foundations of Computer Science, FOCS 2009, October
+25-27, 2009, Atlanta, Georgia, USA, pages 43–52. IEEE Computer Society, 2009. doi:
+10.1109/FOCS.2009.17.
+14 Gil Cohen and Igor Shinkar. The complexity of DNF of parities. In Madhu Sudan, editor,
+Proceedings of the 2016 ACM Conference on Innovations in Theoretical Computer Science,
+Cambridge, MA, USA, January 14-16, 2016, pages 47–58. ACM, 2016. doi:10.1145/
+2840728.2840734.
+15 Sebastian Czort. The complexity of minimizing disjunctive normal form formulas. Master’s
+Thesis, University of Aarhus, 1999.
+16 Anindya De, Omid Etesami, Luca Trevisan, and Madhur Tulsiani. Improved pseudoran-
+dom generators for depth 2 circuits.Electronic Colloquium on Computational Complexity
+(ECCC), 16:141, 2009. URL:http://eccc.hpi-web.de/report/2009/141.
+17 Uriel Feige. A threshold of ln n for approximating set cover.J. ACM, 45(4):634–652, 1998.
+18 Vitaly Feldman. Hardness of approximate two-level logic minimization and PAC learning
+with membership queries.J. Comput. Syst. Sci., 75(1):13–26, 2009. doi:10.1016/j.jcss.
+2008.07.007.
+19 M. R. Garey and David S. Johnson.Computers and Intractability: A Guide to the Theory
+of NP-Completeness. W. H. Freeman, 1979.
+20 Chris Godsil. Double orthogonal complement of a ﬁnite module. MathOverﬂow (Retrieved
+19-01-2018). URL: https://mathoverflow.net/q/75268.
+CCC 2018
+
+=== PAGE 24 ===
+5:24 NP-hardness of MCSP for OR-AND-MOD Circuits
+21 Parikshit Gopalan, Daniel M. Kane, and Raghu Meka. Pseudorandomness via the discrete
+fourier transform. In Venkatesan Guruswami, editor,IEEE 56th Annual Symposium on
+Foundations of Computer Science, FOCS 2015, Berkeley, CA, USA, 17-20 October, 2015,
+pages 903–922. IEEE Computer Society, 2015.doi:10.1109/FOCS.2015.60.
+22 Vince Grolmusz. A lower bound for depth-3 circuits with MODm gates. Inf. Process. Lett.,
+67(2):87–90, 1998. doi:10.1016/S0020-0190(98)00093-3.
+23 Shuichi Hirahara and Osamu Watanabe. Limits of minimum circuit size problem as oracle.
+In Ran Raz, editor,31st Conference on Computational Complexity, CCC 2016, May 29
+to June 1, 2016, Tokyo, Japan, volume 50 ofLIPIcs, pages 18:1–18:20. Schloss Dagstuhl -
+Leibniz-Zentrum fuer Informatik, 2016.doi:10.4230/LIPIcs.CCC.2016.18.
+24 John M. Hitchcock and Aduri Pavan. On the np-completeness of the minimum circuit size
+problem. In Prahladh Harsha and G. Ramalingam, editors,35th IARCS Annual Conference
+on Foundation of Software Technology and Theoretical Computer Science, FSTTCS 2015,
+December 16-18, 2015, Bangalore, India, volume 45 of LIPIcs, pages 236–245. Schloss
+Dagstuhl - Leibniz-Zentrum fuer Informatik, 2015. doi:10.4230/LIPIcs.FSTTCS.2015.
+236.
+25 Stasys Jukna. On graph complexity.Combinatorics, Probability & Computing, 15(6):855–
+876, 2006. doi:10.1017/S0963548306007620.
+26 Stasys Jukna. Boolean Function Complexity - Advances and Frontiers. Springer, 2012.
+27 Valentine Kabanets and Jin-yi Cai. Circuit minimization problem. In F. Frances Yao and
+Eugene M. Luks, editors,Proceedings of the Thirty-Second Annual ACM Symposium on
+Theory of Computing, May 21-23, 2000, Portland, OR, USA, pages 73–79. ACM, 2000.
+doi:10.1145/335305.335314.
+28 Richard M. Karp. Reducibility among combinatorial problems. In Raymond E. Miller and
+James W. Thatcher, editors,Proceedings of a symposium on the Complexity of Computer
+Computations, held March 20-22, 1972, at the IBM Thomas J. Watson Research Center,
+Yorktown Heights, New York., The IBM Research Symposia Series, pages 85–103. Plenum
+Press, New York, 1972. URL:http://www.cs.berkeley.edu/~luca/cs172/karp.pdf.
+29 Subhash Khot and Rishi Saket. Hardness of minimizing and learning DNF expressions. In
+49th Annual IEEE Symposium on Foundations of Computer Science, FOCS 2008, October
+25-28, 2008, Philadelphia, PA, USA, pages 231–240. IEEE Computer Society, 2008.doi:
+10.1109/FOCS.2008.37.
+30 Jan Krajícek. Forcing with Random Variables and Proof Complexity , volume 382
+of London Mathematical Society lecture note series . Cambridge University Press,
+2011. URL: http://www.cambridge.org/de/academic/subjects/mathematics/
+logic-categories-and-sets/forcing-random-variables-and-proof-complexity?
+format=PB.
+31 William J. Masek. Some NP-complete set covering problems. Unpublished Manuscript,
+1979.
+32 Cody D. Murray and Richard Ryan Williams. On the (non) np-hardness of comput-
+ing circuit complexity. In David Zuckerman, editor, 30th Conference on Computa-
+tional Complexity, CCC 2015, June 17-19, 2015, Portland, Oregon, USA , volume 33
+of LIPIcs, pages 365–380. Schloss Dagstuhl - Leibniz-Zentrum fuer Informatik, 2015.
+doi:10.4230/LIPIcs.CCC.2015.365.
+33 Joseph Naor and Moni Naor. Small-bias probability spaces: Eﬃcient constructions and
+applications. SIAM J. Comput., 22(4):838–856, 1993. doi:10.1137/0222053.
+34 Joseph Naor and Moni Naor. Small-bias probability spaces: Eﬃcient constructions and
+applications. SIAM J. Comput., 22(4):838–856, 1993. URL:http://dblp.uni-trier.de/
+db/journals/siamcomp/siamcomp22.html#NaorN93.
+
+=== PAGE 25 ===
+S. Hirahara, I.C. Oliveira, and R. Santhanam 5:25
+35 Ryan O’Donnell. Analysis of Boolean Functions. Cambridge University Press, 2014.
+URL: http://www.cambridge.org/de/academic/subjects/computer-science/
+algorithmics-complexity-computer-algebra-and-computational-g/
+analysis-boolean-functions.
+36 Igor Carboni Oliveira and Rahul Santhanam. Conspiracies between learning algorithms,
+circuit lower bounds, and pseudorandomness. In Ryan O’Donnell, editor, 32nd Com-
+putational Complexity Conference, CCC 2017, July 6-9, 2017, Riga, Latvia, volume 79
+of LIPIcs, pages 18:1–18:49. Schloss Dagstuhl - Leibniz-Zentrum fuer Informatik, 2017.
+doi:10.4230/LIPIcs.CCC.2017.18.
+37 Ramamohan Paturi, Michael E. Saks, and Francis Zane. Exponential lower bounds for
+depth three boolean circuits. Computational Complexity, 9(1):1–15, 2000. doi:10.1007/
+PL00001598.
+38 Leonard Pitt and Leslie G. Valiant. Computational limitations on learning from examples.
+J. ACM, 35(4):965–984, 1988. doi:10.1145/48014.63140.
+39 Alexander A. Razborov and Steven Rudich. Natural proofs.J. Comput. Syst. Sci., 55(1):24–
+35, 1997. doi:10.1006/jcss.1997.1494.
+40 Petr Slavík. A tight analysis of the greedy algorithm for set cover. In Gary L. Miller, editor,
+Proceedings of the Twenty-Eighth Annual ACM Symposium on the Theory of Computing,
+Philadelphia, Pennsylvania, USA, May 22-24, 1996, pages 435–441. ACM, 1996. doi:
+10.1145/237814.237991.
+41 Boris A. Trakhtenbrot. A survey of russian approaches to perebor (brute-force searches)
+algorithms. IEEE Annals of the History of Computing, 6(4):384–400, 1984. doi:10.1109/
+MAHC.1984.10036.
+42 Luca Trevisan. Non-approximability results for optimization problems on bounded de-
+gree instances. In Jeﬀrey Scott Vitter, Paul G. Spirakis, and Mihalis Yannakakis, editors,
+Proceedings on 33rd Annual ACM Symposium on Theory of Computing, July 6-8, 2001,
+Heraklion, Crete, Greece, pages 453–461. ACM, 2001.doi:10.1145/380752.380839.
+A Proof of Fact 3 – Double Orthogonal Complement in(Z/mZ)n
+In this section we present the proof of Fact 3, which for convenience is reformulated as
+Theorem 37 stated below. Our presentation follows the proof outlined in [20].
+Recall the following concepts. We consider the Abelian groupG := (Z/mZ)n equipped
+with component-wise addition modulo m, and let⟨x, y⟩ := ∑
+i∈[n] xiyi mod m, where
+x, y∈ G. For a subgroupV of G, deﬁne V⊥ :={ x∈ G|⟨ x, y⟩ = 0 for all y∈ V}, which is
+again a subgroup ofG.
+▶ Theorem 37(folklore). V⊥⊥ = V for any subgroupV of G = (Z/mZ)n.
+It is easy to seeV ⊆ V⊥⊥: indeed, for anyx∈ V, we have⟨x, y⟩ = 0 for each y∈ V⊥ by
+the deﬁnition ofV⊥; hence x∈ V⊥⊥. Therefore, it is suﬃcient to show that the size ofV⊥⊥
+is equal to that ofV. To this end, we prove the following claim.
+▶ Claim 38.|V⊥| =|G|/|V| for any subgroupV of G.
+Note that, applying this claim twice, we obtain|V⊥⊥| =|G|/|V⊥| =|G|/(|G|/|V|) =|V|,
+which completes the proof of Theorem 37. Claim 38 will be proved by combining the three
+claims below.
+Let H be any ﬁnite Abelian group. Acharacter of the group H is a homomorphism
+χ: H→ C× Let H denote the dual group ofH, that is, the group of all characters ofH.
+(See e.g. [35, Section 8.5] for more details.) It is known that the order of a groupH and the
+order of its dual groupH are the same.
+CCC 2018
+
+=== PAGE 26 ===
+5:26 NP-hardness of MCSP for OR-AND-MOD Circuits
+▶ Claim 39([35, Corollary of Proposition 8.55 and Exercise 8.35]).|H| =|H| for any ﬁnite
+Abelian groupH.
+For any subgroupV of G, deﬁne V∗ :={ χ∈ G| χ(v) = 1 for every v∈ V}.
+▶ Claim 40. ˆG/V ∼= V∗ for any subgroupV of G.
+Proof. We deﬁne an isomorphismϕ: ˆG/V → V∗. Given χ∈ ˆG/V, we deﬁneϕ(χ): G→ C×
+by ϕ(χ)(x) := χ(x+ V ) for x∈ G. We claim thatϕ(χ) is indeed inV∗: First, ϕ(χ): G→ C×
+is a homomorphism sinceϕ(χ)(x+y) = χ(x+y+V ) = χ((x+V )+( y+V )) = χ(x+V )χ(y+V )
+for any x, y∈ G. Second, ϕ(χ)(v) = χ(v + V ) = χ(V ) = 1 for any v∈ V. (Here, we used
+the fact that the homomorphismχ maps the identity0 + V ∈ G/V to the identity1∈ C×.)
+We claim thatϕ is a homomorphism. Indeed, ϕ(χ1χ2)(x) = ( χ1χ2)(x + V ) = χ1(x +
+V )χ2(x + V ) = ϕ(χ1)(x)ϕ(χ2)(x) for any x∈ G and any χ1, χ2∈ ˆG/V; hence ϕ(χ1χ2) =
+ϕ(χ1)ϕ(χ2).
+In order to prove thatϕ is a bijection, we construct an inverse mapψ : V∗→ ˆG/V. Given
+χ∈ V∗, deﬁne ψ(χ)(a + V ) := χ(a) for any coseta + V ∈ G/V. Note that this map is well
+deﬁned since a + V = b + V implies a− b∈ V, and thus1 = χ(a− b) = χ(a)/χ(b). It is
+straightforward to see thatψ = ϕ−1: indeed, ψ(ϕ(χ))(a + V ) = ϕ(χ)(a) = χ(a + V ) and
+ϕ(ψ(χ))(a) = ψ(χ)(a + V ) = χ(a) for any a∈ G. Hence ϕ is both injective and surjective,
+and consequently, an isomorphism. ◀
+▶ Claim 41. V∗∼= V⊥ for any subgroupV of G = (Z/mZ)n.
+Proof. We ﬁrst prepare some notation: For anyi∈ [n], let ei∈ G be the vector whose value
+is 1 on the ith coordinate and is0 on the other coordinates. Letω := exp(2π√−1/m)∈ C×
+denote the mth root of unity.
+We construct an isomorphism ϕ: V⊥ → V∗. Given x∈ V⊥, deﬁne ϕ(x)∈ V∗ as
+ϕ(x)(y) := ω⟨x,y⟩ for any y∈ G. Note that the image ofϕ is contained inV∗: indeed, for
+any v∈ V⊥, we haveϕ(x)(v) = ω⟨x,v⟩ = ω0 = 1.
+We claim thatϕ is injective. It is easy to see thatϕ is a homomorphism; thus, it is
+suﬃcient to prove that the kernel ofϕ is just 0∈ V⊥. If ϕ(x) is the constant function1,
+then⟨x, y⟩ = 0 for any y∈ G; in particular, lettingy∈{ e1, . . . , en}, we obtainx = 0.
+Finally, we claim thatϕ is surjective. For anyχ∈ V∗ and any i∈ [n], there is some
+xi∈ Z/mZ such that χ(ei) = ωxi: indeed, since 1 = χ(0) = χ(m· ei) = χ(ei)m, χ(ei) is
+one of themth roots of unity. Now we deﬁnex :=∑n
+i=1 xiei∈ G. Then, for any y∈ G,
+ϕ(x)(y) = ω⟨x,y⟩ =n
+i=1 ωxiyi =n
+i=1 χ(ei)yi =n
+i=1 χ(yiei) = χ(∑n
+i=1 yiei) = χ(y); hence
+ϕ(x) = χ for some x∈ G. Moreover, for anyv∈ V, we haveχ(v) = ω⟨x,v⟩ = 1 since χ∈ V∗;
+thus we have⟨x, v⟩ = 0, which implies thatx∈ V⊥. ◀
+Combining these three claims, we obtain|V⊥| =|V∗| =| ˆG/V| =|G/V| =|G|/|V|, which
+completes the proof of Claim 38.
+B On Diﬀerent Complexity Measures for DNF ◦ MODp Circuits
+In this section, we provide an example of the robustness of our arguments with respect to
+variations of the complexity measure. Letp≥ 2 be a ﬁxed prime. We sketch the proof of a
+hardness result for a variant of the(DNF◦ MODp)-MCSP∗ problem, described as follows. We
+consider layered OR◦ AND◦ MODp formulas7 over Zn
+p, and measure complexity by the total
+7 Recall that in a formula every non-input gate has fan-out one.
+
+=== PAGE 27 ===
+S. Hirahara, I.C. Oliveira, and R. Santhanam 5:27
+number of (non-input) gates in the formula.8 A bit more precisely, we adapt the proof of
+Theorem 8 from Section 3.1, and show that this problem is also NP-hard under randomized
+reductions.
+Since Zt
+p is a vector space over the ﬁeldZp, we can deﬁne the dimension of an aﬃne
+subspace: For a linear subspaceH⊆ Zt
+p, let dim(H) denote the dimension ofH, and let
+codim(H) := dim(H⊥) = t− dim(H); then, for anya∈ Zt
+p, deﬁne the dimension of an aﬃne
+subspace H + a as dim(H + a) := dim(H), and codim(H + a) := dim(H). Observe that
+this notion is well-deﬁned. Using dimension, we can characterize the number of gates in
+AND◦ MODp formulas.
+▶ Lemma 42. Let A be an aﬃne subspace ofZt
+p. Then, the minimum number of gates in
+any layeredAND◦ MODp formula accepting A is exactly 1 + codim(A).
+Proof Sketch. As in the proof of Lemma 2, a layeredAND◦MODp formula C with 1+ s gates
+accepts the setA = C−1(1) of solutions ofs linear equations overMODp. Let B∈ Zs×t
+p be
+the matrix that deﬁnes these linear equations. Then, we havedim ker(B) = dim(A), and by
+the rank-nullity theorem, we obtaincodim(A) = t− dim(A) = t− dim ker(B) = rank(B)≤ s.
+Conversely, letA =: H + a for some linear subspaceH and somea∈ Zt
+p, and letγ1, . . . , γs
+be a basis ofH⊥, where s := codim(H). Then, using orthogonal complements, it is easy to
+check that x∈ A if and only if⟨γi, x⟩ =⟨γi, a⟩ for all i∈ [s]. The latter condition can be
+written as anAND◦ MODp layered formula with1 + s gates. ◀
+As a corollary, for anyoptimal layered (DNF◦ MODp)-formula C =⋁K
+k=1 Ck for a function
+f : Zn
+p→{ 0, 1}, where Ck is an AND◦ MODp circuit for eachk∈ [K], the total number of
+gates in the formula is precisely1 + K +∑K
+k=1 codim(C−1
+k (1)).
+For convenience, given a functionf : Zt
+p→{ 0, 1,∗}, let size(f) denote the complexity of
+f according to our size measure. Now let us revise the proof of Theorem 8. Given an instance
+S⊆
+(n
+≤r
+)
+of the r-bounded set cover instance, we construct a functionf : Zt
+p→{ 0, 1,∗} in
+exactly the same way. Below we adapt the corresponding claims from Section 3.1. Then we
+employ the new claims to argue that the NP-hardness result still holds.
+▶ Claim 43 (Adaptation of Claim 9). Assume thatS has a set cover of size K. Then
+size(f)≤ (t + 1)K + 1.
+Proof. LetC⊆S be a set cover of sizeK. For eachS∈C , let CS be an AND◦ MODp circuit
+over Zt
+p that acceptsspan(vS). Deﬁne aDNF◦ MODp circuit C :=⋁
+S∈C CS. Then the circuit
+size of C is 1 + K +∑K
+i=1 codim(C−1
+S (1)), which is obviously at most1 + K(t + 1). ◀
+▶ Claim 44(Adaptation of Claim 13). Let (vi)i∈[n] be nice, ands := size(f). ThenS has a
+set cover of size2(s− 1)/(t− r− (log|S|/ log p) + 1).
+Proof. Let C =⋁K
+k=1 Ck be an optimalDNF◦ MODp layered formula of sizes computing f.
+Then, as discussed above, we haves = 1 + K +∑K
+k=1 codim(C−1
+k (1)). On the other hand,
+the same analysis from Claim 13 shows thatS has a set cover of size≤ 2K. It thus remains
+to give an upper bound onK.
+Since C computes f, we have C−1
+k (1)⊆ C−1(1)⊆ f−1({1,∗}) = 
+S∈S span(vS). By
+counting the number of elements inC−1
+k (1) and
+S∈S span(vS), we obtainpdim(C−1
+k (1))≤
+|S|· pr. Hence, we havecodim(C−1
+k (1))≥ t− r− log|S|/ log p; therefore,
+8 Under our notion of layered formulas, an(AND◦ MODp)-circuit with a singleMODp gate has size2.
+While this is convenient for the exposition, it is not particularly important for the result.
+CCC 2018
+
+=== PAGE 28 ===
+5:28 NP-hardness of MCSP for OR-AND-MOD Circuits
+s ≥ 1 + K +
+K∑
+k=1
+codim(C−1
+k (1)) ≥ 1 + K + K(t− r− log|S|/ log p),
+which implies K≤ (s− 1)/(t− r− (log|S|/ log p) + 1). ◀
+Let K be the minimum size of a cover forS. By the claims above, we havesize(f) ≲ tK
+and K ≲ 2size(f)/t, because t can be taken large enough compared to the other relevant
+parameters; hence size(f)/t roughly gives us a 2-factor approximation. More precisely, we
+have size(f)≤ (t+1) K +1≤ 2(t+1) K, andK≤ 2(size(f)−1)/((t+1) /2)≤ 4size(f)/(t+1)
+for any t≥ 2r + 2 log|S|/ log p− 1. That is, the set cover sizeK satisﬁes
+size(f)
+2(t + 1) ≤ K ≤ 4size(f)
+t + 1 ,
+which gives an8-factor approximation ofK. Since we can taker to be a suﬃciently large
+constant in Theorem 5, the result holds.
+C A Hardness of Approximation Result for (DNF ◦ MODm)-MCSP
+The reduction from(DNF◦ MODm)-MCSP∗ to (DNF◦ MODm)-MCSP presented in Section 3
+is notapproximation-preserving: given a partial functionf : Zt
+m→{ 0, 1,∗}, it produces a
+total functiong : ZO(t log m)
+m →{ 0, 1} such thatDNFMODm(g) = DNFMODm(f)+|f−1(∗)|. The
+reduction introduces an additive term|f−1(∗)|, and hence a (multiplicative) approximation
+of DNFMODm(g) does not give a good approximation ofDNFMODm(f). In order to ﬁx this
+situation, we give an approximation-preserving reduction. Our approach is inspired by a
+reduction described in [5].
+▶ Theorem 45(Approximation-preserving version of Corollary 27). There is a polynomial-time
+algorithm that, given the truth table of a partial functionf : Zt
+m→{ 0, 1,∗}, produces the
+truth table of a total functiong : Z2t+2s
+m →{ 0, 1} such that
+DNFMODm(g) =|f−1(∗)|· (DNFMODm(f) + 1),
+where s :=⌈(6t + 4) logm + 2⌉.
+Proof. The idea of the proof is to amplify the circuit size forf; that is, we would like to
+force any circuitC computing g to also compute sub-functions corresponding to|f−1(∗)|
+copies of f.
+We can amplify the circuit size as follows. Let(Lx)x∈f−1(∗) be a scattered collection
+of linear subspaces ofZs
+m. Deﬁne a function g′ by g′(x, z, w) := f(x) if z∈ f−1(∗) and
+w∈ Lz; otherwise g′(x, z, w) := 0. Then, under an appropriate choice of parameters, it
+can be shown thatDNFMODm(g′) = |f−1(∗)|· DNFMODm(f). By combining an analogous
+reduction and the idea behind the proof of Theorem 16, we can obtain a total functiong
+such that DNFMODm(g) = DNFMODm(g′) +|f−1(∗)| =|f−1(∗)|· (DNFMODm(f) + 1).9 Details
+follow.
+9 A black-box application of Corollary 27 produces a functiong such thatDNFMODm(g) = DNFMODm(g′) +
+|g′−1(∗)|, which is not suﬃcient for our purpose because|g′−1(∗)| is larger than|f−1(∗)|.
+
+=== PAGE 29 ===
+S. Hirahara, I.C. Oliveira, and R. Santhanam 5:29
+We ﬁrst obtain a scattered collection(Lx)x∈f−1(∗) of r-dimensional linear subspaces of
+Zs
+m by using Theorem 25 forr := 2t + 2. Then we deﬁneg : Z2t+2s
+m →{ 0, 1} as
+g(x, y, z, w) :=
+
+
+
+f(x) (if f(x)∈{ 0, 1} and y = 0s and f(z) =∗ and w∈ Lz)
+1 (if f(x) =∗ and y∈ Lx)
+0 (otherwise)
+for any((x, y), (z, w))∈ (Zs
+m× Zt
+m)2.
+▶ Claim 46(Analogue of Claim 17). DNFMODm(g)≤| f−1(∗)|· (DNFMODm(f) + 1).
+Proof. Suppose that aDNF◦MODm circuit C =⋁K
+k=1 Ck computes f. For eachx∗∈ f−1(∗),
+take an AND◦ MODm circuit Cx∗ accepting{x∗}× Lx∗ (by Lemma 2). Deﬁne
+C′(x, y, z, w) :=
+
+z∗∈f−1(∗)
+K
+k=1
+(Ck(x)∧y1 = 0∧···∧ ys = 0∧Cz∗(z, w))∨
+
+x∗∈f−1(∗)
+Cx∗(x, y).
+It is easy to see thatC′ computes g. ◀
+The rest of the proof is devoted to the reverse direction.
+▶ Claim 47(Analogue of Claim 20). DNFMODm(g)≥| f−1(∗)|· (DNFMODm(f) + 1).
+Let C = ⋁K
+k=1 Ck be a minimum DNF◦ MODm circuit computing g. In particular,
+K = DNFMODm(g)≤| f−1(∗)|· (DNFMODm(f) + 1)≤ m2t+1. For each x∈ f−1(∗), let
+l(x)∈ [K] be one of the indices such that|C−1
+l(x)(1)\ ({x}× Lx× Zt+s
+m )| is maximized. Since
+k∈[K] C−1
+k (1)⊇{ x}× Lx× Zt+s
+m , there are at least|Lx|· mt+s/K≥ mr+t+s/m2t+1≥ 2
+points in the setC−1
+l(x)(1)\ ({x}× Lx× Zt+s
+m ).
+Deﬁne T0 :={ Cl(x)| f(x) =∗}. For eachz∈ f−1(∗), letTz be the set of allCk such that
+k∈ [K] and Ck accepts at least2 elements from{(x, 0s, z)}× Lz for somex∈ f−1(1). We will
+show that the setsT0,{Tz}z∈f−1(∗) are pairwise disjoint, and henceK≥| T0|+∑
+z∈f−1(∗)|Tz|.
+We will also prove that|T0| =|f−1(∗)| and|Tz|≥ DNFMODm(f), which completes the proof.
+▶ Claim 48. l: f−1(∗)→ [K] is injective(hence|T0| =|f−1(∗)|).
+▶ Claim 49. T0\ Tz = ∅ for any z∈ f−1(∗).
+Since the proofs of these claims are essentially the same as in Claims 21 and 22, respectively
+(except that we have extra coordinates taking values inZt
+m× Zs
+m), we omit them.
+▶ Claim 50. Tz1\ Tz2 = ∅ for any distinct elementsz1, z2∈ f−1(∗).
+Proof. The proof is basically the argument from Claim 21. For completeness, we brieﬂy
+repeat it here. Towards a contradiction, assume that there exists a circuitCk in Tz1\ Tz2. By
+the deﬁnition ofTz1 and Tz2, there exist elementsx1, x2∈ f−1(1), a̸= b∈ Lz1, and c∈ Lz2
+such thatCk(x1, 0s, z1, a) = Ck(x1, 0s, z1, b) = Ck(x2, 0s, z2, c) = 1. Since C−1
+k (1) is an aﬃne
+subspace, we have(x1, 0s, z1, a)−(x1, 0s, z1, b)+( x2, 0s, z2, c) = (x2, 0s, z2, a−b+c)∈ C−1
+k (1).
+Since C−1
+k (1)\ ({(x2, 0s, z2)}× Zs
+m)⊆{ (x2, 0s, z2)}× Lz2, we geta− b + c∈ Lz2. However,
+given thatc∈ Lz2, we obtain0s̸= a− b∈ Lz1\ Lz2, which contradictsLz1\ Lz2 ={0s}. ◀
+Fix any z∈ f−1(∗). For each Ck ∈ Tz, deﬁne an AND◦ MODm circuit C′
+k so that
+C′−1
+k (1) ={ x∈ Zt
+m| Ck(x, 0s, z, w) = 1 for some w∈ Zs
+m}. (Note that a projection of an
+aﬃne subspace C−1
+k (1) is again an aﬃne subpace because a projection is a homomorphism.)
+Now deﬁne Cz :=⋁
+Ck∈Tz C′
+k.
+CCC 2018
+
+=== PAGE 30 ===
+5:30 NP-hardness of MCSP for OR-AND-MOD Circuits
+▶ Claim 51. Cz computes f for any z∈ f−1(∗). (In particular,|Tz|≥ DNFMODm(f).)
+Proof. Fix any x ∈ f−1(1). Since {(x, 0s, z)}× Lz is covered by
+k∈[K] C−1
+k (1), and
+|Lz| = mr, K≤ m2t+1, and r = 2t + 2, there existsk∈ [K] such that there are at least 2
+elements in ({(x, 0s, z)}× Lz)\ C−1
+k (1); hence, by the deﬁnition ofTz, we haveCk∈ Tz.
+Moreover, C′
+k(x) = 1 by the deﬁnition ofC′
+k; thus Cz(x) =⋁
+Ck∈Tz C′
+k(x) = 1.
+Now ﬁx anyx∈ f−1(0). Since g(x, 0s, z, w) = 0 for everyw∈ Zs
+m, we getCk(x, 0s, z, w) =
+0 for any Ck∈ Tz; thus C′
+k(x) = 0, which implies thatCz(x) = 0. ◀
+Combining the claims above, we obtain
+DNFMODm(g) = K ≥| T0| +
+∑
+z∈f−1(∗)
+|Tz|≥| f−1(∗)|· (DNFMODm(f) + 1).
+This completes the proof of Theorem 45. ◀
+We can then establish a hardness of approximation result for computingDNFMODm(f).
+For a functionf : Zt
+m→{ 0, 1}, deﬁne|f| := mt, which is the number of entries in the truth
+table of a functionf.
+▶ Theorem 52. There exists a constant c > 0 such that if there is a quasipolynomial-
+time algorithm which approximates DNFMODm(f) to within a factor of c log log|f|, then
+NP⊆ DTIME(2(log n)O(1)
+).
+Proof. As noted by Trevisan [42], by choosing the parameters of Feige’s reduction [17], one
+can obtain hardness of approximation results for ther-bounded set cover problem. While
+Trevisan only analyzed the case whenr is constant (cf. Theorem 5), a similar analysis10
+shows that it isNP-hard (under quasipolynomial-time many-one reductions) to approximate
+the r(n)-bounded set cover problem onn points within a factor ofγ log r(n) ( = γ log logn )
+for r(n) := log n and some small constantγ > 0.
+Suppose that DNFMODm(g) can be approximated to within a factor of(γ/6) log log|g| by
+an algorithm A, where g : Zt
+m→{ 0, 1} is a total function. We show below that ifA runs in
+quasipolynomial time, thenNP⊆ DTIME(2(log n)O(1)
+).
+First, note that in order to conclude this it is enough to describe a quasipolynomial-time
+algorithm B that approximates r-Bounded Set Cover to within a factor ofγ log r(n) for
+r(n) = log n. Let ([n],S) be an instance of ther-Bounded Set Cover Problem. Algorithm
+B applies the deterministicnO(r(n))-time reduction provided by Corollary 29 to produce a
+partial Boolean functionf : ZO(r log n)
+m →{ 0, 1,∗}. It then invokes the deterministic reduction
+from Theorem 45 to construct fromf a total functiong : ZO(r log n)
+m →{ 0, 1}. Finally, B uses
+the approximation algorithmA to compute a(γ/6) log log|g| approximation toDNFMODm(g).
+Let˜g∈ N be the value output byA. Algorithm B outputs ˜K := 2˜g/|f−1(∗)|.
+Note thatB runs in quasipolynomial time under our assumptions. It remains to show that
+it approximates the solution of the original set cover problem within a factor ofγ log logn.
+Let K be the cost of an optimal solution to the initial set cover instance. Recall that
+10 Speciﬁcally, for the parameters and notation in [17], given a 3CNF-5 formula onn variables, let k be a
+suﬃciently large constant,m :=√log n, and ℓ := c log logm for a large constantc. Then the output
+of Feige’s reduction is an instance of the set cover problem onN
+(
+:= m(5n)ℓ)
+points such that each
+set is of size at mostm2O(ℓ)≤ r(N) = log N, and the gap between yes instances and no instances is
+(1− 4
+k ) lnm = Ω(log logN).
+
+=== PAGE 31 ===
+S. Hirahara, I.C. Oliveira, and R. Santhanam 5:31
+2DNFMODm(f) is a 2-factor approximation forK; that is,K≤ 2· DNFMODm(f)≤ 2K. On
+the other hand, the guarantees of the algorithmA imply that
+DNFMODm(g) ≤ ˜g ≤ DNFMODm(g)· (γ/6) log log|g|.
+Since DNFMODm(g) =|f−1(∗)|· (DNFMODm(f) + 1), we get
+K ≤ 2˜g
+|f−1(∗)| ≤ (γ/6) log log|g|· (K + 1)
+Therefore, for large enoughn and on non-trivial instances (i.e.K≥ 1), the value˜K output
+by B approximates K to within a factor of2· (γ/6) log log|g|≤ (γ/3)· (log r(n) +log logn +
+O(1))≤ (γ/3)· 3 log logn. ◀
+Finally, we note that whenm is prime, it is possible to design a quasipolynomial-time
+approximation algorithm forDNFMODm(f) with an approximation factor ofO(log|f|).
+▶ Theorem 53. Let p be a prime number. There is a quasipolynomial-time algorithm which
+approximates DNFMODp(f) to within a factor ofln|f|.
+Proof. Let|f| = pt be the number of entries in the truth table off, the input function.
+By the results of Section 2.1, computingDNFMODp(f) is equivalent to solving a set cover
+instance. Recall that set cover admits a polynomial-time approximation algorithm that
+achieves an approximation factor ofln N on instances over a universe of sizeN (cf. [40]).
+Consequently, in order to prove the result it is enough to verify that computingDNFMODp(f)
+reduces to a set cover instance with domain sizeNf :=|f−1(1)|≤| f| and of size at most
+quasipolynomial in|f|.
+Indeed, for a non-zero functionf : Zt
+p→{ 0, 1}, DNFMODp(f) is exactly the minimum
+number of aﬃne subspaces that coverf−1(1). Therefore, by relabelling elements, computing
+DNFMODp(f) reduces to a set cover instance([Nf],Sf), where a setS∈ Sf if and only ifS
+viewed as a subset ofZt
+p is an aﬃne subspace contained inf−1(1). Each such aﬃne subspace
+has dimension at mostt, and can be explicitly described by a basisv1, . . . , vℓ∈ Zt
+p, where
+ℓ≤ t, and a vectorb∈ Zt
+p. Hence there are at mostpO(t2) such spaces, and consequently,
+|Sf|≤ pO(t2). In other words, we get a set cover instance over a ground set of size≤| f|, and
+this instance contains at most|f|O(log|f|) sets.
+Finally, since the sets inSf can be generated in time at most|f|O(log|f|), and the set cover
+approximation algorithm runs in time polynomial in its input length, the result holds.◀
+CCC 2018
+
