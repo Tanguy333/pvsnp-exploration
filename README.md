@@ -1,11 +1,18 @@
 # P vs NP — Atlas des impasses
 
-> **Cadrage honnête.** Ce dépôt n'est **pas** une prétention à résoudre P vs NP.
-> C'est une exploration assistée par IA dont le livrable est un **atlas
-> documenté de pourquoi chaque famille d'approches échoue** — adossé à des
-> audits sur textes, des contre-exemples exécutables, et 27 tours de
-> réfutation adverse archivés. La valeur recherchée est la compréhension
-> accumulée et vérifiable, pas une preuve.
+> **Mission (depuis le 2026-08-07).** Explorer le problème **P vs NP** à
+> travers différentes voies pour obtenir une avancée significative — dans
+> l'objectif d'un début de preuve ou d'une preuve de P = NP ou de P ≠ NP.
+> L'instrument central est un **atlas d'élimination** : explorer les voies,
+> éliminer celles qui meurent (preuves, contre-exemples exécutables, audits
+> sur textes — 27 tours de réfutation adverse archivés), pour faire émerger
+> la bonne voie de résolution.
+>
+> **Cadrage honnête, inchangé.** Le problème est ouvert depuis 1971 ; ce
+> dépôt ne prétend pas l'avoir résolu ni être près de le faire. Aucune
+> avancée n'y est revendiquée sans vérification exécutable, folklore-check
+> écrit et confrontation aux barrières — l'ambition est un cap, pas une
+> revendication.
 
 ### Ce que ce dépôt a établi (bilan au 2026-07-25)
 
@@ -21,11 +28,13 @@ l'écart entre ce que l'atelier mesure et l'échelle où le phénomène commence
 (n ≤ 8 contre n ≈ 4050 ; O(n²) contre 2^{polylog n}) —
 [`atlas/echelle_instrument.md`](atlas/echelle_instrument.md). Le reste — 169
 tâches, 188 scripts, 27 tours — est du coût, et il est présenté comme tel.
-**Rien ici ne fait progresser une preuve de P ≠ NP, et ce n'était pas le but** :
-le but est de documenter pourquoi chaque famille d'approches échoue, et la table
-des erreurs du dépôt (36 auto-corrections, dont une revendication asymptotique
-fausse interceptée avant envoi à un auteur du domaine) fait partie du livrable
-au même titre que les résultats.
+**Au 2026-07-25, rien ici n'avait fait progresser une preuve de P ≠ NP** — ce
+bilan est daté et reste exact ; depuis le 2026-08-07 la mission vise
+explicitement l'avancée (voir l'en-tête), et ce bilan est la ligne de départ
+que toute revendication future devra battre, pièces à l'appui. La table des
+erreurs du dépôt (36 auto-corrections, dont une revendication asymptotique
+fausse interceptée avant envoi à un auteur du domaine) fait partie du
+livrable au même titre que les résultats.
 
 ## Le problème
 

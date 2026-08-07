@@ -1022,6 +1022,52 @@ calcul** du fil AS n'avaient pas atteint.
 >   passage : comptage D-005 étendu (médiane W > 211 à n = 10, > 843 à
 >   n = 12), distributions n ≤ 4 contre-validées par instrument indépendant.
 >   Fiche : `tasks/done/MC-001.md` (réserves F2-F6 contraignantes).
+> - [x] **MC-002 (fait, 2026-08-07)** — **l'antériorité du front, vérifiée
+>   systématiquement avant tout calcul** (ordre utilisateur + réserve n°1 de
+>   MC-001) : quatre lignes de recherche en parallèle, ~50 requêtes, règle
+>   « document ouvert ou rien ». **[NON TROUVÉ] confirmé** : la case
+>   « profondeur-2 à tête symétrique depuis la table » est vide — duretés
+>   arrêtées aux têtes OR (Masek/AHMPS ; HOS18, où THR∘AND∘MOD reste une
+>   « extension spéculative ») ; Min-TC⁰ crypto-dur seulement (NP-complétude
+>   ouverte depuis 2005) ; SPP Σ₂ᵖ mais à entrée-formule ; ESOP sans
+>   classification publiée ; PPRM/ANF unique (l'asymétrie du dépôt est du
+>   folklore attesté) ; Simons 2023 muet. **Recadrage MC-001 sourcé** : le
+>   motif des variantes partielles date de Levin 1973 (DNF-MCSP∗,
+>   2ᵉ problème NP-complet de son papier) et HJLT96/ABF+08 — Th.2/Th.3 =
+>   instances non publiées d'un motif établi. **Gabarit identifié** : HOS18
+>   Th.16, la réduction partiel → total (coût contrôlé par les don't cares)
+>   — l'étape manquante exacte du front, → MC-004 [auto]. Prises annexes :
+>   un CONCURRENT de HIL existe (Gaspers-He-Mackenzie, arXiv:2508.05597,
+>   NP-complétude de CC déterministe revendiquée — préprint, lemme retiré
+>   entre v3 et v4, candidate cellule 17) ; HIL CCC 2021 ; Loff-Milovanov
+>   TR24-034 ; pas d'extension NOF (3 voies). Négatif daté 2026-08-07.
+>   Synthèse : `bib/minsym_antecedents.md` ; fiche `tasks/done/MC-002.md`.
+> - [x] **MC-003 (fait, 2026-08-07)** — **la voie « packing contre
+>   échafaudage » (nommée par MC-001) est ÉLIMINÉE, mécanisme identifié** :
+>   88 instances rails-doubles mesurées à l'optimum (zéro non-conclu, deux
+>   exécutions identiques, n = 2 recoupé par force brute pure 10/10).
+>   W(f_g) n'est pas fonction de dnf-size(g) ; la séparation stricte des
+>   plages casse dès n = 3 (W = 9 et W = 10 réalisés chacun par deux valeurs
+>   de r — lire W ne décide plus r) ; **le packing sature à 2n observé**
+>   (4 puis 6) pendant que W monte à 11 — le Lemme 4 ne peut pas fournir la
+>   borne assortie. Mécanisme : les uns de f_g forment une antichaîne —
+>   alternance aveugle (≤ 2), optima à valeur commune sur les uns (« couvert
+>   à valeur exacte », tête ETHR de fait), découplés de la structure DNF.
+>   Prise q.12 n°3 du fil (le gap propre de n = 2 était un artefact de
+>   petite taille). Restent en lice pour le cas total : le gabarit HOS18
+>   Th.16 (MC-004, [auto]) et l'additivité de W sous somme disjointe (trou
+>   (b) de MC-001). Fiche : `tasks/done/MC-003.md` ; données :
+>   `data/mc003_rails_doubles.md`.
+> - [x] **RECADRAGE DE MISSION (décision utilisateur, 2026-08-07)** —
+>   consigné dans `CLAUDE.md` §1 et §8 (règle 10), `README.md` (en-tête) et
+>   l'en-tête de la matrice : la mission du dépôt est désormais d'**explorer
+>   P vs NP par différentes voies pour une avancée significative, dans
+>   l'objectif d'un début de preuve ou d'une preuve de P = NP ou de
+>   P ≠ NP** ; la mission de l'Atlas : **explorer les voies et en éliminer
+>   pour obtenir la bonne voie de résolution**. Les garde-fous, le
+>   rattachement et l'antériorité chiffrée restent en vigueur comme méthode
+>   (l'ambition est un cap, pas une revendication). Les deux directions
+>   (P = NP, P ≠ NP) sont désormais recevables.
 >
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le

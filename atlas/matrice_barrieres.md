@@ -1,5 +1,10 @@
 # Atlas des impasses — matrice barrières × approches pour P vs NP
 
+> **Mission de l'Atlas (décision utilisateur, 2026-08-07)** : explorer les
+> différentes voies et en éliminer pour obtenir la bonne voie de résolution
+> du problème P vs NP. Une cellule fermée = une voie éliminée avec pièces ;
+> ce qui survit à l'élimination est le front de travail.
+>
 > **Livrable central du dépôt** (tâche ATLAS-001, assemblée le 2026-06-09 ;
 > en-tête recâblé le 2026-07-25, tâche ATLAS-007). Pièces du dépôt au
 > 2026-07-25, comptées : **27 tours adverses** (30 fichiers,

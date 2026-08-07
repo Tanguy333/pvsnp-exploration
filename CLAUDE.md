@@ -7,10 +7,23 @@
 
 ## 1. Ce qu'est ce projet
 
-Exploration **pédagogique** assistée par IA de la question ouverte **P vs NP**.
-Ce n'est **pas** une tentative de résoudre le problème (personne ne l'a fait depuis
-1971, et un dépôt qui prétendrait le contraire serait à juste titre ignoré). Le but
-réel est de **comprendre et documenter pourquoi** chaque famille d'approches échoue.
+Exploration assistée par IA du problème ouvert **P vs NP**.
+
+**Mission (décision utilisateur, 2026-08-07)** : explorer le problème
+P vs NP à travers différentes voies pour obtenir une avancée significative
+du problème, dans l'objectif d'obtenir un début de preuve ou une preuve de
+P = NP ou de P ≠ NP. **Mission de l'Atlas** : explorer les différentes voies
+et en éliminer pour obtenir la bonne voie de résolution du problème.
+
+Ce que cette mission exige sans le dire : personne n'a résolu le problème
+depuis 1971, et un dépôt qui prétendrait l'avoir fait — ou être près de le
+faire — sans preuve vérifiée serait à juste titre ignoré. **L'ambition est
+un cap, pas une revendication** : aucune avancée n'est déclarée sans
+vérification exécutable, folklore-check écrit et passage des barrières (§3).
+L'élimination documentée des voies mortes (l'Atlas) est la méthode qui rend
+la voie survivante trouvable — c'est par elle que le dépôt a produit ses
+résultats réels, et les 5 régimes d'échec archivés montrent ce que coûte son
+abandon.
 
 Le dispositif est une boucle à **rôles adverses** :
 - **Proposeur** (joué par Qwen Max, ailleurs) : génère une idée neuve par tour.
@@ -19,12 +32,17 @@ Le dispositif est une boucle à **rôles adverses** :
 - **Journal** : chaque tour est consigné, succès **ou** échec.
 
 > Règle d'or : on ne réexplore jamais une impasse déjà documentée.
-> On mesure le progrès par la compréhension accumulée, pas par « a-t-on la preuve ».
+> On mesure le progrès par les voies éliminées avec preuve et par les
+> avancées vérifiées — jamais par l'enthousiasme d'une piste non réfutée.
 
 ## 2. La question
 
 Tout problème dont une solution candidate se vérifie en temps polynomial (NP)
-est-il aussi *résoluble* en temps polynomial (P) ? Direction explorée : **P ≠ NP**.
+est-il aussi *résoluble* en temps polynomial (P) ? **Les deux issues sont
+recevables** (mission 2026-08-07) : la direction de travail historique du
+dépôt est P ≠ NP (bornes inférieures), mais une voie vers P = NP
+(algorithmique) est recevable au même titre — l'Atlas élimine dans les deux
+directions.
 
 ## 3. Les trois barrières (à vérifier à CHAQUE réfutation)
 
@@ -192,6 +210,13 @@ Tu peux exécuter du code — utilise-le pour transformer des arguments en preuv
     utilisateur » ailleurs doit, dans le même commit, soit la recopier ici, soit écrire
     en une ligne pourquoi elle est ponctuelle.
     **Directives permanentes en vigueur** :
+    - 2026-08-07 — **nouvelle mission** (décision utilisateur, §1) : explorer
+      P vs NP par différentes voies pour une avancée significative, dans
+      l'objectif d'un début de preuve ou d'une preuve de P = NP ou de P ≠ NP ;
+      l'Atlas explore les voies et en élimine pour obtenir la bonne voie de
+      résolution. Les garde-fous (§7), le rattachement (règles 7-9) et
+      l'antériorité chiffrée restent en vigueur comme méthode — l'ambition est
+      un cap, pas une revendication.
     - 2026-06-10 — rester sur l'objectif P vs NP. Un objet mathématiquement valable sans
       lien démontré à P vs NP ne compte pas comme progrès (précédent : recadrage
       Boij-Söderberg, fin Tour 9).
