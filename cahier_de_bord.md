@@ -1068,6 +1068,63 @@ calcul** du fil AS n'avaient pas atteint.
 >   rattachement et l'antériorité chiffrée restent en vigueur comme méthode
 >   (l'ambition est un cap, pas une revendication). Les deux directions
 >   (P = NP, P ≠ NP) sont désormais recevables.
+> - [x] **MC-004 (fait, 2026-08-07, [auto])** — **l'audit du gabarit HOS18
+>   sur texte intégral : il ne transfère pas en l'état, et les deux voies
+>   survivantes du front CONVERGENT.** PDF officiel lu (31 p., texte
+>   extrait versionné), pipeline reconstruit avec verbatims : compression
+>   algébrique (Th.8), totalisation à coût additif exact par fibres
+>   scattered + extraction affine + ablation OR (Th.16), dérandomisation
+>   (Th.23-24), et le lemme de multiplicativité du modèle OR (Th.45).
+>   Quatre ruptures au transfert vers SYM+ — dont deux qui SONT nos verrous
+>   déjà nommés : la réciproque du gating = verrou (c) de F-022, le coût
+>   additif = trou (b) de MC-001 — et trois acquis : slice-gating gratuit à
+>   y = 1^s, **la totalisation à la Th.16 passe par l'additivité de W (le
+>   front se réduit à UNE question)**, deux patrons de preuve. Les auteurs
+>   documentent eux-mêmes la fragilité hors algèbre native. Audit :
+>   `bib/hos18_partiel_total.md` ; fiche : `tasks/done/MC-004.md`.
+>   **Prochaine tâche = MC-005 (formaliser et tester l'additivité de W),
+>   5ᵉ du fil MC : bilan écrit de la règle 9 obligatoire.**
+> - [x] **MC-005 (fait, 2026-08-07)** — **l'additivité de W, formalisée et
+>   mesurée : le schéma de totalisation a son premier fondement.** Deux
+>   bornes PROUVÉES (appariement W(h) ≤ W(f) + (W(f)+1)·W(g) ; restriction
+>   W(h) ≥ max — 588 tests, 0 violation) et l'exhaustif 2+2 (105 paires,
+>   W exact) : **le SÉLECTEUR est strictement super-additif partout**
+>   (105/105, écarts +1..+5 — aucun partage de coût, exactement ce que la
+>   totalisation exige) ; **⊕ jamais sous-additif** (A-013 re-vérifié par
+>   deux méthodes : 6 en force brute, 14 au solveur) ; **∧/∨ partagent**
+>   (21/105 — inutilisables comme colle ; comptes ∧ = ∨ exacts par dualité,
+>   vérification interne). MUX domine strictement ⊕ partout. **BILAN DE FIL
+>   (règle 9) écrit** (fiche §3) : cible constante sur les 5 tâches
+>   MC-001..005, 3 lignes ajoutées à `atlas/temoins.md` (option (i)), et le
+>   point d'arrêt nommé — le front passe de la MESURE à la DÉMONSTRATION
+>   (super-additivité du sélecteur à tout n, ou minoration certifiable de
+>   l'écart) ; aucun « hors de portée » à déclarer. Réserves : q.12 (2+2) ;
+>   optima 5-7 variables certifiés-solveur ; passe adverse tierce du bloc
+>   MC-003/004/005 à faire. Fiche : `tasks/done/MC-005.md` ; données :
+>   `data/mc005_additivite.md` ; script : `checks/mc005_additivite.py`.
+> - [x] **MC-006 (fait, 2026-08-07)** — **LE PREMIER THÉORÈME du fil : la
+>   super-additivité du sélecteur est PROUVÉE.** (i) Fibres à blocs
+>   disjoints, tous motifs, h arbitraire hors tranches : W(h) ≥ Σ W(fᵢ) —
+>   preuve par charge (classes de monômes deux à deux disjointes, chacune
+>   forcée à payer son bras par restriction de tranche) ; (ii) MUX à 1 bit,
+>   STRICT : W ≥ W(f) + W(g) + 1 — l'égalité forcerait p(1,0,y) =
+>   p(0,0,y), collision de classes au y* où g diffère de f(0) ; (iii)
+>   serrée : W(MUX(id,id)) = 3, et 21/105 paires 2+2 au +1 exact. Batterie
+>   de falsification : 0 violation — dont le test dur, 12 instances à
+>   tranches-POUBELLE (h aléatoire partout ailleurs), et la distribution
+>   2+2 reproduite à l'identique entre deux scripts (validation croisée
+>   MC-005/MC-006). **Le fondement du schéma de totalisation passe de
+>   MESURÉ à PROUVÉ** dans la géométrie blocs-disjoints, et le fil gagne
+>   son premier outil de certification de W par théorème (contre le verrou
+>   (c) de MC-001). **Verrou requalifié avec précision** : une totalisation
+>   polynomiale ne peut pas offrir un bloc frais par ∗-point (table
+>   exponentielle dès O(log) fibres) — la géométrie exigée est la fibre à
+>   coordonnées PARTAGÉES (celle de HOS18), où les classes de charge se
+>   recouvrent : candidat MC-007 ; la compression reste l'autre verrou.
+>   Réserve : preuve de session, falsifiée par batterie, sans passe adverse
+>   tierce. Fiche (preuves complètes) : `tasks/done/MC-006.md` ; script :
+>   `checks/mc006_preuve_selecteur.py` ; cellule §3 bis et
+>   `atlas/temoins.md` mis à jour.
 >
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le

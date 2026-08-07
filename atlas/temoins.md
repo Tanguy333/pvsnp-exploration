@@ -10,9 +10,11 @@
 > **Le trou qu'il comble.** `checks/` contient **188 scripts** (compte réel au
 > 2026-07-25) et **aucun n'est cité par le corps de la matrice** : les cellules
 > renvoient à des fiches `tasks/done/`, qui renvoient aux scripts. Ce tableau est
-> le maillon manquant. Il ne liste pas les 188 : seulement les **17 scripts
-> (18 lignes)** qui portent une cellule ou un chiffre cité dans l'Atlas — voir
-> §4 pour ce qui est exclu et pourquoi.
+> le maillon manquant. Il ne liste pas tous les scripts : seulement les
+> **21 scripts (22 lignes)** qui portent une cellule ou un chiffre cité dans
+> l'Atlas (17 scripts au 2026-07-25, ATLAS-010 ; + 3 lignes du fil MC le
+> 2026-08-07, bilan de fil MC-005 ; + 1 ligne le même jour, théorème
+> MC-006) — voir §4 pour ce qui est exclu et pourquoi.
 >
 > **Ce fichier ne prouve rien de neuf.** Il rend vérifiable ce qui est déjà
 > écrit ailleurs. Chaque ligne dit d'où vient sa sortie attendue : re-exécution
@@ -68,6 +70,10 @@ n'écrit.
 | **4** — la loi de deg₆^sym(MAJ_n) | [`checks/task_f011_maj_law.py`](../checks/task_f011_maj_law.py) | `cd checks && python task_f011_maj_law.py` | `Anomalies vs L1 (n, t, d6, L1) : [(4, 2, 3, 2), (16, 8, 9, 8)]` (2 anomalies sur n = 1..44) | **19,7 s** | REJOUÉ 2026-07-25 · MESURÉ → CONJECTURE C-F011 |
 | **4** — la « plate » deg₆(MAJ_n) = ⌈n/2⌉ | [`checks/task_f011e25_ansatz_machine.py`](../checks/task_f011e25_ansatz_machine.py) | `cd checks && python task_f011e25_ansatz_machine.py` | `PLATE CONFIRMEE jusqu'a n = 20 (avec 4..13, 16, 32 deja acquis).` | **0,7 s** (chaque cellule à 0 s) | REJOUÉ 2026-07-25 · MESURÉ (certificats explicites) |
 | **4** — famille infinie K′ | [`checks/task_f011e26_theorem_kprime.py`](../checks/task_f011e26_theorem_kprime.py) | `cd checks && python task_f011e26_theorem_kprime.py` | `THEOREME K' VERIFIE sur k = 0..3 (t = 2, 6, 18, 54).` | **0,1 s** | REJOUÉ 2026-07-25 · PROUVÉ (3 lemmes de Lucas) + vérifié |
+| **7** — front MC : fait THR2_4 + témoins d'indétermination (cellule [`barriers/depot_vs_rr.md`](../barriers/depot_vs_rr.md) §3 bis) | [`checks/mc001_spotcheck_independant.py`](../checks/mc001_spotcheck_independant.py) | `cd checks && python mc001_spotcheck_independant.py` | `SPOT-CHECK : TOUT CONFORME (3e passe independante, force brute pure)` (en amont : `W(THR2_4) = 4`, masques 1776 → W=4 et 748 → W=6) | **[NON VÉRIFIÉ]** (ordre de la minute) | REJOUÉ 2026-08-02 · MESURÉ (force brute pure, zéro solveur — [MC-001](../tasks/done/MC-001.md)) |
+| **7** — front MC : voie packing éliminée | [`checks/mc003_rails_doubles.py`](../checks/mc003_rails_doubles.py) | `cd checks && python mc003_rails_doubles.py n3` | `Q2 frontière r=2\|3 : max=9 vs min=9 → CONTACT (valeur partagée — seuil ambigu)` puis, aux extrêmes, `r=4 g=233 W=11 : packing=6 (OPTIMAL)` | mesures **≈ 45 s** ; packing extrêmes **≈ 2 min** | NON REJOUÉ (2 exécutions concordantes le 2026-08-07) · MESURÉ, optima certifiés-solveur ([MC-003](../tasks/done/MC-003.md)) |
+| **7** — front MC : additivité de W (fondement du schéma de totalisation) | [`checks/mc005_additivite.py`](../checks/mc005_additivite.py) | `cd checks && python mc005_additivite.py tout` | `MUX  : sous-additif 0/105, égal 0/105, super 105/105` puis `W(NOR_3 ⊕ NOR_3) = 14 [OPTIMAL] — CONFORME A-013 ; somme = 6 → écart +8` | 2+2 : **8 s** ; total **[NON VÉRIFIÉ]** (ordre de quelques minutes) | NON REJOUÉ · MESURÉ (force brute ≤ 4 vars, CP-SAT OPTIMAL 5-7 vars — [MC-005](../tasks/done/MC-005.md)) |
+| **7** — front MC : THÉORÈME de super-additivité du sélecteur | [`checks/mc006_preuve_selecteur.py`](../checks/mc006_preuve_selecteur.py) | `cd checks && python mc006_preuve_selecteur.py tout` | `T2 — 105/105 paires 2+2 : W ≥ somme + 1 PARTOUT` (distribution identique à MC-005), `T3 — 12/12 instances à tranches-poubelle : W ≥ W(f) + W(g) PARTOUT`, puis `AUCUNE FALSIFICATION : le théorème MC-006 survit à la batterie.` | T2 : **4 s** ; T3 : **≈ 20 min** (optima 6 vars sur fonctions aléatoires) ; total **≈ 20 min** | NON REJOUÉ · PROUVÉ (preuve complète [MC-006](../tasks/done/MC-006.md) §2) + batterie de falsification 0 violation |
 
 ## 3. Environnement de référence
 

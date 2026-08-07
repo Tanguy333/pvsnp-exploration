@@ -121,6 +121,50 @@ MC-001 :
   structure DNF. Voies restantes en lice : le gabarit HOS18 Th.16 (MC-004)
   et l'additivité de W sous somme disjointe (trou (b) de MC-001).
   Pièces : `tasks/done/MC-003.md`, `data/mc003_rails_doubles.md`.
+- **Les deux voies restantes CONVERGENT (MC-004, 2026-08-07)** : audit sur
+  texte intégral du pipeline HOS18 (`bib/hos18_partiel_total.md`) — le
+  gabarit Th.16 ne transfère pas en l'état (gating-réciproque, extraction
+  affine + ablation OR, coût additif exact, compression algébrique : chaque
+  pièce exige la localité de la tête OR ou l'algèbre MOD_m), et sa
+  totalisation pour SYM+ PASSE PAR le lemme d'additivité/extraction de W.
+  **Le front se concentre donc sur UNE question : l'additivité de W sous
+  structures disjointes/étiquetées** — munie d'un acquis (slice-gating
+  gratuit à y = 1^s) et de deux patrons (zero-error vérifiable,
+  amplification multiplicative à la Th.45). Réserve : analyse
+  d'obstruction, pas théorème — un schéma de totalisation entièrement
+  différent n'est pas exclu. Prochaine tâche = MC-005 (additivité), 5ᵉ du
+  fil : bilan de la règle 9 obligatoire.
+- **Premier fondement mesuré du schéma (MC-005, 2026-08-07)** : sur
+  l'exhaustif 2+2 (105 paires non constantes), le combineur à SÉLECTEUR —
+  la forme même du schéma Th.16 — est **strictement super-additif
+  partout** (105/105, écarts +1..+5, jamais de partage de coût) ; le ⊕
+  n'est jamais sous-additif (points A-013 re-vérifiés par deux méthodes :
+  6, 14) ; ∧/∨ PARTAGENT (21/105) — la colle d'un gadget doit être de type
+  sélecteur/⊕, pas ∧/∨. Deux bornes prouvées encadrent la question :
+  appariement W(h) ≤ W(f) + (W(f)+1)·W(g) et restriction
+  W(h) ≥ max(W(f), W(g)) — 588 tests, 0 violation. **Le pas suivant est
+  une PREUVE** (super-additivité du sélecteur à tout n, ou minoration
+  certifiable de l'écart) — la mesure ne peut plus trancher (q.12 :
+  fondement mesuré à 2+2, pas un théorème). Bilan de fil (règle 9) écrit :
+  `tasks/done/MC-005.md` §3 ; témoins : `atlas/temoins.md` (3 lignes MC).
+  Pièces : `checks/mc005_additivite.py`, `data/mc005_additivite.md`.
+- **LA PREUVE EST FAITE (MC-006, 2026-08-07) — Théorème** : (i) pour toute
+  fibre à BLOCS DISJOINTS sélectionnée par motifs (h arbitraire hors des
+  tranches réalisantes), W(h) ≥ Σᵢ W(fᵢ) — le coût ne se partage JAMAIS, à
+  toute taille ; (ii) strict pour le MUX à 1 bit : W ≥ W(f) + W(g) + 1
+  (bras 0 non constant) ; (iii) borne atteinte (W(MUX(id,id)) = 3 ; 21/105
+  paires à +1). Preuve élémentaire (charge par classes disjointes +
+  collision de valeurs), complète dans `tasks/done/MC-006.md` ; batterie de
+  falsification 0 violation (dont 12 instances à tranches-poubelle,
+  `checks/mc006_preuve_selecteur.py`). Le fondement du schéma de
+  totalisation passe de MESURÉ à **PROUVÉ** dans cette géométrie ; bonus :
+  premier outil de CERTIFICATION de W par théorème (contre le verrou (c) de
+  MC-001). **Verrou requalifié, nommé** : la polynomialité interdit les
+  blocs disjoints au-delà de O(log) fibres — la géométrie exigée est la
+  fibre à coordonnées PARTAGÉES (HOS18), où les classes de charge se
+  recouvrent : c'est le candidat MC-007, et la compression reste l'autre
+  verrou. Réserve : preuve de session, falsifiée par batterie mais sans
+  passe adverse tierce (trou de contrôle du fil).
 
 - **Contre SYM+/ACC⁰ (le régime du fil)** : la sortie 2 de D-001 s'applique —
   Williams, verbatim (pièce du dépôt) : « *there is little evidence that ACC
