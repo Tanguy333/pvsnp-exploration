@@ -1380,6 +1380,76 @@ calcul** du fil AS n'avaient pas atteint.
 >   condition OWF, prix : #P ⊄ FP/poly), KPS CCC 2026 (anticheckers en
 >   test de constructivité), J. ACM 2026. Audit : `bib/pich_santhanam.md` ;
 >   fiche : `tasks/done/A-018.md` ; cellule 15 enrichie.
+> - [x] **A-019 (fait, 2026-08-08)** — **la colonne algébrisation de la
+>   ligne 15 est SOURCÉE** : audit sur texte d'AKPS ICALP 2024 (24e
+>   audit, texte déjà en main par A-018, arXiv v1 unique vérifié
+>   ouverture + clôture). Relevé exhaustif des barrières : relativisation
+>   [NON TROUVÉ], **algébrisation [NON TROUVÉ] (AW08 non cité) alors que
+>   le mécanisme central EST l'arithmétisation** (sum-check LFKN sur
+>   F_p), preuves naturelles [NON TROUVÉ] ; seule barrière discutée : la
+>   « Pich-Santhanam barrier ». iEF = [EF, EF] (Krajíček 2004) ≡
+>   S¹₂ + 1-EXP, simule G ; théorèmes verbatim ; chaîne 2 flèches,
+>   maillon faible = la prémisse « iEF^tt non p-borné » (transfert entre
+>   deux inconnues), #P ⊄ FP/poly ne donne pas P ≠ NP. Réserves :
+>   version ICALP courte (full version arXiv non auditée), pilier
+>   technique sur « Unpublished preprint » d'un co-auteur. Audit :
+>   `bib/akps_2024.md` ; fiche : `tasks/done/A-019.md` ; cellule 15
+>   (colonne algébrisation) réécrite, intégrité 20 × 8 re-vérifiée.
+> - [x] **D-006 (fait, 2026-08-08)** — **L'AUTO-TEST D'ALGÉBRISATION de
+>   la voie iEF** (l'analogue de D-005, sur pièces A-008/A-018/A-019,
+>   zéro calcul) : verdict à deux étages — (1) inconditionnel : la
+>   CIBLE (#P ⊄ FP/poly) est derrière le mur d'AW08 (témoin dérivé de
+>   la liste auditée : PSPACE^Ã ⊆ P^A ⟹ #P^Ã ⊆ FP^A/poly) et le
+>   transfert est l'archétype algébrisant (sum-check) ; (2) sous la
+>   formalisation relativisée consignée, maillon manquant nommé — la
+>   charge non-algébrisante repose ENTIÈREMENT sur la borne iEF future.
+>   **Convergence : algébrisation et auto-référence (FOCS 2019, A-012)
+>   gardent le même maillon.** La voie n'est pas morte (sorties AW08
+>   consignées : structure des tt-formules, lecture-de-circuit,
+>   localité) — élimination PARTIELLE : la sous-voie « le transfert
+>   contournerait les barrières » est fermée. Pièce :
+>   `barriers/ief_vs_algebrisation.md` (5e cellule type D) ; fiche :
+>   `tasks/done/D-006.md` ; cellule 15 : verdict porté. Sans passe
+>   tierce (candidate VER).
+> - [x] **Clôture du fil D (décision utilisateur, 2026-08-08)** — le
+>   fil des auto-tests de barrières (D-005, D-006) est CLOS ; résidus
+>   nommés dans les cellules (maillon Khaniki, VER-D, sourçage F2,
+>   traçage PS23), non poursuivis ; les cellules produites restent
+>   vivantes ; réouverture : décision utilisateur ou mouvement du
+>   domaine. Compteur de fil ajouté au backlog (règle 9). Front suivant
+>   ouvert : A-020 (ligne 1, Williams STOC 2025 sur texte).
+> - [x] **MC-016 (fait, 2026-08-08)** — **LA LOI DE CROISSANCE EST
+>   TRANCHÉE : le déficit croît en s ET en k, mécanisme = LA VALEUR
+>   COMMUNE.** Singletons : g = −(s−1) aux 3 points (W = 3s + 1,
+>   fraction constante de Σ) ; k = 8 : −9 exact (quasi-antichaîne) et
+>   g ∈ [−12, −7] PROUVÉ (antichaîne pleine, ν = 8, 1 h — l'instrument
+>   au plafond, intervalle borne + réalisable). Témoins extraits : les
+>   optima donnent aux points incomparables UNE VALEUR COMMUNE (le
+>   mécanisme MC-003 en géométrie de fibres) — l'antichaîne ne bloque
+>   pas le partage, elle le PERMET (le renversement de MC-015
+>   expliqué). Îlots d'additivité : chaîne alignée, paires
+>   quasi-disjointes (g = 0). **Route recâblée : l'additivité en espace
+>   partagé est morte à toute échelle — le schéma paie les blocs
+>   disjoints (MC-006), le chaînon restant est LA COMPRESSION (MC-017
+>   candidate, sur décision).** Fiche : `tasks/done/MC-016.md` ;
+>   script : `checks/mc016_croissance.py` ; mesures :
+>   `data/mc016_croissance.md` ; ligne témoins ajoutée. Incidents
+>   consignés (job cru mort qui vivait ; leçon python -u).
+> - [x] **A-020 (fait, 2026-08-08)** — **LA LIGNE 1 REFONDÉE SUR TEXTE
+>   (25e audit) et le raccourci d'A-017 CORRIGÉ** : Williams STOC 2025
+>   (arXiv v1 + ECCC + Cook-Mertz TR23-174 + [HCC+93] tous ouverts ;
+>   ACM/J. ACM murés, identification seule). La non-relativisation est
+>   une propriété du THÉORÈME (monde-oracle TIME^A = SPACE^A, [HCC+93]
+>   Thm 6), PAS de l'algèbre — Cook-Mertz en boîte noire donne au
+>   contraire la relativisation RESTREINTE (Thm 5.1) ; parenthèse
+>   [HCC+93] citable via arXiv v1. Distance honnête : « NP » absent du
+>   corps, route = P vs PSPACE conditionnelle ; mur de la récursion
+>   (2^Θ(b), SETH). Barrières : algébrisation/preuves naturelles
+>   [NON TROUVÉ], BGS non cité. État 2026 : la borne √(t log t) TIENT,
+>   DEUX préprints d'amélioration RETIRÉS (leçon A-017 appliquée),
+>   J. ACM 73(3), suites vivantes (Shalunov, Henzinger-Pyne-Ragavan).
+>   Audit : `bib/williams_2025_espace.md` ; fiche : `tasks/done/A-020.md` ;
+>   ligne 1 : 3 corrections MARQUÉES, intégrité 20 × 8.
 >
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le
