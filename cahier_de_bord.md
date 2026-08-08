@@ -1316,6 +1316,70 @@ calcul** du fil AS n'avaient pas atteint.
 >   supérieur. **Le front est à jour de ses relectures** — chaînons
 >   restants : base couronne (a ≥ 2), fibres composées, compression.
 >   Fiche : `tasks/done/VER-MC-2.md`.
+> - [x] **MC-014 (fait, 2026-08-08)** — **la base couronne : partiel
+>   structuré — outils prouvés, Δ = 1 fermé, résidu découpé.** Trois
+>   outils PROUVÉS : (T1) la tranche vers un point (x_i := 1 élimine v ;
+>   la loi G donne W ≥ b + 1 + a_{{i}} pour tout i) ; (T2) la tranche
+>   pleine à DEUX VALEURS PROTÉGÉES (le polynôme fusionné q, de poids
+>   exactement W_B + X, a ses zéros hors {0, Δ} — les bandes reviennent
+>   sans o ; en prime D_j^B ≠ Δ) ; (T3) l'identité de comptage. **Cinq
+>   régimes du minorant F ≥ a + b + 2 fermés**, dont TOUT Δ = 1 (E_j ≥ 2
+>   partout, le coin b = a, W_A = 1 tué par collision des singletons).
+>   **Résidu : Δ = 0 ∪ Δ ≥ 2 sous les WLOG accumulés — et les six optima
+>   extraits vivent TOUS à Δ = 0** (W_A = W_B = 1, σ = 0, tout le poids
+>   en mixte) : le résidu est l'habitat des optima, la loi y est serrée,
+>   c'est là que le minorant est dur. Mécanismes candidats nommés pour
+>   MC-015 : le système d'échange w_{ij} = (A∖i)∪{j} (Δ = 0) et le saut
+>   au-dessus de Δ (Δ ≥ 2). Certificats : 9/9 INFEASIBLE au cap a+b+1
+>   jusqu'à ν = 8. Réserve : preuves de session post-VER-MC-2 ; la base
+>   couronne n'est PAS un théorème complet. Fiche :
+>   `tasks/done/MC-014.md` ; script : `checks/mc014_couronne.py`.
+> - [x] **ATLAS-013 (fait, 2026-08-08)** — **LA LIGNE 18 EST CRÉÉE : le
+>   front MC a son adresse dans le livrable.** La famille
+>   « méta-complexité des classes restreintes profondeur-2 (Min-DNF →
+>   MinSYM+) », ancrée dans la littérature EXTERNE (Masek, Levin,
+>   HJLT96/ABF+08, AHMPS, HOS18, Hirahara-Ilango, HIL — les pièces du
+>   folklore-check MC-002) ; colonne preuves naturelles ⚠
+>   ligne-CHARNIÈRE : cette famille EST l'échappatoire de
+>   non-constructivité de la barrière, l'auto-test D-005 en est la
+>   cellule vivante ; verrou réel : la frontière du cas total à tête
+>   non-OR, la case symétrique vide (vérifié) occupée par le front MC ;
+>   verrou nommé : la totalisation à tête couplante. Garde-fou
+>   anti-auto-référence (leçon des Tours 26-27) : la ligne cite le
+>   DOMAINE, les pièces du dépôt contribuent à sa case, l'ancrage
+>   bibliographique précède la ligne. Intégrité : 20 rangées × 8 pipes
+>   (vérifiée en lecture seule). Comptes corrigés : en-tête matrice,
+>   README (15 → 18 familles). Fiche : `tasks/done/ATLAS-013.md`.
+> - [x] **MC-015 (fait, 2026-08-08)** — **LA CONDITION D'ANTICHAÎNE EST
+>   RÉFUTÉE À BASE ≥ 2** : la route-but (fibres composées) mesurée à
+>   (t, s) = (2, 4) — 456/456 affectations d'antichaînes sous-additives
+>   (636 résolutions OPTIMAL, 0 non-conclu) ; l'additivité des chaînes
+>   était un artefact d'alignement (6/24, 3 classes × 2, mécanisme
+>   OUVERT) ; l'image s'INVERSE entre base 1 (théorème : seuls les
+>   emboîtements partagent, corollaire recâblé sur les lois prouvées,
+>   53/56 cases théorème) et base ≥ 2 (les antichaînes partagent
+>   toujours). Sous-voie « additivité en espace partagé sous condition
+>   d'ordre » FERMÉE ; le sélecteur (MC-006) reste le seul mécanisme
+>   prouvé. Fait neuf : déficit borné (g ≥ −3, antichaînes à −2 = t) →
+>   **verrou requalifié : la loi de croissance du déficit** (MC-016
+>   candidat). Fiche : `tasks/done/MC-015.md` ; script :
+>   `checks/mc015_multifibres.py` ; mesures : `data/mc015_multifibres.md` ;
+>   ligne témoins ajoutée. Incident sans perte (redémarrage PC).
+> - [x] **A-018 (fait, 2026-08-08)** — **l'audit Pich-Santhanam SUR
+>   TEXTE** : la voie « EF → P ≠ NP sous conditions » de la ligne 15
+>   enfin auditée — ECCC TR23-199 (sans révision) + version Oxford
+>   sept. 2023 lues in extenso, version de référence J. ACM 73(2) 2026
+>   identifiée (NON OUVERTE, mur ACM — réserve consignée). Théorèmes
+>   verbatim (w^k_n(f), Théorèmes 9-12, Proposition 1 = la « barrière
+>   Pich-Santhanam » : toute connexion inconditionnelle donnerait
+>   NEXP ⊄ P/poly d'office) ; chaîne en 3 flèches, DEUX entrées ouvertes
+>   indépendantes — maillon faible : condition II (Learning ← ¬∃OWF,
+>   « morally rules out Pessiland ») ; convergence ligne 13 textuellement
+>   fondée (OWF/anticheckers/apprentissage/automatisabilité). État
+>   2024-2026 : voie ACTIVE — AKPS ICALP 2024 (iEF, supprime la
+>   condition OWF, prix : #P ⊄ FP/poly), KPS CCC 2026 (anticheckers en
+>   test de constructivité), J. ACM 2026. Audit : `bib/pich_santhanam.md` ;
+>   fiche : `tasks/done/A-018.md` ; cellule 15 enrichie.
 >
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le

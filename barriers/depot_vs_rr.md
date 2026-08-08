@@ -315,6 +315,44 @@ MC-001 :
   ω_l ≥ 1 explicité (MC-013 §3), trois imprécisions mineures. Résidu :
   les INFEASIBLE ν ≥ 5 restent des assertions de solveur ; relecture
   humaine = étalon supérieur. Pièces : `tasks/done/VER-MC-2.md`.
+- **La base couronne, partiel structuré (MC-014, 2026-08-08)** : trois
+  outils PROUVÉS — (T1) la réduction par tranche vers un point (x_i := 1
+  élimine v, la loi G minore : W ≥ b + 1 + a_{{i}} ∀i ∈ A) ; (T2) la
+  tranche pleine à DEUX VALEURS PROTÉGÉES (q = p(A∪·) − P_A, poids
+  exactement W_B + X, zéros hors {0, Δ = P_B − P_A} — le mécanisme des
+  bandes resurgit SANS o) ; (T3) l'identité de comptage
+  (W ≤ a+b+1 ⟹ h_A + h_B + R ≤ π + 1). **Cinq régimes du minorant
+  F ≥ a+b+2 FERMÉS** — singleton lourd, bloc pur lourd, structure haute,
+  et **tout Δ = 1** (E_j ≥ 2 partout + le coin (b = a, W_A = 1) tué par
+  collision des singletons de B). **Résidu découpé : Δ = 0 et Δ ≥ 2 sous
+  les WLOG accumulés** — et fait mesuré : les six optima extraits vivent
+  TOUS à Δ = 0 (W_A = W_B = 1, tout en mixte) : le résidu est l'habitat
+  des optima, là où la loi est serrée. Mécanismes candidats nommés :
+  système d'échange w_{ij} (Δ = 0), saut au-dessus de Δ (Δ ≥ 2) —
+  MC-015. Certificats : 9/9 INFEASIBLE au cap a+b+1 jusqu'à ν = 8.
+  Réserve : preuves de session post-VER-MC-2. Pièces :
+  `tasks/done/MC-014.md`, `checks/mc014_couronne.py`.
+- **Le multi-fibres conditionnel : la condition d'antichaîne est RÉFUTÉE
+  à base ≥ 2 (MC-015, 2026-08-08)** — la route-but (fibres composées)
+  mesurée à (t, s) = (2, 4), ν = 6 : 4 fibres-points en espace de fibre
+  PARTAGÉ, 636 résolutions OPTIMAL, 0 non-conclu. **456/456 affectations
+  d'antichaînes sous-additives** (g ∈ {−2 majoritaire, −1}) — la brique
+  « fibres sans partage sous condition combinatoire », candidate depuis
+  MC-007/008, N'EXISTE PAS en espace partagé ; et l'additivité des
+  chaînes du premier passage était un artefact d'alignement (6/24
+  affectations seulement, 3 classes × 2, mécanisme OUVERT ; minimum
+  g = −3, sous celui des antichaînes). L'image s'INVERSE entre 2 fibres
+  (base 1 : seuls les emboîtements partagent — corollaire désormais
+  assis sur les lois PROUVÉES, 53/56 cases théorème, volet A) et 4
+  fibres (base 2 : les antichaînes partagent toujours). Le seul
+  mécanisme d'additivité prouvé reste le sélecteur à blocs DISJOINTS
+  (MC-006). **Fait neuf : le déficit est petit et borné** — g ≥ −3
+  partout, antichaînes concentrées à g = −2 = t. **Verrou requalifié :
+  la LOI DE CROISSANCE du déficit** (si |g| = O(t) ou O(k), la
+  totalisation par fibres partagées reste additive à terme contrôlé
+  près ; si |g| = Θ(Σ), elle meurt) → MC-016. Pièces :
+  `tasks/done/MC-015.md`, `checks/mc015_multifibres.py`,
+  `data/mc015_multifibres.md`.
 - **La base linéaire est fermée au sol (MC-012, 2026-08-07) — THÉORÈME
   F(1, b, 0, 0) = b + 2** : forçage d'égalité (si W ≤ b+1 : c = 1,
   E_j = 1 partout, pas de hauts-B ; puis cascade — c = 1 interdit
