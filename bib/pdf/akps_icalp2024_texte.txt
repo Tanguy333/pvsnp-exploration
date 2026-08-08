@@ -1,0 +1,1107 @@
+From Proof Complexity to Circuit Complexity via
+Interactive Protocols
+Noel Arteche /envel⌢pe
+Lund University, Sweden
+University of Copenhagen, Denmark
+Erfan Khaniki /envel⌢pe
+Institute of Mathematics of the Czech Academy of Sciences, Prague, Czech Republic
+Ján Pich /envel⌢pe
+University of Oxford, UK
+Rahul Santhanam /envel⌢pe
+University of Oxford, UK
+Abstract
+Folklore in complexity theory suspects that circuit lower bounds againstNC1 or P/poly, currently
+out of reach, are a necessary step towards proving strong proof complexity lower bounds for systems
+like Frege or Extended Frege. Establishing such a connection formally, however, is already daunting,
+as it would imply the breakthrough separationNEXP̸⊆P/poly, as recently observed by Pich and
+Santhanam [58].
+We show such a connection conditionally for the Implicit Extended Frege proof system (iEF)
+introduced by Krajíček [45], capable of formalizing most of contemporary complexity theory. In
+particular, we show that ifiEF proves efficiently the standard derandomization assumption that a
+concrete Boolean function is hard on average for subexponential-size circuits, then any superpolyno-
+mial lower bound on the length ofiEF proofs implies #P̸⊆FP/poly (which would in turn imply,
+for example, PSP ACE̸⊆P/poly). Our proof exploits the formalization insideiEF of the soundness
+of the sum-check protocol of Lund, Fortnow, Karloff, and Nisan [54]. This has consequences for the
+self-provability of circuit upper bounds iniEF. Interestingly, further improving our result seems to
+require progress in constructing interactive proof systems with more efficient provers.
+2012 ACM Subject ClassificationTheory of computation→Proof complexity; Theory of computa-
+tion→Circuit complexity; Theory of computation→Complexity theory and logic
+Keywords and phrasesproof complexity, circuit complexity, interactive protocols
+Digital Object Identifier10.4230/LIPIcs.ICALP.2024.12
+Category Track A: Algorithms, Complexity and Games
+Related Version Full Version: https://arxiv.org/abs/2405.02232
+Funding Noel Arteche: This work was supported by the Wallenberg AI, Autonomous Systems and
+Software Program (WASP) funded by the Knut and Alice Wallenberg Foundation.
+Erfan Khaniki: This work was supported by the Institute of Mathematics of the Czech Academy of
+Sciences (RVO 67985840) and GAČR grant 19-27871X.
+Ján Pich: This work received support from the Royal Society University Research Fellowship
+URF\R1\211106 “Proof complexity and circuit complexity: a unified approach”.
+Acknowledgements Independently, Albert Atserias suggested to us to consider using interactive
+proof systems to derive this type of connections. We thank Pavel Pudlák for useful comments, and
+the anonymous reviewers for relevant comments and references. This work was done in part while
+the first author was visiting the University of Oxford and the Institute of Mathematics of the Czech
+Academy of Sciences. For the purpose of Open Access, the authors have applied a CC BY public
+copyright license to any Author Accepted Manuscript version arising from this submission.
+EATC
+S
+© Noel Arteche, Erfan Khaniki, Ján Pich, and Rahul Santhanam;
+licensed under Creative Commons License CC-BY 4.0
+51st International Colloquium on Automata, Languages, and Programming (ICALP 2024).
+Editors: Karl Bringmann, Martin Grohe, Gabriele Puppis, and Ola Svensson;
+Article No.12; pp.12:1–12:20
+Leibniz International Proceedings in Informatics
+Schloss Dagstuhl – Leibniz-Zentrum für Informatik, Dagstuhl Publishing, Germany
+12:2 From Proof Complexity to Circuit Complexity via Interactive Protocols
+1 Introduction
+At a high level, both circuit complexity and proof complexity can be thought of as an
+approach towards theP versus NP question. The circuit complexity program, which met
+with considerable success in the 1980s, tries to prove lower bounds against gradually larger
+circuit classes, hoping to eventually showNP̸⊆P/poly. Proof complexity, often identified
+with the so-called Cook-Reckhow program, intends to showNP̸= coNP and, in turn,
+P ̸= NP, by proving lower bounds against gradually more powerful proof systems for
+propositional logic.
+While both enterprises share the motivation to studyconcrete computational models of
+increasing power hoping to build up techniques to attack the long-sought separations, there
+exist notable differences. Circuit complexity looks at deterministic models of computation,
+while proof complexity deals with proof systems, which are inherently non-deterministic.
+Furthermore, while circuit complexity has a clear end-goal (lower bounds against general
+Boolean circuits), it remains wide open whether the Cook-Reckhow program can be realized
+even in principle. It is not known whether lower bounds against strong systems like Extended
+Frege can imply lower bounds for every other system and, as such, one could potentially keep
+proving lower bounds for ever-stronger systems without ever settling whetherNP̸= coNP.
+The parallels between circuit complexity and proof complexity are made clearer by Frege
+systems. For each circuit complexity classC, one can define the proof systemC-Frege, in
+which proof lines are restricted to be circuits fromC. In this setting strong systems like
+Frege and Extended Frege correspond toNC1-Frege and P/poly-Frege, respectively, and
+thus the natural question arises: Can we turn explicit lower bounds forC circuits into lower
+bounds forC-Frege systems, and vice versa?
+While the question is essentially open, work on weaker systems and circuit classes has
+proven successful. In one direction, the method of feasible interpolation [43, 65, 50] (see
+[51, §17.9.1] for the history of the method) has been extensively applied to obtain proof
+complexity lower bounds. The framework of feasible interpolation formalizes the idea of
+extracting computational content from proofs: given short proofs in a given system, one can
+extract a small Boolean circuit in some restricted classes for a related interpolant function.
+Contrapositively, circuit lower bounds for such functions (often coming from unconditional
+results such as lower bounds against monotone circuits [64, 4, 3]), turn into lower bounds for
+proofs systems like Resolution [50] or Cutting Planes [61] (and conditionally for other systems,
+such as Polynomial Calculus or Sum-of-Squares [32]). Unfortunately, this connection breaks
+for stronger proof systems: alreadyAC0-Frege and TC0-Frege are known to lack feasible
+interpolation properties1 under standard cryptographic hardness assumptions [52, 13, 12],
+and this holds even if we allow feasible interpolation by quantum circuits [6].
+In the other direction (circuit complexity from proof complexity), the theory of lifting
+has unveiled deep connections between proofs, circuits and communication protocols. Here,
+so-called query-to-communication lifting theorems translate query complexity lower bounds
+(corresponding to weak systems, like Resolution) into communication complexity lower bounds
+(e.g. [63, 53]). The latter provide restricted circuit lower bounds, such as for monotone
+circuits (see e.g. [27, 24, 25] and references therein). It is, however, not known how to derive
+non-monotone lower bounds for unrestricted Boolean circuits by lifting proof complexity
+lower bounds.
+1 Some of these systems are known to admit some form of interpolation by stronger computational models,
+see e.g. [62, 23], but we are interested in Boolean circuits.
+N. Arteche, E. Khaniki, J. Pich, and R. Santhanam 12:3
+For proper Frege systems, the connection has worked mostly in one direction, from circuits
+to proofs, particularly at the level of techniques. The method of random restrictions and
+the celebrated switching lemmas used to show constant-depth circuit lower bounds in the
+1980s [26, 1, 33] were successfully transferred intoAC0-Frege lower bounds shortly after
+[2, 10, 43, 8, 59, 49]. This suggests that understanding what makes proof lines large might
+be necessary to understand why proofs are long. Intriguingly, understanding the proof lines
+alone does not seem to suffice: theAC0[p] lower bounds of Razborov and Smolensky [66, 68]
+are yet to be successfuly translated to proof complexity, with lower bounds forAC0[2]-Frege
+being one of the prominent frontier problems in the field.
+The current situation seems to suggest that in order to make progress towards proof
+complexity lower bounds, it isnecessary (though seemingly not sufficient) to first obtain
+strong enough circuit lower bounds. In particular, under this folklore belief, circuit lower
+bounds against NC1 or P/poly, currently out or reach, would be a necessary step towards
+proving strong proof complexity lower bounds for systems like Frege or Extended Frege.
+However, the suspicion remains unproven, and no generic way of deriving explicit circuit lower
+bounds for unrestricted Boolean circuits from proof complexity lower bounds for concrete
+propositional proof systems has been discovered2.
+The first result giving such a connection under relatively conventional assumptions which
+are presumably weaker than the conclusion of the connection itself was presented recently by
+Pich and Santhanam [58]. Specifically, they showed that any superpolynomial lower bound
+on the length of tautologies in the Extended Frege systemEF implies NP̸⊆P/poly assuming
+hypotheses (1) and (2) below:
+(1) (Provable circuit lower bound.) EF proves efficiently that a concrete Boolean function in
+E is average-case hard for subexponential-size circuits.
+(2) (Provable reduction of OWFs toP̸= NP.) EF proves efficiently that a polynomial-time
+function transforms circuits breaking one-way functions into circuits solvingSAT.
+We remark that Hypothesis (1) above presupposesE̸⊆P/poly, which is however believed
+to be a significantly weaker statement thanNP̸⊆P/poly. Alternatively, Hypotheses (1)
+and (2) can be replaced by a single assumption on the feasible provability of the existence
+of anticheckers inEF. These results remain valid even if we replaceEF by an essentially
+arbitrary proof system simulatingEF.
+Crucially, improving this and related results by dropping the hypotheses is surprisingly
+daunting. As noted by Pich and Santhanam [58, Prop. 1], if one unconditionally establishes
+the implication “ifS is not polynomially bounded, then NP̸⊆P/poly” for a concrete
+proof systemS, then the breakthrough separationNP̸⊆SIZE[nk], for every fixedk (and
+NEXP̸⊆P/poly) follows!
+In short, proving a formal connection between proof complexity and circuit complexity
+provably requires breakthrough circuit lower bounds! Despite this setback, one can still
+hope to get evidence that points at these connections, possibly by shifting some of the
+components of the ingredients. Namely, one may try to (a) adopt some hardness assumption,
+in the style of [58]; (b) conclude lower bounds weaker thanNP̸⊆P/poly; or (c) look at
+non-Cook-Reckhow proof systems (such as MA proof systems or proof systems for languages
+beyond coNP).
+2 We note that the issue lies in establishing such a connection for aconcrete system. Of course, the
+statement “there is a proof systemS such that if S is not polynomially bounded, then P̸= NP”
+is true: if NP = coNP the implication is vacuously true by taking a polynomially bounded proof
+system; if NP̸= coNP, then P̸= NP and thus the statement holds for any proof system. It would be
+dramatically different to obtain such a connection for a concrete system.
+ICALP 2024
+12:4 From Proof Complexity to Circuit Complexity via Interactive Protocols
+In this style, Grochow and Pitassi [31] showed that the Ideal Proof System (IPS) does
+satisfy such a connection, toalgebraic circuit complexity. Indeed, any superpolynomial lower
+bound in the length of proofs inIPSF implies VPF̸= VNPF. Grochow and Pitassi avoid
+the Pich-Santhanam barrier by means of (b) and (c) above: first,IPS is not known to be
+a Cook-Reckhow system, since proofs are verified by randomized machines via polynomial
+identity testing; second, the lower bounds are algebraic and not Boolean. Recall that while
+separating VP and VNP is a necessary step3 towards NP̸⊆P/poly [14], the converse is not
+known.
+Another interesting connection has been established in the realm of quantified Boolean
+formulas, where the connection can be made essentially optimal. Beyersdorff, Bonacina,
+Chew, and Pich [11] showed that for every circuit classC, the quantified systemC-Frege +
+∀red is not polynomially bounded if and only if eitherPSP ACE̸⊆CorC-Frege is not
+polynomially bounded. Here, C-Frege +∀red stands for the natural quantified system
+obtained by extendingC-Frege with a universal reduction rule, which takes care of universal
+quantifiers by instantiating concrete values for its variables in the hope of refuting the
+formula. The reason this avoids the Pich-Santhanam barrier is the disjunct in the conclusion.
+That is, in the context of QBF the conclusion of the Pich-Santhanam barrier becomes that
+that either NEXP̸⊆P/poly orC-Frege is not polynomially bounded. But this disjunction
+is no breakthrough, since it follows directly by a diagonalization argument anyway: if a
+propositional system is polynomially bounded, thenNEXP is hard forP/poly [44].
+Contributions
+We prove a new conditional connection between proof complexity and circuit complexity,
+giving further evidence that strong proof complexity lower bounds require circuit lower
+bounds. This constitutes the first example of a natural proof system that is conditionally
+Cook-Reckhow and whose lower bounds imply Boolean circuit lower bounds.
+The system in question is (an extension of) the Implicit Extended Frege (iEF) proof system
+of Krajíček [45], capable of formalizing most of contemporary complexity theory. Our result
+can be informally stated as follows, whereiEFtt(h) stands for the proof system extendingiEF
+by axiomsttavg
+1/4(hn, 2n/4) claiming there are no circuits of size2n/4 approximating a concrete
+function h on more than a(1/2 + 1/2n/4)-fraction of the inputs.4
+▶ Theorem 1(Main theorem, informal). Suppose there is a Boolean functionh∈NE∩coNE
+that is hard on average for subexponential-size circuits. If the Cook-Reckhow proof system
+iEFtt(h) is not polynomially bounded, then#P̸⊆FP/poly.
+In the theorem above one could instead consider the systemiEFtt(h) for some uncondi-
+tionally hard function familyh that is guaranteed to exist. The only problem in this case
+is that we might need non-uniform advice to verify the proofs, and so the system would
+not be Cook-Reckhow (we refer to Cook and Krajíček [19] for a systematic treatment of
+non-uniform proof systems).
+One can interpret our theorem as improving on the connection of Pich and Santhanam [58]
+from proof complexity to circuit complexity. Our result improves that of Pich and Santhanam
+by completely dropping their second assumption (the one aboutEF proving the existence of
+one-way functions underP̸= NP). The price to pay for these changes is two-fold:
+3 Unconditionally over finite fields, and assuming the Generalized Riemann Hypothesis for infinite fields.
+4 For technical reasons, we defineiEFtt(h) using a system which is polynomially equivalent toiEF instead
+of iEF itself, see Definition 17.
+N. Arteche, E. Khaniki, J. Pich, and R. Santhanam 12:5
+1. we need to replaceEF by the seemingly stronger Implicit Extended Frege system (iEF).
+Informally, iEF extends EF with an extra rule allowing us to derive a formulaφafter we
+have derived that a truth table of a given circuit encodes anEF-proof ofφ. Such a circuit
+is called animplicit proof;
+2. we can conclude only#P̸⊆FP/poly from iEF lower bounds, instead ofNP̸⊆P/poly.
+One may also compare our result to that of Grochow and Pitassi [31], who showed
+VP̸= VNP (and hence hardness of computing the permanent) would follow fromIPS
+lower bounds. Like our result, theIPS proof system is only conditionally Cook-Reckhow.
+Indeed, IPS is a Merlin-Arthur proof system which can be derandomized5 under standard
+assumptions, like E being hard to approximate by subexponential-size circuits. Our result is
+in some sense stronger in that the lower bounds obtained are Boolean rather than algebraic.
+However, we seem to be getting to lower bounds for the same problem as Grochow and
+Pitassi, since computing the permanent is bothVNP-complete and #P-complete.
+We note that the requirement thath ∈NE∩coNE is not strictly needed and, in
+fact, one can phrase the result in a more general style (as we do in the technical part)
+in which the connection holds for any extension ofiEF by truth table formulas for any
+hard function. Observe, however, thatiEF is a very strong proof system, with its bounded
+arithmetic counterpart being the theoryV1
+2 (or S1
+2 + 1-EXP, in the first-order setting), and
+so it is plausible thatiEF already proves such a circuit lower bound. For example, already
+EF can prove efficiently the PCP theorem [57], AC0, AC0[2] and monotone circuit lower
+bounds [67, 55], or the hardness amplification producing average-case hard functions inE
+from worst-case hard functions inE [36]. Furthermore, iEF proves efficiently the correctness
+of Zhuk’s algorithm from a CSP dichotomy [28, 29]. Hence, it is plausible to imagine that if
+circuit lower bounds are at all provable, they may well be provable already iniEF. If that
+turned out to be the case, then the concrete proof system in our main theorem becomesiEF
+itself.
+▶ Corollary 2(Main theorem, restated). Assume that iEF proves efficientlyttavg
+1/4(hn, 2n/4) for
+some function familyh and each sufficiently bign. Then, if iEF is not polynomially bounded,
+#P̸⊆FP/poly.
+Let us note that one cannot make big improvements to this result without hitting the
+Pich-Santhanam barrier that impliesNEXP̸⊆P/poly unconditionally: if we managed to
+prove Theorem 1 for a Cook-Reckhow proof system, thenNEXP̸⊆P/poly would follow
+unconditionally. On the other hand, if our final goal is to prove FP̸= # P, then the
+assumption of Theorem 1 is given to us for free even for some hardh∈E, as otherwise, ifE
+can be computed by subexponential-size circuits, it is not hard to show thatP̸= NP [44].
+Consequences for self-provability of circuit upper bounds
+Our result has consequences for the self-provability of circuit upper bounds. Suppose that
+#P⊆FP/poly. Then, there is a sequence of polynomial-size circuits{Cn}n∈N that on input
+a formulaφof sizen, outputs a satisfying assignment if one exists. This means that the
+propositional formula SATn(φ,α)→SATn(φ,Cn(φ)) claiming the correctness ofCn as a
+SAT solver is tautological (whereSATn is the satisfiability predicate, taking a formulaφand
+5 In fact, derandomizing IPS at all by simulating it by a Cook-Reckhow system implies a non-trivial
+derandomization of polynomial identity testing toNP [30]; this, in turn, implies some circuit lower
+bounds, as shown by Kabanets and Impagliazzo [38].
+ICALP 2024
+12:6 From Proof Complexity to Circuit Complexity via Interactive Protocols
+an assignmentαand evaluating the formula). But by Theorem 1,iEFtt is now polynomially
+bounded, and so the proof system is able to efficiently argue for the correctness of the circuits.
+Namely, the mere validity of the upper bound#P⊆FP/poly would imply the efficient
+propositional provability ofSAT∈P/poly.
+Outline of the proof
+Our main result follows from a derandomization of the known fact thatcoNP̸⊆MA implies
+#P̸⊆FP/poly (see, for example, [5, Thm. 8.22]), together with a formalization of the
+underlying MA system in a suitable theory of bounded arithmetic. The implication holds,
+actually, for the MA system given by the sum-check protocol of Lund, Fortnow, Karloff,
+and Nisan [54] in which proofs consist of a circuit simulating the moves of the Prover in the
+protocol, so that given such a circuit, the Verifier can simulate the entire protocol on their
+own with the aid of randomness. If#P⊆FP/poly, then the#P-powerful Prover in the
+sum-check protocol can be replaced by a polynomial-size circuit and thus the system is a
+polynomially bounded Merlin-Arthur system. Clearly, lower bounds on the length of proofs
+in this system are exactly circuit lower bounds against#P.
+Since MA can be derandomized under standard hardness assumptions, assuming, for
+example, that E is hard for subexponential-size circuits, the proof systemR based on the
+sum-check protocol above becomes a Cook-Reckhow system such that ifR is not polynomially
+bounded, then #P̸⊆FP/poly. This is almost our goal. Our task now is to replace this
+system by a different more standard Cook-Reckhow systemS. This can be achieved by
+proving efficiently the reflection principle of the systemR in S, which essentially amounts to
+proving the soundness of the sum-check protocol inS. Here, we employ a recent work of
+Khaniki [40], in which the soundness of the sum-check protocol was formalized inS1
+2 + 1-EXP.
+In order to translate the formalization insideS1
+2 + 1-EXP into propositional logic, we
+need to express the soundness of the sum-check protocol by propositional formulas. This
+is achieved using the machinery of approximate counting of Jeřábek [37], which exploits
+Nisan-Wigderson generators based on a hard Boolean function.
+Open problems
+Improving our result seems to require significant conceptual work. Of course, simultaneously
+dropping the circuit lower bound assumption as well as getting the stronger separation
+NP̸⊆P/poly would already imply NEXP̸⊆P/poly, but one may hope to improve the
+existing connection by improving on one of the two fronts only. Interestingly, this seems
+to require progress in some of the central open questions in the theory of interactive proof
+systems or in hardness magnification.
+The power of the prover
+Is it possible to strengthen the conclusion of the main theorem all the way down toNP̸⊆
+P/poly? This would follow, for example, if we managed to design an interactive protocol for
+Tautwith a prover solving onlyNP problems and prove its correctness iniEF (unlike the
+current situation, where the prover is required to compute a#P-complete function). The
+general question of constructing a protocol for a languageL where the prover’s power is
+limited to PL is a well-known open problem in the theory of interactive proof systems (see,
+for example, [5, §8.4]).
+N. Arteche, E. Khaniki, J. Pich, and R. Santhanam 12:7
+Note, of course, that the existence of such a protocol does not suffice, since its soundness
+must be provable insideiEF. In fact, the reason why we requireiEF (or S1
+2 + 1-EXP) to carry
+out the formalization of the existing sum-check protocol is that one cannot feasibly talk
+about #SATdirectly in EF or S1
+2 (unless FP = #P).
+Hardness magnification
+Is it possible to replaceiEF in the main theorem by Gentzen’s systemG, or even by Extended
+Frege? One option would be to carry out the existing formalization insideEF, as mentioned
+above. The caveat would be, however, that we would then have to make the assumption
+on truth table tautologies forEF. Whether EF can prove general circuit lower bounds at
+all seems much less believable than foriEF, and so the plausibility of our hypotheses seems
+affected.
+Instead, one may choose to keep everything iniEF and obtain the connection indirectly for
+EF via hardness magnification. Is there a natural class of formulas over whichEF simulates
+iEF (and which are believably hard forEF)? If so, assuming hardness of these formulas for
+EF would imply iEF lower bounds. By our main theorem,#P̸⊆P/poly would follow. To
+the best of our knowledge, no such type of hardness magnification is known for strong proof
+systems.
+2 Preliminaries
+We assume familiarity with the central concepts of computational complexity theory, pro-
+positional proof complexity and mathematical logic. Below we review the central concepts
+needed in this paper and fix some notation.
+2.1 Proof complexity
+Following Cook and Reckhow [22], apropositional proof systemS for the languageTautof
+propositional tautologies is a polynomial-time surjective functionS :{0, 1}∗→Tauttaking
+as input a proofπ∈{0, 1}∗and outputtingS(π) =φ, the theorem thatπproves. Soundness
+follows from the fact that the range is exactlyTaut, and implicational completeness is
+guaranteed by the fact thatS is surjective. We sometimes drop the termproof in proof
+system and use the termsystem alone to refer to a functionS that is not guaranteed to
+be a Cook-Reckhow proof system (perhaps because it is unsound, or not deterministically
+computable).
+We denote bysizeS(φ) the size of the smallestS-proof ofφplus the size ofφ. A proof
+system S is polynomially-bounded if for everyφ∈Taut, sizeS(φ)≤|φ|O(1). We say that a
+proof systemS polynomially simulatesa systemQ, writtenS≥Q, if for everyφ∈Taut,
+sizeS(φ)≤sizeQ(φ)O(1). Note that the notion of size and the definition of simulation do not
+exploit the soundness requirement of Cook-Reckhow systems. In particular, an unsound
+system can be polynomially bounded and simulate every other system. In some cases
+simulations hold only for some setT of tautologies, such as the set of tautologies written
+as 3DNFs, and not for all formulas, and then we say thatS polynomially simulates Q
+overT. Given a family{φn}n∈N of propositional tautologies, we writeS⊢φn whenever
+sizeS(φn)≤|φn|O(1).
+ICALP 2024
+12:8 From Proof Complexity to Circuit Complexity via Interactive Protocols
+2.1.1 Frege systems
+Proof complexity studies a wide variety of proof systems. The most important ones for us
+are Frege systems. A Frege system is a finite set of axiom schemas and inference rules that
+are sound and implicationally complete for the language of propositional tautologies built
+from the Boolean connectives negation (¬), conjunction (∧), and disjunction (∨). A Frege
+proof is a sequence of formulas where each formula is obtained by either substitution of an
+axiom schema or by application of an inference rule on previously derived formulas. The
+specific choice of rules does not affect proof size up to polynomial factors, as long as there
+are only finitely many rules and these are sound and implicationally complete. Indeed, Frege
+systems polynomially simulate each other [51, Thm. 4.4.13]. Alternatively, one may choose
+to think of Frege systems as some variant of Natural Deduction or the Sequent Calculus for
+classical propositional logic.
+Particularly important for us is the Extended Frege (EF) system, in which proof lines can
+be Boolean circuits and not just formulas, which would allow in principle for more succinct
+proofs. We shall often consider extensions of Extended Frege by sets of additional axioms.
+For a setA⊆Tautof tautologies recognizable in polynomial time, the systemEF +A refers
+to Extended Frege extended with substitution instances of any formula inA. Note that if
+A were to contain contingent formulas, thenEF +A would not be sound; in particular, it
+would not be a Cook-Reckhow system, though it would be polynomially bounded.
+A useful property ofEF is the fact thatEF + RefS≥S for every propositional system
+S [47]. Here RefS is the sequence of tautologies encoding the reflection principle for
+S, which states thatS is sound. Namely, RefS :={RefS,n,m}n,m∈N where the formulas
+RefS,n,m := PrfS,n,m(π,φ)→Satn,m(φ,α) encode the soundness ofS, andφis a formula
+of sizen, πis a purportedS-proof of sizem and αis an assignment to the variables inφ,
+which are all encoded by free variables. The formulaPrfS,n,m encodes thatπis a correct
+S-proof ofφ, and Satn,m(φ,α) encodes the standard satisfaction relation for propositional
+formulas. Alternatively, one may exploit the same relation with respect to theconsistency
+of S, ConS :={ConS,m}m∈N, where ConS,m :=¬PrfS,1,m(π,⊥) and πencodes a purported
+proof of sizem.
+2.1.2 Quantified propositional systems
+It is often convenient to operate on systems capable of reasoning withquantified Boolean
+formulas, where the quantification ranges over{0, 1}. We denote byΣq
+i (respectively, Πq
+i)
+the class of quantified Boolean formulas withi alternations between existential and universal
+quantifiers, starting with an existential (respectively, universal) one.
+We are particularly interested in Gentzen’s Sequent Calculus for quantified propositional
+logic. The system extends the usual propositional Sequent Calculus by four new rules to
+handle quantifiers (see [51, Def. 4.1.2] for a formal definition of the rules). We denote this
+system by G, and byG∗its tree-like counterpart. The systemGi, fori∈N, corresponds toG
+where the quantified formulas appearing in the sequents can only be in the classΣq
+i∪Πq
+i.
+The tree-like counterpart ofGi is naturally denotedG∗
+i. It is useful to know thatEF and G∗
+1
+are polynomially equivalent with respect toΠq
+1 formulas [51, Thm. 4.1.3].
+2.1.3 Implicit proof systems
+Implicit proof systemsconstitute a systematic way of obtaining, for every proof system
+S, a potentially stronger systemS′, and were introduced by Krajíček [45]. The essential
+idea is to encode a given proof in the systemS as a multi-output Boolean circuit taking
+N. Arteche, E. Khaniki, J. Pich, and R. Santhanam 12:9
+as input a numberi in binary and outputting thei-th step of the proof. More formally,
+given propositional proof systemsS and Q, a proof of a tautologyφin theimplicit system
+[S,Q ] is a pair (π,C) consisting of a proof and a circuit, such that the truth table ofC
+encodes a validQ-proof ofφ(the implicit proof), whileπis anexplicit S-proof of the formula
+CorrectQ(φ,C), which is the formula stating that the truth table ofC is a correctQ-proof
+of φ. IfS and Q are Cook-Reckhow proof systems, then so is[S,Q ].
+For a systemS, the implicit system[S,S ] is denoted byiS. In particular, we shall work
+with theImplicit Extended Fregeproof system, iEF := [EF, EF]. The systemiEF is particularly
+strong, and it can in fact simulate all of Gentzen’sG with respect to propositional tautologies
+[45, Cor. 2.4].
+2.2 Bounded arithmetic
+Our proofs exploit the connections between propositional proof complexity and theories of
+bounded arithmetic. Below we cover the essential preliminaries, which should be accessible
+to any reader with basic knowledge of first-order logic.
+2.2.1 The theories S1
+2 and S1
+2 + 1-EXP
+Theories of bounded arithmetic capture various levels of feasible reasoning and act as a
+uniform counterpart of propositional systems. Intuitively, feasibility is achieved by restricting
+the complexity of formulas over which one can apply general reasoning schemes like induction.
+The central theory for us is Buss’sS1
+2, which we think of as corresponding to polynomial-
+time reasoning. In this context, we work over the first-order language of bounded arithmetic,
+LBA :={0,S, +,·,<,|x|,⌊x/2⌋,x #y}, which extends the language of Peano Arithmetic by
+the symbols|x|,⌊x/2⌋andx#y. The standard interpretation of⌊x/2⌋is clear. The notation
+|x|denotes the length of the binary encoding of the numberx,⌈log(x + 1)⌉, while thesmash
+symbol x#y stands for 2|x|·|y|.
+The definition of bounded formulas is analogous to the bounded quantification one
+encounters in the polynomial hierarchy. For a quantifierQ∈{∃,∀}and a termt in the
+language of bounded arithmetic, a formula of the formQx < t.φ(x) stands for either
+∀x.(x<t →φ(x)) or∃x.(x<t ∧φ(x)). These are calledbounded quantifiers. Whenever the
+bounded quantifier is of the formQ< |s|for some terms, we talk aboutsharply bounded
+quantifiers. The hierarchy ofbounded formulasconsists of the classesΣb
+n and Πb
+n, forn≥1,
+which are defined by counting the alternations of bounded quantifiers ignoring the sharply
+bounded ones, starting with an existential (respectively, universal) one. The class∆ b
+n consists
+of all formulas that admit an equivalent definition in bothΣb
+n and Πb
+n. In particular, the
+class ∆ b
+0 stands for all formulas with sharply bounded quantifiers only.
+The theory S1
+2 of Buss [15] extends Robinson’s arithmeticQ by some basic axioms for
+the new function symbols and the polynomial induction scheme (PInd) for Σb
+1-formulas: for
+everyφ∈Σb
+1, the theory contains the axiom
+φ(0)∧∀x(φ(⌊x/2⌋)→φ(x))→∀xφ(x). (PInd)
+An alternative system intended to capture polynomial-time reasoning is Cook’s equational
+theory PV [21]. In the formalism ofPV one has some basic function symbols and introduces
+new ones recursively by composition and limited recursion on notation, in the style of
+Cobham’s functional definition ofFP [17]. In this way, the function symbols obtained inPV
+are precisely those of all polynomial-time functions over the naturals. The first-order version
+of PV is PV1 [48, 16, 18]. Without loss of generality, we shall work in the theoryS1
+2(PV),
+ICALP 2024
+12:10 From Proof Complexity to Circuit Complexity via Interactive Protocols
+which is the theoryS1
+2 in the language of bounded arithmetic extended by allPV function
+symbols, meaning that we have a fresh symbol for each function inFP, and induction is now
+available for allΣb
+1(PV) formulas. We abuse notation and refer to this directly asS1
+2.
+While S1
+2 is able to formalize a significant amount of complexity theory and some
+mathematics, it suffers from the drawback of being unable to even state the existence of
+exponentially large objects. For certain more elaborate arguments we shall work instead
+inside S1
+2 + 1-EXP, which patches this issue. We follow here the definition of the theory given
+by Krajíček [45, Cor. 2.2]: we writeS1
+2 + 1-EXP⊢∀xφ(x) for some arithmetic formulaφif
+there exists a termt such that
+S1
+2⊢∀x∀y(t(x)≤|y|→φ(x)).
+The definition is somewhat indirect and may be hard to grasp at first glance. Intuitively, it
+allows one to derive properties aboutx under the assumption thaty = 2x exists.
+The theoryS1
+2 corresponds to polynomial-time computations in the sense that the provably
+total relations inS1
+2 are precisely the polynomial-time-computable ones. The same relation
+holds for S1
+2 + 1-EXP and the complexity classEXP.
+2.2.2 Approximate counting
+Many of the formalizations carried out in bounded arithmetic require the ability to count.
+In some cases, small sets can be countedexactly, but one often requires more sophisticated
+machinery forapproximate counting, needed to formalize many probabilistic arguments.
+Fora∈N, abounded definable setis a set of naturalsX ={x<a |φ(x)}⊆[0,a ), where
+φ∈Σb
+∞is some arithmetic formula. ForX⊆a andY⊆b, we defineX×Y :={bx +y|x∈
+X,y ∈Y}⊆ab and X ˙∪Y :=X∪{y +a|y∈Y}⊆a +b. Rational numbers are assumed
+to be represented by pairs of integers in the natural way. We also use the unfortunate but
+standard Log-notation widespread in bounded arithmetic, by whichn∈Log stands for the
+formula∃x(n =|x|) and n∈LogLog stands for∃x(n =||x||).
+Intuitively, from the point of view of the theory, numbers inLog are “small” numbers.
+For a circuitC : 2k→2, where we adopt the set-theoretic custom of identifying{0, 1}with
+the number2, we can consider the bounded definable setXC :={x< 2k|C(x) = 1}, and
+ask about the task of counting the size ofXC.
+There exists aPV-function Count(C,y ) =|XC∩|y||. This means that if2k∈Log, then
+one can doexact countingof|XC|efficiently. We use the notationPrx<|y|[C(x) = 1]≤z/w
+for the PV-relation w·Count(C,y )≤|y|·z.
+If 2k ̸∈Log, exact counting becomes problematic. To avoid this, Jeřábek [36, 37]
+systematically developed the theoryAPC1 capturing probabilistic polynomial-time reasoning
+by means of approximate counting. The theoryAPC1 is defined asPV1 +dWPHP(PV) where
+dWPHP(PV) stands for thedual (surjective) pigeonhole principlefor all PV-functions. That
+is, the set of all formulas
+x> 0→∃v <x(|y|+ 1).∀u<x |y|. f(u)̸=v, (dWPHP)
+where f is a PV-function which might involve other parameters not explicitly shown.
+We writeC : X ↠ Y if C is a surjective mapping fromX to Y. Let X,Y ⊆2n be
+definable sets, andϵ≤1. The size ofX is approximately less than the size ofY with errorϵ,
+written asX⪯ϵY, if there exists a circuitC, andv̸= 0 such that
+C :v×(Y ˙∪ϵ2n) ↠v×X.
+N. Arteche, E. Khaniki, J. Pich, and R. Santhanam 12:11
+In this context, the notationX ≈ϵY stands for X ⪯ϵY and Y ⪯ϵX. As with exact
+counting, the notationPrx<y[C(x) = 1]◦ϵz/w stands forw·(XC∩y)◦ϵy·z, for◦∈{⪯,≈}.
+Since a numbers is identified with the interval[0,s ), X⪯ϵs means that the size ofX is at
+most s with errorϵ.
+The definition ofX⪯ϵY is an unbounded∃Πb
+2 formula even ifX and Y are defined by
+circuits, so it cannot be used freely in bounded induction. This problem can be solved by
+working insHARDA, defined as the relativized theoryS1
+2(α) extended with axioms postulating
+that α(x) is a truth table of a function on||x||variables hard on average for circuits of size
+2||x||/4. In sHARDA there is aPV(α) function Size approximating the size of any setX⊆2n
+defined by a circuitC so thatX≈ϵSize(α,C,2n, 2ϵ−1
+) forϵ−1∈Log (by combination of [37,
+Lemma 2.14] and [35, Cor. 3.6]).
+The following key definition allows us to express that a function is indeed hard on average.
+▶ Definition 3 (HardA
+ϵ(f), in PV1 [37]). Letf : 2k→2 be a truth table of a Boolean function
+with k inputs (withf encoded as a string of2k bits, and hence withk∈LogLog). We say
+that f is average-caseϵ-hard, written asHardA
+ϵ(f), if for every circuitC of size at most2ϵk,
+|{u< 2k|C(u) =f(u)}|< (1/2 + 2−ϵk)2k.
+Note that HardA
+ϵ(f) is Πb
+1-definable in PV1.
+We writettavg
+ϵ (fk, 2ϵk) :=||HardA
+ϵ(f)||m for the propositional translation (see Section
+2.2.3) of the formulaHardA
+ϵ(f) above and an appropriately chosen parameterm depending
+on k and ϵ. We also consider the polynomial-time functionCorrectFracTTδ(s,n,C,f ), that
+checks whetherf is a string of length2n, C encodes a circuit of size at mosts, and finally
+verifies whether the fraction of accepted inputs is larger than(1/2 + 2−δn)2n.
+The theory APC1 is strong enough to show that hard-on-average functions do exist.
+▶ Proposition 4 (Jeřábek [35]). For every rational constantϵ<1/3, there exists a constant
+c such that APC1 proves that for everyk∈LogLog such thatk≥c, there exist a function
+f : 2k→2 that is average-caseϵ-hard.
+The theory S1
+2 can be relativized toS1
+2(α). This means, in particular, that the language
+of S1
+2(α), denoted alsoS1
+2(α), contains symbols for all polynomial-time machines with access
+to the oracleα.
+▶ Definition 5 (sHARDA [35]). The theory sHARDA is an extension of the theoryS1
+2(α) by
+the axioms stating
+1. the numberα(x) encodes the truth table of a Boolean function in||x||variables;
+2. x≥c→HardA
+1/4(α(x)), wherec is the constant from the previous proposition;
+3. ||x||=||y||→α(x) =α(y).
+The key technical tool from the framework of approximate counting is the following
+theorem by Jeřábek.
+▶ Theorem 6 (Jeřábek [37]). There is aPV(α)-function Size such that sHARDA proves that
+if X⊆2n is definable by a circuitC, thenX≈ϵSize(α,C,2n,e ), whereϵ=|e|−1.
+For a circuitC : 2n→2, we introduce the notation
+Pr
+x<y
+[C(x) = 1]⪯f
+ϵ
+z
+w
+to meanw·Size(f,C, 2n,e )≤y·z, whereϵ=|e|−1.
+ICALP 2024
+12:12 From Proof Complexity to Circuit Complexity via Interactive Protocols
+2.2.3 Correspondences and propositional translations
+While our formalizations are comfortably carried out in the first-order theories presented
+above, we are able to transfer our results back to propositional logic thanks to the existence
+of propositional translations. Following Krajíček [51], we say that a theoryT correspondsto
+a propositional proof systemS if (i)T can prove the soundness ofS and (ii) every universal
+consequence∀xφ(x) ofT, whereφis quantifier-free, admits polynomial-size proofs inS when
+grounded into a sequence of propositional formulas. Pudlák alternatively says thatS is the
+weak systemof the theoryT [62]. More formally, for such a universal formulaφ, we denote
+by||φ||n the propositional translation for models of sizen. Sometimes we abuse the notation
+and write||φ||dropping the subscriptn. We refer the reader to standard texts like those of
+Krajíček [51] or Cook and Nguyen [20] for formal definitions of the translation.
+The key fact for us is that universal theorems ofS1
+2 admit short propositional proofs in
+Extended Frege. More importantly,S1
+2 + 1-EXP corresponds to Implicit Extended Frege.
+▶ Theorem 7 (Correspondence of S1
+2 + 1-EXP and iEF [45, Thm. 2.1]) . The proof systemiEF
+corresponds toS1
+2 + 1-EXP. That is,
+(i) the theory S1
+2 + 1-EXP proves the soundness ofiEF;
+(ii) whenever a∀Πb
+1-sentence∀xφ(x) is provable inS1
+2 + 1-EXP, there are polynomial-size
+iEF-proofs of the sequence of tautologies{||φ||n}n∈N;
+(iii) if S1
+2 + 1-EXP proves the soundness of some propositional systemS, then iEF≥S.
+The translation also works for formulas beyond∀Πb
+1 as long as we translate into a
+quantified propositional system. The definition of the translation is straightforward, and we
+note that Σb
+1-consequences of S1
+2 translated as Σq
+1 formulas admit polynomial-size proofs in
+G∗
+1.
+▶ Theorem 8(Correspondence of S1
+2 and G∗
+1 [47]). Whenever a∀Σb
+1-sentence∀x∃y≤t.φ(x,y )
+is provable inS1
+2, there are polynomial-size proofs of the sequence ofΣq
+1-formulas obtained by
+the translation,{||∃xφ(x,y )||n}n∈N, in G∗
+1.
+2.3 Interactive proof systems and the sum-sheck protocol
+While our focus is on propositional proof systems in the sense of Cook and Reckhow, our work
+exploits relations to more lax notions of provability. Following Babai [7], anMerlin-Arthur
+proof system or Merlin-Arthur protocolfor a languageL⊆{0, 1}∗is a polynomial-time
+function S together with some constantc such that the two following properties are satisfied
+for everyx∈{0, 1}∗. Namely,
+1. ifx∈L, then there exists someπ∈{0, 1}∗such thatPrr∈{0,1}(|x|+|π|)c [S(x,π,r) = 1] = 1;
+2. if x̸∈L, then for everyπ∈{0, 1}∗, Prr∈{0,1}(|x|+|π|)c [S(x,π,r) = 1]< 1/3.
+The first condition formalizescompleteness, while the second corresponds tosoundness.
+The complexity classMA contains all languages that admit a polynomially-bounded Merlin-
+Arthur protocol, meaning that there exists a constantd such that the completeness guarantee
+is strengthened to proofsπ∈{0, 1}|x|d
+. One should think of MA proof systems as Cook-
+Reckhow systems where the verifier is randomized and may thus accept some incorrect proofs
+with small probability.
+We recall that, under the standard derandomization assumption that there exists a
+Boolean function family inE that is wort-case hard for subexponential-size circuits, every
+Merlin-Arthur system derandomizes into a Cook-Reckhow system and, in particular,MA =
+NP [56, 34].
+N. Arteche, E. Khaniki, J. Pich, and R. Santhanam 12:13
+Our proofs rely on a particular interactive protocol, theSum-Check Protocolof Lund,
+Fortnow, Karloff, and Nisan [54] for the language of unsatisfiable 3CNFs. Unlike Merlin-
+Arthur protocols, this is an interactive protocol running for multiple rounds between a Prover
+and a Verifier, before the Verifier makes a decision. We now recall the details of the protocol.
+The Sum-Check Protocol [54]
+The protocol considers a 3CNFφ(x1,...,xn) overm clauses, known to both the Verifier and
+the Prover.
+1. The Prover generates a prime number6 p∈(22n3+n, 2(2n3+n)cp
+] together with a Pratt
+certificate7 on the primality ofp and sends them to the Verifier, who checks for correctness
+of the certificate, and aborts if incorrect.
+2. The Prover and the Verifier arithmetizeφinto a polynomialPφ(x1,...,xn) of degree at
+most 3m over Fp in the usual way: a clause like(x∨¬y∨z) is turned into1−(1−x)y(1−z),
+and one then takes the product of all such arithmetized clauses. In this way, for all
+x∈{0, 1}n, φ(x) = 1 if and only ifPφ(x) = 1.
+3. The Verifier sets (a1,...,an) := (0,..., 0), Q0(a0) := 0 and for i ∈ {1,...,n}, the
+following interaction is carried out:
+a. Leavingxi free, the Prover computes the coefficients of the following univariate poly-
+nomial over Fp, Qi(xi) :=∑
+xi+1∈{0,1}···∑
+xn∈{0,1}Pφ(a1,...,ai−1,xi,xi+1,...,xn)
+and sends theO(m) coefficients ofQi to the Verifier.
+b. The Verifier checks whetherQi(0) +Qi(1) =Qi−1(ai−1). If the check fails, the Verifier
+rejects. Otherwise, it samples a randomai∈Fp and sends it to the Prover.
+c. In the final round, instead of sendingan to the Prover, the Verifier checks whether
+Pφ(a1,...,an) =Qn(an) and accepts or rejects based on this.
+3 Main result
+Our proof exploits the known fact that if#P⊆FP/poly, then coNP⊆MA. Indeed, if
+#P has small circuits one can provide polynomial-size circuits that simulate the Prover’s
+movements in the Sum-Check protocol forUnsat, since one can consider the MA proof
+system in which Arthur receives from Merlin a circuit claiming to be the circuit that the
+Prover used to carry out their strategy, and with the aid of randomness, Arthur can execute
+this on his own and decide based on the outcome of this simulation.
+Let us make this formal.
+▶ Definition 9 (The SC proof system). LetV (p,u,φ,C,r) be the polynomial-time function
+carrying out the simulation of the Sum-Check protocol. Namely,p is intended to be a prime
+in (22n3+n, 2(2n3+n)cp
+], u a Pratt certificate forp, φa 3CNF overn variables, r a string of
+random bits, andC a multi-output circuit providing the Prover’s responses in the interactions
+with the Verifier in the Sum-Check protocol.
+The Sum-Check Proof System, denoted by SC, is a Merlin-Arthur proof system for
+proving 3DNF tautologies. An SC proof ofφis a tuple⟨p,u,C⟩such that p is indeed a
+prime in the interval above, correctly certified by the Pratt certificateu, and such that
+Prr∈Fnp
+[
+V (p,u,¬φ,C,r) = 1
+]
+= 1.
+6 The constant cp in the exponent comes from the formalization of the soundness of the sum-check
+protocol inside S1
+2 + 1-EXP in a recent work of Khaniki [40]; while we do not need such details in our
+proofs, we leave it here to be faithful to the formalization.
+7 A Pratt certificateis a succinct witness for primality checkable in polynomial time [60]. The details are
+not relevant for our results, but it is important that the Verifier can be convinced ofp being a prime.
+ICALP 2024
+12:14 From Proof Complexity to Circuit Complexity via Interactive Protocols
+The following is just a rephrasing of the fact that#P⊆FP/poly implies coNP⊆MA,
+in terms of the Merlin-Arthur systemSC. We omit the proof, which can be be found in
+standard texts (see e.g. [5, Thm. 8.22]).
+▶ Lemma 10. If #P⊆FP/poly, then SC is polynomially bounded over 3DNF tautologies.
+Our goal is to extend the previous lemma fromSC to the concrete and natural Cook-
+Reckhow system Implicit Extended Frege. The idea again is thatiEF (or rather its first-order
+counterpart, S1
+2 + 1-EXP) can prove the soundness of this system and thus simulate it. We
+shall then derandomize theSC protocol inside iEF. Fortunately for us, the soundness of
+the Sum-Check protocol was recently proven by Khaniki in the right theory of bounded
+arithmetic.
+▶ Theorem 11 (Soundness of the sum-check protocol [ 39, Thm. 15.3]) . There are constants
+c,k∈N such thatS1
+2 proves the following sentence: for everyn,φ,a,p,u,C , if it holds that (i)
+φis a 3CNF inn variables wheren≥c, and (ii)φ(a) = 1 and, (iii) 22n3+n <p ≤2(2n3+n)cp
+and, (iv)nk∈Log Log, then
+Pr
+r∈Fnp
+[
+V (p,u,φ,C,r) = 1
+]
+≤n
+(2n
+3
+)
+p .
+We can now formalize the soundness of theSC proof system from Definition 9. The
+arguments that follow are a concrete application of more sophisticated techniques employed
+by Khaniki [40, 39], who has studied interactive protocols in the context of defining new
+jump operators in proof complexity.
+▶ Definition 12 (The Soundc(SC) formula). We denote bySoundc(SC) the following∀Σb
+1
+sentence, claiming the soundness ofSC: for allφ,a,p,u,C,f , where|φ|>c , there is a circuit
+D of size≤⌈|f|1/4⌉such that if
+¬
+(
+Pr
+r∈Fnp
+[V (p,u,¬φ,C,r) = 1]⪯f
+ϵ
+3
+8
+)
+holds, then at least one of the following conditions holds:
+(i) |f|̸=|C|ka +k′
+a or,
+(ii) CorrectFracTT1/4(⌈|f|1/4⌉,||f||,D,f ) = 1 or,
+(iii) p̸∈(22n3+n, 2(2n3+n)cp
+] or,
+(iv) φ(a) = 1,
+where ka,k′
+a are the constants from Theorem 6 making sure thatSize function works
+properly,ϵ= 1/16 and n is the number of variables ofφ. In the definition of the displayed
+probability, we assume thaty =pn and that the circuit defining the set of strings accepted by
+V rejects allr≥pn.
+Note that even ifV accepts with probability 1 on a given input, the approximating
+probability from Definition 12 can be significantly smaller because of the difference between
+pn and the input-size of the circuit in the input of the Size function. Another relevant point
+is that for eachC, 2n,e, the functionSize(α,C,2n,e ) calls αonly once. In fact, it callsα(x)
+on an inputx which depends only on|C|,n,|e|. This is needed for the formulaSoundc(SC)
+to be well-defined.
+It now suffices to verify that the encoding of the soundness ofSC is indeed provable in
+S1
+2 + 1-EXP.
+N. Arteche, E. Khaniki, J. Pich, and R. Santhanam 12:15
+▶ Proposition 13 (Soundness of SC inside S1
+2 + 1-EXP). There is a constantc∈N such that
+S1
+2 + 1-EXP⊢Soundc(SC).
+Proof. Let c∈N be a big enough constant that can be computed from the rest of the
+argument and
+Soundc(SC) :=∀φ,a,p,u,C,f∃DΦ(φ,a,p,u,C,f,D )
+the soundness formula in Definition 12 above. Letφbe a 3DNF inn variables such that
+|φ|>c , and considera,p,u,C,f . Then the following cases can happen:
+(a) If|f|̸=|C|ka +k′
+a or p̸∈(22n3+n, 2(2n3+n)cp
+], then Φ(φ,a,p,u,C,f, 0) is trivially true.
+(b) If there is a circuitD of size≤⌈|f|1/4⌉such thatCorrectFracTT1/4(⌈|f|1/4⌉,||f||,D,f ) =
+1, then Φ(φ,a,p,u,C,f,D ) is trivially true.
+(c) If the previous cases do not happen and moreover
+¬
+(
+Pr
+r∈Fnp
+[V (p,u,¬φ,C,r) = 1]⪯f
+ϵ
+3
+8
+)
+holds, then we have that8·Size(f,C∗, 2m,e )> 3pn, wherem is the smallest integer such
+that 2m≥pn, ϵ:=|e|−1 and C∗(r) :=V (p,u,¬φ,C,r). By the assumptionHardA
+1/4(f)
+holds and by the fact that we are overS1
+2 and we can usef as a parameter in polynomial
+induction for Σb
+1 formulas, we can do approximate counting using Theorem 6. Hence
+there is a circuitG and somev≤poly(mϵ−1|C∗|) such that
+G :v×(XC∗˙∪ϵ2m) ↠v×Size(f,C∗, 2m,e ).
+As we work inS1
+2 + 1-EXP andG is surjective, we can find a subsetA⊆v×(XC∗˙∪ϵ2m)
+such thatG restricted toA is a one-to-one function fromA to v×Size(f,C∗, 2m,e ).
+Now we can apply exact counting (as we have1-EXP) and show that
+Size(f,C∗, 2m,e )≤|XC∗|+ϵ2m.
+By the fact that8·Size(f,C∗, 2m,e )> 3pn > 3·2m/2, we have2m/8<|XC∗|. Now if
+φ(a) = 0, by Theorem 11 we get
+Pr
+r∈Fnp
+[
+V (p,u,¬φ,π,r) = 1
+]
+≤n
+(2n
+3
+)
+p .
+Note that|φ|> cwhich implies thatn is big enough and asp >22n3+n we get that
+n
+(2n
+3
+)
+/p≤1/8, which implies
+Pr
+r∈Fnp
+[
+V (p,u,¬φ,π,r) = 1
+]
+≤1
+8.
+As C∗rejects allr≥pn, this implies that|XC∗|≤2m/8 which leads to a contradiction,
+so φ(a) = 1. ◀
+The main technical issue now is thatSoundc(SC) is a∀Σb
+1 sentence that does not translate
+into a propositional formula thatiEF can reason about. Instead, we shall work on a quantified
+propositional system. For this to make sense we need to know the quantified propositional
+proof system associated withS1
+2 + 1-EXP.
+We invoke the following knownTFNP characterization of theΣb
+1 consequences of S1
+2 +
+1-EXP, which identifies a “complete”Σb
+1 sentence Ψ such that any otherΣb
+1 consequence of
+S1
+2 + 1-EXP reduces to it inG∗
+1.
+ICALP 2024
+12:16 From Proof Complexity to Circuit Complexity via Interactive Protocols
+▶ Theorem 14 ([42, 41, 46, 9]). There is a∀Σb
+1 sentence Ψ :=∀x∃yψ(x,y ) (the bound ony
+is implicit inψ) such that the following statements are true:
+(i) S1
+2 + 1-EXP⊢∀x∃yψ(x,y );
+(ii) for any∀Σb
+1 sentence∀x∃yα(x,y ) such that S1
+2 + 1-EXP⊢∀x∃yα(x,y ), there arePV
+functions f and g such that S1
+2⊢∀x,y (ψ(f(x),y )→α(x,g (x,y ))).
+In what follows, we shall work with Gentzen’s systemG extended with the propositional
+translation of the sentenceΨ in the theorem above. We denote this system byGEXP :=
+G∗
+1 +||Ψ||and use the following key properties about it. The full version of the paper contains
+explicit proofs of each of these items, but we shall omit these here.
+▶ Corollary 15. The following statements aboutGEXP hold:
+(i) S1
+2 + 1-EXP⊢Σq
+1- Ref(GEXP), i.e. the reflection principle forGEXP and Σq
+1 formulas is
+provable in S1
+2 + 1-EXP;
+(ii) for every∀Σb
+1-sentence∀x∃yα(x,y ), if S1
+2 + 1-EXP ⊢ ∀x∃yα(x,y ), then there are
+polynomial-size GEXP-proofs of the sequence ofΣq
+1-tautologies{||∃yα(y)||n}n∈N;
+(iii) if S1
+2 + 1-EXP proves the soundness of a propositional proof systemS, then GEXP≥S.
+Let us observe thatGEXP is in fact equivalent toiEF.
+▶ Lemma 16. The proof systemsiEF, EF + Ref iEF and GEXP are polynomially equivalent over
+propositional tautologies.
+Proof. By item (iii) of Corollary 15 and item (iii) Theorem 7,iEF and GEXP polynomially
+simulate each other. As mentioned in Section 2.1.1,EF + Ref iEF≥iEF. It is also easy to see
+that S1
+2 + 1-EXP proves the soundness ofEF + Ref iEF, which by item (iii) of Theorem 7 gives
+us iEF≥EF + RefiEF. ◀
+We are now ready to define the extension ofiEF for which our main theorem holds. Recall
+that the propositional formulasttavg
+1/4(hn, 2n/4) were defined in Section 2.2.2 and state the
+average-case hardness of a Boolean functionhn represented as a truth table.
+▶ Definition 17 (The systems iEFtt). Leth ={hn}n∈N be some family of Boolean functions,
+and letn0∈N. We denote by iEFtt(h,n0) := GEXP +{ttavg
+1/4(hn, 2n/4)}n≥n0 the system that
+extends GEXP by the axioms claiming the hardness ofhn, forn≥n0.
+Note that iEFtt(h,n0) is a family of proof systems, parameterized by a Boolean function
+family h and some threshold parametern0. Observe that depending on the choice ofh and
+n0, the systemiEFtt(h,n0) may not be a Cook-Reckhow system: ifh is not a hard function,
+or n0 is not large enough, we will be adding axioms which are not tautologies; and even ifh
+is hard andn0 is large enough, the system may require advice to verify the proofs. As we
+shall see, however, these degenerate instantiations ofiEFtt(h,n0) are not a problem.
+What is more important, the systemsiEFtt(h,n0), regardless of their consistency, always
+simulate SC.
+▶ Lemma 18. Leth be family of Boolean functions and letn0∈N. The system iEFtt(h,n0)
+polynomially simulates SC over 3DNF tautologies.
+Proof. If the systemiEFtt(h,n0) is unsound because the added axioms are not tautologies,
+then the system is polynomially bounded and simulates every other proof system. So suppose
+the added axioms are indeed tautologies, meaning that the functionh is indeed hard on
+average.
+N. Arteche, E. Khaniki, J. Pich, and R. Santhanam 12:17
+Let φ1 be a 3DNF inn1 variables and⟨p1,u 1,C 1⟩be a SC-proof ofφ1. This means
+22n3
+1+n1 <p 1≤2(2n3
+1+n1)cp
+∧Pr
+r∈Fn1p1
+[
+V (p1,u 1,¬φ1,C 1,r ) = 1
+]
+= 1.
+Note that by Theorem 11 and Corollary 15, there arePV functions l,g such that
+S1
+2⊢∀φ,a,p,u,C,f (ψ(l(φ,a,p,u,C,f ),y )→Φ(φ,a,p,u,C,f,g (φ,a,p,u,C,f,y ))),
+where Soundc(SC) :=∀φ,a,p,u,C,f∃DΦ(φ,a,p,u,C,f,D ). Let s :=|⟨p,u,C⟩|. Then by
+Theorem 8 there is asO(1)-size G∗
+1-proof of
+||∀φ,a,p,u,C,f (ψ(l(φ,a,p,u,C,f ),y )→Φ(φ,a,p,u,C,f,g (φ,a,p,u,C,f,y )))||s′,
+where s′:= poly(s). Let us rewrite the previous quantified propositional formula as||Ψ′||→
+||Φ′||with the right range of parameters such thatp1,u 1,φ1,C 1 are substituted in the formula
+in their corresponding places. Now we take the substitution instancettavg
+1/4(hn′, 2n′/4) where
+|hn′|:=|C1|ka +k′
+a and we substitutehn′to the variables corresponding tof and therefore
+the disjunct which corresponds toCorrectFracTTdisappears from||Φ′||when we apply the
+rules of G∗
+1. Moreover, it is not hard to verify that after the substitutions every other disjunct
+which corresponds to subformulas ofSoundc(SC) from Definition 12 disappears exceptφ1. So
+what we have isG∗
+1-proof of||Ψ′′||(¯x, ¯y)→φ1(¯x) (¯x and ¯y are disjoint variables) where||Ψ′′||
+is a substitution instance of||Ψ′||. Since we are working inGEXP, we have the substitution
+instance∃¯y||Ψ′′||(¯x, ¯y) and therefore using the rules ofG∗
+1 we get a short GEXP-proof of
+φ1(¯x). ◀
+Our main theorem now easily follows.
+▶ Theorem 19 (Main theorem). Leth be a family of Boolean functions and letn0∈N. If
+the system iEFtt(h,n0) is not polynomially bounded, then#P̸⊆FP/poly.
+Proof. By Lemma 18 above, for every choice ofh andn0, the systemiEFtt(h,n0) polynomially
+simulates SC, so ifiEFtt(h,n0) is not polynomially bounded, thenSC is not either. Then, by
+the contrapositive of Lemma 10,#P̸⊆FP/poly. ◀
+As discussed, depending on the choice ofh and n0, the systemiEFtt(h,n0) may not be
+sound and thus possibly not Cook-Reckhow. However, for any fixed choice of a uniform
+candidate hard function, the system is concrete and exhibits the desired connection that
+proof complexity lower bounds for it imply strong circuit lower bounds. In particular, if
+there exist functions inNE∩coNE average-case hard for subexponential-size circuits, then
+we recover the version of the theorem presented in the introduction (Theorem 1).
+We note that there is the possibility thatiEF, given its strength, already proves such
+strong circuit lower bounds for some Boolean function. It is thus worth to mention the
+following corollary.
+▶ Corollary 20. Suppose there exists a sequence of Boolean functions{hn}n∈N for which iEF
+has polynomial-size proofs of the formula family{ttavg
+1/4(hn, 2n/4)}n≥n0 for some sufficiently
+largen0∈N. If iEF is not polynomially bounded, then#P̸⊆FP/poly.
+Proof. If there is such a function h and threshold n0, then iEFtt(h,n0) is polynomially
+equivalent toiEF itself, so by Theorem 19 the corollary follows. ◀
+ICALP 2024
+12:18 From Proof Complexity to Circuit Complexity via Interactive Protocols
+References
+1 Miklós Ajtai. Σ 1
+1-formulae on finite structures.Annals of Pure and Applied Logic, 24(1):1–48,
+1983.
+2 Miklós Ajtai. The complexity of the pigeonhole principle.Combinatorica, 14:417–433, 1994.
+3 Noga Alon and Ravi B Boppana. The monotone circuit complexity of Boolean functions.
+Combinatorica, 7:1–22, 1987.
+4 Aleksandr Egorovich Andreev. A method for obtaining lower bounds on the complexity of
+individual monotone functions. InDoklady Akademii Nauk, volume 282(5), pages 1033–1037.
+Russian Academy of Sciences, 1985.
+5 Sanjeev Arora and Boaz Barak.Computational Complexity: A Modern Approach. Cambridge
+University Press, 2009.
+6 Noel Arteche, Gaia Carenini, and Matthew Gray. Quantum automatingTC0-Frege is LWE-
+hard, 2024. arXiv:2402.10351.
+7 László Babai. Trading group theory for randomness. InProceedings of the seventeenth annual
+ACM symposium on Theory of computing, pages 421–429, 1985.
+8 Paul Beame, Russell Impagliazzo, Jan Krajíček, Toniann Pitassi, Pavel Pudlák, and Alan
+Woods. Exponential lower bounds for the pigeonhole principle. InProceedings of the Twenty-
+Fourth Annual ACM Symposium on Theory of Computing, pages 200–220, 1992.
+9 Arnold Beckmann and Sam Buss. TheNP search problems of Frege and Extended Frege
+proofs. ACM Transactions on Computational Logic (TOCL), 18(2):1–19, 2017.
+10 Stephen Bellantoni, Toniann Pitassi, and Alasdair Urquhart. Approximation and small-depth
+Frege proofs. SIAM Journal on Computing, 21(6):1161–1179, 1992.
+11 Olaf Beyersdorff, Ilario Bonacina, Leroy Chew, and Jan Pich. Frege systems for quantified
+boolean logic. Journal of the ACM (JACM), 67(2):1–36, 2020.
+12 Maria Luisa Bonet, Carlos Domingo, Ricard Gavalda, Alexis Maciel, and Toniann Pitassi.
+Non-automatizability of bounded-depth Frege proofs.computational complexity, 13:47–68,
+2004.
+13 Maria Luisa Bonet, Toniann Pitassi, and Ran Raz. On interpolation and automatization for
+Frege systems. SIAM Journal on Computing, 29(6):1939–1967, 2000.
+14 Peter Bürgisser. Completeness and reduction in algebraic complexity theory.Algorithms and
+Computation in Mathematics, 2000.
+15 Samuel R Buss.Bounded arithmetic. Princeton University, 1985.
+16 Samuel R Buss. Relating the bounded arithmetic and polynomial time hierarchies.Annals of
+Pure and Applied Logic, 75(1-2):67–77, 1995.
+17 A Cobham. The intrinsic computational difficulty of functions. InProc. 1964 Congress for
+Logic, Methodology, and the Philosophy of Science, pages 24–30. North-Holland, 1964.
+18 Stephen Cook. Relating the provable collapse ofP to NC1 and the power of logical theories.
+In Proof Complexity and Feasible Arithmetics, pages 73–91, 1996.
+19 Stephen Cook and Jan Krajíček. Consequences of the provability ofNP⊆P/poly. The
+Journal of Symbolic Logic, 72(4):1353–1371, 2007.
+20 Stephen Cook and Phuong Nguyen.Logical Foundations of Proof Complexity. Cambridge
+University Press, 2010.
+21 Stephen A. Cook. Feasibly constructive proofs and the propositional calculus. InProceedings
+of the Seventh Annual ACM Symposium on Theory of Computing, pages 83–97, 1975.
+22 Stephen A. Cook and Robert A. Reckhow. The relative efficiency of propositional proof
+systems. Logic, Automata, and Computational Complexity, 1979.
+23 Ben Davis and Robert Robere. Colourful TFNP and Propositional Proofs. In38th Computa-
+tional Complexity Conference (CCC 2023), volume 264 ofLeibniz International Proceedings in
+Informatics (LIPIcs), pages 36:1–36:21, 2023.doi:10.4230/LIPIcs.CCC.2023.36.
+24 Susanna De Rezende, Or Meir, Jakob Nordström, Toniann Pitassi, Robert Robere, and Marc
+Vinyals. Lifting with simple gadgets and applications to circuit and proof complexity. In61st
+Annual Symposium on Foundations of Computer Science (FOCS), pages 24–30, 2020.
+N. Arteche, E. Khaniki, J. Pich, and R. Santhanam 12:19
+25 Susanna F de Rezende, Mika Göös, and Robert Robere. Proofs, circuits, and communication.
+ACM SIGACT News, 53(1):59–82, 2022.
+26 Merrick Furst, James B Saxe, and Michael Sipser. Parity, circuits, and the polynomial-time
+hierarchy. Mathematical Systems Theory, 17(1):13–27, 1984.
+27 Ankit Garg, Mika Göös, Pritish Kamath, and Dmitry Sokolov. Monotone circuit lower bounds
+from resolution. InProceedings of the 50th Annual ACM SIGACT Symposium on Theory of
+Computing, pages 902–911, 2018.
+28 Azza Gaysin. Proof complexity of CSP.arXiv preprint, 2022. arXiv:2201.00913.
+29 Azza Gaysin. Proof complexity of universal algebra in a CSP dichotomy proof.arXiv preprint,
+2024. arXiv:2403.06704.
+30 Joshua A Grochow. Polynomial identity testing and the Ideal proof system: PIT is inNP if
+and only if IPS can be p-simulated by a Cook-Reckhow proof system.arXiv preprint, 2023.
+arXiv:2306.02184.
+31 Joshua A Grochow and Toniann Pitassi. Circuit complexity, proof complexity, and polynomial
+identity testing: The ideal proof system.Journal of the ACM (JACM), 65(6):1–59, 2018.
+32 Tuomas Hakoniemi. Feasible interpolation for Polynomial Calculus and Sums-of-Squares. In
+47th International Colloquium on Automata, Languages, and Programming (ICALP 2020),
+2020.
+33 John Håstad. Almost optimal lower bounds for small depth circuits. InProceedings of the
+Eighteenth Annual ACM Symposium on Theory of Computing, pages 6–20, 1986.
+34 Russell Impagliazzo and Avi Wigderson. P = BPP if E requires exponential circuits:
+Derandomizing the XOR lemma. InProceedings of the Twenty-Ninth Annual ACM Symposium
+on Theory of computing, pages 220–229, 1997.
+35 Emil Jeřábek. Dual weak pigeonhole principle, Boolean complexity, and derandomization.
+Annals of Pure and Applied Logic, 129(1-3):1–37, 2004.
+36 Emil Jeřábek.Weak pigeonhole principle, and randomized computation. PhD thesis, Faculty
+of Mathematics and Physics, Charles University, Prague, 2005.
+37 Emil Jeřábek. Approximate counting in bounded arithmetic.The Journal of Symbolic Logic,
+72(3):959–993, 2007.
+38 Valentine Kabanets and Russell Impagliazzo. Derandomizing polynomial identity tests means
+proving circuit lower bounds.Computational Complexity, 13(1/2):1–46, 2004.
+39 Erfan Khaniki.(Im)possibilty results in Proof Complexity and Arithmetic. PhD thesis, Faculty
+of Mathematics and Physics, Charles University, Prague, 2023. URL:https://dspace.cuni.
+cz/handle/20.500.11956/187614.
+40 Erfan Khaniki. Jump operators, interactive proofs, and proof complexity generators, 2023.
+Unpublished preprint.
+41 Leszek Aleksander Kołodziejczyk, Phuong Nguyen, and Neil Thapen. The provably totalNP
+search problems of weak second order bounded arithmetic.Annals of Pure and Applied Logic,
+162(6):419–446, 2011.
+42 Jan Krajíček. Exponentiation and second-order bounded arithmetic.Annals of Pure and
+Applied Logic, 48(3):261–276, 1990.
+43 Jan Krajíček. Lower bounds to the size of constant-depth propositional proofs.The Journal
+of Symbolic Logic, 59(1):73–86, 1994.
+44 Jan Krajíček. Diagonalization in proof complexity.Fundamenta Mathematicae, 182:181–192,
+2004.
+45 Jan Krajíček. Implicit proofs.The Journal of Symbolic Logic, 69(2):387–397, 2004.
+46 Jan Krajíček. Consistency of circuit evaluation, Extended Resolution and totalNP search
+problems. In Forum of Mathematics, Sigma, volume 4, page e15. Cambridge University Press,
+2016.
+47 Jan Krajíček and Pavel Pudlák. Quantified propositional calculi and fragments of bounded
+arithmetic. Zeitschrift für mathematische Logik und Grundlagen der Mathematik, 36(1):29–46,
+1990.
+ICALP 2024
+12:20 From Proof Complexity to Circuit Complexity via Interactive Protocols
+48 Jan Krajíček, Pavel Pudlák, and Gaisi Takeuti. Bounded arithmetic and the polynomial
+hierarchy. Annals of Pure and Applied Logic, 52(1-2), 1991.
+49 Jan Krajíček, Pavel Pudlák, and Alan Woods. An exponential lower bound to the size of
+bounded depth Frege proofs of the pigeonhole principle.Random Structures & Algorithms,
+7(1):15–39, 1995.
+50 Jan Krajíček. Interpolation theorems, lower bounds for proof systems, and independence
+results for bounded arithmetic.The Journal of Symbolic Logic, 62(2):457–486, 1997.
+51 Jan Krajíček.Proof Complexity. Encyclopedia of Mathematics and its Applications. Cambridge
+University Press, 2019.doi:10.1017/9781108242066.
+52 Jan Krajíček and Pavel Pudlák. Some consequences of cryptographical conjectures forS1
+2 and
+EF . Information and Computation, 140(1):82–94, 1998.
+53 Shachar Lovett, Raghu Meka, Ian Mertz, Toniann Pitassi, and Jiapeng Zhang. Lifting with
+sunflowers. In13th Innovations in Theoretical Computer Science Conference (ITCS 2022),
+2022.
+54 Carsten Lund, Lance Fortnow, Howard Karloff, and Noam Nisan. Algebraic methods for
+interactive proof systems.Journal of the ACM (JACM), 39(4):859–868, 1992.
+55 Moritz Müller and Ján Pich. Feasibly constructive proofs of succinct weak circuit lower bounds.
+Annals of Pure and Applied Logic, 171(2):102735, 2020.
+56 Noam Nisan and Avi Wigderson. Hardness vs randomness.Journal of Computer and System
+Sciences, 49(2):149–167, 1994.
+57 Ján Pich. Logical strength of complexity theory and a formalization of the PCP theorem in
+bounded arithmetic. Logical Methods in Computer Science, 11, 2015.
+58 Jan Pich and Rahul Santhanam. TowardsP̸= NP from Extended Frege lower bounds.arXiv
+preprint, 2023. arXiv:2312.08163.
+59 Toniann Pitassi, Paul Beame, and Russell Impagliazzo. Exponential lower bounds for the
+pigeonhole principle. Computational complexity, 3:97–140, 1993.
+60 Vaughan R Pratt. Every prime has a succinct certificate.SIAM Journal on Computing,
+4(3):214–220, 1975.
+61 Pavel Pudlák. Lower bounds for resolution and cutting planes proofs and monotone computa-
+tions. The Journal of Symbolic Logic, 62(3):981–998, 1997.
+62 Pavel Pudlák. Reflection principles, propositional proof systems, and theories, 2020.arXiv:
+2007.14835.
+63 Ran Raz and Pierre McKenzie. Separation of the monotoneNC hierarchy. InProceedings
+38th Annual Symposium on Foundations of Computer Science (FOCS), pages 234–243. IEEE,
+1997.
+64 Alexander Razborov. Lower bounds on the monotone complexity of some Boolean function.
+In Soviet Math. Dokl., volume 31, pages 354–357, 1985.
+65 Alexander Razborov. Unprovability of lower bounds on circuit size in certain fragments of
+bounded arithmetic. Izvestiya: mathematics, 59(1):205, 1995.
+66 Alexander A. Razborov. Lower bounds on the size of bounded depth circuits over a complete
+basis with logical addition.Mathematical Notes of the Academy of Sciences of the USSR,
+41(4):333–338, 1987.
+67 Alexander A Razborov. Bounded arithmetic and lower bounds in boolean complexity. In
+Feasible Mathematics II, pages 344–386. Springer, 1995.
+68 Roman Smolensky. Algebraic methods in the theory of lower bounds for boolean circuit
+complexity. In Proceedings of the Nineteenth Annual ACM Symposium on the Theory of
+Computing, pages 77–82, 1987.

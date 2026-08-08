@@ -1,0 +1,1293 @@
+Towards P ̸= NP from Extended
+Frege lower bounds∗
+J´ an Pich
+University of Oxford
+Rahul Santhanam
+University of Oxford
+September 2023
+Abstract
+We prove that if conditions I-II (below) hold and there is a sequence of Boolean
+functions fn hard to approximate by p-size circuits such that p-size circuit lower
+bounds for fn do not have p-size proofs in Extended Frege system EF, then P ̸= NP.
+I. S1
+2 proves that a concrete function inE is hard to approximate by subexponential-
+size circuits.
+II. Learning from ¬∃ OWF. S1
+2 proves that a p-time reduction transforms
+circuits breaking one-way functions to p-size circuits learning p-size circuits
+over the uniform distribution, with membership queries.
+Here, S1
+2 is Buss’s theory of bounded arithmetic formalizing p-time reasoning.
+Further, we show that any of the following assumptions implies that P ̸= NP, if
+EF is not p-bounded:
+1. F easible anticheckers. S1
+2 proves that a p-time function generates anticheck-
+ers for SAT.
+2. Witnessing NP ̸⊆ P/poly. S1
+2 proves that a p-time function witnesses an
+error of each p-size circuit which fails to solve SAT.
+3. OWF from NP ̸⊆ P/poly & hardness of E. Condition I holds and S1
+2 proves
+that a p-time reduction transforms circuits breaking one-way functions to p-
+size circuits computing SAT.
+The results generalize to stronger theories and proof systems.
+∗A version of the paper with a less technical introduction appeared on ECCC.
+1
+1 Introduction
+The proof complexity approach to the P versus NP problem, sometimes refereed to as the
+Cook-Reckhow program [3, 22], proceeds by proving lower bounds on lengths of proofs of
+tautologies in increasingly powerful proof systems - NP ̸= coNP (and hence P ̸= NP) iﬀ
+all propositional proof systems have hard sequences of tautologies that require superpoly-
+nomial proof size. A problem with the approach is that we do not know if we ever reach
+the point of proving a superpolynomial lower bound for all proof systems, if we focus only
+on concrete ones.
+There are several results which mitigate this situation. For example, ‘lifting’ theorems
+provide a method for deriving monotone circuit lower bounds from lower bounds for
+weak proof systems [11]. In the algebraic setting, superpolynomial lower bounds for CNF
+tautologies in the Ideal Proof System imply that the Permanent does not have p-size
+arithmetic circuits [12]. Proving that a proof system P is not p-bounded implies also that
+SAT/∈ P/poly is consistent with a theory TP corresponding to the proof system P via the
+standard correspondence in bounded arithmetic [22].
+However, no generic way of deriving explicit circuit lower bounds for unrestricted
+Boolean circuits from proof complexity lower bounds for concrete propositional proof
+systems of interest has been discovered. 1 In the present paper we connect this problem
+to several classical questions in complexity theory.
+1.1 Our contribution
+1.1.1 Core idea: Self-provability of circuit upper bounds
+The initial point for our considerations is an observation about a potential ‘self-provability’
+of circuit upper bounds: As it turns out, under certain assumptions, the mere truth of
+NP ⊆ P/poly implies its own provability. To explain the self-provability we ﬁrst consider
+a simple-to-state question about a witnessing of NP ̸⊆ P/poly.
+Witnessing NP ̸⊆ P/poly. Fix a constant k ≥ 1. Suppose that for each suﬃciently big
+n, no circuit with n inputs and size nk ﬁnds a satisfying assignment for each satisﬁable
+propositional formula of sizen, i.e. no nk-size circuit solves the search version ofSAT. Can
+we witness this assumption ‘feasibly’ by a p-time functionf such that for each suﬃciently
+big n, for each nk-size circuit C with n inputs and ≤n outputs, f(C) outputs a formula
+φ of size n together with a satisfying assignment a of φ such that ¬φ(C(φ))?
+Similar kinds of witnessing have been considered before in the literature, using diag-
+onalization techniques [13, 2, 5]. Indeed, Bogdanov, Talwar and Wan [5] call a similar
+1It is essentially a trivial observation that there is some proof system P such that if P is not p-
+bounded then NP ̸= coNP. To see that, consider two cases: I. If NP ̸= coNP, we can take arbitrary P ; II.
+If NP = coNP, we can take a p-bounded proof system for P . It would be dramatically diﬀerent to obtain
+such a connection for a concrete proof system.
+2
+feasible witnessing in the uniform setting a “dreambreaker” (following Adam Smith) and
+show that such a feasible witnessing can be constructed. However, in our applications,
+it is crucial that the witnessing function ﬁnds an error on the input length of the given
+circuit assuming just that the circuit errs on the given input length, and we do not yet
+know an unconditional answer to the question in the previous paragraph.
+A witnessing function f from the penultimate paragraph exists under the assumption
+of the existence of a one-way function and a function in E hard for subexponential-
+size circuits [28, 26], see also Lemma 2. Is it, however, possible to construct it without
+assuming more than the assumption we want to witness? Formally, we are asking if there
+is a p-time functionf such that for each big enoughn propositional formulawk
+n(f), deﬁned
+by
+wk
+n(f) := [SATn(x,y ) → SATn(x,C (x))]∨[SATn(f1(C),f 2(C))∧¬SATn(f1(C),C (f1(C)))],
+is a tautology. Here, SATn(x,y ) is a p-time predicate saying that x is an n-bit string
+encoding a propositional formula satisﬁed by assignment y, C(z) says that free variables
+C represent a circuit with n inputs, ≤ n outputs and size nk which outputs C(z) on z,
+andf(C) outputs a pair of strings ⟨f1(C),f 2(C)⟩. We do not specify the precise encoding
+of wk
+n(f). The proof systems we work with simulate Extended Frege system EF and are
+therefore strong enough to reason eﬃciently with any natural encoding of wk
+n(f).
+If we had a function f such that for some n0 and all n > n0, wk
+n(f) would be a
+tautology, we could deﬁne an extension of EF, denoted EF +wk(f), such that EF +wk(f)
+proofs are EF-proofs which are, in addition, allowed to derive substitutional instances of
+wk
+n(f), for n>n 0.
+Self-provability of NP ⊆ P/poly. Assuming we have a p-time function f such that
+wk
+n(f),n>n 0, is a tautology, we can now turn to the self-provability of SAT ∈ P/poly.
+Suppose that ∀n >1, SATn ∈ Circuit[nk′
+], where Circuit[s(n)] stands for the set of all
+single-output circuits with n inputs and size ≤s(n). Then, there is a sequence of circuits
+C with n inputs, ≤n outputs and size nk falsifying the right disjunct in wk
+n(f), for some
+k > k′ and all n > 1. Therefore, EF +wk(f) admits p-size proofs of SATn(x,y ) →
+SATn(x,C (x)). That is, the mere validity of SATn ∈ Circuit[nk′
+] implies an eﬃcient
+propositional provability of SATn ∈ P/poly. The eﬃcient provability of SATn(x,y ) →
+SATn(x,C (x)) further implies that EF +wk(f) is p-bounded: To prove a tautology φ of
+size n in EF +wk(f) it suﬃces to check out that ¬SATn(¬φ,C (¬φ)) (which implies that
+SATn(φ,y ) and φ hold).
+First-order setting. We can formulate also a ﬁrst-order version of the observation from
+the previous paragraph. Consider Buss’s theory of bounded arithmetic S1
+2 formalizing p-
+time reasoning, cf. §2.2. Let Wk
+n0(f) denote a natural ∀Πb
+1-formalization of the statement
+“∀n > n0,wk
+n(f)”, see §2.2 for the deﬁnition of Π b
+1. By the correspondence between S1
+2
+3
+and EF, cf. [22], if Wk
+n0(f) was provable in S1
+2, for some p-time f, then tautologies wk
+n(f),
+for n ≥n0, would have p-size proofs in EF.
+To summarize, we proved the following.
+Theorem 1 (Circuit complexity from proof complexity & witnessing of NP ̸⊆ P/poly).
+Letk ≥ 1 be a constant.
+1. Suppose that there is a p-time function f such that for each big enough n, wk
+n(f) is
+a tautology. If EF +wk(f) is not p-bounded, then SATn /∈ Circuit[nϵk] for inﬁnitely
+many n.
+2. Suppose that there is a p-time function f such that for some n0, S1
+2 ⊢Wk
+n0(f). If EF
+is not p-bounded, then SATn /∈ Circuit[nϵk] for inﬁnitely many n.
+In Items 1 and 2, ϵ> 0 is a universal constant (independent of k).
+Notably, if for all k ≥ 1 there is a p-time function fk such that for each big enough
+n, wk
+n(fk) is a tautology, then NP ̸⊆ SIZE[nℓ], for all ℓ ∈ N. This is because by Theorem
+1, the existence of such functions fk and the assumption that for each k, EF +wk(fk)
+is not p-bounded imply NP ̸⊆ P/poly. On the other hand, if for some k, EF +wk(fk)
+is p-bounded, then NP = coNP and NP ̸⊆ SIZE[nℓ], for each ℓ ∈ N, by Kannan’s lower
+bound [19].
+Corollary 1 (Circuit lower bounds from witnessing) .
+If for all k ≥ 1 there is a p-time function fk such that for each big enough n, wk
+n(fk) is
+a tautology, then NP ̸⊆ SIZE[nℓ], for all ℓ ∈ N.
+The last observation tells us also that obtaining an unconditional reduction of non-
+uniform circuit lower bounds to proof complexity of concrete systems will be challenging.
+Proposition 1. If there is a proof system R such that showing that R is not p-bounded
+implies NP ̸⊆ P/poly, then NP ̸⊆ SIZE[nℓ], for all ℓ ∈ N.
+Restricting nonuniformity. In Theorem 1, we can restrict the number of nonuniform
+bits in the concluded lower bounds by adapting formulas wk
+n(f): Assume that the circuit
+C includes a hardwired description of a ﬁxed universal Turing machine U. Moreover,
+interpretC as encoding an algorithm A described by ≤ logn bits withu(n) ≤nk nonuni-
+form bits of advicea(n). The algorithm A and its nonuniform advice are described by free
+variables. We assume thatu is p-time. On each inputz ∈ {0, 1}n,C(z) usesU to simulate
+the computation of A on z with access to a(n) up to nk steps. That is, now the size of
+C is poly(nk). Denote the resulting formulas by wk,u
+n (f). If we have a p-time function
+f which witnesses errors of nk-time algorithms described by log n bits with u(n) bits of
+advice attempting to solve the search version of SAT, i.e. such that formulas wk,u
+n (f) are
+4
+tautologies for big enough n, we can deﬁne proof system EF +wk,u(f). Further, we can
+deﬁne ∀Πb
+1 formulasWk,u
+n (f) expressing “∀n>n 0, wk,u
+n (f).” Denote by Time[nk]/u(n) the
+class of problems solvable by uniform algorithms with ≤ u(n) bits of nonuniform advice
+running in time O(nk). The proof of Theorem 1 works in this case as well.
+Corollary 2 (Circuit complexity from proof complexity & witnessing of P ̸= NP).
+Letk ≥ 1 be a constant and u a p-time function such that u(n) ≤nk.
+1. Suppose that there is a p-time function f such that for each big enough n, wk,u
+n (f)
+is a tautology. If EF +wk,u(f) is not p-bounded, then SAT/∈ Time[nΩ(k)]/u(n).
+2. Suppose that there is a p-time function f such that for some n0, S1
+2 ⊢ Wk,u
+n0 (f). If
+EF is not p-bounded, then SAT/∈ Time[nΩ(k)]/u(n).
+The signiﬁcance of Corollary 2 is that in the uniform setting, a similar kind of fea-
+sible witnessing is known to exist using diagonalization techniques [13, 5]. It is unclear
+whether diagonalization techniques will suﬃce to establish that wk,u
+n (f) is a tautology
+for large enough n in some concrete proof system, but there is at least a strong motiva-
+tion for considering the question, given its implications for deriving strong computational
+complexity lower bounds from proof complexity lower bounds.
+Nonuniform witnessing. If we allow f to be nonuniform, we obtain a version of
+formulas wk
+n(f) which are unconditionally tautological. This follows from a theorem of
+Lipton and Young [24], who showed that for each suﬃciently big n and each Boolean
+function f with n inputs which is hard for circuits of size s3, s ≥ n3, there is a set
+Af,s
+n ⊆ {0, 1}n of size poly(s) such that no s-size circuit computes f onAf,s
+n . The set Af,s
+n
+is the set of anticheckers of f w.r.t. s. Let n be suﬃciently big and αs
+n be tautologies
+deﬁned by
+αs
+n :=
+(
+SATn(x,y ) → SATn(x,B (x))
+)
+∨
+(⋁
+z∈A
+C(z) ̸= SATn(z)
+)
+,
+where SATn(z) ∈ { 0, 1} is such that SATn(z) = 1 ⇔ ∃y, SATn(z,y ). A is ASATn,s
+n if
+SATn /∈ Circuit[s3] and an arbitrary poly(s)-size subset of {0, 1}n otherwise. C(z) in the
+right disjunct of αs
+n stands for the output of a single-output s-size circuit C with input
+z. The circuit C is represented by free variables. The circuit B in the left disjunct is a
+ﬁxed poly(s)-size circuit, with n inputs and ≤ n outputs, obtained from a ﬁxed s3-size
+single-output circuit B′ with n inputs such that
+SATn ∈ Circuit[s3] ⇔ ∀x ∈ {0, 1}n,B′(x) = SATn(x).
+The circuit B′ exists by considering two cases: I. If SATn /∈ Circuit[s3], we can take
+arbitrary s3-size circuit B′; II. If SATn ∈ Circuit[s3], we can let B′ be an s3-size circuit
+computing SATn. B is obtained from B′ in a standard way so that B solves the search
+version of SATn if SATn ∈ Circuit[s3]. Similarly as before, we get the following.
+5
+Theorem 2 (Circuit complexity from nonuniform proof complexity) .
+Let k ≥ 3 be a constant. If there are tautologies without p-size EF-derivations from
+substitutional instances of tautologies αnk
+n , then SATn /∈ Circuit[nk] for inﬁnitely many n.
+Theorem 2 shows that EF +αnk
+, deﬁned analogously as EF +wk(f), is in certain sense
+optimal: If ∀n, SATn ∈ Circuit[nk], then EF+αnk
+haspoly(n)-size proofs of all tautologies.
+In fact, there is a p-size circuit which given a tautologyφ of sizen outputs its proof in EF+
+αnk
+. Cook and Kraj´ ıˇ cek [10] constructed an optimal proof system with 1 bit of nonuniform
+advice. Their system diﬀers from EF + αnk
+in that it is based on a diagonalization
+simulating all possible proof systems.
+1.1.2 Meta-mathematical implications
+We use observations from the previous section to shed light on some classical questions in
+complexity theory. Speciﬁcally, we show that the assumption of the existence of a p-time
+witnessing function in Theorem 1 can be replaced by an eﬃcient algorithm generating
+anticheckers for SAT or by eﬃcient reductions collapsing some of Impagliazzo’s worlds
+(together with a hardness of E for subexponential-size circuits).
+I. Feasible anticheckers.
+Theorem 3 (‘CC ← PC’ from feasible anticheckers - Informal, cf. Theorem 7) .
+Letk ≥ 3 be a constant and assume that there is a p-time function f such that S1
+2 proves:
+“∀1n, f(1n) outputs a poly(nk)-size circuit B such that
+∀x,y ∈ {0, 1}n, [SATn(x,y ) → SATn(x,B (x))]
+or
+(
+f(1n) outputs sets ASATn,nk
+n ,A′ ⊆ { 0, 1}n of size poly(nk) such that A′ is a set
+of assignment yx of formulas x ∈ASATn,nk
+such that yx satisﬁes x if x is satisﬁable,
+and ∀ nk-size circuit C,
+∃x ∈ASATn,nk
+n , SATn(x,yx) ̸=C(x)
+)
+.”
+Then, proving that EF is not p-bounded implies SATn /∈ Circuit[nk] for inﬁnitely many n.
+Theorem 3 follows easily from the proof of Theorem 1, see §3.
+Similarly as in Corollary 1, if for each k ≥ 3 there is a p-time function f such that S1
+2
+proves the statement about the existence of anticheckers from the assumption of Theorem
+3, then NP ̸⊆ SIZE[nℓ], for all ℓ ∈ N.
+II. One-way functions from NP ̸⊆ P/poly.
+6
+Denote by tt(fn,s ) a propositional formula expressing that Boolean functionfn : {0, 1}n ↦→
+{0, 1} represented by its truth-table is not computable by a Boolean circuit of size s rep-
+resented by free variables, see §2.4. So tt(fn,s ) is a tautology if and only if fn is hard for
+circuits of size s. The size of the formula tt(fn,s ) is poly(2n,s ). Similarly, let tt(fn,s,t )
+be a formula expressing that circuits of size s fail to compute f on ≥t-fraction of inputs.
+Given a function h ∈ E such that for some n0, for each n ≥n0, each s(2n)-size circuit
+with n inputs fails to compute hn on ≥ t(2n)-fraction of inputs, where s,t are p-time
+functions in 2n, we deﬁne a proof system EF + tt(h,s,t ) as an extension of EF which is
+allowed to derive in its proofs substitutional instances of tt(hn,s (2n),t (2n)), for n ≥n0.
+Theorem 4 (‘CC ← PC’ from ‘OWF ← NP ̸⊆ P/poly’ & hard E, cf. Theorem 8) .
+Assume that for each suﬃciently big n, each 2n/4-size circuit fails to compute h′ ∈ E on
+≥ 1/2 −1/2n/4 of all inputs. Further, assume that there is a p-time function h : {0, 1}n ↦→
+{0, 1}u(n) such that for each constants c,d , there is a p-time function f and a constant
+0<ϵ< 1 such that S1
+2 proves:
+“∀n, ∀cnc-size circuit C with u(m) inputs and m outputs such that n ≤dmd,
+f(C) outputs a poly(n)-size circuit B such that
+∀x,y ∈ {0, 1}nϵ
+, [SATnϵ(x,y ) → SATnϵ(x,B (x))]
+or
+Pr
+x∈{0,1}m
+[h(C(h(x))) =h(x)]< 1/2.”
+Then, proving that EF + tt(h′, 2n/4, 1/2 − 1/2n/4) is not p-bounded implies SAT/∈ P/poly.
+We remark that if there is a p-time function f′ and constant n0 such that S1
+2 proves
+that for each n ≥n0,f′(12n
+) outputs the truth-table of a function h′ withn inputs which
+is hard on average for 2 n/4-size circuits, then EF and EF + tt(h′, 2n/4, 1/2 − 1/2n/4) are
+p-equivalent. (Note that h′ ∈ E.)
+The proof of Theorem 4 is based on a formalization of the already-mentioned fact that
+given a one-way function h and a function in E hard for subexponential-size circuits, we
+can construct a p-time function witnessing errors of p-size circuits attempting to solve
+SAT. (The witnessing function outputs formulas encoding the statement h(x) = b, with
+free variables x and suitable constants b, cf. Lemma 2.) We formalize the conditional
+witnessing in a theory S1
+2 +dWPHP (PV), where dWPHP (PV) stands for a dual weak
+pigeonhole principle, see §2.2. Combining this with the assumption that S1
+2 proves that
+a one-way function can be obtained from the hardness of SAT, we obtain the ‘ideal’
+(S1
+2 + dWPHP (PV))-provable witnessing similar to the tautology wk
+n(f). Having the
+ideal witnessing statement we proceed as in the proof of Theorem 1 with the diﬀerence
+that the axiom dWPHP (PV) and the assumed hardness of E lead to the system EF +
+tt(h′, 2n/4, 1/2 − 1/2n/4) instead of EF, see §4.
+7
+III. Learning from the non-existence of OWFs.
+Theorem 5 (‘CC ← PC’ from ‘Learning ← ̸ ∃ OWF’ & hardness of E, cf. Theorem 9) .
+Let k,t ≥ 1 be constants. Assume that for each suﬃciently big n, each 2n/4-size circuit
+fails to compute h′ ∈ E on ≥ 1/2 − 1/2n/4 of all inputs. Further, assume that there is
+a p-time functions h : {0, 1}n ↦→ { 0, 1}u(n) such that for each constants c,d , there is a
+p-time function f and a constant 0<ϵ< 1 such that S1
+2 proves:
+“∀n, ∀cnc-size circuits C with u(m) inputs and m outputs such that n ≤dmd,
+f(C) outputs a poly(n)-size circuit B such that B learns nϵt-size circuits with nϵ
+inputs, over the uniform distribution, up to error 1/2 − 1/nϵ, with membership
+queries and conﬁdence 1/nϵ,
+or
+Pr
+x∈{0,1}m
+[h(C(h(x))) =h(x)]< 1/2.”
+Then, there are constants b and a (depending on k,t,h,h ′,c,d,f,ϵ ) such that for each n,
+the existence of a function gn : {0, 1}n ↦→ {0, 1} such that no bnb-size circuit computes gn
+on ≥ (1/2 + 1/n) fraction of inputs and such that EF + tt(h′, 2n/4, 1/2 − 1/2n/4) does not
+have a 2an-size proof of tt(gn,nt) implies that SATn /∈ Circuit[nk].
+Theorem 5 is proved similarly as Theorem 4 with the diﬀerence that the provability
+of eﬃcient learning allows us to prove eﬃciently only circuit lower bounds instead of all
+tautologies, see §5.
+[29, Lemma 4] shows that, assuming E is S1
+2-provably hard as in Theorem 5, learning
+algorithms for small circuits can be S1
+2-provably constructed from circuits automating EF
+on tt-formulas.2 Theorem 5 thus implies that (assumingE is S1
+2-provably hard) S1
+2-deriving
+automatability of EF from the non-existence of one-way functions would reduce circuit
+complexity to EF lower bounds.
+Generalization to stronger proof systems. S1
+2 in Theorems 1 & 3-5 can be replaced by
+essentially an arbitrary ﬁrst-order theory T containing S1
+2 and satisfying some basic prop-
+erties, if we simultaneously replace EF in conclusions of Theorems 1 & 3-5 by a suitable
+propositional proof system PT such that propositional translations of Π b
+1 theorems of T
+have p-size proofs in PT .
+Weakening the assumptions. The core component of Theorems 1 & 3-5 is the existence
+of a suitable reduction. For example, in case of Theorem 5 we need a p-time reduction
+constructing learning algorithms from circuits breaking one-way functions. If such a
+reduction exists, even without assuming its provability in S1
+2, we can build a propositional
+proof system P by adding tautologies encoding the correctness of the reduction to EF.
+2[29, Lemma 4] assumes also the existence of a prime. The assumption can be removed after moving
+to the propositional setting.
+8
+Then, showing that the resulting proof system P + tt(h′, 2n/4, 1/2 − 1/2n/4) is not p-
+bounded on tt-tautologies would separate P and NP. This shows that the S1
+2-provability
+in the assumptions of our theorems can be weakened just to the validity of the respective
+statements, if we use stronger systems than EF in their conclusions. It also shows that
+the most of technicalities in the present paper stem from making the presented approach
+work for EF.
+Moreover, we remark that if our ﬁnal goal is to prove that P ̸= NP, then the ﬁrst
+assumption of Theorems 4-5 postulating the existence of a hard Boolean function in
+E is given to us ‘for free’, as otherwise, if all functions in E can be approximated by
+subexponential-size circuits, it is not hard to show that P ̸= NP.
+1.1.3 Plausibility of the assumptions
+Impagliazzo’s worlds. In a famous survey of Impagliazzo [15], he described 5 possible
+worlds of average-case complexity: Algorithmica, Heuristica, Pessiland, Minicrypt and
+Cryptomania. Recently, there have been various approaches proposed to rule out Heuris-
+tica and Pessiland (see, for example, [14, 32, 25]) by studying the complexity of problems
+about compression, such as the Minimum Circuit Size Problem (MCSP) and the problem
+of computing time-bounded Kolmogorov complexity. Our results have implications for
+the feasibility of such eﬀorts - provable collapses of Impagliazzo’s worlds would imply a
+new and surprising link between proof complexity and circuit complexity. For example,
+the reduction assumed in Theorem 5 asks for a construction of learning algorithms from
+circuits breaking one-way functions. Morally, the existence of such a reduction would rule
+out Pessiland out of Impagliazzo’s worlds. Similarly, the reduction assumed in Theorem
+4 would rule out Pessiland and Heuristica.
+Feasible MinMax theorem. The proofs of the existence of anticheckers we are aware
+of use the eﬃcient MinMax theorem [1, 24, 27] or similar methods. If we had a proof
+of MinMax which would use counting with only polynomial precision (formally, APC1-
+counting) and if we could replace p-time f in Theorem 3 by the existential quantiﬁers
+(see §3 for a discussion of the issue), we could prove the existence of anticheckers in APC1
+and obtain the desired reduction of circuit complexity to proof complexity. Here, APC1
+is Jeˇ r´ abek’s theory of approximate counting, see§2.2.
+S1
+2-provability of a circuit lower bound. If we want to replace EF + tt(h′, 2n/4, 1/2 −
+1/2n/4) in Theorems 4 & 5 by EF, it suﬃces to assume the S1
+2-provability of a subexpo-
+nential circuit lower bound for E. This assumption has an interesting status. Razborov’s
+conjecture about hardness of Nisan-Wigderson generators implies a conditional hardness
+of formulas tt(h,nO(1)) for Frege (for everyh), cf. [31], and it is possible to consider exten-
+sions of the conjecture to all standard proof systems, even set theory ZFC. A conditional
+hardness of tt-formulas (for EF) follows also from a conjecture of Kraj´ ıˇ cek [21, Conjecture
+9
+7.9]. If the tt-formulas expressing subexponential lower bounds for E are hard for EF,
+then S1
+2 cannot prove the lower bounds either. On the other hand, it is not known how to
+prove hardness of tt(h, 2n/4), for all h, for Frege, under any standard complexity-theoretic
+hardness assumption. Moreover, all major circuit lower bounds for weak circuit classes
+and explicit Boolean functions are known to be provable in S1
+2, cf. [30, 26]. 3 It is thus
+perfectly possible that subexponential average-case circuit lower bounds forE are provable
+in a theory such as S1
+2.4
+1.1.4 Revising the status of the Cook-Reckhow program
+Showing that statements like P ̸= NP follow from proof complexity lower bounds for
+concrete proof systems is considered so challenging that there have not been practically
+any conscious attempts to approach it. Our results show that the signiﬁcant eﬀorts that
+have been made in order to address some of the central problems in cryptography and
+learning theory are, in fact, aiming to establish precisely that. This can be interpreted
+as an evidence for the hardness of resolving the relevant problems in cryptography and
+learning theory, but also as showing that proving that the Cook-Reckhow program could
+be in principle realized successfully might not be completely out of reach. In any case, the
+presented results demonstrate a new fundamental connection between proof complexity,
+cryptography and learning theory.
+1.1.5 Self-provability from random self-reducibility
+In §6 we show that a self-provability of circuit upper bounds can be obtained for some
+random-selfreducible problems. We exhibit this in the case of the discrete logarithm:
+Assuming the existence of a hard Boolean function in E and the existence of eﬃcient
+circuits solving the discrete logarithm problem, we show that an explicit proof system
+admits p-size proofs of the fact that the discrete logarithm problem is solvable eﬃciently.
+1.2 Open problems
+1. Prove that any superpolynomial EF lower bound separates P and NP by constructing
+a witnessing function such that, for all big enough n, tautologies wk
+n(f) have p-size EF-
+proofs. It would be interesting to construct such witnessing functions f even assuming
+P ̸⊆ SIZE[nℓ], for all ℓ ∈ N. By Corollary 1, an unconditional construction of such
+witnessing functions would imply NP ̸⊆ SIZE[nℓ], for all ℓ ∈ N.
+3This has not been veriﬁed for lower bounds obtained via the algorithmic method of Williams [33].
+4We emphasize that Theorems 4 & 5 do not require that S1
+2 proves a circuit lower bound. Further, we
+can replace the system EF + tt(h′, 2n/4, 1/2 − 1/2n/4) in Theorems 4 & 5 by, say, a propositional proof
+system corresponding to ZFC, if we assume that a subexponential circuit lower bound for E is provable
+in (the set theory) ZFC.
+10
+2. Prove that the p-time functions deﬁning reductions in Theorems 3-5 can be replaced
+by the existential quantiﬁers, see §3 for a discussion of the problem.
+2 Preliminaries
+2.1 Learning algorithms
+[n] denotes {1,...,n }. 1n stands for a string ofn 1s. Circuit[s] denotes fan-in two Boolean
+circuits of size at most s. The size of a circuit is the number of its gates. A function
+f : {0, 1}n ↦→ {0, 1} is γ-approximated by a circuit C, if Prx[C(x) =f(x)] ≥γ.
+Deﬁnition 1 (PAC learning). A circuit class C is learnable over the uniform distribution
+by a circuit class D up to error ϵ with conﬁdenceδ, if there are randomized oracle circuits
+Lf from D such that for every Boolean function f : {0, 1}n ↦→ { 0, 1} computable by
+a circuit from C, when given oracle access to f, input 1n and the internal randomness
+w ∈ {0, 1}∗, Lf outputs the description of a circuit satisfying
+Pr
+w
+[Lf(1n,w ) (1 −ϵ)-approximatesf] ≥δ.
+Lf uses non-adaptive membership queries if the set of queries which Lf makes to the
+oracle does not depend on the answers to previous queries. Lf uses random examples if
+the set of queries which Lf makes to the oracle is chosen uniformly at random.
+In this paper, PAC learning always refers to learning over the uniform distribution.
+While, a priori, learning over the uniform distribution might not reﬂect real-world sce-
+narios very well (and on the opposite end, learning over all distributions is perhaps overly
+restrictive), as far as we can tell it is possible that PAC learning of p-size circuits over the
+uniform distribution implies PAC learning of p-size circuits over all p-samplable distribu-
+tions. Binnendyk, Carmosino, Kolokolova, Ramyaa and Sabin [4] proved the implication,
+if the learning algorithm in the conclusion is allowed to depend on the p-samplable dis-
+tribution.
+2.2 Bounded arithmetic and propositional logic
+Theories of bounded arithmetic capture various levels of feasible reasoning and present a
+uniform counterpart to propositional proof systems.
+The ﬁrst theory formalizing p-time reasoning was introduced by Cook [8] as an equa-
+tional theory PV. We work with its ﬁrst-order conservative extension PV1 from [23]. The
+language of PV1, denoted PV as well, consists of symbols for all p-time algorithms given
+by Cobham’s characterization of p-time functions, cf. [7]. A PV-formula is a ﬁrst-order
+formula in the language PV. Σ b
+0 (=Πb
+0) denotes PV-formulas with only sharply bounded
+11
+quantiﬁers ∃x,x ≤ |t|, ∀x,x ≤ |t|, where |t| is “the length of the binary representation of
+t”. Inductively, Σb
+i+1 resp. Πb
+i+1 is the closure of Πb
+i resp. Σb
+i under positive Boolean com-
+binations, sharply bounded quantiﬁers, and bounded quantiﬁers ∃x,x ≤t resp. ∀x,x ≤t.
+Predicates deﬁnable by Σb
+i resp. Πb
+i formulas are in the Σp
+i resp. Πp
+i level of the polynomial
+hierarchy, and vice versa. PV1 is known to prove Σb
+0(PV)-induction:
+A(0) ∧ ∀x (A(x) →A(x + 1)) → ∀xA(x),
+for Σb
+0-formulasA, cf. Kraj´ ıˇ cek [20].
+Buss [6] introduced the theory S1
+2 extending PV1 with the Σb
+1-length induction:
+A(0) ∧ ∀x< |a|, (A(x) →A(x + 1)) →A(|a|),
+for A ∈ Σb
+1. S1
+2 proves the sharply bounded collection scheme BB(Σb
+1):
+∀i< |a| ∃x<a,A (i,x ) → ∃w ∀i< |a|,A (i, [w]i),
+for A ∈ Σb
+1 ([w]i is the ith element of the sequence coded by w), which is unprovable in
+PV1 under a cryptographic assumption, cf. [9]. On the other hand, S1
+2 is ∀Σb
+1-conservative
+over PV1. This is a consequence of Buss’s witnessing theorem stating that S1
+2 ⊢ ∃y,A (x,y )
+for A ∈ Σb
+1 implies PV1 ⊢A(x,f (x)) for some PV-function f.
+Following a work by Kraj´ ıˇ cek [21], Jeˇ r´ abek [16, 17, 18] systematically developed a
+theory APC1 capturing probabilistic p-time reasoning by means of approximate counting.5
+The theory APC1 is deﬁned as PV1 +dWPHP (PV) where dWPHP (PV) stands for the
+dual (surjective) pigeonhole principle for PV-functions, i.e. for the set of all formulas
+x> 0 → ∃v <x(|y| + 1)∀u<x |y|, f(u) ̸=v,
+wheref is a PV-function which might involve other parameters not explicitly shown. We
+devote §2.3 to a more detailed description of the machinery of approximate counting in
+APC1.
+Any Πb
+1-formula φ provable in S1
+2 can be expressed as a sequence of tautologies ||φ||n
+with proofs in the Extended Frege system EF which are constructible in p-time (given
+a string of the length n), cf. [8]. We refer to Kraj´ ıˇ cek [22] for basic notions in proof
+complexity such as EF. As it is often easier to present a proof in a theory of bounded
+arithmetic than in the corresponding propositional system, bounded arithmetic functions,
+so to speak, as a uniform language for propositional logic.
+5Kraj´ ıˇ cek [21] introduced a theoryBT deﬁned as S1
+2 + dW P HP(PV) and proposed it as a theory for
+probabilistic p-time reasoning.
+12
+2.3 Approximate counting
+In order to prove our results we will need to use Jeˇ r´ abek’s theory of approximate counting.
+This section recalls the properties of APC1 we will need.
+By a deﬁnable set we mean a collection of numbers satisfying some formula, possibly
+with parameters. When a number a is used in a context which asks for a set it is assumed
+to represent the integer interval [0 ,a ), e.g. X ⊆ a means that all elements of set X are
+less than a. If X ⊆ a, Y ⊆ b, then X ×Y := {bx +y | x ∈ X,y ∈ Y } ⊆ ab and
+X ˙∪Y :=X ∪ {y +a |y ∈Y } ⊆ a +b. Rational numbers are assumed to be represented
+by pairs of integers in the natural way. We use the notation x ∈Log ↔ ∃y, x = |y| and
+x ∈LogLog ↔ ∃y, x = ||y||.
+LetC : 2n → 2m be a circuit andX ⊆ 2n,Y ⊆ 2m deﬁnable sets. We writeC :X ↠Y
+if ∀y ∈ Y ∃x ∈ X, C(x) = y. Jeˇ r´ abek [18] gives the following deﬁnitions inAPC1, but
+they can be formulated in PV1 as well.
+Deﬁnition 2. LetX,Y ⊆ 2n be deﬁnable sets, and ϵ ≤ 1. The size of X is approximately
+less than the size of Y with error ϵ, written as X ⪯ϵ Y , if there exists a circuit C, and
+v ̸= 0 such that
+C :v × (Y ˙∪ϵ2n) ↠v ×X.
+X ≈ϵ Y stands for X ⪯ϵ Y and Y ⪯ϵ X.
+Since a number s is identiﬁed with the interval [0 ,s ), X ⪯ϵ s means that the size of
+X is at most s with error ϵ.
+The deﬁnition of X ⪯ϵ Y is an unbounded ∃Πb
+2-formula even if X,Y are deﬁned by
+circuits so it cannot be used freely in bounded induction. Jeˇ r´ abek [18] solved this problem
+by working in HARDA, a conservative extension of APC1, deﬁned as a relativized theory
+PV1(α) +dWPHP (PV(α)) extended with axioms postulating that α(x) is a truth-table
+of a function on ||x|| variables hard on average for circuits of size 2 ||x||/4, see §2.4.2. In
+HARDA there is a PV1(α) functionSize approximating the size of any set X ⊆ 2n deﬁned
+by a circuit C so that X ≈ϵ Size(C, 2n, 2ϵ−1
+) for ϵ−1 ∈ Log, cf. [18, Lemma 2.14]. If
+X ∩t ⊆ 2|t| is deﬁned by a circuit C and ϵ−1 ∈Log, we can deﬁne
+Pr
+x<t
+[x ∈X]ϵ := 1
+tSize(C, 2|t|, 2ϵ−1
+).
+The presented deﬁnitions of approximate counting are well-behaved:
+Proposition 2 (Jeˇ r´ abek [18]). (in PV1) Let X,X′,Y,Y ′,Z ⊆ 2n and W,W′ ⊆ 2m be
+deﬁnable sets, and ϵ,δ <1. Then
+i) X ⊆Y ⇒X ⪯0 Y ,
+ii) X ⪯ϵ Y ∧Y ⪯δ Z ⇒X ⪯ϵ+δ Z,
+iii) X ⪯ϵ X′ ∧W ⪯δ W′ ⇒X ×W ⪯ϵ+δ+ϵδ X′ ×W′.
+iv) X ⪯ϵ X′∧Y ⪯δ Y′andX′,Y ′areseparablebyacircuit, thenX ∪Y ⪯ϵ+δ X′∪Y′.
+13
+Proposition 3 (Jeˇ r´ abek [18]). (in APC1)
+1. Let X,Y ⊆ 2n be deﬁnable by circuits, s,t,u ≤ 2n, ϵ,δ,θ,γ < 1,γ−1 ∈Log. Then
+i) X ⪯γ Y or Y ⪯γ X,
+ii) s ⪯ϵ X ⪯δ t ⇒s<t + (ϵ +δ +γ)2n,
+iii) X ⪯ϵ Y ⇒ 2n\Y ⪯ϵ+γ 2n\X,
+iv) X ≈ϵ s ∧Y ≈δ t ∧X ∩Y ≈θ u ⇒X ∪Y ≈ϵ+δ+θ+γ s +t −u.
+2. (Disjoint union) Let Xi ⊆ 2n, i<m be deﬁned by a sequence of circuits and ϵ,δ ≤ 1,
+δ−1 ∈Log. If Xi ⪯ϵ si for every i<m , then ⋃
+i<m(Xi × {i}) ⪯ϵ+δ
+∑
+i<msi.
+When proving Σb
+1 statements in APC1 we can aﬀord to work in S1
+2 +dWPHP (PV) +
+BB(Σb
+2) and, in fact, assuming the existence of a single hard function in PV1 gives us the
+full power of APC1. Here, BB(Σb
+2) is deﬁned as BB(Σb
+1) but with A ∈ Σb
+2.
+Lemma 1 ([26]). Suppose S1
+2 +dWPHP (PV) +BB(Σb
+2) ⊢ ∃yA(x,y ) for A ∈ Σb
+1. Then,
+for every ϵ< 1, there is k and PV-functions g,h such that PV1 proves
+|f | ≥ |x|k ∧ ∃y, |y| = ||f ||,Ch(y) ̸=f(y) →A(x,g (x,f ))
+where f(y) is the yth bit of f, f(y) = 0 for y > |f |, and Ch is a circuit of size ≤ 2ϵ||f||
+generated by h on f,x . Moreover, APC1 ⊢ ∃yA(x,y ).
+2.4 Formalizing complexity-theoretic statements
+2.4.1 Circuit lower bounds
+An ‘almost everywhere’ circuit lower bound for circuits of size s and a function f says
+that for every suﬃciently big n, for each circuit C with n inputs and size s, there exists
+an input y on which the circuit C fails to compute f(y).
+If f : {0, 1}n → { 0, 1} is an NP function and s = nk for a constant k, this can be
+written down as a ∀Σb
+2 formula LB(f,nk),
+∀n, n>n 0 ∀ circuit C of size ≤nk ∃y, |y| =n, C(y) ̸=f(y),
+wheren0 is a constant and C(y) ̸=f(y) is a Σb
+2 formula stating that a circuit C on input
+y outputs the opposite value of f(y). The intended meaning of ‘ ∃y, |y| =n’ is to say that
+y is a string from {0, 1}n. This is a slight abuse of notation as, formally, |y| =n ﬁxes the
+ﬁrst bit of y to 1.
+If we want to express s(n)-size lower bounds for s(n) as big as 2O(n), we add an extra
+assumption on n stating that ∃x, n = ||x||. That is, the resulting formula LBtt(f,s (n))
+has form ‘ ∀x,n ;n = ||x|| → ... ’. Treating x,n as free variables, LBtt(f,s (n)) is Πb
+1 if f
+is, for instance, SAT because n = ||x|| implies that the quantiﬁers bounded by 2 O(n) are
+sharply bounded. Moreover, allowing f ∈ NE lifts the complexity of LBtt(f,s (n)) just
+14
+to ∀Σb
+1. The function s(n) in LBtt(f,s (n)) is assumed to be a PV-function with input x
+(satisfying ||x|| =n).
+In terms of the Log-notation, LB(f,nk) implicitly assumes n ∈ Log while LBtt(f,nk)
+assumes n ∈ LogLog. By chosing the scale of n we are determining how big objects are
+going to be ‘feasible’ for theories reasoning about the statement. In the case n ∈LogLog,
+the truth-table of f (and everything polynomial in it) is feasible. Assuming just n ∈Log
+means that only the objects of polynomial-size in the size of the circuit are feasible.
+Likewise, the theory reasoning about the circuit lower bound is less powerful when working
+with LB(f,nk) than with LBtt(f,nk). (The scaling in LBtt(f,s ) corresponds to the choice
+of parameters in natural proofs and in the formalizations by Razborov [30].)
+We can analogously deﬁne formulasLBtt(f,s (n),t (n)) expressing an average-case lower
+bound for f, where f is a free variable (with f(y) being the yth bit of f andf(y) = 0 for
+y >|f |). More precisely, LBtt(f,s (n),t (n)) generalizes LBtt(f,s (n)) by saying that each
+circuit of size s(n) fails to compute f on at least t(n) inputs, for PV-functions s(n),t (n).
+Since n ∈LogLog, LBtt(f,s (n),t (n)) is Πb
+1.
+Propositional version. An s(n)-size circuit lower bound for a function f : {0, 1}n →
+{0, 1} can be expressed by a poly(2n,s )-size propositional formula tt(f,s ),
+⋁
+y∈{0,1}n
+f(y) ̸=C(y)
+where the formula f(y) ̸= C(y) says that an s(n)-size circuit C represented by poly(s)
+variables does not output f(y) on input y. The values f(y) are ﬁxed bits. That is, the
+whole truth-table of f is hard-wired in tt(f,s ).
+The details of the encoding of the formulatt(f,s ) are not important for us as long as the
+encoding is natural because systems like EF considered in this paper can reason eﬃciently
+about them. We will assume that tt(f,s ) is the formula resulting from the translation of
+Πb
+1 formula LBtt(h,s ), where n0 = 0, n,x are substituted after the translation by ﬁxed
+constants so that x = 22n
+, and h is a free variable (with h(y) being the yth bit of h and
+h(y) = 0 for y >|h|) which is substituted after the translation by constants deﬁning f.
+Analogously, we can express average-case lower bounds by propositional formulas
+tt(f,s (n),t (n)) obtained by translating LBtt(h,s (n),t (n)2n), with n0 = 0, ﬁxed x = 22n
+and h substituted after the translation by f.
+2.4.2 Learning algorithms
+A circuit class C is deﬁned by a PV-formula if there is a PV-formula deﬁning the predicate
+C ∈ C . Deﬁnition 1 can be formulated in the language of HARDA: A circuit class C
+(deﬁned by a PV-formula) is learnable over the uniform disribution by a circuit class D
+(deﬁned by a PV-formula) up to error ϵ with conﬁdence δ, if there are randomized oracle
+15
+circuitsLf from D such that for every Boolean function f : {0, 1}n ↦→ {0, 1} (represented
+by its truth-table) computable by a circuit from C, for eachγ−1 ∈Log, when given oracle
+access tof, input 1n and the internal randomnessw ∈ {0, 1}∗,Lf outputs the description
+of a circuit satisfying
+Pr
+w
+[Lf(1n,w ) (1 −ϵ)-approximatesf]γ ≥δ.
+The inner probability of approximability of f by Lf(1n,w ) is counted exactly. This is
+possible because f is represented by its truth-table, which implies that 2 n ∈Log.
+Propositional version. In order to translate the deﬁnition of learning algorithms to
+propositional formulas and to the language of PV1 we need to look more closely at the
+deﬁnition of HARDA.
+PV1 can be relativized to PV1(α). The new function symbol α is then allowed in the
+inductive clauses for introduction of new function symbols. This means that the language
+of PV1(α), denoted also PV(α), contains symbols for all p-time oracle algorithms.
+Proposition 4 (Jeˇ r´ abek [16]). For every constant ϵ < 1/3 there exists a constant n0
+such that APC1 proves: for every n ∈ LogLog such that n > n0, there exist a function
+f : 2n → 2 such that no circuit of size 2ϵn computesf on ≥ (1/2 + 1/2ϵn)2n inputs.
+Deﬁnition 3 (Jeˇ r´ abek [16]). The theory HARDA is an extension of the theory PV1(α) +
+dWPHP (PV(α)) by the axioms
+1. α(x) is a truth-table of a Boolean function in ||x|| variables,
+2. LBtt(α(x), 2||x||/4, 2||x||(1/2 − 1/2||x||/4)), for constant n0 from Proposition 4,
+3. ||x|| = ||y|| → α(x) =α(y).
+By inspecting the proof of Lemma 2.14 in [18], we can observe that on each input
+C, 2n, 2ϵ−1
+the PV1(α)-function Size calls α just once (to get the truth-table of a hard
+function which is then used as the base function of the Nisan-Wgiderson generator). In
+fact, Size calls α on input x which depends only on |C|, the number of inputs of C
+and w.l.o.g. also just on |ϵ−1| (since decreasing ϵ leads only to a better approximation).
+In combination with the fact that the approximation Size(C, 2n, 2ϵ−1
+) ≈ϵ X, for X ⊆ 2n
+deﬁned byC, is not aﬀected by a particular choice of the hard boolean function generated
+byα, we get that APC1 proves
+LBtt(y, 2||y||/4, 2||y||(1/2 − 1/2||y||/4)) ∧ ||y|| =S(C, 2n, 2ϵ−1
+) → Sz(C, 2n, 2ϵ−1
+,y ) ≈ϵ X,
+whereSz is deﬁned as Size with the only diﬀerence that the call to α(x) on C, 2n, 2ϵ−1
+is
+replaced by y and S(C, 2n, 2ϵ−1
+) = ||x|| for a PV-function S. (S is given by a subcompu-
+tation of Size specifying ||x||, for x on which Size queries α(x).)
+16
+This allows us to express Pr x<t[x ∈ X]ϵ = a, where ϵ−1 ∈ Log and X ∩t ⊆ 2|t| is
+deﬁned by a circuit C, without a PV1(α) function, by formula
+∀y (LBtt(y, 2||y||/4, 2||y||(1/2−1/2||y||/4))∧||y|| =S(C, 2|t|, 2ϵ−1
+) →Sz(C, 2|t|, 2ϵ−1
+,y )/t =a).
+We denote the resulting formula by Pr y
+x<t[x ∈ X]ϵ = a. We will use the notation
+Pry
+x<t[x ∈ X]ϵ in equations with the intended meaning that the equation holds for
+the value Sz(·, ·, ·, ·)/t under corresponding assumptions. For example, t · Pry
+x<t[x ∈
+X]ϵ ⪯δ a stands for ‘ ∀y, ∃v, ∃ circuit ˆC (deﬁning a surjection) which witnesses that
+LBtt(y, 2||y||/4, 2||y||(1/2 −1/2||y||/4)) ∧ ||y|| =S(C, 2|t|, 2ϵ−1
+) impliesSz(C, 2|t|, 2ϵ−1
+,y ) ⪯δ a’.
+The deﬁnition of learning can be now expressed without a PV1(α) function: If circuit
+class C is deﬁned by a PV-function, the statement that a given oracle algorithm L (given
+by a PV-function with oracle queries) learns a circuit class C over the uniform distribution
+up to error ϵ with conﬁdence δ can be expressed as before with the only diﬀerence that
+we replace Prw[Lf(1n,w ) (1 −ϵ)-approximatesf]γ ≥δ by
+y
+Pr
+w
+[Lf(1n,w ) (1 −ϵ)-approximatesf]γ ≥δ.
+Since the resulting formula A deﬁning learning is not Π b
+1 (because of the assump-
+tion LBtt) we cannot translate it to propositional logic. We will sidestep the issue by
+translating only the formula B obtained from A by deleting subformula LBtt (but leaving
+||y|| = S(·, ·, ·) intact) and replacing the variables y by ﬁxed bits representing a hard
+boolean function. In more detail, Π b
+1 formula B can be translated into a sequence of
+propositional formulas leary
+γ(L, C,ϵ,δ ) expressing that “if C ∈ C is a circuit computing
+f, then L querying f generates a circuit D such that Pr[D(x) = f(x)] ≥ 1 −ϵ with
+probability ≥ δ, which is counted approximately with precision γ”. Note that C,f are
+represented by free variables and that there are also free variables for error γ from ap-
+proximate counting and for Boolean functions y. As in the case of tt-formulas, we ﬁx
+|f | = 2n, so n is not a free variable. Importantly, leary
+γ(L, C,ϵ,δ ) does not postulate that
+y is a truth-table of a hard boolean function. Nevertheless, for any ﬁxed (possibly non-
+uniform) bits representing a sequence of Boolean functions h = {hm}m>n0 such that hm
+is not (1/2 + 1/2m/4)-approximable by any circuit of size 2 m/4, we can obtain formulas
+learh
+γ(L, C,ϵ,δ ) by substituting bits h for y.
+Using a single function h in learh
+γ(L, C,ϵ,δ ) does not ruin the fact that (the transla-
+tion of function) Sz approximates the respective probability with accuracy γ because Sz
+queries a boolean function y which depends just on the number of atoms representingγ−1
+and on the size of the circuit D deﬁning the predicate we count together with the number
+of inputs of D. The size of D and the number of its inputs are w.l.o.g. determined by the
+number of inputs of f.
+If we are working with formulas learh
+γ(L, C,ϵ,δ ), where h is a sequence of bits repre-
+senting a hard boolean function, in a proof system which cannot prove eﬃciently that h
+17
+is hard, our proof system might not be able to show that the deﬁnition is well-behaved
+- it might not be able to derive some standard properties of the function Sz used inside
+the formula. Nevertheless, in our theorems this will never be the case: our proof systems
+will always know that h is hard.
+In formulas leary
+γ(L, C,ϵ,δ ) we can allowL to be a sequence of nonuniform circuits, with
+a diﬀerent advice string for each input length. One way to see that is to use additional
+input toL in Πb
+1 formulaB, then translate the formula to propositional logic and substitute
+the right bits of advice for the additional input. Again, the precise encoding of the formula
+leary
+γ(L, C,ϵ,δ ) does not matter very much to us but in order to simplify proofs we will
+assume that leary
+γ(L, Circuit[nk],ϵ,δ ) has the from ¬tt(f,nk) → R, where n,k are ﬁxed,
+f is represented by free variables and R is the remaining part of the formula expressing
+that L generates a suitable circuit with high probability.
+2.4.3 Nisan-Wigderson generators
+The core theorem underlying approximate counting in APC1 is the following formalization
+of Nisan-Wigderson generators (NW), cf. [16, Proposition 4.7].
+Theorem 6 (Jeˇ r´ abek [16]). Let 0 < γ <1. There are constants c >1 and δ′ > 0 such
+that for each δ <δ′ there is a poly(2m)-time function
+NW : {0, 1}cm × {0, 1}2m
+↦→ {0, 1}⌊2δm⌋
+such that S1
+2 proves: “If 2m ∈ Log and f : {0, 1}m ↦→ { 0, 1} is a Boolean function
+such that no circuit of size 2ϵm computes f on > (1/2 + 1/2ϵm)2m inputs, then for each
+(2ϵm − ⌈2(δ+γ)m⌉ − 1)-size circuit D with ⌊2δm⌋ inputs,
+2⌊2δm⌋ × {z <2cm |D(NWf(z)) = 1} ⪰e 2cm × {x< 2⌊2δm⌋ |D(x) = 1},
+wheree := ⌈2δm⌉/2ϵm and NWf(z) :=NW (z,f ).”
+Theorem 6 shows that Pry
+x[D(x) = 1]θ is S1
+2-provably similar to Pry
+z[D(NWf(z)) = 1]θ,
+for θ−1 ∈Log. To see this, note that
+2cm y
+Pr
+z
+[D(NWf(z)) = 1]θ ≈θ {z <2cm |D(NWf(z)) = 1}.
+Hence, by Proposition 2 iii),
+2⌊2δm⌋2cm y
+Pr
+z
+[D(NWf(z)) = 1]θ ⪰θ 2⌊2δm⌋ × {z <2cm |D(NWf(z)) = 1}.
+Similarly,
+2cm × {x< 2⌊2δm⌋ |D(x) = 1} ⪰θ 2⌊2δm⌋2cm y
+Pr
+x
+[D(x) = 1]θ.
+18
+Therefore, by Proposition 2 ii), the conclusion of Theorem 6 implies
+2⌊2δm⌋2cm y
+Pr
+z
+[D(NWf(z)) = 1]θ ⪰2θ+e 2⌊2δm⌋2cm y
+Pr
+x
+[D(x) = 1]θ.
+If the size of D is ≤ 2ϵm − ⌈2(δ+γ)m⌉ − 2, the same inequality holds for ¬D instead of D.
+3 Feasible anticheckers.
+If there is an nk-size circuit computing SATn, there is a poly(nk)-size circuit B with n
+inputs and ≤n outputs such that ∀x,y ∈ {0, 1}n, (SATn(x,y ) → SATn(x,B (x))). We use
+this to formulate the existence of anticheckers for SAT as a ∀Πb
+1 statement.
+Theorem 7 (‘CC ← PC’ from feasible anticheckers).
+Letk ≥ 3 be a constant and assume that there is a p-time function f such that S1
+2 proves:
+“∀1n, f(1n) is a poly(nk)-size circuit B such that
+∀x,y ∈ {0, 1}n, [SATn(x,y ) → SATn(x,B (x))]
+or
+(
+f(1n) outputs sets ASATn,nk
+n ,A′ ⊆ { 0, 1}n, D ⊆ ASATn,nk
+n ×A′ of size poly(nk)
+such that
+∀x ∈ASATn,nk
+n [∃yx ∈A′, ⟨x,yx⟩ ∈ D ∧ ∀z,y ∈A′, (⟨x,y ⟩ ∈ D ∧ ⟨x,z ⟩ ∈ D →y =z)]
+and ∀ nk-size circuit C,
+∀x ∈ASATn,nk
+n ∀y ∈ {0, 1}n [SATn(x,y ) → SATn(x,yx)]∧
+∃x ∈ASATn,nk
+n , SATn(x,yx) ̸=C(x)
+)
+.”
+Then, proving that EF is not p-bounded implies SATn /∈ Circuit[nk] for inﬁnitely many n.
+Proof. The statement assumed to have an S1
+2-proof is ∀Πb
+1, so there are p-size EF-proofs of
+its propositional translation. If we now assume that ∃n0∀n>n 0, SATn ∈ Circuit[nk], there
+are circuits C andy ∈ {0, 1}n falsifying the second disjunct of the translated assumption
+for n>n 0. Consequently, EF proves eﬃciently that the circuits generated by f(1n) solve
+SATn, which implies that EF is p-bounded.
+Existential quantiﬁers instead of witnessing. If we used the existential quantiﬁers
+instead of function f in Theorem 7, the resulting statement S formalizing the existence
+of anticheckers would be ∀Σb
+2. By the KPT theorem [23], PV1-provability ofS would then
+imply the existence of p-time functions f1,...,f c, for a constant c, with a PV1-proof of:
+19
+“∀1n, ∀x1,...,x c,y 1,...,y c, ˜y1,..., ˜yc ∈ {0, 1}n, ∀nk-size circuits C1,...,C c,
+f1(1n) outputs apoly(nk)-size circuitB andASATn,nk
+n ,A′ ⊆ {0, 1}n,D ⊆ASATn,nk
+n ×A′
+of size poly(nk) such that the following predicate, denoted Pf1(x1,y 1,C 1, ˜y1), holds:
+(
+SATn(x1,y 1) → SATn(x1,B (x1))
+)
+∨
+(
+D′(˜y1) ∧ ∃˜x ∈ASATn,nk
+n , SATn(˜x,y ˜x) ̸=C(˜x)
+)
+,
+where D′(˜y1) stands for the remaining part of the Σ b
+0 subformula of S,
+or f2(1n,x 1,y 1,C 1, ˜y1) outputs a poly(nk)-size circuit B and ASATn,nk
+n ,A′,D of size
+poly(nk) such that Pf2(x2,y 2,C 2, ˜y2) holds, or
+...
+orfc(1n,x 1,...,x c−1,y 1,...,y c−1,C 1,...,C c−1, ˜y1,..., ˜yc−1) outputs apoly(nk)-size
+circuit B and ASATn,nk
+n ,A′,D of size poly(nk) such that Pfc(xc,yc,C c, ˜yc).”
+The resulting ∀Πb
+1-statement could be translated to propositional tautologies with p-size
+EF-proofs. However, given ∀n, SATn ∈ Circuit[nk], we could not directly obtain p-size EF-
+proofs of tautologies stating that one of the functions f1,...,f c generates a circuit solving
+SATn. This is because B andASATn,nk
+n generated byf2 depend ony1. For the same reason,
+it seems possible for EF to prove eﬃciently SAT ∈ P/poly (using the formalization based
+on the KPT witnessing) without proving eﬃciently all tautologies.
+4 One-way functions from NP ̸⊆ P/poly
+Theorem 8 (‘CC ← PC’ from ‘OWF ← NP ̸⊆ P/poly’ & hardness of E).
+Assume that for each suﬃciently big n, each 2n/4-size circuit fails to compute h′ ∈ E
+on ≥ (1/2 − 1/2n/4) of all inputs. Further, assume that there is a p-time function h :
+{0, 1}n ↦→ {0, 1}u(n) such that for each constants c,d , there is a p-time function f2 and a
+constant 0<ϵ< 1 such that S1
+2 proves:
+“∀n, ∀ cnc-size circuit C with u(m) inputs and m outputs such that n ≤dmd,(
+f2(C) is a poly(n)-size circuit B such that
+∀x,y ∈ {0, 1}⌊nϵ⌋, [SAT⌊nϵ⌋(x,y ) → SAT⌊nϵ⌋(x,B (x))]
+or y
+Pr
+x∈{0,1}m
+[h(C(h(x))) =h(x)] 1
+m
+< 1/2
+)
+.”
+Then, proving that EF + tt(h′, 2n/4, 1/2 − 1/2n/4) is not p-bounded implies SAT/∈ P/poly.
+The system EF + tt(h′, 2n/4, 1/2 − 1/2n/4) is deﬁned in the same way as in the in-
+troduction. That is, EF + tt(h′, 2n/4, 1/2 − 1/2n/4) is an extension of EF which can use
+substitutional instances of tt(h′
+n, 2n/4, 1/2 − 1/2n/4), for suﬃciently big n, in its proofs.
+The proof of Theorem 8 is based on the following lemma formalizing a conditional
+witnessing of NP ̸⊆ P/poly, cf. [28, 26].
+20
+Lemma 2 (Formalized witnessing of NP ̸⊆ P/poly from OWF & hardness of E).
+Letk ≥ 1 be a constant. For each p-time functions h : {0, 1}n ↦→ {0, 1}u(n) and f1, there
+are p-time functions f0,f−1,f−2 and constants b,n 1 such that S1
+2 +dWPHP (PV) proves:
+“∀1n >n 1, ∀m such that n/2b ≤ 2bm ≤n, if
+LBtt
+′(f1(12m
+), 2m/4, 2m(1/2 − 1/2m/4)),
+then f0(1n,m ) outputs sets A,A′ ⊆ {0, 1}n of size poly(n) such that
+∀x ∈A ∃yx ∈A′ SATn(x,yx)
+and
+(
+∀ nk-size circuit C with n inputs and ≤n outputs,
+∃x ∈A, ¬SATn(x,C (x))
+or f−1(C,m ) outputs a poly(n)-size circuit C′ with u(n′) inputs and n′ outputs, where
+n ≤f−2(1n′
+), such that
+y
+Pr
+x∈{0,1}n′
+[h(C′(h(x))) =h(x)] 1
+n′
+≥ 1/2
+)
+.”
+Here, LBtt
+′ is obtained from LBtt by settingm0 = 0 and skipping the universal quantiﬁer on
+m (som in LBtt
+′ is the same as the universally quantiﬁed m in the S1
+2-provable statement).
+Proof of Theorem 8 from Lemma 2. Intuitively, Theorem 8 assumes that the hardness of
+SAT yields a function h which is hard to invert. Lemma 2 shows that such h can be
+used to ﬁnd an error of each small circuit attempting to compute SAT. Combining the
+assumption of Theorem 8 with Lemma 2 we obtain a p-time function f such that for each
+small circuit C, either C solves SAT or f(C) ﬁnds an error of C. Moreover, this holds
+provably in S1
+2 +dWPHP (PV), so the propositional translation of the correctness of the
+witnessing statement has short proofs in EF + tt(h′, 2n/4, 1/2 − 1/2n/4). This will allow us
+to derive the desired implication similarly as in the proof of Theorem 1.
+We proceed with a formal proof.
+The assumption of Theorem 8 in combination with Lemma 2 implies that for each
+k ≥ 1, for p-time f1 generating the truth-table of h′, there is 0 < ϵ <1 and b,n 1 such
+that S1
+2 +dWPHP (PV) proves the following statement S:
+“∀1n >n 1, ∀m,n/ 2b ≤ 2bm ≤n, if
+LBtt
+′(f1(12m
+), 2m/4, 2m(1/2 − 1/2m/4)),
+then f0(1n,m ) outputs A,A′ ⊆ {0, 1}n such that
+∀x ∈A ∃yx ∈A′ SATn(x,yx)
+21
+and
+(
+∀nk-size circuit C with n inputs and ≤n outputs,
+∃x ∈A, ¬SATn(x,C (x))
+or f2(f−1(C,m )) outputs a circuit B such that
+∀x,y ∈ {0, 1}⌊nϵ⌋, [SAT⌊nϵ⌋(x,y ) → SAT⌊nϵ⌋(x,B (x))]
+or y′ does not satisfy the assumption of Pr y′
+x [·]1/n′ ≥ 1/2
+)
+.”
+Since S is ∀Σb
+1, by Lemma 1, there is a p-time function f3 and a constant ℓ such
+that PV1 proves: “ ∀1n > n1, ∀m,n/ 2b ≤ 2bm ≤ n, if |h′| ≥ nℓ and a 2||h′||/4-size circuit
+generated by a p-time function fails to compute h′, then f3(1n,m,h′,C,x,y,y ′) outputs a
+circuit falsifying
+LBtt
+′(f1(12m
+), 2m/4, 2m(1/2 − 1/2m/4)),
+or f3(1n,m,h′,C,x,y,y ′) outputs a circuit falsifying the assumption of Pr y′
+x [·]1/n′ ≥ 1/2
+or F′ holds,” where F′ is the rest of the statement S.
+Consequently, EF proves eﬃciently the propositional translation of the PV1-theorem.
+Substitutingh′ fory′, EF+ := EF+ tt(h′, 2n/4, 1/2 −1/2n/4) proves the formulaF encoding
+F′. We now proceed as in the proof of Theorem 1. Assuming that SAT ∈ P/poly, there
+is some k such that for all 1 n > n1 ≥ 1 we can eﬃciently falsify the ﬁrst disjunct of
+F . Therefore, there is a p-size circuit B such that EF+ proves eﬃciently SAT⌊nϵ⌋(x,y ) →
+SAT⌊nϵ⌋(x,B (x)), which means that EF+ is p-bounded.
+Proof of Lemma 2. Let f0(1n,m ) output the set of propositional formulas A := {φz(x) |
+z ∈ { 0, 1}cm}, where φz(x) uses free variables x together with some auxiliary variables
+and encodes the statement
+h(x) =h(NWf(z)).
+Here, NWf : {0, 1}cm ↦→ {0, 1}⌊2δm⌋ and c are given by Theorem 6, for some 0 <γ,δ < 1
+speciﬁed later, and f =f1(12m
+). The size of φz(x) is ⌊2Kδm ⌋, for a constant K depending
+only on h. We set m so that n/2Kδ ≤ 2Kδm ≤n and treat formulas φz(x) as formulas of
+size n. Let A′ := {NWf(z) |z ∈ {0, 1}cm}.
+We reason in S1
+2 +dWPHP (PV). Suppose that an nk-size circuitC withn inputs and
+≤n outputs ﬁnds a satisfying assignment for all formulas in A. Then, there is an nk-size
+circuit C′ with u(⌊2δm⌋) inputs such that
+2⌊2δm⌋ × {z ∈ {0, 1}cm |h(C′(h(NWf(z)))) ̸=h(NWf(z))} ⪯0 0. (4.1)
+The circuit C′ is obtained from C by a p-time algorithm f−1 depending on δ,h and m.
+The predicate h(C′(h(x))) ̸= h(x) is computable by a 2 K′δm-size circuit D with ⌊2δm⌋
+inputs, for a constant K′ depending only on k and h. Now, we set a suﬃciently small γ
+22
+and δ so that 2K′δm ≤ 2m/4 − ⌈2(δ+γ)m⌉ − 1. Therefore, by Theorem 6, the assumption
+that f is hard on average for 2m/4-size circuits implies that
+2⌊2δm⌋ × {z <2cm |D(NWf(z)) = 1} ⪰e 2cm × {x< 2⌊2δm⌋ |D(x) = 1},
+where e = ⌈2δm⌉/2m/4. Consequently, by (4.1) and Proposition 2 ii),
+0 ⪰e 2cm × {x< 2⌊2δm⌋ |h(C′(h(x))) ̸=h(x)}. (4.2)
+We want to show that Pr y
+x∈{0,1}⌊2δm⌋[h(C′(h(x))) = h(x)] 1
+⌊2δm⌋
+≥ 1/2. For the sake
+of contradiction, assume that this is not the case. Then, {x < 2⌊2δm⌋ | h(C′(h(x)) =
+h(x)} ⪯1/⌊2δm⌋ 2⌊2δm⌋−1. By Item 1 iii) of Proposition 3,
+{x< 2⌊2δm⌋ |h(C′(h(x)) ̸=h(x)} ⪰2/⌊2δm⌋ 2⌊2δm⌋−1.
+By Proposition 2 iii),
+2cm × {x< 2⌊2δm⌋ |h(C′(h(x)) ̸=h(x)} ⪰2/⌊2δm⌋ 2⌊2δm⌋−1+cm. (4.3)
+By Proposition 2 ii), (4.2) and (4.3) yield 0 ⪰2/⌊2δm⌋+e 2⌊2δm⌋−1+cm. Hence, by Item 1 ii)
+of Proposition 3, 2⌊2δm⌋−1+cm < (3/⌊2δm⌋ +e)2⌊2δm⌋−1+cm, which is a contradiction for a
+suﬃciently big m.
+5 Learning from the non-existence of OWFs
+Theorem 9 (‘CC ← PC’ from ‘Learning ← ̸ ∃ OWF’ & hardness of E).
+Let k,t ≥ 1 be constants. Assume that for each suﬃciently big n, each 2n/4-size circuit
+fails to compute h′ ∈ E on ≥ 1/2 − 1/2n/4 of all inputs. Further, assume that there is a
+p-time function h : {0, 1}n ↦→ {0, 1}u(n) such that for each constants c,d , there is a p-time
+function f2 and constants n0 and 0<ϵ< 1 such that S1
+2 proves:
+“∀n, ∀ cnc-size circuit C with u(m) inputs and m outputs such that n ≤dmd,(
+f2(C) outputs a poly(n)-size circuit B learning ⌊nϵ⌋t-size circuits with ⌊nϵ⌋ inputs
+over the uniform distribution, up to error 1/2 − 1/⌊nϵ⌋, with conﬁdence 1/⌊nϵ⌋;
+formally, ∀f : {0, 1}⌊nϵ⌋ ↦→ {0, 1}, ∀ ⌊nϵ⌋t-size circuit D computingf,
+y
+Pr
+w
+[B(1⌊nϵ⌋,w ) (1/2 + 1/⌊nϵ⌋)-approximates f]1/2⌊nϵ⌋ ≥ 1/⌊nϵ⌋;
+or y
+Pr
+x∈{0,1}m
+[h(C(h(x))) =h(x)] 1
+m
+< 1/2
+)
+.”
+23
+Then there are constants b and a (depending on k,t,h,h ′,c,d,f 2,n 0,ϵ ) such that for each
+n the existence of a function gn : {0, 1}n ↦→ {0, 1} such that no circuit of size bnb computes
+gn on (1/2 + 1/n) fraction of inputs and such that EF + tt(h′, 2n/4, 1/2 − 1/2n/4) does not
+have 2an-size proofs of tt(gn,nt) implies that SATn /∈ Circuit[nk].
+Note that the S1
+2-theorem in the assumption of Theorem 9 assumes 2 ⌊nϵ⌋ ∈Log.
+Proof. The assumption of Theorem 9 in combination with Lemma 2 implies that for any
+givenk,t ≥ 1, for p-timef1 generating the truth-table ofh′, there are constants 0<ϵ< 1
+and b,n 1 such that S1
+2 +dWPHP (PV) proves the following statement S:
+“∀1n >n 1, ∀m,n/ 2b ≤ 2bm ≤n, if
+LBtt
+′(f1(12m
+), 2m/4, 2m(1/2 − 1/2m/4)),
+then f0(1n,m ) outputs A,A′ ⊆ {0, 1}n such that
+∀x ∈A ∃yx ∈A′ SATn(x,yx)
+and
+(
+∀nk-size circuit C with n inputs and ≤n outputs,
+∃x ∈A, ¬SATn(x,C (x))
+orf2(f−1(C,m )) outputs a circuitB such that ∀f : {0, 1}⌊nϵ⌋ ↦→ {0, 1}, ∀ ⌊nϵ⌋t-size circuit
+D computing f,
+y
+Pr
+w
+[B(1⌊nϵ⌋,w ) (1/2 + 1/⌊nϵ⌋)-approximates f]1/2⌊nϵ⌋ ≥ 1/⌊nϵ⌋,
+or y′ does not satisfy the assumption of Pr y′
+x [·]1/n′ ≥ 1/2
+)
+.”
+Since S is ∀Σb
+1, by Lemma 1, there is a p-time function f3 and a constant ℓ such
+that PV1 proves: “ ∀1n >n 1, ∀m,n/ 2b ≤ 2bm ≤n, if |h′| ≥ 2ℓ⌊nϵ⌋ and a 2||h′||/4-size circuit
+generated by a p-time function fails to computeh′, thenf3(1n,m,h′,C,f,D,y,y ′) outputs
+a circuit falsifying
+LBtt
+′(f1(12m
+), 2m/4, 2m(1/2 − 1/2m/4)),
+orf3(1n,m,h′,C,f,D,y,y ′) outputs a circuit falsifying the assumption of Pry′
+x [·]1/n′ ≥ 1/2
+or it outputs a circuit falsifying the assumption of Pr y
+w[·]1/2⌊nϵ⌋ ≥ 1/⌊nϵ⌋ or F′ holds,”
+where F′ is the rest of the statement S.
+Consequently, EF+ := EF+ tt(h′, 2n/4, 1/2 −1/2n/4) proves eﬃciently the propositional
+translation of F′. If we now ﬁx n> 1 and assume that SATn ∈ Circuit[nk′′
+], then there is
+some k =O(k′′) such that we can eﬃciently falsify the ﬁrst disjunct of the propositional
+translation of F′ in EF+. Therefore, there is a poly(n)-size circuit B and a 2Kn-size EF+
+24
+proof of learh′
+1/2n(B, Circuit[nt], 1/2 − 1/n, 1/n), for a constant K independent of n. Recall
+that this means that EF+ proves eﬃciently ¬tt(f,nt) →R, for a formula R.
+Let b ≥ t be such that B has size ≤ bnb. We claim that for each Boolean function
+gn : {0, 1}n ↦→ { 0, 1}n which is not (1/2 + 1/n)-approximable by any circuit of size bnb,
+there is a 2 an-size EF+-proof of tt(gn,nt), for a constant a independent of n. This is
+because in order to prove tt(gn,nt) in EF+, it suﬃces to check in EF+ that ¬R holds for
+f =gn. ¬R holds for f =gn as otherwise there would be a bnb-size circuit (1/2 + 1/n)-
+approximating gn. Moreover, the fact that ¬R holds for f =gn is eﬃciently provable in
+EF+ as w.l.o.g. ¬R, for f =gn, does not contain any free variables (we can assume that
+the auxiliary variables are substituted by suitable constants).
+6 Self-provability from random self-reducibility
+We show that the random self-reducibility of the discrete logarithm problem can be used to
+derive a conditional self-provability of the statement that the discrete logarithm problem
+can be solved by p-size circuits.
+For simplicity, we consider the discrete logarithm problem forZ×
+q , multiplicative groups
+of integers modulo a prime q. Let G be such a cyclic group. Then there are p-time
+algorithms A1,A 2 such that A1(g,h,q ) = g ·h ∈ G, for g,h ∈ G, and A2(g,q ) = g−1,
+for g ∈ G. That is, A1 (given q) deﬁnes the multiplication of two elements in G and A2
+outputs the inverse of each g ∈G.
+The discrete logarithm problem for a cyclic group G generated by g is deﬁned as
+follows. Given b ∈G, we want to ﬁnda such thatga =b. The discrete logarithm problem
+is ‘random self-reducible’: If we have a circuit C which solves the problem for ap-fraction
+of all b ∈ G, we can turn it eﬃciently into a randomized circuit C′ which solves the
+problem on each b ∈ G with probability ≥ p. The circuit C′ interprets its random bits
+r as r ∈ [|G|]. Then C′ applies C on bgr. Since bgr is a uniformly random element of
+G, C succeeds in ﬁnding ℓ such that gℓ = bgr with probability ≥ p. Finally, C′ outputs
+ℓ −r, which is the correct answer with probability ≥ p. In other words, the following
+implication holds
+Pr
+b∈G
+[gC(b) =b] ≥p → ∀b ∈G, Pr
+r∈[|G|]
+[gC′(b,r) =b] ≥p, (6.1)
+where C′ is generated from C and g by a p-time function.
+We want to express (6.1) by a propositional formula. To do so, we approximate
+probabilities by a Nisan-Wigderson generator based on a hard function f ∈ E. Fix a
+constant k and assume that q ∈ (2n−1, 2n], n ∈ N. Then, for each nk-size circuit C, the
+predicategC(b) =b with inputb and the predicategC′(b,r) =b with inputr are computable
+respectively by circuits D1 andD2 withn inputs and size poly(n). Circuits D1,D 2 reject
+all inputs not inG, so in particular Prr∈[|G|][gC′(b,r) =b] ≤ 2 Prr∈{0,1}n[D2(r) = 1]. Further,
+25
+for each ϵ <1, there are constants c′,c′′ and poly(n)-time computable generator NWf :
+{0, 1}c′⌈logn⌉ ↦→ {0, 1}n such that iff : {0, 1}c′′⌈logn⌉ ↦→ {0, 1} is hard to (1/2+1/2ϵc′′⌈logn⌉)-
+approximate by circuits of size 2ϵc′′⌈logn⌉, then
+⏐⏐⏐⏐ Pr
+z∈{0,1}c′⌈logn⌉
+[D1(NWf(z)) = 1] − Pr
+b∈{0,1}n
+[D1(b) = 1]
+⏐⏐⏐⏐ ≤ 1/n,
+⏐⏐⏐⏐ Pr
+z∈{0,1}c′⌈logn⌉
+[D2(NWf(z)) = 1] − Pr
+r∈{0,1}n
+[D2(r) = 1]
+⏐⏐⏐⏐ ≤ 1/n.
+Therefore, if f is hard, we have
+Pr
+z∈{0,1}c′⌈logn⌉
+[D1(NWf(z)) = 1] ≥p → ∀b ∈G, Pr
+z∈{0,1}c′⌈logn⌉
+[D2(NWf(z)) = 1] ≥ p
+2 − 3
+2n.
+(6.2)
+The advantage of (6.2) is that it can be expressed bypoly(n)-size tautologies selfn(p,b,C )
+with free variables for nk-size circuits C, n-bit strings b and n-bit parameters p (among
+other extension variables). The tautologies have p-size proofs in some proof system which
+includes a p-size proof of the primality of q and a p-size proof of the fact that g is a gen-
+erator ofG. Here, we use the property that g generatesG if and only if g(q−1)/d ̸≡ 1 (mod
+q) for every prime d dividing q − 1. We can thus deﬁne a Cook-Reckhow propositional
+proof system Pϵ as EF with the additional axioms which allow the system Pϵ to derive
+any substitutional instance of selfn(p,b,C ) and tt(f, 2ϵn, 1/2 − 1/2ϵn) in a single step of
+the proof, for each suﬃciently big n.
+Theorem 10 (Self-provability for the discrete logarithm).
+Letk be a constant. Assume that for some ϵ< 1 we have a Boolean function f ∈ E such
+that for each suﬃciently big n,f is not (1/2+1/2ϵn)-approximable by any 2ϵn-size circuit.
+LetPϵ be the propositional proof system deﬁned above. If there are nk-size circuits solving
+the discrete logarithm problem for Z×
+q , whereq ∈ (2n−1, 2n], then there are p-size circuitsD
+such that Pϵ has p-size proofs of tautologies encoding the statement “ ∀b ∈ Z×
+q,gD(b) =b.”
+Proof. Given annk-size circuitB solving the discrete logarithm problem forZ×
+q , whereq ∈
+(2n−1, 2n],Pϵ can derive selfn(1/2−1/n,b,B ). Since the assumption of selfn(1/2−1/n,b,B )
+is true and since it contains essentially no free variables, it can be proven eﬃciently in
+EF. (Essentially, in order to do so, it suﬃces to evaluate a P/poly-predicate inside EF.)
+Consequently, Pϵ proves eﬃciently ∀b ∈ Z×
+q,gD(b) = b, for a suitable p-size circuit D
+obtained by simulating C′ on all z ∈ {0, 1}c′⌈logn⌉.
+Notably, Theorem 10 establishes a conditional equivalence between a circuit lower
+bound and a proof complexity lower bound (for propositional formulas which might not
+be tautological).
+26
+Acknowledgement
+J´ an Pich received support from the Royal Society University Research Fellowship URF\R1\211106
+“Proof complexity and circuit complexity: a uniﬁed approach.” Rahul Santhanam was
+partially funded by the EPSRC New Horizons grant EP \V048201\1: “Structure versus
+Randomness in Algorithms and Computation.” Part of this work was done while the au-
+thors were visiting the Simons Institute for the Theory of Computing. For the purpose of
+Open Access, the authors have applied a CC BY public copyright lincence to any Author
+Accepted Manuscript version arising from this submission.
+References
+[1] Alth¨ ofer I.;On sparse approximations to randomized strategies and convex combina-
+tions; Linear Algebra and its Applications, 199(1):339-355, 1994.
+[2] Atserias A.; Distinguishing SAT from polynomial-size circuits, through black-box
+queries; Computational Complexity Conference (CCC), 2006.
+[3] Beame P., Pitassi T.; Propositional Proof Complexity: Past, Present and Future ;
+Current Trends in Theoretical Computer Science, Entering the 21st Century, 42-70,
+2001.
+[4] Binnendyk E., Carmosino M., Kolokolova A., Ramyaa R., Sabin M.; Learning with
+distributional inverters; Algorithmic Learning Theory (ALT), 2022.
+[5] Bogdanov A., Talwar K., Wan A.; Hard instances for satisﬁability and quasi-one-way
+functions; ICS, 2010.
+[6] Buss S.; Bounded arithmetic; Bibliopolis, 1986.
+[7] Cobham A.; The intrinsic computational diﬃculty of functions ; Proceedings of the
+2nd International Congress of Logic, Methodology and Philosophy of Science, North
+Holland, pp. 24-30, 1965.
+[8] Cook S.A.; Feasibly constructive proofs and the propositional calculus ; Symposium
+on Theory of Computing (STOC), 1975.
+[9] Cook S.A., Thapen N.; The strength of replacement in weak arithmetic ; ACM Trans-
+actions on Computational Logic, 7(4):749-764, 2006.
+[10] Cook S.A., Kraj´ ıˇ cek J.;Consequences of the Provability of NP ⊆P/poly; Journal of
+Symbolic Logic, 72:1353-1357, 2007.
+27
+[11] de Rezende S., G¨ o¨ os M., Robere R.;Proofs, Circuits and Communication; SIGACT
+News Complexity Theory Column, 2022.
+[12] Grochow J., Pitassi T.; Circuit Complexity, Proof Complexity, and Polynomial Iden-
+tity Testing: The Ideal Proof System ; Journal of the ACM, 65(6), 37:1-59, 2018.
+[13] Gutfreund D., Shaltiel R., Ta-Shma A.; If NP languages are hard in the worst-case
+then it is easy to ﬁnd their hard instances ; Computational Complexity, 16(4), 412-
+441, 2007.
+[14] Hirahara S.; Non-black-box worst-case to average-case reductions within NP; Foun-
+dations of Computer Science (FOCS), 2018.
+[15] Impagliazzo R.; A personal view of average-case complexity; Structure in Complexity
+Theory (SCT), 1995.
+[16] Jeˇ r´ abek E.;Dual weak pigeonhole principle, Boolean complexity and derandomization;
+Annals of Pure and Applied Logic, 129:1-37, 2004.
+[17] Jeˇ r´ abek E.;Weak pigeonhole principle and randomized computation ; Ph.D. thesis,
+Charles University in Prague, 2005.
+[18] Jeˇ r´ abek E.;Approximate counting in bounded arithmetic; Journal of Symbolic Logic,
+72:959-993, 2007.
+[19] Kannan R.; Circuit-size lower bounds and non-reducibility to sparse sets, Information
+and Control, 55:40-56, 1982.
+[20] Kraj´ ıˇ cek J.;Bounded arithmetic, propositional logic, and complexity theory ; Cam-
+bridge University Press, 1995.
+[21] Kraj´ ıˇ cek J.;On the weak pigeonhole principle ; Fundamenta Mathematicae, 170(1-
+3):123-140, 2001.
+[22] Kraj´ ıˇ cek J.;Proof complexity; Cambridge University Press, 2019.
+[23] Kraj´ ıˇ cek J., Pudl´ ak P., Takeuti G.;Bounded arithmetic and the polynomial hierarchy;
+Annals of Pure and Applied Logic, 52:143-153, 1991.
+[24] Lipton R.J., Young N.E.; Simple strategies for large zero-sum games with applications
+to complexity theory; Symposium on Theory of Computing (STOC), 1994.
+[25] Liu Y., Pass R.; On one-way functions from NP-complete problems; Computational
+Complexity Conference (CCC), 2022.
+28
+[26] M¨ uller M., Pich J.;Feasibly constructive proofs of succinct weak circuit lower bounds;
+Annals of Pure and Applied Logic, 2019.
+[27] Newman I.; Private vs common random bits in communication complexity ; Informa-
+tion Processing Letters, 39:67-71, 1991.
+[28] Pich J.; Circuit lower bounds in bounded arithmetics ; Annals of Pure and Applied
+Logic, 166(1):29-45, 2015.
+[29] Pich J., Santhanam R.; Learning algorithms versus automatability of Frege systems ;
+arXiv, 2021.
+[30] Razborov A.A.; Bounded arithmetic and lower bounds in boolean complexity; Feasible
+Mathematics II, 344-386, 1995.
+[31] Razborov A.A.; Pseudorandom generators hard for k-DNF Resolution and Polyno-
+mial Calculus; Annals of Mathematics, 181(2):415-472, 2015.
+[32] Santhanam R.; Pseudorandomness and the Minimum Circuit Size Problem ; Innova-
+tions in Theoretical Computer Science (ITCS), 2020.
+[33] Williams R.; Non-uniform ACC circuit lower bounds ; Computational Complexity
+Conference (CCC), 2011.
+29
