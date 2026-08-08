@@ -353,6 +353,25 @@ MC-001 :
   près ; si |g| = Θ(Σ), elle meurt) → MC-016. Pièces :
   `tasks/done/MC-015.md`, `checks/mc015_multifibres.py`,
   `data/mc015_multifibres.md`.
+- **La loi de croissance est TRANCHÉE : le déficit croît en s ET en k,
+  et le mécanisme est la VALEUR COMMUNE (MC-016, 2026-08-08)** —
+  singletons : g = −(s−1) aux 3 points mesurés (s = 4, 5, 6 ; W =
+  3s + 1), déficit linéaire en s, fraction constante de Σ ; k = 8 :
+  −9 exact (quasi-antichaîne) et **g ∈ [−12, −7] PROUVÉ** (antichaîne
+  pleine, ν = 8, intervalle borne-solveur + réalisable — l'instrument
+  au plafond). Témoins extraits : les programmes optimaux donnent aux
+  points incomparables UNE VALEUR COMMUNE (le mécanisme de MC-003 —
+  couvert à valeur exacte — en géométrie de fibres) : **l'antichaîne
+  ne bloque pas le partage, elle le PERMET** — le renversement de
+  MC-015 est expliqué. Îlots d'additivité observés (chaîne alignée,
+  paires quasi-disjointes) du côté disjonction, cohérents avec le
+  sélecteur. **Conséquence de route : l'additivité en espace partagé
+  est morte à toute échelle — le schéma paie les blocs disjoints
+  (MC-006), et le chaînon restant de la route-but est LA COMPRESSION à
+  tête symétrique (MC-017 candidate).** Réserves : lois à 3 points,
+  grandes échelles à 1 tuple, certificats solveur. Pièces :
+  `tasks/done/MC-016.md`, `checks/mc016_croissance.py`,
+  `data/mc016_croissance.md`.
 - **La base linéaire est fermée au sol (MC-012, 2026-08-07) — THÉORÈME
   F(1, b, 0, 0) = b + 2** : forçage d'égalité (si W ≤ b+1 : c = 1,
   E_j = 1 partout, pas de hauts-B ; puis cascade — c = 1 interdit
