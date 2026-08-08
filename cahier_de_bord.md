@@ -1500,7 +1500,39 @@ calcul** du fil AS n'avaient pas atteint.
 >   ATLAS-013) ; calibration canonique {OR₃,=₂} ; décision utilisateur
 >   attendue. Dossier : `tours/candidature_ligne19_holographique.md` ;
 >   script : `checks/pr003_holographique.py` ; fiche :
->   `tasks/done/PR-003.md`. **[Ajout même jour : CONTRE-VÉRIFICATION
+>   `tasks/done/PR-003.md`. **[Ajout HOL-002, même jour : la piste
+>   utilisateur « orbite de jauge du réseau de tenseurs » construite
+>   et MESURÉE — réplication conforme des scripts utilisateur
+>   (invariance, jauge BP, 625 boucles, min-support 10), puis campagne
+>   famille dure n = 4..8 : S_min ≈ 0.4-0.6 × #SAT (exponentiel,
+>   courbe 5 points) et le minimum TOUJOURS sur une île pure (17/17,
+>   recuit 0/13) — l'orbite UNIFIE les quatre îles sans les ÉTENDRE ;
+>   la sous-voie « interpolation entre îles » fermée à l'échelle
+>   mesurée ; l'hybride calcule Z en polynomial là où une île pure le
+>   faisait déjà. Réserves : dictionnaire fini, w = 0, folklore-check
+>   min-support à sourcer. Fiche : `tasks/done/HOL-002.md` ; mesures :
+>   `data/hol002_hybride.md` ; script : `checks/hol002_hybride.py`.]**
+> - [x] **A-021 (fait, 2026-08-08)** — **LA LIGNE 19 EST CRÉÉE
+>   (première ligne direction P = NP) — l'audit fondateur du paysage
+>   holographique** (26e audit : 17 textes in extenso, 32 pièces,
+>   révisions ×2). Correction : « Accidental Algorithms » = FOCS 2006.
+>   **Instruments PROMUS : parité ⟺ matchgate à l'arité ≤ 3 (Lemma
+>   2.27 + re-démonstration exécutable) — les « faisable » de
+>   PR-003/PR-001 deviennent des réalisabilités PROUVÉES.**
+>   Folklore-check des faits mesurés : (i) théorème publié (« why 7
+>   is special » : m divise 2³−1) → réplication vérifiante ; (ii)
+>   « can be shown » sans preuve → nos certificats = première
+>   vérification exécutable rencontrée ; méthode = le SRP (nommé, en
+>   P). Verrou de la ligne : la barrière interne positive (les
+>   dichotomies, périmètres exacts) ; le corpus TAIT les 3 barrières
+>   classiques. Poches vivantes nommées par les textes : Holant
+>   complexe toutes-arités-paires, #_kHolant k ≠ 2, domaine ≥ 4,
+>   Pl-Holant général (FKT non universel), collapse non-full-rank.
+>   Matrice 21 × 8 vérifiée, README 18 → 19. Audit :
+>   `bib/holant_paysage.md` (+ 26 extractions `bib/pdf/holant/`) ;
+>   fiche : `tasks/done/A-021.md` ; dossier PR-003 §1 ter (ajout
+>   marqué : promotion + folklore-check + correction FOCS 2006).
+>   **[Ajout même jour : CONTRE-VÉRIFICATION
 >   CROISÉE — second instrument indépendant côté utilisateur
 >   (convention duale, `checks/pr001_sl19_holographique.py`), répliqué
 >   par la session : concordance totale (72 = 36 + 36 bases ;
