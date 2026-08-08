@@ -372,6 +372,25 @@ MC-001 :
   grandes échelles à 1 tuple, certificats solveur. Pièces :
   `tasks/done/MC-016.md`, `checks/mc016_croissance.py`,
   `data/mc016_croissance.md`.
+- **La brique de totalisation minimale (MC-017, 2026-08-08)** — le
+  premier pas du chaînon compression, sous les contraintes de MC-016 :
+  (i) **fait favorable NOUVEAU (Q0)** : la mesure partielle est
+  ATTEINTE par une complétion — min-complétions = W_partiel, 3/3
+  exhaustifs à s = 3 (16-32 complétions chacun) — la quantité que la
+  NP-dureté partielle (Th.2, points listés) contrôle est réalisable en
+  total ; mais l'optimum est RARE (1/32) et les complétions canoniques
+  ∗→0/∗→1 le ratent jusqu'à ×2,5 ; (ii) **le candidat minimal est
+  ÉLIMINÉ comme lecteur** : le MUX 1 bit (h(1,·) = f₀, h(0,·) = 𝟙_∗)
+  n'a pas de loi (δ ∈ {−1, 0, +2} sur 9 instances — les −1 confirmant
+  que le plancher sélecteur exige des blocs disjoints) et lit W(f₀),
+  pas W_partiel ; (iii) **le verrou « totalisation à tête couplante »
+  est requalifié en deux exigences nommées** : forcer l'optimum du
+  total à réaliser LA complétion optimale, et décoder son coût
+  additivement — aucun candidat à ce jour ; la zone à explorer est
+  entre le MUX 1 bit et les O(log) blocs disjoints (MC-018 candidate).
+  Réserves : Q0 à s = 3 seulement (q.12 armé), format points-listés
+  seul. Pièces : `tasks/done/MC-017.md`,
+  `checks/mc017_totalisation.py`, `data/mc017_totalisation.md`.
 - **La base linéaire est fermée au sol (MC-012, 2026-08-07) — THÉORÈME
   F(1, b, 0, 0) = b + 2** : forçage d'égalité (si W ≤ b+1 : c = 1,
   E_j = 1 partout, pas de hauts-B ; puis cascade — c = 1 interdit

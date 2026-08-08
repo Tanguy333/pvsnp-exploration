@@ -1450,6 +1450,57 @@ calcul** du fil AS n'avaient pas atteint.
 >   J. ACM 73(3), suites vivantes (Shalunov, Henzinger-Pyne-Ragavan).
 >   Audit : `bib/williams_2025_espace.md` ; fiche : `tasks/done/A-020.md` ;
 >   ligne 1 : 3 corrections MARQUÉES, intégrité 20 × 8.
+> - [x] **MC-017 (fait, 2026-08-08)** — **la brique de totalisation
+>   minimale (premier pas du chaînon compression)** : Q0 FAVORABLE —
+>   la mesure partielle est ATTEINTE par une complétion (3/3
+>   exhaustifs s = 3 ; optimum RARE, canoniques ×2,5 à côté) ; le MUX
+>   1 bit ÉLIMINÉ comme lecteur (pas de loi, δ ∈ {−1, 0, +2} ; les −1
+>   confirment que le plancher sélecteur exige des blocs disjoints) ;
+>   verrou « tête couplante » requalifié en 2 exigences nommées
+>   (réaliser LA complétion optimale + décodage additif — aucun
+>   candidat ; zone 1 bit ↔ O(log) blocs = MC-018 candidate).
+>   Correction en cours de tâche marquée (étiquette « plancher »).
+>   Fiche : `tasks/done/MC-017.md` ; script :
+>   `checks/mc017_totalisation.py` ; mesures :
+>   `data/mc017_totalisation.md`.
+> - [x] **PR-001 (fait, 2026-08-08)** — **le générateur de cibles
+>   externe réarmé** : `prompts/proposeur_front_neuf.md`, prompt
+>   autonome pour Qwen (candidature de ligne 19), exclusions verbatim
+>   des 18 familles, auto-test des 4 barrières, en-tête de recevabilité
+>   en 7 champs, 4 régimes d'échec en motifs de rejet. N'ouvre pas un
+>   Tour 28 (suspension inchangée). Fiche : `tasks/done/PR-001.md`.
+> - [x] **PR-002 (fait, 2026-08-08)** — **première candidature du
+>   générateur (Qwen : « SRE ») INSTRUITE ET REJETÉE, faille fatale** :
+>   σ est une reformulation (épinglage unique ⟹ σ = CC(SAT) par
+>   définition ; sinon min-complétions = méta-complexité partielle,
+>   Levin 1973, lignes 13/18) ; le mécanisme « propagation/clôture »
+>   est un système de preuve (ligne 15) ; auto-test des barrières
+>   invalide (E_N relativise verbatim — dilemme : générique ⟹ BGS,
+>   spécifique ⟹ plafond linéaire gate-elimination) ; sous-lemme =
+>   coin affaibli de Schnorr 1974, non discriminant — contre-vérifié
+>   par SYNTHÈSE DE CIRCUITS (XOR_3 min = 8 ; XOR_4 UNSAT ≤ 9 prouvé,
+>   majorant 12 vérifié, min ∈ [10, 12] sous la convention NOT-payant
+>   de la candidature). Pas de ligne 19, matrice inchangée. Correction
+>   de méthode marquée (chiffres pré-écrits corrigés par la mesure
+>   avant consignation). Dossier : `tours/candidature_ligne19_sre.md` ;
+>   script : `checks/pr002_sre_parite.py` ; fiche :
+>   `tasks/done/PR-002.md`.
+> - [x] **PR-003 (fait, 2026-08-08)** — **deuxième candidature (Qwen :
+>   holographique/matchgates, direction P = NP) : SURVIT SOUS
+>   CONDITIONS — la première recevable.** SL-19 EXÉCUTÉ : char 0
+>   infaisable dans les 4 combinaisons (1 ∈ idéal, det saturé — tout
+>   corps de char 0) ; PRISE : la calibration F₇ était mal spécifiée
+>   ({OR₃,=₃} infaisable à 7 aussi — le miracle de Valiant est
+>   lecture-DEUX-fois) ; contrôle {OR₃,=₂} ajouté : FAISABLE
+>   uniquement à p = 7 du scan {3,5,7,11,13} (72 bases, témoin
+>   [[1,2],[1,3]]). Une erreur manuscrite du Réfuteur retirée (la
+>   force brute a fait foi contre les mains des deux parties).
+>   Conditions : ligne 19 conditionnée à l'audit A-021 (Valiant,
+>   Cai-Lu, dichotomies — garde-fou anti-auto-référence, précédent
+>   ATLAS-013) ; calibration canonique {OR₃,=₂} ; décision utilisateur
+>   attendue. Dossier : `tours/candidature_ligne19_holographique.md` ;
+>   script : `checks/pr003_holographique.py` ; fiche :
+>   `tasks/done/PR-003.md`.
 >
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le
