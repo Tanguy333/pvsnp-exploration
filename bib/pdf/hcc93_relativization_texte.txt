@@ -1,0 +1,422 @@
+
+===== PAGE 1 =====
+Relativization: a Revisionistic Retrospective ∗
+Juris Hartmanis Richard Chang † Suresh Chari
+Desh Ranjan ‡ Pankaj Rohatgi
+Department of Computer Science, Cornell University
+Ithaca, New York 14853, USA
+In this column we examine the role of relativization in compl exity theory in light
+of recent non-relativizing results involving interactive protocols. We begin with the
+twice-told tale of the relativization principle and ponder upon its possible demise.
+Then, we discuss whether usual assumptions are historicall y accurate.
+1 The Twice-Told Tale
+For almost two decades, contradictory relativization has b een a central theme in
+complexity theory. This concept was ﬁrst introduced by Bake r, Gill and Solovay
+[BGS75] in their ground breaking paper where they exhibited oracles A and B such
+that P A = NP A and P B ̸= NP B. This result was startling because almost all results
+in recursion theory remain true in the presence of oracles an d most techniques used
+in complexity theory had been resource bounded versions of t hose used in recursion
+theory.
+Baker, Gill and Solovay oﬀered the following explanation of their results [BGS75]:
+We feel that this is further evidence of the diﬃculty of the P
+?
+= NP
+question. . . . It seems unlikely that ordinary diagonalizat ion methods are
+adequate for producing an example of a language in NP but not i n P;
+such diagonalizations, we would expect, would apply equall y well to the
+relativized classes. . . . On the other hand, we do not feel tha t one can give
+a general method for simulating nondeterministic machines by determin-
+istic machines in polynomial time, since such a method shoul d apply as
+well to relativized machines.
+∗This work was supported in part by NSF Research Grant CCR 88-2 3053.
+†Current Address: Department of Computer Science, Universi ty of Maryland, Baltimore County
+Campus, Baltimore, MD 21228, USA.
+‡Current Address: Max Plank Institut f¨ ur Informatik, Im Sta dtwald, W 6600 Saarbr¨ ucken, Ger-
+many. On leave from Department of Computer Science, New Mexi co State University, Las Cruces,
+NM 88003, USA.
+===== PAGE 2 =====
+Following this work, much eﬀort was expended to ﬁnd contradi ctory relativiza-
+tions for other open problems in complexity theory. A major p art of this eﬀort re-
+volved around obtaining relativized results about the poly nomial time hierarchy and
+its relationship to other classes. In a seminal work, Furst, Saxe and Sipser [FSS84]
+linked these questions to the power of bounded depth boolean circuits. This led to
+the development of an entire subﬁeld of circuit complexity d evoted to understand-
+ing into the the power of such circuits. As a result of advance s made in this area
+[Yao85, Ko89, H ˚ as89] contradictory relativizations for various unsolved problems re-
+garding the Polynomial Hierarchy were found. These and othe r results led to a strong
+belief that problems with contradictory relativization ar e very hard to solve and are
+not amenable to current proof techniques. This sentiment wa s best summarized by
+Hopcroft in the following “meta-theorem” [Hop84] :
+This perplexing state of aﬀairs is obviously unsatisfactor y as it stands.
+No problem that has been relativized in two conﬂicting ways h as yet been
+solved, and this fact is generally taken as evidence that the solutions of
+such problems are beyond the current state of mathematics.
+Some researchers were able to exhibit cases where diagonali zation arguments could
+overcome the relativization barrier [Koz80, Cha90]. Other s were able to overcome
+this barrier through double relativizations [Kur82, Har85 ]. However, these examples
+were considered highly artiﬁcial and did not refute the basi c import of the meta-
+theorem above. Indeed, some eﬀort was even made to identify o pen problems which
+cannot have contradictory relativizations, in the the hope that they were easier to
+solve [HCKM88]. Thus, as a cursory glance at the proceedings of any STRUC-
+TURES conference will conﬁrm, proving contradictory relat ivizations became a per-
+vasive paradigm for showing the optimality of results up to “ known techniques”.
+Many researchers also explored what relativized separatio ns of complexity classes
+might imply about the relationship between these classes in the unrelativized case.
+From the beginning, it was observed that relativized separa tions usually exploit dif-
+ferences in the oracle access mechanisms. For instance, a po lynomial time bounded
+oracle machine can only make polynomially queries, whereas an NP oracle machine
+can make exponentially many queries in its computation tree . The oracle constructed
+by Baker, Gill and Solovay exploits precisely this diﬀerenc e in the access mechanisms.
+Thus it is not clear whether relativized separation truly re ﬂects the diﬀerent compu-
+tational power of the complexity classes or is just an artifa ct of the diﬀerent oracle
+access mechanisms.
+Motivated by this, Book, Long and Selman [BLS84, Boo87] prop osed the theory of
+positive relativizations. They showed that once the oracle access mechanisms for dif-
+ferent classes were made roughly comparable then a relativi zed separation would also
+separate the nonrelativized classes. For example, if nonde terministic oracle machines
+are restricted to asking only polynomially many questions i n the entire computation
+tree, then a relativized separation of P and NP would imply P ̸= NP. Therefore,
+===== PAGE 3 =====
+in this model, contradictory relativizations of P and NP can not be achieved with-
+out also showing that P ̸= NP. This was perhaps the ﬁrst real blow to the general
+relativization principle.
+On the other hand, Bennett and Gill [BG81] proposed the random oracle approach
+to avoid oracles which are highly structured to exploit the d iﬀerences in the access
+mechanism. A random oracle is formed by considering every po ssible string and
+including it in the oracle with probability 1
+2. Bennett and Gill conjectured that since
+a random oracle is intuitively unbiased and unstructured, r elativized results which
+hold with probability 1 for a random oracle should also be tru e in the absence of
+an oracle. This conjecture was then formalized as the Random Oracle Hypothesis .
+Most of the results obtained along these lines, e.g., P ̸= NP ̸= co-NP, agreed with
+commonly held beliefs, an exception being BPP = P. The suscep tibility of even
+this hypothesis to restricted oracle access mechanisms was demonstrated by Kurtz
+[Kur82] who provided some simple counterexamples. However , these results were not
+considered compelling enough to reject the hypothesis outr ight. In fact, Book [Boo90]
+showed that once the access mechanisms were made comparable then random oracle
+separation results would also separate the base classes.
+Thus, for many years the relativization principle was a domi nant research para-
+digm in complexity theory. Once contradictory relativizat ions for an open problem
+was found it was generally considered impossible to solve. R esearchers learned to
+cope with this obviously unsatisfactory state of aﬀairs unt il December 1989, when
+the famous results on the power of interactive protocols wer e announced by electronic
+mail[Bab90].
+2 The Current State of Mathematics
+In their ground breaking work, Lund, Karloﬀ, Fortnow, and Ni san [LFKN90] showed
+that the Polynomial Hierarchy is contained in the class IP. T his was immediately
+followed by the Shamir’s result that IP = PSPACE [Sha90]. One of the remarkable
+aspects of these results was that a few years earlier Fortnow and Sipser [FS88] had
+constructed an oracle A such that co-NP A ̸⊆ IPA. Thus it seemed that the contradic-
+tory relativization barrier was ﬁnally breached. Subseque ntly, it was shown that with
+probability 1, IP A ̸= PSPACEA for a random oracle A, and thus the IP = PSPACE
+result also convincingly refutes the random oracle hypothe sis [HCRR90, CGH90].
+Due to recent dramatic advances by Arora and Safra [AS92] and Arora et al
+[ALM+92] we now have a natural example of two unequal classes which can be col-
+lapsed by an oracle. These new results are a culmination of a s equence of insights into
+probabilistic proof checking [BFL90, BFLS91, FGL +91]. The concept of probabilistic
+proof checking arose from a characterization of Multi-Prov er Interactive Proofs (MIP)
+due to Fortnow, Rompel and Sipser [FRS88, FRS90].
+Intuitively, probabilistic proof checking is a generaliza tion of the concept of NP.
+A language L is in NP if there is a deterministic polynomial time machine, M, such
+===== PAGE 4 =====
+that if x ∈ L then there is a proof of membership which M accepts, and if x ̸∈ L, no
+“proof” will make M accept. One might relax this requirement by allowing proofs to
+be checked by a probabilistic machine which is correct with h igh probability. The real
+gain could be that the proof checker need not look at the entir e proof and membership
+may be decidable with high probability by looking only at a sm all portion of the proof.
+Using this notion Arora and Safra deﬁne classes with probabi listically checkable proofs
+as follows:
+Deﬁnition 1 [AS92, FGL +91] A veriﬁer M is a random polynomial time machine
+having two inputs x and Π. Π is a proof of membership of x in a language L and M
+has random access to any bit of Π. M is an r(n) restricted veriﬁer if on input x of
+size n it is allowed to use at most r(n) random bits and can query at most r(n) bits
+of the proof Π.
+Deﬁnition 2 [AS92] A language L is in PCP(r(n)) if there exists an r(n) restricted
+veriﬁer M such that for every input x:
+1. If x ∈ L there exists a proof Π(x) which causes M to accept with probability 1.
+2. If x ̸∈ L then for all proofs Π, Pr[M(Π, x) accepts] < 1
+2 .
+In this terminology the famous MIP = NEXP result [BFL90] can b e rephrased as
+NEXP = PCP(poly). Thus, the exponentially long proof of memb ership of a NEXP
+language can be checked randomly by a polynomial time machin e which looks only
+at polynomial number of bits of the proof. The new result of Ar ora and Safra shows
+that this can be scaled down to NP!
+Theorem 1 [AS92] NP = PCP(log) .
+This theorem was further improved by Arora, Lund, Motwani, S udan and Szegedy
+[ALM+92], who showed that all NP languages have PCP proofs where th e veriﬁer uses
+log(n) random bits but queries only a constant number of bits of the proof. As with
+the original MIP = NEXP result, both of these new theorems can be used to extend
+results which show that certain NP optimization problems ar e diﬃcult to approximate
+[FGL+91]. In particular, Arora and Safra’s results show that if th e maximum clique
+size of a graph can be approximated in polynomial time to a con stant factor, then
+P = NP. The results of Arora, Lund et al show that if there exist polynomial
+time approximation schemes for any MAXSNP [PY88] hard probl em, then P = NP.
+Also, as in the case of the IP = PSPACE result, these results pr ovide compelling
+counterexamples to the relativization principle and the ra ndom oracle hypothesis.
+The PCP classes can be relativized by allowing the veriﬁer ac cess to an oracle. It
+is easy to construct a relativized world where Theorem 1 is no t true. In fact, with
+some more work it can be shown that
+Theorem 2 With probability 1, NPA ̸= PCP A(log) for a random oracle A.
+===== PAGE 5 =====
+We can obtain another interesting relativization results u sing the PCP character-
+ization. It is well known that NP ̸= NEXP [SFM78]. Thus PCP(log) ̸= PCP(poly).
+However, the following shows that this separation result do es not relativize and gives
+an example where relativization collapses two classes know n to be diﬀerent in the
+unrelativized case.
+Theorem 3
+Let A be any language complete for EXPSPACE. Then PCPA(log) = PCP A(poly).
+Proof: A polynomial time veriﬁer which uses O(poly(n)) random bits can make at
+most a polynomial number of polynomial sized queries to the o racle A on each path.
+In addition it examines at most a polynomial number of bits of an exponentially long
+proof Π. In exponential space one can easily try out all possi ble proofs Π and check
+whether the veriﬁer accepts with the required probability. Thus one query to the
+exponential space complete oracle A, suﬃces to decide whether the input is in the
+language. Hence we obtain PCP A(O(log(n)) = PCP A(O(poly(n)) = EXPSPACE.
+It is worth mentioning that the relativization principle, w hich began with the
+exploitation of the diﬀerence in the oracle access mechanis ms of diﬀerent Turing ma-
+chines, is now jeopardized by this very same technique — live by the sword, die by
+the sword. The relativized separations and collapses menti oned above all exploit the
+fact that the complexity classes such as NP and PSPACE can be r epresented either
+by time and space bounded Turing machines or by interactive p rotocols and proof
+systems. These two diﬀerent kinds of representations have v ery diﬀerent oracle access
+mechanisms. For example, a PSPACE machine can exhaustively query exponentially
+many strings, but each computation path of an IP veriﬁer can o nly ask about poly-
+nomially many strings. This diﬀerence in the oracle access m echanism can be used
+to separate IP from PSPACE in a relativized world. This examp le demonstrates
+the danger in thinking of oracle worlds as a way of relativizi ng complexity classes —
+oracles do not relativize complexity classes, they only rel ativize the machines.
+3 A Revisionist’s Tale
+The discovery of non-relativizing techniques involving in teractive proofs has had a
+dramatic impact on complexity theory. It seems that problem s which have contradic-
+tory relativizations are not as intimidating as we once beli eved and perhaps we can
+ﬁnally shed ourselves of this relativization principle.
+However, many complexity theorists are still reluctant to d eclare the outright
+demise of the relativization principle. It is debatable whe ther techniques such as
+arithmetization and the algebra of polynomials, which were successful in solving ques-
+tions about interactive proofs, are applicable to other pro blems. So, researchers in
+===== PAGE 6 =====
+many areas of complexity theory would ﬁnd a contradictory re lativization just as in-
+timidating as before. Still, these new results do force us to examine the assumptions
+that we usually make in complexity theory. It is often assume d that any proof which
+uses only direct simulation and diagonalization must relat ivize. Do all of the “stan-
+dard techniques” in complexity theory relativize? If we wou ld shed our inhibitions
+and take advantage of the clarity of hindsight, we just might ﬁnd another way to tell
+the tale of the relativization principle.
+It turns out that the PH ⊆ IP and IP = PSPACE results were not the ﬁrst
+theorems in complexity theory that do not relativize — they a re simply the ﬁrst ones
+that were so compelling that they could not be ignored. In fac t, there have been
+non-relativizing theorems since 1977 (only two years after Baker, Gill and Solovay!),
+yet these rather signiﬁcant theorems have not been brought u p as serious challengers
+of the relativization principle.
+We are talking about the theorem due to Hopcroft, Paul and Val iant which showed
+that space bounded computations are strictly more powerful than time bounded com-
+putations.
+Theorem 4 [HPV77]
+For all space constructible f (n), TIME[f (n)] ⊊ SPACE[f (n)].
+The techniques in this proof eventually led to the following result by Paul, Pippenger,
+Szemer´ edi and Trotter, which is one of the few known separat ions between nondeter-
+minism and determinism. (Actually, it is one of the few known separations, period.)
+Theorem 5 [PPST83] TIME[ n] ⊊ NTIME[n].
+As we have mentioned above, these results do not relativize a nd it is not clear why
+they have not been championed as counterexamples to the rela tivization principle.
+Perhaps the fact that Theorem 5 depends heavily on the linear ity of the time bounds
+dissipated some of the enthusiasm for this result. However, Theorem 4 holds for all
+space constructible f (n). Moreover, the result holds for multi-tape Turing machine s.
+Furthermore the theorem conﬁrms our intuition that space is a more powerful resource
+than time. So, this theorem cannot be casually brushed aside as contrived or model
+dependent.
+Theorem 6 There exists an oracle A such that for all f (n),
+TIMEA[f (n)] = SPACEA[f (n)].
+Proof: Let D1, D2, D3, . . . be a standard enumeration of SPACE[2 n] machines. Con-
+sider the language A0 deﬁned by
+A0 = { ⟨M, Di, 1c, x, 1r⟩ | M L(Di)(x) accepts using r tape cells
+and c > |⟨M, Di⟩|2 }.
+Since M is restricted to querying L(Di) on strings of length at most r, 1 c provides
+enough padding for A0 to be recognized in SPACE[2 n]. A direct simulation of the
+===== PAGE 7 =====
+M L(Di)(x) computation would require at most c1|x|+ c22r tape cells, where c1 and c2
+are constants that depend only on the machine description of Di and M (e.g. size of
+the tape alphabet and number of work tapes). So, some ﬁxed SPA CE[2n] machine
+Di0 recognizes A0.
+Now, suppose that f (n) is time constructible. Let L be a language accepted by
+some f (n)-space bounded TM M with oracle A0. Then, M A0 accepts an input string
+x if and only if ⟨M, Di0, 1c, x, 1f (n)⟩ ∈ A0 where c > |⟨M, Di0⟩|2. Since, f (n) is time
+constructible, a TIME A0[f (n)] machine can write down the query
+“⟨M, Di0, 1c, x, 1f (n)⟩ ∈ A0?”.
+Hence, L ∈ TIMEA0[f (n)].
+In the case where f (n) is not time constructible, the time bounded machine will
+ﬁrst compute the exact amount of space used by an f (n)-space bounded machine M
+with the help of the oracle A1,
+A1 = { ⟨M, Di, 1c, x, 1r⟩ | M L(Di)(x) uses at least r tape cells
+and c > |⟨M, Di⟩|2 }.
+As before, A = A0 ⊕ A1 can be recognized in SPACE[2 n] by some ﬁxed TM Dj. Now,
+let L be the language recognized by M A an f (n)-space bounded oracle TM and let
+s(x) be the number of tape cells that M A uses on input x. Hence, s(x) ≤ f (|x|).
+Using s(x) queries to the oracle A1, a time-bounded oracle TM N A can compute s(x)
+in O(s(x)) time steps. Essentially, N A asks the oracle A1 questions of the form
+“⟨M, Dj, 1c, x, 1r⟩ ∈ A1?”.
+If the answer is yes then, N repeats the question with r replaced by r + 1. This takes
+one only time step, assuming the oracle query model which doe s not erase the query
+tape immediately after the query. If the answer is no, then s(x) = r − 1 and with one
+ﬁnal query
+“⟨M, Dj, 1c, x, 1s(x)⟩ ∈ A0?”,
+N A can determine if M A accepts x. Since s(x) ≤ f (|x|), L ∈ TIMEA[f (n)].
+It seems unlikely, though possible, that no one has noticed t hat Theorem 4 does
+not relativize. It must have been immediately obvious that t he proof technique does
+not relativize, since Hopcroft, Paul and Valiant showed by a graph pebbling argument
+that a SPACE[f (n)/ log(f (n))] machine can directly simulate a TIME[ f (n)] machine.
+I.e., they showed that
+TIME[f (n)] ⊆ SPACE[f (n)/ log(f (n))].
+Since f (n) is space constructible 1, by invoking the Space Hierarchy Theorem [SHL65],
+they conclude that
+TIME[f (n)] ⊊ SPACE[f (n)].
+===== PAGE 8 =====
+Clearly, a SPACE[f (n)/ log(f (n))] machine cannot query strings that a TIME[ f (n)]
+machine can, so the ﬁrst step of the proof does not relativize . However, the theo-
+rem itself does not relativize, so any proof of the theorem mu st use non-relativizing
+techniques. So it is surprising to ﬁnd that the technique whi ch Hopcroft, Paul and
+Valiant employed is essentially simulation and diagonaliz ation. Thus, it should have
+been obvious in 1977, that the relativization principle doe s not hold water, because
+standard techniques can produce non-relativizing results .
+4 A Turning Point
+What is really at stake here is not just the relativization pr inciple, but also our
+concept of computation. The way that the computation of a Tur ing machine is
+generally viewed is as a sequence of discrete steps regulate d by the ﬁnite control of
+the machine. In this model, the steps taken at one end of the co mputation do not seem
+to have much eﬀect on the rest of the computation. Papadimitr iou and Yannakakis
+complained about this apparent defect of machine models whe n they deﬁned the
+approximation classes MAXNP and MAXSNP [PY88] as sets of log ical sentences:
+The intuitive reason is that computation is an inherently un stable, non-
+robust mathematical object, in the sense that it can be turne d from non-
+accepting to accepting by changes that would be insigniﬁcan t in any rea-
+sonable metric—say, by ﬂipping a single state to accepting.
+Another consequence of this view of computation is that the s ize of a single step
+of the computation does not seem to matter. Whether the machi ne changes the tape
+symbol based upon the entries of the transition table or upon the recommendation
+of an oracle, the overall structure of the computation remai ns the same. The rela-
+tivization principle is born out of this view of computation . Adding an oracle merely
+increases the size of each step of the computation, much like adding axioms to a proof
+system. The steps involved in the reasoning are the same, we a re just allowed to make
+more assumptions. This view of computation is very appealin g because it allows us
+to deal with computation at a very high level. However by doin g this we ignore a
+crucial diﬀerence between unrelativized and relativized c omputations. The step size
+of an unrelativized computation is much smaller because tra nsitions are made only
+on the basis of a ﬁnite transition table. Moreover, the chang e from one conﬁguration
+to the next is based completely on local information near the machine heads. Thus,
+in some sense, the structure of an unrelativized computatio n is “coherent”. Adding
+an oracle immediately destroys this coherence because succ essive steps now depend
+on entire queries and not just on ﬁnite local information.
+1If this space constructibility assumption were not necessa ry, then we would have a corollary that
+P ⊊ PSPACE, because by the Union Theorem [MM69], there exists a r ecursive function S(n) such
+that P = TIME[ S(n)] and PSPACE = SPACE[ S(n)]. However, S(n) cannot be space constructible,
+so we cannot conclude that TIME[ S(n)] ⊊ SPACE[S(n)].
+===== PAGE 9 =====
+Both the non-relativizing techniques mentioned earlier ex ploit this coherence prop-
+erty in a essential way. The techniques used in results about interactive proofs and
+probabilistic proof checking rely on the fact that coherenc e enables us to obtain
+small descriptions for entire machine computations. For ex ample, an entire PSPACE
+computation can be encoded as a QBF and a nondeterministic co mputation is repre-
+sentable as a boolean formula. Such descriptions make these problems amenable to
+the algebra of low degree polynomials. This insight played a key role in the recent
+results about interactive proofs and has opened a fresh aven ue for exploring com-
+putations. Even the pebbling approach of Hopcroft, Paul and Valiant uses the fact
+that coherence ensures that a computation can be simulated w ithout having to store
+entire conﬁgurations of the machine at the same time. Only th ose parts that change
+are required at any one time and others can be recomputed when required without
+using too much space.
+The above examples demonstrate that if we are to resolve the m ajor open questions
+in computational complexity, we must take into account the coherence of unrelativized
+computations. A fascinating question is whether further in sights into unrelativized
+computation can be obtained by representing entire computa tions by other “continu-
+ous” mathematical objects. In any case, with the emergence o f new non-relativizing
+techniques, we can be sure that the old problems will be attac ked with renewed vigor.
+The next few years promise to be exciting times for complexit y theory.
+References
+[ALM+92] S. Arora, C. Lund, R. Motwani, M. Sudan, and M. Szegedy. Pr oof veriﬁcation
+and intractability of approximation problems. Unpublishe d manuscript, 1992.
+[AS92] S. Arora and S. Safra. Approximating clique is NP-com plete. Unpublished
+manuscript, 1992.
+[Bab90] L. Babai. E-mail and the unexpected power of interac tion. In Proceedings of
+the 5th Structure in Complexity Theory Conference , pages 30–44, July 1990.
+[BFL90] L. Babai, L. Fortnow, and C. Lund. Non-deterministi c exponential time has
+two-prover interactive protocols. In Proceedings of the IEEE Symposium on
+Foundations of Computer Science , pages 16–25, 1990.
+[BFLS91] L. Babai, L. Fortnow, L. Levin and M. Szegedy Checki ng computations in
+poly-logarithmic time. In Proceedings of the 23 rd ACM Symposium on Theory
+of Computing , pages 21–31, 1991.
+[BG81] C. Bennett and J. Gill. Relative to a random oracle A, P A ̸= NP A ̸= co-NP A
+with probability 1. SIAM Journal on Computing , 10(1):96–113, February 1981.
+[BGS75] T. Baker, J. Gill, and R. Solovay. Relativizations o f the P =? NP question.
+SIAM Journal on Computing , 4(4):431–442, December 1975.
+===== PAGE 10 =====
+[BLS84] R. V. Book, T. J. Long, and A. L. Selman. Quantitative relativizations of
+complexity classes. SIAM Journal on Computing , 13:461–487, 1984.
+[Boo87] R. V. Book. Towards a theory of relativizations: Pos itive relativizations. In
+Proceedings of the 4th Symposium on Theoretical Aspects of C omputer Science,
+volume 247 of Lecture Notes in Computer Science , pages 1–21. Springer-Verlag,
+1987.
+[Boo90] R. V. Book. On separating complexity classes. In Proceedings of the 5th Struc-
+ture in Complexity Theory Conference , pages 299–304, July 1990.
+[CGH90] B. Chor, O. Goldreich, and J. H ˚ astad. The random ora cle hypothesis is false.
+Technical Report 631, Department of Computer Science, Tech nion, 1990. Re-
+vised paper to appear in the Journal of Computer and System Sciences .
+[Cha90] R. Chang. An example of a theorem that has contradict ory relativizations and
+a diagonalization proof. Bulletin of the European Association for Theoretical
+Computer Science , 42:172–173, October 1990.
+[FGL+91] U. Feige, S. Goldwasser, L. Lov´ asz, S. Safra, and M. Szeg edy. Approximat-
+ing clique is almost NP-complete. In Proceedings of the IEEE Symposium on
+Foundations of Computer Science , pages 2–12, 1991.
+[FRS88] L. Fortnow, J. Rompel, and M. Sipser. On the power of m ulti-prover interactive
+protocols. In Proceedings of the 3rd Structure in Complexity Theory Confe rence,
+pages 156–161, June 1988.
+[FRS90] L. Fortnow, J. Rompel, and M. Sipser. Errata for on th e power of multi-prover
+interactive protocols. In Proceedings of the 5th Structure in Complexity Theory
+Conference, pages 318–319, July 1990.
+[FS88] L. Fortnow and M. Sipser. Are there interactive proto cols for co-NP languages?
+Information Processing Letters , 28(5):249–251, August 1988.
+[FSS84] M. Furst, J. B. Saxe, and M. Sipser. Parity, circuits and the polynomial-time
+hierarchy. Mathematical Systems Theory , 17:13–27, 1984.
+[Har85] J. Hartmanis. Solvable problems with conﬂicting re lativizations. Bulletin of the
+European Association for Theoretical Computer Science , 27:40–49, Oct 1985.
+[H ˚ as89] J. H ˚ astad. Almost optimal lower bounds for small d epth circuits. In Random-
+ness and Computation , volume 5 of Advances in Computing Research , (Silvio
+Micali, ed.), pages 143–170. JAI Press Inc, 1989.
+[HCKM88] J. Hartmanis, R. Chang, J. Kadin, and S. Mitchell. S ome observations about
+relativization of space bounded computations. Bulletin of the European Asso-
+ciation for Theoretical Computer Science , 35:82–92, June 1988.
+===== PAGE 11 =====
+[HCRR90] J. Hartmanis, R. Chang, D. Ranjan, and P. Rohatgi. S tructural complexity
+theory: Recent surprises. In Proceedings of the 2nd Scandinavian Workshop on
+Algorithm Theory, volume 447 of Lecture Notes in Computer Science , pages 1–
+12. Springer-Verlag, 1990. Revised paper to appear in the Journal of Computer
+and System Sciences .
+[Hop84] J. E. Hopcroft. Turing machines. Scientiﬁc American, pages 86–98, May 1984.
+[HPV77] J. Hopcroft, W. Paul, and L. Valiant. On time versus s pace. Journal of the
+ACM, 24(2):332–337, April 1977.
+[Ko89] K. Ko. Relativized polynomial time hierarchies havi ng exactly k levels. SIAM
+Journal on Computing , 18(2):392, 1989.
+[Koz80] D. Kozen. Indexings of subrecursive classes. Theoretical Computer Science ,
+11:277–301, 1980.
+[Kur82] S. A. Kurtz. On the random oracle hypothesis. In ACM Symposium on Theory
+of Computing , pages 224–230, 1982.
+[LFKN90] C. Lund, L. Fortnow, H. Karloﬀ, and N. Nisan. Algebr aic methods for interac-
+tive proof systems. In Proceedings of the IEEE Symposium on Foundations of
+Computer Science , pages 2–10, 1990.
+[MM69] E. M. McCreight and A. R. Meyer. Classes of computable functions deﬁned by
+bounds on computation. In ACM Symposium on Theory of Computing , pages
+79–88, 1969.
+[PPST83] W. J. Paul, N. Pippenger, E. Szemer´ edi, and W. T. Tr otter. On determinism
+versus non-determinism. In Proceedings of the IEEE Symposium on Foundations
+of Computer Science , pages 429–438, 1983.
+[PY88] C. H. Papadimitriou and M. Yannakakis. Optimization , approximation, and
+complexity classes. In ACM Symposium on Theory of Computing , pages 229–
+234, 1988.
+[SFM78] J. I. Seiferas, M. J. Fischer, and A. R. Meyer. Separa ting nondeterministic time
+complexity classes. Journal of the ACM , 25:146–167, 1978.
+[Sha90] A. Shamir. IP = PSPACE. In Proceedings of the IEEE Symposium on Foun-
+dations of Computer Science , pages 11–15, 1990.
+[SHL65] R. E. Stearns, J. Hartmanis, and P. M. Lewis II. Hiera rchies of memory limited
+computations. In Proceedings of the Sixth Annual Symposium on Switching
+Circuit Theory and Logical Design , pages 179–190, 1965.
+[Yao85] A. C. Yao. Separating the polynomial-time hierarch y by oracles. In Proceedings
+of the IEEE Symposium on Foundations of Computer Science , pages 1–10, 1985.
