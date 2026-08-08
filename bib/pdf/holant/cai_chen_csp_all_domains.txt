@@ -1,0 +1,2360 @@
+arXiv:1111.2384v1  [cs.CC]  10 Nov 2011
+Complexity of Counting CSP with Complex Weights
+Jin-Yi Cai
+University of Wisconsin – Madison
+jyc@cs.wisc.edu
+Xi Chen
+Columbia University
+xichen@cs.columbia.edu
+Abstract
+We give a complexity dichotomy theorem for the counting Constraint Satisfaction Problem (#CSP
+in short) with complex weights. To this end, we give three conditions for its tractability. Let F be any
+ﬁnite set of complex-valued functions, then we prove that #CSP(F) is solvable in polynomial time if
+all three conditions are satisﬁed; and is #P-hard otherwise.
+Our complexity dichotomy generalizes a long series of important results on counting problems: (a)
+the problem of counting graph homomorphisms is the special case when there is a single symmetric
+binary function in F [12, 5, 16, 7]; (b) the problem of counting directed graph homomorphisms is the
+special case when there is a single not-necessarily-symmetric binary function in F [10, 6]; and (c) the
+standard form of #CSP is when all functions in F take values in {0, 1} [1, 13, 14].
+1
+
+1
+Introduction
+It is well known that if NP ̸= P, there is an inﬁnite hierarchy of complexity classes between them [18].
+However, for some broad classes of problems, a complexity dichotomy exists: every problem in the class is
+either in polynomial time or NP-hard. Such results include Schaefer’s theorem [20], the dichotomy of Hell
+and Neˇsetˇril for H-coloring [17], and some subclasses of the general constraint satisfaction problem (CSP
+in short) [9]. These developments lead to the following questions: How far can we push the envelope and
+show dichotomies for even broader classes of problems? Given a class of problems, what is the criterion
+that distinguishes the tractable problems from the intractable ones? The famous dichotomy conjecture
+by Feder and Vardi on decision CSP [15], which motivated much of the subsequent work, remains open
+to date. Now replacing NP with #P [23], both questions above can be asked for counting problems and
+in particular, the counting constraint satisfaction problem (#CSP in short).
+In this paper, we study the complexity of #CSP in its most general form with complex weights. Let
+D = {1, . . . , d} be a ﬁnite set, called a domain. A weighted constraint language F over the domain D is
+a ﬁnite set of complex-valued functions {f1, . . . , fh}, where fi : Dri →C for some ri ≥1. The language
+F then deﬁnes the following counting constraint satisfaction problem, denoted by #CSP(F). The input
+consists of a tuple x = (x1, . . . , xn) of variables over D and a collection I of tuples (f, i1, . . . , ir) in which
+f is an r-ary function from F and i1, . . . , ir ∈[n]. It deﬁnes the following function FI over x ∈Dn:
+FI(x) =
+Y
+(f,i1,...,ir)∈I
+f(xi1, . . . , xir).
+And the output of the problem is the following sum: Z(I) = P
+x∈Dn FI(x).
+Various subclasses of #CSP have been studied intensively recently:
+Counting graph homomorphisms: This is the special case when the language F has a single
+symmetric binary function. A series of dichotomies have been discovered for functions with {0, 1}
+weights by Dyer and Greenhill [12], nonnegative weights by Bulatov and Grohe [5], real weights by
+Goldberg, Grohe, Jerrum and Thurley [16], and complex weights by Cai, Chen and Lu [7].
+Counting directed graph homomorphisms: This is the special case when F has a single not-
+necessarily-symmetric binary function. In [11], Dyer, Goldberg and Paterson show a dichotomy for
+{0, 1} functions that induce an acyclic graph when viewed as the adjacency matrix of a directed
+graph. Then Cai and Chen [6] give a dichotomy for all nonnegative binary functions.
+The standard form of #CSP: This is the special case when every function in F takes values in
+{0, 1}. Bulatov makes a breakthrough and proves a complexity dichotomy for this class (which we
+will refer to as unweighted #CSP). Later Dyer and Richerby give a simpliﬁed proof of his theorem
+and also prove the decidability of the dichotomy criterion in [13, 14]. It is then extended to include
+nonnegative and rational weights by Bulatov, Dyer, Goldberg, Jalsenius, Jerrum and Richerby [4],
+and nonnegative weights by Cai, Chen and Lu [8].
+In this paper, we generalize all these results and prove a dichotomy for #CSP with complex weights:
+Theorem 1 (main). Given any constraint language F with algebraic complex weights, #CSP(F) is either
+in polynomial time or #P-hard.
+2
+
+To prove the dichotomy, we introduce three conditions on the language F: the Block Orthogonality
+condition, the Mal’tsev condition and the Type Partition condition. We show that #CSP(F) is #P-hard
+if F violates any of these three conditions; and give a polynomial-time algorithm that solves #CSP(F)
+when F satisﬁes all three conditions.
+Proof Sketch
+The proof starts with the following framework for solving #CSP(F). Let I be an instance of #CSP(F)
+and F be the n-ary function it deﬁnes. We let F [t], for each t ∈[n], denote the following t-ary function:
+F [t](x1, . . . , xt) =
+X
+xt+1,...,xn∈D
+F(x1, . . . , xt, xt+1, . . . , xn).
+In the discussion below, it is more convenient to consider F [t] as a dt−1 × d matrix when t ≥2: the rows
+are indexed by x = (x1, . . . , xt−1); the columns are indexed by i ∈D; and the (x, i)th entry is F [t](x, i).
+In particular, we use F [t](x, ∗) to denote the d-dimensional row vector indexed by x ∈Dt−1.
+In an ideal world, Z(I) can be computed eﬃciently with the following oracle: We can send any tuple
+x ∈Dt−1 to the oracle, and it returns a d-dimensional vector v that is linearly dependent with F [t](x, ∗).
+Here either v = 0 if F [t](x, ∗) = 0; or v has its ﬁrst non-zero entry normalized to 1 so that it is unique.
+With the help of such a powerful oracle, we can compute Z(I) as follows. From Z(I) = P
+a∈D F [1](a)
+it suﬃces to compute F [1](a) for each a ∈D. Pick any a1 ∈D, and we send it to the oracle. The oracle
+returns a vector v that is linearly dependent with F [2](a1, ∗). If v = 0 then F [1](a1) = P
+b∈D F [2](a1, b) =
+0. Otherwise, let a2 ∈D be the index of the ﬁrst non-zero entry of v, with va2 = 1. Then we have
+F [1](a1) =
+X
+b∈D
+F [2](a1, b) = F [2](a1, a2) ·
+X
+b∈D
+vb,
+where the last equation follows from the assumption that F [2](a1, ∗) and v are linearly dependent. This
+reduces the computation of F [1](a1) to F [1](a1, a2). Next we send (a1, a2) to the oracle. Either the vector
+w we get back from the oracle is 0, in which case F [2](a1, a2) = 0; or we can use w to further reduce the
+computation of F [1](a1) to F [3](a1, a2, a3) for some appropriate a3 ∈D. Repeating this process for n −1
+rounds, then it suﬃces to compute F [n](a1, a2, . . . , an) for some appropriate a2, . . . , an ∈D. This gives
+an eﬃcient algorithm for computing F [1](a1) because F = F [n] can be evaluated eﬃciently using I.
+As a result, we can solve #CSP(F) eﬃciently with such an oracle. It turns out that almost the whole
+proof of Theorem 1 is trying to understand how and when we can eﬃciently implement this oracle. Note
+that we essentially need to “collect” the following huge amount of information: For each t ∈[n], we need
+to compute a set of pairwise linearly independent (and normalized) d-dimensional vectors v[t,1], . . . , v[t,st]
+for some st ≥0, so that every nonzero row vector F [t](x, ∗) is linearly dependent with one of them. Also
+for each vector v[t,j], we need to know the set of x ∈Dt−1, denoted by S[t,j] ⊆Dt−1, such that F [t](x, ∗)
+is non-zero and linearly dependent with v[t,j]. Two diﬃculties arise. First, note that in general an m × d
+matrix may have as many as m pairwise linearly independent row vectors. Thus in general, we may need
+to keep track of exponentially many v[t,j]’s. Second, for each v[t,j], S[t,j] is in general exponential in t.
+To overcome the ﬁrst diﬃculty, we drew inspiration from the recent dichotomy theorems for counting
+graph homomorphisms with real [16] and complex weights [7]. In both dichotomies those tractable cases
+are closely related to matrices in which every two row vectors are either linearly dependent or orthogonal
+3
+
+e.g., the Hadamard matrices and the so-called discrete unitary matrices [7]. This inspires us to introduce
+the ﬁrst necessary condition for tractability: the Block Orthogonality condition. It requires that for any
+F deﬁned by an instance of #CSP(F) and for any t ∈[n], every two row vectors of F [t] are either linearly
+dependent or orthogonal; Otherwise #CSP(F) is #P-hard. Actually a more stringent requirement than
+orthogonality must hold (as the word “block” suggests); Otherwise #CSP(F) is #P-hard. See the formal
+deﬁnition in Section 3.1. Assume F satisﬁes the Block Orthogonality condition. Then we know for sure
+that each F [t] has at most d pairwise linearly independent (and indeed pairwise orthogonal) row vectors.
+To overcome the second diﬃculty, we need some of the powerful techniques developed for the unwei-
+ghted #CSP [1, 13]. One of the tools used there is the notion of Mal’tsev polymorphism from universal
+algebra (see Section 2.8). In [13] Dyer and Richerby introduce a succinct representation, called a witness
+function, for any set Φ ⊆Dn that has a Mal’tsev polymorphism ϕ. A witness function of a set Φ ⊆Dn
+is of linear size in n, the arity of Φ, and essentially contains all the information about Φ. In particular,
+with a witness function one can decide whether a given tuple x ∈Dn belongs to Φ eﬃciently. From here
+it is only natural to ask whether the sets S[t,j] associated with each v[t,j] have a Mal’tsev polymorphism.
+This is where we introduce the second necessary condition: the Mal’tsev condition. Roughly speaking, it
+requires all the sets S[t,j] ⊆Dt−1, deﬁned from all F, t and j, to share a common Mal’tsev polymorphism
+ϕ; Otherwise the problem #CSP(F) is #P-hard.
+We can now reﬁne the plan of implementing the oracle as follows. Assume the language F satisﬁes
+both the Block Orthogonality condition and the Mal’tsev condition. Then given any input instance I of
+#CSP(F) which deﬁnes an n-ary function F, we compute for each t : 2 ≤t ≤n,
+(a) A set of (at most d) pairwise orthogonal and normalized d-dimensional vectors v[t,1], . . . , v[t,st],
+for some st ≥0, such that every nonzero F [t](x, ∗) is linearly dependent with one of them.
+(b) A witness function ω[t,j] for each set S[t,j], which can be used to decide membership eﬃciently.
+So the only algorithmic problem left is, how (and when) can we compute these objects eﬃciently?
+To this end, we start with t = n and F = F [n]. First, by using the Mal’tsev condition and a beautiful
+algorithm of Dyer and Richerby [13], we can construct eﬃciently a witness function ω for R ⊆Dn where
+x ∈R if and only if F(x) ̸= 0. With ω, it is also easy to construct a witness function ω′ for R′ ⊆Dn−1,
+the projection of R on its ﬁrst n−1 coordinates. We are getting closer because by the deﬁnition of S[n,j],
+R′ is exactly the union of the sn pairwise disjoint sets S[n,1], . . . , S[n,sn] ⊆Dn−1. Skipping some technical
+details, what we need boils down to the following splitting operation over witness functions:
+Let Φ ⊆Dn be a nonempty set, and let Ψ1, . . . , Ψs be an s-way partition of Φ, for some s ∈[d]:
+The Ψi’s are nonempty, pairwise disjoint, and satisfy Φ = Ψ1 ∪· · · ∪Ψs. Assume that ϕ is a
+Mal’tsev polymorphism of Φ and all the Ψi’s. At the beginning, we have completely no
+information about the Ψi’s, not even the number s of the Ψi’s, though we do know that s ∈[d].
+The only resources we have are a witness function ω for Φ and a black box to query: We can send
+any x ∈Φ to the black box and it returns the unique index k ∈[s] such that x ∈Ψk. The
+question is: Can we use ω and the black box to compute s ∈[d] as well as a witness function ωk
+for each Ψk in polynomial time and only using polynomially many queries?
+In general, we do not know how to implement the splitting operation above eﬃciently. However, if Φ
+and Ψ1, . . . , Ψs satisfy the so-called partition condition (see the deﬁnition in Section 3.1) then we present
+4
+
+an algorithm that computes s ∈[d] as well as a witness function ωk for each Ψk, in polynomial time and
+using polynomially many queries. This ﬁnally brings us to the last condition: the Type Partition condi-
+tion. It turns out that this condition is also necessary for tractability. If F violates it, then #CSP(F) is
+#P-hard. Roughly speaking, the Type Partition condition requires that whenever we need to apply the
+splitting operation, Φ and Ψ1, . . . , Ψs satisfy the partition condition so that our algorithm works. In par-
+ticular, it requires R′ and S[n,1], . . . , S[n,sn] to satisfy the partition condition and thus, we can apply the
+splitting operation to construct a witness function for each S[n,j] using ω′. The proof showing that the
+Type Partition condition is necessary (Section 5) and the algorithm for the splitting operation assuming
+the partition condition (Section 7.3) are among the most challenging in the paper. Moreover, with the
+help of the splitting operation and the Type Partition condition, we can inductively construct a witness
+function for each S[t,j] from t = n to 2. Therefore, we get an eﬃcient implementation of the oracle and
+thus, the problem #CSP(F) is in polynomial time when all three necessary conditions are satisﬁed. This
+ﬁnishes the proof of Theorem 1.
+2
+Preliminaries
+2.1
+Notation
+For convenience, we let C denote the set of algebraic complex numbers throughout the paper and usually
+refer to them simply as complex numbers when it is clear from the context.
+Let D = {1, 2, . . . , d} be a ﬁnite set, called a domain. Let F : Dn →C be an n-ary complex function.
+We use Im(F) to denote the image of F, i.e.,
+Im(F) =
+
+c ∈C : c = F(x) for some x ∈Dn	
+.
+Given a ﬁnite set F = {F1, . . . , Fh} of functions, we use Im(F) to denote the image of F:
+Im(F) = Im(F1) ∪· · · ∪Im(Fh).
+Given F : Dn →C, we use F [t], for each t ∈[n], to denote the following t-ary function:
+F [t](x1, . . . , xt) =
+X
+xt+1,...,xn∈D
+F(x1, . . . , xt, xt+1, . . . , xn).
+Note that F [n] = F. We also use |F| to denote the non-negative function deﬁned as follows:
+|F| : x 7→|F(x)|,
+for all x ∈Dn.
+Given F = {F1, . . . , Fh}, we use |F| to denote
+
+|F1|, . . . , |Fh|
+	
+.
+Given F : Dn →C where n ≥2, in certain situations we consider F as a matrix with exponentially
+many rows but only d columns. We let MF denote the following dn−1 × d matrix: The rows of MF are
+indexed by x = (x1, . . . , xn−1) ∈Dn−1; the columns are indexed by xn ∈D; and the (x, xn)th entry
+MF (x, xn) = F(x, xn) = F(x1, . . . , xn−1, xn).
+5
+
+For any x ∈Dn−1, we use F(x, ∗) to denote the d-dimensional vector whose ith entry is F(x, i). We use
+|F(x, ∗)| to denote the d-dimensional non-negative vector whose ith entry is |F(x, i)|.
+Given an m × n matrix M, we use M(i, ∗) to denote the ith row vector of M.
+Given two vectors x and y ∈Cd, we say they are orthogonal if
+P
+i∈[d] xi · yi = 0.
+Given x ∈Dn and ℓ∈[n], we use Pr[ℓ]x to denote its preﬁx of length ℓ.
+Let Φ ⊆Dn be an n-ary relation. For each ℓ∈[n], we let PrℓΦ ⊆D denote the projection of Φ on the
+ℓth coordinate: a ∈PrℓΦ if and only if there is an x ∈Φ such that xℓ= a. We call x a witness for a at the
+ℓth coordinate, or simply a witness for the pair (ℓ, a). We also use Pr[ℓ]Φ ⊆Dℓto denote the projection
+of Φ on the ﬁrst ℓcoordinates: y ∈Pr[ℓ]Φ if and only if there exists an x ∈Φ such that y = Pr[ℓ]x.
+Given a vector a ∈Dℓfor some ℓ∈[n], we let Φ(a, ∗) = Φ(a1, . . . , aℓ, ∗) denote the relation on n −ℓ
+variables with the ﬁrst ℓvariables ﬁxed to a: y ∈Φ(a, ∗) if and only if a ◦y ∈Φ.
+Given a permutation π over [n], we let Φπ denote the n-ary relation such that x ∈Φπ if and only if
+xπ(1), . . . , xπ(n)
+
+∈Φ.
+Finally we use ≤T to denote polynomial-time Turing reductions between problems, and ≡T to denote
+equivalence under polynomial-time Turing reductions.
+2.2
+Counting CSP with Algebraic Weights
+Let D = [d] be a domain, and F = {F1, . . . , Fh} be a ﬁnite set of complex functions over D. They deﬁne
+the following problem denoted by #CSP(F). An input instance of the problem consists of a ﬁnite set of
+variables x1, . . . , xn over D and a ﬁnite multiset I of tuples (F, i1, . . . , ir) in which F is an r-ary function
+in F and i1, . . . , ir ∈[n]. It deﬁnes the following n-ary function FI over x = (x1, . . . , xn) ∈Dn:
+FI(x) =
+Y
+(F,i1,...,ir)∈I
+F(xi1, . . . , xir).
+The output of the problem is then the following exponential sum:
+Z(FI) =
+X
+x∈Dn
+FI(x).
+When F = {F} has only one function, we also use #CSP(F) to denote #CSP(F) for convenience.
+To complete the deﬁnition of #CSP(F), we need to specify the model of algebraic number computa-
+tion, i.e., how the numbers in F and the output Z(FI) are encoded. We can take any reasonable model,
+e.g., the one used earlier in [22, 21, 19]. This issue of computation model does not seem central to this
+paper because when the complexity of #CSP(F) is concerned, F is ﬁxed and considered as a constant.
+The input size only depends on n, the number of variables, and |I|, the number of tuples in I.
+Given D and F, we can also deﬁne the following problem, denoted COUNT(F): The input is a pair
+(I, c), where I is an input instance of #CSP(F) and c is an algebraic complex number. Let x1, . . . , xn be
+6
+
+the variables over D in I, then the output is the number of x = (x1, . . . , xn) ∈Dn such that
+FI(x) = c,
+where FI is the n-ary function deﬁned by I.
+It turns out that COUNT(F) and #CSP(F) are equivalent under polynomial-time Turing reductions:
+Lemma 1. COUNT(F) ≡T #CSP(F).
+Proof. Let Im(F) = {c1, . . . , ck} where k = |Im(F)| is considered as a constant because F is ﬁxed. Let I
+be an input instance of #CSP(F) over n variables x ∈Dn with m = |I|, and let F be the n-ary function
+that I deﬁnes. First of all, we can compute the following set of numbers in time polynomial in m:
+Cm =
+n
+cℓ1
+1 · · · cℓk
+k : ℓ1, . . . , ℓk are non-negative integers and ℓ1 + · · · + ℓk = m
+o
+,
+since k is a constant. It then follows from the deﬁnition of F that F(x) ∈Cm for all x ∈Dn.
+For each c ∈Cm, we let Nc denote the number of x ∈Dn such that F(x) = c, then we have
+Z(F) =
+X
+x∈Dn
+F(x) =
+X
+c∈Cm
+c · Nc.
+This immediately gives us a polynomial-time reduction from #CSP(F) to COUNT(F).
+We prove the other direction: Given any I, we use a subroutine for #CSP(F) to compute Nc for all
+c ∈Cm. For this purpose, we let C′
+m = Cm −{0} and let s = |C′
+m| which is polynomial in m. We build
+from I the following instances I1, . . . , Is: to get Iℓ, ℓ∈[s], we make ℓcopies of each tuple in I and thus,
+I1 = I and |Iℓ| = ℓ· |I|. We also let Fℓdenote the n-ary function deﬁned by Iℓ.
+By the construction of Iℓ, it is easy to see that Fℓ(x) = (F(x))ℓfor all x ∈Dn and thus,
+Z(Fℓ) =
+X
+x∈Dn
+Fℓ(x) =
+X
+c∈Cm
+cℓ· Nc =
+X
+c∈C′m
+cℓ· Nc,
+for each ℓ= 1, . . . , s.
+The left hand side of the equations can be obtained by calling a subroutine for #CSP(F) on Iℓ. We can
+then solve the Vandermonde system above to get Nc for each c ∈C′
+m. If 0 ∈Cm, we can also derive N0
+using the fact that the sum of all the Nc’s, c ∈Cm, is dn. This ﬁnishes the proof of the lemma.
+In certain situations the problem COUNT(F) is easier to use than #CSP(F). For example, we use it
+to prove the following lemma.
+Lemma 2. #CSP(|F|) ≤T #CSP(F).
+Proof. By Lemma 1, it suﬃces to show COUNT(|F|) ≤T COUNT(F). We let Im(F) = {c1, . . . , ck} where
+k is considered as a constant because the set F of functions is ﬁxed.
+Let I be an input instance of #CSP(|F|), and F be the n-ary non-negative function it deﬁnes. Let a
+be a non-negative number, and we need to compute the number of x ∈Dn such that F(x) = a.
+From I, it is natural to construct an input instance I′ of #CSP(F) by simply replacing the function
+|Fi| in each tuple of I with its corresponding function Fi in F. Let F ′ denote the function that I′ deﬁnes
+then it is clear that F(x) = |F ′(x)| for all x ∈Dn.
+7
+
+Let m = |I| = |I′|, then we can compute
+Cm =
+n
+cℓ1
+1 · · · cℓk
+k : ℓ1, . . . , ℓk are non-negative integers and ℓ1 + · · · + ℓk = m
+o
+in time polynomial in m because k is a constant.
+From the deﬁnitions of Cm and F ′, we have F ′(x) ∈Cm for all x ∈Dn. As a result,
+h
+the number of x such that F(x) = a
+i
+=
+X
+c∈Cm: |c|=a
+h
+the number of x such that F ′(x) = c
+i
+,
+and the right hand side can be computed eﬃciently, because the number of such c can be no more than
+|Cm| and the term for each c can be evaluated by calling a subroutine for COUNT(F).
+This ﬁnishes the proof of the lemma.
+2.3
+Row Representation
+Let M be an m × n complex matrix. It induces the following equivalence relation ∼M over
+n
+ℓ∈[m] : M(ℓ, ∗) ̸= 0
+o
+,
+i.e., the set of nonzero rows of M:
+ℓ∼M ℓ′ ⇐⇒M(ℓ, ∗) and M(ℓ′, ∗) are linearly dependent over C.
+We say that S =
+
+(S1, v1), . . . , (Sk, vk)
+	
+, for some integer k ≥0, is the row representation of M if
+1. S1, . . . , Sk ⊆[m] are the equivalence classes of the equivalence relation ∼M; and
+2. For each i ∈[k], vi is a nonzero n-dimensional vector with its ﬁrst nonzero entry being 1, and is
+linearly dependent with M(ℓ, ∗), for all ℓ∈Si. (By the deﬁnition of ∼M, vi exists and is unique.)
+We will refer to vi as the representative row vector for the equivalence class Si.
+From the deﬁnition, it is easy to see that Si is nonempty for all i; the Si’s are pairwise disjoint;
+S1 ∪· · · ∪Sk =
+n
+ℓ∈[m] : M(ℓ, ∗) ̸= 0
+o
+;
+for all i ̸= j, vi and vj are linearly independent. Clearly every matrix has a unique row representation.
+In general, the row representation S of an m × n matrix M may consist of as many as m pairs. But
+if it is known that every two rows of M are either linearly dependent or orthogonal, then the number of
+pairs in its row representation cannot exceed n.
+For a non-negative M, we say it is block-rank-1 if its row representation S =
+
+(S1, v1), . . . , (Sk, vk)
+	
+has the property that for all i ̸= j ∈[k], the two vectors vi and vj have distinct positive entries.
+We next extend the notion of row representations to functions. Given any F : Dn →C with n ≥2,
+we deﬁne the following equivalence relation ∼F over
+
+x ∈Dn−1 : F(x, ∗) ̸= 0
+	
+:
+x ∼F y ⇐⇒F(x, ∗) and F(y, ∗) are linearly dependent over C.
+8
+
+Similarly, we say
+S =
+
+(S1, v1), . . . , (Sk, vk)
+	
+,
+where Si ⊆Dn−1 for all i ∈[k],
+is the row representation of F if S is the row representation of the dn−1 × d matrix MF . (Equivalently,
+we have S1, . . . , Sk are the equivalence classes of ∼F; and for each i ∈[k], vi is a non-zero d-dimensional
+vector with its ﬁrst non-zero entry being 1, and is linearly dependent with F(x, ∗), x ∈Si.)
+Finally, we also call F a block-rank-1 function, if M|F | is a block-rank-1 matrix. (Equivalently, for all
+x, y ∈Dn−1 with F(x, ∗) and F(y, ∗) being nonzero, the two non-negative vectors |F(x, ∗)| and |F(y, ∗)|
+either are linearly dependent or share no common positive entry.)
+2.4
+The Block-Rank-1 Condition
+We need the following dichotomy from Bulatov and Grohe [5]. Let A denote a symmetric d × d non-ne-
+gative matrix with algebraic entries. It deﬁnes the following graph homomorphism problem, denoted by
+EVAL(A): The input is an undirected graph G = (V, E) with V = [n], and the output is
+ZA(G) =
+X
+x1,...,xn∈[d]
+
+Y
+ij∈E
+A(xi, xj)
+
+.
+In the language of #CSP, EVAL(A) is the same as #CSP(F) with F(i, j) = A(i, j) for all i, j ∈[d].
+Theorem 2. Let A be a symmetric and non-negative square matrix with algebraic entries, then EVAL(A)
+is in polynomial time if A is block-rank-1; and is #P-hard otherwise.
+We can also extend the deﬁnitions of EVAL(A) and ZA(·) to any square matrix A over C. The input
+of EVAL(A) is now a directed graph G = (V, E), and the output is
+ZA(G) =
+X
+x1,...,xn∈[d]
+
+Y
+−
+→
+ij ∈E
+A(xi, xj)
+
+.
+The following lemma will be useful later in the proof:
+Lemma 3. Let A be a square (though not necessarily symmetric) matrix with algebraic complex entries.
+If |A| is not block-rank-1, then EVAL(A) is #P-hard.
+Proof. By Lemma 2, it suﬃces to show that EVAL(|A|) is #P-hard. To this end we use B to denote the
+symmetric and non-negative d × d matrix |A||A|T , where the (i, j)th entry of B is
+B(i, j) =
+X
+k∈[d]
+A(i, k)
+ ·
+A(j, k)
+.
+From the deﬁnition of B, we claim EVAL(B) ≤T EVAL(|A|). This is because given any undirected graph
+G = (V, E) of EVAL(B), we can construct a new directed graph G′ = (V ′, E′) with
+V ′ =
+n
+xv, xe : v ∈V and e ∈E
+o
+and
+E′ =
+n−−→
+xuxe, −−→
+xvxe : e = uv ∈E
+o
+.
+9
+
+It is then easy to check that ZB(G) = Z|A|(G′) from which the reduction follows. On the other hand, by
+Cauchy-Schwarz, if |A| is not block-rank-1, neither is B. Then it follows from Theorem 2 that EVAL(B)
+is #P-hard, and so is EVAL(|A|). This ﬁnishes the proof.
+Next, we use Theorem 2 to give a useful #P-hardness lemma for #CSP with a single complex-valued
+function. The idea is similar to the proof of Lemma 3 above. Let D = [d] be a domain, then
+Lemma 4 (The Block-Rank-1 Condition). Let F : Dr →C be any algebraic complex function with arity
+r ≥2. If F is not a block-rank-1 function, then #CSP(F) is #P-hard.
+Proof. First of all, by Lemma 2 it suﬃces to show that #CSP(|F|) is #P-hard.
+To ﬁnish the proof, we construct a symmetric and non-negative matrix A from |F| such that
+EVAL(A) ≤T #CSP(|F|)
+(1)
+and then use Theorem 2 to show that EVAL(A) is #P-hard.
+To this end, we deﬁne the following matrix A: its rows and columns are indexed by x ∈Dr−1, and
+A(x, y) =
+X
+i∈D
+F(x, i)
+ ·
+F(y, i)
+.
+It is clear that A is both symmetric and non-negative.
+Moreover, given any undirected graph G = (V, E) of EVAL(A), we construct the following instance I
+of #CSP(|F|): it has the following (r −1)|V | + |E| variables
+xv,1, . . . , xv,r−1, ye,
+for each v ∈V and e ∈E.
+For every e = uv ∈E, we add the following two tuples to I:
+
+|F|, xu,1, . . . , xu,r−1, ye
+
+and
+
+|F|, xv,1, . . . , xv,r−1, ye
+
+.
+From the construction of I and the deﬁnition of A from |F|, it is easy to check that
+ZA(G) = Z(FI),
+where FI is the function that I deﬁnes.
+This gives us a polynomial-time reduction from EVAL(A) to #CSP(|F|).
+Finally, we show that if F is not block-rank-1, then A is not a block-rank-1 matrix, and by Theorem
+2, EVAL(A) is #P-hard. Because F is not block-rank-1, we know there are two vectors x, y ∈Dr−1 such
+that |F(x, ∗)| and |F(y, ∗)| share at least one common positive entry but are linearly independent. This
+implies that all the following four entries of A are positive:
+A(x, x), A(x, y) = A(y, x), A(y, x) > 0,
+but by Cauchy-Schwarz, we have
+A(x, y) · A(y, x) =
+ X
+i∈D
+F(x, i)
+ ·
+F(y, i)
+
+!2
+<
+ X
+i∈D
+F(x, i)
+2
+!  X
+i∈D
+F(y, i)
+2
+!
+= A(x, x) · A(y, y).
+10
+
+Therefore, A is not a block-rank-1 matrix by deﬁnition. This ﬁnishes the proof of the lemma.
+2.5
+Block Orthogonality
+Let x, y ∈Cd be two nonzero d-dimensional vectors. Let x′ and y′ be the two non-negative vectors such
+that x′
+i = |xi| and y′
+i = |yi| for all i, and assume that x′ and y′ are linearly dependent. As a result, these
+four vectors share the same nonzero entries, and we use T ⊆[d] to denote the set of such indices. Let
+
+µ1, . . . , µℓ
+	
+=
+
+x′
+i : i ∈T
+	
+,
+for some ℓ≥1, such that µ1 > · · · > µℓ> 0. This further partitions T into T1, . . . , Tℓwith
+x′
+i = µk,
+for all i ∈Tk and k ∈[ℓ].
+It is also clear that y′ would yield the same partition because it is linearly dependent with x′.
+Now we say x and y are block-orthogonal if for every k ∈[ℓ],
+X
+i∈Tk
+xi · yi = 0.
+(2)
+It is also easy to show that x and y are orthogonal if they are block-orthogonal:
+X
+i∈[d]
+xi · yi =
+X
+i∈T
+xi · yi =
+X
+k∈[ℓ]
+X
+i∈Tk
+xi · yi = 0.
+We need the following property of two vectors being block-orthogonal:
+Lemma 5. If x and y are block-orthogonal, and the non-zero entries of these two vectors satisfy xK
+i > 0
+and yK
+i > 0 for some integer K ≥1, then we have
+X
+i∈D
+xisK+1 · yrK−1
+i
+= 0,
+for any integers s ≥0 and r ≥1.
+Proof. We use the same notation as in the deﬁnition of block orthogonality above. For each i ∈T, we let
+zi = xi
+
+|xi| and wi = yi
+
+|yi|. Then by the assumption of the lemma, zi and wi are roots of unity whose
+order divides K. As x′ and y′ are linearly dependent, there are ν1 > · · · > νℓ> 0 such that |yi| = νk for
+all i ∈Tk and k ∈[ℓ]. Now we can rewrite (2) as
+0 =
+X
+i∈Tk
+xi · yi = µk · νk
+X
+i∈Tk
+zi · wi.
+Then the lemma follows from
+X
+i∈D
+xsK+1
+i
+· yrK−1
+i
+=
+X
+k∈[ℓ]
+X
+i∈Tk
+xsK+1
+i
+· yrK−1
+i
+=
+X
+k∈[ℓ]
+µsK+1
+k
+· νrK−1
+k
+X
+i∈Tk
+zsK+1
+i
+· wrK−1
+i
+=
+X
+k∈[ℓ]
+µsK+1
+k
+· νrK−1
+k
+X
+i∈Tk
+zi · wi = 0.
+11
+
+The second to the last equation uses the fact that zi, wi are roots of unity whose order divides K.
+We are now ready to deﬁne block-orthogonal functions:
+Deﬁnition 1 (Block-Orthogonal Function). Let F : Dn →C be a block-rank-1 function with n ≥2. We
+call it a block-orthogonal function if for all x, y ∈Dn−1 such that F(x, ∗), F(y, ∗) ̸= 0 and x ∼|F | y, the
+two vectors F(x, ∗) and F(y, ∗) are either linearly dependent or block-orthogonal.
+2.6
+Unweighted Counting CSP
+We need the following connection between weighted and unweighted #CSP. The latter is the case when
+all the functions in F take values in {0, 1}, for which we adopt the following notation. Let D = [d] be a
+domain. An unweighted constraint language Γ over domain D is a ﬁnite set of relations {Φ1, Φ2, . . . , Φh}
+in which every Φi is an ri-ary relation over Dri, for some ri ≥1. D and Γ deﬁne the following problem
+which we denote by #CSP(Γ). Let x = (x1, . . . , xn) ∈Dn be a set of n variables over D. The input is a
+collection I of tuples (Φ, i1, . . . , ir) in which Φ is an r-ary relation in Γ and i1, . . . , ir ∈[n]. The input I
+then deﬁnes the following relation RI over Dn:
+x ∈RI ⇐⇒for every tuple (Φ, i1, . . . , ir) ∈I, we have (xi1, . . . , xir) ∈Φ.
+Given I, the output of the problem is the number of x ∈Dn in this relation RI.
+Given F : Dn →C, we use ΦF = Boolean(F) to denote the relation over n variables such that
+x ∈ΦF ⇐⇒F(x) ̸= 0,
+for all x ∈Dn.
+The following lemma is a corollary of Lemma 1:
+Lemma 6. Given a ﬁnite set of complex functions F =
+
+F1, . . . , Fh
+	
+, we have
+#CSP(Γ) ≤T #CSP(F),
+where Γ =
+
+Φ1, . . . , Φh
+	
+and Φi = Boolean(Fi) for all i ∈[h].
+Proof. By Lemma 1, it suﬃces to show that #CSP(Γ) ≤T COUNT(F).
+Let I be an input instance of #CSP(Γ) over n variables and let R be the relation that it deﬁnes. We
+then construct an instance I′ of #CSP(F) in polynomial time, by replacing the relation Φi in each tuple
+of I with its corresponding function Fi ∈F, and let F denote the function that I′ deﬁnes. Then we have
+x ∈R ⇐⇒F(x) ̸= 0,
+for all x ∈Dn,
+and thus,
+|R| = dn −
+
+the number of x ∈Dn such that F(x) = 0
+
+.
+The right hand side can be obtained by calling a subroutine for COUNT(F).
+2.7
+The Puriﬁcation Lemma
+As it will become clear later, it is easier to work with functions that take complex values with rational
+arguments. We need the following deﬁnition:
+12
+
+Deﬁnition 2 (Pure Functions). We call F : Dn →C a pure complex function if F(x) is the product of
+a non-negative integer and a root of unity, for all x ∈Dn. Given a pure function F, we use order(F) to
+denote the smallest positive integer K such that (F(x))K is positive for all x ∈Dn with F(x) ̸= 0.
+A useful tool in proving the hardness part of our dichotomy is the following Puriﬁcation Lemma. It
+was introduced in the study of complex graph homomorphisms in [7], and gives us a connection between
+pure and general functions (which can take values with irrational arguments). In Section 4 and Section
+5, we will see two examples where the Puriﬁcation Lemma is used to extend two hardness lemmas from
+pure to general functions.
+Lemma 7 (The Puriﬁcation Lemma). There is a mapping Pure which, given any ﬁnite tuple (F1, . . . , Fh)
+of complex-valued functions, produces a tuple of pure functions
+F ′
+1, . . . , F ′
+h
+
+= Pure
+F1, . . . , Fh
+
+(3)
+in which each F ′
+i has the same arity ri ≥1 as Fi, such that
+1. #CSP(F ′
+1, . . . , F ′
+h) ≡T #CSP(F1, . . . , Fh);
+2. For every i ∈[h], we have Boolean(F ′
+i) = Boolean(Fi);
+3. For every i ∈[h] with ri ≥2, if F ′
+i is block-rank-1 then Fi is block-rank-1; and
+4. If F ′
+i is block-rank-1, then for any x, y ∈Dn−1 such that F ′
+i(x, ∗) and F ′
+i(y, ∗) share
+at least one common nonzero entry, we have
+(a) F ′
+i(x, ∗) and F ′
+i(y, ∗) are linearly dependent iﬀFi(x, ∗) and Fi(y, ∗) are linearly dependent;
+(b) If F ′
+i(x, ∗) and F ′
+i(y, ∗) are block-orthogonal, then Fi(x, ∗) and Fi(y, ∗) are block-orthogonal.
+The proof of the Puriﬁcation Lemma uses the following lemma from [7]. We start with a deﬁnition:
+Deﬁnition 3. Let C = {c1, c2, . . . , cn} be a set of nonzero algebraic numbers, for some n ≥1. Then we
+say {g1, . . . , gs}, for some s ≥0, is a generating set of C if
+1. Every gi is a nonzero algebraic number in Q(C);
+2. For all (k1, . . . , ks) ∈Zs −
+
+0
+	
+, gk1
+1 · · · gks
+s
+is not a root of unity; and
+3. For every c ∈C, there exists a unique tuple (k1, . . . , ks) ∈Zs such that
+c
+gk1
+1 · · · gks
+s
+is a root of unity.
+Note that s = 0 happens if and only if all the ci’s in C are roots of unity.
+Lemma 8 (7.2 in [7]). Let C be a ﬁnite set of nonzero algebraic numbers, then it has a generating set.
+We now use Lemma 8 to prove the Puriﬁcation Lemma:
+13
+
+Proof of the Puriﬁcation Lemma. We ﬁrst describe the mapping Pure, and then prove the properties.
+By Lemma 8, we use {g1, . . . , gs} to denote a generating set of Im(F1, . . . , Fh) −{0}. Given a tuple
+k = (k1, . . . , ks) ∈Zs, we use g(k) to denote gk1
+1 · · · gks
+s
+for convenience. By deﬁnition, there is a unique
+tuple k ∈Zs for each c ∈Im(F1, . . . , Fh) −{0} such that c
+
+g(k) is a root of unity. Because the functions
+F1, . . . , Fh are ﬁxed, all the integers in k are considered as constants.
+We deﬁne F ′
+i from Fi as follows. For every x ∈Dri, F ′
+i(x) = 0 if Fi(x) = 0. If Fi(x) ̸= 0, then there
+exists a unique tuple k ∈Zs such that Fi(x)
+
+g(k) is a root of unity, and we set
+F ′
+i(x) = pk1
+1 · · · pks
+s · Fi(x)
+g(k) ,
+where pi denotes the ith smallest prime. It is clear that Property 2 of the lemma is satisﬁed. In the rest
+of the proof, we will use p(k) to denote pk1
+1 · · · pks
+s for all k ∈Zs.
+Next we prove the equivalence of the two problems. By Lemma 1, it suﬃces to show that
+COUNT(F1, . . . , Fh) ≡T COUNT(F ′
+1, . . . , F ′
+h).
+(4)
+We start with the reduction from COUNT(F1, . . . , Fh) to COUNT(F ′
+1, . . . , F ′
+h).
+Given an instance I of #CSP(F1, . . . , Fh) over n variables, we use I′ to denote the instance of #CSP
+(F ′
+1, . . . , F ′
+h) obtained by replacing the Fi in each tuple of I with its corresponding function F ′
+i. Also let
+m = |I| = |I′| and let F and F ′ denote the functions that I and I′ deﬁne, respectively. By Property 2, we
+have F(x) ̸= 0 iﬀF ′(x) ̸= 0 and thus, the number of x such that F(x) = 0 is the same as the number of
+x such that F ′(x) = 0. The latter can be obtained by calling a subroutine for COUNT(F ′
+1, . . . , F ′
+h).
+Let {c1, . . . , ct} = Im(F1, . . . , Fh) −{0} with t being a constant since the set of functions is ﬁxed. We
+then compute the following set Cm in time polynomial in m:
+Cm =
+n
+cℓ1
+1 · · · cℓt
+t : ℓ1, . . . , ℓt are non-negative integers and ℓ1 + · · · + ℓt = m
+o
+.
+For each c ∈Cm we also compute the unique tuple k ∈Zs such that c
+
+g(k) is a root of unity, using the
+known tuples for {c1, . . . , ct}. By the construction of F ′
+1, . . . , F ′
+h from F1, . . . , Fh, and by the assumption
+that {g1, . . . , gs} is a generating set, we have
+F(x) = c ⇐⇒F ′(x) = p(k) ·
+c
+g(k),
+for all x ∈Dn.
+Hence, the number of x with F(x) = c can be obtained by calling a subroutine for COUNT(F ′
+1, . . . , F ′
+h).
+The other direction from COUNT(F ′
+1, . . . , F ′
+h) to COUNT(F1, . . . , Fh) can be proved similarly.
+Now we check Property 3. In the rest of the proof, we use F to denote Fi, F ′ to denote F ′
+i and r to
+denote ri, the arity of Fi, for convenience.
+Assume r ≥2 and F ′ is block-rank-1. Let x, y ∈Dr−1 be two vectors such that F(x, ∗) and F(y, ∗)
+share at least one common nonzero entry. From Property 2 and the assumption that F ′ is block-rank-1
+we know that |F ′(x, ∗)| and |F ′(y, ∗)| must be nonzero and linearly dependent.
+To prove that |F(x, ∗)| and |F(y, ∗)| are linearly dependent, it suﬃces to show for all indices i, j ∈D
+14
+
+of nonzero entries of F(x, ∗) (which are also indices of nonzero entries of F(y, ∗), F ′(x, ∗), F ′(y, ∗)),
+F(x, i)
+ ·
+F(y, j)
+ =
+F(y, i)
+ ·
+F(x, j)
+.
+(5)
+To this end, we let u, v, w, z ∈Zs denote the vectors such that
+F ′(x, i)
+p(u) ,
+F ′(y, j)
+p(v)
+,
+F ′(y, i)
+p(w) ,
+F ′(x, j)
+p(z)
+are all roots of unity. Because |F ′(x, ∗)| and |F ′(y, ∗)| are linearly dependent, we have
+pu1+v1
+1
+· · · pus+vs
+s
+=
+F ′(x, i)
+ ·
+F ′(y, j)
+ =
+F ′(y, i)
+ ·
+F ′(x, j)
+ = pw1+z1
+1
+· · · pws+zs
+s
+and thus, uk + vk = wk + zk for all k ∈[s]. (5) then follows directly from the construction of F ′.
+Next we prove Property 4(a). Assume that F(x, ∗) and F(y, ∗) are linearly dependent. Then we use
+i, j ∈D to denote two indices of nonzero entries of F ′(x, ∗), which must be indices of nonzero entries of
+F ′(y, ∗), F(x, ∗) and F(y, ∗) as well. Similarly, let u, v, w, z ∈Zs be the vectors such that
+c1 = F(x, i)
+g(u) ,
+c2 = F(y, j)
+g(v) ,
+c3 = F(y, i)
+g(w) ,
+c4 = F(x, j)
+g(z) ,
+and c1, . . . , c4 are all roots of unity. Because F(x, ∗) and F(y, ∗) are linearly dependent, we have
+c1 · c2 · gu1+v1
+1
+· · · gus+vs
+s
+= F(x, i) · F(y, j) = F(y, i) · F(x, j) = c3 · c4 · gw1+z1
+1
+· · · gws+zs
+s
+.
+By the deﬁnition of generating sets, we must have c1 · c2 = c3 · c4 and uk + vk = wk + zk for all k ∈[s].
+On the other hand, by the construction of F ′, we have
+F ′(x, i) · F ′(y, j) = c1 · c2 · pu1+v1
+1
+· · · pus+vs
+s
+= c3 · c4 · pw1+z1
+1
+· · · pws+zs
+s
+= F ′(y, i) · F ′(x, j)
+and thus, F ′(x, ∗) and F ′(y, ∗) are also linearly dependent. The other direction can be proved similarly.
+For 4(b), assume that F ′(x, ∗) and F ′(y, ∗) are block-orthogonal. Note that when F ′ is block-rank-1
+F is also block-rank-1 by Property 3. We then use T ⊆D to denote the set of indices j ∈D such that
+F(x, j) ̸= 0 (and F(y, j), F ′(x, j), F ′(y, j) ̸= 0 as both functions are block-rank-1). We use F ′(x, ∗) to
+further partition T into T1, . . . , Tt for some t ≥1: there are positive integers µ1 > · · · > µt > 0 such that
+F ′(x, j)
+ = µk,
+for all j ∈Tk and k ∈[t].
+Since F ′ is block-rank-1, we know |F ′(x, ∗)|, |F ′(y, ∗)| are linearly dependent and thus, there are positive
+integers ω1 > · · · > ωt > 0 such that (µ1, . . . , µt) and (ω1, . . . , ωt) are linearly dependent and
+F ′(y, j)
+ = ωk,
+for all j ∈Tk and k ∈[t].
+We also use c(x, j) and c(y, j) to denote the roots of unity such that
+F ′(x, j) = µk · c(x, j)
+and
+F ′(y, j) = ωk · c(y, j).
+15
+
+Because F ′(x, ∗) and F ′(y, ∗) are block-orthogonal, by deﬁnition, we have
+X
+j∈Tk
+F ′(x, j) · F ′(y, j) = µk · ωk
+X
+j∈Tk
+c(x, j) · c(y, j) = 0,
+for all k ∈[t].
+(6)
+For each k ∈[t], we use uk and vk ∈Zs to denote the two unique vectors such that
+µk = p(uk)
+and
+ωk = p(vk).
+Then by the construction of F ′ from F, we have for all j ∈Tk,
+F(x, j) = g(uk) · c(x, j)
+and
+F(x, j)
+ =
+g(uk)
+
+(7)
+F(y, j) = g(vk) · c(y, j)
+and
+F(y, j)
+ =
+g(vk)
+.
+Now we are ready to prove that F(x, ∗) and F(y, ∗) are block-orthogonal. Let υ = |F(x, j)| > 0 for
+some j ∈T and let Sυ ⊆T be the set of indices j such that |F(x, j)| = υ. Then by (7) above Sυ must
+be the union of some of the Tk’s. Without loss of generality, let Sυ = T1 ∪· · · ∪Tq for some q ≤t, then
+X
+j∈Sυ
+F(x, j) · F(y, j) =
+X
+k∈[q]
+X
+j∈Tk
+g(uk)c(x, j) · g(vk)c(y, j) =
+X
+k∈[q]
+g(uk)g(vk)
+X
+j∈Tk
+c(x, j) · c(y, j) = 0
+where the ﬁrst equation uses (7) and the last equation uses (6). This ﬁnishes the proof.
+We remark that in both Property 3 and Property 4(b) of the lemma, the statement only holds in one
+direction. For example, when Fi is block-rank-1, it is not clear how to prove that F ′
+i is block-rank-1 as
+well. However, it turns out that the directions that we can prove are the ones that we will actually need
+later in proving those hardness lemmas for general functions.
+Using Property 2, 3 and 4 of the Puriﬁcation Lemma, we have the following corollary:
+Corollary 1. Given (3), if F ′
+i is block-orthogonal, then so is Fi. Moreover, the equivalence relations ∼Fi
+and ∼F ′
+i, as deﬁned by Fi and F ′
+i, are the same.
+2.8
+Mal’tsev Polymorphisms and Witness Functions
+The algorithmic part of our dichotomy theorem uses the following concept of Mal’tsev polymorphisms:
+Deﬁnition 4. Let Φ ⊆Dn be an n-ary relation and ϕ : D3 →D be a map. If for any u, v, w ∈Φ,
+ϕ
+u1, v1, w1
+
+, . . . , ϕ
+un, vn, wn
+
+∈Φ,
+then we say Φ is closed under ϕ, and call ϕ a ternary polymorphism of Φ.
+Given Φ ⊆Dn and ϕ : D3 →D, we use clϕΦ to denote the closure of Φ under ϕ, that is, the smallest
+relation that contains Φ and is closed under ϕ.
+Deﬁnition 5 (Mal’tsev Polymorphism). Let Φ ⊆Dn be an n-ary relation, then we say ϕ : D3 →D is a
+Mal’tsev polymorphism of Φ if ϕ is a polymorphism of Φ and satisﬁes
+ϕ(a, b, b) = ϕ(b, b, a) = a,
+for all a, b ∈D.
+(8)
+16
+
+Let Γ = {Φ1, . . . , Φh} be a ﬁnite set of relations, then we say ϕ is a Mal’tsev polymorphism of Γ if it
+is a Mal’tsev polymorphism of Φi for all i ∈[h].
+Bulatov and Dalmau [2] gave the following #P-hardness theorem. Also see Dyer and Richerby [13].
+Theorem 3 ([2]). Let Γ = {Φ1, . . . ,Φh} be a ﬁnite set of relations. If Γ does not have any Mal’tsev poly-
+morphism, then #CSP(Γ) is #P-hard.
+Corollary 2. Let Λ be a collection of (possibly inﬁnitely many) relations. Either all relations in Λ share
+a common Mal’tsev polymorphism ϕ; or there is a ﬁnite subset Γ ⊂Λ such that #CSP(Γ) is #P-hard.
+Proof. Note that, given d, there are only ﬁnitely many maps ϕ : D3 →D. We let P denote the set of all
+such maps. Now assume the relations in Λ do not share a common Mal’tsev polymorphism, then for any
+ϕ ∈P, there is a relation Φϕ ∈Λ of which ϕ is not a Mal’tsev polymorphism. Then from Theorem 3, we
+know that #CSP(Γ) is #P-hard, where Γ = {Φϕ : ϕ ∈P} is a ﬁnite subset of Λ.
+Let Φ be an n-ary relation with variables x1, . . . , xn ranging over D, then in general |Φ| could be ex-
+ponentially large in n. But when Φ is known to have a Mal’tsev polymorphism and such a polymorphism
+ϕ is also given, Dyer and Richerby introduced in [13] the following succinct representation for Φ, which
+is similar to the “compact representation” of Bulatov and Dalmau [3]. We start with some notation.
+For each i ∈[n] we deﬁne the following relation ∼i on Pri Φ, the projection of Φ on its ith coordinate:
+a ∼i b if there exist tuples x ∈Di−1 and ya, yb ∈Dn−i such that
+x ◦a ◦ya ∈Φ
+and
+x ◦b ◦yb ∈Φ.
+For the case when i = 1, we have a ∼1 b for all a, b ∈Pr1Φ because they share the common empty preﬁx
+ǫ. It was then shown in [13] that if Φ has a Mal’tsev polymorphism, ∼i must be an equivalence relation:
+Lemma 9. If Φ has a Mal’tsev polymorphism, then ∼i is an equivalence relation for all i ∈[n].
+When Φ has a Mal’tsev polymorphism, we let Ei,k ⊆PriΦ, where k = 1, 2, . . . , denote the equivalence
+classes of ∼i. Moreover, we can use the Mal’tsev polymorphism to show that
+Lemma 10. If a ∼i b and x ∈Φ with xi = a, then there is a y ∈Φ with yi = b and Pr[i−1]x = Pr[i−1]y.
+Proof. Because a ∼i b, by deﬁnition, there exist z ∈Di−1 and u1, u2 ∈Dn−i such that
+z ◦a ◦u1 ∈Φ
+and
+z ◦b ◦u2 ∈Φ.
+Applying a Mal’tsev polymorphism ϕ of Φ on these two vectors together with x ∈Φ gives a new vector
+y ∈Φ. It is easy to check that y satisﬁes both properties, and the lemma is proven.
+Next, we deﬁne the succinct representation called witness functions [13].
+Deﬁnition 6 (Witness Function). Let Φ ⊆Dn be a relation that has a Mal’tsev polymorphism, then we
+say ω : [n] × D →Dn ∪{⊥} is a witness function of Φ if
+1. For any i ∈[n] and a /∈PriΦ, ω(i, a) = ⊥;
+2. For any i ∈[n] and a ∈PriΦ, ω(i, a) ∈Φ is a witness for (i, a), i.e., its ith component is a;
+17
+
+3. For any i ∈[n] and a, b ∈PriΦ with a ∼i b, we have
+Pr[i−1]ω(i, a) = Pr[i−1]ω(i, b).
+In [13] a subset of Φ that contains the image of a witness function of Φ is called a frame of Φ. But in
+this paper, we will only use witness functions. The following lemma from [13] is the reason why a witness
+function is considered as a succinct (and linear-size) representation of Φ:
+Lemma 11 (Membership). Let Φ ⊆Dn be an n-ary relation which has a Mal’tsev polymorphism. With
+ω, a witness function of Φ, and ϕ, a Mal’tsev polymorphism of Φ, we can solve the following problem in
+time polynomial in n: Given x ∈Dn, decide if x ∈Φ or not.
+It is also easy to show that, if ϕ is a Mal’tsev polymorphism of Φ ⊆Dn, then all three operations on
+Φ described in Section 2.1, that is, projection, pinning, and permutation, would result in a relation Φ′ of
+which ϕ remains a Mal’tsev polymorphism.
+Lemma 12. Let ϕ be a Mal’tsev polymorphism of Φ ⊆Dn. Let ℓ∈[n], a ∈Dℓ, and π be a permutation
+on [n]. Then ϕ is also a Mal’tsev polymorphism of Pr[ℓ]Φ, Φ(a, ∗), and Φπ.
+Moreover, given a witness function ω of Φ, we can construct a witness function of Pr[ℓ]Φ, Φ(a, ∗) and
+Φπ in time polynomial in n. For pinning and projection, the following two lemmas can be found in Dyer
+and Richerby [13]. In Section 7, we will discuss permutation and two other polynomial-time operations
+on witness functions, union and splitting. They will play an important role in the algorithmic part.
+Lemma 13 (Pinning). Let ω : [n] × D →Dn ∪{⊥} be a witness function of Φ. Then given any a ∈Dℓ
+for some ℓ∈[n], we can construct a witness function for Φ(a, ∗) in time polynomial in n.
+Lemma 14 (Projection). Let ω : [n] × D →Dn ∪{⊥} be a witness function of Φ. Given any ℓ∈[n], we
+can construct a witness function for Pr[ℓ]Φ in time polynomial in n.
+When ℓis bounded by a constant, we can use ω to compute the projection Pr[ℓ]Φ itself in polynomial
+time. Given an x ∈Pr[ℓ]Φ, we can also compute a vector y ∈Φ with x = Pr[ℓ]y in polynomial time.
+Let Γ =
+
+Φ1, . . . , Φh
+	
+be an unweighted language over D. Then by Theorem 3, #CSP(Γ) is #P-hard
+if the relations in Γ do not share a common Mal’tsev polymorphism. Dyer and Richerby showed [13] that
+if all the relations in Γ share a common Mal’tsev polymorphism, then given any instance I of #CSP(Γ),
+a witness function for the relation RI that I deﬁnes can be constructed eﬃciently.
+Theorem 4. Let ϕ be a Mal’tsev polymorphism of all the relations in Γ, then given any input instance
+I of #CSP(Γ), one can construct a witness function of RI in polynomial time.
+2.9
+Type-Partition Maps
+Finally, we deﬁne type-partition maps. Let S ⊆Dn be a nonempty set and let S1, . . . , Sk be a partition
+of S, for some k ≥1: the Si’s are nonempty and pairwise disjoint, and S = S1 ∪· · · ∪Sk. Then the pair
+(S, (S1, . . . , Sk)) deﬁnes the following type map type(·): Given any ℓ∈[n] and x ∈Dℓ,
+type(x) =
+n
+j ∈[k] : ∃y ∈Sj such that x = Pr[ℓ]y
+o
+⊆[k].
+(9)
+18
+
+We usually call type(x) the type of x. When ℓ= n, type(x) is either the empty set or a singleton. When
+ℓ= n and type(x) is a singleton, we sometimes also refer to the element in type(x) simply as the type of
+x for convenience.
+Deﬁnition 7. Let type(x) be the map deﬁned by
+S, (S1, . . . , Sk)
+
+, then we say it is a type-partition map
+if for all ℓ∈[n] and x, y ∈Dℓ, type(x) and type(y) are either the same or disjoint.
+Now let type(·), as deﬁned by
+S, (S1, . . . , Sk)
+
+in (9), be a type-partition map over Dn, then we will
+refer to the following (n + 1)-tuple
+T =
+T0, T1, . . . , Tn
+
+,
+where Tℓ=
+n
+type(x) ⊆[k] : x ∈Dℓand type(x) ̸= ∅
+o
+⊂2[k].
+as the list of types of type(·). Here for the special case of ℓ= 0, we have T0 =
+
+[k]
+	
+.
+Because it is assumed to be a type-partition map, we have |Tℓ| ≤k for all ℓ. It is also clear, from the
+deﬁnition, that all the sets in Tℓare nonempty, since we are only interested in x ∈Dℓwith type(x) ̸= ∅.
+It is easy to prove the following lemma:
+Lemma 15. Let type(·) be a type-partition map. Then for any ℓ: 0 ≤ℓ≤n,
+[
+T∈Tℓ
+T = [k].
+For any i, j : 0 ≤i < j ≤n and U ∈Ti, V ∈Tj, either V ⊆U or U ∩V = ∅.
+One way to better understand the list T is to consider it as a tree of height n: [k] ∈T0 is the root,
+and the sets of Tℓare nodes at level ℓof the tree; U ∈Tℓand V ∈Tℓ+1 are connected if V ⊆U. The tree
+has the property that the leaves are singletons and every other node is the union of its children.
+3
+A Complexity Dichotomy for #CSP with Complex Weights
+We now prove Theorem 1. We start by describing the three necessary conditions for tractability.
+Let D = [d] be a domain and let F be a ﬁnite set of algebraic complex functions over D. We use WF
+to denote the following set of inﬁnitely many (though countable) complex-valued functions:
+WF =
+n
+F [t] : F is a function deﬁned by an input instance of #CSP(F) and t : 1 ≤t ≤arity of F
+o
+.
+The following lemma concerning WF is easy to prove:
+Lemma 16. For any ﬁnite subset F′ ⊂WF, we have #CSP(F′) ≤T #CSP(F).
+3.1
+Hardness Part of the Dichotomy
+The hardness part of the dichotomy theorem consists of three conditions over WF. The violation of any
+of these conditions implies that #CSP(F) is #P-hard. First, we impose the following condition:
+Block Orthogonality: Let {F1, . . . , Fk} be any ﬁnite subset of WF, and let
+19
+
+F ′
+1, . . . , F ′
+k
+
+= Pure
+F1, . . . , Fk
+
+.
+Then for every F ′
+i with arity ≥2, we have F ′
+i is block-orthogonal (and in particular, block-rank-1).
+We prove the following lemma in Section 4:
+Lemma 17. If F does not satisfy the Block Orthogonality condition, then #CSP(F) is #P-hard.
+Assume F satisﬁes the Block Orthogonality condition. By Corollary 1, every F in WF with arity ≥2
+is block-orthogonal (and in particular, block-rank-1). Let n ≥2 be the arity of F ∈WF, and let
+
+(S1, v1), . . . , (Sk, vk)
+	
+,
+where Sj ⊆Dn−1 and v1, . . . , vk are linearly independent vectors,
+(10)
+denote the row representation of F. We have k ≤d because F is block-orthogonal. Let
+ΨF = S1 ∪· · · ∪Sk,
+and let typeF (·) denote the type map deﬁned by the pair (ΨF , (S1, . . . , Sk)).
+Assuming F satisﬁes the Block Orthogonality condition. Here is the second condition on WF:
+Type Partition: For any F ∈WF of arity n ≥2, typeF (·) is a type-partition map.
+We prove the following hardness lemma in Section 5.
+Lemma 18. If F does not satisfy the Type Partition condition, then #CSP(F) is #P-hard.
+We also need a condition on relations deﬁned from WF. Assume F satisﬁes the Block Orthogonality
+condition. Let F ∈WF, and ΦF = Boolean(F). If F has arity n ≥2, we denote its row representation by
+(10) and deﬁne the following relation ΩF on 2(n−1) variables x = (x1, . . . , xn−1) and y = (y1, . . . , yn−1):
+(x, y) ∈ΩF ⇐⇒x, y ∈Sj for some j ∈[k] ⇐⇒F(x, ∗), F(y, ∗) are nonzero and linearly dependent
+This gives us the following set ΛF of inﬁnitely many relations derived from the functions in WF:
+ΛF =
+n
+ΦF : F ∈WF
+o
+∪
+n
+ΩF : F ∈WF of arity ≥2
+o
+.
+We now impose the last condition on ΛF:
+Mal’tsev: All relations in ΛF share a common Mal’tsev polymorphism ϕ : D3 →D.
+To ﬁnish the hardness part, we prove the following hardness lemma in Section 6:
+Lemma 19. If F does not satisfy the Mal’tsev condition, then #CSP(F) is #P-hard.
+3.2
+Algorithmic Part of the Dichotomy
+We show that if a ﬁnite set F of complex functions satisﬁes all three conditions:
+(a) the Block Orthogonality condition
+(b) the Type Partition condition
+20
+
+(c) the Mal’tsev condition
+then there is a polynomial-time algorithm for #CSP(F). Theorem 1 then follows.
+First, by the Mal’tsev condition, all the relations in ΛF share a common Mal’tsev polymorphism. We
+may assume that such a polymorphism ϕ is given, and will use it later in the algorithm.
+Let I be an instance of #CSP(F), and let F : Dn →C be the function it deﬁnes. To compute Z(F),
+we examine the functions F = F [n], . . . , F [2]. For each F [t], t : 2 ≤t ≤n, we use
+S[t] =
+nS[t,j], v[t,j]
+: j ∈[st]
+o
+(11)
+to denote the row representation of F [t]. At this moment, we do not know what exactly st is, though by
+the Block Orthogonality condition, we know F [t] ∈WF is block-orthogonal and thus, 0 ≤st ≤d.
+Next by using the Mal’tsev condition, we know that ϕ is a Mal’tsev polymorphism of ΩF [t], a relation
+over 2(t −1) variables. The following lemma shows that ϕ must also be a Mal’tsev polymorphism of the
+S[t,j]’s when viewed as relations over t −1 variables:
+Lemma 20. If ϕ is a Mal’tsev polymorphism of ΩF [t], then it is a Mal’tsev polymorphism of the S[t,j]’s.
+Proof. Let u ∈Dt−1 be a vector in S[t,j] (since S[t,j] is nonempty). By the deﬁnition of ΩF [t], we have
+y ∈S[t,j] ⇐⇒(u, y) ∈ΩF [t]
+As a result, S[t,j] = ΩF [t](u, ∗), and the lemma follows directly from Lemma 13.
+Now it makes sense to talk about witness functions for the S[t,j]’s (even though we still do not know
+st at this moment). We prove the following important algorithmic lemma in Section 7 and 8:
+Lemma 21. Assume F satisﬁes all three conditions with ϕ being a Mal’tsev polymorphism of ΛF. Given
+an instance I of #CSP(F), letting F : Dn →C denote the function it deﬁnes, we can compute in polyno-
+mial time a sequence of n −1 non-negative integers sn, . . . , s2 ≤d such that st is the number of pairs in
+the row representation of F [t]. Moreover, we can compute in polynomial time st pairs for each 2 ≤t ≤d:
+nω[t,j], v[t,j]
+: j ∈[st]
+o
+(12)
+where ω[t,j] : [t −1] × D →Dt−1 ∪{⊥} and v[t,j] is a nonzero d-dimensional vector, such that
+1.
+
+v[t,j] : j ∈[st]
+	
+are exactly the st vectors in the row representation of F [t]; and
+2. ω[t,j] is a witness function of S[t,j], the set paired with v[t,j] in the row representation of F [t].
+Once we have obtained st and the pairs in (12) for each t, Z(F) can be computed eﬃciently:
+Lemma 22 (Computation of Z(F)). Given st and (12), Z(F) can be computed in polynomial time.
+Proof. For each t, we let (11) denote the row representation of F [t]. By Lemma 21, all the vectors v[t,j]
+in (11) have been computed and for each set S[t,j], we have computed one of its witness functions ω[t,j].
+For any a1 ∈D, we will show how to compute F [1](a1) eﬃciently. The lemma then follows because
+Z(F) =
+X
+a1∈D
+F [1](a1).
+21
+
+We start with an informal description of the algorithm.
+We ﬁrst check whether a1 ∈S[2,j] for some j ∈[s2]. This can be done eﬃciently as s2 ≤d is bounded
+by a constant and for each j ∈[s2], whether a1 ∈S[2,j] or not can be checked eﬃciently using the witness
+function ω[2,j] of S[2,j]. By deﬁnition, if a1 /∈S[2,j] for all j ∈[st], we must have F [2](a1, ∗) = 0 and thus,
+F [1](a1) =
+X
+b∈D
+F [2](a1, b) = 0.
+Otherwise, let j ∈[st] be the unique index such that a1 ∈S[2,j], and a2 ∈D be the smallest nonzero
+index of v[2,j]. By the deﬁnition of row representation we have v[2,j]
+a2
+= 1. We also know that F [2](a1, ∗) is
+a nonzero vector and is linearly dependent with v[2,j]. Therefore, we have
+F [1](a1) =
+X
+b∈D
+F [2](a1, b) = F [2](a1, a2) ·
+X
+b∈D
+v[2,j]
+b
+.
+It reduces the computation of F [1](a1) to that of F [2](a1, a2). If n = 2, then we are already done because
+F [2](a1, a2) can be evaluated eﬃciently using the input instance I. Otherwise we continue and reduce the
+computation of F [2](a1, a2) to that of F [3](a1, a2, a3), for some appropriate a3 ∈D.
+Because F [2](a1, ∗) is nonzero and is linearly dependent with v[2,j], we have F [2](a1, a2) ̸= 0 and thus
+(a1, a2) ∈S[3,j] for some j ∈[s3]. By using the witness functions ω[3,j], we can ﬁnd this j ∈[s3] eﬃciently
+and by deﬁnition, F [3](a1, a2, ∗) is nonzero and linearly dependent with v[3,j]. Let a3 denote the smallest
+nonzero index of v[3,j], then we have
+v[3,j]
+a3
+= 1
+and
+F [2](a1, a2) =
+X
+b∈D
+F [3](a1, a2, b) = F [3](a1, a2, a3) ·
+X
+b∈D
+v[3,j]
+b
+.
+This further reduces the computation of F [1](a1) to that of F [3](a1, a2, a3). After a total n −1 rounds of
+such reductions, it suﬃces to compute F [n](a1, . . . , an) for some appropriate a2, a3, . . . , an ∈D, in order
+to get F [1](a1). This gives an eﬃcient algorithm for F [1](a1) as F [n] can be evaluated eﬃciently using I.
+A formal recursive procedure called ComputeF is described in Figure 1. It takes two inputs: t and a,
+where t : 1 ≤t ≤n and a ∈Dt, and outputs F [t](a). Its correctness can be easily proved by induction on
+t, and its running time is polynomial because the total number of recursive calls is at most n −1 and in
+each call, the only non-trivial part is line 4 which has an eﬃcient implementation by Lemma 11.
+4
+The Block Orthogonality Condition
+We prove Lemma 17 in this section. We start with the following hardness lemma for pure functions and
+then use the Puriﬁcation Lemma to generalize it to general functions:
+Lemma 23. Let F : Dn →C be a pure function with n ≥2. If F is not block-orthogonal, then #CSP(F)
+is #P-hard.
+Proof. Because F is pure, we let K denote the constant order(F). Without loss of generality, we assume
+that F is block-rank-1 since otherwise, #CSP(F) is #P-hard by Lemma 4.
+Now assume F is not block-orthogonal. Then by deﬁnition, there exist x, y ∈Dn−1 such that the two
+vectors F(x, ∗) and F(y, ∗) have at least one common non-zero entry, but are neither linearly dependent
+22
+
+ComputeF
+t, a
+
+, where t : 1 ≤t ≤n and a ∈Dt
+1.
+if t = n then
+2.
+use the input instance I to evaluate F [n](a) = F(a); output F(a) and exit
+3.
+end if
+4.
+use ω[t+1,j], j ∈[st+1], to check if there is a j ∈[st+1] such that a ∈S[t+1,j]
+5.
+if no such j ∈[st+1] exists then
+6.
+output 0 and exit
+7.
+else
+8.
+let j ∈[st+1] be the unique index such that a ∈S[t+1,j]
+9.
+let at+1 ∈D be the smallest nonzero index of v[t+1,j]
+10.
+compute F [t+1](a, at+1) = ComputeF
+t + 1, a ◦at+1
+
+with a recursive call
+11.
+output the following and exit
+F [t](a) =
+X
+b∈D
+F [t+1](a, b) = F [t+1](a, at+1) ·
+X
+b∈D
+v[t+1,j]
+b
+12.
+end if
+Figure 1: The recursive procedure ComputeF
+nor block-orthogonal. Because F is block-rank-1, we have F(x, i) = 0 if and only if F(y, i) = 0. We use
+T ⊆D to denote the nonempty set of i ∈D such that F(x, i) is non-zero. As F is pure and block-rank-1
+we can partition T into T1, . . . , Tℓfor some ℓ≥1 and there are positive a, b, µ1 > · · · > µℓ> 0 such that
+F(x, i) = a · µj · c(x, i)
+and
+F(y, i) = b · µj · c(y, i),
+for all j ∈[ℓ] and i ∈Tj,
+where c(x, i) and c(y, i) are all roots of unity whose orders divide K.
+To show #CSP(F) is #P-hard, we let Ar, for each r ≥1, denote the following dn−1 × dn−1 matrix:
+Ar(w, w′) =
+X
+i∈D
+F(w, i) ·
+F(w′, i)
+rK−1,
+for all w, w′ ∈Dn−1,
+and prove that for every r ≥1 (note that the square matrix Ar here is not necessarily symmetric),
+EVAL(Ar) ≤T #CSP(F).
+Given any input directed graph G = (V, E) of EVAL(Ar), we construct I with the following variables:
+zv,1, . . . , zv,n−1, we,
+for all v ∈V and e ∈E,
+23
+
+ranging over D. Then for each edge e = uv ∈E, we apply
+F over (zu,1, . . . , zu,n−1, we) and (rK −1) copies of F over (zv,1, . . . , zv,n−1, we).
+The reduction then follows because ZAr(G) = Z(FI), where FI denotes the function that I deﬁnes. Now
+to prove that #CSP(F) is #P-hard, it suﬃces to show that EVAL(Ar) is #P-hard for some r ≥1.
+Focusing on the 2 × 2 sub-matrix of Ar indexed by x and y, we have
+Ar(x, x) =
+X
+j∈[ℓ]
+X
+i∈Tj
+a · µj · c(x, i)
+rK = arK X
+j∈[ℓ]
+|Tj| · (µj)rK
+and
+Ar(y, y) =
+X
+j∈[ℓ]
+X
+i∈Tj
+b · µj · c(y, i)
+rK = brK X
+j∈[ℓ]
+|Tj| · (µj)rK
+while
+Ar(x, y) =
+X
+j∈[ℓ]
+X
+i∈Tj
+a · µj · c(x, i) ·
+b · µj · c(y, i)
+rK−1 = a · brK−1 X
+j∈[ℓ]
+(µj)rK X
+i∈Tj
+c(x, i) · c(y, i)
+and
+Ar(y, x) =
+X
+j∈[ℓ]
+X
+i∈Tj
+b · µj · c(y, i) ·
+a · µj · c(x, i)
+rK−1 = arK−1 · b
+X
+j∈[ℓ]
+(µj)rK X
+i∈Tj
+c(y, i) · c(x, i)
+We use L to denote
+X
+j∈[ℓ]
+(µj)rK X
+i∈Tj
+c(x, i) · c(y, i)
+Since all the µj’s are positive, we have
+Ar(x, y) · Ar(y, x) = arK · brK · |L|2.
+We discuss the following three cases. First, if
+|L| =
+X
+j∈[ℓ]
+|Tj| · (µj)rK,
+for some r ≥1.
+then by Cauchy-Schwarz, it must be the case that c(x, ∗) and c(y, ∗), as two |T|-dimensional vectors, are
+linearly dependent and thus, F(x, ∗) and F(y, ∗) are linearly dependent, contradicting the assumption.
+Second, if L = 0 for all r ≥1, then by solving a Vandermonde system, it must be the case that
+X
+i∈Tj
+c(x, i) · c(y, i) = 0,
+for all j ∈[ℓ].
+As a result, these two rows are actually block-orthogonal, contradicting the assumption again.
+24
+
+Otherwise, we must have
+0 < |L| <
+X
+j∈[ℓ]
+|Tj| · (µj)rK,
+for some r ≥1.
+So all the four entries of this sub-matrix of |Ar| are positive but its rank is 2. This implies that |Ar| is
+not a block-rank-1 matrix. By Lemma 3, we have EVAL(Ar) is #P-hard and so is #CSP(F).
+This ﬁnishes the proof of the lemma.
+Lemma 17 then follows from Lemma 23, Lemma 16, and Lemma 7.
+Proof of Lemma 17. Assume F does not satisfy the Block Orthogonality condition.
+Let {F1, . . . , Fk} ⊂WF be a ﬁnite set that violates the Block Orthogonality condition. Let
+F ′
+1, . . . , F ′
+k
+
+= Pure
+F1, . . . , Fk
+
+,
+then by Lemma 7 and Lemma 16, we have for each i ∈[k],
+#CSP(F ′
+i) ≤T #CSP(F ′
+1, . . . , F ′
+k) ≡T #CSP(F1, . . . , Fk) ≤T #CSP(F).
+If F ′
+i is not block-orthogonal, then by Lemma 23, #CSP(F ′
+i) is #P-hard and so is #CSP(F).
+5
+The Type Partition Condition
+We prove Lemma 18 in this section.
+Again, we start by working on pure functions. Let F : Dn →C be a pure function where n ≥2. Also
+assume that F is block-orthogonal (and in particular, block-rank-1 as well).
+Let S =
+
+(S1, v1), . . . , (Sk, vk)
+	
+be the row representation of F, where S1, . . . , Sk ⊆Dn−1, and let
+Ψ = S1 ∪· · · ∪Sk.
+From the pair (Ψ, (S1, . . . , Sk)), we deﬁne the type map type(·): For any ℓ∈[n −1] and any x ∈Dℓ,
+type(x) =
+n
+j ∈[k] : ∃y ∈Sj such that x = Pr[ℓ]y
+o
+.
+We show that if type(·) is not a type-partition map, then #CSP(F) is #P-hard.
+Lemma 24. Let F : Dn →C be a pure and block-orthogonal function with arity n ≥2, then the problem
+#CSP(F) is #P-hard if there exist an ℓ∈[n −1] and x, y ∈Dℓsuch that
+neither type(x) ∩type(y) = ∅nor type(x) = type(y).
+(13)
+Proof. We start with some notation. Let K be the constant order(F).
+Because S is the row representation of F, there is a function g : Ψ →C such that
+F(x, ∗) = g(x) · vj,
+for all j ∈[k] and x ∈Sj.
+25
+
+By the deﬁnition of row representation, g(x) is exactly the ﬁrst non-zero entry of F(x, ∗).
+As F is pure, g(x) is the product of a positive integer and a root of unity whose order divides K, for
+all x ∈Ψ. This then implies that all the nonzero entries of v1, . . . , vk are products of a positive rational
+number and a root of unity whose order divides K.
+Moreover, we know that for any i ̸= j ∈[k], it follows from Lemma 5 that
+X
+a∈D
+vi,a · (vj,a)K−1 = 0,
+(14)
+because they are not only orthogonal but also block-orthogonal. For each j ∈[k], we let cj > 0 denote
+cj =
+X
+a∈D
+vj,a · (vj,a)K−1 =
+X
+a∈D
+|vj,a|K.
+Now we start the proof. Let ℓ∈[n −1] and let x, y ∈Dℓbe two vectors that satisfy (13). Note that
+if ℓ= n −1, then type(x) is either the empty set or a singleton set. Therefore, to satisfy (13), ℓhas to be
+smaller than n −1. Without loss of generality, we let
+type(x) = L1 ∪L2
+and
+type(y) = L1 ∪L3,
+where L1 and at least one of L2, L3 are nonempty and they are pairwise disjoint subsets of [k].
+Let A denote the following dℓ× dℓmatrix: For z, w ∈Dℓ, the (z, w)th entry of A is
+A(z, w) =
+X
+z′,w′∈Dn−1−ℓ
+
+X
+p∈D
+F(z, z′, p) ·
+
+F(w, w′, p)
+K−1
+
+
+
+X
+q∈D
+
+F(z, z′, q)
+K−1
+· F(w, w′, q)
+
+
+It is easy to see that A is symmetric. We can then use the following construction to show that
+EVAL(A) ≤T #CSP(F).
+(15)
+Given any undirected graph G = (V, E), we construct an instance I with the following variables:
+v1, . . . , vℓfor each v ∈|V |
+and
+pe, qe, se,ℓ+1, . . . , se,n−1, re,ℓ+1, . . . , re,n−1 for each e ∈|E|.
+For each e = uv ∈E, we apply one copy of F over
+u1, . . . , uℓ, se,ℓ+1, . . . , se,n−1, pe
+
+and
+v1, . . . , vℓ, re,ℓ+1, . . . , re,n−1, qe
+
+;
+and apply (K −1) copies of F over
+u1, . . . , uℓ, se,ℓ+1, . . . , se,n−1, qe
+
+and
+v1, . . . , vℓ, re,ℓ+1, . . . , re,n−1, pe
+
+.
+It then follows from the construction of A from F that ZA(G) = Z(FI) where FI is the function that I
+deﬁnes, and (15) follows. To ﬁnish the proof, it now suﬃces to show that EVAL(A) is #P-hard.
+For this purpose, we analyze the four entries of A with z, w ∈{x, y}.
+For each i ∈type(x) = L1 ∪L2, we let Ui denote the nonempty set of vectors x′ ∈Dn−ℓ−1 such that
+26
+
+x ◦x′ ∈Si. And we deﬁne Vi similarly for y. Then for i ̸= j ∈L1 ∪L2 and z′ ∈Ui, w′ ∈Uj, we have
+X
+p∈D
+F(x, z′, p) ·
+F(x, w′, p)
+K−1 = 0
+by (14). This can be used to simplify the sum in A(x, x) as follows:
+A(x, x) =
+X
+i∈L1∪L2
+X
+x′,x′′∈Ui
+
+X
+p∈D
+g(x, x′)vi,p ·
+g(x, x′′)vi,p
+K−1
+
+
+
+X
+q∈D
+g(x, x′)vi,q
+K−1 · g(x, x′′)vi,q
+
+
+=
+X
+i∈L1∪L2
+X
+x′,x′′∈Ui
+g(x, x′)
+K ·
+g(x, x′′)
+K · (ci)2 =
+X
+i∈L1∪L2
+
+X
+x′∈Ui
+g(x, x′)
+K · ci
+
+
+2
+Similarly, using the same argument, we have
+A(y, y) =
+X
+i∈L1∪L3
+X
+y′,y′′∈Vi
+g(y, y′)
+K ·
+g(y, y′′)
+K · (ci)2 =
+X
+i∈L1∪L3
+
+X
+y′∈Vi
+g(y, y′)
+K · ci
+
+
+2
+On the other hand, by a similar proof, we also have
+A(x, y) =
+X
+i∈L1
+X
+x′∈Ui, y′∈Vi
+
+X
+p∈D
+g(x, x′) · vi,p ·
+g(y, y′) · vi,p
+K−1
+
+
+
+X
+q∈D
+g(x, x′) · vi,q
+K−1 · g(y, y′) · vi,q
+
+
+=
+X
+i∈L1
+X
+x′∈Ui, y′∈Vi
+g(x, x′)
+K ·
+g(y, y′)
+K · (ci)2
+=
+X
+i∈L1
+
+X
+x′∈Ui
+g(x, x′)
+K · ci
+
+
+
+X
+y′∈Vi
+g(y, y′)
+K · ci
+
+
+and A(y, x) = A(x, y) (since the construction is symmetric). Because L1 is nonempty, we have
+A(x, y) = A(y, x) > 0.
+It is now easy to see that if at least one of the L2, L3 is nonempty, then we have
+A(x, x) · A(y, y) > A(x, y) · A(y, x).
+By Theorem 2, we have that EVAL(A) is #P-hard and so is #CSP(F). This proves the lemma.
+Finally, we use the Puriﬁcation Lemma to prove Lemma 18.
+Proof of Lemma 18. Without loss of generality, we may assume that F satisﬁes the Block Orthogonality
+condition (since otherwise, #CSP(F) is #P-hard by Lemma 17).
+27
+
+Let F ∈WF be a function of arity ≥2, and let F ′ = Pure(F). By Lemma 16,
+#CSP(F ′) ≡T #CSP(F) ≤T #CSP(F).
+As F satisﬁes the Block Orthogonality condition, F ′ is block-orthogonal. From Corollary 1 of the Puriﬁ-
+cation Lemma, F and F ′ induce the same equivalence relation ∼F and ∼F ′ and therefore, the type map
+typeF (·) and typeF ′(·), induced by F and F ′, respectively, are the same. If typeF (·) is not a type-partition
+map, then neither is typeF ′(·). By Lemma 24, #CSP(F ′) is #P-hard and so is #CSP(F).
+This ﬁnishes the proof of the lemma.
+6
+The Mal’tsev Condition
+We prove Lemma 19 in this section. It follows directly from the following lemma:
+Lemma 25. If F satisﬁes the Block Orthogonality condition, then for any ﬁnite Γ ⊂ΛF, we have
+#CSP(Γ) ≤T #CSP(F).
+Proof of Lemma 19. If F does not satisfy the Block Orthogonality condition then we are done by Lemma
+17. Assume F satisﬁes the Block Orthogonality condition but does not satisfy the Mal’tsev condition.
+By Corollary 2, there exists a ﬁnite set Γ ⊂ΛF with #CSP(Γ) being #P-hard. Then using Lemma
+25, we know #CSP(F) is also #P-hard, and the lemma is proven.
+Now we prove Lemma 25.
+Proof of Lemma 25. Given Γ, we can ﬁnd a ﬁnite subset
+
+F1, . . . , Fk
+	
+⊂WF such that Γ ⊆∆, where
+∆=
+n
+Φi = Boolean(Fi) : i ∈[k]
+o
+∪
+n
+Ωi : i ∈[k] and the arity of Fi is ≥2
+o
+.
+We use ri ≥1 to denote the arity of Fi. Here Ωi is the following relation over 2(ri −1) variables:
+(x, y) ∈Ωi ⇐⇒Fi(x, ∗) and Fi(y, ∗) are non-zero and linearly dependent
+By Lemma 16, we have
+#CSP
+F1, . . . , Fk
+
+≤T #CSP(F),
+(16)
+so we only need to give a polynomial-time reduction from #CSP(∆) to #CSP
+F1, . . . , Fk).
+To this end, we ﬁrst apply the Puriﬁcation Lemma to get
+F ′
+1, . . . , F ′
+k
+
+= Pure
+F1, . . . , Fk
+
+.
+(17)
+All the new functions F ′
+1 . . . , F ′
+k are pure, and we have
+#CSP
+F ′
+1, . . . , F ′
+k
+
+≡T #CSP
+F1, . . . , Fk
+
+.
+(18)
+We use K to denote the least common multiplier of the orders of all the pure F ′
+i’s.
+28
+
+The plan of the proof is the following. For every i ∈[k] with ri ≥2, we use a construction to deﬁne,
+from F ′
+i, a 2(ri −1)-ary function Hi and prove that
+#CSP
+
+F ′
+i : i ∈[k]
+	
+∪
+
+Hi : i ∈[k] and ri ≥2
+	
+≤T #CSP
+F ′
+1, . . . , F ′
+k
+
+.
+(19)
+We will also show that for every i ∈[k] with ri ≥2,
+Ωi = Boolean(Hi).
+(20)
+On the other hand, by Property 2 of the Puriﬁcation Lemma, we know that
+Φi = Boolean(Fi) = Boolean(F ′
+i),
+for all i ∈[k].
+As a result, by Lemma 6, we have
+#CSP(∆) ≤T #CSP
+
+F ′
+i : i ∈[k]
+	
+∪
+
+Hi : i ∈[k] and ri ≥2
+	
+,
+(21)
+and the lemma follows by combining (21), (19), (18) and (16).
+For each i ∈[k] with ri ≥2. We use Hi to denote the following function:
+Hi(x, y) =
+X
+z∈D
+F ′
+i(x, z) ·
+F ′
+i(y, z)
+K−1,
+for all x, y ∈Dri−1.
+We now use the following construction to show (19). Given any instance I of the ﬁrst problem in (19) we
+construct an instance I′ as follows. We start with the same set of variables as I, and add all the tuples
+in I whose function is F ′
+i to I′. For each other tuple in I, i.e., (Hi, x1, . . . , xri−1, y1, . . . , yri−1), we create
+a new variable z and then add the following K tuples to I′:
+F ′
+i, x1, . . . , xri−1, z
+
+and
+(K −1) copies of
+F ′
+i, y1, . . . , yri−1, z
+
+.
+It is easy to show that Z(FI) = Z(FI′) where FI, FI′ are the functions deﬁned by I, I′, and (19) follows.
+Finally we prove (20). As F satisﬁes the Block Orthogonality condition, (17) implies that F ′
+i is block-
+orthogonal. From this, it follows from Lemma 5 that
+Hi(x, y) ̸= 0 ⇐⇒F ′
+i(x, ∗) and F ′
+i(y, ∗) are nonzero and linearly dependent
+Using Corollary 1, the two equivalence relations ∼Fi and ∼F ′
+i, induced by Fi and F ′
+i, respectively, are the
+same. Therefore, F ′
+i(x, ∗), F ′
+i (y, ∗) are nonzero and linearly dependent if and only if Fi(x, ∗), Fi(y, ∗) are
+nonzero and linearly dependent. This proves (20) and ﬁnishes the proof of the lemma.
+7
+Polynomial-Time Operations on Witness Functions
+In this section, we present three useful polynomial-time operations on witness functions of relations that
+share a common Mal’tsev polymorphism. They will then be used later in Section 8 to prove Lemma 21.
+29
+
+7.1
+Variable Permutation of Witness Functions
+Lemma 26 (Variable Permutation). Let Φ ⊆Dn be an n-ary relation. Let ϕ be a Mal’tsev polymorphism
+of Φ and ω be a witness function of Φ. Then given any permutation π over [n], we can compute a witness
+function ω′ for π(Φ) in time polynomial in n.
+Proof. It suﬃces to show that, given any i ∈[n −1], we can construct a witness function ω′ for
+Φ′ =
+na1, . . . , ai, ai+1, . . . , an
+ 
+a1, . . . , ai+1, ai, . . . , an
+
+∈Φ
+o
+.
+in time polynomial in n. For each j ∈[n], we use ∼j and ∼′
+j to denote the equivalence relations deﬁned
+by Φ and Φ′, respectively. Clearly for j ̸= i or i + 1, ∼′
+j is the same as ∼j and thus, we can set
+ω′(j, a) = ω(j, a),
+for all a ∈D.
+Next we compute ∼′
+i. Let b ∈PriΦ′ = Pri+1Φ. Note that the latter can be computed eﬃciently from
+ω. We want to compute the class E of b in ∼′
+i and in addition, a witness for each b′ ∈E that shares the
+same (i −1)-preﬁx. We are then done for E by setting ω′(i, b′) to be this witness for every b′ ∈E.
+To this end, we denote ω(i + 1, b), a witness for (i + 1, b) in Φ, by
+x ◦a ◦b ◦u ∈Φ,
+where x ∈Di−1, a ∈D and u ∈Dn−i−1.
+(22)
+We then use Lemma 13 to compute a witness function for Φ(x, ∗) on n −(i −1) variables, and use it to
+project Φ(x, ∗) on its second coordinate: Pr2 Φ(x, ∗). We now show that E = Pr2 Φ(x, ∗).
+Clearly every b′ ∈Pr2 Φ(x, ∗) satisﬁes b′ ∼′
+i b, because b′ ∈Pr2 Φ(x, ∗) implies that there is a witness
+for (i + 1, b′) in Φ with the same preﬁx x. Now suppose b′ ∼′
+i b, then by the deﬁnition of ∼′
+i, there exist
+a y ∈Di−1 and a1, a2 ∈D, u1, u2 ∈Dn−i−1 such that
+y ◦a1 ◦b′ ◦u1 ∈Φ
+and
+y ◦a2 ◦b ◦u2 ∈Φ.
+Applying the Mal’tsev polymorphism ϕ on these two vectors together with the one in (22) then gives a
+witness for (i + 1, b′) in Φ with x as its preﬁx. This means that b′ ∈Pr2 Φ(x, ∗).
+Now we have computed the equivalence class E of b. We can also use the witness function of Φ(x, ∗)
+to get a witness for (i + 1, b′) in Φ with x being its preﬁx. This ﬁnishes the construction of ω′(i, ∗).
+Finally, we work on ∼′
+i+1. Let a ∈Pri+1Φ′ = PriΦ, then we want to compute the equivalence class E
+of a in ∼′
+i+1. We denote the vector ω(i, a) by
+x ◦a ◦b ◦u ∈Φ,
+where x ∈Di−1, b ∈D and u ∈Dn−i−1.
+(23)
+We use Lemma 13 to compute a witness function of Φ(x, ∗) and then, Pr[2]Φ(x, ∗). For every pair in
+(a′, b′) ∈Pr[2]Φ(x, ∗), we also compute a vector in Φ(x, ∗) which starts with a′ and b′. We then collect all
+the a′ ∈D such that for some b′ ∈D, both (a′, b′), (a, b′) ∈Pr[2]Φ(x, ∗), and claim that this is exactly E.
+First, it is easy to see that if (a′, b′), (a, b′) ∈Pr[2]Φ(x, ∗) for some b′ ∈D, then a ∼′
+i+1 a′. Conversely,
+if a ∼′
+i+1 a′, then there are y ∈Di−1 and c ∈D, u1, u2 ∈Dn−i−1 such that
+y ◦a ◦c ◦u1 ∈Φ
+and
+y ◦a′ ◦c ◦u2 ∈Φ.
+30
+
+Applying the Mal’tsev polymorphism ϕ on these two vectors together with the one in (23) then gives a
+vector in Φ with preﬁx x ◦a′ ◦b. This implies that (a′, b) ∈Pr[2]Φ(x, ∗).
+We have computed the class E of a in ∼′
+i+1. For each a′ ∈E with (a′, b′), (a, b′) ∈Pr[2]Φ(x, ∗), we can
+compute two vectors in Φ with preﬁxes x ◦a′ ◦b′ and x ◦a ◦b′. Applying the Mal’tsev polymorphism ϕ
+on these two vectors together with the one in (23) gives a vector in Φ with preﬁx x ◦a′ ◦b. As a result,
+we obtain a witness of (i + 1, a′) in Φ′, for every a′ ∈E, which shares the same preﬁx x ◦b. We then set
+ω′(i + 1, a′) to be this witness for each a′ ∈E, and this ﬁnishes the construction of ω′(i + 1, ∗).
+7.2
+Union of Witness Functions
+Let Ψ1, . . . , Ψs be s pairwise disjoint relations over n variables x1, . . . , xn ∈D. Also assume that ϕ is a
+Mal’tsev polymorphism of all the Ψk’s. Let
+Φ = Ψ1 ∪· · · ∪Ψs.
+In general, ϕ may not be a Mal’tsev polymorphism of Φ. However, the following lemma shows that if it
+is assumed that ϕ is a Mal’tsev polymorphism of Φ as well, then we can construct a witness function of
+Φ from witness functions of the Ψk’s eﬃciently.
+Lemma 27. Let Ψ1, . . . , Ψs be pairwise disjoint and nonempty subsets of Dn, and let Φ = Ψ1 ∪· · · ∪Ψs.
+Also assume that ϕ is a Mal’tsev polymorphism of both Φ and the Ψk’s. Given a witness function ωk of
+Ψk for each k ∈[s], we can construct a witness function ω of Φ in polynomial time (in s and n).
+Proof. Pick any pair (i, a) ∈[n] × D. We ﬁrst decide whether there is a vector x ∈Φ such that xi = a.
+As Φ is the union of the Ψk’s, it suﬃces to check if ωk(i, a) ̸= ⊥for some k ∈[s]. If ωk(i, a) = ⊥for every
+k ∈[s], then we simply set ω(i, a) = ⊥; otherwise we have computed a witness in Φ for (i, a).
+Next for each i ∈[n] we compute the equivalence relation ∼i of Φ as follows. Pick any a ̸= b ∈D for
+which we have already found witnesses x, y in Φ, with xi = a and yi = b. By Lemma 10, we have
+a ∼i b ⇐⇒∃z ∈Φ such that Pr[i]z = (x1, . . . , xi−1, b)
+Because Φ is the union of the Ψk’s, it happens if and only if there exists such a z ∈Ψk for some k ∈[s].
+To check whether Ψk has such a z, by Lemma 13, we can use ωk to construct a witness function for
+Ψk
+x1, . . . , xi−1, b, ∗
+
+.
+Then Ψk has a z with Pr[i]z = (x1, . . . , xi−1, b) if and only if the witness function we get is nonempty.
+It is clear that the computation of ∼i, i ∈[n], also gives us a witness function ω for Φ.
+7.3
+Splitting a Witness Function, with the Type Partition Condition
+Here we describe the inverse of the union operation described above. The setting is the following.
+Let Φ ⊆Dn be a nonempty relation over n variables. And let Ψ1, . . . , Ψs be an s-way partition of Φ,
+for some s ∈[d]: The Ψi’s are nonempty, pairwise disjoint, and satisfy
+Φ = Ψ1 ∪· · · ∪Ψs.
+31
+
+Assume that ϕ is a Mal’tsev polymorphism of Φ and all the Ψi’s.
+At the beginning, we have completely no information about the sets Ψi’s. Even the number s of sets
+is not given, though we do know that s ∈[d]. The only resources we have are a witness function ω for
+Φ and a black box to query: We can send any x ∈Φ to the black box and it returns the unique k ∈[s]
+such that x ∈Ψk. The question then is: Can we use ω and the black box to compute s ∈[d] as well as a
+witness function ωk for each Ψk in polynomial time and only using polynomially many queries?
+In general, we do not know how to solve this problem eﬃciently. But if the following condition holds
+then it has an eﬃcient algorithm. Here given any permutation π on [n], we use typeπ to denote the type
+map deﬁned by
+π(Φ), (π(Ψ1), . . . , π(Ψs))
+
+, that is,
+typeπ(x) =
+n
+k ∈[s] : ∃y ∈π(Ψk) such that Pr[ℓ]y = x
+o
+,
+for all x ∈Dℓwith ℓ∈[n].
+We also set typeπ(ǫ) = [s], where ǫ denotes the empty string.
+Our condition requires that typeπ(·) is a type-partition map for all permutations π over [n]:
+Lemma 28. Let Ψ1, . . . , Ψs be an s-way partition of Φ ⊆Dn, for some s ∈[d]. Assume ϕ is a Mal’tsev
+polymorphism of Φ and the Ψk’s, and typeπ(·) deﬁned above is a type-partition map for any permutation
+π on [n]. Then given a witness function ω of Φ and a black box speciﬁed above, we can compute s ∈[d] as
+well as a witness function ωk of each Ψk in polynomial time and using polynomially many queries (in n).
+We start with some deﬁnitions and lemmas.
+We use type(·) to denote typeπ(·) with π being the identity permutation for short, and use
+T =
+T0, T1, . . . , Tn
+
+,
+where Tj =
+n
+type(x) ⊆[s] : x ∈Pr[j]Φ
+o
+to denote the list of types of type(·). Since type(·) is a type-partition map, we have |Tj| ≤s ≤d for all j.
+It is clear that all the Tj’s are nonempty because Φ is nonempty; every set in Tj is a nonempty subset of
+[s] because we are only interested in x ∈Pr[j]Φ in the deﬁnition above.
+We need the following deﬁnition in the algorithm:
+Deﬁnition 8. We say S = (S0, S1, . . . , Sn) is a partial list of T if Sj ⊆Tj for all j : 0 ≤j ≤n.
+Given U ∈Tℓfor some 0 ≤ℓ≤n, we say S is closed with respect to U at level ℓ, if U ∈Sℓand for
+every j > ℓ, we have V ∈Sj for any V ∈Tj with V ⊆U.
+Finally we say S is closed if it is closed with respect to every U ∈Sj at level j, for all j : 0 ≤j ≤n.
+In particular, S is closed if Sj = ∅for all j. It is easy to show from the deﬁnition that
+Lemma 29. If S is a closed partial list of T and S0 has the set [s], then S = T.
+Proof. We use induction on j = 0, 1, . . . , n. The base case is trivial as by assumption, S0 = T0 =
+
+[s]
+	
+.
+Now assume that Sj = Tj for some j ≥0. As S is a partial list of T, to show Sj+1 = Tj+1, it suﬃces
+to prove that V ∈Sj+1 for any V ∈Tj+1. By the earlier discussion on the tree structure of T in Section
+2.9, there is a unique set U ∈Tj such that V ⊆U. By the inductive hypothesis, U ∈Tj = Sj and hence,
+V ∈Sj+1 as S is closed. This ﬁnishes the induction and the proof of the lemma.
+We present a recursive procedure ComputeType for computing both s ∈[d] and T, using the witness
+function ω of Φ and the black box. The procedure is given formally in Figure 2. It takes two inputs:
+32
+
+(i) a vector x ∈Pr[ℓ]Φ, where ℓ: 0 ≤ℓ≤n
+and x = ǫ when ℓ= 0
+
+; and
+(ii) a closed partial list S = (S0, S1, . . . , Sn) of T. (Note that during the execution of
+ComputeType, it sometimes updates the list S by adding new sets to the Si’s.)
+We analyze the procedure ComputeType and prove the following lemma:
+Lemma 30. Let x ∈Pr[ℓ]Φ for some ℓ: 0 ≤ℓ≤n and let S be a partial list of T, then we have
+ComputeType(x, S) = type(x).
+Let S′ = (S′
+0, S′
+1, . . . , S′
+n) denote the tuple S after the execution of ComputeType(x, S), then we have
+type(x) ∈S′
+ℓand Sj ⊆S′
+j,
+for all j : 0 ≤j ≤n.
+(24)
+Moreover, if S is a closed partial list of T, then so is S′.
+Proof. We prove the lemma by induction on ℓ= n, n −1, . . . , 1, 0. The base case when ℓ= n is trivial as
+S remains a closed partial list of T if a singleton set {k} ∈Tn is added to Sn.
+Assume the lemma holds for all calls to ComputeType with vectors x of length ℓ+ 1, . . . , n, for some
+ℓ≥0. We now show that if x ∈Pr[ℓ]Φ and S is a partial list of T, then
+ComputeType(x, S) = type(x)
+and the new tuple S′ after the execution satisﬁes (24). In addition, if S is closed then so is S′.
+There are two cases to discuss. First if the algorithm reaches line 9 then we clearly have type(x) = U
+since type(·) is a type-partition map and the input tuple S is assumed to be a partial list of T. Also the
+properties about S′ hold because S′ = S in this case.
+Otherwise, the algorithm uses the for-loop to get Ua for each a ∈Pr1Φ′. By the inductive hypothesis,
+we know that at the end of each iteration of line 12, S remains a partial list of T. After the for-loop, we
+have Ua = type(x ◦a) and S is a partial list with type(x ◦a) ∈Sℓ+1 for all a ∈Pr1Φ′.
+As a result, we have by line 18 and line 21 that
+ComputeType(x, S) = U =
+[
+a∈Pr1Φ′
+Ua =
+[
+a∈Pr1Φ′
+type(x ◦a) = type(x).
+It is easy to show that after the execution, S′ remains a partial list of T and satisﬁes (24). Next, assume
+that the input S is closed. By the inductive hypothesis, S remains closed before line 22 and we have
+type(x ◦a) ∈Sℓ+1,
+for all a ∈Pr1Φ′.
+Therefore, before and after line 22 S is closed with respect to type(x ◦a) at level ℓ+ 1 for all a ∈Pr1Φ′.
+Also notice that these are all the subsets of type(x) in Tℓ+1. It follows that S remains closed after adding
+type(x) to Sℓin line 22, because S remains closed with respect to type(x) at level ℓ.
+This ﬁnishes the induction and the proof of the lemma.
+Proof of Lemma 28. We start the proof of Lemma 28 now.
+33
+
+ComputeType
+x, S
+
+, where x ∈Pr[ℓ]Φ and ℓ: 0 ≤ℓ≤n
+1.
+if ℓ= n then
+2.
+query the black box to get the k ∈[d] such that x ∈Ψk
+3.
+add {k} to Sn if {k} /∈Sn; output {k} and exit
+4.
+end if
+5.
+compute a witness function ω′ of Φ′ = Φ
+x1, . . . , xℓ, ∗
+ Φ′ = Φ if x = ǫ and ℓ= 0
+
+6.
+use ω′ to ﬁnd a vector y ∈Dn−ℓsuch that x ◦y ∈Φ
+7.
+query the black box to get the k ∈[d] such that x ◦y ∈Ψk
+8.
+if k belongs to one of the subsets U in Sℓthen
+9.
+output U and exit
+10.
+else
+11.
+use ω′ to compute Pr1Φ′ =
+
+b ∈D : ω′(1, b) ̸= ⊥
+	
+12.
+for each a ∈Pr1Φ′
+13.
+let z = ω′(1, a) ∈Dn−ℓand we have z1 = a and x ◦z ∈Φ
+
+14.
+query the black box to get the k ∈[d] such that x ◦z ∈Ψk
+15.
+if k belongs to one of the subsets in Sℓ+1 then
+16.
+denote this subset of Sℓ+1 by Ua
+and we have type(x ◦a) = Ua
+
+17.
+else
+18.
+let Ua = ComputeType
+x ◦a, S
+
+19.
+end if
+20.
+end for
+21.
+let U = S
+a∈Pr1Φ′ Ua
+22.
+set Sℓto be Sℓ∪{U}; output U and exit
+23.
+end if
+Figure 2: The recursive procedure ComputeType
+From Lemma 30, we can call ComputeType(ǫ, S) with Sj = ∅in S for all j, to get the number s ∈[d]
+of Ψk’s as it outputs type(ǫ) = [s]. By the end of its execution, we also have type(ǫ) ∈S0 and S remains
+a closed partial list of T. It then follows from Lemma 29 that S becomes exactly T.
+Next, we show that ComputeType(ǫ, S) actually runs in polynomial time, and only uses polynomially
+34
+
+1.
+use ω to ﬁnd a vector y ∈Dn−ℓsuch that x ◦y ∈Φ
+2.
+query the black box to get the integer k ∈[s] such that x ◦y ∈Ψk
+3.
+use k to ﬁnd a subset U in Tℓsuch that k ∈U
+Figure 3: Computation of type(x) using T
+1.
+for every a ∈D such that x ◦a ∈Pr[ℓ+1]Φ
+2.
+compute type(x, a)
+3.
+if k ∈type(x, a), then recursively ﬁnd a z such that x ◦a ◦z ∈Ψk, and output a ◦z
+4.
+end for
+Figure 4: Finding a y such that x ◦y ∈Ψk, where k ∈type(x)
+many queries to the black box. Notice that the running time and number of queries used in each call to
+ComputeType, excluding those spent in the recursive calls in line 18, are bounded by a polynomial in n.
+We now show the following statement: during each recursive call to ComputeType in line 18, at least
+one new set is added to one of the Sj’s in S. This is because each recursive call to ComputeType in line
+18 has the following property: The index k obtained in line 14 belongs to type(x ◦a) by the deﬁnition of
+z in line 13 and the deﬁnition of k in line 14. The fact that we reach line 18 means that the condition in
+line 15 fails and thus, k /∈any set in Sℓ+1 before the execution of ComputeType in line 18. But after the
+execution of ComputeType in line 18, k ∈the set type(x ◦a) ∈the updated Sℓ+1. The statement follows.
+As a result, each recursive call of ComputeType in line 18 strictly increases the cardinality of S, but
+n
+X
+ℓ=0
+Sℓ
+ ≤
+n
+X
+ℓ=0
+Tℓ
+ ≤1 + dn = O(n),
+because |Tℓ| ≤d for every ℓ∈[n] and |T0| = 1. Hence, there can be at most O(n) recursive calls in every
+execution of ComputeType(x, S). Therefore, we conclude that the total running time and the number of
+queries to the black box used by ComputeType(ǫ, S) is polynomial in n.
+We have computed s ∈[d] and T. With T, we can compute type(x) for any x ∈Pr[ℓ]Φ in polynomial
+time. The algorithm is described in Figure 3. Since type(·) is a type-partition map, by the deﬁnition of
+T, we know there is a unique U ∈Tℓsuch that k ∈U, and we have type(x) = U.
+Moreover, given any x ∈Pr[ℓ]Φ and k ∈type(x), we can ﬁnd recursively and in polynomial time a y
+such that x ◦y ∈Ψk. The algorithm is described in Figure 4.
+Let π be any permutation on [n]. By the assumption of the lemma, typeπ(·) is also a type-partition
+map. We note that all the algorithms in Figure 2, 3 and 4 still work correctly, even if we replace type(·)
+by typeπ(·) and replace the witness function ω of Φ by a witness function ωπ of π(Φ). Also note that ωπ
+can be computed from ω eﬃciently using Lemma 26.
+Now pick any k ∈[s], and we start to construct a witness function ωk for Ψk.
+Pick any pair (i, a) with i ∈[n] and a ∈D. We use π to denote a permutation over [n] with π(i) = 1.
+35
+
+Then by using the ﬁrst two algorithms in Figure 2 and 3, we can compute typeπ(a). We use typeπ(a) to
+determine if a ∈Pri Ψk as follows. If k ∈typeπ(a), then a ∈Pri Ψk, and we use the algorithm in Figure 4
+to ﬁnd a witness in Ψk for (i, a); Otherwise, no such witness exists and we set ωk(i, a) = ⊥.
+To derive the equivalence relation ∼i deﬁned by Ψk, we pick a, b ∈PriΨk and use x, y ∈Ψk to denote
+the witnesses in Ψk we have found for (i, a) and (i, b). Then we use the algorithm in Figure 3 to check if
+k ∈type
+Pr[i−1] x
+
+◦b
+
+.
+It is then easy to show that a ∼i b if and only if k ∈type
+Pr[i−1]x
+
+◦b
+
+. This gives us the relation ∼i.
+Finally, we can also use the algorithm in Figure 4 to ﬁnd a vector x′, for each b ∼i a, such that
+Pr[i−1]x
+
+◦b ◦x′ ∈Ψk.
+This ﬁnishes the construction of ωk, and the proof of Lemma 28.
+8
+Proof of Lemma 21
+With all the operations for witness functions developed in the last section, we now prove Lemma 21.
+For each ℓ: 2 ≤ℓ≤n, we let Φℓ= Boolean(F [ℓ]), and use
+nS[ℓ,j], v[ℓ,j]
+: j ∈[sℓ]
+o
+to denote the row representation of F [ℓ].
+We now show how to compute eﬃciently sℓ∈[d], a witness function ωℓfor Φℓ, and
+nω[ℓ,j], v[ℓ,j]
+: j ∈[sℓ]
+o
+in polynomial time for all 2 ≤ℓ≤n such that ω[ℓ,j] is a witness function of S[ℓ,j] for all ℓand j. Here it
+makes sense to talk about witness functions for Φℓand S[ℓ,j] since by the Mal’tsev condition and Lemma
+20, ϕ is a Mal’tsev polymorphism of all these sets.
+We use induction on ℓ= n, . . . , 2. We start with the base case ℓ= n. Let F = {f1, . . . , fh} and let ϕ
+denote a Mal’tsev polymorphism shared by relations in ΛF and thus, ϕ is a Mal’tsev polymorphism of
+n
+Boolean
+f1
+
+, . . . , Boolean
+fh
+o
+.
+Therefore, by Theorem 4, we can construct a witness function ωn eﬃciently for
+Φn = Boolean(F [n]) = Boolean(F),
+because Φn = Boolean(F) is the relation deﬁned by an input instance of the unweighted
+#CSP
+
+Boolean
+f1
+
+, . . . , Boolean
+fh
+
+.
+36
+
+Using ωn, we can construct a witness function ω′
+n for Ψn = Pr[n−1]Φn using Lemma 14. Because
+nS[n,j], v[n,j]
+: j ∈[sn]
+o
+denotes the row representation, we have
+Ψn =
+[
+j∈[sn]
+S[n,j].
+Now let π be any permutation from [n −1] to itself. We deﬁne the following type map typeπ(·):
+typeπ(x) =
+n
+j ∈[sn] : ∃y ∈π
+S[n,j]
+such that Pr[r]y = x
+o
+,
+for x ∈Dr and r ∈[n −1].
+By the Type Partition condition, we know that typeπ(·) is a type-partition map, for any permutation π.
+This follows from the fact that, given any function in WF, we can arbitrarily permute its variables and
+the new function still belongs to WF.
+Therefore, we can now use Lemma 28 to compute sn ∈[d], and construct a witness function ω[n,j] for
+each S[n,j], j ∈[sn]. Notice that the black box that Lemma 28 needs to query can be implemented quite
+trivially here: given any x ∈Dn−1, we can evaluate the vector F(x, ∗) eﬃciently using the input instance
+I. The black box keeps all the linearly independent vectors F(x, ∗) evaluated so far and associates each
+of them with a unique label j ∈[sn]. With ω[n,j] computed, we can use it to get a vector x ∈S[n,j], and
+then evaluate F(x, ∗) to get the representative vector v[n,j].
+Assume for induction that for some ℓ: 2 ≤ℓ< n, we have computed st, a witness function of Φt and
+nω[t,j], v[t,j]
+: j ∈[st]
+o
+for all t = ℓ+ 1, . . . , n such that ω[t,j] is a witness function for S[t,j]. To work on F [ℓ], we notice that
+F [ℓ](x) =
+X
+a∈D
+F [ℓ+1](x, a).
+As a result, we have F [ℓ](x) ̸= 0 if and only if x ∈S[ℓ+1,j] for some j ∈[sℓ+1] and
+X
+a∈D
+v[ℓ+1,j]
+a
+̸= 0.
+We let L denote the subset of [sℓ+1] such that j ∈L if the sum above is nonzero, then we have
+Φℓ= Boolean
+F [ℓ]
+=
+[
+j∈L
+S[ℓ+1,j].
+Using the Mal’tsev condition and Lemma 20 we also know that ϕ is a Mal’tsev polymorphism of Φℓand
+the S[ℓ+1,j]’s. By using Lemma 27 as well as the witness functions ω[ℓ+1,j] for S[ℓ+1,j], we can compute a
+witness function ωℓof Φℓeﬃciently.
+Next, we use ωℓand Lemma 14 to construct a witness function ω′
+ℓfor
+Ψℓ= Pr[ℓ−1]Φℓ,
+37
+
+a relation over ℓ−1 variables. Because
+nS[ℓ,j], v[ℓ,j]
+: j ∈[sℓ]
+o
+denotes the row representation of F [ℓ], we have
+Ψℓ=
+[
+j∈[sℓ]
+S[ℓ,j].
+Similarly, given any permutation π from [ℓ−1] to itself, we deﬁne the following type map:
+typeπ(x) =
+n
+j ∈[sℓ] : ∃y ∈π
+S[ℓ,j]
+such that Pr[r]y = x
+o
+,
+for x ∈Dr and r ∈[ℓ−1].
+By the Type Partition condition again, typeπ(·) is a type-partition map for any permutation π.
+But before we can ﬁnally use the algorithm of Lemma 28 to compute sℓ∈[d] and construct a witness
+function ω[ℓ,j] for each S[ℓ,j] in the row representation, we need to ﬁrst show how to implement the black
+box eﬃciently. For this purpose, it suﬃces to give an eﬃcient algorithm for computing F [ℓ](x), x ∈Dℓ.
+This can be done by calling ComputeF(ℓ, x), the polynomial-time algorithm described in the proof of
+Lemma 22 in Figure 1. Notice that the execution of ComputeF(ℓ, x) uses sℓ+1, . . . , sn and the pairs
+nω[t,j], v[t,j]
+: ℓ+ 1 ≤t ≤n and j ∈[st]
+o
+,
+all of which have already been computed by the inductive hypothesis. Now we can use the algorithm in
+Lemma 28 to compute sℓand the pairs
+ω[ℓ,j], v[ℓ,j]
+.
+This ﬁnishes the induction and the lemma is proven.
+9
+Conclusions
+We proved a complexity dichotomy theorem for #CSP with complex weights. To this end, we introduced
+three criteria over the language F: the Block Orthogonality condition, the Type Partition condition and
+the Mal’tsev condition. We show that #CSP(F) is #P-hard if F violates any of these three conditions,
+and give a polynomial-time algorithm for #CSP(F) when all three conditions are satisﬁed.
+One open question is then to determine the decidability of our dichotomy criteria. Note that all the
+dichotomies discussed in the introduction are known to be decidable in NP, with many of them decidable
+in polynomial time. From the deﬁnitions of our dichotomy criteria, each of them requires one to check a
+condition on an inﬁnitary object. Given a language F as the input, can we decide whether F satisﬁes all
+three conditions in ﬁnite time? If so, can we further show that the decision problem is in NP?
+38
+
+References
+[1] A.A. Bulatov. The complexity of the counting constraint satisfaction problem. In Proceedings of
+the 35th International Colloquium on Automata, Languages and Programming, pages 646–661,
+2008. A technical report with more details is available at ECCC.
+[2] A.A. Bulatov and V. Dalmau. Towards a dichotomy theorem for the counting constraint
+satisfaction problem. In Proceedings of the 44th Annual IEEE Symposium on Foundations of
+Computer Science, pages 562–571, 2003.
+[3] A.A. Bulatov and V. Dalmau. A simple algorithm for Mal’tsev constraints. SIAM Journal on
+Computing, 36(1):16–27, 2006.
+[4] A.A. Bulatov, M.E. Dyer, L.A. Goldberg, M. Jalsenius, M.R. Jerrum, and D. Richerby. The
+complexity of weighted and unweighted #CSP. arXiv:1005.2678, 2010.
+[5] A.A. Bulatov and M. Grohe. The complexity of partition functions. Theoretical Computer Science,
+348(2):148–186, 2005.
+[6] J.-Y. Cai and X. Chen. A decidable dichotomy theorem on directed graph homomorphisms with
+non-negative weights. In Proceedings of the 51st Annual IEEE Symposium on Foundations of
+Computer Science, pages 437–446, 2010.
+[7] J.-Y. Cai, X. Chen, and P. Lu. Graph homomorphisms with complex values: A dichotomy
+theorem. In Proceedings of the 37th International Colloquium on Automata, Languages and
+Programming, pages 275–286, 2010. The full version is available at arXiv.org.
+[8] J.-Y. Cai, X. Chen, and P. Lu. Nonnegatively weighted #CSPs: An eﬀective complexity dichotomy.
+In Proceedings of the 25th IEEE Conference on Computational Complexity, pages 45–54, 2011.
+[9] N. Creignou, S. Khanna, and M. Sudan. Complexity classications of boolean constraint satisfaction
+problems. SIAM Monographs on Discrete Mathematics and Applications, 2001.
+[10] M.E. Dyer, L.A. Goldberg, and M. Paterson. On counting homomorphisms to directed acyclic
+graphs. Journal of the ACM, 54(6): Article 27, 2007.
+[11] M.E. Dyer, L.A. Goldberg, and M. Paterson. On counting homomorphisms to directed acyclic
+graphs. Journal of the ACM, 54, 2007.
+[12] M.E. Dyer and C. Greenhill. The complexity of counting graph homomorphisms. In Proceedings of
+the 9th International Conference on Random Structures and Algorithms, pages 260–289, 2000.
+[13] M.E. Dyer and D.M. Richerby. On the complexity of #CSP. In Proceedings of the 42nd Annual
+ACM Symposium on Theory of Computing, pages 725–734, 2010.
+[14] M.E. Dyer and D.M. Richerby. The #CSP dichotomy is decidable. In Proceedings of the 28th
+Symposium on Theoretical Aspects of Computer Science, 2011.
+39
+
+[15] T. Feder and M. Vardi. The computational structure of monotone monadic SNP and constraint
+satisfaction: A study through Datalog and group theory. SIAM Journal on Computing,
+28(1):57–104, 1999.
+[16] L.A. Goldberg, M. Grohe, M. Jerrum, and M. Thurley. A complexity dichotomy for partition
+functions with mixed signs. SIAM Journal on Computing, 39(7):3336–3402, 2010.
+[17] P. Hell and J. Neˇsetˇril. On the complexity of H-coloring. Journal of Combinatorial Theory, Series
+B, 48(1):92–110, 1990.
+[18] R.E. Ladner. On the structure of polynomial time reducibility. Journal of the ACM, 22(1):155–171,
+1975.
+[19] H.W. Lenstra. Algorithms in algebraic number theory. Bulletin of the American Mathematical
+Society, 26(2), 1992.
+[20] T.J. Schaefer. The complexity of satisﬁability problems. In Proceedings of the 10th Annual ACM
+Symposium on Theory of Computing, pages 216–226, 1978.
+[21] M. Thurley. The complexity of partition functions. PhD Thesis, Humboldt Universitat zu Berlin,
+2009.
+[22] M. Thurley. The complexity of partition functions on Hermitian matrices. arXiv:1004.0992, 2010.
+[23] L.G. Valiant. The complexity of computing the permanent. Theoretical Computer Science,
+(8):189–201, 1979.
+40

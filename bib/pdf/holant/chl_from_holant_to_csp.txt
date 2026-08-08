@@ -1,0 +1,1665 @@
+Algorithmica (2012) 64:511–533
+DOI 10.1007/s00453-012-9626-6
+From Holant to #CSP and Back:
+Dichotomy for Holantc Problems
+Jin-Yi Cai · Sangxia Huang · Pinyan Lu
+Received: 24 December 2010 / Accepted: 19 February 2012 / Published online: 1 March 2012
+© Springer Science+Business Media, LLC 2012
+Abstract We explore the intricate interdependent relationship among counting prob-
+lems, considered from three frameworks for such problems: Holant Problems, count-
+ing CSP and weighted H-colorings. We consider these problems for general complex
+valued functions that take boolean inputs. We show that results from one framework
+can be used to derive results in another, and this happens in both directions. Holo-
+graphic reductions discover an underlying unity, which is only revealed when these
+counting problems are investigated in the complex domain C. We prove three com-
+plexity dichotomy theorems, leading to a general theorem for Holantc problems. This
+is the natural class of Holant problems where one can assign constants 0 or 1. More
+speciﬁcally, given any signature grid on G = (V,E) over a set F of symmetric func-
+tions, we completely classify the complexity to be in P or #P-hard, according to F , of
+
+σ:E→{0,1}
+
+v∈V
+fv(σ|E(v)),
+where fv ∈F ∪{0,1} (0, 1 are the unary constant 0, 1 functions). Not only is holo-
+graphic reduction the main tool, but also the ﬁnal dichotomy can be only naturally
+stated in the language of holographic transformations. The proof goes through an-
+other dichotomy theorem on Boolean complex weighted #CSP.
+J.-Y. Cai
+University of Wisconsin-Madison, 1210 West Dayton Street, Madison, WI 53706, USA
+e-mail: jyc@cs.wisc.edu
+S. Huang ()
+KTH Royal Institute of Technology, 10044 Stockholm, Sweden
+e-mail: sangxia@csc.kth.se
+P. Lu
+Microsoft Research Asia, Microsoft Shanghai Technology Park, No 999, Zixing Road, Minhang
+District Shanghai, 200241, China
+e-mail: pinyanl@microsoft.com
+
+512
+Algorithmica (2012) 64:511–533
+Keywords Holant problem · #CSP · Holographic reduction · Dichotomy
+1 Introduction
+In order to study the complexity of counting problems, several interesting frame-
+works have been proposed. One is called counting Constraint Satisfaction Problems
+(#CSP) [1–3, 13, 18]. Another well studied framework is called H-coloring or Graph
+Homomorphism, which can be viewed as a special case of #CSP problems [4–6,
+14–17, 20, 21]. Recently, we proposed a new reﬁned framework called Holant Prob-
+lems [8, 9] inspired by Valiant’s Holographic Algorithms [24, 25]. One reason such
+frameworks are interesting is because the language is expressive enough so that
+they can express many natural counting problems, while speciﬁc enough so that
+we can prove dichotomy theorems (i.e., every problem in the class is either in P or
+#P-hard) [11]. By a theorem of Ladner, if P ̸= NP, or P ̸= #P, then such a dichotomy
+for NP or #P is false. Many natural counting problems can be expressed in all three
+frameworks. This includes counting the number of vertex covers, the number of k-
+colorings in a graph, and many others. However, some natural and important counting
+problems, such as counting the number of perfect matchings in a graph, cannot be ex-
+pressed as a graph homomorphism function [19], but can be naturally expressed as
+a Holant Problem. Both #CSP and Graph Homomorphisms can be viewed as special
+cases of Holant Problems. The Holant framework of counting problems makes a ﬁner
+complexity classiﬁcation. A rich mathematical structure is uncovered in the Holant
+framework regarding the complexity of counting problems, which is sometimes dif-
+ﬁcult even to state in #CSP. This is particularly true when we apply holographic
+reductions [8, 24, 25].
+We give a brief description of the Holant framework here. A signature grid  =
+(G,F ,π) is a tuple, where G = (V,E) is a graph, and π labels each v ∈V with a
+function fv ∈F . We consider all edge assignments (in this paper 0–1 assignments).
+An assignment σ for every e ∈E gives an evaluation 
+v∈V fv(σ|E(v)), where E(v)
+denotes the incident edges of v, and σ|E(v) denotes the restriction of σ to E(v). The
+counting problem on the instance  is to compute
+Holant =
+
+σ
+
+v∈V
+fv(σ|E(v)).
+For example, consider the PERFECT MATCHING problem on G. This problem corre-
+sponds to attaching the EXACT-ONE function at every vertex of G, and then consider
+all 0–1 edge assignments. In this case, Holant counts the number of perfect match-
+ings. If we use the AT-MOST-ONE function at every vertex, then we count all (not
+necessarily perfect) matchings. We use the notation Holant(F ) to denote the class of
+Holant problems where all functions are given by F .
+To see that Holant is a more expressive framework, we show that every #CSP
+problem can be directly simulated by a Holant problem. Represent an instance of a
+#CSP problem by a bipartite graph where LHS are labeled by variables and RHS are
+labeled by constraints. Now the signature grid  on this bipartite graph is as follows:
+Every variable node on LHS is labeled with an EQUALITY function, every constraint
+
+Algorithmica (2012) 64:511–533
+513
+node on RHS is labeled with the given constraint function. Then Holant is exactly
+the answer to the counting CSP problem. In effect, the EQUALITY function on a node
+in LHS forces the incident edges to take the same value; this effectively reduces to a
+vertex assignment on LHS as in #CSP. We can show that #CSP is equivalent to Holant
+problems where EQUALITY functions of k variables, for arbitrary k (denoted by =k),
+are freely and implicitly available as constraints. However, this process provably can-
+not be reversed in general (if P ̸= #P). While #CSP is the same as adding all =k to
+Holant, the effect of this is non-trivial. From the lens of holographic transformations,
+=3 is a full-ﬂedged non-degenerate symmetric function of arity 3.
+Meanwhile, starting from the Holant framework, rather than assuming EQUALITY
+functions are free, one can consider new classes of counting problems which are
+difﬁcult to express as #CSP problems. One such class, called Holant∗Problems [9],
+is the class of Holant Problems where all unary functions are freely available. If we
+allow only two special unary functions 0 and 1 as freely available, then we obtain the
+family of counting problems called Holantc Problems, which is even more appealing.
+This is the class of all Holant Problems (on boolean variables) where one can set any
+particular edge (variable) to 0 or 1 in an input graph.
+Previously we proved a dichotomy theorem for Holant∗(F ), where F is any set
+of complex-valued symmetric functions [9]. It is used to prove a dichotomy theo-
+rem for #CSP in [9]. For Holantc(F ) we could only prove a dichotomy theorem
+for real-valued functions. In this paper we manage to traverse in the other direc-
+tion, going from #CSP to Holant Problems. First we establish a dichotomy theorem
+for a special Holant class. Second we prove a more general dichotomy for bipartite
+Holant Problems. Finally by going through #CSP, we prove a dichotomy theorem for
+complex-valued Holantc Problems. Now we describe our results in more detail.
+A symmetric function f : {0,1}k →C will be written as [f0,f1,...,fk], where
+fj is the value of f on inputs of Hamming weight j. Our ﬁrst main result (in Sect. 3)
+is a dichotomy theorem for Holant(F ), where F contains a single ternary func-
+tion [x0,x1,x2,x3]. More generally, as proved by holographic reductions, we get a
+dichotomy theorem for Holant([y0,y1,y2]|[x0,x1,x2,x3]) deﬁned on 2–3 regular bi-
+partite graphs. Here the notation indicates that every vertex of degree 2 on LHS has
+label [y0,y1,y2] and every vertex of degree 3 on RHS has label [x0,x1,x2,x3]. This
+is the foundation of the remaining two dichotomy results in this paper. Previously
+we proved a dichotomy theorem for Holant([y0,y1,y2]|[x0,x1,x2,x3]), when all xi,
+yj take values in {0,1} [8]. Kowalczyk extended this to {−1,0,1} in [22]. In [10],
+we gave a dichotomy theorem for Holant([y0,y1,y2]|[1,0,0,1]), where y0,y1,y3
+take arbitrary real values. Finally this last result was extended to arbitrary complex
+numbers [23]. Our result here is built upon these results, especially [23].
+Our second result (Sect. 4) is a dichotomy theorem, under a mild condition, for
+bipartite Holant problems Holant(F1|F2). To prove that, we ﬁrst use holographic re-
+ductions to transform it to Holant(F ′
+1|F ′
+2), where we transform some non-degenerate
+function [x0,x1,x2,x3] ∈F2 to the EQUALITY function (=3) = [1,0,0,1] ∈F ′
+2.
+Then we prove that we can “realize” the binary EQUALITY function (=2) = [1,0,1]
+in the left side and reduce the problem to #CSP(F ′
+1 ∪F ′
+2). This is a new proof ap-
+proach. Previously in [9], we reduced a #CSP problem to a Holant problem and ob-
+tained results for #CSP. Here, we go the opposite way, using results for #CSP to prove
+
+514
+Algorithmica (2012) 64:511–533
+dichotomy theorems for Holant problems. This is made possible by our complete di-
+chotomy theorem for boolean complex weighted #CSP [9]. We note that proving this
+over C is crucial, as holographic reductions naturally go beyond R. We also note
+that our dichotomy theorem here does not require the functions in F1 or F2 to be
+symmetric. This will be useful in the future.
+Our third main result, also the initial motivation of this work, is a dichotomy the-
+orem for symmetric complex Holantc problems. This improves our previous result in
+[9]. We made a conjecture in [9] that the dichotomy theorem of Holantc for symmetric
+complex functions. It turns out that this conjecture is not correct as stated. For exam-
+ple, Holantc([1,0,i,0]) is tractable (according to our new theorem), but not included
+in the tractable cases by the conjecture. After isolating these new tractable cases we
+prove everything else is #P-hard. Generally speaking, non-trivial and previously un-
+known tractable cases are what make dichotomy theorems particularly interesting, but
+at the same time make them more difﬁcult to prove (especially for hardness proofs,
+which must “carve out” exactly what’s left). The proof approach here is also different
+from that of [9]. In [9], the idea is to interpolate all unary functions and then use
+the results for Holant∗Problems. Here we ﬁrst prove that we can realize some non-
+degenerate ternary function, for which we can use the result of our ﬁrst dichotomy
+theorem. Then we use our second dichotomy theorem to further reduce the problem
+to #CSP and obtain a dichotomy theorem for Holantc.
+The study of Holant Problems is strongly inﬂuenced by the development of holo-
+graphic algorithms [7, 8, 24, 25]. Holographic reduction is a primary technique in
+the proof of these dichotomies, both for the tractability part and the hardness part.
+More than that—and this seems to be the ﬁrst instance—holographic reduction even
+provides the correct language for the statements of these dichotomies. Without us-
+ing holographic reductions, it is not easy to even fully describe what are the tractable
+cases in the dichotomy theorem. Another interesting observation is that by employing
+holographic reductions, complex numbers appear naturally and in an essential way.
+Even if one is only interested in integer or real valued counting problems, in the com-
+plex domain C the picture becomes whole. “It has been written that the shortest and
+best way between two truths of the real domain often passes through the imaginary
+one.”—Jacques Hadamard.
+2 Preliminaries
+Our functions take values in C by default. Strictly speaking complexity results should
+be restricted to computable numbers in the Turing model; but it is more convenient
+to express this over C. We say a problem is tractable if it is computable in P. The
+framework of Holant Problems is deﬁned for functions mapping any [q]k →C for a
+ﬁnite q. Our results in this paper are for the Boolean case q = 2.
+Let F be a set of functions. A signature grid  = (G,F ,π) is a tuple,
+where G = (V,E) is a graph, and π : V →F labels each v ∈V with a func-
+tion fv ∈F . The Holant problem on instance  is to compute Holant =
+
+σ:E→{0,1}
+
+v∈V fv(σ|E(v)), a sum over all 0–1 edge assignments, of the products
+of the function evaluations at each vertex. A function fv can be represented as a truth
+table. It will be more convenient to denote it as a tensor in (C2)⊗deg(v), or a vector
+
+Algorithmica (2012) 64:511–533
+515
+in C2deg(v), when we perform holographic transformations. We also call it a signa-
+ture. We denote by =k the EQUALITY signature of arity k. A symmetric function f
+on k Boolean variables can be expressed by [f0,f1,...,fk], where fj is the value
+of f on inputs of Hamming weight j. Thus, for example, 0 = [1,0], 1 = [0,1] and
+(=k) = [1,0,...,0,1] (with (k −1) 0’s).
+Deﬁnition 1 Given a set of signatures F , we deﬁne Holant(F ):
+Input: A signature grid  = (G,F ,π);
+Output: Holant.
+We would like to characterize the complexity of Holant problems in terms of its
+signature set F . Some special families of Holant problems have already been widely
+studied. For example, if F contains all EQUALITY signatures {=1,=2,=3,···}, then
+this is exactly the weighted #CSP problem. In [9], we also introduced the follow-
+ing two special families of Holant problems by assuming some signatures are freely
+available.
+Deﬁnition 2 Let U denote the set of all unary signatures. Then we deﬁne
+Holant∗(F ) = Holant(F ∪U).
+Deﬁnition 3 Given a set of signatures F , we use Holantc(F ) to denote the problem
+Holant(F ∪{0,1}).
+Replacing a signature f ∈F by a constant multiple cf , where c ̸= 0, does not
+change the complexity of Holant(F ). An important property of a signature is whether
+it is degenerate.
+Deﬁnition 4 A signature is degenerate iff it is a tensor product of unary signatures.
+In particular, a symmetric signature in F is degenerate iff it can be expressed as
+λ[x,y]⊗k.
+To introduce the idea of holographic reductions, it is convenient to consider bipar-
+tite graphs. This is without loss of generality. For any general graph, we can make it
+bipartite by adding an additional vertex on each edge, and giving each new vertex the
+EQUALITY function =2 on 2 inputs.
+We use Holant(G|R) to denote all counting problems, expressed as Holant prob-
+lems on bipartite graphs H = (U,V,E), where each signature for a vertex in U or
+V is from G or R, respectively. An input instance for the bipartite Holant problem
+is a bipartite signature grid and is denoted as  = (H,G|R,π). Signatures in G are
+denoted by column vectors (or contravariant tensors); signatures in R are denoted by
+row vectors (or covariant tensors) [12].
+One can perform (contravariant and covariant) tensor transformations on the sig-
+natures. We will deﬁne a simple version of holographic reductions, which are in-
+vertible. Suppose Holant(G|R) and Holant(G′|R′) are two Holant problems deﬁned
+for the same family of graphs, and T ∈GL2(C) is a basis. We say that there is an
+(invertible) holographic reduction from Holant(G|R) to Holant(G′|R′), if the con-
+travariant transformation G′ = T ⊗gG and the covariant transformation R = R′T ⊗r
+
+516
+Algorithmica (2012) 64:511–533
+map G ∈G to G′ ∈G′ and R ∈R to R′ ∈R′, and vice versa, where G and R have
+arity g and r respectively. (Notice the reversal of directions when the transformation
+T ⊗n is applied. This is the meaning of contravariance and covariance.)
+Theorem 1 (Valiant’s Holant Theorem) Suppose that there is a holographic re-
+duction from #G|R to #G′|R′, mapping signature grid  to ′, then Holant =
+Holant′.
+In particular, for invertible holographic reductions from Holant(G|R) to
+Holant(G′|R′), one problem is in P iff the other one is in P, and similarly one problem
+is #P-hard iff the other one is also #P-hard.
+In the study of Holant problems, we will often transfer between bipartite and non-
+bipartite settings. When this does not cause confusion, we do not distinguish signa-
+tures between column vectors (or contravariant tensors) and row vectors (or covariant
+tensors). Whenever we write a transformation as T ⊗nF or T F , we view the signa-
+tures as column vectors (or contravariant tensors); whenever we write a transforma-
+tion as FT ⊗n or F T , we view the signatures as row vectors (or covariant tensors).
+3 Dichotomy Theorem for Ternary Signatures
+In this section, we consider the complexity of Holant([x0,x1,x2,x3]). If the ternary
+signature [x0,x1,x2,x3] is degenerate, it is trivially tractable, since a degenerate sig-
+nature factors as a tensor product and the signature grid simply decomposes into iso-
+lated edges. In the following we always assume that it is non-degenerate. Given a non-
+degenerate signature [x0,x1,x2,x3], we can ﬁnd a non-zero tuple (a,b,c) (unique up
+to a scalar factor), such that ax0 + bx1 + cx2 = 0 and ax1 + bx2 + cx3 = 0. If c ̸= 0,
+the sequence [x0,x1,x2,x3] is a second order linear recurrence sequence. Its char-
+acteristic equation is a + bλ + cλ2 = 0. We can write down an expression for this
+sequence [x0,x1,x2,x3] by the eigenvalues. When c = 0 and a ̸= 0, we can consider
+its reverse sequence. The case a = c = 0 can be viewed as a limiting case. Statedly
+succinctly, the sequence [x0,x1,x2,x3] can always be expressed by one of the fol-
+lowing three categories (with the convention that α0 = 1, and kαk−1 = 0 if k = 0,
+even when α = 0):
+1. xk = α3−k
+1
+αk
+2 + β3−k
+1
+βk
+2, where det
+ α1 β1
+α2 β2
+
+̸= 0;
+2. xk = Akαk−1 + Bαk, where A ̸= 0;
+3. xk = A(3 −k)α2−k + Bα3−k, where A ̸= 0.
+The ﬁrst category corresponds to the case when the characteristic equation a + bλ +
+cλ2 = 0 has two distinct roots and we call it the generic case. The second category
+corresponds to the case when it has a double root (and c ̸= 0) and we call it the
+double-root case. Category 3 is also a double-root case, and is only needed for a very
+special case b = c = 0. It can be viewed as the reversal of category 2, and we always
+omit the formal proof for this category since it is similar to category 2.
+For the generic case, we can apply a holographic reduction using T =
+ α1 β1
+α2 β2
+
+.
+Then we have the following reductions (readers may wish to take a look at Ap-
+pendix B):
+
+Algorithmica (2012) 64:511–533
+517
+Holant
+
+[x0,x1,x2,x3]
+	
+≡T Holant
+
+[1,0,1]|[x0,x1,x2,x3]
+	
+≡T Holant
+
+[1,0,1]T ⊗2|
+
+T −1	⊗3[x0,x1,x2,x3]
+	
+≡T Holant
+
+[y0,y1,y2]|[1,0,0,1]
+	
+,
+where [y0,y1,y2] = [1,0,1]T ⊗2. (We note that [x0,x1,x2,x3] = T ⊗3[1,0,0,1].)
+So for the generic case, we only need to give a dichotomy for the bipartite prob-
+lem Holant([y0,y1,y2]|[1,0,0,1]), which has been proved in [23]; we quote their
+theorem here.
+Theorem 2 ([23]) The problem Holant([y0,y1,y2]|[1,0,0,1]) is #P-hard for all
+y0,y1,y2 ∈C except in the following cases, for which the problem is in P: (1) y2
+1 =
+y0y2; (2) y12
+0 = y12
+1 and y0y2 = −y2
+1 (y1 ̸= 0); (3) y1 = 0; and (4) y0 = y2 = 0.
+To get a complete dichotomy for Holant([x0,x1,x2,x3]), we next deal with the
+double-root case.
+Lemma 1 Let xk = Akαk−1 + Bαk, where A ̸= 0 and k = 0,1,2,3. If α = ±i,
+Holant([x0,x1,x2,x3]) is in P. Otherwise, the problem is #P-hard.
+Proof If α = ±i, the signature [x0,x1,x2,x3] satisﬁes the recurrence relation xk+2 =
+±2ixk+1 + xk, where k = 0,1. This is a generalized Fibonacci signature (see [8]).
+Thus we know that it is in P by holographic algorithms [8] using Fibonacci gates.
+Now assume that α ̸= ±i. We ﬁrst apply an orthogonal holographic transforma-
+tion. A crucial observation is that we can view Holant([x0,x1,x2,x3]) as the bipartite
+Holant([1,0,1]|[x0,x1,x2,x3]) and an orthogonal transformation T ∈O2(C) keeps
+(=2) = [1,0,1] invariant: [1,0,1]T ⊗2 = [1,0,1]. By a suitable orthogonal transfor-
+mation T , we can transform [x0,x1,x2,x3] to [v,1,0,0] for some v ∈C, up to a
+scalar. (Details are in Appendix.) So the complexity of Holant([x0,x1,x2,x3]) is the
+same as Holant([v,1,0,0]).
+Next we prove that Holant([v,1,0,0]) is #P-hard for all v ∈C. First, for v = 0,
+Holant([0,1,0,0]) is #P-hard, because it is the problem of counting all perfect match-
+ings on 3-regular graphs [26]. Second, let v ̸= 0. We can realize [v3 +3v,v2 +1,v,1]
+by connecting [v,1,0,0]’s as illustrated in Fig. 1, so it is enough to prove that
+Holant([v3 + 3v,v2 + 1,v,1]) is #P-hard. In tensor product notation this signature is
+
+v3 + 3v,v2 + 1,v,1
+T = 1
+2
+
+v + 1
+1
+⊗3
++
+v −1
+1
+⊗3
+.
+Fig. 1 All vertex signatures are
+[v,1,0,0]
+
+518
+Algorithmica (2012) 64:511–533
+Then the following reduction chain holds:
+Holant
+
+v3 + 3v,v2 + 1,v,1
+	
+≡T Holant
+
+[1,0,1]|
+
+v3 + 3v,v2 + 1,v,1
+	
+≡T Holant
+
+v2 + 2v + 2,v2,v2 −2v + 2
+
+|[1,0,0,1]
+	
+where the second step is a holographic reduction using
+ v+1 v−1
+1
+1
+
+. We can apply The-
+orem 2 to Holant([v2 + 2v + 2,v2,v2 −2v + 2]|[1,0,0,1]), by checking against the
+four exceptions. (1) [v2 + 2v + 2,v2,v2 −2v + 2] is non-degenerate. (2) There is
+no solution for (v2 −2v + 2)12 = v24 and (v2 + 2v + 2)(v2 −2v + 2) + v4 = 0.
+(3) v2 ̸= 0. (4) It cannot be the case that v2 + 2v + 2 = v2 −2v + 2 = 0. There-
+fore Holant([v3 + 3v,v2 + 1,v,1]) is #P-hard, and so is Holant([v,1,0,0]) for all
+v ∈C.
+□
+By Theorem 2 and Lemma 1, we have a complete dichotomy theorem for
+Holant([x0,x1,x2,x3]). From this, we can get a further dichotomy for all bipar-
+tite Holant problems Holant([y0,y1,y2]|[x0,x1,x2,x3]). The reduction is standard.
+For any non-degenerate [y0,y1,y2], we can ﬁnd a transformation T , such that
+[y0,y1,y2]T ⊗2 = [1,0,1]. Then the bipartite problem Holant([y0,y1,y2]|[x0,x1,
+x2,x3]) is transformed to the equivalent problem Holant((T −1)⊗3[x0,x1,x2,x3]),
+for which we have a dichotomy theorem. The following dichotomy theorems are
+both effective dichotomies. They use the function families A and P , called afﬁne
+functions and functions of a product type. (See Appendix A for more details.)
+Theorem 3 Holant([x0,x1,x2,x3]) is #P-hard unless [x0,x1,x2,x3] satisﬁes one of
+the following conditions, in which case the problem is in P:
+1. [x0,x1,x2,x3] is degenerate;
+2. There is a 2 × 2 matrix T such that [x0,x1,x2,x3] = T ⊗3[1,0,0,1] and
+[1,0,1]T ⊗2 is in A ∪P ;
+3. For α ∈{2i,−2i}, x2 + αx1 −x0 = 0 and x3 + αx2 −x1 = 0.
+Theorem 4 Holant([y0,y1,y2]|[x0,x1,x2,x3]) is #P-hard unless [x0,x1,x2,x3] and
+[y0,y1,y2] satisfy one of the following conditions, in which case the problem is in P:
+1. [x0,x1,x2,x3] is degenerate;
+2. There is a 2 × 2 matrix T such that [x0,x1,x2,x3] = T ⊗3[1,0,0,1] and
+[y0,y1,y2]T ⊗2 is in A ∪P ;
+3. There is a 2 × 2 matrix T such that [x0,x1,x2,x3] = T ⊗3[1,1,0,0] and
+[y0,y1,y2]T ⊗2 is of form [0,∗,∗];
+4. There is a 2 × 2 matrix T such that [x0,x1,x2,x3] = T ⊗3[0,0,1,1] and
+[y0,y1,y2]T ⊗2 is of form [∗,∗,0].
+4 Reductions Between Holant and #CSP
+In this section, we extend the dichotomies in Sect. 3 for a single ternary signature to
+a set of signatures. We are going to give a dichotomy for the problem Holant([x0,x1,
+
+Algorithmica (2012) 64:511–533
+519
+x2,x3] ∪F ), or more generally for the bipartite problem Holant([y0,y1,y2] ∪
+G1|[x0,x1,x2,x3] ∪G2), where [y0,y1,y2] and [x0,x1,x2,x3] are non-degenerate.
+We focus on the generic case of [x0,x1,x2,x3] in this section, and the double
+root case will be handled in the next section in Lemma 6. For the generic case,
+we can apply a holographic reduction to transform [x0,x1,x2,x3] to [1,0,0,1].
+Therefore we only need to give a dichotomy for Holant problems of the form
+Holant([y0,y1,y2] ∪G1|[1,0,0,1] ∪G2), where [y0,y1,y2] is non-degenerate. We
+make one more observation: The ternary equality signature [1,0,0,1] is invariant
+under the following transformations:
+T3 ≜
+1
+0
+0
+1
+
+,
+1
+0
+0
+ω
+
+,
+1
+0
+0
+ω2
+
+,
+where ω = ω3 = e2πi/3. For any T ∈T3,
+Holant
+
+[y0,y1,y2]|[1,0,0,1] ∪F
+	
+≡T Holant
+
+[y0,y1,y2]T ⊗2|[1,0,0,1] ∪T −1F
+	
+.
+As a result, we can normalize [y0,y1,y2] by a holographic reduction with any T ∈T3.
+In particular, we call a symmetric binary signature [y0,y1,y2] normalized if y0 = 0
+or it is not the case that y2 is y0 times a t-th primitive root of unity, and t = 3t′ where
+gcd(t′,3) = 1. If [y0,y1,y2] is not normalized, then y2 = y0ωs
+t , where ωt = e2πi/t
+and gcd(s,t) = 1. Write 1 = 3u + t′v for some integers u and v, then ωt = ωvωu
+t′
+and ωs
+t = ωkωl
+t′, where k ≡sv mod 3, and gcd(k,3) = 1. Hence k = 1 or 2. After
+applying the transformation
+ 1 0
+0 ωk
+
+∈T3, we get a new signature [y0,y1ωk,y0ωl
+t′],
+which is normalized. So in the following, we only deal with normalized [y0,y1,y2].
+In one case, we also need to normalized a unary signature [x0,x1], namely x0 = 0
+or x1 is not a multiple of x0 by a t-th primitive root of unity, and t = 3t′ where
+gcd(t′,3) = 1. Again we can normalize the unary signature by a suitable T ∈T3.
+We note that a normalized signature is still normalized after a scalar multiple.
+Theorem 5 Let [y0,y1,y2] be a normalized and non-degenerate signature. And in
+the case of y0 = y2 = 0, we further assume that G1 contains a unary signature [a,b],
+which is normalized and ab ̸= 0. Then
+Holant
+
+[y0,y1,y2] ∪G1|[1,0,0,1] ∪G2
+	
+≡T #CSP
+
+[y0,y1,y2] ∪G1 ∪G2
+	
+.
+More speciﬁcally, Holant([y0,y1,y2] ∪G1|[1,0,0,1] ∪G2) is #P-hard unless
+[y0,y1,y2] ∪G1 ∪G2 ⊆P or [y0,y1,y2] ∪G1 ∪G2 ⊆A, in which cases the problem
+is in P.
+This dichotomy is an important reduction step in the proof of our dichotomy theo-
+rem for Holantc. It is also interesting in its own right as a connection between Holant
+and #CSP. The assumption on signature normalization in the statement of the the-
+orem is without loss of generality. For a non-normalized signature, we can apply a
+normalization and then apply the dichotomy criterion in the theorem. The additional
+assumption of the existence of a non-zero unary signature circumvents a technical
+difﬁculty, and ﬁnds a circuitous route to the proof of our dichotomy theorem for
+Holantc, the main objective in this paper. For Holantc, the needed unary signature
+
+520
+Algorithmica (2012) 64:511–533
+will be produced from [1,0] and [0,1]. We also note that we do not require the sig-
+natures in G1 and G2 to be symmetric, so the theorem could have applications in
+dichotomy theorems for general Holant problems over non-symmetric signatures.
+One direction in Theorem 5, from Holant to #CSP, is straightforward. Thus
+our main claim is a reduction from #CSP to these bipartite Holant problems. The
+approach is to construct the binary equality gate [1,0,1] = (=2) in LHS in the
+Holant problem. As soon as we have [1,0,1] in LHS, together with [1,0,0,1] = (=3)
+in RHS, we get equality gates of all arities (=k) in RHS. Also with the help of [1,0,1]
+in LHS we can transfer G2 to LHS. Then we have all of #CSP([y0,y1,y2]∪G1 ∪G2).
+If the problem Holant([y0,y1,y2]|[1,0,0,1]) is already #P-hard, then for
+any G1 and G2, it is #P-hard. So we only need to consider the cases, where
+Holant([y0,y1,y2]|[1,0,0,1]) is not #P-hard. For this, we again use Theorem 2
+from [23]. The ﬁrst tractable case y2
+1 = y0y2 is degenerate, which does not apply
+here. The following three lemmas deal with the remaining three tractable cases re-
+spectively.
+For the case y12
+0 = y12
+1 and y0y2 = −y2
+1 (y1 ̸= 0), we can scale it to [a,1,b], where
+a12 = 1 and ab = −1. Since [a,1,b] is normalized, it follows that a4 = 1.
+Lemma 2 Let G1 and G2 be two sets of signatures. For all pairs of a and b satisfying
+a4 = 1 and ab = −1, Holant([a,1,b] ∪G1|[1,0,0,1] ∪G2) is #P-hard unless G1 ∪
+G2 ⊆A, in which case it is in P.
+Proof We ﬁrst prove that when a4 = 1 and ab = −1,
+Holant
+
+[a,1,b] ∪G1|[1,0,0,1] ∪G2
+	
+≡T #CSP
+
+[a,1,b] ∪G1 ∪G2
+	
+.
+To get this, it is sufﬁcient to construct [1,0,1] in LHS.
+Case 1: a = ±i. It is equivalent to consider Holant([1,±i,1] ∪G1|[1,0,0,1] ∪
+G2) because they only differ by a constant factor. We can construct [1,1] on RHS
+by connecting the two edges of a [1,±i,1] gate on the LHS with two edges of a
+[1,0,0,1] = (=3) on the RHS. With the gadget in Fig. 2, we can construct the binary
+disequality gate [0,1,0] = (̸=2) on LHS. Together with the =3 on RHS, we can have
+=3 on LHS. Connecting this LHS =3 with a [1,1] on RHS, we can obtain the binary
+equality gate [1,0,1] = (=2) on LHS.
+Case 2: a = ±1. It is equivalent to consider Holant([1,±1,−1] ∪G1|[1,0,0,1] ∪
+G2). With the gadget in Fig. 3, we can construct [0,1,0] on LHS, and thus [1,0,0,1]
+on LHS. Furthermore, we can construct [1,−1] and [1,0,−1] on both sides. By con-
+necting [1,−1] with [1,0,−1], we can realize [1,1] on both sides, and consequently
+[1,0,1] on both sides.
+Fig. 2 A gadget construction
+for the binary disequality gate
+(̸=2) on LHS. Degree 3 vertices
+have signature =3, degree 2
+vertices have signature [1,±i,1]
+
+Algorithmica (2012) 64:511–533
+521
+Fig. 3 Another gadget
+construction for (̸=2) on LHS.
+Degree 3 vertices have signature
+=3, degree 2 vertices signature
+[1,±1,−1]
+Fig. 4 A recursive gadget we use to construct [1,0,a3k+1] on LHS. Ternary signatures are [1,0,0,1],
+and binary signatures are [1,0,a]
+By [9], #CSP([a,1,b]∪F ) is #P-hard unless [a,1,b]∪G1 ∪G2 ⊆P or [a,1,b]∪
+G1 ∪G2 ⊆A. Since [a,1,b] ∈A−P , we conclude that the only possible case which
+is not #P-hard is G1 ∪G2 ⊆A. This is also sufﬁcient for tractability. The proof is
+complete.
+□
+For the tractable case y1 = 0 in Theorem 2, by non-degeneracy, we can scale it to
+be [1,0,a], where a ̸= 0. Then we have the following lemma:
+Lemma 3 Let G1 and G2 be two sets of signatures, and let a ̸= 0 be a complex
+number. We assume [1,0,a] is normalized. Then we have the following dichotomy:
+– If a4 = 1, then Holant([1,0,a] ∪G1|[1,0,0,1] ∪G2) is #P-hard unless G1 ∪G2 ⊆
+P or G1 ∪G2 ⊆A, in which cases it is in P.
+– if a4 ̸= 1, then Holant([1,0,a] ∪G1|[1,0,0,1] ∪G2) is #P-hard unless G1 ∪G2 ⊆
+P , in which case it is in P.
+Proof As above, it is sufﬁcient to show that we can construct [1,0,1] in LHS. We
+will use the gadget in Fig. 4 in our proof. We can use it to realize [1,0,a3k+1] for any
+k ∈N on LHS.
+If a is not a root of unity, then we will be able to interpolate all signatures of the
+form [1,0,x] where x ∈C on LHS. This uses a Vandermonde system and we omit
+the details. In particular, we will be able to interpolate [1,0,1] on LHS. So we are
+done.
+Now we can assume that a is a t-th primitive root of unity, that is a = ωb
+t for some
+b relatively prime to t, where ωt = e2πi/t. If t is not a multiple of 3, then we can ﬁnd
+an integer k, such that 3k + 1 ≡0
+(mod t). Therefore, we can realize [1,0,1] on
+LHS, and carry out the same reduction as above.
+Now we consider the case of t = 3lt′, where l ≥1 and gcd(t′,3) = 1. Since
+[1,0,a] is normalized, we have a further condition that l > 1. For this case, we do
+not know how to construct [1,0,1] in LHS directly. Instead we will further apply a
+holographic reduction. Also in this case, we have a4 ̸= 1, so we want to prove that
+
+522
+Algorithmica (2012) 64:511–533
+Fig. 5 A recursive gadget we use to realize [1,0,0,ωmbk0
+3(l−1)] where m is an odd integer. All ternary gadgets
+are [1,0,0,ωbk0
+3(l−1)]
+Holant([1,0,a] ∪G1|[1,0,0,1] ∪G2) is #P-hard unless G1 ∪G2 ⊆P . The fact that
+the problem is in P when G1 ∪G2 ⊆P is obvious by Theorem 9, since [1,0,a] ∈P .
+Since 2t′ is not a multiple of 3, there exist some integers k and k0, such that
+3k + 1 = 2k0t′. Since
+a3k+1 = a2k0t′ = ω2bk0t′
+3lt′
+= ω2bk0
+3l
+we can realize [1,0,ω2bk0
+3l
+] on LHS. So
+Holant
+
+1,0,ω2bk0
+3l
+
+∪G1|{=3} ∪G2
+	
+≤T Holant
+
+[1,0,a] ∪G1|[1,0,0,1] ∪G2
+	
+.
+Therefore it is sufﬁcient to prove that Holant([1,0,ω2bk0
+3l
+]∪G1|{=3}∪G2) is #P-hard
+if G1 ∪G2 ̸⊆P .
+We apply a holographic reduction under the basis T =
+ 1
+0
+0 ω−bk0
+3l
+
+, and get
+Holant
+
+1,0,ω2bk0
+3l
+
+∪G1|{=3} ∪G2
+	
+≡T Holant
+
+[1,0,1] ∪G1T |
+
+1,0,0,ωbk0
+3(l−1)
+
+∪T −1G2
+	
+.
+We then use the gadget in Fig. 5 to realize [1,0,0,ω3l−1bk0
+3(l−1) ] = [1,0,0,1] = (=3)
+in RHS. Together with [1,0,1] = (=2) in LHS this gives all equality gates. As a
+result
+#CSP
+
+1,0,0,ωbk0
+3(l−1)
+
+∪G1T ∪T −1G2
+	
+≤T Holant
+
+[1,0,1] ∪G1T |
+
+1,0,0,ωbk0
+3(l−1)
+
+∪T −1G2
+	
+.
+Since l > 1, [1,0,0,ωbk0
+3(l−1)] ̸∈A. So the problem is #P-hard unless G1T ∪
+T −1G2 ⊆P . Since T and T −1 are diagonal matrices, it is equivalent to say that
+G1 ∪G2 ⊆P . This completes the proof.
+□
+For the last tractable case y0 = y2 = 0 in Theorem 2, we can scale it to [0,1,0].
+Lemma 4 Let G1 and G2 be two sets of signatures, and a ̸= 0 be a complex number.
+We assume [1,a] is normalized. Then we have the following dichotomy:
+• If a4 = 1, then Holant({[0,1,0],[1,a]} ∪G1|[1,0,0,1] ∪G2) is #P-hard unless
+G1 ∪G2 ⊆P or G1 ∪G2 ⊆A, in which cases it is in P.
+• if a4 ̸= 1, then Holant({[0,1,0],[1,a]} ∪G1|[1,0,0,1] ∪G2) is #P-hard unless
+G1 ∪G2 ⊆P , in which case it is in P.
+Proof By connecting a [a,1] and two [0,1,0]’s to a [1,0,0,1], we can realize
+[a,0,1], or equivalently [1,0,1/a] on LHS, and by Lemma 3, the proof follows. □
+
+Algorithmica (2012) 64:511–533
+523
+5 Dichotomy Theorem for Complex Holantc Problems
+In this section, we prove our main result, a dichotomy theorem for Holantc problems
+with complex valued symmetric signatures, which is stated as Theorem 6. The proof
+crucially uses the dichotomies proved in the previous two sections. In order to use
+them, we ﬁrst prove in Lemma 5 that we can always realize a non-degenerate ternary
+signature except in some trivial cases. After having a non-degenerate ternary signa-
+ture, we can immediately prove #P-hard if the ternary is not of one of the tractable
+cases in Theorem 3. For the tractable ternary signatures, we use Theorem 5 to extend
+the dichotomy theorem to the whole signature set. In Theorem 5, we only consider
+the generic case of the ternary function. The double-root case is handled here in
+Lemma 6.
+Lemma 5 Given any set of symmetric signatures F which contains [1,0] and [0,1],
+we can construct a non-degenerate symmetric ternary signature X = [x0,x1,x2,x3],
+except in the following two trivial cases:
+1. Any non-degenerate signature in F is of arity at most 2;
+2. In F , all unary signatures are of form [x,0] or [0,x]; all binary signatures are
+of form [x,0,y] or [0,x,0]; and all signatures of arity greater than 2 are of form
+[x,0,...,0,y].
+Proof Suppose case 1. does not hold, and let [x0,x1,...,xm] ∈F be a non-
+degenerate signature of arity at least 3. Since we have [1,0] and [0,1], we can
+construct all sub-signatures of any signature in F . If there exists a ternary non-
+degenerate sub-signature, we are done. Now suppose all ternary sub-signatures are
+degenerate, and m > 3. Then we can show that it must be of form [x0,0,...,0,xm],
+where x0xm ̸= 0. If we have a unary signature [a,b] where ab ̸= 0 or a unary sub-
+signature [a,b] (where ab ̸= 0) of a binary signature, we can connect this signature
+to m −3 dangling edges of [x0,0,...,0,xm] to get a non-degenerate ternary signa-
+ture [x,0,0,y], and we are done. Otherwise, all unary signatures are of form [x,0]
+or [0,x] and all binary signatures are of form [x,0,y] or [0,x,0]. Therefore we are
+in the exceptional case 2.
+□
+We next consider the double root case for X = [x0,x1,x2,x3]. By Lemma 1,
+Holant(X) is already #P-hard unless the double eigenvalue is i or −i. Then, xk+2 +
+αxk+1 −xk = 0 for k = 0,1, where α = ±2i.
+Lemma 6 Let X = [x0,x1,x2,x3] be a complex signature satisfying xk+2 +αxk+1 −
+xk = 0 for k = 0,1, where α = ±2i. Let Y = [y0,y1,y2] be a non-degenerate binary
+signature. Then Holant({X,Y}) is #P-hard unless y2 + αy1 −y0 = 0 (in which case
+it is in P by Fibonacci gates).
+Proof We prove this result for α = −2i. The other case is similar.
+The sequence {xk} can be written as follows: xk = Akik−1 + Bik, where A ̸= 0.
+Thus, we have
+X = T ⊗3[1,1,0,0]T,
+where T =
+1
+B−1
+3
+i
+A + B−1
+3 i
+
+.
+
+524
+Algorithmica (2012) 64:511–533
+By expressing
+ y0 y1
+y1 y2
+
+= T T
+0 T0, which is always possible for some non-singular T0 =
+ a c
+b d
+
+, we have
+Y = [1,0,1]T ⊗2
+0
+=
+
+(1 0)T0
+	⊗2 +
+
+(0 1)T0
+	⊗2 =
+
+a2 + b2,ac + bd,c2 + d2
+.
+Thus we have the following chain of reductions
+Holant(Y|X) ≡T Holant
+
+[1,0,1]T ⊗2
+0
+T ⊗3[1,1,0,0]T	
+≡T Holant
+
+[1,0,1]|(T0T )⊗3[1,1,0,0]T	
+,
+where,
+T0T =
+
+a + ci
+Ac + B−1
+3 (a + ci)
+b + di
+Ad + B−1
+3 (b + di)
+
+,
+and we will call it
+p
+q
+r
+s
+
+.
+Our next goal is to use an orthogonal matrix to transform T0T to be upper-
+triangular. T0 is non-singular, therefore p and r cannot both be zero. If r = 0 then
+T0T is already upper-triangular. If p = 0 then the orthogonal matrix Q =
+ 0 1
+1 0
+
+makes QT0T upper-triangular. In general, if p2 + r2 ̸= 0, then we can ﬁnd a (com-
+plex) orthogonal matrix Q such that QT0T is upper-triangular. It can be veriﬁed that
+(QT0T )⊗3[1,1,0,0]T, where QT0T is upper-triangular, has the form [v,u,0,0] for
+some non-zero u and v. We normalize it to [v,1,0,0].
+A crucial observation is that for any orthogonal matrix Q, the [1,0,1] on the LHS
+is unchanged under the holographic transformation Q: [1,0,1](Q−1)⊗2 = [1,0,1].
+This gives us
+Holant
+
+[1,0,1]|(T0T )⊗3[1,1,0,0]T	
+≡T Holant
+
+[1,0,1]|[v,1,0,0]
+	
+≡T Holant
+
+[v,1,0,0]
+	
+,
+for some v. This shows the equivalence of Holant([v,1,0,0]) with the original in-
+stance. By Lemma 1, Holant([v,1,0,0]) is #P-hard.
+Finally p2 + r2 = 0 implies that (a + ci)2 + (b + di)2 = (a2 + b2) + 2i(ac +
+bd) −(c2 + d2) = 0. This is exactly y2 −2iy1 −y0 = 0.
+□
+Theorem 6 Let F be a set of complex symmetric signatures. Holantc(F ) is #P-hard
+unless F satisﬁes one of the following conditions, in which case it is tractable:
+1. Holant∗(F ) is tractable ( for which we have an effective dichotomy—Theorem 7);
+or
+2. There exists a T ∈T such that F ⊆T A, where
+T ≜
+
+T |[1,0,1]T ⊗2,[1,0]T,[0,1]T ∈A
+
+.
+Proof First of all, if F
+is an exceptional case of Lemma 5, we know that
+Holant∗(F ) is tractable and we are done. Now we can assume that we have a
+non-degenerate symmetric ternary signature X = [x0,x1,x2,x3] and the problem
+is Holantc(F ∪{X}).
+As discussed in Sect. 3, there are three categories for X and we only need to
+consider the ﬁrst two:
+
+Algorithmica (2012) 64:511–533
+525
+1. xk = α3−k
+1
+αk
+2 + β3−k
+1
+βk
+2;
+2. xk = Akαk−1 + Bαk, where A ̸= 0.
+Case 1: xk = α3−k
+1
+αk
+2 + β3−k
+1
+βk
+2. In this case, X = T ⊗3[1,0,0,1]T , where T =
+ α1 β1
+α2 β2
+
+. So we have the following reduction chain,
+Holantc(F ) ≡T Holantc
+F ∪{X}
+	
+≡T Holant
+
+F ∪{X,[1,0],[0,1]}
+	
+≡T Holant
+
+[1,0,1],[1,0],[0,1]
+
+|F ∪{X}
+	
+≡T Holant
+
+[1,0,1]T ⊗2,[1,0]T,[0,1]T
+[1,0,0,1] ∪T −1F
+	
+.
+Since [1,0,1]T ⊗2 is a non-degenerate binary signature, we can apply Theo-
+rem 5. The only thing we need to verify is that in the case [1,0,1]T ⊗2 = [α2
+1 +
+α0
+2,α1β1 + α2β2,β2
+1 + β2
+2] = [0,α1β1 + α2β2,0], at least one of [1,0]T = [α1,β1]
+or [0,1]T = [α2,β2] has both entries non-zero. If not, we would have α1β1 = 0
+and α2β2 = 0, which implies that [1,0,1]T ⊗2 = [0,α1β1 + α2β2,0] = [0,0,0], a
+contradiction. Therefore, by Theorem 5, we know that the problem is #P-hard un-
+less [1,0,1]T ⊗2 ∪T −1F ⊆P (note that unary [1,0]T,[0,1]T are automatically in
+P ) or {[1,0,1]T ⊗2,[1,0]T,[0,1]T } ∪T −1F ⊆A. In the ﬁrst case, Holant∗(F ) is
+tractable; in the second case, this is equivalent to having T ∈T satisfying F ⊆T A.
+Case 2: xk = Akαk−1 + Bαk, where A ̸= 0. In this case, if α ̸= ±i, the problem
+is #P-hard by Lemma 1 and we are done. Now we consider the case α = i (the case
+α = −i is similar). Consider the following equation
+zk+2 −2izk+1 −zk = 0.
+(1)
+We note that X = [x0,x1,x2,x3] satisﬁes this equation for k = 0,1. If all non-
+degenerate signatures Z = [z0,z1,...,zm] in F with arity m ≥2 satisfy the fol-
+lowing condition
+• Z satisﬁes (1) for k = 0,1,...,m −2,
+then, by Theorem 7 (tractable case 2), Holant∗(F ) is tractable, and we are done. So
+suppose this is not the case, and Z = [z0,z1,...,zm] ∈F , for some m ≥2, is a non-
+degenerate signature that does not satisfy the above condition. By Lemma 6, if any
+non-degenerate sub-signature [zk,zk+1,zk+2] does not satisfy (1), then, together with
+X which does satisfy (1), we know that the problem is #P-hard and we are done. So
+we assume every non-degenerate sub-signature [zk,zk+1,zk+2] of Z satisﬁes (1). In
+particular m ≥3, and there exists some binary sub-signature of Z that is degenerate
+and does not satisfy (1).
+Subcase 2.1: All binary sub-signatures of Z are degenerate (but Z itself is non-
+degenerate).
+We claim that Z has the form [z0,0,...,0,zm], where z0zm ̸= 0. For a contra-
+diction suppose z0 = 0, since Z is non-degenerate, there exists k < m such that
+zk ̸= 0. Let k be the minimum such, then 0 < k < m and [zk−1,zk,zk+1] is non-
+degenerate. So z0 ̸= 0 and similarly zm ̸= 0. If there are any other 0 < k < m such that
+zk ̸= 0, then let k be the minimum such. If k = 1, then a simple induction shows that
+zk = z0(z1/z0)k, for 0 ≤k ≤m, and Z is degenerate. If k > 1, then [zk−1,zk,zk+1]
+is non-degenerate, a contradiction.
+
+526
+Algorithmica (2012) 64:511–533
+Next we claim that there exists a unary sub-signature [xk,xk+1] of X with both
+entries non-zero. If x0x1 ̸= 0, then we set k = 0 and the claim is proved; if x0 =
+0,x1 ̸= 0, then we have x2 = 2ix1 + x0 ̸= 0; if x0 ̸= 0,x1 = 0, then we have x2 =
+2ix1 + x0 ̸= 0 and x3 = 2ix2 + x1 ̸= 0. (Note that x0 = x1 = 0 is impossible because
+A ̸= 0.)
+Connect this unary signature to m−3 dangling edges of [z0,0,...,0,zm], we have
+a ternary signature [a,0,0,b] where ab ̸= 0. We can use this as the non-degenerate
+ternary signature X and we have reduced this case to Case 1.
+Subcase 2.2: Some binary sub-signatures of [z0,z1,...,zm] are non-degenerate
+(some others are degenerate).
+Then we can ﬁnd a ternary sub-signature [zk,zk+1,zk+2,zk+3] (or its reversal)
+where [zk,zk+1,zk+2] is degenerate and [zk+1,zk+2,zk+3] is non-degenerate and
+thus satisﬁes −zk+1 −2izk+2 + zk+3 = 0.
+If {zk,zk+1,zk+2} is a geometric sequence of a non-zero ratio p, we could assume
+that zk = 1 after scaling. Then we have
+ 1
+0
+p
+(p + 2ip2 −p3)1/3
+⊗3
+[1,0,0,1]T = [zk,zk+1,zk+2,zk+3]T.
+Therefore, the ternary sub-signature [zk,zk+1,zk+2,zk+3] is in the ﬁrst category and
+we reduce the problem to Case 1. Otherwise, it must be that zk = zk+1 = 0 and
+zk+2 ̸= 0. This signature became [0,0,zk+2,zk+3], which is equivalent to [0,0,1,v]
+for some v ∈C, and as we proved in Sect. 3, it is #P-hard.
+□
+6 Conclusion
+We proved a dichotomy theorem for Holantc(F ) problems where all signatures in F
+are symmetric Boolean functions taking complex values, improving previous results
+in [9]. Our approach, however, is very different from that in [9]. The key is to establish
+a close relationship between Holant problems and #CSP problems, and then apply
+dichotomy results for the latter. This is achieved by applying holographic reduction to
+go from Holant to #CSP problems. This new approach gives a more uniﬁed statement
+of our ﬁnal results, and could also be useful for future research.
+Appendix A: Some Known Dichotomy Results
+In this section, we review three dichotomy theorems from [9].
+Theorem 7 ([9]) Let F be a set of symmetric non-degenerate signatures over C.
+Then Holant∗(F ) is computable in polynomial time in the following three cases. In
+all other cases, Holant∗(F ) is #P-hard.
+1. Every signature in F is of arity no more than two;
+2. There exist two constants a and b (not both zero, depending only on F ), such
+that for every signature [x0,x1,...,xn] ∈F one of the two conditions is satisﬁed:
+(1) for every k = 0,1,...,n −2, we have axk + bxk+1 −axk+2 = 0; (2) n = 2
+and the signature [x0,x1,x2] is of form [2aλ,bλ,−2aλ].
+
+Algorithmica (2012) 64:511–533
+527
+3. For every signature [x0,x1,...,xn] ∈F , one of the two conditions is satisﬁed:
+(1) For every k = 0,1,...,n −2, we have xk + xk+2 = 0; (2) n = 2 and the sig-
+nature [x0,x1,x2] is of form [λ,0,λ].
+Theorem 8 [9] Let F be a set of real symmetric signatures, and let F1,F2 and F3
+be three families of signatures deﬁned as
+F1 =
+
+λ
+
+[1,0]⊗k + ir[0,1]⊗k	
+|λ ∈C,k = 1,2,...,r = 0,1,2,3
+
+;
+F2 =
+
+λ
+
+[1,1]⊗k + ir[1,−1]⊗k	
+|λ ∈C,k = 1,2,...,r = 0,1,2,3
+
+;
+F3 =
+
+λ
+
+[1,i]⊗k + ir[1,−i]⊗k	
+|λ ∈C,k = 1,2,...,r = 0,1,2,3
+
+.
+Then Holantc(F ) is computable in polynomial time if (1) After removing unary signa-
+tures from F , it falls in one of the three cases of Theorem 7 (this implies Holant∗(F )
+is computable in polynomial time) or (2) (Without removing any unary signature)
+F ⊆F1 ∪F2 ∪F3. Otherwise, Holantc(F ) is #P-hard.
+Deﬁnition 5 A k-ary function f (x1,...,xk) is afﬁne if it has the form
+χAX=0 ·
+√
+−1
+n
+j=1⟨αj ,X⟩
+where X = (x1,x2,...,xk,1), A is matrix over F2, αj is a vector over F2, and χ
+is a 0–1 indicator function such that χAX=0 is 1 iff AX = 0. Note that the inner
+product ⟨αj,X⟩is calculated over F2, while the summation n
+j=1 on the exponent
+of i =
+√
+−1 is evaluated as a sum mod 4 of 0–1 terms. We use A to denote the set of
+all afﬁne functions.
+We use P to denote the set of functions which can be expressed as a product of
+unary functions, binary equality functions ([1,0,1]) and binary disequality functions
+([0,1,0]).
+Theorem 9 [9] Suppose F is a class of functions mapping Boolean inputs to complex
+numbers. If F ⊆A or F ⊆P , then #CSP(F ) is computable in polynomial time.
+Otherwise, #CSP(F ) is #P-hard.
+As we mentioned in [9], the class A is a natural generalization of the symmetric
+signatures family F1 ∪F2 ∪F3. It is easy to show that the set of symmetric signatures
+in A is exactly F1 ∪F2 ∪F3.
+Appendix B: Some Useful Reductions
+In this section, we list some useful simple reductions: reduction between Holant and
+#CSP, reduction between bipartite and non-bipartite settings, and holographic reduc-
+tion.
+Proposition 1 #CSP(F ) ≡T Holant(F ∪
+j≥1{=j}) ≡T Holant(F ∪{=3}).
+This says that #CSP is the same as Holant problems with EQUALITY functions
+given for free.
+
+528
+Algorithmica (2012) 64:511–533
+Proposition 2 Holant(F ) ≡T Holant([1,0,1]|F ).
+That is, we can transform every edge to a path of length 2 with the new vertex
+given (=2) = [1,0,1].
+Proposition 3 Holant(G1 ∪[1,0,1]|G2 ∪[1,0,1]) ≡T Holant(G1 ∪G2).
+Binary EQUALITY functions on both sides allow the transfer of signatures.
+Proposition 4 For any T ∈GL2(C), Holant(G1|G2) ≡T Holant(G1T |T −1G2).
+This is a restatement of Valiant’s Holant Theorem.
+Proposition 5 Let T be an orthogonal transformation (T T T = I). Then Holant(F )
+≡T Holant(T F ).
+This follows from the invariance of (=2) = [1,0,1] under an orthogonal transfor-
+mation, and Propositions 2 and 4.
+Appendix C: List of Matrices in T
+In this section, we explicitly list all the matrices in the family
+T ≜
+
+T |[1,0,1]T ⊗2,[1,0]T,[0,1]T ∈A
+
+,
+which is deﬁned and used in the statement of Theorem 6. The following condition is
+given in Theorem 6:
+There exists a T ∈T such that F ⊆T A.
+(2)
+Together with the condition in Theorem 7, this gives an effective tractability condition
+which is both necessary and sufﬁcient for Holantc problems, by Theorem 6.
+As noted before, the set of symmetric signatures in A is exactly F1 ∪F2 ∪F3. We
+note that [1,0,1]T ⊗2, [1,0]T and [0,1]T are all symmetric, as is the requirement
+T −1F ⊆A in Theorem 6. Thus we can replace A by F1 ∪F2 ∪F3 in the expression
+T above.
+It is obvious that the family T is closed under a scalar multiplication. Thus we list
+them up to a scalar multiple.
+After a scalar multiple, symmetric binary signatures in F1 ∪F2 ∪F3 are precisely
+[1,0,±1],
+[1,0,±i],
+[1,±1,−1],
+[1,±i,1],
+[0,1,0].
+Also the unary signatures in F1 ∪F2 ∪F3, up to a scalar multiple, are
+[1,±1],
+[1,±i],
+[1,0],
+[0,1].
+Before we enumerate all the possibilities, we make two observations to simplify
+this process:
+
+Algorithmica (2012) 64:511–533
+529
+1. If we exchange the two columns of T , the signature [1,0,1]T ⊗2 becomes its rever-
+sal, and the two numbers in [1,0]T are interchanged. Similarly the two numbers
+in [0,1]T are interchanged as well. The effect of exchanging the two columns of
+T is the same as replacing T by T
+ 0 1
+1 0
+
+. On the other hand, the holographic trans-
+formation
+ 0 1
+1 0
+
+A amounts exchanging input values 0 and 1 for functions in A,
+and this operation keeps A invariant.
+2. If we multiply
+ 1 0
+0 −1
+
+on the right side of T , then [y0,y1,y2] ≜[1,0,1]T ⊗2 be-
+comes [y0,−y1,y2]. This operation also preserves both the set of binary and the
+set of unary signatures, respectively, listed for F1 ∪F2 ∪F3, up to a scalar fac-
+tor. On the other hand, the effect of the holographic transformation
+ 1 0
+0 −1
+
+A is to
+transform an original function f to f ·(−1)
+
+i xi, and thus it is in A iff the original
+f ∈A.
+Similarly, we can multiply
+ 1 0
+0 i
+
+on the right side of T . Of course the invariance
+under
+ 1 0
+0 i
+
+implies that of
+ 1 0
+0 −1
+
+=
+ 1 0
+0 i
+2.
+What has been shown is that Condition (2) is invariant under the right action on T
+by the group generated by
+ 0 1
+1 0
+
+and
+ 1 0
+0 i
+
+. By
+ 1 0
+0 i
+
+, we may consider only those T ’s
+such that [1,0,1]T ⊗2 ∈{[1,0,1],[1,0,i],[1,i,1],[0,1,0]}, up to a scalar factor.
+If we further normalize by the reversal action
+ 0 1
+1 0
+
+we may consider only those
+T ’s such that [1,0]T ∈{[1,±1],[1,i],[1,0]}, up to a scalar factor. However this
+reversal action is only partially closed for {[1,0,1],[1,0,i],[1,i,1],[0,1,0]}, with
+the exception [1,0,i] which is changed to [1,0,−i]. Thus we may have two extra
+cases to consider: [1,0,1]T ⊗2 = [1,0,i] and, [1,0]T = [0,1] or [1,−i]. But for
+these two cases if we apply ﬁrst
+ 1 0
+0 i
+
+, followed by
+ 0 1
+1 0
+
+, we obtain [1,0,1]T ⊗2 =
+[1,0,i] and, [1,0]T = [1,0] or [1,1] respectively. Hence we can eliminate these two
+cases.
+To summarize, to enumerate all T satisfying Condition (2) we only need to con-
+sider
+[1,0,1]T ⊗2 ∈
+
+[1,0,1],[1,0,i],[1,i,1],[0,1,0]
+
+and
+[1,0]T ∈
+
+[1,±1],[1,i],[1,0]
+
+,
+up to a scalar factor. In the following, we denote by α = (1 + i)/
+√
+2 =
+√
+i.
+If [1,0,1]T ⊗2 = γ [1,0,1], [1,0]T = λ[1,1], we have
+T =
+1
+1
+1
+−1
+
+,
+ 1
+1
+−1
+1
+
+.
+If [1,0,1]T ⊗2 = γ [1,0,1], [1,0]T = λ[1,−1], we have
+T =
+1
+−1
+1
+1
+
+,
+ 1
+−1
+−1
+−1
+
+.
+For [1,0,1]T ⊗2 = γ [1,0,1], [1,0]T = λ[1,i], there is no solution.
+If [1,0,1]T ⊗2 = γ [1,0,1], [1,0]T = λ[1,0], we have
+T =
+1
+0
+0
+±1
+
+.
+
+530
+Algorithmica (2012) 64:511–533
+If [1,0,1]T ⊗2 = γ [1,0,i], [1,0]T = λ[1,1], we have
+T =
+ 1
+1
+α3
+α
+
+,
+ 1
+1
+−α3
+−α
+
+.
+If [1,0,1]T ⊗2 = γ [1,0,i], [1,0]T = λ[1,−1], we have
+T =
+ 1
+−1
+α3
+−α
+
+,
+ 1
+−1
+−α3
+α
+
+.
+If [1,0,1]T ⊗2 = γ [1,0,i], [1,0]T = λ[1,i], we have
+T =
+ 1
+i
+α
+−α
+
+,
+ 1
+i
+−α
+α
+
+.
+If [1,0,1]T ⊗2 = γ [1,0,i], [1,0]T = λ[1,0], we have
+T =
+1
+0
+0
+α
+
+,
+1
+0
+0
+−α
+
+.
+If [1,0,1]T ⊗2 = γ [1,i,1], [1,0]T = λ[1,1], we have
+T =
+ 1
+1
+−α3
+α3
+
+,
+ 1
+1
+α3
+−α3
+
+.
+If [1,0,1]T ⊗2 = γ [1,i,1], [1,0]T = λ[1,−1], we have
+T =
+ 1
+−1
+α
+α
+
+,
+ 1
+−1
+−α
+−α
+
+.
+If [1,0,1]T ⊗2 = γ [1,i,1], [1,0]T = λ[1,i], we have
+T =
+1
+i
+0
+√
+2
+
+,
+1
+i
+0
+−
+√
+2
+
+.
+If [1,0,1]T ⊗2 = γ [1,i,1], [1,0]T = λ[1,0], we have
+T =
+√
+2
+0
+i
+1
+
+,
+√
+2
+0
+−i
+1
+
+.
+If [1,0,1]T ⊗2 = γ [0,1,0], [1,0]T = λ[1,1], we have
+T =
+1
+1
+i
+−i
+
+,
+ 1
+1
+−i
+i
+
+.
+If [1,0,1]T ⊗2 = γ [0,1,0], [1,0]T = λ[1,−1], we have
+T =
+ 1
+−1
+−i
+−i
+
+,
+1
+−1
+i
+i
+
+.
+If [1,0,1]T ⊗2 = γ [0,1,0], [1,0]T = λ[1,i], we have
+T =
+ 1
+i
+−i
+−1
+
+,
+1
+i
+i
+1
+
+.
+For [1,0,1]T ⊗2 = γ [0,1,0], [1,0]T = λ[1,0], there is no solution.
+
+Algorithmica (2012) 64:511–533
+531
+Appendix D: An Orthogonal Transformation
+In this section we give the detail of an orthogonal holographic transformation used
+in the proof of Lemma 1.
+We are given xk = Akαk−1 + Bαk, where A ̸= 0, and α ̸= ±i. Let
+S =
+
+1
+B−1
+3
+α
+A + B−1
+3 α
+
+,
+then the signature [x0,x1,x2,x3] can be expressed as
+(x0,x1,x1,x2,x1,x2,x2,x3)T = S⊗3(1,1,1,0,1,0,0,0)T.
+This identity can be veriﬁed by observing that
+(1,1,1,0,1,0,0,0)T =
+
+1
+0
+⊗3
++
+
+1
+0
+
+⊗
+
+1
+0
+
+⊗
+
+0
+1
+
++
+
+1
+0
+
+⊗
+
+0
+1
+
+⊗
+
+1
+0
+
++
+
+0
+1
+
+⊗
+
+1
+0
+
+⊗
+
+1
+0
+
+,
+and we apply S⊗3 using properties of tensor product, S⊗3 1
+0
+⊗3 = (S
+ 1
+0
+
+)⊗3, etc.
+Let T =
+1
+√
+1+α2
+ 1 α
+α −1
+
+, then T = T T = T −1 ∈O2(C) is orthogonal, and R =
+T S =
+ u w
+0 v
+
+is upper triangular, where u =
+√
+1 + α2. As detR = detT detS =
+(−1)A ̸= 0, we have uv ̸= 0. It follows that
+T ⊗3(x0,x1,x1,x2,x1,x2,x2,x3)T
+= (T S)⊗3(1,1,1,0,1,0,0,0)T
+= R⊗3(1,1,1,0,1,0,0,0)T
+= R⊗3
+
+1
+0
+⊗3
++
+
+1
+0
+
+⊗
+
+1
+0
+
+⊗
+
+0
+1
+
++
+
+1
+0
+
+⊗
+
+0
+1
+
+⊗
+
+1
+0
+
++
+
+0
+1
+
+⊗
+
+1
+0
+
+⊗
+
+1
+0
+
+=
+
+u
+0
+⊗3
++
+
+u
+0
+
+⊗
+
+u
+0
+
+⊗
+
+w
+v
+
++
+
+u
+0
+
+⊗
+
+w
+v
+
+⊗
+
+u
+0
+
++
+
+w
+v
+
+⊗
+
+u
+0
+
+⊗
+
+u
+0
+
+.
+This can be written as a symmetric signature form [u3 + 3u2w,u2v,0,0]. Note that
+the entry u2v ̸= 0, which we can normalize to 1, after a scalar multiplication. This
+gives us the form [z,1,0,0] for some z ∈C.
+References
+1. Bulatov, A.A.: A dichotomy theorem for constraint satisfaction problems on a 3-element set. J. ACM
+53, 66–120 (2006)
+
+532
+Algorithmica (2012) 64:511–533
+2. Bulatov, A.A.: The complexity of the counting constraint satisfaction problem. In: Aceto, L.,
+Damgård, I., Goldberg, L.A., Halldórsson, M.M., Ingólfsdóttir, A., Walukiewicz, I. (eds.) Proceed-
+ings of 35th International Colloquium on Automata, Languages and Programming, ICALP 2008, Part
+I: Track A: Algorithms, Automata, Complexity, and Games, Reykjavik, Iceland, July 7–11, 2008.
+Lecture Notes in Computer Science, vol. 5125, pp. 646–661. Springer, Berlin (2008)
+3. Bulatov, A.A., Dalmau, V.: Towards a dichotomy theorem for the counting constraint satisfaction
+problem. Inf. Comput. 205(5), 651–678 (2007)
+4. Bulatov, A.A., Grohe, M.: The complexity of partition functions. In: Díaz, J., Karhumäki, J., Lepistö,
+A., Sannella, D. (eds.) Proceedings of 31st International Colloquium on Automata, Languages and
+Programming: ICALP 2004, Turku, Finland, July 12–16, 2004. Lecture Notes in Computer Science,
+vol. 3142, pp. 294–306. Springer, Berlin (2004)
+5. Bulatov, A.A., Grohe, M.: The complexity of partition functions. Theor. Comput. Sci. 348(2–3), 148–
+186 (2005)
+6. Cai, J.y., Chen, X., Lu, P.: Graph homomorphisms with complex values: A dichotomy theorem. In:
+Abramsky, S., Gavoille, C., Kirchner, C., Meyer auf der Heide, F., Spirakis, P.G. (eds.): Proceedings
+of 37th International Colloquium on Automata, Languages and Programming, Part I, ICALP 2010,
+Bordeaux, France, July 6–10, 2010. Lecture Notes in Computer Science, vol. 6198, pp. 275–286.
+Springer, Berlin (2010)
+7. Cai, J.y., Lu, P.: Holographic algorithms: From art to science. J. Comput. Syst. Sci. 77(1), 41–61
+(2011)
+8. Cai, J.y., Lu, P., Xia, M.: Holographic algorithms by Fibonacci gates and holographic reductions
+for hardness. In: 49th Annual IEEE Symposium on Foundations of Computer Science, FOCS 2008,
+Philadelphia, PA, USA, October 25–28, 2008, pp. 644–653. IEEE Computer Society, Los Alamitos
+(2008)
+9. Cai, J.Y., Lu, P., Xia, M.: Holant problems and counting CSP. In: Mitzenmacher, M. (ed.) Proceedings
+of the 41st Annual ACM Symposium on Theory of Computing, STOC 2009, Bethesda, MD, USA,
+May 31–June 2, 2009, pp. 715–724. ACM, New York (2009)
+10. Cai, J.y., Lu, P., Xia, M.: A computational proof of complexity of some restricted counting problems.
+Theor. Comput. Sci. 412(23), 2468–2485 (2011)
+11. Creignou, N., Khanna, S., Sudan, M.: Complexity Classiﬁcations of Boolean Constraint Satisfaction
+Problems. Society for Industrial and Applied Mathematics, Philadelphia (2001)
+12. Dodson, C.T.J., Poston, T.: Tensor Geometry: the Geometric Viewpoint and Its Uses. Graduate Texts
+in Mathematics. Springer, Berlin (1991)
+13. Dyer, M.E., Goldberg, L.A., Jerrum, M.: The complexity of weighted Boolean CSP. SIAM J. Comput.
+38(5), 1970–1986 (2009)
+14. Dyer, M.E., Goldberg, L.A., Paterson, M.: On counting homomorphisms to directed acyclic graphs.
+In: Bugliesi, M., Preneel, B., Sassone, V., Wegener, I. (eds.) Proceedings of 33rd International Col-
+loquium, on Automata, Languages and Programming, Part I, ICALP 2006, Venice, Italy, July 10–14,
+2006. Lecture Notes in Computer Science, vol. 4051, pp. 38–49. Springer, Berlin (2006)
+15. Dyer, M.E., Goldberg, L.A., Paterson, M.: On counting homomorphisms to directed acyclic graphs.
+J. ACM 54(6) (2007)
+16. Dyer, M.E., Greenhill, C.S.: The complexity of counting graph homomorphisms (extended abstract).
+In: Shmoys, David B. (ed.) Proceedings of the Eleventh Annual ACM-SIAM Symposium on Discrete
+Algorithms, San Francisco, CA, USA, January 9–11, 2000, pp. 246–255. ACM/SIAM, New York
+(2000)
+17. Dyer, M.E., Greenhill, C.S.: Corrigendum: The complexity of counting graph homomorphisms. Ran-
+dom Struct. Algorithms 25(3), 346–352 (2004)
+18. Feder, T., Vardi, M.Y.: The computational structure of monotone monadic SNP and constraint satis-
+faction: A study through datalog and group theory. SIAM J. Comput. 28(1), 57–104 (1998)
+19. Freedman, M., Lovász, L., Schrijver, A.: Reﬂection positivity, rank connectivity, and homomorphism
+of graphs. J. Am. Math. Soc. 20, 37–51 (2007)
+20. Goldberg, L.A., Grohe, M., Jerrum, M., Thurley, M.: A complexity dichotomy for partition functions
+with mixed signs. SIAM J. Comput. 39(7), 3336–3402 (2010)
+21. Hell, P., Nešetˇril, J.: On the complexity of h-coloring. J. Comb. Theory, Ser. B 48(1), 92–110 (1990)
+22. Kowalczyk, M.: Classiﬁcation of a class of counting problems using holographic reductions. In: Ngo,
+Hung Q. (ed.) Proceedings of 15th Annual International Conference on Computing and Combina-
+torics, COCOON 2009, Niagara Falls, NY, USA, July 13–15, 2009. Lecture Notes in Computer Sci-
+ence, vol. 5609, pp. 472–485. Springer, Berlin (2009)
+
+Algorithmica (2012) 64:511–533
+533
+23. Kowalczyk, M., Cai, J.y.: Holant problems for regular graphs with complex edge functions. In:
+Marion, J.-Y., Schwentick, T. (eds.) 27th International Symposium on Theoretical Aspects of Com-
+puter Science, STACS 2010, Nancy, France, March 4–6, 2010, LIPIcs, vol. 5, pp. 525–536. Schloss
+Dagstuhl—Leibniz-Zentrum fuer Informatik, Dagstuhl (2010)
+24. Valiant, L.G.: Accidental algorithms. In: Proceedings of 47th Annual IEEE Symposium on Foun-
+dations of Computer Science (FOCS 2006), Berkeley, California, USA, 21–24 October 2006, pp.
+509–517. IEEE Comput. Soc., Los Alamitos (2006)
+25. Valiant, L.G.: Holographic algorithms. SIAM J. Comput. 37(5), 1565–1594 (2008)
+26. Xia, M., Zhang, P., Zhao, W.: Computational complexity of counting problems on 3-regular planar
+graphs. Theor. Comput. Sci. 384(1), 111–125 (2007)

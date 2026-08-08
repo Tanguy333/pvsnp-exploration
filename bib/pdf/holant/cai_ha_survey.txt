@@ -1,0 +1,2007 @@
+Holographic Algorithms
+Jin-Yi Cai ∗
+Computer Sciences Department
+University of Wisconsin
+Madison, WI 53706. USA.
+Email: jyc@cs.wisc.edu
+Abstract
+Leslie Valiant recently proposed a theory of holographic algorithms. These novel algorithms
+achieve exponential speed-ups for certain computational problems compared to naive algorithms
+for the same problems. The methodology uses Pfaﬃans and (planar) perfect matchings as basic
+computational primitives, and attempts to create exponential cancellations in computation. In
+this article we survey this new theory of matchgate computations and holographic algorithms.
+Key words: Theoretical Computer Science, Computational Complexity Theory, Perfect Match-
+ings, Pfaﬃans, Matchgates, Matchcircuits, Matchgrids, Signatures, Holographic Algorithms.
+1
+Some Historical Background
+There have always been two major strands of mathematical thought since antiquity and across
+civilizations: Structural Theory and Computation, as exempliﬁed by Euclid’s Elements and Dio-
+phantus’ Arithmetica. Structural Theory prizes the formulation and proof of structural theorems,
+while Computation seeks eﬃcient algorithmic methods to solve problems. Of course, these strands
+of mathematical thought are not in opposition to each other, but rather they are highly intertwined
+and mutually complementary. For example, from Euclid’s Elements we learn the Euclidean algo-
+rithm to ﬁnd the greatest common divisor of two positive integers. This algorithm can serve as
+the ﬁrst logical step in the structural derivation of elementary number theory. At the same time,
+the correctness and eﬃciency of this and similar algorithms demand proofs in a purely structural
+sense, and use quite a bit more structural results from number theory [4]. As another example,
+the computational diﬃculty of recognizing primes and the related (but separate) problem of in-
+teger factorization already fascinated Gauss, and are closely tied to the structural theory of the
+distribution of primes [21, 1, 2].
+The precise formulation of the concept of computation can be traced to the work of G¨odel, Tur-
+ing, and other logicians in the 1930’s, who were particularly concerned with foundational questions
+in mathematics: What is true, what is a proof, and what are ultimately provable. Out of such
+foundational investigations, we arrive at the rigorous concept of computation and what is, and is
+not, ultimately computable. This is considered well established now and is encapsulated by the
+model of Turing machines, or by G¨odel’s general recursive functions [48].
+An important harbinger which motivated much of this development is Hilbert’s 10th problem,
+which asks for an algorithmic procedure to decide whether a general Diophantine equation (a
+∗Supported in part by NSF CCR-0511679.
+1
+
+polynomial in several variables with integer coeﬃcients) has an integer solution. This problem was
+ﬁnally shown by Matiyasevich in 1970 to admit no algorithm which can always answer correctly in
+a ﬁnite number of steps [43, 44]. Thus, starting with the work by G¨odel, Turing, and others, in
+answering Hilbert’s Entscheidungsproblem, computability theory was born.
+However, in computability theory, we focus on ultimate computability in a logical sense, regard-
+less of how long the computation may last, as long as it is ﬁnite. Starting in the 1960’s, a new focus
+was given for eﬃcient computations [14, 16, 25]. To capture this notion, complexity classes were
+deﬁned, the most prominent among them were the classes P and NP. Loosely speaking, P denotes
+the class of all problems which can be solved by an algorithm whose running time is bounded by a
+ﬁxed polynomial in the size of the input. The class P is called deterministic polynomial time, and
+is identiﬁed with the notion of what is eﬃciently computable. The class NP denotes all problems
+which have the property that whenever the answer is Yes for an instance of the problem, there
+is a short proof which can be eﬃciently veriﬁed.
+Here being short means that the size of the
+proof is bounded by a polynomial, and being eﬃcient means that this veriﬁcation is computable in
+deterministic polynomial time.
+For example, most computations one does in linear algebra are in P, such as computing the
+determinant of an integer matrix, or solving a linear system of equations with rational coeﬃcients.
+An archetypical problem in NP is the Boolean Satisﬁability Problem (SAT): Given a propositional
+formula Φ in Conjunctive Normal Form (CNF), decide whether Φ has a satisfying assignment. Here
+the formula Φ takes the form Φ = V
+j Cj, where each Cj is a disjunction of literals c
+xj1 ∨. . . ∨d
+xjd
+(where a literal c
+xj is either the Boolean variable xj or its negation xj), and a satisfying assignment
+is a mapping σ : {x1, . . . , xn} →{0, 1}, which assigns a truth value to each variable xi, such that
+every Cj evaluates to true.
+Many problems from NP have been shown to be NP-complete. This is a notion borrowed from
+computability theory. We will not formally deﬁne it, but it means that every problem in NP can be
+reduced by a computation in P to any NP-complete problem. It implies that if any NP-complete
+problem is solvable in P, then every problem in NP is solvable in P. Examples of NP-complete
+problems include the above mentioned SAT, Graph 3-Coloring (given a graph, is it 3-colorable),
+Hamiltonicity (given a graph, does it contain a Hamiltonian circuit), and thousands more [19].
+Typically, to solve an NP-complete problem it seems to require the examination of exponentially
+many possibilities. Whether this is intrinsically the case, is a major open problem in Theoretical
+Computer Science and in Mathematics, and is known as the P vs. NP problem [13]. Cook [15]
+was the ﬁrst to introduce NP-completeness and proved that the problem SAT is NP-complete.
+He also proved some restricted versions of SAT, called 3SAT, where each clause Cj contains 3
+literals, is also NP-complete. (Note however the 2SAT problem where each clause has 2 literals
+is in P.) Soon afterwards, Karp [29] proved a host of other problems to be NP-complete, making
+NP-completeness a ubiquitous tool to prove (relative) intractability. Levin [34] in the former Soviet
+Union independently discovered NP-completeness.
+There are many other complexity classes, e.g., the polynomial time hierarchy PH (the 0th
+level and the ﬁrst level of PH are P and NP respectively), PSPACE which denotes all problems
+computable in polynomial bounded space complexity, and a class introduced by Valiant called #P.
+A function is in #P if it counts the number of solutions to an instance of a problem in NP. A
+typical function in #P is to count the number of satisfying assignment to a Boolean formula, or the
+number of Traveling Salesman tours under a certain threshold for a given graph, etc. It is known
+that the trivial containment P ⊆NP ⊆PH ⊆PSPACE holds. Also trivially #P can compute
+NP and can be computed in PSPACE. A well known theorem by Toda [50] says that the class
+#P is at least as hard as PH. Thus #P-completeness is harder than NP-completeness, assuming
+the standard complexity theory hypothesis that the polynomial time hierarchy does not collapse.
+2
+
+From P to PSPACE none of the above containments is known to be proper, although they are all
+conjectured to be.
+All these classes at or above NP seem to require exponential time computation. However the
+apparent need to examine exponentially many possibilities could be misleading for certain problems.
+There are some problems which may appear to require this exponential blow-up, but in fact do not,
+i.e., there are ingenious and sometimes complicated algorithms, which provably solve a problem in
+polynomial time. An example is the Perfect Matching problem: Given any undirected graph, decide
+whether there is a perfect matching, i.e., a subset M of edges such that every vertex is incident to
+exactly one edge in M. Edmonds [16] proved that the Perfect Matching problem is solvable in P
+(and in fact this motivated the concept of P initially.)
+Another surprisingly good algorithm is the Fisher-Kestelyan-Temperley method, which can
+count the number of perfect matchings in a planar graph in polynomial time [30, 31, 49]. For
+weighted graphs, this method can ﬁnd the sum of all weights of perfect matchings M, where the
+weight of a perfect matching M is the product of all the weights of the matching edges in M. The
+counting version corresponds to the special case where all edge weights are one. Roughly speaking
+this algorithm works as follows. First it assigns a suitable factor of ±1 to each weighted edge of
+the planar graph, and then it computes the Pfaﬃan of (the skew-symmetric adjacency matrix of)
+the modiﬁed graph. As the computation of a Pfaﬃan is essentially of the same complexity as the
+determinant, this algorithm is in polynomial time. Valiant’s new holographic algorithms will use
+this remarkable algorithm as a basic component in its operations.
+In this article, we will survey the new algorithm design method called holographic algorithms.
+This method uses perfect matching as a basic coding technique to encode computations, and then
+the FKT-algorithm to carry out the ﬁnal computation. A particularly innovative idea is to choose a
+set of linear basis vectors to express and interpret a desired computation. In eﬀect the algorithm is
+designed to manipulate sums of perfect matchings in superpositions, while the speed up is achieved
+by cancellations among such “holographic mixes”. These holographic algorithms are quite unlike
+anything before, except perhaps quantum algorithms. At the heart of the computation is a process
+of introducing and then cancelling exponentially many computational fragments. But unlike quan-
+tum algorithms, these holographic algorithms produce classical polynomial time algorithms. So far
+this method has produced some exotic algorithms for problems which were not known to be in P
+previously, and minor variations of which are known to be NP-complete or NP-hard.
+The most intriguing question is whether this new theory can lead to any collapse of complexity
+classes.
+We contend that our belief of NP ̸= P is based on the sense and experience that the
+usual algorithmic paradigms are insuﬃcient for NP-hard problems (we don’t have strong lower
+bounds for general models of computation). But does our erstwhile experience apply to these new
+exotic algorithms? If the answer is no, then it is conceivable that the new methodology may lead
+to a radically revised conception of P vs. NP. Of course it is quite possible that the theory of
+holographic algorithms does not in the end lead to any collapse of complexity classes. But even in
+this eventuality, as Valiant suggested in [54], “any proof of P ̸= NP may need to explain, and not
+only to imply, the unsolvability” of NP-hard problems using this approach.
+In Section 2 we will start with some basic deﬁnitions on holographic algorithms. In Section 3
+we describe some speciﬁc problems for which there are holographic algorithms showing that the
+problems belong to P. In Section 4 we discuss symmetric signatures. In Section 5 we consider
+admissibility and realizability of signatures. In Section 6 we consider a class of general unsymmetric
+signatures.
+3
+
+2
+Preliminaries
+In this section we give some basic deﬁnitions. Terminolgies from the theory of holographic algo-
+rithms have been mostly introduced by Valiant [52, 54, 53], but we also include some modiﬁcations
+from [7, 8].
+Let G = (V, E, W) be a weighted undirected graph, where V is the set of vertices represented
+by integers k1 < k2 < . . . < kn, E is the set of edges, and W denotes the weights of the edges. We
+represent the graph by a skew-symmetric matrix M, called the (skew-symmetric adjacency) matrix
+of G, where M(i, j) = w(ki, kj) if i < j, M(i, j) = −w(kj, ki) if i > j, and M(i, i) = 0.
+The Pfaﬃan of an n × n skew-symmetric matrix M is deﬁned to be 0 if n is odd, 1 if n is 0,
+and if n = 2k where k > 0 then it is deﬁned as
+Pf(M) =
+X
+π
+ǫπw(i1, i2)w(i3, i4) . . . w(i2k−1, i2k),
+where
+• π =
+ 1
+2
+. . .
+n
+i1
+i2
+. . .
+in
+
+is a permutation,
+• summation is over all permutations π where i1 < i2, i3 < i4, . . . , i2k−1 < i2k and i1 < i3 <
+. . . < i2k−1, and
+• ǫπ ∈{−1, 1} is the sign of the permutation π, i.e., +1 for even permutations and −1 for
+odd permutations. Another equivalent deﬁnition of ǫπ is that it is the sign or parity of the
+number of overlapping pairs where a pair of edges (i2r−1, i2r), (i2s−1, i2s) is overlapping iﬀ
+i2r−1 < i2s−1 < i2r < i2s or i2s−1 < i2r−1 < i2s < i2r.
+The Pfaﬃan is computable in polynomial time. In particular (Pf(M))2 = det(M).
+In the notation for the Pfaﬃan Pf(i1, . . . , ir) of a submatrix consisting of rows and columns
+i1, . . . , ir, we implicitly assume the indices are in increasing order i1 < . . . < ir.
+If i1, . . . , ir
+are not in increasing order, the sign will vary according to the parity of the permutation, e.g.,
+Pf(i2, i1, . . . , ir) = −Pf(i1, i2, . . . , ir) and so on.
+A matching is a subset of edges such that no two edges share a common vertex. A perfect
+matching is a matching which matches all vertices.
+There is a graph-theoretic interpretation of the Pfaﬃan. If M is the matrix of a graph G,
+then there is a one-to-one correspondence between monomials in the Pfaﬃan and perfect match-
+ings in G. The monomial w(i1, i2) . . . w(i2k−1, i2k) in Pf(M) corresponds to the perfect matching
+{(i1, i2), . . . , (i2k−1, i2k)} in G. The condition on the permutation implies that every perfect match-
+ing corresponds to exactly one monomial. The coeﬃcient ǫπ of this monomial is the parity of the
+number of overlapping pairs of edges, in the sense deﬁned earlier.
+The following theorem states the Grassmann-Pl¨ucker identities.
+Theorem 2.1
+[46] For any n × n skew-symmetric matrix M, and for any I = {i1, . . . , iK} ⊆[n]
+and J = {j1, . . . , jL} ⊆[n], the following is called the Grassmann-Pl¨ucker identities,
+L
+X
+l=1
+(−1)lPf(jl, i1, . . . , iK)Pf(j1, . . . , ˆjl, . . . , jL) +
+K
+X
+k=1
+(−1)kPf(i1, . . . , ˆik, . . . , iK)Pf(ik, j1, . . . , jL) = 0 (1)
+where the notation ˆj denotes that this entry j is deleted.
+4
+
+Now we will restrict to planar graphs.
+A (planar) matchgate is a planar graph with some
+external nodes labeled as input and/or output nodes. We will only deﬁne matchgates with only
+input or only output nodes. Let G = (V, E, W), G′ = (V ′, E′, W ′) be weighted undirected planar
+graphs. A generator matchgate Γ is a tuple (G, X) where X ⊂V is a set of external output nodes.
+A recognizer matchgate Γ′ is a tuple (G′, Y ) where Y ⊂V ′ is a set of external input nodes. The
+external nodes are ordered counter-clock wise on the external face. Γ is called an odd (resp. even)
+matchgate if it has an odd (resp. even) number of nodes. As combinatorial objects, a generator
+matchgate and a recognizer matchgate have no diﬀerence. It is in the way they are used and their
+assigned signature tensors are transformed which distinguish them.
+Let b = [b0, b1] =
+ 1
+0
+
+,
+ 0
+1
+
+denote the standard basis of a vector space V .
+Deﬁne
+PerfMatch(G) = P
+M
+Q
+(i,j)∈M wij to be the sum over all perfect matchings M in G. Each match-
+gate is assigned a signature tensor. A generator Γ with m output nodes is assigned a contravariant
+tensor G ∈V m
+0
+of type
+m
+0
+. This tensor under the standard basis b has the form
+X
+Gi1i2...imbi1 ⊗bi2 ⊗· · · ⊗bim,
+where
+Gi1i2...im = PerfMatch(G −Z),
+and where Z is the subset of the output nodes having the characteristic sequence χZ = i1i2 . . . im.
+Similarly a recognizer Γ′ with m input nodes is assigned a covariant tensor R ∈V 0
+m of type
+ 0
+m
+.
+This tensor under the standard (dual) basis b∗has the form
+X
+Ri1i2...imbi1 ⊗bi2 ⊗· · · ⊗bim,
+where
+Ri1i2...im = PerfMatch(G′ −Z),
+where Z is the subset of the input nodes having χZ = i1i2 . . . im.
+In particular, G transforms as a contravariant tensor under a basis transformation βj = P
+i biti
+j,
+(G′)i′
+1i′
+2...i′
+m =
+X
+Gi1i2...im˜ti′
+1
+i1˜ti′
+2
+i2 . . . ˜ti′
+m
+im,
+where (˜ti
+j) is the inverse matrix of (ti
+j). Similarly, R transforms as a covariant tensor, namely
+(R′)i′
+1i′
+2...i′m =
+X
+Ri1i2...imti1
+i′
+1ti2
+i′
+2 . . . tim
+i′m.
+A signature is symmetric, if each entry only depends on the Hamming weight of the in-
+dex.
+This notion is invariant under basis transformations.
+A symmetric signature is denoted
+by [σ0, σ1, . . . , σm].
+A matchgrid Ω= (A, B, C) is a weighted planar graph consisting of a disjoint union of: a
+set of g generators A = (A1, . . . , Ag), a set of r recognizers B = (B1, . . . , Br), and a set of f
+connecting edges C = (C1, . . . , Cf), where each Ci edge has weight 1 and joins an output node
+of a generator with a input node of a recognizer, so that every input and output node in every
+constituent matchgate has exactly one such incident connecting edge.
+Let G = Ng
+i=1 G(Ai) be the tensor product of all the generator signatures, and let R =
+Nr
+j=1 R(Bj) be the tensor product of all the recognizer signatures. Then Holant(Ω) is deﬁned to
+be the contraction of the two product tensors, under some basis β, where the corresponding indices
+match up according to the f connecting edges Ck.
+Valiant’s Holant Theorem is
+5
+
+Theorem 2.2 (Valiant) For any matchgrid Ωover any basis β, let G be its underlying weighted
+graph, then
+Holant(Ω) = PerfMatch(G).
+The FKT algorithm can compute the perfect matching polynomial PerfMatch(G) for a planar
+graph in polynomial time. The complexity of this algorithm is essentially the evaluation of a Pfaﬃan
+of a (modifed) skew-symmetric matrix of the graph.
+3
+Some Holographic Algorithms
+In this section, we list some problems which can be solved in polynomial time using holographic
+algorithms. The ﬁrst several problems are all taken from the initial paper by Valiant [54].
+We start with an “ice” problem motivated by statistical physics. An orientation of an undirected
+graph G is an assignment of a direction to each of its edges. An ice problem involves counting
+the number of orientations such that certain local constraints are satisﬁed. Pauling [47] initially
+proposed such a model for planar square lattices, where the constraint was that an orientation had
+to have incoming and outgoing degree two at every node. The question of determining how the
+number of such orientations grows for various planar repeating structures has been analyzed [38,
+39, 40, 41, 5, 58].
+However, more generally the range of natural counting problems for graph-
+theoretic problems for which there are polynomial time algorithms is very limited, including for
+“ice” problems.
+#PL-3-NAE-ICE
+Input: A planar graph G = (V, E) of maximum degree 3.
+Output: The number of orientations such that no node has all the edges directed towards it or
+all the edges directed away from it.
+To solve this problem by a holographic algorithm, we design a matchgrid as follows: We repre-
+sent each node of degree three in V by a recognizer matchgate with signature (0, 1, 1, 1, 1, 1, 1, 0).
+This represents a NOT-ALL-EQUAL or NAE gate. For any degree two node we use a recognizer
+matchgate with the binary NAE (i.e. NOT-EQUAL) gate signature (0, 1, 1, 0). For each edge in E
+we use a generator matchgate with signature (0, 1, 1, 0), which stands for an orientation from either
+of the two nodes to the other one (i.e., either β0 ⊗β1 or β1 ⊗β0, but not β0 ⊗β0 nor β1 ⊗β1).
+Then we connect the external nodes of these matchgates by an edge of weight 1, in a one-to-one
+fashion according to the given planar graph G. Now consider the exponential sum evaluated in the
+deﬁnition of the Holant under this basis β. Each term in the sum is a product of 0’s and 1’s which
+come from the appropriate entries of the signatures of the matchgates in the matchgrid. Each term
+is indexed by an assignment on every connecting edge between external nodes of these matchgates,
+which can be either β0 or β1. Then it is not hard to see, when this exponential sum is evaluated
+over the basis β, each term is 0 or 1, and it is 1 iﬀit corresponds to an orientation of every edge
+such that at each vertex the local NOT-ALL-EQUAL constraint is satisﬁed. Thus, it follows that
+the Holant is precisely the number of valid orientations required by #PL-3-NAE-ICE. While we
+express the solution by the Holant under the basis β, algorithmically we evaluate the Holant by
+the FKT algorithm.
+In the next section we will discuss the question of realizability of these signatures. We will see
+that these signatures are all realizable in the Hadamard basis
+ 1
+1
+
+,
+ 1
+−1
+
+(this is called b2 in
+[54]).
+6
+
+The next problem is a Satisﬁability problem.
+#PL-3-NAE-SAT
+Input: A planar formula Φ consisting of a conjunction of NOT-ALL-EQUAL clauses each of size
+3.
+Output: The number satisfying assignments of Φ.
+This is a constrained satisﬁability problem, where we are given a planar formula which is a
+Boolean conjunction of NOT-ALL-EQUAL clauses. Lichtenstein [37] deﬁned the notion of planar
+formulae. A Boolean formula is planar if it can be represented by a planar graph where vertices
+represent variables and clauses, and there is an edge iﬀthe variable or literal appears in that
+clause.
+The SAT problem is where the gate for each clause is the Boolean OR. When SAT is
+restricted to planar formulae it is still NP-complete. Moreover, for many connectives other than
+NOT-ALL-EQUAL (e.g., EXACTLY-ONE) the unrestricted or the planar decision problems are
+still NP-complete, and the corresponding counting problems are #P-complete [27].
+To solve this problem by a holographic algorithm, we represent each NOT-ALL-EQUAL gate
+with the recognizer signature (0, 1, 1, 1, 1, 1, 1, 0), and represent a Boolean variable having fan-out
+k with the generator signature for EQUALITY, namely β0 ⊗β0 ⊗· · · ⊗β0 + β1 ⊗β1 ⊗· · · ⊗β1 =
+(1, 0, . . . , 0, 1) (there are 2k −2 zeroes). Again we will see in the next section these signatures are
+realizable in the Hadamard basis.
+The next problem is essentially a decision problem, rather than a counting problem.
+PL-NODE-BIPARTITION
+Input: A planar graph G = (V, E) of maximum degree 3.
+Output: The cardinality of a smallest subset V ′ ⊂V such that the deletion of V ′ and its incident
+edges results in a bipartite graph.
+This problem is known to be NP-complete for maximum degree 6 [33]. See [35] for a general
+approach to such “node deletion” problems. Note that numerous other planar NP-complete prob-
+lems, such as Hamiltonian cycles and minimum vertex covers are NP-complete already for degree
+3 (e.g., [20], and [19]).
+For this problem, Valiant introduced another idea of applying the general machinery of the
+Holant. We will see that with an arbitrary real value x, the recognizer signature (x, 1, 1, 1, 1, 1, 1, x)
+and (x, 1, 1, x) are both realizable, and moreover it is simultaneously realizable with the generator
+signature (0, 1, 1, 0), all over the Hadamard basis. The signature (0, 1, 1, 0) can be used to eﬀect
+an ORIENTATION gate.
+Now if we use the ORIENTATION gate for an edge, and the above
+recognizer signatures for a node of degree 3 or 2 respectively, then a node that has its incident
+edges either all oriented away from it or all oriented toward it will contribute a factor x. In the
+other cases, namely when some edges are oriented away from it and some are oriented toward it,
+the node will contribute a factor 1. These terms are then summed up in the exponential sum in
+the Holant which we evaluate over the Hadamard basis where the signatures are realized. Thus in
+the ﬁnal outcome, the Holant is a polynomial in x, where the largest i for which xi has a non-zero
+coeﬃcient is exactly the maximum number of nodes that a bipartite graph can have that is obtained
+by deleting nodes and incident edges from G.
+Now this polynomial can have maximum possible degree at most |V |.
+Thus by evaluating
+the Holant at |V | + 1 distinct values of x, we can interpolate the polynomial and reconstruct it.
+7
+
+Consequently we can ﬁnd its actual degree d, which gives |V | −d as the answer to the instance of
+PL-NODE-BIPARTITION.
+We also note that if instead of considering node deletion we consider edge deletion, this is just
+another way of deﬁning the well known problem of MAX-CUT, which is NP-hard (and even NP-
+hard to approximate [22, 3, 26]). The holographic algorithm by Valiant above is the ﬁrst polynomial
+time algorithm for PL-NODE-BIPARTITION [54]. On the other hand, planar MAX-CUT is known
+to be in P [24]. In [6] a joint generalization was shown to be also solvable in polynomial time by
+holographic algorithms.
+PL-NODE-EDGE-BIPARTITION
+Input: A planar graph G = (V, E) of maximum degree 3. A non-negative integer k ≤|V |.
+Output: The minimal l such that deletion of at most k nodes (including all of their incident edges)
+and l more edges results in a bipartite graph.
+The holographic algorithm for this problem is slightly more complicated, but follows generally
+the same methodology as Valiant’s algorithm for PL-NODE-BIPARTITION. The interpolation
+method is again crucial.
+We now consider a matching problem. We note that Jerrum [28] showed that counting the number of
+(not necessarily perfect) matchings in a planar graph is #P-complete, and Vadhan [51] subsequently
+proved that it remains #P-complete even for planar bipartite graphs of degree six. For degree two
+the problem can be solved easily and one might have conjectured that all other nontrivial cases are
+#P-complete. However, Valiant showed that the following problem can be solved in polynomial
+time.
+#X-MATCHINGS
+Input: A planar weighted bipartite graph G = (V, E, W) where V has bipartition V1, V2 and the
+nodes in V1 have degree 2.
+Output: The sum of the masses of all matchings of all sizes where the mass of a matching is the
+product of (i) the weights of all the edges present in the matching, as well as of the quantity, (ii)
+“−(w1 + . . . + wk)” for all the V2 nodes that are not matched, where w1, . . . , wk are the weights of
+the edges incident to that (unmatched) node.
+Note that if every V2 node has degree 4 and every edge has weight one, then computing #X-
+MATCHINGS gives the number of matchings, but each weighted by (−4)k, where k is the number
+of unmatched V2 nodes. Computing this mod 5 gives the number of matchings mod 5.
+At this point we may want to pause and reﬂect a bit. While the factor −(w1 + . . . + wk) may
+appear contrived, there is nothing contrived about mod 5. In fact one will be hard pressed to think
+of any other polynomial time algorithm computing this problem mod 5. One may have conjectured
+that it is complete for Mod5P, a complexity class which is hard for NP under randomized reductions.
+To solve this problem, we use a diﬀerent basis β =
+ 1
+−1
+
+,
+ 1
+0
+
+. Valiant showed that suitable
+signatures can be realized under this basis with appropriate matchgates [54].
+This problem is motivated by its proximity to counting the number of (not necessarily perfect)
+matchings in a planar graph, which is #P-complete [28]. Still, the quantity −(w1 +. . . +wk) seems
+a little artiﬁcial. If one were to be able to replace −(w1 + . . . + wk) by 1, then one would be able to
+8
+
+count all (not necessarily perfect) matchings in such planar bipartite graphs. In [6] we proved that
+a direct adaptation with suitable signatures by dropping the −(w1 +. . .+wk) factor cannot be done
+by a holographic algorithm. In that paper we deﬁned a restricted class of holographic algorithms
+called holographic templates. Without going into the formal deﬁnitions of holographic templates,
+we quote
+Theorem 3.1 There is no holographic template using any basis of two linearly independent vectors
+to solve the counting problem for all (not necessarily perfect) matchings for these graphs, which is
+the same as the above problem with −(w1 + . . . + wk) replaced by 1.
+Now we consider a curious Satisﬁability counting problem.
+#7Pl-Rtw-Mon-3CNF
+Input: A planar 3CNF Boolean formula where each variable appears positively and in exactly two
+clauses (Planar, Read-Twice, Monotone, 3CNF.)
+Output: Count the number of satisfying assignments modulo 7.
+Let us ﬁrst consider simply the counting problem for this restricted class of Boolean formulae,
+which is denoted as #Pl-Rtw-Mon-3CNF. This problem is known to be #P-complete. For a given
+planar, read-twice, monotone formula Φ, we can express its number of satisfying assignments as an
+exponential sum in the form of a Holant as follows: For each clause C in Φ with 3 variables we would
+like the signature RC = (0, 1, 1, 1, 1, 1, 1, 1), where the entries are indexed by 3 bits b1b2b3 ∈{0, 1}3.
+Here b1b2b3 corresponds to a truth assignment to the 3 variables. Therefore RC corresponds to a
+Boolean OR gate. Suppose in the formula Φ a Boolean variable x appears in two clauses C and C′.
+Then we would like to have the signature Gx = (1, 0, 0, 1)T, indexed by b1b2 ∈{0, 1}2, to indicate
+that the fan-out value from x to C and C′ must be consistent, i.e., they must be either 00 or 11.
+Then we form the tensor products as in the construction of a Holant, R = N
+C RC and G = N
+x Gx.
+Suppose in the planar formula Φ there are exactly e edges connecting various x’s to various C’s,
+then both R and G have e indices, each taking values in {0, 1}, and both tensors have 2e entries.
+The indices of R = (Ri1i2...ie) and G = (Gi1i2...ie) match up one-to-one according to which x appears
+in which C. Then the exponential sum ⟨R, G⟩= P
+i1,i2,...,ie∈{0,1} Ri1i2...ieGi1i2...ie counts exactly the
+number of satisfying assignments to Φ. This is because each tuple (i1, i2, . . . , ie) ∈{0, 1}e assigns a
+value 0 or 1 to each connecting edge, and the product Ri1i2...ieGi1i2...ie is 1 when this is a consistent
+assignment of truth values to each variable and the truth assignment satisﬁes each clause; the
+product value is 0 otherwise.
+Now the question is whether one can ﬁnd all the needed signatures. (If one could, then P =
+NP = #P.) It turns out that these signatures are not realizable over the ﬁeld C of characteristic
+0, but they are realizable over a ﬁeld of characteristic 7. This gives the polynomial time algorithm
+for the problem #7Pl-Rtw-Mon-3CNF.
+We note that in addition to the #P-completeness of the counting problem itself, it is also known
+that counting mod 2, i.e., #2Pl-Rtw-Mon-3CNF is NP-hard by a randomized reduction. Put in
+this context, this success with counting mod 7 is rather extraordinary. One might not have guessed
+that solving the problem modulo 7 is any easier than solving it mod 2 (Or is it?). Finding the
+signatures and matchgates in the mod 7 case comes about by algebraic means, and not intuitively
+obvious. Likewise, to show that suitable signatures exist only in characteristic 7 is also obtained
+algebraically, and not combinatorially obvious.
+This brings us to the central interest of this subject, at least to this author. Our generally
+9
+
+accepted conjecture of NP ̸= P is just a conjecture.
+We think it has been supported by our
+experience with the usual algorithmic paradigms which seem not to be applicable to NP-hard
+problems. But we don’t have strong provable lower bounds for general models of computation. In
+the meanwhile holographic algorithms produce exotic algorithms for which we have little experience.
+Our current conception of what a polynomial time algorithm can do may be inadequate. It is even
+conceivable that they lead to a collapse of complexity classes. So the attraction is from a complexity
+theoretic perspective.
+It is not so much as the particular problems that can be solved by this
+approach, but what it says to us about the limitations and unfamiliar ways of doing polynomial
+time computation, and our inadequate understanding of the ultimate reach of all polynomial time
+algorithms. For NP ̸= P and other standard conjectures in complexity theory to remain credible,
+we feel that they should all be re-examined against this new algorithm design paradigm.
+We think the ﬁrst step to develop the theory of holographic algorithms is to develop a coherent
+theory of realizable signatures. The search for a holographic algorithm for a particular combinatorial
+problem typically boils down to the existence of suitable signatures in a suitable tensor space.
+In general, realizability is speciﬁed by a family of algebraic equations called Matchgate Identities
+(MGI). This will be discussed in Section 5. These families of equations are non-linear, exponential in
+size, and diﬃcult to handle. But whenever we ﬁnd a suitable solution, we get an exotic polynomial
+time algorithm.
+Searching for these signatures is what Valiant called the “enumerative” form
+in [57]. Quoting Valiant [57]: “The objects enumerated are sets of polynomial systems such that
+the solvability of any one member would give a polynomial time algorithm for a speciﬁc problem.
+. . . the situation with the P = NP question is not dissimilar to that of other unresolved enumerative
+conjectures in mathematics. The possibility that accidental or freak objects in the enumeration
+exist cannot be discounted, if the objects in the enumeration have not been systematically studied
+previously.”
+We now return to the problem #7Pl-Rtw-Mon-3CNF. There is another aspect that is remarkable
+about Valiant’s solution of this problem [57].
+In holographic algorithms, since the underlying
+computation is ultimately reduced to perfect matchings, the linear basis vectors which express the
+computation are necessarily of dimension 2k, for some integer k. This k is called the size of the
+basis. Most holographic algorithms so far [54, 7, 6, 57] use bases of size 1. (In this survey we have
+restricted the discussion to bases of size 1.) Surprisingly Valiant’s algorithm for #7Pl-Rtw-Mon-
+3CNF used a basis of size 2. Utilizing bases of a higher dimension has always been a theoretical
+possibility, which may further extend the reach of holographic algorithms.
+Valiant’s algorithm
+makes it realistic, and this freedom would have given us an inﬁnite set of possibilities in which an
+exotic or “freak” object may materialize leading to the collapse of complexity classes.
+However, it has been shown that a universal bases collapse theorem [12] holds for holographic
+algorithms: Any holographic algorithm using two basis vectors of arbitrary size k can be simulated
+by a holographic algorithm using another basis of size 1. This cuts oﬀa potentially inﬁnite family
+of possible ways to achieve a collapse of complexity classes. However, holographic algorithms may
+use more than two bases vectors as well as in higher dimensions. In that case whether there is a
+universal bases collapse is still open. Interested readers are referred to [11, 12] for more details.
+Finally we consider a geometric problem.
+2-COLOR-COUNTING
+Input: Given a set S of n points on a plane, where no three points are colinear. Also given a set of
+straight line segments between some pairs of points in S. We assume no 3 line segments intersect
+10
+
+at a point (̸∈S). Every point of S is incident to either 2 or 3 line segments.
+Output: The number of 2-colorings for the line segments which satisfy the following conditions:
+(1) for every point in S, the incident line segments are not monochromatic; (2) when two line
+segments cross over each other, they have diﬀerent colors.
+For most holographic algorithms, the signatures needed are typically symmetric signatures which
+will be discussed in more detail in Section 4. For this problem 2-COLOR-COUNTING we will use
+unsymmetric signatures in our holographic algorithm. The theory of unsymmetric signatures have
+not been fully developed. The existence of the unsymmetric signatures for 2-COLOR-COUNTING
+follows from a diﬃcult classiﬁcation theorem in Section 6.
+Another notable feature about 2-COLOR-COUNTING is that the problem is not a priori stated
+for a planar graph. It is in the process of forming the matchgrid that we obtain a planar graph.
+There are several more problems that have been solved using holographic algorithms [54, 57, 7,
+6, 10]. Interested readers are referred to these papers for more details.
+4
+Symmetric Signatures
+As seen from the examples, the general outline of the design of a holographic algorithm consists
+of two parts as follows: (1) some suitable linear basis vectors and (2) some suitable matchgates.
+Typically a linear basis consists of two linearly independent vectors β = [β0, β1]. The matchgates
+are used in two dual roles, as generators and recognizers. Before the basis transformation there
+is no real diﬀerence between generators and recognizers; they both deﬁne standard signatures
+Gi1i2...im = PerfMatch(G −Z) ( and similarly Ri1i2...im), where Z is the subset of the output nodes
+having the characteristic sequence χZ = i1i2 . . . im. However the idea is to transform these standard
+signatures under the basis transformation βj = P
+i biti
+j, where b =
+ 1
+0
+
+,
+ 0
+1
+
+is the standard
+basis, to produce the signatures
+(G′)i′
+1i′
+2...i′
+m =
+X
+Gi1i2...im˜ti′
+1
+i1˜ti′
+2
+i2 . . . ˜ti′
+m
+im,
+and
+(R′)i′
+1i′
+2...i′m =
+X
+Ri1i2...imti1
+i′
+1ti2
+i′
+2 . . . tim
+i′m,
+which are the entities that have some intended meanings.
+For example, to express the meaning of Boolean OR of three bits, we want a recognizer signature
+which has dimension 8, and indexed by three bits b1b2b3 ∈{0, 1}3, namely (0, 1, 1, 1, 1, 1, 1, 1). This
+indicates that for the input bit pattern 000 this signature assigns the multiplier 0 and thus does not
+“recognize” it, but for all other “satisﬁable” input bit patterns this signature assigns the multiplier
+1, and thus “accepting” them.
+Clearly this signature is suitable for the problem of 3SAT for
+Boolean Satisﬁability on the clause side. Note that, this 8-dimensional tensor is not realizable by
+a matchgate as a standard signature. In this case we can give a simple reason for it. Standard
+signatures must satisfy the parity constraint, namely either all entries indexed by bit patterns with
+odd Hamming weights are zero or all entries indexed by bit patterns with even Hammming weights
+are zero. This parity constraint is a simple consequence of being a perfect matching. Later we will
+discuss more subtle constraints, called Matchgate Identities.
+However, while (0, 1, 1, 1, 1, 1, 1, 1) can not be realized as a standard signature, under a suitable
+basis transformation, it can be realized as a signature. More concretely if we take the basis
+ 1 + ω
+1 −ω
+
+,
+ 1
+1
+
+,
+where ω3 = 1 is a primitive third root of unity, then there in fact exists a matchgate with three
+11
+
+external nodes with the standard signature
+(Ri1i2i3) = (0, 1, 1, 1, 1, 1, 1, 1)
+  1 + ω
+1
+1 −ω
+1
+−1!⊗3
+.
+Indeed we can calculate, up to a scalar multiple of 1/8,
+  1 + ω
+1
+1 −ω
+1
+−1!⊗3
+is
+
+
+
+
+
+
+
+
+
+
+
+
+
+1
+−1
+−1
+1
+−1
+1
+1
+−1
+−1 + ω
+1 + ω
+1 −ω
+−1 −ω
+1 −ω
+−1 −ω
+−1 + ω
+1 + ω
+−1 + ω
+1 −ω
+1 + ω
+−1 −ω
+1 −ω
+−1 + ω
+−1 −ω
+1 + ω
+−3ω
+−2 −ω
+−2 −ω
+ω
+3ω
+2 + ω
+2 + ω
+−ω
+−1 + ω
+1 −ω
+1 −ω
+−1 + ω
+1 + ω
+−1 −ω
+−1 −ω
+1 + ω
+−3ω
+−2 −ω
+3ω
+2 + ω
+−2 −ω
+ω
+2 + ω
+−ω
+−3ω
+3ω
+−2 −ω
+2 + ω
+−2 −ω
+2 + ω
+ω
+−ω
+3 + 6ω
+3
+3
+−1 −2ω
+3
+−1 −2ω
+−1 −2ω
+−1
+
+
+
+
+
+
+
+
+
+
+
+
+
+and by adding the last 7 rows we get
+(Ri1i2i3) = 1
+4(0, 1, 1, 0, 1, 0, 0, 1).
+This is realizable as the standard signature of a planar matchgate with three external nodes; for
+example, we can take a disjoint union of an edge with weight 1/4, together with a triangle. The 3
+edges of the triangle all have weight 1 and the 3 vertices are the external nodes.
+The signature (0, 1, 1, 1, 1, 1, 1, 1) is a symmetric signature, i.e., the value of each entry only
+depends on the Hamming weight of the index. This notion is invariant under a basis transformation.
+A symmetric signature of arity m is denoted by a more compact notation with m+1 entries (instead
+of 2m entries), [z0, z1, . . . , zm], where zi denotes the signature value at an entry of index of weight
+i. Thus the Boolean OR signature above on 3 bits is denoted as [0, 1, 1, 1].
+Symmetric signatures are often convenient for the design of holographic algorithms, as they
+have easily interpretable combinatorial meanings. For symmetric signatures Cai and Lu [9] have
+achieved a complete characterization of their realizability. These tell us exactly what signatures
+can be realized over some bases.
+Theorem 4.1 A symmetric signature [x0, x1, . . . , xm] for a recognizer is realizable under the basis
+β = [n, p] =
+ n0
+n1
+
+,
+ p0
+p1
+
+iﬀit takes one of the following forms:
+• Form 1: there exist (arbitrary) constants λ, s, t and ǫ where ǫ = ±1, such that for all i, 0 ≤
+i ≤m,
+xi = λ[(sn0 + tn1)m−i(sp0 + tp1)i + ǫ(sn0 −tn1)m−i(sp0 −tp1)i].
+(2)
+• Form 2: there exist (arbitrary) constants λ,such that for all i, 0 ≤i ≤m,
+xi = λ[(m −i)n0(p1)i(n1)m−1−i + ip0(p1)i−1(n1)m−i].
+(3)
+• Form 3: there exist (arbitrary) constants λ,such that for all i, 0 ≤i ≤m,
+xi = λ[(m −i)n1(p0)i(n0)m−1−i + ip1(p0)i−1(n0)m−i].
+(4)
+12
+
+A similar theorem holds for generators. These theorems are proved by applying the Matchgate
+Identities. See Section 5.
+There is another characterization theorem, assuming the characteristic of the ﬁeld p ̸= 2 and
+p ̸ | m.
+Theorem 4.2 A symmetric signature [x0, x1, . . . , xm] is realizable on some basis of size 1 iﬀthere
+exists three constants a, b, c (not all zero), such that ∀k, 0 ≤k ≤m −2,
+axk + bxk+1 + cxk+2 = 0.
+(5)
+These characterization theorems are very informative, but they do not tell the whole story. To
+construct a holographic algorithm, one needs to realize some generators and recognizers simulta-
+neously.
+To discuss this simultaneous realizability, we ﬁrst need the following simple lemma:
+Lemma 4.1 (Valiant)
+[54] If there is a generator (recognizer) with a certain signature for size
+one basis
+ n0
+n1
+
+,
+ p0
+p1
+
+then there is a generator (recognizer) with the same signature for size
+one basis
+ xn0
+yn1
+
+,
+ xp0
+yp1
+
+or
+ xn1
+yn0
+
+,
+ xp1
+yp0
+
+for any x, y ∈F and xy ̸= 0.
+This leads to the following deﬁnition of an equivalence relation:
+Deﬁnition 4.1 Two bases β = [n, p] =
+ n0
+n1
+
+,
+ p0
+p1
+
+and β′ = [n′, p′] =
+ n′
+0
+n′
+1
+
+,
+ p′
+0
+p′
+1
+
+are
+equivalent, denoted by β ∼β′, iﬀthere exist x, y ∈F∗such that
+n′
+0 = xn0, p′
+0 = xp0, n′
+1 = yn1, p′
+1 = yp1,
+or
+n′
+0 = xn1, p′
+0 = xp1, n′
+1 = yn0, p′
+1 = yp0.
+Lemma 4.2 GL2(F)/ ∼is a two dimensional manifold (for F = C or R). For F = R, M is
+topologically a M¨obius strip.
+We call this the basis manifold M. From now on we identify a basis β with its equivalence class
+containing it. When it is permissible, we use the dehomogenized coordinates
+ 1
+x
+1
+y
+
+to represent
+a point (i.e., a basis class) in M. We will assume char.F ̸= 2.
+In terms of M, a given generator (recognizer) deﬁnes a (possibly empty) subvariety which
+consists of all the bases over which it is realizable. The simultaneous realizability is equivalent
+to a non-empty intersection of these subvarieties. Thus we have to go beyond Theorem 4.1 and
+Theorem 4.2.
+For every signature which is realizable according to these theorems, we need to
+determine the subvariety where it is realizable.
+Deﬁnition 4.2 Let Brec([x0, x1, . . . , xn]) (resp.
+Bgen([x0, x1, . . . , xn])) be the set of all possible
+bases in M for which a symmetric signature [x0, x1, . . . , xn] for a recognizer (resp. a generator) is
+realizable. We also use Brec(R) and Bgen(G) for possibly unsymmetric signatures.
+We will state the results for the recognizers. The results for the generators are similar. Since
+the identical zero signature is realizable in every basis, we will assume the signature is non-zero in
+the following discussion.
+The following Lemmas give a complete and mutually exclusive list of realizable symmetric
+signatures for recognizers.
+13
+
+Lemma 4.3
+Brec([am, am−1b, . . . , bm]) =
+ a
+n1
+
+,
+ b
+p1
+
+∈M
+ n1, p1 ∈F
+
+.
+Remark: Every signature with arity m = 1 is trivially of this form.
+Lemma 4.4
+Brec([x0, x1, x2]) =
+( n0
+n1
+
+,
+ p0
+p1
+
+∈M
+
+x0p2
+1 −2x1p1n1 + x2n2
+1 = 0, x0p2
+0 −2x1p0n0 + x2n2
+0 = 0
+or
+x0p0p1 −x1(n0p1 + n1p0) + x2n0n1 = 0
+)
+.
+In the following the matchgate arity m is ≥3.
+Lemma 4.5 Let λ1 ̸= 0. Suppose p = char.F ̸ |m,
+Brec([0, 0, . . . , 0, λ1, λ2]) =
+
+0
+mλ1
+
+,
+ 1
+λ2
+
+.
+For p|m and λ2 = 0, Brec([0, 0, . . . , 0, λ1, 0]) =
+ 0
+n1
+
+,
+ 1
+p1
+
+∈M
+ n1, p1 ∈F
+
+. For p|m and
+λ2 ̸= 0, then [0, 0, . . . , 0, λ1, λ2] is not realizable.
+Lemma 4.6 For AB ̸= 0,
+Brec([A, Aα, Aα2, . . . , Aαm + B]) =
+ 1
+1
+
+,
+ α + ω
+α −ω
+ ωm = ±B
+A
+
+.
+For example, the EQUALITY gate (1, 0, . . . , 0, 1) (there are 2m −2 zeroes) that was used for
+#PL-3-NAE-SAT can be obtained by choosing A = B = 1 and α = 0.
+In terms of the formulation from Theorem 4.2, the other cases of Theorem 4.2 have the property
+that the a, b and c (in the theorem statement) are unique up to a scaling factor and c ̸= 0. So we
+have a unique characteristic equation cx2 + bx + a = 0, which has two roots α and β. If α ̸= β, we
+have the following lemma:
+Lemma 4.7 For AB ̸= 0 and α ̸= β,
+Brec([Aαi + Bβi|i = 0, 1, . . . , m]) =
+ 1 + ω
+1 −ω
+
+,
+ α + βω
+α −βω
+ ωm = ±B
+A
+
+.
+Remark: We denote 00 = 1.
+For example, the NOT-ALL-EQUAL gates of arity 3 can be obtained by choosing A = 1, B =
+−1, and choosing α, β to be the two roots of x2 −x + 1 = 0. Then we have Brec([0, 1, 1, 0]) =
+ 1 + ω
+1 −ω
+
+,
+ α + βω
+α −βω
+ ω3 = ±1
+
+. Notice that α3 = −1 and αβ = 1, let ω = α, we have (using
+∼on M)
+ 1 + ω
+1 −ω
+
+,
+ α + βω
+α −βω
+
+=
+ 1 + α
+1 −α
+
+,
+ α + 1
+α −1
+
+=
+ 1
+1
+
+,
+ 1
+−1
+
+,
+arriving at the Hadamard basis.
+However we can only realize the symmetric NAE signatures [0, 1, 0] and [0, 1, 1, 0] of arity 2 and
+3. For m > 3 the symmetric signature [0, 1, 1, . . . , 1, 0] (there are m −1 1’s) is not realizable. (This
+was ﬁrst proved in [6] by a complicated proof; but it follows from these characterization theorems
+as an easy consequence.) This explains why for many problems solved by holographic algorithms
+there is a restriction of “maximum degree 3”.
+If α = β, we have the following lemma:
+14
+
+Lemma 4.8 Let p = char.F and let A ̸= 0.
+Case 1: p = 0 or p ̸ |m.
+Brec([Aiαi−1 + Bαi|i = 0, 1, . . . , m]) =
+ 1
+B
+
+,
+
+α
+mA + Bα
+
+.
+Case 2: p|m and x0 = 0, in this case, the signature is of the form Aiαi−1.
+Brec([Aiαi−1|i = 0, 1, . . . , m]) =
+ 1
+n1
+
+,
+ α
+p1
+
+∈M
+ n1, p1 ∈F
+
+.
+Case 3: p|m and x0 ̸= 0. Then it’s not realizable.
+Remark: If α = 0, and i = 0, we still denote iαi−1 = 0, and also αi = 1.
+Deﬁnition 4.3 The Simultaneous Realizability Problem (SRP):
+Input: A set of symmetric signatures for generators and/or recognizers.
+Output: A common basis of these signatures if any basis exists; “NO” if they are not simultaneously
+realizable.
+Algorithm:
+For every signature [x0, x1, . . . , xm], check if it satisﬁes Theorem 4.2.
+If not, output “NO” and halt.
+Otherwise ﬁnd Bgen([x0, x1, . . . , xm]) or Brec([x0, x1, . . . , xm]) according to one of the Lemmas.
+Check if these subvarieties have a non-empty intersection.
+Theorem 4.3
+This is a polynomial time algorithm for SRP.
+With the help of these characterization theorems, we can have a better understanding of, for
+example, why mod 7 is the only modulus that works for #7Pl-Rtw-Mon-3CNF. Moreover we can
+obtain non-trivial generalizations to all Mersenne numbers of the form 2k −1.
+#2k−1Pl-Rtw-Mon-kCNF
+Input: A planar kCNF Boolean formula which is monotone and read-twice.
+Output: Count the number of satisfying assignments modulo 2k −1.
+We can also ﬁnd some other exotic holographic algorithms.
+#k+12/k-X-MATCHINGS
+Input: A planar bipartite graph G = (V1, V2, E).
+Nodes in V1 and V2 have degrees 2 and k
+respectively.
+Output: The number mod (k + 1) of all (not necessarily perfect) matchings.
+5
+Admissibility and Realizability
+The theory of symmetric signatures has been satisfactorily developed. Symmetric signatures are
+particularly useful because they have clear combinatorial meanings.
+However general (i.e.
+un-
+symmetric) signatures can also be useful.
+To understand completely the power of holographic
+15
+
+algorithms, we must also study unsymmetric signatures as well.
+(In the following, we discuss
+generators only; the situation for recognizers is similar.)
+We will denote the contravariant tensor for a generator in the form implicitly under a basis,
+G = (GS) where S ⊂[m], and GS = GχS(1)χS(2)...χS(m). A generator signature G is realizable on a
+basis β iﬀthe standard signature G = β⊗mG can be realized by some planar matchgate.
+There are two conditions for a standard signature to be realizable:
+Parity Constraint: Either GS = 0 for all |S| even, or GS = 0 for all |S| odd.
+Matchgate Identities: G satisﬁes all the useful Grassmann-Pl¨ucker identities.
+The Parity Constraint is a consequence of the properties of being a perfect matching. Namely if
+a matchgate realizing the signature has an even number of nodes (these are called even matchgates),
+then GS = 0 for all |S| odd; similarly for matchgates with an odd number of nodes (odd matchgates),
+GS = 0 for all |S| even.
+The Matchgate Identities are derived from the Grassmann-Pl¨ucker identities (1), and can be
+stated as follows:
+A pattern α is an m-bit string, i.e., α ∈{0, 1}m. A position vector P = {pi}, i ∈[l], is a
+subsequence of {1, 2, . . . , m}, i.e., pi ∈[m] and p1 < p2 < · · · < pl. We also use p to denote the
+m-bit string, whose (p1, p2, . . . , pl)-th bits are 1 and others are 0. Let ei ∈{0, 1}m be the pattern
+with 1 in the i-th bit and 0 elsewhere. Let α + β be the pattern obtained from bitwise XOR the
+patterns α and β. Then for any pattern α ∈{0, 1}m and any position vector P = {pi}, i ∈[l], we
+have the following identity:
+l
+X
+i=1
+(−1)iGα+epiGα+p+epi = 0.
+(6)
+Theorem 5.1
+[6, 8] A tensor G = (Gi1,...,im) is realizable as the standard signature of some
+planar matchgate iﬀit satisﬁes all the Parity Constraint and (6) for all α and P.
+Prior to introducing holographic algorithms, Valiant had written a highly inﬂuential paper [52] in
+which he introduced (not necessarily planar) matchgates, and the theory of matchcircuits and char-
+acters associated with these (general, non-planar) matchgates. Valiant showed that a non-trivial
+fragment of quantum circuit computation can be simulated by these matchcircuits in polynomial
+time. In this matchcircuit theory each matchgate Γ is assigned a character χ(Γ), somewhat similar
+to a signature. They are deﬁned in terms of Pfaﬃans, together with a carefully deﬁned factor called
+the “modiﬁer”, which is designed to produce the right sign factors when a composition theorem for
+the matchcircuit is proved. We do not intend to discuss this theory in much detail in this survey,
+but the proof of Theorem 5.1 is ultimately connected to this Pfaﬃan based character theory. It
+is achieved in two steps. We ﬁrst achieve a complete algebraic characterization of realizable char-
+acter tensors: A necessary and suﬃcient condition for a tensor to be the character tensor of some
+(general, not necessarily planar) matchgate. This characterization is in terms of a set of useful
+Grassmann-Pl¨ucker identities [8].
+The second step is to prove a uniﬁcation between the matchcircuit/character theory and the
+matchgrid/signature theory [6, 8]. Roughly speaking, this uniﬁcation is proved as follows. Given a
+planar matchgate with a standard signature G, deﬁned by the perfect matching polynomial Perf-
+Match, one can use the FKT algorithm to show that each entry of G is equal to the Pfaﬃan of
+a submatrix of a single skew-symmetric matrix with a corresponding set of appropriate rows and
+columns deleted. This becomes an entry of the character of a matchgate. The FKT algorithm is
+applied simultaneously to the exponentially many induced subgraphs of the original planar match-
+gate with various external nodes removed. Due to a property of the FKT algorithm, it gives a
+16
+
+single consistent orientation to produce the modiﬁed weighted graph, which is good for all entries
+of the signature to character identiﬁcation. The reverse direction is more interesting. We take a
+general (not necessarily planar) matchgate Γ with a character χ(Γ), and realize it as the signature
+of a planar matchgate. This is done by an embedding of all the vertices of Γ on a convex curve in
+the given order as in Γ, and then replacing each physical crossing of a pair of edges by a planar
+crossover gadget. This produces a planar matchgate Γ′. One then argues that the PerfMatch value
+for each signature entry of Γ′ is the same as the corresponding Pfaﬃan value of the character χ(Γ).
+It follows that the set of useful Grassmann-Pl¨ucker identities also applies to signatures of planar
+matchgates, as necessary and suﬃcient conditions. Theorem 5.1 follows from that.
+If we apply this to the class of symmetric signatures, we have
+Lemma 5.1 Suppose Γ is an even matchgate with symmetric standard signature [z0, . . . , zm]. Then
+for all odd i, zi = 0, and there exist r1 and r2 not both zero, such that for every even 2 ≤k ≤m,
+r1zk−2 = r2zk.
+A similar statement holds for odd matchgates.
+For m ≤3 the condition r1zk−2 = r2zk is always satisﬁable for some r1 and r2 not both zero.
+Let m ≥4, we use matchgate identities (6). Consider the pattern 1000α where α has Hamming
+weight 2i, and 0 ≤2i ≤m −4. Let the position vector be 11110 . . . 0. Then (6) gives
+G0000αG1111α −G1100αG0011α + G1010αG0101α −G1001αG0110α = 0.
+It follows from symmetry that the last two terms cancel and we get z2iz2i+4 = (z2i+2)2.
+Also, if m is even then consider the pattern 1000α and the position vector 1111β, where α =
+0m−4 and β = 1m−4. Then we have
+G0000αG1111β −G1100αG0011β + G1010αG0101β −G1001αG0110β ± . . . = 0.
+The terms cancel except the ﬁrst two, from which we get z0zm = z2zm−2. Similarly if m is odd, we
+consider the pattern 1000 . . . 0 and the position vector 1111 . . . 10 and we can get z0zm−1 = z2zm−3.
+The lemma follows from this.
+Combining even and odd matchgates we have
+Theorem 5.2 A symmetric signature [z0, . . . , zm] is realizable as the standard signature of a planar
+matchgate with even cardinality iﬀfor all odd i, zi = 0, and there exist constants r1, r2 and λ,
+such that z2i = λ · (r1)⌊m/2⌋−i · (r2)i, for 0 ≤i ≤⌊m
+2 ⌋.
+A symmetric signature [z0, . . . , zm] is realizable as the standard signature of a planar matchgate
+with odd cardinality iﬀfor all even i, zi = 0, and there exist constants r1, r2 and λ, such that
+z2i−1 = λ · (r1)⌈m/2⌉−i · (r2)i−1, for 1 ≤i ≤⌈m
+2 ⌉.
+Theorem 5.2 is the ﬁrst step in the proof of the characterization theorems of Section 4.
+To isolate the requirements for signature tensors, we introduce a new concept called admissi-
+bility.
+Deﬁnition 5.1 A tensor G of arity n is admissible as a generator on a basis β iﬀG = β⊗nG
+satisﬁes the Parity Constraint. Let Bp
+gen(G) denote the subset of M for which G is admissible as
+a generator.
+By deﬁnition we have Bgen(G) ⊆Bp
+gen(G) for all G.
+17
+
+Deﬁnition 5.2 A generator G is called d-realizable (resp. d-admissible) for an integer d ≥0 iﬀ
+Bgen(G) ⊂M (resp. Bp
+gen(G) ⊂M) is a (non-empty) algebraic subset of dimension at least d.
+By deﬁnition, if a generator G is d-realizable, then it is d-admissible.
+Remark: Since M has dimension two, 2-realizability is universal realizability which means that
+G is realizable on any basis. This is because the conditions deﬁning realizability are polynomial
+equations (with coeﬃcients from (GS), and variables on M). If there is at least one polynomial
+which is not identically 0, the algebraic set has dimension ≤1. Using any 2-realizable signature is
+a freebie in the design of holographic algorithms; it places no restriction on the rest of the design.
+Therefore they are particularly desirable.
+The following theorem is a complete characterization of 2-admissibility over ﬁelds of character-
+istic 0. It uses rank estimates related to the Kneser Graph KG2k+1,k [32, 42, 45, 17, 18, 23, 36].
+Theorem 5.3 Let G be a tensor of arity n. G is 2-admissible iﬀ(1) n = 2k is even; (2) all GS = 0
+except for |S| = k; and (3) for all T ⊂[n] with |T| = k + 1,
+X
+S⊂T,|S|=k
+GS = 0.
+(7)
+The solution space is a linear subspace of dimension the Catalan number
+1
+k+1
+2k
+k
+.
+Consider all subsets of [n] of a certain cardinality. Let 0 ≤k ≤ℓ≤n, and let Ak,ℓ,n denote the
+n
+k
+×
+n
+ℓ
+ Boolean matrix indexed by (A, B), where A, B ⊂[n] and |A| = k, |B| = ℓ, and the entry at
+(A, B) is χ[A⊂B]. It is known that over the rationals Q, the rank rk(Ak,ℓ,n) = min{
+n
+k
+,
+n
+ℓ
+} [17, 18,
+23, 36]. The situation with ﬁnite characteristic p is interesting and is more involved. For example,
+Linial and Rothschild [36] prove exact rank formula for characteristic 2 and 3. The rank “defect”
+compared to the characteristic 0 case provides more admissible signatures. For the rest of this
+article, we will focus on characteristic 0.
+We restate the deﬁnition of d-admissibility in more detail.
+Deﬁnition 5.3 G = (GS)S⊂[n] is called d-admissible if the following algebraic variety V has di-
+mension at least d, where V = V0 ∪V1 ⊂M, and V0 (resp. V1) is deﬁned by the set of all parity
+requirements for the generator signature of an odd (resp. even) matchgate.
+More precisely, consider V0. We take a point (in dehomogenized coordinates)
+ 1
+x
+1
+y
+
+∈M.
+We also denote x0 = x, x1 = y. Let T ⊂[n] with |T| even. Then we require
+* n
+O
+σ=1
+[1, x[σ∈T]], G
++
+= 0.
+Similarly we deﬁne V1, where we require that all |T| be odd.
+We note that
+* n
+O
+σ=1
+[1, x[σ∈T]], G
++
+=
+X
+0≤i≤n−|T |
+0 ≤j ≤|T |
+xiyj
+X
+A ⊂T c, |A| = i
+B ⊂T, |B| = j
+GA∪B.
+(8)
+If dim(V ) = 2, then either dim(V0) = 2 or dim(V1) = 2. For dim(V0) = 2, we have the following:
+For all T ⊂[n] with |T| even, and for all 0 ≤i ≤n −|T| and 0 ≤j ≤|T|,
+X
+A⊂T c,B⊂T,|A|=i,|B|=j
+GA∪B = 0.
+(9)
+18
+
+(If there is one equation not satisﬁed, then there is at least one non-trivial polynomial among the
+parity requirements, which implies dim(V0) ≤1.) For dim(V1) = 2, the above holds for all |T| odd.
+Continuing with dim(V0) = 2, by taking i = 0, we get for all T ⊂[n] with |T| even, and j ≤|T|,
+X
+S⊂T,|S|=j
+GS = 0.
+(10)
+Also by taking j = 0, we get for all i ≤n −|T|,
+X
+S⊂T c,|S|=i
+GS = 0.
+If S ⊂[n] with |S| even, then we may take T = S and j = |T|, and it follows that
+GS = 0.
+If n is odd, then T is even and T c is odd, and together they range over all possible subsets of
+[n]. It follows that
+GS = 0,
+for all S ⊂[n]. That is, G is trivial.
+An identical argument also shows that for dim(V1) = 2 and n odd, the trivial G ≡0 is the only
+possibility.
+Now we assume n = 2k is even, and continuing with dim(V0) = 2. Both T and T c are even.
+Pick any T even and i = n −|T|, we get
+X
+A⊂T c,B⊂T,|A|=i,|B|=j
+GA∪B =
+X
+S⊃T c,|S|=i+j
+GS = 0.
+i.e. for all even T ′ ⊂[n] and all i ≥|T ′|,
+X
+S⊃T ′,|S|=i
+GS = 0.
+(11)
+If |S| = i < k, we form the following system of equations from (10),
+X
+S⊂T,|S|=i
+GS = 0,
+where T ranges over all subsets of [n] with |T| = t, and t = i or i+1, whichever is even. This linear
+system has rank
+n
+i
+. It follows that GS = 0 for all |S| < k.
+Similarly if |S| = i > k, we can use (11) with |T| = i or i −1, whichever is even, and summing
+over all subsets S containing T. This linear system also has rank
+n
+i
+. It follows that GS = 0 for
+all |S| > k.
+Therefore the only non-zero entries of G are among GS with half weight |S| = k. Also with
+dim(V0) = 2, we may assume k is odd. Otherwise, we already know GS = 0 for all |S| even.
+A similar argument for V1 shows that, in order for dim(V1) = 2, we must have n = 2k even, all
+GS = 0 except for |S| = k and k is even.
+Summarizing, we have
+Lemma 5.2 If G is 2-admissible, then n = 2k is even, all GS = 0 except for |S| = k. If k is odd
+(resp. even) then the only possibility is dim(V0) = 2 (resp. dim(V1) = 2). Moreover, for all T ⊂[n]
+with |T| = k + 1,
+X
+S⊂T,|S|=k
+GS = 0.
+(12)
+19
+
+Next we prove that the conditions in Lemma 5.2 are also suﬃcient for G being 2-admissible,
+i.e., we prove (9), thus all the polynomials in (8) are identically zero.
+Suppose k odd. We prove dim(V0) = 2. A similar argument does for k even and dim(V1) = 2.
+We only need to verify (9) for all i + j = k, namely for all T ⊂[n] with |T| even, and for all
+0 ≤i ≤n −|T|, and 0 ≤j = k −i ≤|T|,
+X
+A⊂T c,B⊂T,|A|=i,|B|=k−i
+GA∪B = 0.
+(13)
+Denote by t = |T| and s = n −|T|. By symmetry of T and T c (both being even subsets of [n]) we
+may assume s ≤t. Since k is odd, we have the strict s < t, for otherwise s = t = k would be odd.
+We prove (13) by induction on i ≥0. For the base case i = 0, j = k, we consider all U ⊂T
+with |U| = k + 1. Note that as t ≥k + 1, this is not vacuous. By (12) we have
+X
+S⊂U,|S|=k
+GS = 0.
+Summing over all such U, and consider how many times each S ⊂[n] with |S| = k appears in the
+sum, we get
+X
+A ⊂T c, |A| = 0
+B ⊂T, |B| = k
+GA∪B =
+X
+S⊂T,|S|=k
+GS =
+1
+t−k
+1
+
+X
+U ⊂T
+|U| = k + 1
+X
+S⊂U,|S|=k
+GS = 0.
+(14)
+Inductively we assume (13) has been proved for i−1, for some i ≥1. Consider i and j = k−i. We
+may assume i ≤s; otherwise we are done. Also k−i+1 ≤t. Consider all subsets U = U1∪U2 ⊂[n],
+where U1 ⊂T c, U2 ⊂T, with |U1| = i and |U2| = k −i + 1. Note that |U| = k + 1. We have
+0 =
+X
+S⊂U,|S|=k
+GS =
+X
+A⊂U1,|A|=i−1
+GA∪U2 +
+X
+B⊂U2,|B|=k−i
+GU1∪B,
+as all sets S ⊂U with |S| = k are classiﬁed into two classes according to whether |S ∩U1| = i −1
+or i. Then summing over all such U,
+0 =
+X
+U
+X
+S⊂U,|S|=k
+GS =
+ 
+s −(i −1)
+1
+!
+X
+A ⊂T c, |A| = i −1
+B ⊂T, |B| = k −i + 1
+GA∪B +
+ 
+t −(k −i)
+1
+!
+X
+A ⊂T c, |A| = i
+B ⊂T, |B| = k −i
+GA∪B,
+by considering how many times each S of the two classes appears in the sum P
+U
+P
+S. Since the
+ﬁrst sum is 0 by inductive hypothesis, and t −k + i ≥1, the second sum is also zero. Thus
+X
+A⊂T c,B⊂T,|A|=i,|B|=k−i
+GA∪B = 0.
+This proves Theorem 5.3.
+The next theorem shows that any basis transformation on a 2-admissible G is just a scaling.
+Theorem 5.4 If G is 2-admissible with arity 2k, then ∀β =
+ n0
+p0
+n1
+p1
+
+∈M, β⊗2kG = (n0p1 −
+n1p0)kG.
+Corollary 5.1 If G is 2-admissible and realizable on some basis (e.g. on the standard basis), then
+it is 2-realizable.
+20
+
+6
+A Class of General Signatures
+The basis b2 =
+ 1
+1
+
+,
+ 1
+−1
+
+is probably the most successful basis in the design of holographical
+algorithms.
+Consider the following extension of b2
+B2 =
+ n0
+n1
+
+,
+ p0
+p1
+
+∈GL2(C)
+ n0p1 + n1p0 = 0
+
+.
+Note that b2 ∈B2.
+We will use dehomogenized coordinates
+ 1
+x
+1
+−x
+
+for notational simplicity.
+We will discuss a complete characterization theorem of all the signatures of arity n which are
+realizable on B2. The plan is to ﬁrst give a characterization of all the signatures which are admissible
+on B2. Then we apply the set of all MGIs to them to get the characterization theorem.
+For the parity constraint, we assume they are admissible as odd matchgate signatures (the
+case of even matchgates is similar). Consider an arbitrary
+ 1
+x
+1
+−x
+
+∈B2, where non-singularity
+implies that x ̸= 0. Under a basis transformation G =
+ 1
+x
+1
+−x
+⊗n
+G, the entry
+GT =
+* n
+O
+σ=1
+[1, (−1)χ[σ∈T ]x], G
++
+=
+X
+0≤i≤n−|T |
+0 ≤j ≤|T |
+xi(−x)j
+X
+A ⊂T c, |A| = i
+B ⊂T, |B| = j
+GA∪B,
+(15)
+The polynomials should be identically zero when |T| is even. This is the necessary and suﬃcient
+condition for G to be admissible on B2. Thus for any T with |T| even, the coeﬃcient of xi in the
+polynomial of (15) is
+X
+|S|=i
+(−1)|S∩T|GS = 0.
+(16)
+When T ranges over all even subsets, we have a linear system for GS. Thus we get n + 1 linear
+equation systems according to the weight of S; the i-th linear system, 0 ≤i ≤n, is over the set of
+variables GS with |S| = i, where the equations are indexed by subsets T with even cardinality. We
+deﬁne the coeﬃcient matrix of the system as M, which is indexed by T and S. Then we have the
+following calculation of MTM:
+(MTM)S1,S2 =
+X
+|T| is even
+(−1)|S1∩T|(−1)|S2∩T| =
+X
+|T| is even
+(−1)|(S1⊕S2)∩T|.
+(17)
+There are three cases: If S1 ⊕S2 = ∅, or if S1 ⊕S2 = [n], we have P
+|T| is even(−1)|(S1⊕S2)∩T| = 2n−1.
+The third case is S1 ⊕S2 ̸= ∅and S1 ⊕S2 ̸= [n]. We can take two elements a and b such
+that a ∈S1 ⊕S2 and b ̸∈S1 ⊕S2. Then we can give a perfect matching of all the even subsets
+T by matching T and T ⊕{a, b} together. For each pair of T and T ⊕{a, b}, one contributes a
++1 and the other contributes a −1 in (17). They cancel out by each other, so overall we have
+P
+|T| is even(−1)|(S1⊕S2)∩T| = 0.
+Now for the i-th system, for i = |S| ̸= n/2, the case S1 ⊕S2 = [n] does not occur. So the matrix
+MTM is 2n−1I, which means that GS = 0, for all |S| ̸= n/2. (In particular, only trivial G ≡0
+exists for n odd.)
+If |S| = n/2, the n/2-th linear system gives GS = −GSc. For the even matchgate case (|T| is
+odd), it gives GS = GSc. This is also suﬃcient. So we have the following theorem, which completely
+solves the problem of admissibility for B2:
+21
+
+Theorem 6.1 For a signature G with arity n, G is admissible on B2 iﬀthere exists ǫ = ±1 such
+that GS = 0 for all |S| ̸= n/2 and GS = ǫGSc for all |S| = n/2.
+Now we move on to the more diﬃcult question of realizability. Realizability is more diﬃcult
+than admissibility because it is controlled by the set of Matchgate Identities (MGI). These MGI
+are not only exponential in size, but also non-linear. We will apply all the MGIs to the signatures
+in the above theorem to get our characterization theorem over B2.
+For a β =
+ 1
+x
+1
+−x
+
+∈B2, let G = β⊗nG. The problem is to characterize when G is realizable
+by an even matchgate as a standard signature. (The case for odd matchgate is similar.) From
+Theorem 6.1, we know that GS = 0 for all |S| ̸= n/2, and GS = GSc for all |S| = n/2. (For odd
+matchgates it would be GS = −GSc; we omit it here.) By the basis transformation G = β⊗nG, we
+have (T is even):
+GT = xn/2
+X
+|S|=n/2
+(−1)|T∩S|GS.
+In the above equation, when substituted in any MGI, xn/2 is just a global scaling factor. So we
+can just let x = 1, without changing its realizability.
+We consider an arbitrary MGI of G: for a pattern set A (|A| is odd), position set P (|P| is
+even), we have
+0
+=
+|P |
+X
+i=1
+(−1)iGA⊕{pi}GA⊕P ⊕{pi}
+=
+|P |
+X
+i=1
+(−1)i
+X
+|S1|=n/2
+(−1)|(A⊕{pi})∩S1|GS1
+X
+|S2|=n/2
+(−1)|(A⊕P ⊕{pi})∩S2|GS2
+=
+X
+|S1|=|S2|=n/2
+GS1GS2
+|P |
+X
+i=1
+(−1)i(−1)|(A⊕{pi})∩S1|(−1)|(A⊕P ⊕{pi})∩S2|.
+Over all odd A and even P these are also suﬃcient conditions. Note that for even matchgates, both
+A and A ⊕P must be odd (so that the single bit ﬂips A ⊕{pi} and A ⊕P ⊕{pi} are even).
+Because the sets A ⊕{pi} and A ⊕P ⊕{pi} are both even, the coeﬃcients of the four terms
+GS1GS2, GS1GSc
+2, GSc
+1GS2 and GSc
+1GSc
+2 are all equal. Therefore we can combine these four terms
+(and divide by 4) and have
+0
+=
+X
+|S1|=|S2|=n/2, 1∈S1∩S2
+GS1GS2
+|P |
+X
+i=1
+(−1)i(−1)|(A⊕{pi})∩S1|(−1)|(A⊕P ⊕{pi})∩S2|
+=
+X
+|S1|=|S2|=n/2, 1∈S1∩S2
+GS1GS2(−1)|A∩(S1⊕S2)|(−1)|P ∩S2|
+|P |
+X
+i=1
+(−1)i(−1)|{pi}∩(S1⊕S2)|.
+Here we identify a set X ⊂[n] with its characteristic vector in our notations. We call an X a
+single run iﬀit is ∅, or [n], or it consists of a contiguous segment of 0’s and then 1’s, in a circular
+fashion. We have the following theorem.
+Theorem 6.2 For a signature G with arity n, G is realizable on B2 iﬀthere exists ǫ = ±1 such
+that
+22
+
+1. GS = 0 for all |S| ̸= n/2;
+2. GS = ǫGSc for all |S| = n/2; and
+3. for any pair (S1, S2), if GS1GS2 ̸= 0, then S1 ⊕S2 is a single run.
+Proof:
+First we denote X = S1 ⊕S2 and use S instead of S2 in the above MGI (we note that X
+is an even set and 1 ̸∈X):
+X
+|X| is even, 1̸∈X
+(−1)|A∩X|
+X
+|S|=|S⊕X|=n/2, 1∈S
+GSGS⊕X(−1)|P ∩S|
+|P |
+X
+i=1
+(−1)i(−1)|{pi}∩X| = 0.
+(18)
+The above equation is valid for all odd sets A and even sets P. We deﬁne a set of valuables Y (X, P)
+as
+Y (X, P) =
+X
+|S|=|S⊕X|=n/2, 1∈S
+GSGS⊕X(−1)|P ∩S|
+|P |
+X
+i=1
+(−1)i(−1)|{pi}∩X|.
+We ﬁx an arbitrary even P. Then let A go through all the odd sets, we have a linear system for the
+valuables Y (X, P) from (18), where the variables are indexed by even X not containing 1, and the
+equations are indexed by odd A. The coeﬃcient matrix of this system is ((−1)|A∩X|). This matrix
+has full rank, which can be proved similarly as in the two out of three cases for (17). Note that for
+two X1 and X2, we have X1 ⊕X2 ̸= [n], because 1 ̸∈X1 ⊕X2.
+Therefore we have for any even P and any even X with 1 ̸∈X,
+X
+|S|=|S⊕X|=n/2, 1∈S
+GSGS⊕X(−1)|P ∩S|
+|P |
+X
+i=1
+(−1)i(−1)|{pi}∩X| = 0.
+(19)
+Now we will ﬁx an even X with 1 ̸∈X, and view (19) as a linear system on the variables
+GSGS⊕X, where the equations are indexed by all even P.
+First we show that if X is a single run, then (19) always holds. If P ∩X is even, since X is a
+single run and is even, and P is even, it follows that there are an even number of elements in both
+P ∩X and P ∩Xc. A moment reﬂection shows that P|P |
+i=1(−1)i(−1)|{pi}∩X| = 0.
+If P ∩X is odd, then by symmetry of S to S ⊕X, the combined coeﬃcient of GSGS⊕X =
+GS⊕XGS is (−1)|P ∩S| + (−1)|P ∩(S⊕X)| = (−1)|P ∩S|[1 + (−1)|P ∩X|]. When P ∩X is odd, this is 0.
+So we proved the “if” part of this theorem.
+Now we prove that the conditions in Theorem 6.2 are also necessary. We will show that in
+order to satisfy all the MGI, for any even X with 1 ̸∈X, if X is not a single run, then for all S,
+GSGS⊕X = 0. This is more diﬃcult. The crux of the proof is to show that a certain exponential
+sized matrix has mutually orthogonal columns, a matrix which we don’t even give an explicit
+formula for its dimension.
+Fix an even X with 1 ̸∈X. We assume X is not a single run. Then we can pick a particular P
+with 4 elements, such that p1 < p2 < p3 < p4, and p2, p4 ∈X and p1, p3 ̸∈X. This can be done
+greedily, e.g., pick p1 = 1 (we know that 1 ̸∈X). Then run from 1, 2, 3, . . . till the ﬁrst i ∈X. That
+is our p2. Since X is not a single run, by our deﬁnition X ̸= ∅in particular. So p2 exists. Then
+the ﬁrst one after that which is not in X is p3. Being not a single run, such a p3 must exist. Then
+there must be another one after p3, which belongs to X, again by X being not a single run. This
+is our p4 ∈X. Now for this particular P, we can see that P|P |
+i=1(−1)i(−1)|{pi}∩X| ̸= 0 .
+For a ﬁxed even X with 1 ̸∈X, and X is not a single run, consider the linear equation system:
+23
+
+For all even P such that P|P |
+i=1(−1)i(−1)|{pi}∩X| ̸= 0, and P ∩X is also even,
+X
+|S|=|S⊕X|=n/2, 1∈S
+(−1)|P ∩S|GSGS⊕X = 0.
+(20)
+Here the variables are all “GSGS⊕X”, where |S| = |S ⊕X| = n/2, 1 ∈S. Note that, as shown
+above, if P ∩X is odd, then the combined coeﬃcients of GSGS⊕X = GS⊕XGS is zero in (19).
+(That proof does not depend on X being a single run or not.) For P ∩X is even, the coeﬃcients of
+GSGS⊕X = GS⊕XGS are the same, which can be combined. Consequently in (20) we combine the
+coeﬃcients of GSGS⊕X = GS⊕XGS, but only consider for P ∩X even. After this identiﬁcation,
+the equation system in (20) (for a ﬁxed X satisfying the conditions) has equations indexed by the
+P’s satisfying its stated conditions, has variables GSGS⊕X after the identiﬁcation S with S ⊕X.
+They range over unordered pairs {S, S ⊕X} obtained by taking 1, and exactly half the elements
+of X and exactly n
+2 −|X|
+2 −1 elements of [n] −{1} −X. We will not give a closed-form formula for
+the number of equations indexed by the P’s; nevertheless, we will show that columns of the matrix
+of the linear system (20) are mutually orthogonal!
+In the following, when we say, consider two “distinct” S and S′ in this equation system, we have
+the following property: S ⊕S′ is not any of the four sets: ∅, [n], X, Xc. (Not equal to ∅because
+they are distinct; not equal to [n] because both contain 1; not equal to X because of the above
+identiﬁcation; and ﬁnally not equal to Xc because 1 ̸∈S ⊕S′ and yet 1 ∈Xc.)
+Our goal is to show, for the linear equation system (20), the columns of “distinct” S and S′ are
+orthogonal. First some comments. We will not use explicitly below the fact that X is not a single
+run to show orthogonality. Not being a single run was used to show that the column coeﬃcient
+vectors in (19) are non-zero (for these vectors the entries are indexed by P as P runs through all
+the appropriate sets, the set of vectors is indexed by various S). In going from (19) to (20), we
+have already taken that into account.
+We had proved earlier that for X not a single run, there exits some position vector P which
+makes the sum P|P |
+i=1(−1)i(−1)|{pi}∩X| ̸= 0. For a ﬁxed X, in the linear equation system (19) the
+above quantity P|P |
+i=1(−1)i(−1)|{pi}∩X| does not depend on variables GSGS⊕X indexed by S. We
+can collect those equations (a non-empty subset of equations indexed by P) in (19) where the
+above quantity is non-zero, and factor out this sum from each such equation. This gives us (20).
+Of course in (19) those equations (indexed by P) where the above sum is zero is trivially satisﬁed.
+This means that the orthogonality of the coeﬃcient vectors in (20) implies that all GSGS⊕X = 0
+in (20) and therefore in (19).
+(For notational simplicity, we may consider the equality GSGS⊕X = 0 above really for all S, and
+not worry about S being half weight or S ⊕X being half weight. As otherwise they are obvious.)
+Now we wish to prove any two “distinct” column vectors for S and S′ are orthogonal. Let’s
+consider the condition P|P |
+i=1(−1)i(−1)|{pi}∩X| ̸= 0 more carefully. Lay out the elements 1, 2, 3, . . . , n,
+and lay out the elements of X in that order from left to right.
+It breaks [n] into runs.
+Say
+1, 2, . . . , a ̸∈X, a + 1, a + 2, . . . , b ∈X, b + 1, b + 2, . . . , c ̸∈X, etc. We call [1, 2, . . . , a] an “out”
+segment for X, [a+1, a+2, . . . , b] an “in” segment for X, etc. Now consider going through elements
+of P, also from 1 to n. Put down −and + alternately under each such element of P, from p1 to the
+last P-element. These record the factor (−1)i in the sum. In each “in” and “out” segment of X,
+P will have either an even or an odd number of elements. Since |P| is even, there must be an even
+number of segments (“in” or “out”) which have an odd number of P-elements. A moment reﬂection
+will convince us that whenever we have a segment which contains an even number of P-elements,
+we can ignore that segment. It does not aﬀect the subsequent ± labelling. And for either an “in”
+segment or an “out” segment of X, the contribution of these even number of P-elements to the sum
+24
+
+P|P |
+i=1(−1)i(−1)|{pi}∩X| is 0. So we can imagine a sequence of “even-segment removal” operations
+as follows: Whenever we see an “even segment” (either an “in” or an “out” segment of X which
+contains an even number of elements of P), we can remove it, and then merge the neighboring
+segments. This keeps the segments to be alternately “in” and “out” for X, and P is still even and
+therefore there remains an even number of segments with an odd number of P-elements. We can
+continue this process until no more “even segment” is left. When this process ends, we have an
+even number of “odd segments” left. They will still be alternately “in” and “out” for X. Now
+the key observation is this: There is nothing left (that even number = 0) iﬀthat original sum
+P|P |
+i=1(−1)i(−1)|{pi}∩X| = 0. This is because every “odd segment” that is left at the end contributes
+exactly the same ±1 to the sum. If the even number of “odd segments” left starts with an “in”
+segment for X, then each segment contributes a +1; if it starts with an “out” segment for X, then
+each segment contributes a −1.
+Now consider two “distinct” S and S′, and consider the inner product of their column vectors.
+Denote by D = S ⊕S′. Then D ̸= ∅, [n], X, Xc. The inner product is
+X
+P
+(−1)|P ∩S|(−1)|P ∩S′| =
+X
+P
+(−1)|P ∩D|,
+where P runs over all even subsets of [n] with |P ∩X| even, and satisfying P|P |
+i=1(−1)i(−1)|{pi}∩X| ̸=
+0.
+Now we design an involution (order 2 permutation) with no ﬁxed point on the set of all such
+P’s: Since D ̸= ∅, [n], X, Xc, as we examine all elements from 1 to n, there must be two elements
+next to each other, both in X or both out of X, and one is in D and the other one is out of D.
+(This is because: as D ̸= ∅, [n], there must be “changes” in membership of D as we go from 1 to n.
+And if all such changes coincide with boundaries of “segments” (these are the change boundaries)
+of X, then either D = X or D = Xc, but both are ruled out.) Thus there are i and i + 1 which are
+in the same segment of X (either “in” segment or “out” segment) such that |D ∩{i, i + 1}| = 1.
+We use this {i, i + 1} to deﬁne our involution on the set of P’s: P 7→P ′ = P ⊕{i, i + 1}.
+Note that P is even iﬀP ′ is even, and also, P ∩X is even iﬀP ′ ∩X is even. Moreover, in the
+“eliminating the even segment” process described above both P and P ′ will yield the same answer
+as to 0 or non-zero. Thus the involution is an involution on the set of even P, with P ∩X even,
+and such that P|P |
+i=1(−1)i(−1)|{pi}∩X| ̸= 0.
+Finally in the sum P
+P (−1)|P ∩D|, the term (−1)|P ∩D| and (−1)|P ′∩D| cancel, since
+(−1)|P ′∩D| = (−1)|P ∩D|(−1)|{i,i+1}∩D| = −(−1)|P ∩D|.
+This completes the proof.
+This theorem is quite powerful, and we believe that the full extent of its usefulness has not been
+explored.
+When n = 4, there is a special case.
+Theorem 6.3 For any a, b ∈C, the following generator
+Gα =
+
+
+
+
+
+a,
+α ∈{0101, 1010},
+b,
+α ∈{0011, 1100},
+0,
+otherwise.
+(21)
+is realizable on bases
+ 1
+x
+1
+−x
+
+for all x ̸= 0.
+25
+
+This family of signatures is used in the design of the holographic algorithm for the problem
+2-COLOR-COUNTING in Section 3. In fact for that particular problem we only need the case of
+a = 1 and b = 0 in Theorem 6.3. But other cases of a and b have also been used.
+Acknowledgement
+The author thanks Les Valiant for his comments on this article.
+References
+[1] L. Adleman and M.-D. Huang. Recognizing primes in random polynomial time. In Proc. 19th
+ACM Symposium on Theory of Computing, 1987, 462–469.
+[2] Manindra Agrawal, Neeraj Kayal, and Nitin Saxena. PRIMES is in P. Annals of Mathematics,
+160: 781–793 (2004).
+[3] S. Arora, C. Lund, R. Motwani, M. Sudan, and M. Szegedy. Proof veriﬁcation and hardness
+of approximation problems. In Proc. 33rd FOCS, pages 14-23, 1992.
+[4] E. Bach and J. Shallit. Algorithmic Number Theory (Volume I: Eﬃcient Algorithms). MIT
+Press, 1996.
+[5] R. J. Baxter. Exactly Solved Models in Statistical Physics, Academic Press, London. 1982.
+[6] J-Y. Cai and Vinay Choudhary. Some Results on Matchgates and Holographic Algorithms. In
+Proceedings of ICALP 2006, Part I. Lecture Notes in Computer Science vol. 4051. pp 703-714.
+Also available at Electronic Colloquium on Computational Complexity TR06-048, 2006.
+[7] J-Y. Cai and Vinay Choudhary. Valiant’s Holant Theorem and Matchgate Tensors (Extended
+Abstract).
+In Proceedings of TAMC 2006: Lecture Notes in Computer Science vol. 3959,
+pp 248-261. Also available at Electronic Colloquium on Computational Complexity Report
+TR05-118.
+[8] J-Y. Cai, Vinay Choudhary and Pinyan Lu. On the Theory of Matchgate Computations. IEEE
+Conference on Computational Complexity 2007: 305-318.
+[9] J-Y. Cai and Pinyan Lu. On Symmetric Signatures in Holographic Algorithms. In the pro-
+ceedings of STACS 2007, LNCS Vol 4393, pp 429–440. Also available at Electronic Colloquium
+on Computational Complexity Report TR06-135.
+[10] J-Y. Cai and Pinyan Lu. Holographic Algorithms: From Art to Science. To appear in STOC
+2007. Also available at Electronic Colloquium on Computational Complexity Report TR06-
+145.
+[11] J-Y. Cai and Pinyan Lu. Bases Collapse in Holographic Algorithms. To appear in CCC 2007.
+Also available at Electronic Colloquium on Computational Complexity Report TR07-003.
+[12] J-Y. Cai and Pinyan Lu. Holographic Algorithms: The Power of Dimensionality Resolved. To
+appear in ICALP 2007. Also available at Electronic Colloquium on Computational Complexity
+Report TR07-020.
+26
+
+[13] The Millennium Problems. The Clay Institute. http://www.claymath.org/millennium/P vs NP/
+[14] A. Cobham. The intrinsic computational diﬃculty of functions. In Proc. Logic, Methodology,
+and Philosophy of Science II, North Holland, 1965.
+[15] S. Cook. The Complexity of Theorem Proving Procedures. Proceedings of the third annual
+ACM symposium on Theory of computing, 151158. (1971).
+[16] J. Edmonds, Maximum matching and a polyhedron with (0, 1) vertices, J. Res. Nat. Bur.
+Standards Sect B. 69B (1965) 125-130.
+[17] W. Foody and A. Hedayat. On theory and applications of BIB designs with repeated blocks,
+Annals Statist., 5 (1977), pp. 932-945.
+[18] W. Foody and A. Hedayat. Note: Correction to ”On Theory and Application of BIB Designs
+with Repeated Blocks”. Annals of Statistics, Vol. 7, No. 4 (Jul., 1979), p. 925.
+[19] M. Garey and D. Johnson. Computers and Intractability: A Guide to the Theory of NP-
+Completeness. Freeman. 1979.
+[20] M. Garey, D. Johnson and L. Stockmeyer. Some simpliﬁed NP-complete graph problems,
+Theoretical Computer Science 1: 237-267. 1976.
+[21] C. F. Gauss. Disquisitiones Arithmeticae. Transl. by A. A. Clarke. Yale University Press,
+1966.
+[22] M. X. Goemans and D. P. Williamson. .879-approximation algorithms for MAX CUT and MAX
+2SAT Proceedings of the twenty-sixth annual ACM symposium on Theory of computing. pp.
+422 - 431. 1994.
+[23] R. L. Graham, S.-Y. R. Li, and W.-C. W. Li. On the Structure of t-Designs. SIAM. J. on
+Algebraic and Discrete Methods 1, 8 (1980).
+[24] F. Hadlock. Finding a Maximum Cut of a Planar Graph in Polynomial Time. SIAM Journal
+on Computing, 4 (1975): 221-225.
+[25] J. Hartmanis and R. .E. Stearns. On the computational complexity of algorithms. Trans. Amer.
+Math. Soc. 117 (1965), 285–306.
+[26] J. H˚astad. Some optimal inapproximability results. Journal of the ACM. Volume 48 Issue 4,
+July 2001.
+[27] H. B. Hunt, M. V. Marathe, V. Radhakrishnan, and R.E. Stearns, The complexity of planar
+counting problems, SIAM J. Comput. 27, 4: 1142-1167. (1998).
+[28] M. Jerrum.
+Two-dimensional monomer-dimer systems are computationally intractable.
+J.
+Stat. Phys. 48 (1987) 121-134; erratum, 59 (1990) 1087-1088
+[29] R. M. Karp. Reducibility Among Combinatorial Problems. In R. E. Miller and J. W. Thatcher
+(editors): Complexity of Computer Computations. New York: Plenum, 85103. 1972.
+[30] P. W. Kasteleyn. The statistics of dimers on a lattice. Physica, 27: 1209-1225 (1961).
+[31] P. W. Kasteleyn. Graph Theory and Crystal Physics. In Graph Theory and Theoretical Physics,
+(F. Harary, ed.), Academic Press, London, 43-110 (1967).
+27
+
+[32] M. Kneser.
+“Aufgabe 360”. Jahresbericht der Deutschen Mathematiker-Vereinigung, 2.
+Abteilung 58: 27. 1955.
+[33] M. S.Krishnamoorthy and N. Deo. Node-deletion NP-complete problems, Siam J. Comput. 8,
+4: 619-625. 1977.
+[34] . L. Levin (1973). ”Universal’nye perebornye zadachi”. Problemy Peredachi Informatsii 9 (3):
+265266. (1973). English translation, ”Universal Search Problems”, in B. A. Trakhtenbrot
+(1984). ”A Survey of Russian Approaches to Perebor (Brute-Force Searches) Algorithms”.
+Annals of the History of Computing 6 (4): 384-400.
+[35] J. M. Lewis and M. Yannakakis. The node deletion problem for hereditary properties is NP-
+complete, J. Comp. and Syst. Sciences 20: 219-230. 1980.
+[36] N. Linial and B. Rothschild. Incidence Matrices of Subsets–A Rank Formula. SIAM. J. on
+Algebraic and Discrete Methods 2, 333 (1981).
+[37] D. Lichtenstein. Planar formulae and their uses. SIAM J. Comput. 11, 2:329-343.
+[38] E. H. Lieb. Exact solution of the problem of the entropy of two-dimensional ice, Phys. Rev.
+Lett. 18: 692-694. 1967.
+[39] E. H. Lieb. Residual entropy of square ice, Phys. Rev. 162: 162-172. 1967.
+[40] E. H. Lieb. Exact solution of the F model of an antiferroelectric, Phys. Rev. Lett. 18: 1046-
+1048. 1967.
+[41] E. H. Lieb. Exact solution of the two-dimensional Slater KDP model of a ferroelectric, Phys.
+Rev. Lett. 19: 108–110. 1967.
+[42] L. Lov´asz. “Kneser’s conjecture, chromatic number, and homotopy”. Journal of Combinatorial
+Theory, Series A 25: 319-324. 1978.
+[43] . Ju. V. Matijasevich. The Diophantineness of Enumerable Sets. Dokl. Akad. Nauk SSSR 191,
+279-282, 1970. English translation: Soviet Math. Dokl 11, 354-358, 1970.
+[44] Yu. V. Matijasevich. Hilbert’s Tenth Problem. Cambridge, MA: MIT Press, 1993.
+[45] J. Matouˇsek. “A combinatorial proof of Kneser’s conjecture”. Combinatorica 24 (1): 163-170.
+2004.
+[46] K. Murota. Matrices and Matroids for Systems Analysis, Springer, Berlin, 2000.
+[47] L. Pauling. The Structure and Entropy of Ice and of Other Crystals with Some Randomness
+of Atomic Arrangement. J. Am. Chem. Soc.; 1935; 57(12) pp 2680 - 2684.
+[48] R. Soare. Recursively enumerable sets and degrees, Perspectives in Mathematical Logic.
+Springer-Verlag. (1987).
+[49] H. N. V. Temperley and M. E. Fisher. Dimer problem in statistical mechanics – an exact
+result. Philosophical Magazine 6: 1061– 1063 (1961).
+[50] S. Toda: PP is as Hard as the Polynomial-Time Hierarchy. SIAM J. Comput. 20(5): 865-877
+(1991).
+28
+
+[51] S. P. Vadhan. The Complexity of Counting in Sparse, Regular and Planar Graphs. SIAM
+Journal on Computing, 8(1): 398-427 (2001).
+[52] L. G. Valiant. Quantum circuits that can be simulated classically in polynomial time. SIAM
+Journal of Computing, 31(4): 1229-1254 (2002).
+[53] L. G. Valiant. Expressiveness of Matchgates. Theoretical Computer Science, 281(1): 457-471
+(2002).
+[54] L. G. Valiant. Holographic Algorithms (Extended Abstract). In Proc. 45th IEEE Symposium
+on Foundations of Computer Science, 2004, 306–315. A more detailed version appeared in
+Electronic Colloquium on Computational Complexity Report TR05-099.
+[55] L. G. Valiant. Holographic circuits. In Proc. 32nd International Colloquium on Automata,
+Languages and Programming, 2005, 1–15.
+[56] L. G. Valiant. Completeness for parity problems. In Proc. 11th International Computing and
+Combinatorics Conference, 2005, 1–8.
+[57] L. G. Valiant. Accidental Algorithms. In Proc. 47th Annual IEEE Symposium on Foundations
+of Computer Science 2006, 509–517.
+[58] D. J. A. Welsh. Complexity: Knots, Colourings and Counting, Cambridge University Press.
+1993.
+29
+
+Figures
+2
+2
+1
+1
+2
+Figure 1: Under the basis b2,
+this generator matchgate has
+the signature (0, 1, 1, 0)T .
+1
+1
+1
+1
+2
+3
+6
+3
+1
+3
+1
+3
+1
+Figure 2: Under basis b2, this generator match-
+gate has the signature (0, 1, 1, 1, 1, 1, 1, 0)T .
+30
+
+Figure 3: This planar matchgate has standard signature (2a + 2b, 0, 0, −2a + 2b, 0, 2a −2b, −2a −
+2b, 0, 0, −2a−2b, 2a−2b, 0, −2a+2b, 0, 0, 2a+2b)T . Here i = √−1, and we assume 2a+2b ̸= 0. (In
+case 2a+2b = 0, a similar matchgate will work.) This is an explicit construction for the matchgate
+promised in Theorem 6.3, which follows from the general Theorem 6.2.
+31
+
+1
+4
+3
+2
+1
+1
+1
+1
+1
+1
+1
+1
+i
+i
+i
+i
+i
+i
+i
+i
+2
+1
+2
+1
+2
+1
+2
+1
+2
+1
+1
+1
+1
+Figure 4: This is a special case of Figure 3. Un-
+der the basis b2, this generator matchgate has
+the signature G, where G0101 = G1010 = 1 and
+Gα = 0 for other α.
+This matchgate together
+with Figure 1, 2 and 5 are used for the problem
+2-COLOR-COUNTING.
+2
+1
+1
+1
+2
+2
+1
+Figure 5: Under the basis b2,
+this recognizer matchgate has
+the signature (1, 0, 0, 1).
+32

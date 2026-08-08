@@ -1,0 +1,1532 @@
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+www.theoryofcomputing.org
+RESEARCH SURVEY
+Matchgates Revisited
+Jin-Yi Cai∗
+Aaron Gorenstein
+Received May 17, 2013; Revised December 17, 2013; Published August 12, 2014
+Abstract:
+We study a collection of concepts and theorems that laid the foundation of
+matchgate computation. This includes the signature theory of planar matchgates, and the
+parallel theory of characters of not necessarily planar matchgates. Our aim is to present a
+uniﬁed and, whenever possible, simpliﬁed account of this challenging theory. Our results
+include: (1) A direct proof that the Matchgate Identities (MGI) are necessary and sufﬁcient
+conditions for matchgate signatures. This proof is self-contained and does not go through
+the character theory. (2) A proof that the MGI already imply the Parity Condition. (3) A
+simpliﬁed construction of a crossover gadget. This is used in the proof of sufﬁciency of
+the MGI for matchgate signatures. This is also used to give a proof of equivalence between
+the signature theory and the character theory which permits omittable nodes. (4) A direct
+construction of matchgates realizing all matchgate-realizable symmetric signatures.
+ACM Classiﬁcation: F.1.3, F.2.2, G.2.1, G.2.2
+AMS Classiﬁcation: 03D15, 05C70, 68R10
+Key words and phrases: complexity theory, matchgates, Pfafﬁan orientation
+1
+Introduction
+Leslie Valiant introduced matchgates in a seminal paper [24]. In that paper he presented a way to encode
+computation via the Pfafﬁan and Pfafﬁan Sum, and showed that a non-trivial, though restricted, fragment
+of quantum computation can be simulated in classical polynomial time. Underlying this magic is a way
+to encode certain quantum states by a classical computation of perfect matchings, and to simulate certain
+∗Supported by NSF CCF-0914969 and NSF CCF-1217549.
+© 2014 Jin-Yi Cai and Aaron Gorenstein
+cb Licensed under a Creative Commons Attribution License (CC-BY)
+DOI: 10.4086/toc.2014.v010a007
+
+JIN-YI CAI AND AARON GORENSTEIN
+quantum gates by the so-called matchgates. These matchgates are weighted graphs, not necessarily planar,
+and are equipped with input and output nodes, as well as the so-called omittable nodes. Each matchgate
+is associated with a character, whose entries are deﬁned in terms of a Pfafﬁan and Pfafﬁan Sum.
+Three years later, there was great excitement when Valiant invented holographic algorithms [26],
+where he also introduced planar matchgates. These matchgates are planar graphs, have a subset of
+vertices on the outer face designated as external nodes, and are each associated with a signature. The
+entries of a signature are deﬁned in terms of the perfect matching polynomial, PerfMatch(·). For planar
+weighted graphs, this quantity can be computed by Kasteleyn’s well-known algorithm [14] (a. k. a. FKT
+algorithm [21]) in polynomial time, which uses the Pfafﬁan and a Pfafﬁan orientation.
+Holographic algorithms (for examples, see [26, 25, 7]) are quite exotic, and use a quantum-like
+superposition of fragments of computation to achieve custom-designed cancellations. The two basic
+ingredients of holographic algorithms from [26] are matchgates and holographic transformations. A
+number of concrete problems are shown to be polynomial-time computable by this novel technique,
+even though they appear to require exponential time, and minor variations of which are NP-hard. They
+challenge our perceived boundary of what polynomial-time computation can do. Since we do not really
+have any reasonable absolute lower bounds that apply to unrestricted computational models, our faith in
+such well-known conjectures such as P ̸= NP or P ̸= P#P is based primarily on the inability of existing
+algorithmic techniques to solve NP-hard or #P-hard problems in polynomial time. To maintain this faith,
+it is imperative that we gain a better understanding of what the new methodology can or cannot do. To
+quote Valiant [26], “any proof of P ̸= NP may need to explain, and not only to imply, the unsolvability”
+of NP-complete or #P-complete problems by this methodology. It becomes apparent that there is a
+fundamental problem of what are the intrinsic limitations of matchgates, and what is the relationship
+between characters of general matchgates and signatures of planar matchgates.
+In [23], Valiant showed that the character of every 2-input 2-output matchgate must satisfy ﬁve
+polynomial identities, called the Matchgate Identities. Valiant used this to show that certain quantum
+gates cannot be simulated by the characters of general matchgates. In a sequence of two papers [1, 2]
+a general study of the character theory and the signature theory of matchgates was undertaken. These
+papers achieved the following general results: Firstly, there is essentially an equivalence between the
+character theory and the signature theory of matchgates, and secondly, a set of useful Grassmann-Plücker
+identities together with the Parity Condition are a necessary and sufﬁcient condition for a sequence of
+values to be the signature of a planar matchgate. (The notion of “useful” was deﬁned in [2].) This set
+of useful Grassmann-Plücker identities will be called Matchgate Identities (MGI) in the general sense.
+Along the way they also established a concrete characterization of symmetric signatures, which are
+signatures whose entries only depend on the Hamming weight of the index.
+However, this proof is long and indirect. In particular the proof for the signature theory of planar
+matchgates goes through characters. Additionally, there is a subtle gap in the proof that every planar
+matchgate signature must satisfy the Matchgate Identities. The gap has to do with the non-uniform and
+exponentially many ways in which the induced Pfafﬁan orientations on subgraphs of a planar graph can
+introduce a correction factor (−1) to Pfafﬁan values, relative to perfect matchings. We note that Pfafﬁan
+orientations are themselves an important topic [22], and resolving this gap also leads to the ﬁrst result to
+our knowledge concerning the behavior of Pfafﬁan orientations of subgraphs under node removal.
+In this paper we present a full, self-contained proof that the MGI characterize planar matchgate
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+168
+
+MATCHGATES REVISITED
+signatures. This proof does not involve character theory or any non-planar matchgate. Moreover, we
+include a short proof demonstrating that the MGI imply the Parity Condition. Previously this was
+presented as a separate requirement for matchgates, but now we show that the MGI entirely characterize
+matchgate signatures. We then revisit and clarify the equivalence between planar matchgates and the
+original general matchgates. Along the way we introduce a concise matchgate for the “crossover gadget,”
+using only real weights 1 and −1. Previously the only known such gadget uses complex values. Finally,
+it has been known that the MGI greatly simplify for symmetric signatures. By the general theory
+any symmetric sequence satisfying the MGI must be realizable as the signature of a planar matchgate.
+Previously this existence was only known by going through the entire equivalence proof of characters and
+signatures, which also uses the only known “crossover gadget.” In this paper, we present a simple, direct
+construction of a planar matchgate realizing any symmetric sequence satisfying the MGI.
+The most intricate part of this paper is the proof that planar matchgate signatures must satisfy the
+MGI. The strategy is as follows: we ﬁrst establish identities for Pfafﬁan minors implied by the Grassmann-
+Plücker identities. Then we want to map the signature entries of the MGI term-by-term to the factors
+appearing in the new identities. However, such a mapping involves an individualized (per-factor) sign
+change. The presence of this sign change is a consequence of Pfafﬁan orientations. To compute the
+signature of a matchgate G, we assume it has a ﬁxed Pfafﬁan orientation −→
+G. This induces a natural
+Pfafﬁan orientation for every subgraph, −→
+Gα, where α is a bitstring specifying a removal pattern of the
+external nodes from G. A Pfafﬁan orientation may introduce an extra (−1) factor, a “sign change,” to the
+corresponding perfect matching value. The sign change of −→
+Gα depends on α, so the presence or absence
+of the “sign change” may itself change between different external node removals.
+Thus, our main goal is to show that the change of the sign change occurs in a pattern such that the
+MGI still hold. We do so using Theorem 4.3. Essentially, it proves the following. For any two ﬁxed
+bit positions i < j referencing the external nodes, let bibj ∈{0,1}2 be the bit pattern on these two bits.
+Then, while the sign change may be different for different values of bib j, the change of sign change when
+we go from bibj to bi bj is always the same, independent of the removal pattern on the other external
+nodes. This is succinctly expressed as a quadruple product identity. Moreover, this is in fact the strongest
+statement we can say about a pair of nodes and their change of signs (see Figure 1). Fortunately this is
+also sufﬁcient to prove the MGI.
+This paper is organized as follows. In Section 2 we deﬁne all the concepts and terminology in the
+signature theory of planar matchgates. We will also prove that MGI imply the Parity Condition. We will
+restrict discussion to planar matchgates pertaining to signature theory here. The terminology having to
+do with general (not necessarily planar) matchgates and characters will be delayed until Section 6. In
+Section 3 we will give a self-contained proof of some known identities. This is partly for the convenience
+of the readers, and partly to give simpliﬁed proofs when possible. For example, the earlier proof of
+Theorem 3.2 from [10] goes through skew-symmetric bilinear forms and operators acting on the exterior
+algebra of a module over some commutative ring. Here we present a direct, elementary proof. In Section 4
+we prove that every matchgate signature satisﬁes the MGI. In Section 5 we prove that the MGI are also
+sufﬁcient conditions for a signature to be realizable as a matchgate signature. Here we also give the
+simpliﬁed construction of a crossover gadget. In Section 6 we discuss the character theory. In Section 7
+we give the direct construction for matchgates realizing symmetric signatures. Some concluding remarks
+are in Section 8.
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+169
+
+JIN-YI CAI AND AARON GORENSTEIN
+2
+Preliminaries
+Matchgate, PerfMatch deﬁnitions
+A matchgate is an undirected weighted plane graph G with k
+distinguished “external” nodes on its outer face, ordered in a clockwise order. (We will see shortly that
+without loss of generality we may assume the graph G is connected. Therefore it is a plane graph, i. e., a
+planar graph given with a particular planar embedding, and the outer face is both uniquely deﬁned and
+has a connected boundary.) Without loss of generality, we assume all edge weights are non-zero; zero
+weighted edges can be deleted. The weights can be from any ﬁeld F. We deﬁne the perfect matching
+polynomial, PerfMatch(G), as the following:
+PerfMatch(G) =
+∑
+M∈M(G) ∏
+e∈M
+w(e)
+(2.1)
+where M(G) is the set of all perfect matchings in G and w(e) is the weight of edge e in G. For each
+length-k bitstring α, G deﬁnes a subgraph Gα obtained from G by the following operation: For all
+1 ≤i ≤k, if the i-th bit αi of α is 1, then we remove the i-th external node and all its incident edges.
+Thus, G00...0 = G, and G11...1 is G with all external nodes removed.
+Signature, perfect matching term deﬁnitions
+We deﬁne the signature of the matchgate G as the
+vector ΓG = (Γα
+G), indexed by α ∈{0,1}k, as follows:
+Γα
+G = PerfMatch(Gα) =
+∑
+M∈M(Gα) ∏
+e∈M
+w(e).
+(2.2)
+For a perfect matching M ∈M(Gα) we deﬁne Γα
+G(M) = ∏e∈M w(e) as the perfect matching term, equal
+to the product of the edge weights for the matching M. Where G is clear, we omit the subscript G, and
+write Γα for Γα
+G, and Γα(M) for Γα
+G(M).
+Pfafﬁan orientations, induced Pfafﬁan orientations
+For a plane graph G, the value PerfMatch(G)
+can be computed using Kasteleyn’s algorithm [14] via the Pfafﬁan. A Pfafﬁan orientation on G is an
+assignment of a direction to each edge of G in such a way that each face, except possibly the outer face,
+has an odd number of clockwise oriented edges when one traverses the boundary of the face. Such an
+orientation is easy to compute for any plane graph. Note that any “bridge edge” (an edge both sides of
+which belong to the same face) can be oriented arbitrarily, and the traversal of the face will count the
+edge twice, once clockwise and once counter-clockwise. Under a Pfafﬁan orientation, deﬁned below, on
+G, the Pfafﬁan of a skew-symmetric matrix deﬁned by G and the orientation is equal to ±PerfMatch(G).
+We ﬁx a single Pfafﬁan orientation for G and call the directed graph −→
+G. Note that −→
+G α, which is obtained
+from −→
+G by removing some vertices and their incident edges according to α, is also Pfafﬁan-oriented.
+This is because we only remove zero or more vertices on the outer face, and the removal of these vertices
+and their incident edges does not create any non-outer face. Thus a single ﬁxed Pfafﬁan orientation for G
+induces a set of Pfafﬁan orientations, one for each Gα. We consider a Pfafﬁan orientation for G is ﬁxed,
+and each Gα inherits the induced Pfafﬁan orientation.
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+170
+
+MATCHGATES REVISITED
+Skew-symmetric matrix
+Now we assume the vertices of G are labeled by a totally ordered set, for
+example, 1 < 2 < ... < n. Given an orientation on G, we deﬁne a skew-symmetric adjacency matrix
+A = A−→
+G for −→
+G as follows. Let (u,v) be a directed edge from u to v in −→
+G. Then Au,v = w({u,v}), and
+Av,u = −w({u,v}), where w({u,v}) is the weight of the corresponding edge in G. The diagonal and all
+other locations (u,v) not corresponding to an edge in the matrix A are set to 0. As a result, the lower-left
+triangle of A is the negation of the upper-right triangle.
+Pfafﬁan
+The Pfafﬁan of an n×n matrix, where n ≥2 is even, is deﬁned as follows:
+Pf(A) = ∑
+π
+επAi1,i2Ai3,i4 ···Ain−1,in
+(2.3)
+where the sum is over all permutations
+π =
+1
+2
+...
+n
+i1
+i2
+...
+in
+
+such that i1 < i2, i3 < i4, ..., in−1 < in and i1 < i3 < i5 < ... < in−1. The term επ is −1 or 1 depending
+on whether the parity of π is odd or even, respectively. We note that there is a natural 1-1 correspondence
+between permutations π in this canonical expression and partitions of [n] into disjoint pairs, which are
+potential perfect matchings. A permutation π corresponds to an actual perfect matching iff all the pairs
+are edges. It is known and easy to verify that the sign επ can also be computed by the parity of the
+number of overlapping pairs (+1 if it is even, −1 if it is odd). We say {i2k−1,i2k} and {i2ℓ−1,i2ℓ} is an
+overlapping pair iff i2k−1 < i2ℓ−1 < i2k < i2ℓor i2ℓ−1 < i2k−1 < i2ℓ< i2k.
+We note that the term επAi1,i2Ai3,i4 ···Ain−1,in is the same for any listing of the partition [n] = {i1,i2}∪
+{i3,i4}∪...∪{in−1,in}, where
+π =
+1
+2
+...
+n
+i1
+i2
+...
+in
+
+,
+independent of the ordering of the pairs, as well as the order within each pair. We also note that this
+deﬁnition is valid for any linear order on the vertices; it need not be the set of consecutive integers from 1
+to n. This is particularly relevant when we consider the Pfafﬁan of −→
+G α, where the vertices will inherit the
+labeling from G.
+As convention, if n is odd, then Pf(A) = 0; if n is zero, then Pf(A) = 1.
+Relating Pf to PerfMatch
+If A = A−→
+G, we call επAi1,i2Ai3,i4 ···Ain−1,in a Pfafﬁan term. As observed,
+there is a 1-to-1 correspondence between all non-zero Pfafﬁan terms and perfect matchings in M(G). If M
+is a perfect matching, we denote the corresponding Pfafﬁan term by Pf−→
+G(M). A perfect matching term has
+the same value, up to a ± sign, as the corresponding Pfafﬁan term. In other words, Pf−→
+G(M) = ±ΓG(M).
+They may indeed differ, even under a Pfafﬁan orientation. The heart of the FKT algorithm is the proof
+that for the skew symmetric matrix of a Pfafﬁan-oriented graph, either every pair of corresponding terms
+are the same, or every pair of corresponding terms differ by a sign. Thus, Pf(A−→
+G) = ±PerfMatch(G).
+This equality is an equality of polynomials: Given a Pfafﬁan oriented −→
+G, there exists an ε = ±1, such
+that
+Pf(A−→
+G) = ε PerfMatch(G)
+(2.4)
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+171
+
+JIN-YI CAI AND AARON GORENSTEIN
+and if (2.4) holds for one set of edge weights, then every Pfafﬁan term is ε times its corresponding perfect
+matching term, for every set of weights.
+Pfafﬁan signature deﬁnition
+As the orientation in −→
+G induces a Pfafﬁan orientation for all Gα, we
+can naturally refer to −→
+Gα. Note that −→
+Gα = −→
+G α, the oriented graph obtained by −→
+G after removing some
+vertices and incident edges according to α, in the same way as before. Also note that A−→
+Gα is obtained
+from A−→
+G by removing the appropriate columns and rows indicated by α. We abbreviate Pf(A−→
+Gα) as Pfα−→
+G.
+Where −→
+G is clear, we just write Pfα. With a given Pfafﬁan orientation on the plane graph G, and a given
+labeling of its k external nodes in clockwise order, we deﬁne the Pfafﬁan Signature of −→
+G to be the vector
+(Pfα) indexed by α ∈{0,1}k. Each Pfα is a sum of Pfafﬁan terms, by the deﬁnition of Pf(A−→
+Gα), under
+the induced Pfafﬁan orientation.
+Critically, equation (2.4) is a term by term equation: For every α ∈{0,1}k, there exists ε(α) ∈
+{−1,1}, such that for all M ∈M(Gα),
+Pf−→
+Gα(M) = ε(α)ΓGα(M).
+(2.5)
+Matchgate Identities
+We state the Matchgate Identities, or MGI.
+Theorem 2.1. Let Γ be the signature of a matchgate with k external nodes. For any length-k bitstrings
+α,β ∈{0,1}k, let α ⊕β ∈{0,1}k be their bitwise XOR, and let P = {p1,..., pℓ}, where p1 < ... < pℓ,
+be the subset of [k] whose characteristic sequence is α ⊕β. Here pi is the i-th bit where α and β differ.
+Then, the signature Γ satisﬁes:
+ℓ
+∑
+i=1
+(−1)iΓα⊕epiΓβ⊕epi = 0,
+(2.6)
+where ej denotes a length-k bitstring with a 1 in the j-th index, and 0 elsewhere.
+We will show that this is a complete characterization of what vectors can be planar matchgate
+signatures.
+Parity Condition
+A perfect matching has an even number of vertices. Therefore it follows that
+PerfMatch(Gα) = 0, whenever Gα has an odd number of vertices. Thus, either for all α of odd Hamming
+weight, or for all α of even Hamming weight, Γα = 0.
+Matchgate Identities imply Parity Condition
+Here we show that this Parity Condition is a conse-
+quence of MGI.
+Theorem 2.2. If a vector Γ obeys the MGI, then it also obeys the Parity Condition.
+Proof. For a contradiction assume Γα ̸= 0 and Γβ ̸= 0, for some α and β of even and odd Hamming
+weight respectively. We deﬁne eΓ by eΓγ = Γγ⊕α. Since γ ⊕γ′ = (γ ⊕α)⊕(γ′ ⊕α), if the vector Γ obeys
+the MGI then the vector eΓ also obeys the MGI. Also eΓ00...0 = Γα ̸= 0 and eΓβ⊕α = Γβ ̸= 0. Note that
+β ⊕α has an odd Hamming weight.
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+172
+
+MATCHGATES REVISITED
+Let β ′ = {p1,..., pℓ} be of minimum odd Hamming weight such that eΓβ ′ ̸= 0, where ℓ≥1. Now
+invoke the MGI on the bitstrings 00...0⊕ep1 and β ′ ⊕ep1. That gives
+0 = −eΓ00...0eΓβ ′ +
+ℓ
+∑
+i=2
+(−1)ieΓ00...0⊕ep1⊕epi eΓβ ′⊕ep1⊕epi .
+(2.7)
+If ℓ= 1 then the sum ∑ℓ
+i=2 is vacuous, and we have a contradiction. So ℓ≥2 and we consider each term
+in the sum ∑ℓ
+i=2. Observe that for every 2 ≤i ≤ℓ, β ′ ⊕ep1 ⊕epi has an odd Hamming weight less than
+that of β ′, hence eΓβ ′⊕ep1⊕epi = 0. Thus the sum ∑ℓ
+i=2 is zero but eΓ00...0eΓβ ′ ̸= 0, a contradiction.
+Nonetheless, in further development of the signature theory, our experience is that the Parity Condition
+is a good criterion to apply ﬁrst.
+The sign
+MGI were ﬁrst introduced by Valiant in [23] in the context of proving certain 2-input 2-output
+quantum gate cannot be realized by a matchgate. It was shown that 2-input 2-output matchgates must
+satisfy certain identities which are named the Matchgate Identities. These identities are actually concerned
+with characters of matchgates. These so-called characters are deﬁned directly in terms of Pfafﬁans, and
+their underlying matchgates need not be planar by deﬁnition. In the case of 2-input 2-output matchgates,
+these character values constitute a 4 by 4 matrix, called a character matrix. Subsequently in [1] and [2],
+this theory is generalized to matchgates of an arbitrary number of external nodes. The ultimate result is
+that there is an equivalence of matchgate characters (of not necessarily planar matchgates) and matchgate
+signatures (of planar matchgates). See Section 6. Furthermore Matchgate Identities (together with the
+Parity Condition) are a necessary and sufﬁcient condition for a vector of values to be the signature of a
+(planar) matchgate. In fact, by Theorem 2.2, the Matchgate Identities already logically imply the Parity
+Condition.
+The existing proof of the equivalence of being a matchgate signature and satisfaction of MGI
+(together with parity requirements) is quite long and indirect. In particular it goes through characters.
+More importantly, there is a gap in the existing proof that Matchgate Identities are a necessary condition
+for a matchgate signature. The gap is to exactly account for the change of signs from Pfafﬁans to
+signatures. We will rectify this situation. Our new proof is direct and self-contained; we show that
+Matchgate Identities are a necessary condition for matchgate signatures without going through characters.
+We will ﬁrst establish the Pfafﬁan Signature Identities.
+Theorem 2.3. Let −→
+G be a plane graph with a Pfafﬁan orientation and k external nodes. For any length-k
+bitstrings α,β ∈{0,1}k, let α ⊕β ∈{0,1}k be their bitwise XOR, and let P = {p1,..., pℓ}, where
+p1 < ... < pℓ, be the subset of [k] whose characteristic sequence is α ⊕β. Then,
+ℓ
+∑
+i=1
+(−1)i Pfα⊕epi Pfβ⊕epi = 0.
+(2.8)
+Because of the “sign change” between Pfα and Γα, this statement does not immediately imply
+Theorem 2.1. We need to know that the extra −1 factors between Pfα and Γα appear in just such a
+pattern that the −1 factors all cancel each other in the Matchgate Identities in (2.6) relative to the Pfafﬁan
+Signature Identities in (2.8). Before doing so, we will prove Theorem 2.3.
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+173
+
+JIN-YI CAI AND AARON GORENSTEIN
+3
+Proving the Pfafﬁan signature identities
+Theorem 2.3 will follow from the Grassmann-Plücker Identities over Pfafﬁan minors of a matrix. We
+state the following deﬁnition of the Grassmann-Plücker Identities for a skew-symmetric matrix A. In
+writing Pf(i1,i2,...,iK) we mean the Pfafﬁan of the K × K matrix whose rows and columns are the
+i1,i2,...,iK-th rows and columns of A, in that order. The order matters: Pf(i1,i2,...) = −Pf(i2,i1,...),
+for instance. In particular, if there are two identical rows and columns, the Pfafﬁan is 0. When we write
+Pf(i1,i2,..., bik,...,iK), the bik means that ik is explicitly excluded from that list.
+Theorem 3.1 (The Grassmann-Plücker Identities). Let I = {i1,i2,...,iK},J = { j1, j2,..., jL} be subsets
+of indices of a skew-symmetric A, where i1 < i2 < ... < iK and j1 < j2 < ... < jL. Then
+L
+∑
+ℓ=1
+(−1)ℓ−1 Pf(jℓ,i1,...,iK)Pf(j1,..., bjℓ,..., jL)+
+K
+∑
+k=1
+(−1)k−1 Pf(i1,..., bik,...,iK)Pf(ik, j1,..., jL) = 0.
+(3.1)
+Theorem 3.1 has the following short proof [23, 19] originally from [20].
+Proof of Theorem 3.1. From the deﬁnition of Pfafﬁan:
+Pf(jℓ,i1,...,iK) =
+K
+∑
+k=1
+(−1)k−1 Pf(jℓ,ik)Pf(i1,..., bik,...,iK),
+(3.2)
+Pf(ik, j1,..., jL) =
+L
+∑
+ℓ=1
+(−1)ℓ−1 Pf(ik, jℓ)Pf(j1,..., bjℓ,..., jL),
+(3.3)
+and also
+Pf(jℓ,ik)+Pf(ik, jℓ) = 0.
+(3.4)
+The proof is completed by substituting these into the left-hand side of equation (3.1).
+There is another form of these identities which is more closely related to the Pfafﬁan Signature
+Identities. We state this theorem next. An earlier proof of Theorem 3.2 appears in [10]. They go through
+skew-symmetric bilinear forms and operators acting on the exterior algebra Λ(M) of an R-module M over
+some commutative ring R. Here we present a direct, elementary proof.
+Theorem 3.2. Let A,I,J be as above. For a subset S of indices of A, we write Pf(S) when S is listed in
+increasing order. Let D = I △J = {k1,...,km} (listed in increasing order) be the symmetric difference of
+I,J. Then
+m
+∑
+s=1
+(−1)s−1 Pf(I △{ks})Pf(J △{ks}) = 0.
+(3.5)
+Proof of Theorem 3.2. We prove Theorem 3.2 by Theorem 3.1.
+Considering a term in equation (3.1), and let x be the element being moved from the index set of one
+Pfafﬁan to another. If x ∈I ∩J, clearly the term is 0. It follows that there is a one-to-one correspondence
+between the remaining terms in equations (3.1) and (3.5). All that remains is showing that each such term
+in equation (3.1) has the same sign as its counterpart in (3.5).
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+174
+
+MATCHGATES REVISITED
+Suppose x ∈J −I. In that case, the term in equation (3.1) is
+(−1)z Pf(x,i1,...,iK)Pf(j1,..., ˆx,..., jL)
+(3.6)
+where z is the number of elements in J preceding x, equivalently those elements in J less than x. We write
+z = a+b, where
+a = |{y | y ∈J −I, y < x}| ,
+(3.7)
+b = |{y | y ∈J ∩I, y < x}| ,
+(3.8)
+and we also deﬁne
+c = |{y | y ∈I −J, y < x}| .
+(3.9)
+When we put the indices in Pf(x,i1,...,iK) in increasing order we move x along until it is in the sorted
+order, we move x exactly b+c times. Thus
+Pf(x,i1,...,iK) = (−1)b+c Pf(I ∪{x})
+(3.10)
+and so it follows that
+(−1)z Pf(x,i1,...,iK) = (−1)a+c Pf(I ∪{x}).
+(3.11)
+It is clear that a+c is precisely the number of those in D preceding x, exactly the sign in front of the
+corresponding term in (3.5).
+The argument for the case x ∈I −J is symmetric.
+Now we are ready to prove Theorem 2.3.
+Proof of Theorem 2.3. We prove Theorem 2.3 by Theorem 3.2. For a matchgate G, let α,β be two
+bitstrings of length k, where k is the number of external nodes in G. The i-th bit of α, denoted αi,
+corresponds to the i-th external node in G in clockwise order.
+Let U be the set of all internal (that is, not external) nodes in G. We deﬁne I = {vi | αi = 0} ∪U,
+where vi is the label of the node in G which is the i-th external node referenced by αi. Similarly let
+J = {vi | βi = 0} ∪U. Observe that I △J = {vi | αi ̸= βi}. It follows that there is a term-for-term
+correspondence between equation (3.5) of Theorem 3.2 and equation (2.8) of Theorem 2.3.
+4
+Matchgates satisfy Matchgate Identities
+We will now prove that while Pfα may differ from Γα by a sign depending on α, the differences occur in
+just such a pattern that they cancel in the MGI. This will allow us to conclude that the Pfafﬁan Signature
+Identities (2.8) differ from the MGI (2.6) by a global ±1 factor, thus proving the Matchgate Identities.
+Deﬁnition 4.1. For any Mα ∈M(Gα), where Gα has the orientation −→
+Gα, we deﬁne the sign of the perfect
+matching Mα to be:
+sgn(Mα) =
+Pf−→
+Gα(Mα)
+ΓGα(Mα) ∈{−1,1}.
+(4.1)
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+175
+
+JIN-YI CAI AND AARON GORENSTEIN
+Recall that it is a polynomial equality that the Pfafﬁan is equal to ±PerfMatch, under a Pfafﬁan
+orientation. Thus we can conclude that, for Pf−→
+Gα(Mα) and ΓGα(Mα), the value of sgn(Mα) is the same
+±1 for every perfect matching Mα ∈M(Gα). This allows us to deﬁne a very useful function:
+Deﬁnition 4.2. For any α such that M(Gα) ̸= /0, we take any Mα ∈M(Gα) and deﬁne the function δ:
+δ(α) = sgn(Mα) =
+Pf−→
+Gα(Mα)
+ΓGα(Mα) .
+(4.2)
+Note that δ(α) is well-deﬁned; the value is independent of the choice of Mα ∈M(Gα). It is deﬁned
+whenever M(Gα) ̸= /0. Recall that we have a ﬁxed Pfafﬁan orientation for G and a ﬁxed induced
+orientation for all Gα.
+We are ready to state the key theorem which implies the MGI.
+Theorem 4.3. Let 1 ≤i < j ≤k. Let b,c ∈{0,1} and denote b = 1 −b, c = 1 −c. For any strings
+u, ˜u ∈{0,1}i−1, v, ˜v ∈{0,1}j−i−1, and w, ˜w ∈{0,1}k, the following is true:
+δ(ubvcw)δ(ubvcw) = δ( ˜ub˜vc ˜w)δ( ˜ub˜vc ˜w)
+(4.3)
+when all four δ terms involved are deﬁned.
+Note that the only equality we claim here is the pairwise product being the same. The individual
+δ terms can vary; for example there are cases when the above equation resolves to (1)(−1) = (−1)(1)
+(see Figure 1). The theorem asserts that if ﬂipping two ﬁxed bits changes the “sign change” δ for some
+u,v,w, then it will change the sign change for all u,v,w of the same lengths whenever δ is deﬁned. It is
+an invariance of the change of sign change.
+Since each factor in (4.3) is ±1, this equation can also be equivalently expressed as the following
+quadruple product identity:
+δ(ubvcw)δ(ubvcw)δ( ˜ub˜vc ˜w)δ( ˜ub˜vc ˜w) = 1.
+(4.4)
+Theorem 4.3 implies the MGI
+Before proving Theorem 4.3 we show how it proves Theorem 2.1.
+If there are no non-zero terms in a particular MGI indexed by α,β ∈{0,1}k, then the MGI is trivial.
+There is a 1-1 correspondence between the non-zero terms in (2.6) and (2.8). Since (2.8) is an equality,
+if there are non-zero terms in (2.6), then there are at least two such terms. Consider all non-zero terms in
+(2.6), and let each non-zero term from the Pfafﬁan identity (2.8) be divided by its corresponding MGI
+term in (2.6). The ratio is of the form
+Pfα⊕ei Pfβ⊕ei
+Γα⊕eiΓβ⊕ei = δ(α ⊕ei)δ(β ⊕ei),
+(4.5)
+where i is a bit location where αi ̸= βi. Consider any two such terms and form the product of the two
+products of the pairs. This quadruple product has the form
+δ(α ⊕ei)δ(β ⊕ei)δ(α ⊕ej)δ(β ⊕ej)
+(4.6)
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+176
+
+MATCHGATES REVISITED
+1
+5
+2
+6
+3
+7
+4
+8
+Figure 1: This graph is an example of a nontrivial instance of equation (4.3). All edge weights are 1. Let
+the external nodes be 5,6,7,8. Observe that δ(0000) = 1,δ(1100) = −1,δ(0011) = −1,δ(1111) = 1.
+Thus, if we let b,c refer to the ﬁrst two external nodes, u,v both be the empty string, and w = 00 and
+˜w = 11, we get the situation where equation (4.3) becomes (1)(−1) = (−1)(1).
+for some 1 ≤i < j ≤k, which is the same as
+δ(α ⊕ei)δ(α ⊕e j)δ(β ⊕ej)δ(β ⊕ei).
+(4.7)
+Let αℓbe the ℓ-th bit in α (1 ≤ℓ≤k). Recall that αi = βi,αj = β j. Letting b = αi and c = αj, we see
+that we can use Theorem 4.3 to conclude that the product of the ﬁrst two terms equals the product of the
+other two terms in (4.7), and so the whole product must be 1. This implies that all Pfafﬁan identity terms
+differ from their corresponding MGI terms by the same global ±1 constant. Note that δ is not deﬁned
+exactly when that term in the MGI is 0 (and the corresponding Pfafﬁan Signature Identity term is also 0),
+so it is sufﬁcient to consider only those terms in the MGI where the relevant δ is deﬁned.
+Theorem 2.1 is proved assuming Theorem 4.3.
+Now we will prove Theorem 4.3. We ﬁrst prove for the case b = c = 0. The proof for the case
+b = 1,c = 0 is similar with only a few extra complications. The other cases follow by symmetry.
+Preprocessing
+In the following, and for the rest of the paper, all newly-introduced edges have weight
+1 unless otherwise speciﬁed. We assume that G is preprocessed in the following way: First we append
+a path of length 2 from each external node in G. For the i-th external node, we will connect it to a
+new node called ˆi, which is then connected to another new node called i. The new nodes 1,2,...,k are
+now considered external nodes, and are labeled as such within the graph. All other nodes, including all
+original nodes and all ˆ1, ˆ2,..., ˆk are non-external nodes. The node ˆi will be given the label 2k + 1 −i.
+Thus ˆ1, ˆ2,..., ˆk are ordered reversely 2k > 2k −1 > ... > k +1 respectively. All other nodes (the original
+nodes of G) are labeled arbitrarily starting from 2k +1. The modiﬁed graph will now be called G. Now
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+177
+
+JIN-YI CAI AND AARON GORENSTEIN
+10
+9
+8
+7
+6
+1
+2
+3
+4
+5
+Figure 2: An example of preprocessing.
+all external nodes are at the end of a path of length at least 2. It is easy to check that the signature Γ is not
+changed. As an example of the preprocessing for k = 5, consider Figure 2.
+Second, we make G a connected graph. If the graph is already connected then we do nothing. Suppose
+it is not connected and there are several connected components Gi. Consider a clockwise traversal of all
+the external nodes. We may consider the planar embedding is on the sphere with one ﬁxed point in the
+outer face designated as ∞. We temporarily connect each external node to ∞by non-intersecting paths.
+As we clockwise-traverse from one external node to the next, if they belong to different components Gi
+and Gj, we can connect one non-external node u from Gi to one non-external node v from G j by a path of
+length 2: u,e = {u,w},w,e′ = {w,v},v, together with one extra node w′ and an edge {w,w′}. This gadget
+can be made disjoint from all the temporary paths to ∞, and also disjoint from each other. In any perfect
+matching, w is matched to w′ and therefore this gadget has no effect on the signature. Then we remove the
+temporary paths to ∞. The reasons for this construction are to make the matchgate graph (1) connected,
+and (2) its outer face uniquely well-deﬁned for the given planar embedding, with a connected boundary.
+Lastly, we concern ourselves with the orientation −→
+G for G. The k external nodes are labeled clockwise
+1 through k exactly in that order. When we index G with a length-k bitstring α, the bits in α refer to the
+external nodes in G in this clockwise order. The neighbor ˆi of i is labeled 2k +1−i. Then we let −→
+G be
+any Pfafﬁan orientation of G. Note that the orientation of bridge edges (edges that are not part of any
+cycle) have no bearing on the orientation being a Pfafﬁan orientation, and therefore can be arbitrary. In
+particular, for each {i, ˆi} edge (being a bridge edge) we assume it is oriented in the order (i, ˆi): from low
+to high.
+With our graph so preprocessed, we are ready to prove our theorem. For every bit values b and c, and
+strings u,v,w, for brevity we will use Gbc to refer to the graph Gubvcw, suppressing u,v,w.
+Proof for the case b = 0,c = 0. We assume that δ(u0v0w) and δ(u1v1w) are both deﬁned (for the par-
+ticular u,v,w).
+Hence there exists a perfect matching in G00, call it M00. Similarly there exists a perfect matching
+in G11, call it M11. Let e∗= {i, j} be a new edge (recall that i < j are the external nodes referenced by
+b,c). This is an undirected edge placed in the outer face. Deﬁne the graph G∗= G00 ∪{e∗}, having
+the same set of vertices as G00 and one extra edge e∗. See Figure 3. This introduces a new non-outer
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+178
+
+MATCHGATES REVISITED
+10
+9
+8
+7
+6
+1
+3
+4
+e∗
+Figure 3: Adding e∗in the b = 0,c = 0 case. In this example i = 1, j = 4, and bvc = 0100.
+face, consisting of the segment from external nodes i to j (corresponding to bvc) followed by e∗. The
+segment has a path from i to j through all the external nodes ℓor its neighbor ˆℓreferenced in v because
+the boundary of the outer face is connected. Viewed from within the new non-outer face just formed by
+this path and e∗, the segment bvc is traversed in counter-clockwise direction.
+By adding e∗we have exactly one more face in G∗compared to G, as well as compared to G00 and
+G11. Let −→
+G∗=
+−→
+G00 ∪{−→
+e∗} with −→
+e∗oriented either as (i, j) or as (j,i), such that that new face has an
+odd number of clockwise oriented edges, as demanded by Kasteleyn’s algorithm to produce a Pfafﬁan
+orientation. We note that each existing bridge edge {ℓ, ˆℓ} corresponding to a bit 0 in v contributes exactly
+one extra clockwise oriented edge in the traversal around the boundary of the new face, since it is traversed
+in both directions exactly once. We deﬁne M∗= M11 ∪{e∗}. Note that M∗∈M(G∗) and we may also
+consider M00 ∈M(G∗).
+We shall use M∗as an intermediate step to understand how δ(u0v0w) and δ(u1v1w) are related. Our
+goal is to show that their product is a function entirely of i, j and −→
+G, and independent of u, v and w, thus
+proving our theorem.
+Claim: The signs of M∗and M00 are the same. Formally:
+Pf−→
+G00(M00)
+ΓG00(M00) =
+Pf−→
+G∗(M00)
+ΓG∗(M00) =
+Pf−→
+G∗(M∗)
+ΓG∗(M∗) .
+(4.8)
+The ﬁrst equality follows from the fact that adding the edge e∗to G00 does not change the Pfafﬁan term nor
+the perfect matching term, both corresponding to the perfect matching M00, since M00 does not contain
+the edge e∗. The second equality follows from the fact that all perfect matchings in a Pfafﬁan-oriented
+graph must have the same sign. terms in a Pfafﬁan-oriented graph must have the same sign.
+Now we compare M∗and M11. The perfect matching terms are the same, ΓG∗(M∗) = ΓG11(M11),
+since the additional edge e∗has weight 1. We write out their Pfafﬁan terms explicitly. For Pf−→
+G11(M11)
+we will write it in the canonical form where the listing of matched edges are given according to the
+stipulation after (2.3). Note that the nodes of G11 are linearly ordered by the induced order from that of
+G. For Pf−→
+G∗(M∗) we will write it by appending the extra matched pair {i, j} in the order i < j at the end.
+(4.9)
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+179
+
+JIN-YI CAI AND AARON GORENSTEIN
+Pf−→
+G11(M11) = επ1Ax1,x2Ax3,x4 ···Axn−1,xn
+(4.10)
+and
+Pf−→
+G∗(M∗) = επ2Ax1,x2Ax3,x4 ···Axn−1,xnAi,j
+(4.11)
+where x1 < x2,x3 < x4,...,xn−1 < xn, x1 < x3 < ... < xn−1. The value Ai,j = ±1, and it is +1 if −→
+e∗is
+oriented as (i, j) and it is −1 if it is oriented as (j,i), according to Kasteleyn’s algorithm. The sign of the
+permutation επ1 counts the parity of the overlapping pairs among {{x1,x2},{x3,x4},...,{xn−1,xn}}. The
+sign επ2 counts the parity of the overlapping pairs among {{x1,x2},{x3,x4},...,{xn−1,xn},{i, j}}. Thus
+επ2/επ1 = (−1)z, where z is the number of overlaps between {i, j} and the edges in M11.
+We account for these two sources of change in values separately.
+Consider επ2/επ1. To form an overlapping pair with {i, j}, a pair must be an edge with one label
+between i and j and one label outside. Vertices with a label between i and j correspond exactly to the
+external nodes within the segment v that are not removed. These external nodes must be matched within
+M11 to a node of a label greater than j. It follows that z is precisely the number of 0’s within v.
+Now consider Ai,j. It is −1 if e∗is oriented high-to-low in −→
+G∗, and 1 otherwise. Let f(−→
+G,i, j) be
+this value when the orientation of e∗is made to the graph G11...1⊕ei⊕ej—the graph obtained from G with
+all external nodes removed except i and j—according to Kasteleyn’s algorithm. Relative to this, if the
+orientation of e∗is made to the graph G∗, the orientation is changed according to the parity of the number
+of zeros in v, the removal pattern within the segment between i and j. More precisely, each 0 within v
+adds one more bridge edge of the form {ℓ, ˆℓ} where i < ℓ< j and changes the orientation of e∗exactly
+once. Hence the value Ai,j is precisely f(−→
+G,i, j)(−1)z, where, again z is the number of 0’s within v.
+Returning to our Pfafﬁan terms:
+Pf−→
+G11(M11) = επ1Ax1,x2Ax3,x4 ···Axn−1,xn
+(4.12)
+and
+Pf−→
+G∗(M∗) = επ2Ax1,x2Ax3,x4 ···Axn−1,xnAi,j
+(4.13)
+= επ1Ax1,x2Ax3,x4 ···Axn−1,xn f(−→
+G,i, j).
+(4.14)
+Note that the two factors (−1)z are canceled. So the sign difference between δ(u0v0w) and δ(u1v1w) is
+entirely a function of −→
+G and i, j, and not the constituent u,v,w.
+Proof for the case b = 1,c = 0. Following the idea of M00 and M11 from the previous proof, we deﬁne
+M01 and M10 in the graphs G01,G10 respectively. Recall that the neighbor of i is ˆi, and the neighbor of j
+is ˆj, {i, ˆi} ∈M01 and { j, ˆj} ∈M10, and that they are specially labeled such that i < j < ˆj < ˆi. We deﬁne
+a new edge e∗= { j, ˆi}, and G∗= G10 ∪{e∗}. See Figure 4. The edge e∗is drawn on the outer face of
+G10 so that G∗is a plane graph with one more non-outer face. We orient G∗to −→
+G∗, namely to orient the
+edge e∗appropriately as before by Kasteleyn’s algorithm. Let M∗= (M01 −{i, ˆi})∪{e∗}.
+We claim, using the same reasoning from the previous proof, that M∗and M10 have the same sign.
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+180
+
+MATCHGATES REVISITED
+10
+9
+8
+7
+6
+3
+4
+e∗
+Figure 4: Adding e∗in the b = 1,c = 0 case. In this example ˆi = 10, j = 4, and bvc = 1100.
+Pf−→
+G10(M10)
+ΓG10(M10) =
+Pf−→
+G∗(M10)
+ΓG∗(M10) =
+Pf−→
+G∗(M∗)
+ΓG∗(M∗) .
+(4.15)
+The ﬁrst equality is because M10 does not contain the edge e∗which was added to G10 to obtain G∗. The
+second equality is because M10 and M∗are both perfect matchings in a Pfafﬁan oriented graph −→
+G∗.
+Now we only need to compare M∗and M01. The perfect matching terms are the same, ΓG∗(M∗) =
+ΓG01(M01), since both edges e∗and {i, ˆi} have weight 1. We shall use the same approach as before to
+analyze the Pfafﬁan terms. Once again we write their Pfafﬁan terms explicitly:
+Pf−→
+G01(M01) = επ1Ax1,x2Ax3,x4 ···Axn−1,xnAi,ˆi
+(4.16)
+and
+Pf−→
+G∗(M∗) = επ2Ax1,x2Ax3,x4 ···Axn−1,xnA j,ˆi
+(4.17)
+where the labels of the matching edges satisfy x1 < x2,x3 < x4,...,xn−1 < xn, x1 < x3 < ... < xn−1,
+and επ1 and επ2 count the parity of the number of overlapping pairs among the matching edges in M01
+and M∗respectively. To compute επ2/επ1, we only need to account for the parities of the number of
+overlapping pairs between {i, ˆi} and the other matching edges in M01, and between { j, ˆi} and the other
+matching edges in M∗. As a necessary condition, any such an overlapping edge must have at least one
+end point strictly less than ˆi. Let us account for all edges {x,y} with the minimum label min{x,y} < ˆi.
+Those with min{x,y} < i are not overlapping edges since each has a unique neighbor with label greater
+than ˆi. The unique edge with min{x,y} = i is {i, ˆi} in G01, which is not present in G∗. The edges with
+i < min{x,y} < j are of the form {ℓ, ˆℓ}. They are in 1-1 correspondence with the 0’s in v, and do
+contribute an overlapping pair in M∗but not in M01. The node j is not present in G01, and the edge
+e∗= { j, ˆi} has min{x,y} = j, and is in M∗. All edges with j < min{x,y} < ˆi either do not contribute to
+an overlap in both M01 and M∗(when j < min{x,y} ≤k), or do contribute to an overlap in both M01 and
+M∗(when k < min{x,y} < ˆi). The conclusion is that επ2/επ1 = (−1)z, where z is the number of 0’s in v.
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+181
+
+JIN-YI CAI AND AARON GORENSTEIN
+Now consider Ai,ˆi and A j,ˆi. Because we oriented the bridge edge {i, ˆi} from low to high, we know that
+Ai,ˆi is 1. We now need only consider A j,ˆi. By the same reasoning as in the previous proof we conclude
+A j,ˆi = f(−→
+G,i, j)(−1)z ,
+(4.18)
+where f(−→
+G,i, j) is the ±1 value for A j,ˆi when we introduce the edge { j, ˆi} to the graph obtained from G
+with all external nodes removed except j, according to Kasteleyn’s algorithm.
+Our conclusion is the same:
+Pf−→
+G01(M01) = επ1Ax1,x2Ax3,x4 ···Axn−1,xnAi,ˆi
+(4.19)
+= επ1Ax1,x2Ax3,x4 ···Axn−1,xn
+(4.20)
+and
+Pf−→
+G∗(M∗) = επ2Ax1,x2Ax3,x4 ···Axn−1,xnA j,ˆi
+(4.21)
+= επ1Ax1,x2Ax3,x4 ···Axn−1,xn f(−→
+G,i, j),
+(4.22)
+again with the two factors (−1)z canceled. The second line follows from the fact that Ai,ˆi = 1. Again we
+conclude that the difference in sign between ubvcw and ubvcw is entirely a function of −→
+G and i, j, and
+not of u,v,w.
+With this, the proof of Theorem 2.1 is complete, namely (planar) matchgate signatures satisfy the
+Matchgate Identities.
+5
+MGI imply matchgate-realizable
+Any signature of a matchgate must satisfy the Matchgate Identities. In this section, we show that any
+Γ ∈(F2)⊗k = F2k satisfying the Matchgate Identities can be realized as the signature of a matchgate with
+k external nodes. Thus MGI are not only necessary but also sufﬁcient conditions for matchgate signatures.
+Consider a length 2k vector Γ indexed by {0,1}k satisfying MGI. If it is the all-zeros vector then it is
+trivially realizable. So assume there is at least one non-zero value.
+Preprocessing
+Assume Γβ ̸= 0, for some β ∈{0,1}k. Deﬁne Γ′α = Γα⊕β/Γβ, where β = β ⊕11...1.
+Thus, Γ′11...1 = 1, and Γ′ also satisﬁes the MGI. In this section we will create a matchgate G′ with
+signature Γ′. Given such a G′, we can create a matchgate G with signature Γ as follows: First we add two
+new non-external nodes u,v to G′ and an edge {u,v} of weight Γβ. Those two nodes are not connected to
+any other nodes—in effect they contribute exactly a factor Γβ to each perfect matching term. Then, if the
+i-th bit of β is one, we add a new edge {vi,v′
+i} of weight one to the i-th external node vi, and making v′
+i
+the new i-th external node. It follows that the signature of G is exactly Γ.
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+182
+
+MATCHGATES REVISITED
+Figure 5: The embedding for K5.
+Construction
+We now show that we can realize Γ satisfying MGI and Γ11...1 = 1. Let Kk denote the
+complete graph on k vertices. The labels of Kk are ordered 1 < 2 < ... < k, and correspond to the bit
+positions in the index for Γ. We place the nodes of Kk on a convex curve, as illustrated in Figure 5. The
+nodes are arranged in clockwise order by their index, and two edges cross each other geometrically in the
+drawing of the graph iff their labels form an overlapping pair as deﬁned before algebraically. (We assume
+the k nodes are placed in general position, so that any pair of crossing edges intersect at a unique point.
+There are exactly
+k
+4
+
+such intersection points.) For each α of Hamming weight k −2, note that Kα
+k has
+exactly one edge left. For each such α, set the weight of the unique edge in Kα
+k to be Γα. This deﬁnes a
+weight for every edge of Kk.
+Equality with Pfafﬁan
+We ﬁrst prove the following equality: Let Pf(Kα
+k ) be the Pfafﬁan value of the
+skew-symmetric matrix representing Kα
+k where the nodes of Kα
+k have the induced order from 1 < 2 <
+... < k. Then for all α ∈{0,1}k:
+Pf(Kα
+k ) = Γα .
+(5.1)
+It follows that the
+k
+2
+
+edge weights of Kk determine the 2k values of any Γ satisfying MGI.
+Equation (5.1) holds for any α of Hamming weight k −ℓ, for any odd ℓ. The left-hand side would be
+a Pfafﬁan of a matrix with an odd number of rows and columns, hence 0, and the right-hand side would
+be 0 by the Parity Condition, Theorem 2.2. Now we consider the case when ℓis even.
+Clearly (5.1) holds for any α of Hamming weight equal to k −2. By assumption Γ satisﬁes the
+Matchgate Identities (2.6). Inductively, consider α with Hamming weight k −ℓfor some even ℓ> 2. Let
+{p1,..., pℓ} be the set of indices listed in increasing order p1 < ... < pℓ, where α has the bit 0. These
+are the bit positions where α differs from 1k. Consider the MGI on α ⊕ep1 and 1k ⊕ep1:
+ΓαΓ11...1 =
+ℓ
+∑
+i=2
+(−1)iΓα⊕ep1⊕epiΓ1k⊕ep1⊕epi .
+(5.2)
+As Γ11...1 = 1, we see that Γα is deﬁned by higher Hamming weight terms.
+Thus all lower Hamming weight terms of Γ are determined by those of weight k −2. However we
+observe that, by Theorem 3.2, the Pfafﬁan values also satisfy exactly the same identities as MGI. By
+induction, it follows that Pf(Kα
+k ) = Γα for all α.
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+183
+
+JIN-YI CAI AND AARON GORENSTEIN
+1
+2
+4
+3
+−1
+Figure 6: The crossover gadget. The external nodes are those labeled, and all edge weights are 1, except
+the edge labeled −1.
+Planarizing Kk
+We want to show next that there exists a planar matchgate G with signature ΓG = Γ.
+We construct such a G from Kk. Consider the convex embedding of Kk. For k ≥4 it has some edge
+crossings, as shown in Figure 5. The planar graph G is created by replacing each edge crossing with
+a crossover gadget from Figure 6. The crossover gadget is itself a matchgate X with the following
+signature:
+X0000 = 1,
+(5.3)
+X0101 = 1,
+(5.4)
+X1010 = 1,
+(5.5)
+X1111 = −1,
+(5.6)
+and for all other β ∈{0,1}4, Xβ = 0. We note that even though geometrically this gadget is only
+symmetric under a rotation of π (but not π/2), its signature is invariant under a cyclic permutation, and
+thus functionally it is symmetric under a rotation of π/2. Now we replace every crossing of a pair of
+edges in the embedded Kk by a copy of X. For example, this replacement by the crossover gadget changes
+Figure 5 to Figure 7. If an edge {i, j} in Kk crosses some other edges (this happens for every non-adjacent
+i and j in the cyclic sense), then this replacement breaks the edge {i, j} into several parts. If {i, j} crosses
+t ≥0 other edges, then it is replaced by t +1 edges (outside of crossover gadgets)—we will call them the
+i-j-passage—in addition to t copies of the crossover gadget. Of course one copy of the crossover gadget
+is used for both edges of a pair of crossing edges in this replacement. Deﬁne I to be the set of all edges in
+G that are not part of a crossover gadget. Then each edge {i, j} in Kk deﬁnes a unique subset of edges in
+I, which is the i- j-passage. It is clear that I is a disjoint union of these i-j-passages, over all
+k
+2
+
+pairs
+1 ≤i < j ≤k. Finally we choose one edge in each i- j-passage to have the weight Γ[k]−{i,j}, namely the
+edge weight of {i, j} in Kk. To be speciﬁc, we will choose this edge to be the one adjacent to i, the lower
+indexed external node of {i, j}. All other edges of I are assigned weight one. See Figure 8. This deﬁnes
+our planar matchgate G with external nodes 1 < 2 < ... < k.
+We claim that ΓG = Γ.
+Fix any α ∈{0,1}k. For any S ⊆I, deﬁne MS(Gα) to be the subset of all perfect matchings
+M′ ∈M(Gα) such that M′ ∩I = S. Every perfect matching M ∈M(Kα
+k ) deﬁnes a collection of i- j-
+passages, for all {i, j} ∈M. Let S(M) be the union of these i- j-passages. Clearly the perfect matching
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+184
+
+MATCHGATES REVISITED
+5
+4
+3
+2
+1
+Figure 7: The graph from Figure 5 with the crossovers replaced by crossover gadgets from Figure 6.
+5
+4
+3
+2
+1
+w(1, 5)
+w(2, 3)
+w(3, 4)
+w(1, 2)
+w(4, 5)
+w(1, 4)
+w(1, 3)
+w(2, 5)
+w(2, 4)
+w(3, 5)
+Figure 8: The “planarized” K5 with edge weights. The unlabeled edges have weight 1. For notational
+simplicity, in the ﬁgure we use the notation w(i, j) for w({i, j}).
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+185
+
+JIN-YI CAI AND AARON GORENSTEIN
+5
+3
+2
+1
+Figure 9: The thick edges comprise S(M) for G00010, where M = {{1,3},{2,5}}.
+M ∈M(Kα
+k ) can be recovered from S(M), and is unique for the given S(M). There is a 1-1 correspondence
+between M and S(M). As an example, we consider M = {{1,3},{2,5}} ∈M(K00010
+5
+). The set S(M) for
+G00010 is indicated in Figure 9.
+We will show that, for the purpose of computing the signature entry Γα
+G, we only need to consider
+those perfect matchings M′ ∈M(Gα) that satisfy the following property:
+Property: There exists an M ∈M(Kα
+k ), such that
+M′ ∩I = S(M).
+(5.7)
+This is a consequence of properties of the crossover gadget. If i is an external node in Gα, then any
+M′ ∈M(Gα) must contain a unique edge e′ adjacent to i. There is a unique j, which is another external
+node in G, such that e′ belongs to the i- j-passage. Then by the properties of the crossover gadgets along
+this i- j-passage, we may assume M′ contains all edges of this i- j-passage, saturating j. In particular j
+belongs to Gα. All other M′ collectively contribute 0, since the evaluation of the crossover gadget X will
+be 0. More generally, in the computation of Γα
+G = ∑M′∈M(Gα) ∏e′∈M′ w(e′), we classify all M′ ∈M(Gα)
+according to M′ ∩I. If S ̸= S(M) for any M ∈M(Kα
+k ), then
+∑
+M′∈M(Gα): M′∩I=S ∏
+e′∈M′
+w(e′) = 0.
+(5.8)
+In fact, for any M′ ∈M(Gα) such that M′ ∩I = S which is not S(M) for any M ∈M(Kα
+k ), it must be the
+case that at some crossover gadget X, S induces an external removal pattern β ̸∈{0000,0101,1010,1111}.
+Then Xβ = 0, and (5.8) follows.
+Thus we restrict to those perfect matchings M′ ∈M(Gα) that satisfy the property (5.7). For any
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+186
+
+MATCHGATES REVISITED
+M ∈M(Kα
+k ), it is clear that
+∑
+M′∈MS(M)(Gα) ∏
+e′∈M′
+w(e′) = (−1)c(M) ∏
+e∈M
+w(e),
+(5.9)
+where c(M) counts the number of copies of X where the external removal pattern is β = 1111. Thus
+c(M) is exactly the number of overlapping pairs in M. It follows that
+Γα
+G
+=
+∑
+M′∈M(Gα) ∏
+e′∈M′
+w(e′)
+(5.10)
+= ∑
+S⊆I
+∑
+M′∈MS(Gα) ∏
+e′∈M′
+w(e′)
+(5.11)
+=
+∑
+M∈M(Kα
+k )
+∑
+M′∈MS(M)(Gα) ∏
+e′∈M′
+w(e′)
+(5.12)
+=
+Pf(Kα
+k ).
+(5.13)
+The last equality is because each Pfafﬁan term in Pf(Kα
+k ) has exactly the same sign as in (5.9). Hence
+ΓG = Γ follows from this and (5.1).
+Theorem 5.1. Let F be any ﬁeld. Any Γ ∈(F2)⊗k satisfying the Matchgate Identities is the signature
+of a matchgate with k external nodes. The matchgate has O(k4) nodes. If Γ11...1 = 1, achievable by a
+normalization for every nonzero Γ, there exists a skew-symmetric matrix M ∈Fk×k such that Γα = Pf(Mα),
+where Mα is the matrix obtained from M by deleting all rows and columns belonging to the subset denoted
+by α.
+6
+Character
+In [24] Valiant showed that a fragment of quantum computation could be simulated in polynomial time
+through the character of general (not-necessarily-planar) matchgates. The notion of a general matchgate
+and its character ultimately inspired planar matchgates and their signatures. The character is directly
+based on the notion of the Pfafﬁan, and what counting problems are expressible in that form.
+Historically, the proof that the MGI characterize planar matchgate signatures went through character
+theory. In the new proof presented in this paper we bypassed the need for character and general
+matchgates. In this section we discuss character to show that the character of a general matchgate is
+essentially equivalent to the signature of a planar matchgate. While prior work expressed this equivalence
+in principle, the explicit statement in Theorem 6.1 is new.
+6.1
+Deﬁnitions
+The Pfafﬁan of an undirected graph
+For an undirected, labeled, weighted graph G = (V,E,W) there
+is a skew-symmetric matrix MG. For i < j, we deﬁne (MG)i,j = w({i, j}), the weight of the edge {i, j} ∈E.
+If that edge does not exist, we say the weight is 0. For i > j, we deﬁne (MG)i,j = −w({i, j}). We deﬁne
+Pf(G) = Pf(MG).
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+187
+
+JIN-YI CAI AND AARON GORENSTEIN
+General matchgate
+A general matchgate G = (V,E,W) is an undirected, labeled, weighted graph with
+three designated subsets of V. The set X ⊆V is the set of input nodes, the set Y ⊆V is the set of output
+nodes, and the set T ⊆V is the set of omittable nodes. These three subsets are disjoint. The nodes in X ∪Y
+are called external nodes. They also deﬁne a (possibly nonempty) fourth subset U = V −(X ∪Y ∪T).
+The ordered labeling of the nodes of G obey some rules: ∀i ∈X, ∀j ∈T : i < j, and ∀j ∈T, ∀ℓ∈Y :
+j < ℓ. In other words, ordered from low-to-high, the input nodes X come ﬁrst, then the omittable nodes
+T, and ﬁnally the output nodes Y. The remaining nodes can be interspersed throughout the ordering.
+The omittable nodes
+For G with a set of omittable nodes T, we deﬁne the “Pfafﬁan Sum,” PfS, as
+follows:
+PfS(G) = ∑
+W⊆T
+Pf(G−W)
+(6.1)
+where the sum is over all subsets W of T, and G−W is the graph obtained from G with all nodes in W
+and their incident edges removed.
+We can express this solely in terms of Pfafﬁans as well. Let I be the index set of MG. Deﬁne λi = 1 if
+i is an index corresponding to an omittable node, and λi = 0 otherwise. Then,
+PfS(G) = ∑
+A⊆I
+
+∏
+i∈A
+λi
+
+Pf(MG[A])
+(6.2)
+where the sum is over all subsets A of I, and MG[A] is the matrix obtained from MG with the rows and
+columns indexed by A removed. It was shown in [24] that, for a size-n graph:
+PfS(G) =
+(
+Pf(MG +Λ(n))
+if n even,
+Pf(M+
+G +Λ(n+1))
+if n odd,
+(6.3)
+where Λ(n) is a simple matrix constructed from the λi values and M+
+G is MG with an additional ﬁnal
+row, column of all zeros. Thus the Pfafﬁan Sum PfS(G) is also computable in polynomial time. This
+“omittable node” feature seems to be quite different from what has been presented for planar matchgate
+signatures. However, we shall see that it ultimately does not add more power.
+The character of a matchgate
+Consider any Z ⊆X ∪Y, a subset of the external nodes of G. A general
+matchgate is ultimately part of a larger matchcircuit, and the external nodes in G are connected to external
+edges. The following is from [24], “[w]e consider there to exist one external edge from each node in
+X ∩Z and from each node in Y ∩Z. The other endpoint of each of the former is some node of lower index
+than any in V and of each of the latter is some node of index higher than any in V.”
+The character of a matchgate G is deﬁned as
+χ(G,Z) = µ(G,Z)PfS(G−Z).
+(6.4)
+The term µ(G,Z) is called the modiﬁer value. It is one of ±1, and corresponds to the parity of the
+overlapping pairs between matching edges in E and external edges. Recall that the number of overlapping
+pairs is computed as a function of node labels. Due to the rules of index ordering, this value is determined
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+188
+
+MATCHGATES REVISITED
+by (G,Z), and is independent of the particular matching in PfS(G−Z). Thus µ(G,Z) is well-deﬁned for
+any (G,Z).
+We also deﬁne the naked character ˇχ of a matchgate, without the modiﬁer.
+ˇχ(G,Z) = PfS(G−Z).
+(6.5)
+For brevity and consistency, we write χα
+G = χ(G,Z), where α is the characteristic bitstring of Z. The
+naked character will be referred to as ˇχα
+G. Where G is clear we may omit it.
+Matchcircuits
+These matchgates, not necessarily planar, were designed to show that the evaluation of
+some quantum circuits could be done in polynomial time. Matchgates can be combined into matchcircuits
+in speciﬁc ways. The composition is helped by the modiﬁers; in fact their sole purpose is to make this
+composition nicely expressible as a Pfafﬁan. We will not go into this detail; please see [24]. From another
+perspective, a matchcircuit is simply a larger matchgate with a modiﬁer value set to a constant 1, as
+there are no more edges external to the entire matchcircuit. The naked character of a matchcircuit is its
+character.
+6.2
+Equivalence of naked characters and signatures
+We will prove the following theorem:
+Theorem 6.1. For a general matchgate G with k external nodes, there exist two planar matchgates G1
+and G2 such that for all α ∈{0,1}k,
+ˇχα
+G = Γα
+G1 +Γα
+G2 .
+(6.6)
+Proof. G may not be a planar graph. We draw it by placing its nodes on a semi-circle arc. The nodes
+appear in a clockwise ordering, ordered exactly by their labels in the graph. The edges are drawn as
+chords inside the semi-circle arc. If we place the nodes in general position, then any pair of intersecting
+chords intersect at a unique point. Observe that two edges (u,v),(x,y), where u < v and x < y, cross in
+the drawing exactly when u < x < v < y or x < u < y < v, i. e., exactly when they form an overlapping
+pair. This arrangement is very similar to the planar matchgate construction in Section 5.
+We start by replacing every crossing of chords by the planar crossover gadget from Figure 6. For
+the purpose of this proof, we may consider G as a subgraph of some Kn. After each crossing has been
+replaced by the crossover gadget we have a planar matchgate G′. We consider X ∪T ∪Y as its external
+nodes. Let Γ′ be its signature. Let α ∈{0,1}|X∪T∪Y| indicate a bit removal pattern, and let β and γ be its
+restrictions to X ∪Y and T respectively. The same proof in Section 5 shows that
+Γ′α = Pf(Gβ −Wγ),
+(6.7)
+where Wγ is the subset of T indicated by γ.
+Fix any β ∈{0,1}|X∪Y|, such that Gβ has an even number of nodes. Then we only need to consider
+γ ∈{0,1}|T| of even Hamming weight in the sum (6.7). Similarly, if Gβ has an odd number of nodes,
+then we only need to consider γ of odd Hamming weight in (6.7).
+The following idea is from [26, p. 1952]. There exists a planar matchgate H with t = |T| external
+nodes such that for any γ ∈{0,1}|T| of even Hamming weight, Hγ = 1, and for any bitstring γ of odd
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+189
+
+JIN-YI CAI AND AARON GORENSTEIN
+Hamming weight, Hγ = 0 (see Section 7). Clearly H has an even number of nodes, since H00...0 = 1.
+We deﬁne the planar matchgate G′
+1 by attaching H to the set T of G′ on the side of the semi-circle arc
+opposite to all the intersecting chords in the embedding of G. Each node in T is connected to a distinct
+external node of H by an edge of weight 1. We note that composing G′ with H in this fashion does not
+introduce any more edge crossings, and all external nodes X ∪Y still remain on the outer face.
+For all β where G′β
+1 has an even number of nodes, which happens exactly when Gβ has an even
+number of nodes, the following hold:
+Γβ
+G′
+1 = ∑
+Weven
+Γβ
+G′−Weven = ∑
+even γ
+Γα(β,γ)
+G′
+= ∑
+even γ
+Pf(Gβ −Wγ) = ˇχβ
+G ,
+(6.8)
+where the sum over Weven is for all even-sized subsets of T, and α(β,γ) is the bit string in {0,1}|X∪T∪Y|
+formed by concatenating β and γ, in the proper order. If G′β
+1 has an odd number of nodes, then Γβ
+G′
+1 = 0.
+There also exists a planar matchgate H′ of arity t = |T| such that for any β of odd Hamming weight,
+H′β = 1, and for any bitstring β of even Hamming weight, H′β = 0 (see Section 7). Use H′ instead of H
+we can deﬁne a planar matchgate G′
+2, which will have the signature values equal to the naked character
+values of G for all β for which Gβ has an odd number of nodes. If G′β
+2 has an even number of nodes,
+then Γβ
+G′
+2 = 0.
+This completes the proof.
+Note that a matchcircuit is itself a large general matchgate with only a naked character. Thus, its
+character is also expressible as the sum of two signatures of planar matchgates.
+7
+Symmetric signatures
+We return to planar matchgate signatures. We say a signature is even if it is the signature of an even
+matchgate, i. e., a matchgate with an even number of nodes. An even signature has nonzero values only
+for indices of even Hamming weight. We deﬁne an odd signature similarly. A signature Γ of a matchgate
+is symmetric if, for all α,β of equal Hamming weight, Γα = Γβ. In other words, the value of a signature
+entry is only a function of how many 1’s are in its index, not their particular pattern. These signatures are
+important because they have a clear combinatorial meaning. We write a symmetric arity-k signature in
+the following form [z0,z1,...,zk], where zi is the value of the signature for an index of Hamming weight i.
+The symmetric signatures that obey the MGI have a very concise description, which we prove next.
+Theorem 7.1. If [z0,...,zk] is an even symmetric matchgate signature, then zi = 0 for all odd i, and there
+exist r1 and r2 not both zero such that for all even i ≥2:
+r1zi−2 = r2zi .
+(7.1)
+Conversely, every sequence of values satisfying these conditions is an even symmetric matchgate signature.
+The statement for odd symmetric signatures is analogous.
+Stated equivalently, a sequence is a symmetric matchgate signature iff it takes the following form:
+Alternate entries of [z0,...,zk] are zero and the entries at the other alternate positions form a geometric
+progression.
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+190
+
+MATCHGATES REVISITED
+Proof. By the Parity Condition, all odd parity entries of the signature of an even matchgate are zero.
+Consider any even i and j, where 0 ≤i < j ≤k. We invoke the MGI for α = 1i10k−i,β = 1i01 j−i−10k−j.
+We use the exponentiation notation here to denote repetition. The string α has an odd Hamming weight
+i+1 and β has an odd Hamming weight j−1. Note that i and j being both even implies that j−i−1 ≥1.
+Using the fact that Γ is symmetric, the MGI under α,β can be simpliﬁed (where the set P deﬁned in
+Theorem 2.1 is {i+1,..., j}, having cardinality ℓ= j −i):
+ℓ
+∑
+k=1
+(−1)kΓα⊕epkΓβ⊕epk = −zizj +
+ℓ
+∑
+k=2
+(−1)kzi+2zj−2 = 0.
+(7.2)
+Rearranging the second equality, we get:
+zizj =
+ℓ
+∑
+k=2
+(−1)kzi+2zj−2 .
+(7.3)
+There are an odd number ( j −i−1 ≥1) of terms in the sum, and the terms alternate their signs and begin
+with a +, so we conclude that
+zizj = zi+2zj−2 .
+(7.4)
+In particular, if i is even and 0 ≤i ≤k −4, then
+zizi+4 = z2
+i+2 .
+(7.5)
+If zi+2 ̸= 0, then both zi ̸= 0 and zi+4 ̸= 0. This means that if any even indexed entry that is not the ﬁrst
+or the last even indexed entry (call it a non-extremal entry) is nonzero, then all even indexed entries are
+nonzero. In this case, the geometric progression is established, with common ratio zi+2/zi = zi+4/zi+2,
+for even 0 ≤i ≤k −4.
+Suppose all non-extremal even indexed entries are zero. If k ≤3 then the theorem is self-evident.
+Suppose k ≥4. Let k∗≤k be the maximum even index. Then k∗≥4 and we have
+z0zk∗= z2zk∗−2 .
+(7.6)
+Note that k∗−2 ≥2 and therefore it is non-extremal. It follows that z0zk∗= 0 and therefore at most
+one extremal even indexed entry can be nonzero. It is also easy to verify that a sequence satisfying the
+conditions of this theorem also satisﬁes MGI, and hence is a matchgate signature. (See Section 7.1 for a
+direct construction.) This completes the proof for even signatures. The proof for odd signatures is similar.
+The theorem follows.
+Explicitly, there are just four cases for symmetric signatures:
+1. [akb0,0,ak−1b,0,ak−2b2,0,...,a0bk] (arity 2k +1);
+2. [akb0,0,ak−1b,0,ak−2b2,0,...,a0bk,0] (arity 2k +2);
+3. [0,akb0,0,ak−1b,0,ak−2b2,0,...,a0bk] (arity 2k +2);
+4. [0,akb0,0,ak−1b,0,ak−2b2,0,...,a0bk,0] (arity 2k +3).
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+191
+
+JIN-YI CAI AND AARON GORENSTEIN
+1
+3
+4
+6
+2
+5
+y
+y
+y
+y
+y
+y
+x
+x
+x
+x
+x
+x
+x
+x
+x
+x
+x
+x
+Figure 10: A matchgate for an even, symmetric, arity-6 signature.
+7.1
+Matchgates for symmetric signatures
+We have already demonstrated how to build a planar matchgate realizing any MGI-satisfying signature,
+through a planarizing procedure. Up until now the only known construction of a matchgate realizing an
+arbitrary symmetric signature is through this general procedure. This is unsatisfactory, since they ought
+to have more symmetry. However it is difﬁcult to imagine a geometric construction that is planar and
+symmetric for all pairs of external nodes 1 ≤i < j ≤k, if k ≥4. Now we will present a simple and direct
+construction for symmetric signatures, when the underlying ﬁeld F is the complex numbers C (or any
+algebraically closed ﬁeld). The constructed matchgates are not geometrically symmetric for all pairs of
+external nodes, but functionally they are, in terms of the signatures.
+We present two closely related matchgate constructions, one for even symmetric signatures, and the
+other for odd, which is a simple modiﬁcation of the even signature case. Our constructions for both these
+cases work regardless if the signature has odd or even arity.
+In Figure 10 we have an example of a planar matchgate for an even, arity-6 signature. Its design can
+be described as a cycle of triangles which share vertices (each triangle has two weight x edges, and a
+weight y base). For odd signatures, the construction is changed very slightly, as shown in Figure 11. The
+only modiﬁcation is to delete one external node in a matchgate for an even symmetric signature of arity
+one higher.
+More speciﬁcally, to construct in general an even matchgate G of arity k, we ﬁrst take k triangles with
+vertices {ai,bi,ci} (1 ≤i ≤k). The edges {ai,bi} and {ai,ci} have weight x, and {bi,ci} has weight y.
+We link them in a cycle, identifying ci with bi+1, where the index is counted modulo k. The matchgate G
+has k external nodes {a1,...,ak}, and a total of 2k nodes.
+Consider any α ∈{0,1}k of even Hamming weight. αi = 0 iff ai remains in Gα. If α = 1k, then Gα
+is a cycle of length k. If k is odd, of course Gα has no perfect matchings. If k is even, there are exactly
+two perfect matchings, each having weight yk/2.
+Now assume α ̸= 1k. Then α cyclically alternates between consecutive 0’s (called a 0-run) and
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+192
+
+MATCHGATES REVISITED
+1
+3
+4
+2
+5
+y
+y
+y
+y
+y
+y
+x
+x
+x
+x
+x
+x
+x
+x
+x
+x
+Figure 11: A matchgate for an odd, symmetric, arity-5 signature.
+consecutive 1’s (called a 1-run). Each ai that remains in Gα must be matched to either bi (we call it
+left-match) or ci = bi+1 (we call it right-match), both with weight x. Consider any 0-run. It is clear that
+either all ai within this 0-run left-match or all right-match. Next consider a 1-run of m 1’s; it is between
+two 0-runs. If m is even, then the path of m edges all with weight y forces the two neighboring 0-runs to
+take either both left-match or both right-match. Moreover, both possibilities are realizable, and in each
+case the 1-run contributes a weight ym/2. If m is odd, then the path of m edges forces the two neighboring
+0-runs to take opposite types of left-match and right-match. Again both possibilities are realizable; in
+one case the 1-run contributes a weight y(m−1)/2, and in another case it contributes a weight y(m+1)/2.
+Furthermore, for two 1-runs 1m and 1m′ both of odd length and are consecutive in the sense that the
+only 1-runs in between are of even length, they contribute a combined weight y(m+m′)/2. Since α has an
+even Hamming weight |α|, there is an even number of 1-runs of odd length. Hence together the 1-runs
+contribute a weight y|α|/2. There are exactly two perfect matchings in Gα, each uniquely determined
+by the left-match or right-match choice of any particular ai in Gα. It follows that the signature value
+is Γα = 2xk−|α|y|α|/2. Clearly by choosing x and y suitably, we can realize an arbitrary even symmetric
+signature.
+The construction for odd symmetric signatures is to remove one external node in the matchgate for an
+even symmetric signature of arity one higher. By the general form of odd symmetric signatures, being a
+sub-signature [z1,...,zn] of an even symmetric signature [z0,z1,...,zn], the proof is complete.
+8
+Conclusion
+Substantial work has been built on top of MGI in the signature theory of matchgates [7, 6, 17, 5, 16, 15,
+8, 18, 9, 13]. In particular, a number of complexity dichotomy theorems have been proved that use this
+understanding of what matchgates can and cannot compute. A general theme of these theorems asserts
+that a wide class of locally constrained counting problems can be classiﬁed into three types: (1) Those
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+193
+
+JIN-YI CAI AND AARON GORENSTEIN
+that are computable in polynomial time for general graphs; (2) Those that are #P-hard for general graphs
+but computable in polynomial time over planar graphs; and (3) Those that remain #P-hard for planar
+graphs. Moreover type (2) occurs precisely for problems which can be described by signatures that are
+realizable by planar matchgates after a holographic transformation. This theme is generally proved for
+symmetric signatures [15, 9, 13]. For not-necessarily-symmetric signatures, these are only proved in
+special cases [4]. This paper provides a ﬁrm foundation for this theory and for future explorations.
+Acknowledgements
+We would like to thank the referees and the editor for many constructive com-
+ments.
+References
+[1] JIN-YI CAI AND VINAY CHOUDHARY: Some results on matchgates and holographic algorithms.
+Int. J. Software and Informatics, 1(1):3–36, 2007. See at IJSI. Preliminary version in ICALP’06.
+See also at ECCC. 168, 173
+[2] JIN-YI CAI, VINAY CHOUDHARY, AND PINYAN LU: On the theory of matchgate computations.
+Theory Comput. Syst., 45(1):108–132, 2009. Preliminary version in CCC’07. See also at ECCC.
+[doi:10.1007/s00224-007-9092-8] 168, 173
+[3] JIN-YI CAI, HENG GUO, AND TYSON WILLIAMS: A complete dichotomy rises from the capture
+of vanishing signatures: extended abstract. In Proc. 45th STOC, pp. 635–644. ACM Press, 2013.
+See also at arXiv. [doi:10.1145/2488608.2488687]
+[4] JIN-YI CAI, MICHAEL R. KOWALCZYK, AND TYSON WILLIAMS: Gadgets and anti-gadgets
+leading to a complexity dichotomy. In Proc. 3rd Symp. Innovations in Theoretical Computer Science
+(ITCS’12), pp. 452–467. ACM Press, 2012. See also at arXiv. [doi:10.1145/2090236.2090272] 194
+[5] JIN-YI CAI AND PINYAN LU: Holographic algorithms: The power of dimensionality resolved.
+Theoret. Comput. Sci., 410(18):1618–1628, 2009. Preliminary version in ICALP’07. See also at
+ECCC. [doi:10.1016/j.tcs.2008.12.047] 193
+[6] JIN-YI CAI AND PINYAN LU: On blockwise symmetric signatures for matchgates. Theoret.
+Comput. Sci., 411(4-5):739–750, 2010.
+Preliminary version in FCT’07. See also at ECCC.
+[doi:10.1016/j.tcs.2009.10.012] 193
+[7] JIN-YI CAI AND PINYAN LU:
+Holographic algorithms:
+From art to science.
+J. Com-
+put. System Sci., 77(1):41–61, 2011.
+Preliminary version in STOC’07. See also at ECCC.
+[doi:10.1016/j.jcss.2010.06.005] 168, 193
+[8] JIN-YI CAI AND PINYAN LU: Signature theory in holographic algorithms. Algorithmica, 61(4):779–
+816, 2011. Preliminary version in ISAAC’08. [doi:10.1007/s00453-009-9383-3] 193
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+194
+
+MATCHGATES REVISITED
+[9] JIN-YI CAI, PINYAN LU, AND MINGJI XIA: Holographic algorithms with matchgates capture
+precisely tractable planar #CSP. In Proc. 51st FOCS, pp. 427–436. IEEE Comp. Soc. Press, 2010.
+See also at arXiv. [doi:10.1109/FOCS.2010.48] 193, 194
+[10] ANDREAS W.M. DRESS AND WALTER WENZEL: A simple proof of an identity concern-
+ing Pfafﬁans of skew symmetric matrices. Advances in Mathematics, 112(1):120–134, 1995.
+[doi:10.1006/aima.1995.1029] 169, 174
+[11] HENG GUO, SANGXIA HUANG, PINYAN LU, AND MINGJI XIA: The complexity of weighted
+Boolean #CSP modulo k. In Proc. 28th Symp. Theoretical Aspects of Comp. Sci. (STACS’11), pp.
+249–260. Schloss Dagstuhl, 2011. [doi:10.4230/LIPIcs.STACS.2011.249]
+[12] HENG GUO, PINYAN LU, AND LESLIE G. VALIANT: The complexity of symmetric Boolean
+parity Holant problems. SIAM J. Comput., 42(1):324–356, 2013. Preliminary version in ICALP’11.
+[doi:10.1137/100815530]
+[13] HENG GUO AND TYSON WILLIAMS: The complexity of planar Boolean #CSP with complex
+weights. In Proc. 40th Internat. Colloq. on Automata, Languages and Programming (ICALP’13),
+pp. 516–527. Springer, 2013. See also at arXiv. [doi:10.1007/978-3-642-39206-1_44] 193, 194
+[14] PIETER WILLEM KASTELEYN: Graph theory and crystal physics. In FRANK HARARY, editor,
+Graph Theory and Theoretical Physics, pp. 43–110. Academic Press, 1967. 168, 170
+[15] MICHAEL KOWALCZYK: Dichotomy Theorems for Holant Problems. Ph. D. thesis, University of
+Wisconsin–Madison, 2010. Available at author’s home page. [ACM:2049085] 193, 194
+[16] JOSEPH M. LANDSBERG, JASON MORTON, AND SERGUEI NORINE: Holographic algorithms
+without matchgates. Linear Algebra and its Applications, 438(2):782–795, 2013. See also at arXiv.
+[doi:10.1016/j.laa.2012.01.010] 193
+[17] ANGSHENG LI AND MINGJI XIA: A theory for Valiant’s matchcircuits (extended abstract). In
+Proc. 25th Symp. Theoretical Aspects of Comp. Sci. (STACS’08), pp. 491–502. Schloss Dagstuhl,
+2008. See also at arXiv. [doi:10.4230/LIPIcs.STACS.2008.1368] 193
+[18] JASON MORTON: Pfafﬁan circuits. Technical report, 2010. [arXiv:1101.0129] 193
+[19] KAZUO MUROTA: Matrices and Matroids for Systems Analysis. Volume 20 of Algorithms and
+Combinatorics. Springer, 2000. [doi:10.1007/978-3-642-03994-2] 174
+[20] YASUHIRO OHTA: Bilinear Theory of Soliton. Ph. D. thesis, University of Tokyo, 1992. 174
+[21] HAROLD
+N.
+V.
+TEMPERLEY
+AND
+MICHAEL
+E.
+FISHER:
+Dimer problem in sta-
+tistical mechanics–an exact result.
+Philosophical Magazine,
+6(68):1061–1063,
+1961.
+[doi:10.1080/14786436108243366] 168
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+195
+
+JIN-YI CAI AND AARON GORENSTEIN
+[22] ROBIN THOMAS: A survey of Pfafﬁan orientations of graphs. In MARTA SANZ-SOLÉ, JAVIER
+SORIA, JUAN LUIS VARONA, AND JOAN VERDERA, editors, Proceedings of the International
+Congress of Mathematicians, volume 3, pp. 963–984, Madrid, 2006. European Mathematical Society
+Publishing House. [doi:10.4171/022-3/47] 168
+[23] LESLIE G. VALIANT: Expressiveness of matchgates. Theoret. Comput. Sci., 289(1):457–471, 2002.
+[doi:10.1016/S0304-3975(01)00325-5] 168, 173, 174
+[24] LESLIE G. VALIANT:
+Quantum circuits that can be simulated classically in polynomial
+time.
+SIAM J. Comput., 31(4):1229–1254, 2002.
+Preliminary version in STOC’01.
+[doi:10.1137/S0097539700377025] 167, 187, 188, 189
+[25] LESLIE G. VALIANT: Accidental algorithms. In Proc. 47th FOCS, pp. 509–517. IEEE Comp. Soc.
+Press, 2006. [doi:10.1109/FOCS.2006.7] 168
+[26] LESLIE G. VALIANT: Holographic algorithms. SIAM J. Comput., 37(5):1565–1594, 2008. Prelimi-
+nary version in FOCS’04. See also at ECCC. [doi:10.1137/070682575] 168, 189
+AUTHORS
+Jin-Yi Cai
+Professor
+University of Wisconsin–Madison, WI
+jyc
+cs wisc edu
+http://pages.cs.wisc.edu/~jyc/
+Aaron Gorenstein
+University of Wisconsin–Madison, WI
+agorenst
+cs wisc edu
+http://pages.cs.wisc.edu/~agorenst/
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+196
+
+MATCHGATES REVISITED
+ABOUT THE AUTHORS
+JIN-YI CAI grew up in Shanghai, China, and attended schools there. He studied mathematics
+at Fudan University (class of 77), where his ﬁrst interest was analysis. He continued his
+studies at Temple University, where he was greatly inﬂuenced by Donald J. Newman. It
+was during that period that he came in contact with complexity theory. He also realized
+that a trick he had “invented,” to the displeasure of some of his teachers, was really a
+matter about the complexity of proofs and would ﬁt nicely within this theory. His trick
+was to reduce all Euclidean geometry problems, for which he could not always ﬁnd a
+clever proof quickly enough, to a computational problem via coordinates, replacing the
+need for cleverness.
+He studied complexity theory at Cornell University under the guidance of Juris Hartmanis,
+and received his Ph. D. in 1986. Then he held faculty positions at Yale University
+(1986-1989), Princeton University (1989-1993), and SUNY Buffalo (1993-2000). He
+is currently a Professor of Computer Science at the University of Wisconsin–Madison.
+He was a Sloan Fellow and a Guggenheim Fellow. He was elected a Fellow of the ACM
+in 2001. His main research interest is complexity theory. He has published over 100
+research papers.
+AARON GORENSTEIN ﬁrst realized he wanted to study computer science after taking some
+introductory courses at Boston University. During his college studies at the University
+of Rochester, he decided to focus on theory after taking an algorithms course. Under
+his advisor Lane Hemaspaandra, Aaron pursued his interest in complexity theory and
+graduated from Rochester with a B. S. and M. S. in computer science. He is currently
+a graduate student studying under Jin-Yi Cai at the University of Wisconsin–Madison.
+When not studying computer science, he enjoys practicing the piano and reading historical
+nonﬁction.
+THEORY OF COMPUTING, Volume 10 (7), 2014, pp. 167–197
+197

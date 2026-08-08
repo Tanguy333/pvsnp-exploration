@@ -1,0 +1,4740 @@
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+SIAM J. COMPUT.
+c
+⃝2011 Society for Industrial and Applied Mathematics
+Vol. 40, No. 4, pp. 1101–1132
+COMPUTATIONAL COMPLEXITY OF HOLANT PROBLEMS∗
+JIN-YI CAI†, PINYAN LU‡, AND MINGJI XIA§
+Abstract. We propose and explore a novel alternative framework to study the complexity of
+counting problems, called Holant problems. Compared to counting constraint satisfaction problems
+(#CSP), it is a reﬁnement with a more explicit role for the constraint functions. Both graph ho-
+momorphism and #CSP can be viewed as special cases of Holant problems. We prove complexity
+dichotomy theorems in this framework. Our dichotomy theorems apply to local constraint functions,
+which are symmetric functions on Boolean input variables and evaluate to arbitrary real or complex
+values.
+We discover surprising tractable subclasses of counting problems, which could not easily
+be speciﬁed in the #CSP framework. When all unary functions are assumed to be free (Holant∗
+problems), the tractable ones consist of functions that are degenerate, or of arity at most two, or
+holographic transformations of Fibonacci gates. When only two special unary functions, the constant
+zero and constant one functions, are assumed to be free (Holantc problems), we further identify three
+special families of tractable cases. Then we prove that all other cases are #P-hard. The main tech-
+nical tool we use and develop is holographic reductions. Another technical tool used in combination
+with holographic reductions is polynomial interpolations.
+Key words. Holant problems, holographic reduction, polynomial interpolation, #P-hardness
+AMS subject classiﬁcations. 68Q17, 68Q25
+DOI. 10.1137/100814585
+1. Introduction. In order to study the complexity of counting problems, sev-
+eral interesting frameworks have been proposed. One is called counting constraint
+satisfaction problems (#CSP) [4, 2, 18, 3]. Another well-studied framework is called
+graph homomorphisms or H-coloring problems, which can be viewed as a special case
+of #CSP problems [5, 6, 21, 22, 19, 20, 24, 7]. One reason such frameworks are in-
+teresting is because the language is expressive enough so that they can express many
+natural counting problems, while speciﬁc enough so that it is possible to prove com-
+plete classiﬁcation theorems on their complexity [15]. Natural counting problems that
+can be expressed as graph homomorphism problems include counting the number of
+vertex covers, the number of k-colorings in a graph, and many others. However, there
+are some natural and important counting problems, which cannot be expressed as
+a graph homomorphism problem. In [23], it is proved that counting the number of
+perfect matchings in a graph cannot be expressed as a graph homomorphism function.
+Additionally, sometimes a problem can be expressed in the existing framework, such
+as #CSP, but only with some contrived restrictions.
+∗Received by the editors November 11, 2010; accepted for publication (in revised form) May 5,
+2011; published electronically July 19, 2011. Some results in this paper have been reported in “Holant
+problems and counting CSP,” in Proceedings of STOC 2009 the 41st Annual ACM Symposium on
+Theory of Computing, 2009.
+http://www.siam.org/journals/sicomp/40-4/81458.html
+†Computer Sciences Department, University of Wisconsin, Madison, WI 53706, and Beijing Uni-
+versity, Beijing, People’s Republic of China (jyc@cs.wisc.edu). The ﬁrst author’s work was supported
+by NSF CCF-0830488, CCF-0914969, and CCF-0511679.
+‡Microsoft Research Asia, Beijing, People’s Republic of China (pinyanl@microsoft.com).
+§State Key Laboratory of Computer Science, Institute of Software, Chinese Academy of Sciences,
+Beijing, People’s Republic of China (mingji@ios.ac.cn).
+The third author’s work was supported
+by Hundred Talent Program of Chinese Academy of Sciences Under Angsheng Li, and the Grand
+Challenge Program “Network Algorithms and Digital Information” of ISCAS, and by NSFC 61003030
+and 60970003.
+1101
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+1102
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+In this paper, we propose and explore an alternative framework to study the
+complexity of counting problems, called Holant problems. This notion is motivated
+by holographic reductions proposed by Valiant [34, 33]. Compared to #CSP, it is a
+generalization with a more explicit role for the constraint functions, without assuming
+implicitly that Equality functions of all arities are freely available.
+Both graph
+homomorphism and #CSP can be viewed as special cases of Holant problems. We
+give a brief description here, and a more formal deﬁnition is given in section 2. A
+signature grid Ω = (G, F, π) is a tuple, where G = (V, E) is an undirected graph, F
+is a set of functions, and π maps each v ∈V (G) to a function fv ∈F, with input
+variables associated with the incident edges at v. Edges are treated as variables that
+take values from a ﬁnite domain set [q]. An assignment σ gives each edge e ∈E a
+value from [q] and produces an evaluation 
+v∈V fv(σ |E(v)), where E(v) denotes the
+incident edges of v, and fv is evaluated on the restriction of σ on E(v). The counting
+problem on an input instance Ω is to compute
+HolantΩ =
+
+σ
+
+v∈V
+fv(σ |E(v)).
+For example, consider the Perfect Matching problem on G. This problem corre-
+sponds to attaching the Exact-One function at every vertex of G. Consider all 0-1
+edge assignments σ. The product 
+v∈V fv(σ |E(v)) evaluates to 0 or 1, and is 1 iﬀ
+σ−1(1) ⊆E is a perfect matching. Hence in this case, HolantΩ counts the number of
+perfect matchings. If we use the At-Most-One function at every vertex, then we are
+counting all (not necessarily perfect) matchings. So this new framework can express
+some natural counting problems that are not expressible as graph homomorphisms.
+To see that Holant is a more expressive framework, we show that every #CSP
+problem can be simulated by a Holant problem. Represent an instance of a #CSP
+problem by a bipartite graph where the left-hand sides (LHS) are labeled by variables
+and the right-hand sides (RHS) are labeled by constraints. Now the signature grid Ω
+on this bipartite graph is as follows: Every variable node on the LHS is attached to an
+Equality function, and every constraint node on the RHS has the given constraint
+function.
+Then HolantΩ is exactly the answer to the #CSP problem.
+In eﬀect,
+the Equality function on each variable node forces the incident edges to take the
+same value; this eﬀectively reduces edge assignments to vertex assignments assigning
+values to each variable on the LHS as in #CSP. It follows that #CSP problems are
+precisely the special case of Holant problems on bipartite graphs where every node
+on LHS is attached to an Equality function. It is easy to show that the class of
+#CSP problems is equivalent to Holant problems where all Equality functions (of
+arbitrary arities) are always assumed to be freely available, and implicitly so. Graph
+homomorphism is a further special case where not only all Equality functions are
+freely (and implicitly) available, but also the function set F in our signature grid Ω
+contains exactly one binary function (other than the Equality functions). It turns
+out that allowing Equality functions has a major inﬂuence on the computational
+complexity of the problems. By making the presence of these Equality functions
+explicit, the Holant framework of counting problems can make a ﬁner complexity
+classiﬁcation, which is diﬃcult to do in #CSP.
+Our Holant problem framework is strongly inﬂuenced by the development of holo-
+graphic algorithms and holographic reductions [34, 33, 9, 13]. Indeed, we will use and
+develop holographic reductions in this paper as a primary technique. One advantage
+of our new framework is that one can naturally consider new subclasses of counting
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+COMPUTATIONAL COMPLEXITY OF HOLANT PROBLEMS
+1103
+problems as special cases of Holant problems other than #CSP problems. It turns out
+that a special class of constraint functions, called degenerate functions, plays a basic
+role in tractable cases. These are functions that can be expressed as tensor products
+of unary functions (a unary function is a function of arity one, i.e., on one variable).
+Degenerate functions are particularly weak.
+By assuming all unary functions are
+freely available, we propose an interesting class of counting problems called Holant∗
+problems. Our ﬁrst main result is a complexity dichotomy theorem for all Holant∗
+problems for arbitrary complex valued symmetric functions over Boolean variables:
+Each problem in the class is either #P-hard or solvable in polynomial time. In this
+dichotomy theorem, essentially all tractable cases are accomplished by holographic
+algorithms with Fibonacci gates [13, 12]. And what is more interesting and surprising
+is that the key technique used in the hardness proof is also holographic reductions.
+Furthermore, we prove that the dichotomy theorem also holds for planar graphs.
+Our second main result is a dichotomy theorem for an even more appealing class of
+counting problems, called Holantc problems, where we assume only two special unary
+functions Δ0 and Δ1 are available. These two unary functions simply set a particular
+edge (variable) to a constant value 0 or 1, respectively. We can prove again that
+every problem in this class is either #P-hard or solvable in P. However, here we can
+only prove it for all real valued symmetric functions over Boolean variables, as local
+constraint functions. Note that when we assume fewer functions are freely available
+in the framework, it makes the speciﬁcation of the family more stringent. It delin-
+eates more precisely what functions and what combinations lead to #P-hardness or
+to tractability, respectively. However, the fewer functions are assumed free, the more
+challenging it is to prove #P-hardness. We make essential use of the dichotomy theo-
+rem just proved for Holant∗problems, as a launching station to prove our dichotomy
+theorem for Holantc problems.
+Holantc problems are basically generic Holant problems with the ability to ﬁx the
+assignments of some edges to constants. In many cases this is indeed very natural.
+By the Pinning Lemma in [18], in any #CSP problem, Δ0 and Δ1 can be simulated
+(using Equality functions), and as a result can be viewed as freely available. In
+other words Equality functions are stronger than Δ0 and Δ1. Therefore Holantc
+problems already subsume #CSP, and meanwhile provide a way for a more exacting
+account of what makes a problem tractable or #P-hard.
+The main technique for the proof of the second dichotomy theorem is polynomial
+interpolation.
+Once we can interpolate all unary functions, we can apply the di-
+chotomy theorem for Holant∗problems. Our dichotomy theorems have already paid
+dividends in the study of classiﬁcations of #CSP problems. Since #CSP can be viewed
+as a special case of Holantc problems, the dichotomy theorem for Holantc problems
+automatically implies a dichotomy theorem for Boolean #CSP problems with real
+symmetric constraints. Motivated by this, we investigated how one might generalize
+the tractable cases to asymmetric ones. Surprisingly it turns out that the symmetric
+tractable cases already supplied the essential ingredients for all possible (including
+asymmetric) tractable ones. This led us to a dichotomy theorem for the whole fam-
+ily of complex weighted Boolean #CSP. However, the proof requires substantial new
+techniques, and we report it in a separate paper [11, 14].
+2. Deﬁnitions and background. Our functions take values in C by default.
+In this paper, we will mostly be concerned with symmetric functions on Boolean
+variables as local constraint functions; however, the framework of Holant problems is
+deﬁned for functions mapping any [q]k →F for a ﬁnite q and a ﬁeld F. Results in this
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+1104
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+paper are for the case q = 2 and F = C, as well as F = R when speciﬁed. In order
+to avoid any diﬃculty with respect to models of computation, we will assume the
+function values are algebraic numbers. However, for convenience we will still use the
+symbol C. (If we use the model of computation over C from [1], then there is no need
+for any restriction.) We say a problem is tractable if it is computable in polynomial
+time. Since these are functions, this means computable in the class FP (we sometimes
+say simply in P, although strictly speaking the latter is a language class).
+As stated, a signature grid Ω = (H, F, π) consists of a graph H = (V, E) with
+each vertex labeled by a function fv ∈F of arity deg(v), where deg(v) denotes the
+degree of v, and each edge is treated as a variable. We use the symbol Fq when
+variables range over [q].
+The Holant problem on instance Ω is that of computing
+HolantΩ = 
+σ
+
+v∈V fv(σ |E(v)), a sum over all edge assignments σ : E →[q]. When
+q = 2, a function fv can be represented as a vector of dimension 2deg(v) listing all its
+values, or as a tensor in (C2)⊗deg(v). This is called a signature. We denote by =k the
+Equality signature of arity k. Δ0 (respectively, Δ1) denotes the unary signature
+that takes value 1 on input 0 (respectively, 1), and 0 otherwise. A symmetric function
+f on k Boolean variables can be denoted by [f0, f1, . . . , fk], where fj is the value of f
+on inputs of Hamming weight j. Thus, (=k) = [1, 0, . . . , 0, 1] (with k −1 many 0’s),
+Δ0 = [1, 0], and Δ1 = [0, 1]. A Holant problem is parameterized by a set of signatures.
+Definition 2.1.
+Given a set of signatures F, we deﬁne a counting problem
+Holant(F):
+Input: A signature grid Ω = (G, F, π);
+Output: HolantΩ.
+We would like to characterize the complexity of Holant problems in terms of their
+signature sets. Some special families of Holant problems have already been widely
+studied. For example, if Fq contains all Equality signatures {=1, =2, =3, · · · }, then
+this is exactly the weighted #CSP problem. #CSP problems are a special family of
+Holant problems, in which we assume that all Equality functions are freely available.
+Graph homomorphism is a further special case, where we allow only a single binary
+function in Fq other than all the Equality functions.
+We now deﬁne two more special families of Holant problems by assuming some
+signatures are freely available. We deﬁne them for q = 2; they can easily be extended
+to arbitrary [q].
+Definition 2.2. Let U denote the set of all unary signatures. Given a set of
+signatures F, we use Holant∗(F) to denote Holant(F ∪U).
+Definition 2.3.
+Given a set of signatures F, we use Holantc(F) to denote
+Holant(F ∪{Δ0, Δ1}).
+Replacing a signature f ∈F by a constant multiple cf, where c ̸= 0, does not
+change the complexity of Holant(F). It only contributes an easily computable power
+of c as a global factor to HolantΩ. So we view f and cf as the same signature. An
+important property of a signature is whether it is degenerate.
+Definition 2.4. A signature is degenerate iﬀit is a tensor product of unary
+signatures.
+In particular, a symmetric signature in F is degenerate iﬀit can be expressed
+as λ[x, y]⊗n. Also a symmetric signature [x0, x1, . . . , xn] is nondegenerate iﬀrank
+[ x0
+...
+xn−1
+x1
+...
+xn ] = 2. To see this, suppose [x0, x1, . . . , xn] = λ[x, y]⊗n, and then clearly
+rank[ x0
+...
+xn−1
+x1
+...
+xn ] ≤1. Conversely, suppose this rank is at most 1. If x0 ̸= 0, then
+there exists a c, such that xi = cxi−1, for 1 ≤i ≤n, and we have x0[1, c]⊗n. If x0 = 0,
+since the rank is at most 1, an easy induction shows that x1 = · · · = xn−1 = 0. Then
+it is xn[0, 1]⊗n.
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+COMPUTATIONAL COMPLEXITY OF HOLANT PROBLEMS
+1105
+To introduce the idea of holographic reductions, it is convenient to consider bi-
+partite graphs. For any general graph as a signature grid, we can make it bipartite by
+adding an additional vertex on each edge and giving each new vertex the Equality
+function =2 on two inputs.
+We use #Rq|Gq to denote all counting problems, expressed as Holant problems on
+bipartite graphs H = (U, V, E), where each signature for a vertex in U (respectively,
+V ) is from Rq (respectively, Gq). An input instance for the bipartite Holant problem
+is a bipartite signature grid and is denoted as Ω = (H, Rq|Gq, π). Signatures in Gq are
+denoted by column vectors (or contravariant tensors); signatures in Rq are denoted
+by row vectors (or covariant tensors) [17, 8].
+One can perform (contravariant and covariant) tensor transformations on the
+signatures. We will deﬁne a simple version of holographic reductions, which are in-
+vertible. Suppose #Rq|Gq and #R′q|G′q are two Holant problems deﬁned for the same
+family of graphs, and T ∈GLq(C). We will use T to carry out a basis transformation.
+We say that there is a holographic reduction from #Rq|Gq to #R′q|G′q, if the con-
+travariant transformation G′ = T ⊗gG and the covariant transformation R = R′T ⊗r
+map G ∈Gq to G′ ∈G′q and R ∈Rq to R′ ∈R′q, where G and R have arity g and r,
+respectively. (Notice the reversal of direction when the transformations T ⊗g versus
+T ⊗r are applied. This is the meaning of contravariance and covariance.)
+Theorem 2.5 (Valiant’s Holant theorem [34]). Suppose there is a holographic
+reduction from #Rq|Gq to #R′q|G′q mapping signature grid Ω to Ω′; then HolantΩ =
+HolantΩ′.
+In particular, if T is an invertible holographic reduction from #Rq|Gq to #R′q|G′q,
+and T −1 is a holographic reduction from #R′q|G′q to #Rq|Gq, then one problem is in
+P iﬀthe other one is, and similarly one problem is #P-hard iﬀthe other one is also.
+Theorem 2.6. Let Fq be a set of signatures and M be a q ×q orthogonal matrix,
+i.e., MM T = I, the identity matrix. For any signature grid Ω = (G, Fq, π), replacing
+every signature F ∈Fq by M ⊗nF, where n is the arity of F, we can get a new
+signature grid Ω′. Then HolantΩ = HolantΩ′.
+Proof. First we reformulate the signature grid Ω = (G, Fq, π). We insert a new
+vertex on each edge of G with signature =2; the original edge becomes a path of
+length 2. This will not change the Holant value. Then for the new bipartite signature
+grid (G′, {=2}|Fq, π′), we apply a holographic reduction with M. This will map a
+signature F ∈Fq to M ⊗nF, where n is the arity of F. It is a direct consequence of
+MM T = I that =2 will map to itself. Indeed, the covariant transformation maps =2
+to (=2)(M −1)⊗2 as a q2-dimensional row vector. A binary function f can be denoted
+by a matrix, where the (i, j) entry is f(i, j), for i, j ∈[q]. Then =2 is the identity
+matrix I. In matrix notation, (=2)(M −1)⊗2 is precisely (M −1)TIM −1 = I. Now we
+can replace each new =2 node back to an edge to revert back to G. This gives the
+signature grid Ω′ as required. By the Holant theorem, its value is the same as Ω.
+This theorem is very useful as a way to normalize a given signature set Fq.
+There is a technical issue with models of computation for C [1, 27].
+Strictly
+speaking, in the Turing model, we must only use computable numbers. We will state
+our results for all C, assuming all numbers and their arithmetic operations (+, ·) in
+a particular instance (signature entries) are computable in polynomial time in the
+Turing sense. This is certainly the case when Fq is a ﬁnite set and function values
+are all algebraic numbers.
+3. Some preliminary results. A signature from Fq at a vertex is considered
+a basic realizable function. Instead of a single vertex, we can use a graph fragment
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+1106
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+H
+Fig. 3.1. An F-gate with ﬁve dangling edges.
+to generalize this notion. An Fq-gate Γ is a tuple (H, Fq, π), where H = (V, E, D)
+is a graph with regular edges E and some dangling edges D. (See Figure 3.1 for one
+example.) Other than these dangling edges, an Fq-gate is the same as a signature
+grid. The role of dangling edges is to provide input/output variables. This is similar
+to that of external nodes in Valiant’s notion for matchgates [32, 34]; however, we
+allow more than one dangling edge for a node. In H = (V, E, D) each node in V is
+assigned a function in Fq by the mapping π (we do not consider “dangling” leaf nodes
+at the end of a dangling edge among these), E is the set of regular edges, denoted as
+1, 2, . . . , m, and D is the set of dangling edges, denoted as m + 1, m + 2, . . . , m + n.
+Then we can deﬁne a function for this F-gate Γ = (H, Fq, π),
+Γ(y1, y2, . . . , yn) =
+
+x1,x2,...,xm∈[q]
+H(x1, x2, . . . , xm, y1, y2, . . . , yn),
+where (y1, y2, . . . , yn) ∈[q]n denotes an assignment on the dangling edges and H(x1, x2,
+. . . , xm, y1, y2, . . . , yn) denotes the value of the signature grid on an assignment of all
+edges. We will also call this function the signature of the Fq-gate Γ. An Fq-gate can
+be used in a signature grid as if it is just a single node with the particular signature.
+We note that even for a very simple signature set Fq, the signatures for all Fq-gates
+can be quite complicated and expressive. Matchgate signatures are an example [32].
+Using the idea of Fq-gates, we can reduce one Holant problem to another. Let g be
+the signature of some Fq-gate Γ. Then Holant(Fq ∪{g}) is polynomial-time Turing re-
+ducible to Holant(Fq). The reduction is simple. Given an instance of Holant(Fq∪{g}),
+replacing every appearance of g by the Fq-gate Γ, we get an instance of Holant(Fq).
+Since the signature of Γ is g, the Holant values for these two signature grids are
+identical.
+We give some propositions that are useful in the proof in the next section. We
+ﬁrst give one more deﬁnition.
+Definition 3.1. Given a symmetric signature [x0, x1, . . . , xn] and any l, r where
+0 ≤l < r ≤n, we call [xl, xl+1, . . . , xr] a subsignature of [x0, x1, . . . , xn] with arity
+r −l.
+Proposition 3.2. If [xl, xl+1, . . . , xr] is a subsignature of [x0, x1, . . . , xn] and
+Holant∗([xl, xl+1, . . . , xr]) is #P-hard, then Holant∗([x0, x1, . . . , xn]) is #P-hard. This
+is also true for Holantc.
+Proof. We use unary signatures Δ0 = [1, 0], Δ1 = [0, 1], and [x0, x1, . . . , xn] to
+simulate a subsignature [xl, xl+1, . . . , xr]. We connect l dangling edges of [x0, x1, . . . , xn]
+to the unary signature [0, 1], and connect another n −r dangling edges to the unary
+signature [1, 0].
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+COMPUTATIONAL COMPLEXITY OF HOLANT PROBLEMS
+1107
+Proposition 3.3. Let n ≥3 and let [x0, x1, . . . , xn] be a nondegenerate sym-
+metric signature.
+Then for any m = 2, 3, . . . , n −1, there exists a nondegenerate
+subsignature of arity m, unless the signature is of the form [x0, 0, . . . , 0, xn].
+Proof. Since rank[ x0
+...
+xn−1
+x1
+...
+xn ] = 2, there must be nonzero entries among x0, x1, . . . ,
+xn. If all entries are nonzero, then either rank[ x0
+...
+xn−2
+x1
+...
+xn−1 ] = 2 or rank[ x1
+...
+xn−1
+x2
+...
+xn ] =
+2. Otherwise they are both of rank 1, and being nonzero, the second row is a multiple
+of the ﬁrst row in both matrices. Since they share at least one column, and being
+nonzero, this multiplier must be the same, which says that rank[ x0
+...
+xn−1
+x1
+...
+xn ] = 1, a
+contradiction. Then we use induction to complete the proof.
+Now suppose there are zero entries. Consider x1, . . . , xn−1. Since [x0, . . . , xn] is
+not of the form [x0, 0, . . . , 0, xn], there must be some 1 ≤i ≤n −1 such that xi ̸= 0.
+Find an xi ̸= 0, for some 1 ≤i ≤n −1, such that a neighbor xi−1 = 0 or xi+1 = 0.
+Now any submatrix containing [ ...
+xi−1
+xi
+...
+...
+xi
+xi+1
+... ] has rank 2.
+Proposition 3.4. Let F be a set of signatures and M be a 2 × 2 orthogonal
+matrix. We deﬁne a new set of signatures FM as follows:
+FM = {Y | Y = M ⊗nX, where X is a signature in F with arity n}.
+Then Holant∗(F) and Holant∗(FM) have the same complexity; i.e., one problem is in
+P (respectively, #P-hard) iﬀthe other problem is also.
+Proof. Because M is nonsingular, the set of unary signatures U is transformed to
+the same set U. By Theorem 2.6, Holant∗(F) and Holant∗(FM) have the same value
+on the corresponding signature grids. This is clearly a two-way reduction between
+them.
+Proposition 3.5.
+Let [x0, x1, x2, x3] be a symmetric signature of arity three,
+expressed as row vectors
+[x0, x1, x2, x3] = c(α1, α2)⊗3 + d(β1, β2)⊗3.
+Then
+det
+x0
+x1
+x1
+x2
+
+= cd det
+α1
+β1
+α2
+β2
+2
+α1β1,
+det
+x1
+x2
+x2
+x3
+
+= cd det
+α1
+β1
+α2
+β2
+2
+α2β2,
+and
+det
+x0 −x2
+x1
+x1 −x3
+x2
+
+= cd det
+α1
+β1
+α2
+β2
+2
+(α1β1 + α2β2).
+Suppose cd ̸= 0 and det[ α1
+β1
+α2
+β2 ] ̸= 0. Then [x0, x1, x2, x3] is nondegenerate. Further-
+more, det[ x0−x2
+x1
+x1−x3
+x2 ] = 0 iﬀα1β1 + α2β2 = 0. In the latter case, the unique (up to a
+scalar multiple) nonzero solution (a, b) to
+
+x0 −x2
+x1
+x1 −x3
+x2
+ 
+a
+b
+
+= 0
+is a = α1β1 = −α2β2 and b = α1β2 + α2β1.
+Proof. A straightforward calculation.
+Proposition 3.6.
+Let [x0, x1, x2, x3] be a symmetric signature of arity three,
+expressed as
+[x0, x1, x2, x3] = c(α1, α2)⊗3 + d(β1, β2)⊗3,
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+1108
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+where cd ̸= 0 and det[ α1
+β1
+α2
+β2 ] ̸= 0. Then, [x0, x1, x2, x3] is of the form [x, y, −x, −y]
+iﬀα2
+1 + α2
+2 = β2
+1 + β2
+2 = 0.
+Proof. The equations x0 + x2 = 0 and x1 + x3 = 0 are, respectively, cα1(α2
+1 +
+α2
+2) + dβ1(β2
+1 + β2
+2) = 0 and cα2(α2
+1 + α2
+2) + dβ2(β2
+1 + β2
+2) = 0. Viewed as a linear
+equation system on c and d, there are nonzero solutions iﬀits determinant is zero:
+det
+
+α1
+β1
+α2
+β2
+
+(α2
+1 + α2
+2)(β2
+1 + β2
+2) = 0.
+It follows that at least one of the factors α2
+1 + α2
+2 = 0 or β2
+1 + β2
+2 = 0. In the ﬁrst case,
+by the linear equation system, since (β1, β2) is a nonzero vector, we get the second
+factor β2
+1 +β2
+2 = 0 as well. Similarly starting with β2
+1 +β2
+2 = 0 we also get α2
+1 +α2
+2 = 0.
+Conversely, if α2 = ±iα1 and β2 = ±iβ1, then c(α1, α2)⊗3 + d(β1, β2)⊗3 has the
+form [x, y, −x, −y].
+4. A dichotomy theorem for Holant∗(F). Our ﬁrst dichotomy theorem is
+for Holant∗(F), where F is an arbitrary set of symmetric signatures on Boolean
+variables.
+Since all unary signatures can be used for free in Holant∗(F), we always assume
+the arity of every signature in F is greater than one.
+And since any degenerate
+signature can be decomposed to unary signatures, we also assume that every signature
+in F is nondegenerate.
+Theorem 4.1. Let F be a set of nondegenerate symmetric signatures over C.
+Then Holant∗(F) is computable in polynomial time in the following three classes. In
+all other cases, Holant∗(F) is #P-hard.
+1. Every signature in F is of arity no more than two.
+2. There exist two constants a and b (not both zero, depending only on F),
+such that for all signatures [x0, x1, . . . , xn] ∈F one of the two conditions is
+satisﬁed: (1) for every k = 0, 1, . . . , n −2, we have axk + bxk+1 −axk+2 = 0;
+(2) n = 2 and the signature [x0, x1, x2] is of the form [2aλ, bλ, −2aλ].
+3. For every signature [x0, x1, . . . , xn] ∈F one of the two conditions is satisﬁed:
+(1) For every k = 0, 1, . . . , n −2, we have xk + xk+2 = 0; (2) n = 2 and the
+signature [x0, x1, x2] is of the form [λ, 0, λ].
+The dichotomy is still valid even if the inputs are restricted to planar graphs.
+Remark. In order that Holant∗(F) be a ﬁnitely speciﬁable problem with param-
+eter F, we may require F to be a ﬁnite set. However, our dichotomy theorem is
+stronger, and applies to an inﬁnite set F in the following sense: When F falls in one
+of the tractable classes, the Holant problem is computable in polynomial time even
+when F is inﬁnite, but the input size of the signature grid includes a description (in
+symmetric signature notation) of the functions at each node. On the other hand,
+when F does not belong to one of the tractable classes, then there is a ﬁnite subset
+F′ ⊆F for which Holant∗(F′) is #P-hard.
+The statement of this dichotomy theorem essentially says that the only symmetric
+signature set F for which Holant∗(F) is tractable is when F is degenerate, or of arity
+at most two, or most interestingly F consists of Fibonacci gates under a holographic
+transformation [13, 12].
+Proof outline. The ﬁrst class to be computable in P is easy. One can compute
+the signature of a path by matrix multiplication and the signature of a cycle by
+taking trace.
+The other two polynomial time computable classes use holographic
+algorithms and mainly follow from our previous work on Fibonacci gates [13, 12]. See
+subsection 4.5.
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+COMPUTATIONAL COMPLEXITY OF HOLANT PROBLEMS
+1109
+Now for the proof of hardness, we ﬁrst prove in Lemma 4.2 that the theorem
+holds if F contains a single symmetric signature of arity three. The main technique is
+holographic reductions. The choice of speciﬁc reductions is informed by our previous
+work on signature theory in holographic algorithms [10, 9]. This theory gives us three
+categories in a certain parameterization for a signature of arity three according to
+its eigenvalues. For each category, we choose one #P-hard problem to reduce from,
+all using holographic reductions. In Lemma 4.3, we prove that if one signature of
+arity three has the form in class 2 of Theorem 4.1, and we combine it with another
+signature of arity two that is not in class 2, then the Holant∗problem is #P-hard. The
+main idea of the proof of Lemma 4.3 is to reduce it to Lemma 4.2 with holographic
+reductions. In Lemma 4.4, we prove the same thing for class 3. In Lemma 4.5 we
+extend it to a single signature of arbitrary arity. Finally in subsection 4.5 we extend
+the above proofs to a set of signatures of arbitrary arities and ﬁnish the proof of
+Theorem 4.1.
+4.1. The ﬁrst lemma: A single ternary signature. The following lemma is
+an important ﬁrst step toward the proof of Theorem 4.1. It says that Theorem 4.1
+holds if F contains only one signature and it has arity three. Holographic reductions
+play a decisive role in the proof. This lemma serves as the foundation for all subsequent
+lemmas.
+Lemma 4.2.
+Let [x0, x1, x2, x3] be a nondegenerate symmetric signature with
+arity three, then Holant∗([x0, x1, x2, x3]) is #P-hard unless one of the following two
+statements is true: (1) there exist two constants a, b (not both zero) such that ax0 +
+bx1 −ax2 = 0 and ax1 + bx2 −ax3 = 0; (2) x0 + x2 = 0 and x1 + x3 = 0.
+Proof. Assuming [x0, x1, x2, x3] does not satisfy either of the two statements, we
+prove that Holant∗([x0, x1, x2, x3]) is #P-hard. Our starting point is that #[0, 1, 1]|
+[1, 0, 0, 1] and #[1, 0, 1]|[1, 1, 0, 0] are both #P-complete [35]. The ﬁrst problem is to
+count the number of vertex covers for 3-regular graphs; while the second is to count
+the number of (not necessarily perfect) matchings for 3-regular graphs. We remark
+that both of them remain #P-complete even for planar graphs [16, 35].
+First we give a useful parameterization. Given a nondegenerate signature [x0, x1,
+x2, x3], there are three categories: For 0 ≤k ≤3,
+• Category 1. xk = α3−k
+1
+αk
+2 + β3−k
+1
+βk
+2, where det[ α1
+β1
+α2
+β2 ] ̸= 0;
+• Category 2. xk = ckαk−1 + dαk, where c ̸= 0; or
+• Category 3. xk = c(3 −k)α2−k + dα3−k, where c ̸= 0.
+This parameterization can be obtained by considering the rank 1 solution to
+
+x0
+x1
+x2
+x1
+x2
+x3
+ ⎡
+⎣
+a
+b
+c
+⎤
+⎦= 0.
+If a = c = 0 we have x1 = x2 = 0 and a diagonal matrix [
+3√x0
+0
+0
+3√x3 ] can be used in
+Category 1. If a and c are not both 0, then we may consider [x0, x1, x2, x3] satisﬁes a
+second order linear recurrence relation (either forward or backward). Depending on
+whether the characteristic equation has two distinct roots (or, respectively, a double
+root), we have a case in Category 1 (or, respectively, Category 2 or 3). Category 3
+can be viewed as the reversal of Category 2, so we will omit the proof for Category
+3. The choices made here in this particular parameterization are informed by the
+signature theory [10, 9] that we had developed in the previous work. But one can
+directly check that for any nondegenerate signature [x0, x1, x2, x3], one of these three
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+1110
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+parameterizations is always possible. Note that, if α = 0, then we take the convention
+that the expression kαk−1 = 0, 1, 0, 0 for k = 0, 1, 2, 3, respectively.
+For Category 1, we have
+X = [x0, x1, x2, x3] =
+α1
+α2
+⊗3
++
+β1
+β2
+⊗3
+.
+We restate our conditions from the lemma’s statement in this new parameterization.
+The fact that X is nondegenerate implies that α1β2−α2β1 ̸= 0. The fact that X is not
+in the case indicated in statement (1) of Lemma 4.2 implies that α1β1+α2β2 ̸= 0. This
+follows from Proposition 3.5. The fact that X is not in the case indicated in statement
+(2) implies that α2
+1 + α2
+2 ̸= 0 or β2
+1 + β2
+2 ̸= 0. This follows from Proposition 3.6. By
+symmetry, we can assume that α2
+1 + α2
+2 ̸= 0.
+Under the condition α2
+1 + α2
+2 ̸= 0, we can apply an orthogonal transformation to
+map the vector (α1, α2)T to (α′
+1, 0)T, for some α′
+1 ̸= 0. We may use the (complex or-
+thogonal) matrix (1/
+
+α2
+1 + α2
+2)[ α1
+α2
+−α2 α1 ] for this purpose. Then under this orthogonal
+transformation, the signature becomes
+X′ = [x′
+0, x′
+1, x′
+2, x′
+3] =
+α′
+1
+0
+⊗3
++
+β′
+1
+β′
+2
+⊗3
+.
+By Proposition 3.4, this transformation does not change the complexity of the Holant
+problem. So it suﬃces to prove #P-hardness for this signature. By a scalar multi-
+plication we assume α′
+1 = 1. So, reusing the notation X, we can assume the given
+signature is of this form
+X = [x0, x1, x2, x3] =
+
+1
+0
+⊗3
++
+
+β1
+β2
+⊗3
+.
+The two conditions from the statement of Lemma 4.2 become simply β1β2 ̸= 0.
+Now under the basis transformation T = [ 1
+β1
+0
+β2 ], the Equality signature (=3) =
+[1, 0, 0, 1] becomes [x0, x1, x2, x3].
+This is the result of the contravariant transfor-
+mation (x0, x1, x1, x2, x1, x2, x2, x3)T = T ⊗3(1, 0, 0, 0, 0, 0, 0, 1)T, namely, X = T ⊗3
+([ 1
+0 ]⊗3 + [ 0
+1 ]⊗3). By the same matrix, [0, 1, 1] undergoes a covariant transformation.
+We have
+(0, 1, 1, 1)(T −1)⊗2 = 1
+β2
+2
+(0, β2, β2, 1 −2β1).
+Again, we can ignore the scalar factor 1/β2
+2. So by the holographic reduction de-
+ﬁned by T , the complexity of the problem #[0, β2, 1 −2β1]|[x0, x1, x2, x3] is the
+same as #[0, 1, 1]|[1, 0, 0, 1], which is #P-complete (vertex cover). In order to prove
+that Holant∗([x0, x1, x2, x3]) is #P-hard, we only need to show that the signature
+[0, β2, 1 −2β1] can be realized by [x0, x1, x2, x3] with some unary signatures.
+For a binary signature F we can write it in a matrix form
+ F (00)
+F (01)
+F (10)
+F (11)
+
+. We use
+the gadget in Figure 4.1 to realize [0, β2, 1 −2β1], where the two unary signatures
+(t0, t1) and (s0, s1) will be determined later. Let
+A =
+1
+0
+ 
+1
+0
+
+=
+1
+0
+0
+0
+
+,
+B =
+β1
+β2
+ 
+β1
+β2
+
+=
+ β2
+1
+β1β2
+β1β2
+β2
+2
+
+.
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+COMPUTATIONAL COMPLEXITY OF HOLANT PROBLEMS
+1111
+(t0, t1)
+(t0, t1)
+(s0, s1)
+Fig. 4.1. We use this gadget to realize the signature [0, β2, 1 −2β1]. All (three) nodes of degree
+3 in this gadget have the signature [x0, x1, x2, x3].
+In X, if one input is 0, the induced binary signature has its matrix form A + β1B. If
+one input is 1, the induced binary signature has matrix form β2B. It follows that the
+signature of the above gadget, as a binary function in matrix form, is
+(t0(A + β1B) + t1β2B)(s0(A + β1B) + s1β2B)(t0(A + β1B) + t1β2B)
+= (t0A + (t0β1 + t1β2)B)(s0A + (s0β1 + s1β2)B)(t0A + (t0β1 + t1β2)B).
+Now we use a new set of variables
+(4.1)
+x = t0,
+y = t0β1 + t1β2,
+z = s0,
+w = s0β1 + s1β2,
+and write the above matrix as (xA + yB)(zA + wB)(xA + yB). We note that, since
+β2 ̸= 0, for any given x, y, z, w, we can ﬁnd t0, t1, s0, s1 to satisfy the relationships
+(4.1). Then, to realize [0, β2, 1 −2β1], we just want to choose some x, y, z, and w such
+that
+(xA + yB)(zA + wB)(xA + yB) =
+ 0
+β2
+β2
+1 −2β1
+
+.
+We show that we can ﬁnd some x, y, z, and w to satisfy the above condition.
+Substituting A and B, and denoting β2
+1 + β2
+2 by γ, we have the following:
+(xA + yB)(zA + wB)(xA + yB)
+= w
+
+β2
+1(x + yγ)2
+yβ1β2γ(x + yγ)
+yβ1β2γ(x + yγ)
+y2β2
+2γ2
+
++ z
+
+(x + yβ2
+1)2
+yβ1β2(x + yβ2
+1)
+yβ1β2(x + yβ2
+1)
+y2β2
+1β2
+2
+
+.
+We may choose w = (x + yβ2
+1)2 and z = −β2
+1(x + yγ)2 to make the (1, 1) entry
+zero. The (1, 2) (and (2, 1)) entry is
+g1 = xyβ1β3
+2(x + yβ2
+1)(x + yγ);
+and the (2, 2) entry is
+g2 = xy2β4
+2(x(2β2
+1 + β2
+2) + 2y(β4
+1 + β2
+1β2
+2)).
+We want to choose some x and y such that [g1, g2] = [β2, 1 −2β1]. We have β2 ̸= 0.
+We will choose xy ̸= 0. As both g1 and g2 are homogeneous (of degree 4) in x and
+y, we can ignore (and remove) the common factor xyβ3
+2 of g1 and g2. It follows that
+we only have to satisfy that g2/g1 = (1 −2β1)/β2 and g1 ̸= 0, with y = 1. Setting
+β2g2 = (1 −2β1)g1, we will satisfy the following:
+(4.2)
+β1(2β1−1)x2+(2β2
+1 −β1+β2
+2)(2β2
+1 +β2
+2)x+β2
+1(β2
+1 +β2
+2)(2β2
+1 −β1+2β2
+2) = 0.
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+1112
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+What we have to prove is that at least one of the roots x to the equation in (4.2)
+is not a root of g1 = g1(x, 1) = 0. The roots of g1 = 0 are x = 0, x = −β2
+1, and
+x = −γ. First we can verify that x = −β2
+1 is not a root of (4.2). This is because when
+x = −β2
+1, the expression in (4.2) can be simpliﬁed to β2
+1β4
+2 ̸= 0. Second when x = −γ
+the expression in (4.2) can be simpliﬁed to −β4
+2γ, and if x = −γ is a root, this would
+force γ = 0. So, assuming the expression in (4.2) as a polynomial in x is indeed of
+degree 2, then the only case we need to worry about is that x = 0 is a double root of
+(4.2). Indeed, suppose (4.2) is of degree 2, and x = 0 is not a double root, then we
+may let ξ ̸= 0 be a root of (4.2). This implies ξ ̸= −β2
+1, because −β2
+1 is not a root of
+(4.2); ξ cannot be −γ either, for otherwise −γ would be a root of (4.2), which we had
+proved would force γ = 0, and thus ξ = −γ = 0, a contradiction. Thus ξ is a root of
+(4.2) but not a root of g1, as is needed.
+Now let us consider the exceptional cases: either x = 0 is a double root of (4.2)
+or (4.2) has degree less than 2. If x = 0 is a double root of (4.2), we have
+(2β2
+1 −β1 + β2
+2)(2β2
+1 + β2
+2) = β2
+1(β2
+1 + β2
+2)(2β2
+1 −β1 + 2β2
+2) = 0.
+To satisfy this, since β1β2 ̸= 0, there are only four exceptional cases (A1 to A4):
+β1 = 1, β2 = ±i or β1 = −1
+2, β2 = ± i
+√
+2. On the other hand, if the polynomial in
+(4.2) has degree less than 2, by β1 ̸= 0, we get β1 = 1
+2. In this case, the polynomial
+becomes
+(1/2 + β2
+2)x + (1/4 + β2
+2)/2 = 0.
+This gives us four additional exceptional cases (B1 to B4): β1 = 1
+2, β2 = ± i
+2, in which
+case the polynomial is linear with root x = 0; or β1 = 1
+2, β2 = ± i
+√
+2, in which case the
+polynomial degenerates to a (nonzero) constant. In all other cases, there is a root of
+(4.2) which is not a root of g1(x, 1), which completes the #P-hardness proof.
+For the cases A1 and A2, we use a new starting problem #[1, 1, 0]|[1, 0, 0, 1], which
+is the reversal of the previous problem, and therefore it is also #P-complete. Then
+all previous parts of the proof are still valid, except that the signature of arity two we
+would like to realize is
+(1, 1, 1, 0)(T −1)⊗2 =
+
+1, 1 −β1
+β2
+, 1 −β1
+β2
+, β2
+1 −2β1
+β2
+2
+
+.
+Substituting β1 = 1, β2 = ±i, the signature is [1, 0, 1], which is trivially realizable by
+one edge. So we have proved that it is #P-hard in the cases A1 and A2. Now consider
+the cases A3 and A4: β1 = −1
+2, β2 = ± i
+√
+2. We will give a diﬀerent parameterization.
+For the case A3, we apply an orthogonal transformation M = [ −i
+−
+√
+2
+√
+2
+−i ] and a scalar
+multiplier (2i)3 on the signature and it becomes [ 1
+0 ]⊗3 + [
+2
+2
+√
+2i ]⊗3. This is not one
+of the exceptional cases, and we have proved that it is #P-hard. For the case A4,
+we apply another orthogonal transformation M ′ = [ i
+−
+√
+2
+√
+2
+i
+] and a scalar multiplier
+(−2i)3 on the signature, and it becomes [ 1
+0 ]⊗3 + [
+2
+−2
+√
+2i ]⊗3.
+The cases B3 and B4 can be shown by the same method as in A4 and A3, using
+M ′ and M, respectively. The only remaining cases are B1 and B2. Here we will
+use another gadget similar to the one in Figure 4.1 except we remove the middle
+edge (including the node labeled (s0, s1) and the middle node of degree 3). For B1,
+β1 = 1
+2, β2 = i
+2, the signature of this gadget is
+(t0(A + β1B) + t1β2B)2 = (xA + yB)2,
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+COMPUTATIONAL COMPLEXITY OF HOLANT PROBLEMS
+1113
+where A and B are as before, and with the speciﬁc values of β1, β2, B = 1
+4[ 1
+i
+i
+−1 ]. By
+setting x = i and y = −2i, we have (xA + yB)2 = [ 0
+i/2
+i/2
+0 ], which is the matrix form
+of the target signature [0, β2, 1 −2β1] = [0, i
+2, 0]. This ﬁnishes case B1. The case B2
+can be proved the same way with x = 1 and y = −2.
+Now we prove for Category 2. In this case xk = ckαk−1+dαk, the condition that it
+does not satisfy statement (1) in Lemma 4.2 implies that α ̸= ±i. Indeed, xk satisﬁes
+the recurrence xk+2 = 2αxk+1 −α2xk, for k = 0, 1. (Note that the characteristic
+polynomial λ2 −2αλ+α2 has a double root α.) If α = ±i, xk would satisfy statement
+(1) in Lemma 4.2 with (a, b) = (1, 2α). Since α ̸= ±i, we can choose some orthogonal
+matrix to transform the signature to the form [x, y, 0, 0] where y ̸= 0. In fact, if we
+let T =
+ 1
+d−1
+3
+α
+c+ d−1
+3
+α
+
+(which has det T = c ̸= 0), then the signature [x0, x1, x2, x3] can
+be expressed as
+(x0, x1, x1, x2, x1, x2, x2, x3)T = T ⊗3(1, 1, 1, 0, 1, 0, 0, 0)T.
+(We chose these transformations based on an underlying signature theory of holo-
+graphic algorithms [9], not “out of blue.”
+But for brevity of exposition we state
+these transformations as is without discussing the background.
+They can be di-
+rectly veriﬁed, albeit a bit tedious.)
+Let T = QR be its QR-factorization, i.e.,
+where Q is orthogonal and R is upper triangular. In fact, for T = [ 1
+∗
+α
+∗], we can
+choose our Q as the (complex) orthogonal matrix Q = QT =
+1
+√
+1+α2 [ 1
+α
+α
+−1 ]. Then
+QT = R = [ u
+w
+0
+v ] is upper triangular, where u =
+√
+1 + α2. Because det Q = −1 and
+det R = −det T = −c ̸= 0, we have uv ̸= 0. This Q is our choice of the orthogonal
+transformation. It follows that
+Q⊗3(x0, x1, x1, x2, x1, x2, x2, x3)T
+= (QT )⊗3(1, 1, 1, 0, 1, 0, 0, 0)T
+= R⊗3(1, 1, 1, 0, 1, 0, 0, 0)T
+= R⊗3
+
+1
+0
+⊗3
++
+
+1
+0
+
+⊗
+
+1
+0
+
+⊗
+
+0
+1
+
++
+
+1
+0
+
+⊗
+
+0
+1
+
+⊗
+
+1
+0
+
++
+
+0
+1
+
+⊗
+
+1
+0
+
+⊗
+
+1
+0
+
+=
+u
+0
+⊗3
++
+u
+0
+
+⊗
+u
+0
+
+⊗
+w
+v
+
++
+u
+0
+
+⊗
+w
+v
+
+⊗
+u
+0
+
++
+w
+v
+
+⊗
+u
+0
+
+⊗
+u
+0
+
+.
+In the notation for symmetric signatures, this signature is [u3 + 3u2w, u2v, 0, 0]. Note
+that the entry u2v ̸= 0.
+By a scalar multiplication, we can make the entry u2v equal to 1, so we only have
+to deal with a signature of the form [v, 1, 0, 0] for an arbitrary given v.
+For this signature, we can apply a holographic transformation deﬁned by the ma-
+trix T ′ = [ 1
+(v−1)/3
+0
+1
+] with inverse T ′−1 = [ 1
+−(v−1)/3
+0
+1
+]. To prove #P-hardness, we will
+reduce from the matching problem #[1, 0, 1] | [1, 1, 0, 0]. (Note that this is counting all,
+not necessarily perfect, matchings on 3-regular graphs, which remains #P-complete
+even for planar graphs [16]; counting perfect matchings on planar graphs is in P.)
+Under a contravariant transformation (v, 1, 1, 0, 1, 0, 0, 0)T = T ′⊗3(1, 1, 1, 0, 1, 0, 0, 0)T,
+the signature [1, 1, 0, 0] becomes [v, 1, 0, 0]. Under the covariant transformation by the
+same matrix, [1, 0, 1] becomes
+(1, 0, 0, 1)(T ′−1)⊗2 = ((1, 0)⊗2 +(0, 1)⊗2)(T ′−1)⊗2 =
+
+1, 1 −v
+3
+, 1 −v
+3
+, 1 + (1 −v)2
+9
+
+;
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+1114
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+i.e., the signature [1, 0, 1] becomes a new symmetric signature [1, 1−v
+3 , 1 + (1−v)2
+9
+]. We
+complete this proof by using the same gadget as in Figure 4.1 to realize this signature,
+using unary signatures and [v, 1, 0, 0].
+We will rename the values x = t0, y = t1, z = s0, and w = s1 in Figure 4.1.
+The signature of this gadget in matrix form is (xA + yB)(zA + wB)(xA + yB), where
+A = [ v
+1
+1
+0 ] and B = [ 1
+0
+0
+0 ]. After some calculations we found that this signature in
+matrix form is
+
+w(xv + y)2 + z(x2(v3 + 2v) + 2xy(v2 + 1) + y2v)
+wx(xv + y) + z(x2(v2 + 1) + xyv)
+w(x2v + xy) + z(x2(v2 + 1) + xyv)
+wx2 + zx2v
+
+.
+Our goal is to choose x, y, z and w such that it is equal to
+
+1
+(1−v)/3
+(1−v)/3
+1+((1−v)2)/9
+
+.
+We can write this as a system of three linear equations in z and w, whose coeﬃcient
+matrix depends on x and y. Then we can complete the proof, if we can choose x and
+y such that the following matrix has determinant 0, yet the ﬁrst two columns have
+rank 2.
+⎡
+⎣
+x2v2 + 2xyv + y2
+x2(v3 + 2v) + 2xy(v2 + 1) + y2v
+1
+x2v + xy
+x2(v2 + 1) + xyv
+1−v
+3
+x2
+x2v
+1 + (1−v)2
+9
+⎤
+⎦.
+After some elementary row operations it becomes
+⎡
+⎣
+y2
+2xy + y2v
+f3
+xy
+x2 + xyv
+f2
+x2
+x2v
+f1
+⎤
+⎦,
+where f1, f2, f3 are polynomials in v.
+Explicitly, let f1 = (10 −2v + v2)/9 and
+f2 = (3 −13v + 2v2 −v3)/9. Subtracting from the second column the ﬁrst column
+multiplied by v, we get
+⎡
+⎣
+y2
+2xy
+f3
+xy
+x2
+f2
+x2
+0
+f1
+⎤
+⎦.
+We will set x = 1; this guarantees that the ﬁrst two columns have rank 2, and gives
+the matrix
+⎡
+⎣
+y2
+2y
+f3
+y
+1
+f2
+1
+0
+f1
+⎤
+⎦.
+Now the determinant is easily calculated (subtract the ﬁrst row by the second row
+multiplied by y, and the second from the third multiplied by y). The determinant is
+−(f1y2 −2f2y + f3). As long as f1 and f2 are not simultaneously 0, we can always
+choose a y to make this determinant 0.
+However, it is easy to show that f1 and f2 have no common zero in v, as 3(f2 +
+vf1) = 1 −v and v = 1 is not a zero of either f1 or f2. This completes the proof of
+Lemma 4.2.
+4.2. A pair of signatures: Case (1). Lemma 4.2 shows what happens when
+there is a single nondegenerate symmetric signature of arity three. It explicitly lists
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+COMPUTATIONAL COMPLEXITY OF HOLANT PROBLEMS
+1115
+two exceptional cases for being not #P-hard. The next lemma addresses what happens
+when we have more than one signature, where one signature of arity three happens
+to be in the exceptional case (1) of Lemma 4.2, but some other signature does not ﬁt.
+Lemma 4.3. Let [x0, x1, x2, x3] and [y0, y1, y2] be nondegenerate symmetric sig-
+natures with arity three and two, respectively.
+Suppose there exist two constants
+a, b (not both zero), such that ax0 + bx1 −ax2 = 0 and ax1 + bx2 −ax3 = 0,
+but ay0 + by1 −ay2 ̸= 0 and [y0, y1, y2] is not of the form [2aλ, bλ, −2aλ].
+Then
+Holant∗({[x0, x1, x2, x3], [y0, y1, y2]}) is #P-hard.
+In fact, it is #P-hard when re-
+stricted to bipartite graphs, where [x0, x1, x2, x3] is on one side and [y0, y1, y2] is on
+another.
+We remark that, since [x0, x1, x2, x3] is nondegenerate, the constant pair (a, b) is
+unique up to a scalar factor.
+Proof. Our proof plan is as follows: We will show that the counting problem
+Holant∗({[x0, x1, x2, x3], [y0, y1, y2]}) is still #P-hard when restricted to instances
+where the input graph is bipartite, where other than degree one nodes, all nodes on
+one side are of degree three and are given the signature [x0, x1, x2, x3], and all nodes
+on the other side are of degree two and are given the signature [y0, y1, y2]. (There can
+be any number of degree one nodes, on either side of the bipartite graph, assigned any
+unary signatures.) We may denote this problem Holant∗([x0, x1, x2, x3] | [y0, y1, y2]).
+We show it is #P-hard by a holographic reduction, where [y0, y1, y2] is (contravari-
+antly) transformed to [1, 0, 1] and [x0, x1, x2, x3] is (covariantly) transformed to some
+[u0, u1, u2, u3].
+Note that [1, 0, 1] can be replaced by an edge, and the unary sig-
+natures are transformed to unary signatures.
+Thus the complexity of the prob-
+lem Holant∗([x0, x1, x2, x3] | [y0, y1, y2]) is the same as Holant∗([u0, u1, u2, u3]). We
+then apply Lemma 4.2 to [u0, u1, u2, u3].
+Note that [u0, u1, u2, u3] is nondegener-
+ate, since otherwise [u0, u1, u2, u3] is a tensor product of unary signatures, and then
+[x0, x1, x2, x3] would also be a tensor product of unary signatures, and thus degenerate.
+We want an invertible matrix T = [ α1
+β1
+α2
+β2 ] such that (T −1)⊗2[y0, y1, y2]T =
+[1, 0, 1]T, but [u0, u1, u2, u3] = [x0, x1, x2, x3]T ⊗3 is not of either of the two excep-
+tional forms in Lemma 4.2. T ⊗2[1, 0, 1]T = [y0, y1, y2]T can be written as
+T ⊗2(1, 0, 0, 1)T = T ⊗2
+
+1
+0
+⊗2
++
+
+0
+1
+⊗2
+=
+
+T
+
+1
+0
+⊗2
++
+
+T
+
+0
+1
+⊗2
+= (y0, y1, y1, y2)T.
+This is equivalent to [ y0
+y1
+y1
+y2 ] = T T T, in matrix notation. Such a factorization for a
+symmetric matrix is always possible for complex matrices. Since [y0, y1, y2] is non-
+degenerate, we have a full rank matrix T = [ α1
+β1
+α2
+β2 ] such that (y0, y1, y1, y2)T =
+T ⊗2(1, 0, 0, 1)T.
+Let [u0, u1, u2, u3] = [x0, x1, x2, x3]T ⊗3. We want to show that it does not fall
+into either of the two exceptional cases of Lemma 4.2.
+There are two cases. First we assume for a contradiction that [u0, u1, u2, u3] is of
+the form [x, y, −x, −y]. Then {uk} satisﬁes the recurrence uk+2 +uk = 0, for k = 0, 1,
+with characteristic polynomial λ2 + 1. Therefore there are scalars c and d, such that
+[u0, u1, u2, u3] = c(1, i)⊗3 + d(1, −i)⊗3.
+Let Δ = det(T ) ̸= 0, we have T −1 = Δ−1[ β2
+−β1
+−α2
+α1 ]. Then it follows that
+[x0, x1, x2, x3] = [u0, u1, u2, u3](T −1)⊗3
+= cΔ−3(β2 −α2i, −β1 + α1i)⊗3 + dΔ−3(β2 + α2i, −β1 −α1i)⊗3.
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+1116
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+Since [x0, x1, x2, x3] is nondegenerate, cd ̸= 0. By the assumption on [x0, x1, x2, x3]
+and Proposition 3.5, we have
+0 = (β2 −α2i)(β2 + α2i) + (−β1 + α1i)(−β1 −α1i) = α2
+1 + α2
+2 + β2
+1 + β2
+2.
+And after a scaling, we also have a = α2
+2 + β2
+2 = −α2
+1 −β2
+1 and b = −2(α1α2 + β1β2).
+Now
+(y0, y1, y1, y2)T = T ⊗2(1, 0, 0, 1)T = (α2
+1 + β2
+1, α1α2 + β1β2, α1α2 + β1β2, α2
+2 + β2
+2)T.
+Then [y0, y1, y2] = [−a, −b/2, a] is of the form [2aλ, bλ, −2aλ], a contradiction.
+This completes our ﬁrst step. Our second step is to take care of the other excep-
+tional case (exception (1) in Lemma 4.2).
+This exceptional case is that there exist two constants a′, b′ (not both zero), such
+that a′u0 + b′u1 −a′u2 = 0 and a′u1 + b′u2 −a′u3 = 0. We split this exceptional
+case into two cases depending on whether a = 0 or a ̸= 0, given in the statement of
+Lemma 4.3.
+If a = 0, then b ̸= 0 and x1 = x2 = 0. As [x0, 0, 0, x3] is nondegenerate, x0x3 ̸= 0.
+We can write
+[x0, 0, 0, x3] = x0
+
+1
+0
+⊗3 + x3
+
+0
+1
+⊗3 ,
+and
+[u0, u1, u2, u3] = [x0, 0, 0, x3]T ⊗3 = x0(
+1
+0
+T )⊗3 + x3(
+0
+1
+T )⊗3.
+The existence of a′, b′ (not both zero), such that a′u0 +b′u1 −a′u2 = 0 and a′u1 +
+b′u2 −a′u3 = 0, implies that the matrix [ u2−u0
+u1
+u3−u1
+u2 ] is degenerate. By Proposition 3.5
+we have the inner product of (1, 0)T = (α1, β1) and (0, 1)T = (α2, β2) is zero, i.e.,
+α1α2 + β1β2 = 0.
+But noticing that y1 = α1α2 + β1β2 and a = 0, we have ay0 + by1 −ay2 = 0, a
+contradiction.
+Finally we consider the case a ̸= 0. By a scaling we can assume a = 1. Then
+x2 = bx1 + x0, x3 = bx2 + x1 = b2x1 + bx0 + x1. Assume temporarily that b ̸= ±2i,
+then the recurrence has two distinct eigenvalues, and therefore Proposition 3.5 applies.
+After some calculation we can obtain an expression for the determinant
+(4.3)
+det
+
+u0 −u2
+u1
+u1 −u3
+u2
+
+= det
+
+α1
+β1
+α2
+β2
+2
+(α2
+1+β2
+1+b(α1α2+β1β2)−α2
+2−β2
+2)(bx0x1−x2
+1+x2
+0).
+However, for a ﬁxed T , the above polynomial identity is valid for any b ̸= ±2i, when
+we deﬁne a recurrence xk+2 = bxk+1 + xk, k = 0, 1, and then deﬁne [u0, u1, u2, u3] =
+[x0, x1, x2, x3]T ⊗3. Hence, it is also valid for b = ±2i, and so we dispense with the
+temporary assumption that b ̸= ±2i.
+The condition that there exist two constants a′, b′ (not both zero), such that
+a′u0 + b′u1 −a′u2 = 0 and a′u1 + b′u2 −a′u3 = 0 is equivalent to det[ u0−u2
+u1
+u1−u3
+u2 ] = 0.
+We know that det[ α1
+β1
+α2
+β2 ] ̸= 0; the second factor α2
+1 + β2
+1 + b(α1α2 + β1β2) −α2
+2 −β2
+2
+in (4.3) is exactly y0 + by1 −y2 which is nonzero. So we have bx0x1 −x2
+1 + x2
+0 = 0.
+Since bx0x1 +x2
+0 −x2
+1 = x0x2 −x2
+1 = det[ x0
+x1
+x1
+x2 ], and the third column in [ x0
+x1
+x2
+x1
+x2
+x3 ] is
+linearly dependent on the ﬁrst two columns, this says that [x0, x1, x2, x3] is degenerate,
+a contradiction.
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+COMPUTATIONAL COMPLEXITY OF HOLANT PROBLEMS
+1117
+4.3. A pair of signatures:
+Case (2). Lemma 4.4 does the same thing as
+Lemma 4.3 for the second exceptional case of Lemma 4.2 for a pair of signatures.
+Lemma 4.4.
+Let [x, y, −x, −y] be a symmetric signature with arity three and
+[y0, y1, y2] be a symmetric signature with arity two.
+Suppose they are both nonde-
+generate.
+If y0 + y2 ̸= 0 and [y0, y1, y2] is not of the form [λ, 0, λ], then Holant∗
+({[x, y, −x, −y], [y0, y1, y2]}) is #P-hard.
+In fact, it is #P-hard when restricted to
+bipartite graphs where [x, y, −x, −y] is on one side and [y0, y1, y2] is on another.
+Proof. The overall plan of the proof of this Lemma is the same as for Lemma 4.3.
+We can choose a basis transformation T = [ α1
+β1
+α2
+β2 ] such that (y0, y1, y1, y2)T =
+T ⊗2(1, 0, 0, 1)T. Then under the same T , [x, y, −x, −y] is transformed to [u0, u1, u2, u3]
+= [x, y, −x, −y]T ⊗3. Since [x, y, −x, −y] as a linear recurrence has the characteristic
+equation λ2 + 1, we have
+[x, y, −x, −y] = c(1, i)⊗3 + d(1, −i)⊗3,
+and hence
+[u0, u1, u2, u3] = [x, y, −x, −y]T ⊗3 = c(α1 + α2i, β1 + β2i)⊗3 + d(α1 −α2i, β1 −β2i)⊗3.
+Since we assumed that [x, y, −x, −y] is nondegenerate, we have cd ̸= 0.
+By this holographic reduction, we only need to prove that Holant∗({[u0, u1, u2, u3]})
+is #P-hard. Since [u0, u1, u2, u3] is nondegenerate, by Lemma 4.2, we have to consider
+two cases.
+If [u0, u1, u2, u3] is of the form [x′, y′, −x′, −y′], then by Proposition 3.6
+0 = (α1 + α2i)2 + (β1 + β2i)2 = (α1 −α2i)2 + (β1 −β2i)2.
+This gives α1α2 + β1β2 = 0 and α2
+1 + β2
+1 = α2
+2 + β2
+2.
+Then by (y0, y1, y1, y2)T =
+T ⊗2(1, 0, 0, 1)T, we know that [y0, y1, y2] is of the form [λ, 0, λ], a contradiction.
+Now we consider the second exceptional case from Lemma 4.2: There exist two
+constants a, b (not both zero) such that au0 + bu1 −au2 = 0 and au1 + bu2 −au3 = 0.
+By Proposition 3.5 we have
+0 = (α1 + α2i)(α1 −α2i) + (β1 + β2i)(β1 + β2i) = α2
+1 + α2
+2 + β2
+1 + β2
+2.
+This gives y0 + y2 = α2
+1 + β2
+1 + α2
+2 + β2
+2 = 0, a contradiction.
+4.4. A single signature of arity n. The following lemma extends the result
+to a signature with an arbitrary arity.
+Lemma 4.5. Let [x0, x1, x2, . . . , xn] be a nondegenerate symmetric signature with
+arity n > 3; then Holant∗([x0, x1, x2, . . . , xn]) is #P-hard unless one of the following
+two statements is true: (1) there exist two constants a, b (not both zero), such that for
+all k = 0, 1, . . . , n −2, we have axk + bxk+1 −axk+2 = 0 (the pair (a, b) is unique up
+to a scalar factor); (2) for all k = 0, 1, . . . , n −2, we have xk + xk+2 = 0.
+Proof. We assume that Holant∗([x0, x1, x2, . . . , xn]) is not #P-hard. Then we
+prove that it must satisfy either statement (1) or (2) in Lemma 4.5.
+Case A: We ﬁrst consider the case where for every k = 0, 1, . . ., n −2, the
+subsignature [xk, xk+1, xk+2] is nondegenerate. Then by Lemma 4.2, there are the
+following two exceptional cases (1) and (2) to be considered for [x0, x1, x2, x3].
+(1) There is a nonzero pair (a, b) such that ax0 + bx1 −ax2 = 0 and ax1 + bx2 −
+ax3 = 0.
+Such a nonzero pair (a, b) must be unique up to a scalar factor, since
+otherwise [x0, x1, x2, x3] is all 0. Then Holant∗({[x0, x1, x2, x3], [xk, xk+1, xk+2]}) ≤p
+T
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+1118
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+Holant∗([x0, x1, x2, . . . , xn]) is not #P-hard, and by Lemma 4.3, for every k = 0, 1, . . . ,
+n −2, axk + bxk+1 −axk+2 = 0 or [xk, xk+1xk+2] is of the form [2aλ, bλ, −2aλ].
+First we claim a ̸= 0. Suppose otherwise a = 0, then b ̸= 0, and x1 = x2 = 0, from
+the linear equations. But then surely x3 ̸= 0, since [x0, x1, x2, x3] is nondegenerate.
+Consider when k = 2. If ax2 + bx3 −ax4 = 0, then we have a contradiction. Hence
+[x2, x3, x4] is of the form [2aλ, bλ, −2aλ]. But then x2 = x4 = 0. It follows that
+[x1, x2, x3, x4] = [0, 0, x3, 0]. Applying Lemma 4.2 to this signature, it follows that
+Holant∗([x1, x2, x3, x4]) is #P-hard, contrary to assumption.
+So we can assume a = 1. Now we show that the form [2λ, bλ, −2λ] cannot appear
+among all [xk, xk+1, xk+2]. This will conclude that statement (1) of Lemma 4.5 holds.
+Suppose the form [2λ, bλ, −2λ] does occur. Such a λ certainly is nonzero; other-
+wise it is degenerate.
+If it occurs as [xk, xk+1, xk+2] for some k, then b ̸= ±2i, since [2, ±2i, −2] is
+degenerate.
+If it occurs as [xk, xk+1, xk+2] for k = 0 or 1, then together with
+ax0 + bx1 −ax2 = 0 and ax1 + bx2 −ax3 = 0, we have b = ±2i.
+A contra-
+diction.
+Thus, if this form λ[2, b, −2] appears as some [xk, xk+1, xk+2], and con-
+sider the minimal k where it appears, then k ≥2, and there is a subsignature
+[xk−2, xk−1, xk, xk+1, xk+2] = λ[x, y, 2, b, −2] with arity 4, where ax + by −2a = 0
+and ay + 2b −ab = 0. So the subsignature is λ[b2 + 2, −b, 2, b, −2], of which there is
+a subsignature λ[−b, 2, b, −2]. Applying Lemma 4.4 to the nondegenerate signature
+pair [−b, 2, b, −2] and [b2 + 2, −b, 2], we have b2 + 2 = −2 or b2 + 2 = 2. The ﬁrst case
+would imply that [2, b, −2] is degenerate. So we have b2 + 2 = 2 and thus b = 0. In
+this case, the subsignature is [2, 0, 2, 0, −2]. Using a unary signature [1, 1], we can get
+[2, 2, 2, −2]. By Lemma 4.2, this is #P-hard, again contrary to assumption.
+(2) If [x0, x1, x2, x3] is of the form [x, y, −x, −y], then by Lemma 4.4, for every
+k = 0, 1, . . ., n−2, we have xk+xk+2 = 0 or [xk, xk+1, xk+2] is of the form [λ, 0, λ]. We
+prove that [λ, 0, λ] cannot appear. This will conclude that statement (2) of Lemma 4.5
+holds.
+Suppose the form [λ, 0, λ] does appear among [xk, xk+1, xk+2]. It is easy to see
+that if it occurred at k = 0 or 1, then [x0, x1, x2, x3] = [x, y, −x, −y] is degenerate.
+Then look at the ﬁrst k ≥2 where it occurred, and to its left we have xℓ+ xℓ+2 = 0,
+for 0 ≤ℓ< k. It follows that there must be a subsignature (after a scaling) of the
+form [1, 0, −1, 0, −1]. Now we can use a similar trick with a unary signature [1, 1] and
+get [1, −1, −1, −1], which is #P-hard by Lemma 4.2.
+This completes the proof of Case A.
+Case B: There exists some 0 ≤k ≤n −2, such that the subsignature [xk, xk+1,
+xk+2] is degenerate.
+If the signature is of the form [x0, 0, 0, . . ., 0, xn], we can choose (a, b) = (0, 1),
+and statement (1) of Lemma 4.5 holds. In the following we assume the signature is
+not of this form.
+By Proposition 3.3, there exists an s, 0 ≤s ≤n −3, such that a subsignature
+σ3 = [xs, xs+1, xs+2, xs+3] has arity three and is nondegenerate. We want to ﬁnd a
+nondegenerate subsignature of arity three that contains a degenerate subsignature of
+arity two. Starting from a degenerate subsignature τ2 = [xk, xk+1, xk+2] of arity two,
+if s ≤k ≤s+1, then τ2 is already a subsignature of σ3. Otherwise, k < s or k > s+1.
+Suppose k < s. Consider the subsignature [xk+1, xk+2, xk+3]. If it is degenerate, we
+can substitute it for τ2 and continue. If it is nondegenerate, then we can substitute
+σ3 by [xk, xk+1, xk+2, xk+3], and it will also be nondegenerate. This is similar for
+k > s + 1.
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+COMPUTATIONAL COMPLEXITY OF HOLANT PROBLEMS
+1119
+Thus we can ﬁnd a degenerate subsignature of arity two that is a subsigna-
+ture of a nondegenerate subsignature σ3 of arity three.
+This σ3 must be of the
+form [s2, sr, r2, x] or [y, s2, sr, r2]. By symmetry, we only consider [s2, sr, r2, x]. By
+Lemma 4.2, we have two cases.
+For the ﬁrst case, det
+ r2−s2
+sr
+x−sr
+r2
+
+= (r2 −s2)r2 −(x−sr)sr = 0. This implies that
+srx = r4. If sr ̸= 0, srx = r4 implies that [s2, sr, r2, x] is degenerate, a contradiction.
+If sr = 0, then r = 0 by srx = r4. Since [s2, sr, r2, x] = [s2, 0, 0, x] is nondegenerate,
+we must have s2 ̸= 0 and x ̸= 0. Because n > 3, there must be entries to its left or to
+its right, say, [s2, 0, 0, x, z]. Consider the pair [s2, 0, 0, x] and [0, x, z]. By Lemma 4.3,
+the (up to a scalar multiple) unique pair for [s2, 0, 0, x] is (a, b) = (0, 1). If z ̸= 0,
+then Lemma 4.3 would imply #P-hardness. If z = 0, then we have a subsignature
+[0, 0, x, 0]. This is also #P-hard by Lemma 4.2.
+Finally for the other case, s2 +r2 = 0 and sr+x = 0. Then the signature must be
+[s2, s2i, −s2, −s2i] or [s2, −s2i, −s2, s2i]. Both are degenerate, a contradiction.
+4.5. Proof of Theorem 4.1. Finally we extend these lemmas to a set of signa-
+tures and ﬁnish the proof of Theorem 4.1.
+Before we give the proof of Theorem 4.1, we make some deﬁnitions and obser-
+vations. We say a signature [x0, x1, . . . , xn], where n ≥2, is of type I, if there exist
+two constants a and b (not both zero), such that for every k = 0, 1, . . . , n −2, we
+have axk + bxk+1 −axk+2 = 0. If we want to specify the parameters a and b, we say
+it is of type I(a, b). We say it is of type II, if for every k = 0, 1, . . ., n −2, we have
+xk +xk+2 = 0. We say a signature [x0, x1, x2] of arity two is of type I∗, more precisely
+type I∗(a, b), if it is of the form λ[2a, b, −2a]. Finally we say a signature [x0, x1, x2] of
+arity two is of type II∗, if it is of the form λ[1, 0, 1].
+For any nondegenerate signature of arity at least three, if it is of type I(a, b), then
+this (a, b) is uniquely determined up to a nonzero constant multiple. We consider such
+(a, b)’s are the same; when we say two diﬀerent pairs (a, b) and (a′, b′), we mean they
+are not constant multiples of each other (distinct points on the projective line PC1). In
+particular a nondegenerate signature of arity at least three cannot be of type I(a, b)
+and I(a′, b′) for two diﬀerent pairs (a, b) and (a′, b′). Similarly, any nondegenerate
+signature of arity at least three cannot be of both type I and type II. These can be
+directly veriﬁed. Also we can verify that any nondegenerate signature of arity two
+cannot be of both type I(a, b) and type I∗(a, b), cannot be of both type II and type
+II∗, and cannot be of both type I∗and type II∗.
+Now we rephrase the statements of Lemma 4.2 to Lemma 4.5 as follows, where ev-
+ery signature mentioned is nondegenerate. Lemma 4.2 states that, if Holant∗([x0, x1,
+x2, x3]) is not #P-hard, then [x0, x1, x2, x3] is either of type I or of type II. Lemma 4.5
+proves the same result as Lemma 4.2 for Holant∗([x0, x1, x2, . . . , xn]) with arity n > 3.
+Lemma 4.3 states that, if [x0, x1, x2, x3] is of type I(a, b) and Holant∗([x0, x1, x2, x3],
+[y0, y1, y2]) is not #P-hard, then [y0, y1, y2] is either of type I(a, b) or of type I∗(a, b).
+Lemma 4.4 states that, if [x0, x1, x2, x3] is of type II and Holant∗([x0, x1, x2, x3], [y0, y1,
+y2]) is not #P-hard, then [y0, y1, y2] is either of type II or of type II∗.
+Now we prove Theorem 4.1. The tractability part of the theorem mainly follows
+from our previous work on Fibonacci gates [13, 12]. However, we will give an alter-
+native proof. The main result here is the hardness proof, which applies Lemma 4.2
+to Lemma 4.5.
+Proof. Since we consider Holant∗problems, every degenerate signature can be
+decomposed into a tensor product of unary signatures, and will be absorbed in the
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+1120
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+Holant∗notation. Thus we will assume every explicitly given signature in F is non-
+degenerate and has arity at least 2.
+We ﬁrst consider tractability. Class 1 is when every signature in F has arity at
+most two. Then the graph of the signature grid Ω is a disjoint union of paths and
+cycles (isolated points contribute a constant; we may assume there are no isolated
+points). By matrix multiplication, we can compute the value for a path. The value
+for a cycle is the trace of that path. The value HolantΩ is the product over connected
+components.
+Next we consider class 2. We have type I(a, b) or I∗(a, b). If a = 0, all func-
+tions in F have the form [x0, 0, . . . , 0, xn] or [0, x, 0]. Then Holant∗(F) is obviously
+computable in polynomial time, by extending uniquely any initial value at an edge
+within a connected component. Now suppose a ̸= 0. We ﬁrst assume the charac-
+teristic equation a + bλ −aλ2 = 0 has two distinct eigenvalues λ1 ̸= λ2. Note that
+λ1λ2 = −1. In this case all functions in F have the form F = u[ 1
+λ1]⊗n + v[ 1
+λ2]⊗n or
+G = [2a, b, −2a]. We use the nonsingular matrix M = [1
+λ1
+1
+λ2] to perform a holographic
+reduction on #({=2}∪U)|(F ∪U), which is the bipartite form of problem Holant∗(F).
+Under this basis, F is turned into M ⊗nF = u[1 + λ2
+1
+0
+]⊗n + v[
+0
+1 + λ2
+2]⊗n, G is turned into
+M ⊗2G = [0, (4a2+b2)/a, 0], and (=2) = [1, 0, 1] is turned into [1, 0, 1](M −1)
+⊗2, which
+is a nonzero scalar multiple of [1 + λ2
+2, 0, 1 + λ2
+1]. In the meanwhile all unary functions
+are transformed into unary functions. Connecting any unary function to a function
+of the type M ⊗nF maintains that type (with arity n −1). Connecting any unary
+function to any function of arity two, including M ⊗2G or [1, 0, 1](M −1)
+⊗2 creates
+another unary function. Hence it follows that this reduction reduces Holant∗(F) to
+an obviously tractable problem.
+Continuing for class 2, if the eigenvalues λ1 = λ2, then b = ±2ai. Then a ̸= 0 and
+we can normalize to a = 1, b = ±2i, λ1 = λ2 = b/2. The signature G = [2, b, −2] =
+[2, ±2i, −2] is degenerate. Therefore we only need to consider signatures F ∈F of
+type I(1, b), together with unary signatures. Connecting any unary signature to any
+F of type I(1, b) creates another signature of type I(1, b) (of lower arity).
+Suppose b = 2i (the case with −2i is similar). A signature X = [x0, . . . , xn] ∈F
+of type I(1, 2i) satisﬁes xk = skik−1 +tik, 0 ≤k ≤n, where s and t are two constants.
+Let c = t −sni
+2
+and d = si
+2 . Consider the signature
+X′ = c
+
+1
+0
+⊗n
++d
+
+1
+0
+⊗(n−1)
+⊗
+
+0
+1
+
++
+
+1
+0
+⊗(n−2)
+⊗
+
+0
+1
+
+⊗
+
+1
+0
+
++ · · · +
+
+0
+1
+
+⊗
+
+1
+0
+⊗(n−1)
+.
+We claim that
+Z⊗nX′ = X,
+where
+Z =
+
+1
+1
+i
+−i
+
+.
+To wit, the weight k entry of Z⊗nX′ is cik + d[k(−i)ik−1 + (n −k)ik] = ik[c +
+d(n −2k)] = skik−1 + tik.
+Under the holographic transformation by Z, (=2) is
+transformed to ZTI2Z = 2[ 0
+1
+1
+0 ], which is 2 times the binary Disequality (̸=2)
+function in matrix form. The bipartite problem #{̸=2} | {X′}, where each X′ may
+have diﬀerent parameters c and d, is tractable by the following argument. In any
+nonzero evaluation, on account of (̸=2), an assignment must assign exactly half the
+edges 0 and the other half 1. For any X′ with arity more than two, to be nonzero it
+must have strictly more incident edges 0. Hence the computation reduces to that of
+class 1, with arities at most 2.
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+COMPUTATIONAL COMPLEXITY OF HOLANT PROBLEMS
+1121
+For class 3, we will prove that the Holant is zero unless the input graph is bipartite,
+and there is a holographic algorithm for bipartite graphs. If there is a function [1, 0, 1]
+applied to two variables x and y, we just merge them into one variable and remove this
+function. Connecting a unary function to a function of type II still gives a function
+of type II. Hence, we may assume all functions on vertices of an input graph are
+of type II, i.e., have the form [u, v, −u, −v, . . .]. If the input graph G(V, E) is not
+bipartite, there is a cycle v1, e1, v2, . . . , vk, ek, v1 of odd length. We partition all 0-
+1 assignments for E into two parts, with a 1-1 correspondence between them. An
+assignment σ is mapped to σ′, which assigns the same values on E −{e1, . . . , ek}, but
+opposite values on {e1, . . . , ek}. Under σ and σ′, all functions on V −{v1, . . . , vk}
+evaluate to the same value, and if σ(ej−1) ̸= σ(ej) (where the index j is counted mod
+k), the function at vj evaluates to the same value under σ and σ′, and if σ(ej−1) =
+σ(ej), the function at vj evaluates to the opposite values under σ and σ′. Consider
+σ(e1), σ(e2), . . . , σ(ek), σ(e1), there must be an even number of times where the value
+changes in this sequence. Since k is odd, there are an odd number of vj’s, where the
+functions at vj give opposite values under σ and σ′. Hence, in the summation, the
+contributions of σ and σ′ are canceled.
+If the input graph is bipartite, the problem is #(F ∪U)|(F ∪U). Then #(F ∪
+U)|(F ∪U) is turned into #(F′ ∪U)|(F′ ∪U), where every signature in F′ has the
+form [x1, 0, . . . , 0, xn], by the holographic reduction with matrix M = [1
+i
+1
+−i]. This is
+clearly tractable.
+Now we prove that if Holant∗(F) is not #P-hard, then F must fall in one of the
+three classes.
+As stated earlier, all signatures in F are assumed to be nondegenerate. If no
+signature has arity ≥3, then we are done with class 1.
+Suppose there are some
+signatures of arity ≥3. Each such signature is of type I or II by Lemma 4.2 and
+Lemma 4.5. If there is exactly one signature of arity ≥3, then if it is of type I,
+Lemma 4.3 ﬁnishes the proof and we are in class 2; if it is of type II, Lemma 4.4
+ﬁnishes the proof and we are in class 3. So we are ﬁnished.
+In the following we assume there are more than one signatures in F of arity
+≥3. Of course, each such signature declares a type I or II. As remarked before, any
+signature in F, being nondegenerate of arity ≥3, declares a unique type I or II, not
+both; and in case of type I, it is of type I(a, b), for a unique (a, b) ∈PC1. We would
+like to prove that these declarations are all “consistent”; i.e., there is only one type
+for all nondegenerate signatures of arity at least three.
+• Case 1. Suppose there is a nondegenerate type I(0, 1) signature σ3 of arity ≥3.
+By connecting with the unary [1, 1] we may assume it is of arity three. Then for any
+other nondegenerate signature σ′ of arity ≥3 and of a diﬀerent type, if one exists, by
+Proposition 3.3, there exists a nondegenerate subsignature [x, y, z] of arity two. By
+being not #P-hard, we apply Lemma 4.3 to the pair σ3 and [x, y, z] and conclude that
+there are two cases: [x, y, z] = [x, 0, z], or [0, y, 0]. Being nondegenerate, xz ̸= 0, or
+y ̸= 0, respectively. Within σ′ there is a subsignature containing it. In the ﬁrst case,
+it has the form [w, x, 0, z] (or [x, 0, z, w]), then [w, x, 0] (or [0, z, w]) is nondegenerate,
+and applying Lemma 4.3 once again, we get w = 0. In the second case, it has the
+form [u, 0, y, 0] (or [0, y, 0, u]). If u = 0, Holant∗([0, 0, y, 0]) (or Holant∗([0, y, 0, 0])) is
+#P-hard by Lemma 4.2. Hence in all cases we get a signature of the form [u, 0, v, 0]
+(or its reversal [0, v, 0, u]) where uv ̸= 0. By symmetry consider [u, 0, v, 0] (the case
+[0, v, 0, u] is similar). We connect a unary [s, t] to it, and get [su, tv, sv]. As long as
+st ̸= 0 and s2/t2 ̸= v/u, this is nondegenerate and Lemma 4.3 on the pair σ3 and
+[su, tv, sv] leads to #P-hardness.
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+1122
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+• Case 2. Now we assume Case 1 does not apply, but there exists a nondegenerate
+type I(a, b) signature σ3 of arity ≥3, where a ̸= 0 and b ̸= ±2ai. By Proposition 3.3,
+we may assume σ3 has arity three. We may normalize it to a = 1, and b ̸= ±2i.
+Then the characteristic equation λ2 −bλ−1 has two distinct eigenvalues λ1 ̸= λ2.
+It follows that λ1λ2 = −1, and thus λ1, λ2 ̸= ±i. Deﬁne
+T =
+⎡
+⎣
+1
+√
+1+λ2
+1
+1
+√
+1+λ2
+2
+λ1
+√
+1+λ2
+1
+λ2
+√
+1+λ2
+2
+⎤
+⎦,
+then T is orthogonal. It is easy to verify that σ3 = T ⊗3f for some f = [x0, 0, 0, x3]T,
+a nondegenerate signature of type I(0, 1). Performing a holographic transformation
+by T on all signatures in F, we have reduced Case 2 to Case 1.
+• Case 3. We assume Cases 1 and 2 do not apply, but there exists a nondegenerate
+type I(1, b) signature σ3 of arity ≥3, where b = ±2i. By Proposition 3.3, we may
+assume σ3 has arity three. We still suppose there exists a nondegenerate signature σ′
+of arity ≥3 and of a diﬀerent type, for otherwise we are done. By Proposition 3.3,
+there exists a nondegenerate subsignature [x, y, z] of σ′. σ′ could be of type I(1, b′) or
+II, where b′ = ±2i (but b′ ̸= b, and hence b′ = b).
+If it is of type I(1, b′), note that for b = ±2i, the binary signature [2, b, −2] is
+degenerate, and so, by applying Lemma 4.3 to σ3 and [x, y, z], we get x + by −z = 0
+as well as x + b′y −z = 0. This implies that y = 0 and x = z ̸= 0. But within σ′
+there is a subsignature [w, x, 0, x] or [x, 0, x, w]. As x ̸= 0, [w, x, 0] and [0, x, w] are
+nondegenerate. Applying Lemma 4.3 once again we get a contradiction. If σ′ is of
+type II, then we still get x + by −z = 0 as well as z = −x. Since b = ±2i, this implies
+that [x, y, z] is degenerate, also a contradiction.
+• Case 4. There are no nondegenerate signatures of type I and arity ≥3. Then
+all of them must be of type II. This concludes the proof.
+5. A dichotomy theorem for Holantc(F).
+Theorem 5.1. Let F be a set of real symmetric signatures, and let F1, F2, and
+F3 be three families of signatures deﬁned as
+F1 = {λ([1, 0]⊗k + ir[0,
+1]⊗k) | λ ∈C, k = 1, 2, . . . , and r = 0, 1, 2, 3};
+F2 = {λ([1, 1]⊗k + ir[1, −1]⊗k) | λ ∈C, k = 1, 2, . . ., and r = 0, 1, 2, 3};
+F3 = {λ([1, i]⊗k + ir[1, −i]⊗k) | λ ∈C, k = 1, 2, . . ., and r = 0, 1, 2, 3}.
+Then Holantc(F) is computable in polynomial time if (1) Holant∗(F) is computable
+in polynomial time or (2) F ⊆F1 ∪F2 ∪F3. Otherwise, Holantc(F) is #P-hard.
+Tractability and proof outline for hardness.
+By deﬁnition, every instance of
+Holantc(F) is also an instance of Holant∗(F). So it is obvious that if Holant∗(F)
+is computable in polynomial time, then so is Holantc(F). The polynomial time al-
+gorithm for any complex-valued function set F ⊆F1 ∪F2 ∪F3 is nontrivial. The
+tractability crucially depends on algebraic cancellations. The crux of the matter is a
+polynomial time algorithm to evaluate
+
+x1,x2,...,xn=0,1
+iL1(X)+L2(X)+···+Lm(X),
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+COMPUTATIONAL COMPLEXITY OF HOLANT PROBLEMS
+1123
+where each Lk(X) is a 0-1 indicator function of an aﬃne linear function mod 2.
+Thus the exponent on i can be viewed as a mod 4 sum of mod 2 sums. It turns
+out that this tractability leads to a more general polynomial time algorithm that
+includes asymmetric signatures as well. In [11, 14], we extend these families to a
+uniﬁed algorithm, which eventually leads to a dichotomy theorem for complex-valued
+Boolean #CSP.
+The tractability for Holantc(F1 ∪F2 ∪F3) works for complex-valued signatures.
+In this paper we give a proof for the case of real-valued signatures, which suﬃces for
+Theorem 5.1.
+We explicitly list all the signatures in F1 ∪F2 ∪F3, up to an arbitrary constant
+multiple from C.
+1. [1, 0, 0, . . ., 0, ±1];
+(F1, r = 0, 2)
+2. [1, 0, 0, . . ., 0, ±i];
+(F1, r = 1, 3)
+3. [1, 0, 1, 0, . . ., 0 or 1];
+(F2, r = 0)
+4. [0, 1, 0, 1, . . ., 0 or 1];
+(F2, r = 2)
+5. [1, i, 1, i, . . ., i or 1];
+(F2, r = 3)
+6. [1, −i, 1, −i, . . ., (−i) or 1];
+(F2, r = 1)
+7. [1, 0, −1, 0, 1, 0, −1, 0, . . ., 0 or 1 or (−1)];
+(F3, r = 0)
+8. [1, 1, −1, −1, 1, 1, −1, −1, . . ., 1 or (−1)];
+(F3, r = 1)
+9. [0, 1, 0, −1, 0, 1, 0, −1, . . ., 0 or 1 or (−1)];
+(F3, r = 2)
+10. [1, −1, −1, 1, 1, −1, −1, 1, . . ., 1 or (−1)].
+(F3, r = 3)
+Among these, we single out the real-valued signatures, up to an arbitrary constant
+multiple from R.
+1. [1, 0, 0, . . ., 0, ±1];
+(F1)
+2. [1, 0, 1, 0, . . ., 0 or 1];
+(F2)
+3. [0, 1, 0, 1, . . ., 0 or 1];
+(F2)
+4. [1, 0, −1, 0, 1, 0, −1, 0, . . ., 0 or 1 or (−1)];
+(F3)
+5. [1, 1, −1, −1, 1, 1, −1, −1, . . ., 1 or (−1)];
+(F3)
+6. [0, 1, 0, −1, 0, 1, 0, −1, . . ., 0 or 1 or (−1)];
+(F3)
+7. [1, −1, −1, 1, 1, −1, −1, 1, . . ., 1 or (−1)].
+(F3)
+For any occurrence of a constraint function of the form [1, 0, 0, . . ., 0, 1] of arity k,
+we can simply identify the k variables and eliminate this constraint function. Similarly
+for [1, 0, 0, . . ., 0, −1] on x1, . . . xk, we will identify all x1, . . . xk, and replace it by
+[1, −1] = (−1)x1. For [1, 0, 1, 0, . . ., 0 or 1] on x1, . . . xk, k > 1, we substitute xk =
+x1 + · · · + xk−1 (a mod 2 sum), and for [0, 1, 0, 1, . . ., 0 or 1] we substitute xk =
+x1 + · · · + xk−1 + 1. For k = 1, we have [1, 0] and [0, 1], respectively, and the variable
+is simply set to the constant 0 and 1, respectively.
+A more interesting case is [1, 1, −1, −1, 1, 1, −1, −1, . . ., 1 or (−1)] on x1, . . . xk.
+We claim this is the same function as (−1)
+
+1≤i<j≤k xixj.
+On any input of Ham-
+ming weight t, the exponent is
+t
+2
+
+, which by Lucas theorem gives the following val-
+ues: 0, 0, 1, 1, 0, 0, 1, 1, . . . mod 2. Similarly [1, −1, −1, 1, 1, −1, −1, 1, . . ., 1 or (−1)] is
+(−1)
+
+1≤i≤k xi+
+1≤i<j≤k xixj.
+Finally, [1, 0, −1, 0, 1, 0, −1, 0, . . ., 0 or 1 or (−1)] is the product of
+[1, 0, 1, 0, . . ., 0 or 1]
+and
+[1, 1, −1, −1, 1, 1, −1, −1, . . ., 1 or (−1)],
+and [0, 1, 0, −1, 0, 1, 0, −1, . . ., 0 or 1 or (−1)] is the product of
+[0, 1, 0, 1, . . ., 0 or 1]
+and
+[1, 1, −1, −1, 1, 1, −1, −1, . . ., 1 or (−1)].
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+1124
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+The above analysis shows that the tractability of Holantc(F1 ∪F2 ∪F3) follows
+from a polynomial time algorithm to evaluate the sum
+
+x1,x2,...,xn=0,1
+(−1)Q(x1,x2,...,xn),
+where Q(x1, x2, . . . , xn) is a polynomial over Z2 of degree at most 2. This algorithm
+is known [28].
+The main result of Theorem 5.1 is hardness. We want to prove that aside from
+these tractable cases, all remaining problems are #P-hard. Here the main technique
+is polynomial interpolation. We prove the second dichotomy theorem (Theorem 5.1)
+by a reduction to the ﬁrst (Theorem 4.1). We will show how to interpolate all unary
+signatures. The interpolation method used here is brieﬂy described in subsection 5.1.
+Once we can interpolate all unary signatures by Lemma 5.3, we can make use of
+the dichotomy theorem for Holant∗(F). The whole proof is organized as a sequence
+of lemmas (Lemma 5.5 to Lemma 5.9). In each lemma, we prove the theorem for
+a broader family of F, and the remaining unproved ones are the beginning of the
+next lemma. Finally we prove the theorem for all possible signature sets F. In some
+cases, the attempt to interpolate all unary signatures does not work. In these cases,
+we employ another starting point of #P-hardness, which is the problem of count-
+ing Perfect Matchings on 3-regular graphs [16]. The reduction from Perfect
+Matching is also by polynomial interpolation, which is done in Lemma 5.4. How-
+ever, note that counting Perfect Matchings is computable in polynomial time for
+planar graphs [25, 26, 29]; therefore our dichotomy theorem for Holantc problems here
+does not apply to planar graphs as our dichotomy theorem for Holant∗problems does.
+5.1. Polynomial interpolation. In this subsection, we discuss the interpola-
+tion method we use for the dichotomy theorem for Holantc. Polynomial interpolation
+is a powerful tool in the study of counting problems initiated by Valiant [31] and
+further developed by Vadhan [30], Dyer and Greenhill [21], and many others. The
+method we use here is essentially the same as Vadhan [30].
+Suppose for some set of signatures F, we want to show that for all unary signatures
+f = [x, y], we have Holant(F ∪{[x, y]}) ≤p
+T Holant(F); i.e., Holant(F ∪{[x, y]}) is
+polynomial time Turing reducible to Holant(F). Let Ω = (G, F ∪{[x, y]}, π). We
+want to compute HolantΩ in polynomial time using an oracle for Holant(F).
+Let Vf be the subset of vertices in G assigned f in Ω. Suppose |Vf| = n. We can
+classify all 0-1 assignments σ in the Holant sum according to how many vertices in Vf
+whose incident edge is assigned a 0 or a 1. Then the Holant value can be expressed
+as
+(5.1)
+HolantΩ =
+
+0≤i≤n
+cixiyn−i,
+where ci is the sum over all edge assignments σ, of products of evaluations at all
+v ∈V (G) −Vf, where σ is such that exactly i vertices in Vf have their incident edges
+assigned 0 (and n −i have their incident edges assigned 1). If we can evaluate these
+ci, we can evaluate HolantΩ.
+Now suppose {Gs} is a sequence of F-gates, and each Gs has one dangling edge.
+Denote the signature of Gs by fs = [xs, ys], for s = 0, 1, . . ..
+If we replace each
+occurrence of f by fs in Ω, we get a new signature grid Ωs, which is an instance of
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+COMPUTATIONAL COMPLEXITY OF HOLANT PROBLEMS
+1125
+g
+A
+A
+Fig. 5.1. Recursive construction.
+Holant(F), with
+(5.2)
+HolantΩs =
+
+0≤i≤n
+cixi
+syn−i
+s
+.
+One can evaluate HolantΩs by oracle access to Holant(F). Note that the same set
+of values ci occurs in (5.1) and (5.2). We can treat ci in (5.2) as a set of unknowns
+in a linear system. The idea of interpolation is to ﬁnd a suitable sequence {fs} such
+that the evaluation of HolantΩs gives a linear system (5.2) of full rank, from which
+we can solve all ci. In this case, we say that the sequence {Gs} interpolates all unary
+signatures.
+In this paper, the sequence {Gs} will be constructed recursively using suitable
+gadgetry. There are two gadgets in a recursive construction: one gadget has arity
+one, giving the initial signature g = [x0, y0]; the other gadget has arity two, giving
+the recursive iteration. It is more convenient to use a 2 × 2 matrix A to denote the
+signature of this binary gadget. So we can recursively connect them as in Figure 5.1
+and get {Gs}.
+The signatures of {Gs} have the following relation:
+(5.3)
+
+xs
+ys
+
+=
+
+a11
+a12
+a21
+a22
+ 
+xs−1
+ys−1
+
+,
+where A = [ a11
+a12
+a21
+a22 ] and g = [ x0
+y0 ].
+We call this gadget pair (A, g) a recursive construction. Vadhan’s Lemma 6.1 in
+[30] gives the following lemma.
+Lemma 5.2. Let α, β be the two eigenvalues of A. If the following three conditions
+are satisﬁed:
+1. det(A) ̸= 0;
+2. g is not a column eigenvector of A (nor the zero vector);
+3. α/β is not a root of unity,
+then the recursive construction (A, g) can interpolate all unary signatures.
+This interpolation method also works in a similar way for signatures with a larger
+arity but only two dimensions of freedom. For example, it works for all signatures of
+the form [0, x, 0, y]. This version is used in the proof of Lemma 5.4.
+5.2. Hardness proof of Theorem 5.1. In the dichotomy theorem for Holant∗
+(F), we assume the arity of every signature in F is greater than one and all signatures
+in F are nondegenerate. In Holantc(F), not all unary signatures are freely available,
+so we cannot assume that. In some cases, the presence of some unary signatures or
+degenerate signatures does change the complexity of the problem. However, we can
+still do some normalization here to make the proof clearer. Since any degenerate
+signature [x, y]⊗k can be replaced by the corresponding unary signature [x, y] without
+changing the complexity of the problem, we always assume that every signature in
+F, whose arity is greater than one, is nondegenerate. Since [1, 0] and [0, 1] are freely
+available, we can construct any subsignature of the original signatures as well as any
+signature realizable by some F-gate.
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+1126
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+Lemma 5.3. If we can construct a gadget with a (real) signature [a, b, c], where
+b2 ̸= ac, b ̸= 0, and a + c ̸= 0, then we can interpolate all unary functions.
+Proof.
+We use the interpolation method as described in subsection 5.1.
+We
+consider the recursive construction
+
+[ a
+b
+b
+c ], [ 1
+0 ]
+
+(alternatively
+
+[ a
+b
+b
+c ], [ 0
+1 ]
+
+), show that
+the construction succeeds in interpolating all unary functions. We use A to denote
+[ a
+b
+b
+c ]. Since b2 ̸= ac, A is nondegenerate, the ﬁrst condition of Lemma 5.2 is satisﬁed.
+If [1, 0]T is a column eigenvector of A then b = 0, a contradiction. So the second
+condition of Lemma 5.2 is satisﬁed. Since A is a real symmetric matrix, both its
+eigenvalues are real. If the ratio of two real numbers is a root of unity, they must
+be the same or opposite to each other. If the two eigenvalues are the same, we will
+have b = 0 and a = c, a contradiction. If the two eigenvalues are opposite to each
+other, then the trace a + c = 0, also a contradiction. Therefore, the third condition
+of Lemma 5.2 is also satisﬁed. This completes the proof.
+If we can construct a gadget with a binary symmetric signature [a, b, c], which
+satisﬁes all the conditions in Lemma 5.3, then we are done. In most cases, we prove
+Theorem 5.1 by interpolating all unary signatures. However, in some cases, we are
+not able to do that. For example, if every signature F has the parity condition (i.e.,
+it is zero on all odd weight entries, or zero on all even weight entries), then all unary
+signatures we can realize from F have the form [a, 0] or [0, a]. So we cannot interpolate
+all unary signatures. For these cases, our starting point is the following lemma.
+Lemma 5.4.
+If a ∈R and a ̸= ±1, then Holantc([0, 1, 0, a]) is #P-hard. By
+symmetry, Holantc([a, 0, 1, 0]) is also #P-hard.
+Proof. We start with Holant([0, 1, 0, 0]), which is #P-hard. This is the problem
+of counting perfect matchings in 3-regular graphs [16]. So the problem is #P-hard if
+a = 0.
+Now assume that a ̸∈{−1, 0, 1}. We will use the signature [0, 1, 0, a] to interpolate
+all the signatures of the form [0, 1, 0, x]; in particular, we can interpolate [0, 1, 0, 0] and
+ﬁnish the hardness reduction.
+The recursive construction is depicted by Figure 5.2. By a simple parity argument,
+and an induction on i, every F-gate Ni has a signature of the form [0, xi, 0, yi]. More
+precisely, let σ be an assignment to the three dangling edges of Ni. We show that
+if the Hamming weight wt(σ) is even, then the value of Ni is zero. Each internal
+edge in Ni, excluding those internal to Ni−1, appears twice as input to functions at
+vertices, and hence wt(σ) is congruent mod 2 to the sum of Hamming weights of
+assignments at all seven vertices of degree 3 in Ni (Figure 5.2), where we consider
+Ni−1 as a single vertex of degree 3. To have a nonzero evaluation, each of the seven
+vertices requires an input of odd Hamming weights. This shows that the signature of
+Ni has the form [0, xi, 0, yi]. After some calculation, we can get that they satisfy the
+following recursive relation:
+xi+1
+yi+1
+
+=
+3(a2 + 1)
+(a3 + a)
+3(a3 + a)
+a6 + 1
+ xi
+yi
+
+.
+In this case, the signatures we want to interpolate are of arity three. But since all of
+them are of the form [0, xi, 0, yi], we can use the interpolation method in subsection
+5.1. Let A = [ 3(a2+1)
+(a3+a)
+3(a3+a)
+a6+1 ], and then (A, [1, a]T) forms a recursive construction.
+Note that here [1, a] really denotes the initial gadget consisting of a single vertex with
+signature [0, 1, 0, a]. Since det(A) = 3(a4 −1)2 ̸= 0, the ﬁrst condition holds. Its
+characteristic equation is X2 −(a6 + 3a2 + 4)X + 3(a4 −1)2 = 0. For this quadratic
+equation, its discriminant Δ = (a6 −3a2 −2)2 + 12(a + a3)2 > 0. So A has two
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+COMPUTATIONAL COMPLEXITY OF HOLANT PROBLEMS
+1127
+1
+i
+N
+0
+N
+1
+N
+i
+N
+Fig. 5.2. The recursive construction. The signature of every vertex in the gadget is [0, 1, 0, a].
+distinct real eigenvalues. The sum of the two eigenvalues is a6 + 3a2 + 4 > 0. So they
+are not opposite to each other. Therefore, the ratio of these two eigenvalues is not
+a root of unity and the third condition holds. Consider the second condition, if the
+initial vector [1, a]T is a column eigenvector of A, we have A[ 1
+a ] = λ[ 1
+a ], where λ is an
+eigenvalue of A. From this, we can conclude that a(a2 −1)(a4 −1) = 0, which does
+not hold given a ̸∈{−1, 0, 1}. To sum up, this recursive relation satisﬁes all three
+conditions of Lemma 5.2 and can be used to interpolate all signatures of the form
+[0, 1, 0, x]. This completes the proof.
+We deﬁne some families of real symmetric signatures, which will be used in our
+proof.
+G1 = {[a, 0, . . . , 0, b] | ab ̸= 0, arity k ≥1}.
+G2 = {[x0, x1, . . . , xk] | k ≥1
+∀i even, xi = 0, or ∀i odd, xi = 0}.
+G3 = {[x0, x1, . . . , xk] | k ≥1
+∀i, xi + xi+2 = 0}.
+We note that G1, G2, and G3 are supersets of (the real parts of) F1, F2, and F3,
+respectively (the only exception is that the all zero function is in F1, but not in G1).
+The following several lemmas serve as the main technical argument for the proof of
+Theorem 5.1. It is a carefully calibrated sequence that is designed to chip away at the
+diﬃculty. In an intuitive sense, signature sets within G1∪G2∪G3 are suﬃciently “close”
+to being tractable for Holantc, so that to exactly “carve” out their #P-hardness while
+keeping F1 ∪F2 ∪F3 in the tractable side (as we must) is a delicate task. All these
+lemmas have the form “If F ̸⊆A, then Theorem 5.1 holds.” After proving one lemma,
+in all subsequent lemmas, we only need to consider the case that F ⊆A.
+Lemma 5.5. If F ̸⊆G1 ∪G2 ∪G3, then Theorem 5.1 holds.
+Proof. Since F ̸⊆G1∪G2∪G3, there exists an f ∈F and f ̸∈G1∪G2∪G3. Since all
+unary signatures are in G3, the arity of f is greater than one and f is nondegenerate.
+There are two cases according to whether f has a zero entry or not.
+(1) f has some zero entries. If there exists a subsignature of f having the form
+[0, a, b] or [a, b, 0], where ab ̸= 0, then we are done by Lemma 5.3. Otherwise, we can
+conclude that there are no two successive nonzero entries. So the signature f takes
+this form [0i0x10i1x20i2 · · · xk0ik]. Here for all 1 ≤j ≤k, 0 ̸= xj ∈R; k ≥2, since
+f ̸∈G2; i0, ik ≥0, and for all 1 ≤j ≤k −1, ij ≥1. If for all 1 ≤j ≤k −1, ij is
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+1128
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+Fig. 5.3. The signature of every degree 4 vertex in the gadget is [1, 0, 1, 0, −1]. And the signature
+of the degree 1 vertex in the gadget is [1, 0].
+odd, then f ∈G2, a contradiction. Therefore there exists a subsignature of the form
+[x, 0, . . . , 0, y], where xy ̸= 0 and there is an even number of 0’s between x and y. If
+this is the entire signature f itself, then f ∈G1, a contradiction. So there is at least
+one 0 before x or after y in f. By symmetry, we assume there is a 0 before x, so
+we have a subsignature [0, x, 0, . . . , 0, y], whose arity is even and greater than three.
+We call its dangling edges 1, 2, . . ., 2k. Then for every i = 1, 2, . . . , k −1, we merge
+dangling edges 2i+1 and 2i+2 together to form a regular edge. After that, we have an
+F-gate with arity two, and its signature is [0, x, y]. Then we are done by Lemma 5.3.
+(2) f has no zero entries. We only need to prove that we can construct a function
+[a′, b′, c′] satisfying the three conditions in Lemma 5.3. Suppose all subsignatures of
+f with arity two do not satisfy all three conditions. For each subsignature [a′, b′, c′],
+either a′ + c′ = 0, or b′2 = a′c′. If all of them satisfy a′ + c′ = 0, then f ∈G3, and
+we get a contradiction. If all of them satisfy b′2 = a′c′, then f is degenerate. This is
+also a contradiction, since the arity of f is > 1, and all signatures in F of arity > 1
+are nondegenerate. Without loss of generality, we can assume there is a subsignature
+[a, b, c, d] of f (or its reversal), such that a+ c = 0, b+ d ̸= 0, and c2 = bd. Combining
+two copies of [a, b, c, d] by connecting two pairs of dangling edges, we can get a binary
+function [a′, b′, c′] = [a2 + 2b2 + c2, ab + 2bc + cd, b2 + 2c2 + d2]. Then a′ = 2(b2 + c2),
+b′ = c(b+d) ̸= 0, c′ = (b+d)2. And so a′+c′ > 0, and a′c′−b′2 = (b+d)2(2b2+c2) > 0.
+We are done by Lemma 5.3.
+Lemma 5.6. If F ̸⊆G1 ∪F2 ∪G3, then Theorem 5.1 holds.
+Proof. If F ̸⊆G1 ∪G2 ∪G3, then by Lemma 5.5, we are done. Otherwise, there
+exists a signature f ∈F ⊆G1 ∪G2 ∪G3 and f ̸∈G1 ∪F2 ∪G3. Then it must be the
+case that f ∈G2. We claim that f has arity greater than two. Since U ⊂G3, the
+arity of f is at least two. Being from F and of arity at least two, f is nondegenerate.
+If f has arity two, since f ∈G2, it has form [∗, 0, ∗] or [0, ∗, 0]. Being nondegenerate,
+the former belongs to G1.
+The latter belongs to G3.
+Hence f has arity at least
+three. Since f ̸∈G1, there is some nonzero entry in the middle of the signature f;
+after normalization, we can assume there is a subsignature of the form [0, 1, 0, x] (or
+[x, 0, 1, 0]). If x ̸= ±1, then by Lemma 5.4, the problem is #P-hard and we are done.
+Otherwise, for every such pattern, we have x = ±1. Since f ̸∈F2, then there is some
+subsignature [0, 1, 0, −1] and because f ̸∈G3, there is some subsignature ±[0, 1, 0, 1].
+Therefore, there is a subsignature [1, 0, 1, 0, −1] of f, up to a nonzero multiple. Then
+we can construct an F-gate as in Figure 5.3, whose signature is [8, 0, 4, 0]. So by
+Lemma 5.4, we know that the problem is #P-hard and we are done. This completes
+the proof.
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+COMPUTATIONAL COMPLEXITY OF HOLANT PROBLEMS
+1129
+Fig. 5.4. The function on degree 2 nodes is [1, a, −1], and the function on degree 3 nodes is
+[1, 0, 0, b′].
+Lemma 5.7. If F ̸⊆G1 ∪G3, then Theorem 5.1 holds.
+Proof. If F ̸⊆G1 ∪F2 ∪G3, then by Lemma 5.6, we are done. Otherwise, there
+exists a signature f ∈F ⊆G1 ∪F2 ∪G3 and f ̸∈G1 ∪G3. Then it must be the case
+that f ∈F2. Note that every signature with arity at most two in F2 is also contained
+in G1 ∪G3, so f is of arity greater than two. Then f has a subsignature [1, 0, 1, 0] or
+[0, 1, 0, 1]. By symmetry, we assume it is [1, 0, 1, 0]. If F ⊆F1∪F2∪F3, then Theorem
+5.1 trivially holds and there is nothing to prove.
+If not, there exists a signature
+g ∈F −F1 ∪F2 ∪F3. By F ⊆G1 ∪F2 ∪G3, either g ∈G1 −F1 ∪F2 ∪F3 (⊆G1 −F1)
+or g ∈G3 −F1 ∪F2 ∪F3 (⊆G3 −F3).
+For the ﬁrst case, g ∈G1 −F1, then after eliminating a scalar factor, g is of the
+form [1, 0, 0, . . ., b], where b ̸∈{−1, 0, 1}. If the arity of g is odd, we can realize [1, b]
+by connecting every two dangling edges into one edge and leave one dangling edge.
+Then connecting this unary signature to one dangling edge of [1, 0, 1, 0], we can realize
+a binary signature [1, b, 1]. Then by Lemma 5.3, Theorem 5.1 holds. If the arity of g is
+even, we can realize [1, 0, b] (leaving two dangling edges). By connecting one dangling
+edge of each of 3 copies of [1, 0, b] to each of 3 dangling edges of [1, 0, 1, 0], we can have
+a new ternary symmetric signature [1, 0, b2, 0], which is equivalent to [1/b2, 0, 1, 0]. By
+Lemma 5.4, we know the problem is #P-hard.
+For the second case g ∈G3−F3, then g has a subsignature of the form [1, b], where
+b ̸∈{−1, 0, 1}. By the same argument as above, Theorem 5.1 holds. This completes
+the proof.
+Lemma 5.8. If F ̸⊆G1 ∪F3, then Theorem 5.1 holds.
+Proof. If F ̸⊆G1 ∪G3, then by Lemma 5.7, we are done. Otherwise, there exists
+a signature f ∈F ⊆G1 ∪G3 and f ̸∈G1 ∪F3. Then it must be the case that f ∈G3.
+Since every unary signature is in G1 ∪F3, the arity of f is at least two. It can be seen
+that f has a subsignature of the form [1, a, −1], where a ̸∈{−1, 0, 1}.
+If F ⊆{[1, 0, 1]} ∪G3, then Holant∗(F) is polynomial time computable by Theo-
+rem 4.1, and as a result Theorem 5.1 holds and we are done.
+If not, there exists a signature g ∈F ⊆G1 ∪G3 and g ̸∈{[1, 0, 1]} ∪G3. Then it
+must be the case that g ∈G1. The arity of g is greater than one, since g ̸∈G3.
+If the arity of g is two, then g is of the form [1, 0, b], where b ̸∈{−1, 0, 1}.
+Connecting two copies of [1, 0, b] to both sides of one binary signature [1, a, −1], we
+can get a new binary signature [1, ab, −b2]. It satisﬁes all the conditions of Lemma 5.3,
+and we are done. If the arity of g is greater than two, then we can always realize a
+signature [1, 0, 0, b′], where b′ ̸= 0.
+(We can connect the unary signature [1, a] to
+all dangling edges of g except three.) Then we can use an F-gate as in Figure 5.4.
+Its signature is [1, a2b′, b′2], and by Lemma 5.3, we are done.
+This completes the
+proof.
+By the above lemmas, the only case we have to handle is that F ⊆G1 ∪F3. This
+is done by the following lemma, which completes the proof of Theorem 5.1.
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+1130
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+Lemma 5.9. If F ⊆G1 ∪F3, then Theorem 5.1 holds.
+Proof. If F ⊆F1 ∪F3, Holantc(F) is computable in polynomial time. Similarly, if
+F ⊆U ∪F3∪{[1, 0, 1]}, then by Theorem 4.1, Holantc(F) is computable in polynomial
+time. Hence in these two cases, Theorem 5.1 holds. Now suppose F ̸⊆F1 ∪F3 and
+F ̸⊆U ∪F3 ∪{[1, 0, 1]}.
+There exists f ∈F −F1 ∪F3. Since F ⊆G1 ∪F3, such an f belongs to G1.
+Now there are two cases. The ﬁrst case is that we have such an f ̸∈U, i.e.,
+f ∈F ∩G1 −(F1 ∪F3 ∪U). The arity of f is greater than one. By connecting its
+dangling edges together except two or three depending on the parity of the arity of
+f, we can assume f has the form [1, 0, a] or [1, 0, 0, a], where a ̸∈{−1, 0, 1}.
+The second case is that every f ∈F ∩G1 −(F1 ∪F3) is also in U. By F ̸⊆
+U ∪F3 ∪{[1, 0, 1]}, there exists an f1 ∈F −(U ∪F3 ∪{[1, 0, 1]}). Since F ⊆G1 ∪F3,
+and f1 ̸∈F3, we get f1 ∈G1. If f1 ̸∈F1, we could use this f1 as the f above, namely,
+f1 ∈F ∩G1 −(F1∪F3 ∪U). This contradicts the condition of this case. Thus f1 ∈F1.
+Also we have some f2 ∈F −(F1 ∪F3). We have f2 ∈G1, since F ⊆G1 ∪F3. So
+f2 ∈F ∩G1 −(F1 ∪F3). Since we are in this second case, certainly f2 ∈U.
+To recap, we have f1, f2 ∈F ∩G1 such that f1 ∈F1 but f1 ̸∈U ∪F3 ∪{[1, 0, 1]},
+and f2 ∈U but f2 ̸∈F1. The arity of f1 is at least two. We claim it is greater than
+two. Otherwise, f1 being from F1 and not [1, 0, 1], it would be f1 = [1, 0, −1] ∈F3, a
+contradiction. So f1 has the form [1, 0, 0, . . ., ±1] of arity at least three. f2 is of the
+form [1, a′], where a′ ̸∈{−1, 0, 1}; this follows from f2 ∈U ∩G1 −F1. By connecting
+all the dangling edges of f1 except two with f2, we can construct an F-gate with a
+signature of the form [1, 0, a], where a ̸∈{−1, 0, 1}. This is one of the above two forms
+after the ﬁrst case. To sum up, in both cases, we have some f of the form [1, 0, a] or
+[1, 0, 0, a], where a ̸∈{−1, 0, 1}.
+If F ⊆G1 ∪{[0, 1, 0]} ∪U, then by Theorem 4.1, Holantc(F) is computable
+in polynomial time and Theorem 5.1 holds.
+Otherwise, there exists a g ∈F ⊆
+G1 ∪F3, and g ̸∈G1 ∪{[0, 1, 0]} ∪U.
+Being not in U, g has arity at least two.
+Being not in G1, g must be in F3. Then g has one of the following subsignatures:
+[1, 1, −1], [1, −1, −1], [1, 0, −1, 0], [0, 1, 0, −1]; this follows from a careful examination
+of the forms of F3. By symmetry (taking the reversal of both f and g), we only need
+to consider two cases for f = [1, 0, a] or [1, 0, 0, a], where a ̸∈{−1, 0, 1}, and two cases
+for g = [1, 1, −1] or [1, 0, −1, 0].
+According to f and g, we have four cases. If f = [1, 0, a] and g = [1, 1, −1], then
+connecting them together into a chain fgf, we can realize [1, a, −a2]. By Lemma 5.3,
+we are done. If f = [1, 0, a] and g = [1, 0, −1, 0], for each dangling edge of g, we
+extend it by one copy of f. Then we can realize [1, 0, −a2, 0]. So by Lemma 5.4,
+we are done. If f = [1, 0, 0, a] and g = [1, 1, −1], we can connect a unary signature
+[1, 1] (a subsignature of g) to one dangling edge of f and realize a binary signature
+f ′ = [1, 0, a]. This reduces it to the ﬁrst case, which has been proved. If f = [1, 0, 0, a]
+and g = [1, 0, −1, 0], we can realize a unary signature [1, a] from f by connecting two
+of its dangling edges together, and then connect this unary signature to one dangling
+edge of g to realize [1, −a, −1]. Note that [1, −a, −1] ̸∈G1 ∪F3, and by Lemma 5.8,
+we are done.
+6. Conclusions. We have introduced an alternative framework, called the Holant
+problems, in the study of the complexity of counting problems. We have proved some
+dichotomy theorems for both the Holant∗setting as well as the Holantc setting. Some
+deeper mathematical structure becomes visible when we treat Equality functions
+as an ordinary function subject to holographic reductions. This is a feature that is
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+COMPUTATIONAL COMPLEXITY OF HOLANT PROBLEMS
+1131
+hard to discuss in the traditional #CSP formulation of the complexity of counting
+problems, where all Equality functions are assumed to be present for free. A major
+open area for future investigations in #CSP problems is when the constraint functions
+can take negative values, and thus cancellations occur in the counting problems they
+deﬁne. The Holant framework seems a natural ﬁt when we need to address potential
+cancellations in the computation of counting problems. Holographic reductions are a
+main tool in this investigation.
+The results on Holant problems in this paper are only a beginning. There are
+many open problems for future investigations. The results on Holant∗and Holantc
+are restrictions of Holant problems. Naturally one should investigate the unrestricted
+Holant problems.
+The local constraint functions in this paper are all symmetric
+functions. One can investigate asymmetric functions. The domain size in this paper
+is Boolean.
+To extend to larger domains would be very challenging; but such a
+generalization would be a vast extension on all #CSP problems, with cancellations.
+Currently this is still largely unexplored.
+Acknowledgment. We thank many colleagues who have expressed an interest
+and gave us valuable feedbacks on this work. Special thanks to Martin Dyer, Leslie
+Ann Goldberg, Mark Jerrum, Leslie Valiant, and the anonymous referees for our
+conference paper at STOC 2009 [11], which contained some of the results reported
+here. We are also very grateful to the anonymous referees for our journal submission.
+The journal version contained many more proof details, and we are thankful to the
+referees for very detailed, insightful, and constructive comments.
+REFERENCES
+[1] L. Blum, F. Cucker, M. Shub, and S. Smale, Complexity and Real Computation, Springer-
+Verlag, New York, Secaucus, NJ, 1998.
+[2] A. A. Bulatov, A dichotomy theorem for constraint satisfaction problems on a 3-element set,
+J. ACM, 53 (2006), pp. 66–120.
+[3] A. A. Bulatov, The complexity of the counting constraint satisfaction problem, in Proc.
+ICALP (1), Lecture Notes in Computer Science 5125, L. Aceto, I. Damg˚ard, L. A. Gold-
+berg, M. M. Halld´orsson, A. Ing´olfsd´ottir, and I. Walukiewicz, eds., Springer, New York,
+2008, pp. 646–661.
+[4] A. A. Bulatov and V. Dalmau, Towards a dichotomy theorem for the counting constraint
+satisfaction problem, in FOCS, IEEE Computer Society, New York, 2003, pp. 562–571.
+[5] A. A. Bulatov and M. Grohe, The complexity of partition functions, in Proc. ICALP, 2004,
+Turku, Finland, Lecture Notes in Comput. Sci. 3142, Springer, 2004, pp. 294–306.
+[6] A. A. Bulatov and M. Grohe, The complexity of partition functions, Theor. Comput. Sci.,
+348 (2005), pp. 148–186.
+[7] J.-Y. Cai, X. Chen, and P. Lu, Graph homomorphisms with complex values: A dichotomy
+theorem, in Proc. ICALP (1), 2010, Bordeaux, France, Lecture Notes in Comput. Sci. 6198,
+Springer, 2010, pp. 275–286.
+[8] J.-Y. Cai and V. Choudhary, Valiant’s holant theorem and matchgate tensors, Theor. Com-
+put. Sci., 384 (2007), pp. 22–32.
+[9] J.-Y. Cai and P. Lu, Holographic algorithms: From art to science, J. Comput. Syst. Sci., 77
+(2011), pp. 41–61.
+[10] J.-Y. Cai and P. Lu, On symmetric signatures in holographic algorithms, Theory Comput.
+Syst., 46 (2010), pp. 398–415.
+[11] J.-Y. Cai, P. Lu, and M. Xia, Holant problems and counting CSP, in Proceedings of STOC
+2009: The 41st Annual ACM Symposium on Theory of Computing, M. Mitzenmacher, ed.,
+Bethesda, MD, pp. 715–724, 2009.
+[12] J.-Y. Cai, P. Lu, and M. Xia, Holographic algorithms by Fibonacci gates, Linear Algebra
+Appl. special issue on Tensors and Multilinear Algebra, to appear; available online from
+http://www.sciencedirect.com/science/article/pii/S0024379511001625.
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+1132
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+[13] J.-Y. Cai, P. Lu, and M. Xia, Holographic algorithms by Fibonacci gates and holographic
+reductions for hardness, in FOCS ’08: Proceedings of the 49th Annual IEEE Symposium
+on Foundations of Computer Science, Philadelphia, PA, 2008, IEEE Computer Society,
+New York, 2008.
+[14] J.-Y. Cai, P. Lu, and M. Xia, The complexity of complex weighted Boolean #CSP, Upcoming
+Journal Submission.
+[15] N. Creignou, S. Khanna, and M. Sudan, Complexity classiﬁcations of Boolean constraint
+satisfaction problems, SIAM Monogr. Discrete Math. Appl., SIAM, Philadelphia, 2001.
+[16] P. Dagum and M. Luby, Approximating the permanent of graphs with large factors, Theor.
+Comput. Sci., 102 (1992), pp. 283–305.
+[17] C. T. J. Dodson and T. Poston, Tensor geometry, Graduate Texts in Mathematics 130,
+Springer-Verlag, New York, 1991.
+[18] M. E. Dyer, L. A. Goldberg, and M. Jerrum, The complexity of weighted Boolean CSP,
+SIAM J. Comput., 38 (2008), pp. 1970–1986.
+[19] M. E. Dyer, L. A. Goldberg, and M. Paterson, On counting homomorphisms to directed
+acyclic graphs, in ICALP (1), Lecture Notes in Computer Science 4051, M. Bugliesi, B.
+Preneel, V. Sassone, and I. Wegener, eds., Springer, New York, 2006, pp. 38–49.
+[20] M. E. Dyer, L. A. Goldberg, and M. Paterson, On counting homomorphisms to directed
+acyclic graphs, J. ACM, 54 (2007).
+[21] M. E. Dyer and C. S. Greenhill, The complexity of counting graph homomorphisms (ex-
+tended abstract), in Proceedings of the 11th Annual ACM-SIAM Symposium on Discrete
+Algorithms, 2000, San Francisco, CA, ACM/SIAM, pp. 246–255.
+[22] M. E. Dyer and C. S. Greenhill, Corrigendum: The complexity of counting graph homo-
+morphisms, Random Structures Algorithms, 25 (2004), pp. 346–352.
+[23] M. Freedman, L. Lov´asz, and A. Schrijver, Reﬂection positivity, rank connectivity, and
+homomorphism of graphs, J. AMS, 20 (2007), pp. 37–51.
+[24] L. A. Goldberg, M. Grohe, M. Jerrum, and M. Thurley, A complexity dichotomy for
+partition functions with mixed signs, CoRR, abs/0804.1932, 2008.
+[25] P. W. Kasteleyn, The statistics of dimers on a lattice, Phys., 27 (1961), pp. 1209–1225.
+[26] P. W. Kasteleyn, Graph theory and crystal physics, in Graph Theory and Theoretical Physics,
+F. Harary, ed., Academic Press, London, 1967, pp. 43–110.
+[27] K.-I. Ko, Complexity theory of real functions, Birkh¨auser Boston, Cambridge, MA, 1991.
+[28] R. Lidl and H. Niederreiter, Finite ﬁelds, Encyclopedia of Mathematics and its Applications,
+Vol. 20, Cambridge University Press, Cambridge, 1997.
+[29] H. N. V. Temperley and M. E. Fisher, Dimer problem in statistical mechanics-an exact
+result, Philos. Mag., 6 (1961), p. 1061C–1063.
+[30] S. P. Vadhan, The complexity of counting in sparse, regular, and planar graphs, SIAM J.
+Comput., 31 (2001), pp. 398–427.
+[31] L. G. Valiant, The complexity of enumeration and reliability problems, SIAM J. Comput., 8
+(1979), pp. 410–421.
+[32] L. G. Valiant, Quantum circuits that can be simulated classically in polynomial time, SIAM
+J. Comput., 31 (2002), pp. 1229–1254.
+[33] L. G. Valiant, Accidental algorithms, in FOCS ’06: Proceedings of the 47th Annual IEEE
+Symposium on Foundations of Computer Science, Washington, DC, 2006, IEEE Computer
+Society, pp. 509–517.
+[34] L. G. Valiant, Holographic algorithms, SIAM J. Comput., 37 (2008), pp. 1565–1594.
+[35] M. Xia, P. Zhang, and W. Zhao, Computational complexity of counting problems on 3-regular
+planar graphs, Theor. Comput. Sci., 384 (2007), pp. 111–125.
+Downloaded 07/07/16 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php

@@ -1,0 +1,2066 @@
+Journal of Computer and System Sciences 77 (2011) 41–61
+Contents lists available at ScienceDirect
+Journal of Computer and System Sciences
+www.elsevier.com/locate/jcss
+Holographic algorithms: From art to science ✩
+Jin-Yi Cai a,∗,1, Pinyan Lu b,2
+a Computer Sciences Department, University of Wisconsin, Madison, WI 53706, USA
+b Microsoft Research Asia, Beijing, 100190, PR China
+a r t i c l e
+i n f o
+a b s t r a c t
+Article history:
+Received 23 June 2009
+Received in revised form 22 December 2009
+Accepted 7 June 2010
+Available online 11 June 2010
+Keywords:
+Holographic algorithm
+Matchgate
+Matchgate realizability
+We develop the theory of holographic algorithms initiated by Leslie Valiant. First we
+deﬁne a basis manifold. Then we characterize algebraic varieties of realizable symmetric
+generators and recognizers on the basis manifold, and give a polynomial time decision
+algorithm for the simultaneous realizability problem. These results enable one to decide
+whether suitable signatures for a holographic algorithm are realizable, and if so, to
+ﬁnd a suitable linear basis to realize these signatures by an eﬃcient algorithm. Using
+the general machinery we are able to give unexpected holographic algorithms for some
+counting problems, modulo certain Mersenne type integers. These counting problems
+are #P-complete without the moduli. Going beyond symmetric signatures, we deﬁne
+d-admissibility and d-realizability for general signatures, and give a characterization of
+2-admissibility and some general constructions of admissible and realizable families.
+© 2010 Elsevier Inc. All rights reserved.
+1. Introduction
+It is a testament to the enormous impact of NP-completeness theory [2,18] that the conjecture P ̸= NP has become a
+leading hypothesis in all computer science and mathematics. We consider it a great honor and privilege to dedicate this
+paper to the 2009 Kyoto Prize Laureate Prof. Richard M. Karp, a founder of this theory.
+The NP-completeness theory is so well established that most computer scientists consider it a proof of computational
+intractability in terms of worst-case complexity if a problem is proved to be NP-complete. Expressed in terms of complexity
+classes, it has become more or less an article of faith among theoretical computer scientists that the conjecture P ̸= NP
+holds. The theory of holographic algorithms, however, provides a cautionary coda, that our understanding of the ultimate
+capability of polynomial time algorithms is far from well understood.
+Certainly there are good reasons to believe the conjecture P ̸= NP, not the least of which is the fact that the usual algo-
+rithmic paradigms seem unable to handle any of the NP-hard problems. Such statements are made credible by decades of
+in-depth study of these methodologies. On the other hand, there are some “surprising” polynomial time algorithms for prob-
+lems which, on appearance, would seem to require exponential time. One such example is to count the number of perfect
+matchings in a planar graph (the FKT method) [19,20,25]. In [27,29] L. Valiant introduced an algorithmic design technique of
+breathtaking originality, called holographic algorithms. Computation in these algorithms is expressed and interpreted through
+a choice of linear basis vectors in an exponential “holographic” mix, and then it is carried out by the FKT method via the
+Holant Theorem. This methodology has produced polynomial time algorithms for a variety of problems ranging from re-
+✩A preliminary version of this paper appeared in the 39th ACM Symposium on Theory of Computing (STOC 2007) (J.-Y. Cai and P. Lu (2007) [7]).
+* Corresponding author.
+E-mail addresses: jyc@cs.wisc.edu (J.-Y. Cai), pinyanl@microsoft.com (P. Lu).
+1 Supported by NSF CCR-0208013 and CCR-0511679.
+2 Work performed while the author was a graduate student at Tsinghua University.
+0022-0000/$ – see front matter © 2010 Elsevier Inc. All rights reserved.
+doi:10.1016/j.jcss.2010.06.005
+
+42
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+strictive versions of satisﬁability, vertex cover, to other graph problems such as edge orientation and node/edge deletion. No
+polynomial time algorithms were known for any of these problems, and some minor variations are known to be NP-hard.
+These holographic algorithms are quite unusual compared to other kinds of algorithms (except perhaps quantum algo-
+rithms). At the heart of the computation is a process of introducing and then canceling exponentially many computational
+fragments. Invariably the success of this methodology on a particular problem boils down to ﬁnding a certain “exotic” object
+represented by a signature.
+For example, Valiant showed [30] that the restrictive SAT problem #7Pl-Rtw-Mon-3CNF (counting the number of sat-
+isfying assignments of a planar read-twice monotone 3CNF formula, modulo 7) is solvable in P. The same problem
+#Pl-Rtw-Mon-3CNF without mod 7 is known to be #P-complete, a result due to Xia et al. [31]; the problem mod 2, #2Pl-
+Rtw-Mon-3CNF, is known to be ⊕P-complete (thus NP-hard), a result due to Valiant [30]. The surprising tractability mod 7
+is due to the unexpected existence of suitable generators and recognizers over Z7.
+These signatures are speciﬁed by families of algebraic equations. These families of equations are typically exponential in
+size. Searching for their solutions is what Valiant called “the enumeration” of “freak objects” in his “Accidental algorithm”
+paper [30].3 Dealing with such algebraic equations can be diﬃcult due to the exponential size. So far the successes have
+been an expression of artistic inspiration.
+To sustain a belief in P ̸= NP, we must develop a systematic understanding of the capabilities of holographic algorithms.
+One might take the view that the problems such as #7Pl-Rtw-Mon-3CNF that have been solved in this framework are a little
+contrived. But the point is that when we surveyed potential algorithmic approaches with P vs. NP in mind, these algorithms
+were not part of the repertoire. Presumably the same “intuition” for P ̸= NP would have applied equally to #7Pl-Rtw-Mon-
+3CNF and to #2Pl-Rtw-Mon-3CNF. Thus, Valiant suggested in [29], “any proof of P ̸= NP may need to explain, and not only
+to imply, the unsolvability” of NP-hard problems using this approach.
+While ﬁnding “exotic” solutions such as the signature for #7Pl-Rtw-Mon-3CNF is inspired artistry, the situation with
+ever more complicated algebraic constraints on such signatures (for other problems) can quickly overwhelm such an artistic
+approach (as well as a computer search). At any rate, failure to ﬁnd such solutions to a particular algebraic system yields
+no proof that such solutions do not exist, and it generally does not give us any insight as to why. We need a more scientiﬁc
+understanding. The aim of this paper is to build toward such an understanding.
+In this paper we have achieved a complete account for all realizable symmetric signatures. Using this we can show why
+the modulus 7 happens to be the modulus that works for #7Pl-Rtw-Mon-3CNF. Underlying this is the fact that 7 is 23 −1,
+and for any odd prime p, any prime factor q of the Mersenne number 2p −1 has q ≡±1 mod 8, and therefore 2 is a
+quadratic residue in Zq. Generalizing this, we show that #2k−1Pl-Rtw-Mon-kCNF is in P for all k ⩾3 (the problem is trivial
+for k ⩽2). Furthermore, no suitable signatures exist for any modulus other than factors of 2k −1 for this problem.
+When designing a holographic algorithm for any particular problem, the essential step is to decide whether there is
+a linear basis for which certain signatures of both generators and recognizers can be simultaneously realized (we give a
+quick review of terminologies in Section 2. See [29,27,4,5] for more details). Frequently these signatures are symmetric
+signatures. Our understanding of symmetric signatures has advanced to the point where it is possible to give a polynomial
+time algorithm to decide the simultaneous realizability problem. If a matchgate has arity n, the signature has size 2n.
+However for symmetric signatures we have a compact form, and the running time of the decision algorithm is polynomial
+in n. With this structural understanding we can give (i) a complete account of all the previous successes of holographic
+algorithms using symmetric signatures [29,5,30]; (ii) generalizations such as #2k−1Pl-Rtw-Mon-kCNF and a similar problem
+for vertex cover, when this is possible; and (iii) a proof when this is not possible. We think this is an important step in our
+understanding of holographic algorithms, from art to science.
+In order to investigate realizability of signatures, we found it useful to introduce a basis manifold M, which is deﬁned
+to be the set of all possible bases modulo an equivalence relation. This is a useful language for the discussion of symmetric
+signatures; it becomes essential for the general signatures. We deﬁne the notions of d-admissibility and d-realizability. To
+be d-admissible is to have a d-dimensional solution subvariety in M, satisfying all the parity requirements. This is a part
+of the requirements in order to be realizable. To be d-realizable is to have a d-dimensional solution subvariety in M for
+all realizability requirements, which include the parity requirements as well as the useful Grassmann–Plücker identities [5,28],
+called the matchgate identities. To have 0-realizability is a necessary condition. But to get holographic algorithms one needs
+simultaneous realizability of both generators and recognizers. This is accomplished by having a non-empty intersection
+of the respective subvarieties for the realizability of generators and recognizers. And this tends to be accomplished by
+having d-realizability (which implies d-admissibility), for d ⩾1, on at least one side. Therefore it is important to investigate
+d-realizability and d-admissibility for d ⩾1. We give a complete characterization of 2-admissibility. We also give some
+non-trivial 1-admissible families, and 1- or 2-realizable families.
+This paper is organized as follows. In Section 2 we give a review of terminologies. In Section 3 we deﬁne the basis
+manifold M which will be used to express our results throughout. In Section 4 we describe our results on simultaneous
+realizability of recognizers and generators, culminating in the polynomial time decision procedure. In Section 5 we describe
+3 From [30]: “The objects enumerated are sets of polynomial systems such that the solvability of any one member would give a polynomial time algorithm
+for a speciﬁc problem. ... the situation with the P = NP question is not dissimilar to that of other unresolved enumerative conjectures in mathematics. The
+possibility that accidental or freak objects in the enumeration exist cannot be discounted, if the objects in the enumeration have not been systematically
+studied previously.”
+
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+43
+our results on #2k−1Pl-Rtw-Mon-kCNF and on vertex cover. Further illustrations of the power of the general machinery are
+given in Section 6. In Section 7 we go beyond symmetric signatures, and give some general results regarding d-admissibility
+and d-realizability.
+2. Some background
+In this section, for the convenience of readers, we review some deﬁnitions and results. More details can be found in
+[27,29,28,5,4,3].
+Let G = (V , E, W ) and G′ = (V ′, E′, W ′) be weighted undirected planar graphs, where V and V ′ are vertices, E and E′
+are edges, and W and W ′ are edge weights. A generator matchgate Γ is a tuple (G, X) where X ⊆V is a set of external
+output nodes. A recognizer matchgate Γ ′ is a tuple (G′, Y) where Y ⊆V ′ is a set of external input nodes. The external nodes
+are ordered counter-clock wise on the external face. Γ is called an odd (resp. even) matchgate if it has an odd (resp. even)
+number of nodes.
+Each matchgate is assigned a signature tensor. A generator Γ with m output nodes is assigned a contravariant tensor
+G ∈V m
+0
+of type
+m
+0
+
+, where V m
+0
+is the tensor space spanned by the m-fold tensor products of the standard basis b =
+[b0, b1] =
+ 1
+0
+
+,
+ 0
+1
+
+. The tensor G under the standard basis b has the form
+
+Gi1i2...imbi1 ⊗bi2 ⊗··· ⊗bim,
+where
+Gi1i2...im = PerfMatch(G −Z),
+where PerfMatch(G −Z) = 
+M
+
+(i, j)∈M wij, is a sum over all perfect matchings M in G −Z, wij is the weight of the edge
+(i, j), and where Z is the subset of the output nodes of Γ having the characteristic sequence χZ = i1i2 ... im. Similarly a
+recognizer Γ ′ with m input nodes is assigned a covariant tensor R ∈V 0
+m of type
+0
+m
+
+. This tensor under the standard (dual)
+basis b∗has the form
+
+Ri1i2...imbi1 ⊗bi2 ⊗··· ⊗bim,
+where
+Ri1i2...im = PerfMatch
+
+G′ −Z
+
+,
+where Z is the subset of the input nodes of Γ ′ having the characteristic sequence χZ = i1i2 ... im.
+In particular, G transforms as a contravariant tensor under a basis transformation β j = 
+i biti
+j,
+
+G′ j1 j2... jm =
+
+Gi1i2...im˜t j1
+i1 ˜t j2
+i2 ... ˜t jm
+im ,
+where (˜t j
+i ) is the inverse matrix of (ti
+j). Similarly, R transforms as a covariant tensor, namely
+
+R′
+j1 j2... jm =
+
+Ri1i2...imti1
+j1ti2
+j2 ...tim
+jm.
+A signature is symmetric if each entry only depends on the Hamming weight of the index i1i2 ... im. This notion is
+invariant under a basis transformation. A symmetric signature is denoted by [σ0,σ1,...,σm], where σi denotes the value of
+a signature entry whose Hamming weight of its index is i.
+A matchgrid Ω = (A, B, C) is a weighted planar graph consisting of a disjoint union of: a set of g generators A =
+(A1,..., Ag), a set of r recognizers B = (B1,..., Br), and a set of f connecting edges C = (C1,..., C f ), where each Ci edge
+has weight 1 and joins an output node of a generator with an input node of a recognizer, so that every input and output
+node in every constituent matchgate has exactly one such incident connecting edge.
+Let G = 	g
+i=1 G(Ai) be the tensor product of all the generator signatures, and let R = 	r
+j=1 R(B j) be the tensor product
+of all the recognizer signatures. Then Holant(Ω) is deﬁned to be the contraction of the two product tensors, under some
+basis β, where the corresponding indices match up according to the f connecting edges Ck:
+Holant(Ω) = ⟨R, G⟩=
+
+x∈β⊗f
+
+ 
+1⩽i⩽g
+G(Ai, x|Ai)
+
+·
+ 
+1⩽j⩽r
+R
+
+B j, x∗
+B j
+
+.
+(If we write the tensor product for the covariant tensor R as a row vector of dimension 2 f , and write the contravariant
+tensor G as a column vector of dimension 2 f , then Holant(Ω) is just the inner product of these two vectors.)
+
+44
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+Valiant’s beautiful Holant Theorem is
+Theorem 2.1 (Valiant). For any matchgrid Ω over any basis β, let G be its underlying weighted graph, then
+Holant(Ω) = PerfMatch(G).
+The FKT algorithm can compute the perfect matching polynomial PerfMatch(G) for a planar graph in polynomial time.
+This algorithm gives an orientation of the edges of the planar graph, which assigns a ±1 factor to each edge weight. It then
+evaluates the Pfaﬃan of the skew-symmetric matrix of the graph.
+Pfaﬃans satisfy the Grassmann–Plücker identities [24].
+Theorem 2.2. For any n × n skew-symmetric matrix M, and any I = {i1,..., iK } ⊆[n] and J = { j1,..., jL} ⊆[n],
+L
+
+l=1
+(−1)lPf( jl, i1,..., iK )Pf( j1,...,jl,..., jL) +
+K
+
+k=1
+(−1)kPf(i1,...,ik,..., iK )Pf(ik, j1,..., jL) = 0,
+where the notation ˆi indicates that the entry i is omitted.
+A set of the so-called useful Grassmann–Plücker identities have been proved to characterize planar matchgate signatures
+[28,3,5]. These are called matchgate identities.
+We state some theorems from [6], which will be used.
+Theorem 2.3. A symmetric signature [x0, x1,..., xn] for a recognizer is realizable under the basis β = [n, p] =
+ n0
+n1
+
+,
+ p0
+p1
+
+iff it takes
+one of the following forms:
+• Form 1: there exist (arbitrary) constants λ, s, t and ϵ where ϵ = ±1, such that for all i, 0 ⩽i ⩽n,
+xi = λ
+
+(sn0 + tn1)n−i(sp0 + tp1)i + ϵ(sn0 −tn1)n−i(sp0 −tp1)i
+.
+(1)
+• Form 2: there exists an (arbitrary) constant λ, such that for all i, 0 ⩽i ⩽n,
+xi = λ
+
+(n −i)n0(p1)i(n1)n−1−i + ip0(p1)i−1(n1)n−i
+.
+(2)
+• Form 3: there exists an (arbitrary) constant λ, such that for all i, 0 ⩽i ⩽n,
+xi = λ
+
+(n −i)n1(p0)i(n0)n−1−i + ip1(p0)i−1(n0)n−i
+.
+(3)
+We take the convention that α0 = 1 and 0 · α0−1 = 0.
+Theorem 2.4. A symmetric signature [x0, x1,..., xn] for a generator is realizable under the basis β = [n, p] =
+ n0
+n1
+
+,
+ p0
+p1
+
+(more
+precisely in the dual basis) iff it takes one of the following forms:
+• Form 1: there exist (arbitrary) constants λ, s, t and ϵ where ϵ = ±1, such that for all i, 0 ⩽i ⩽n,
+xi = λ
+
+(sp1 −tp0)n−i(−sn1 + tn0)i + ϵ(sp1 + tp0)n−i(−sn1 −tn0)i
+.
+(4)
+• Form 2: there exists an (arbitrary) constant λ, such that for all i, 0 ⩽i ⩽n,
+xi = λ
+
+(n −i)p1(n0)i(−p0)n−1−i −in1(n0)i−1(−p0)n−i
+.
+(5)
+• Form 3: there exists an (arbitrary) constant λ, such that for all i, 0 ⩽i ⩽n,
+xi = λ
+
+−(n −i)p0(−n1)i(p1)n−1−i + in0(−n1)i−1(p1)n−i
+.
+(6)
+Theorem 2.5. A symmetric signature [x0, x1,..., xn] is realizable on some basis iff there exist three constants a, b, c (not all zero), such
+that for all k, 0 ⩽k ⩽n −2,
+axk + bxk+1 + cxk+2 = 0.
+(7)
+The following two simple lemmas are used in the proof of Lemmas 4.5 and 4.6.
+
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+45
+Lemma 2.1. Suppose a sequence (xi)i=0,1,...,n, where n ⩾3, has the following form: xi = Aαi + Bβi (AB ̸= 0, α ̸= β), then the
+representation is unique. That is, if xi = A′(α′)i + B′(β′)i (i = 0, 1,...,n, n ⩾3), then A′ = A, B′ = B, α′ = α, β′ = β or A′ = B,
+B′ = A, α′ = β, β′ = α.
+Lemma 2.2. Suppose a sequence (xi)i=0,1,...,n, where n ⩾3, has the following form: xi = Aiαi−1 + Bαi (A ̸= 0), then the representa-
+tion is unique. That is, if xi = A′i(α′)i−1 + B′(α′)i (i = 0, 1,...,n, n ⩾3), then A′ = A, B′ = B, α′ = α.
+These follow from the fact that second order homogeneous linear recurrence sequence has a unique representation.
+3. The basis manifold M
+In holographic algorithms, computations are expressed in terms of a set of linear basis vectors of dimension 2k, where k
+is called the size of the basis. In almost all cases [29,3], the successful design of a holographic algorithm was accomplished
+by a basis of size 1. In [30], initially Valiant used a basis of size 2 to show #7Pl-Rtw-Mon-3CNF ∈P. Then it was pointed out
+in [6] that even in that case the same can be done with a basis of size 1. In [8] and [9], we show that this is generally true,
+i.e., higher dimensional bases do not extend the reach of holographic algorithms. Therefore, in this paper we will develop
+our theory exclusively with bases of size 1; but our results are universally applicable.
+We will identify the set of 2-dimensional bases
+ n0
+n1
+
+,
+ p0
+p1
+
+with GL2(F). Over the complex ﬁeld F = C, it has dimen-
+sion 4. However, the following simple proposition (Proposition 4.3 of [29]) shows that the essential underlying structure has
+only dimension 2.
+Proposition 3.1 (Valiant). (See [29].) If there is a generator (recognizer) with certain signature for size one basis {(n0,n1),(p0, p1)}
+then there is a generator (recognizer) with the same signature for size one basis {(xn0, yn1),(xp0, yp1)} or {(xn1, yn0),(xp1, yp0)}
+for any x, y ∈F and xy ̸= 0.
+This leads to the following deﬁnition of an equivalence relation:
+Deﬁnition 3.1. Two bases β = [n, p] =
+ n0
+n1
+
+,
+ p0
+p1
+
+and β′ = [n′, p′] =
+ n′
+0
+n′
+1
+
+,
+ p′
+0
+p′
+1
+
+are equivalent, denoted by β ∼β′, iff
+there exist x, y ∈F∗, the non-zero elements in F, such that n′
+0 = xn0, p′
+0 = xp0, n′
+1 = yn1, p′
+1 = yp1 or n′
+0 = xn1, p′
+0 = xp1,
+n′
+1 = yn0, p′
+1 = yp0.
+In other words, to obtain β′ from β, viewed as a 2 × 2 matrix, we can multiply each row by a non-zero constant, or
+exchange the two rows.
+Theorem 3.1. GL2(F)/∼is a 2-dimensional manifold ( for F = C or R).
+We call this the basis manifold M. For F = R, it can be shown that topologically M is a Möbius strip. From now on we
+identify a basis β with its equivalence class containing it. When it is permissible, we use the dehomogenized coordinates
+ 1 x
+1 y
+
+to represent a point (i.e., a basis class) in M. We will assume char.F ̸= 2.
+4. Simultaneous realizability of symmetric signatures
+In [6], we gave a complete characterization of all the realizable symmetric signatures (Theorems 2.3–2.5). These tell
+us exactly what signatures can be realized over some bases. However, to construct a holographic algorithm, one needs to
+realize some generators and recognizers simultaneously. In terms of M, a given generator (recognizer) deﬁnes a (possibly
+empty) subvariety which consists of all the bases over which it is realizable. The simultaneous realizability is equivalent to
+a non-empty intersection of these subvarieties. Thus we have to go beyond Theorems 2.3–2.5. For every signature which is
+realizable according to Theorem 2.5, we need to determine the subvariety where it is realizable.
+Deﬁnition 4.1. Let Brec([x0, x1,..., xn]) (resp. Bgen([x0, x1,..., xn])) be the set of all possible bases in M for which a sym-
+metric signature [x0, x1,..., xn] for a recognizer (resp. a generator) is realizable. We also use Brec(R) and Bgen(G) to denote
+the realizability subvarieties for general (unsymmetric) signatures R and G.
+Since the identically zero signature is realizable in every basis, we will assume the signature is not identically zero in
+the following discussion.
+
+46
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+4.1. Realizability of recognizers
+The following lemmas give a complete and mutually exclusive list of realizable symmetric signatures for recognizers.
+Lemma 4.1.
+Brec
+
+λ
+
+an,an−1b,...,bn
+=
+
+
+a
+n1
+
+,
+
+b
+p1
+
+∈M
+ n1, p1 ∈F
+
+.
+Remark. Every signature with arity 1 is trivially of this form. We will omit the scalar factor λ below as it is trivial. Since
+we will exclude the identically 0 signature, a and b are not both 0.
+Proof of Lemma 4.1. If n = 1, the standard signature can and can only be (λ, 0) or (0,λ) (where λ is arbitrary). One entry
+of the signature must be zero due to the parity requirement, as matchgates are deﬁned in terms of perfect matchings. So
+the signature over the basis
+ n0
+n1
+
+,
+ p0
+p1
+
+is (λn0,λp0) or (λn1,λp1). Since we require the signature to be (a,b), all possible
+bases as expressed in M are
+ a
+n1
+
+,
+ b
+p1
+
+, taking into account the equivalence relation ∼, where n1, p1 are arbitrary, except
+ap1 −bn1 ̸= 0.
+Now we assume n > 1. First suppose this signature is expressed as Form 1 of Theorem 2.3.
+In Form 1, denote by u0 = sn0 + tn1, u1 = sp0 + tp1, v0 = sn0 −tn1, and v1 = sp0 −tp1. Then up to a constant factor λ,
+for each 0 ⩽i ⩽n, we have un−i
+0
+ui
+1 + ϵvn−i
+0
+vi
+1 = an−ibi.
+We ﬁrst assume u0v0 ̸= 0. Then by multiplying the equations for i = 0 and i = 2, and multiplying the equation for i = 1
+by itself, we get an equation on u0, u1, v0 and v1. After some simpliﬁcations we get u1/u0 = v1/v0. Denote this common
+ratio by ρ.
+We claim in this case a ̸= 0, and ρ = b/a. Assume for a contradiction that a = 0, then all entries of the signature are
+0 for i = 0,...,n −1. However the entry at i = n is obtained from the entry at i = n −1 by multiplying with the ratio ρ,
+and thus it is also 0. Then it follows that b = 0 as well, contrary to assumption. Therefore a ̸= 0 and b/a is deﬁned. Now
+consider the signature entry at i = 0 and i = 1. The entry at i = 0 is an ̸= 0, and the entry at i = 1 is obtained by multiplying
+the non-zero entry at i = 0 by the ratio b/a, as well as by the common ratio ρ. It follows that ρ = b/a.
+Hence bu0 = au1 and bv0 = av1. Then by the deﬁnitions of ui and v j, it follows that bsn0 = asp0 and btn1 = atp1.
+Because at least one of a, b is non-zero, we claim that this implies either s = 0 or t = 0. Otherwise, st ̸= 0, we have
+n0p1 −n1p0 = 0. This is impossible. So we must have s = 0 or t = 0 (and not both zero since otherwise the signature is
+identically zero). Now in either cases, it is easy to verify that all the possible bases are
+ a
+n1
+
+,
+ b
+p1
+
+∈M, taking into account
+the equivalence relation ∼, where n1, p1 are arbitrary, except ap1 −bn1 ̸= 0.
+The same conclusion holds if we assume u1v1 ̸= 0. To complete the proof, assume both u0v0 = 0 and u1v1 = 0. By
+symmetry, suppose u0 = 0 (the other cases are symmetric). In this case if u1 = 0 as well, then s = t = 0 since the deter-
+minant n0p1 −n1p0 ̸= 0. Then v0 = v1 = 0 and the signature is identically zero. Hence u1 ̸= 0. Then v1 = 0. It follows that
+the signature has the form λ[ϵvn
+0, 0,..., 0, un
+1], where there are a non-empty segment of zeros corresponding to 0 < i < n.
+These are of the form an−ibi, and thus ab = 0. But then the signature entry is zero at either i = 0 or at i = n. Since u1 ̸= 0,
+we get v0 = 0. The statement of the lemma clearly holds when u0 = v0 = 0.
+Now suppose the signature is expressed as Form 2 of Theorem 2.3. (The case with Form 3 is symmetric, exchanging
+subscript 0 for 1 in the basis.)
+In that expression, if n1 = 0, then a = 0 since x0 = an = nn0nn−1
+1
+= 0. At i = n −1, xn−1 = n0pn−1
+1
+= an−1b = 0. This gives
+n0 = 0 or p1 = 0, together with n1 = 0, we get a singular basis.
+So we have n1 ̸= 0. Then we claim a ̸= 0. Otherwise at i = 0, x0 = nn0nn−1
+1
+= an = 0, which implies that n0 = 0. At i = 1,
+x1 = p0nn−1
+1
+= an−1b = 0, we get p0 = 0. This gives a singular basis. So a ̸= 0, and from the above we also get n0 ̸= 0. Then
+up to a scalar factor an = 1, an−1b = c + ρ, and an−2b2 = 2cρ + ρ2, for c = (n1p0 −n0p1)n1/nn0 and ρ = p1/n1. It follows
+that 2cρ +ρ2 = (c +ρ)2, which implies that c = 0. As the determinant n1p0 −n0p1 ̸= 0, and n1 ̸= 0, we get a contradiction.
+This completes the proof.
+2
+Deﬁnition 4.2. A symmetric signature [x0, x1,..., xn], where n ⩾2, is called non-degenerate iff rank
+ x0 ... xn−1
+x1 ...
+xn
+
+= 2. Otherwise
+it is degenerate.
+The signature is identically 0 iff rank
+ x0 ... xn−1
+x1 ...
+xn
+
+= 0. It has rank 1 iff it can be expressed as λ[an,an−1b,...,bn], for λ ̸= 0,
+and a,b not both 0. In the following we assume the signature is non-degenerate. We directly handle the case for arity n = 2
+next.
+Lemma 4.2.
+Brec
+
+[x0, x1, x2]
+
+=
+
+
+n0
+n1
+
+,
+
+p0
+p1
+
+∈M
+ x0p2
+1 −2x1p1n1 + x2n2
+1 = 0, x0p2
+0 −2x1p0n0 + x2n2
+0 = 0
+or x0p0p1 −x1(n0p1 + n1p0) + x2n0n1 = 0
+
+.
+
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+47
+Proof. Under the equivalence relation, we can assume n0p1 −n1p0 = 1.
+Then
+ n0
+n1
+
+,
+ p0
+p1
+−1 =
+ p1
+−n1
+
+,
+ −p0
+n0
+
+. So the standard signature of [x0, x1, x2] is
+
+x0p2
+1 −2x1p1n1 + x2n2
+1, x0p0p1 −x1(n0p1 + n1p0) + x2n0n1, x0p2
+0 −2x1p0n0 + x2n2
+0
+
+.
+The fact that the only constraint of a standard signature of arity 2 is the parity constraint completes the proof.
+2
+In the following we assume the signature has arity n ⩾3, and non-degenerate. In this case, we note that the constants
+a, b, c in Theorem 2.5 are unique up to a scalar factor. In fact if there are two linearly independent triples (a,b,c), then the
+following matrix
+ x0
+x1
+...
+xn−2
+x1
+x2
+...
+xn−1
+x2
+x3
+...
+xn
+
+has rank ⩽1. The ﬁrst row and the last row are not both zero, otherwise the signature is identically zero (by n ⩾3). It
+follows that the matrix
+
+x0
+x1
+...
+xn−1
+x1
+x2
+...
+xn
+
+also has rank 1, hence the signature is degenerate.
+Lemma 4.3. Let λ1 ̸= 0. Let p = char.F. Suppose p = 0, or p ∤n,
+Brec
+
+[0, 0,..., 0,λ1,λ2]
+
+=
+
+
+0
+nλ1
+
+,
+
+1
+λ2
+
+.
+For p | n and λ2 = 0, Brec([0, 0,..., 0,λ1, 0]) =
+ 0
+n1
+
+,
+ 1
+p1
+
+∈M | n1, p1 ∈F
+
+. For p | n and λ2 ̸= 0, the signature [0, 0,...,
+0,λ1,λ2] is not realizable.
+Proof. Its reversal signature [λ2,λ1, 0,..., 0] is a special case of Lemma 4.6 (with α = 0).
+2
+Lemma 4.4. For AB ̸= 0,
+Brec
+
+A, Aα, Aα2,..., Aαn + B
+
+=
+
+
+1
+1
+
+,
+α + ω
+α −ω
+  ωn = ± B
+A
+
+.
+Proof. Its reversal signature [Aαn + B, Aαn−1,..., Aα, A] is a spacial case of Lemma 4.5. (This proof assumes α ̸= 0. For
+α = 0, it can be directly veriﬁed.)
+2
+In the following we use the fact that the triple (a,b,c) in the statement of Theorem 2.5 is unique up to a scalar factor.
+Also in the remaining cases we may assume c ̸= 0. So we have a unique characteristic equation cx2 + bx + a = 0, which has
+two roots α and β. In particular Forms 1, 2 and 3 from Theorem 2.3 are mutually exclusive. If α ̸= β, we have the following
+lemma:
+Lemma 4.5. For AB ̸= 0 and α ̸= β,
+Brec
+
+Aαi + Bβi  i = 0, 1,...,n
+
+=
+
+
+1 + ω
+1 −ω
+
+,
+α + βω
+α −βω
+  ωn = ± B
+A
+
+.
+Remark. We denote 00 = 1.
+Proof of Lemma 4.5. From A + B = x0, Aα + Bβ = x1, we can solve uniquely for A, B. We have AB ̸= 0; otherwise {xi}
+has the form {an−ibi}, which has been dealt with in Lemma 4.1. Having two distinct eigenvalues α ̸= β, this signature
+must be expressed as Form 1 of Theorem 2.3. Let u0 = sn0 + tn1, u1 = sp0 + tp1, v0 = sn0 −tn1, and v1 = sp0 −tp1. Then
+Aαi + Bβi = un−i
+0
+ui
+1 + ϵvn−i
+0
+vi
+1.
+We claim u0 ̸= 0. Otherwise, for i = 0, 1,...,n −1, the signature entry at i is ϵvn−i
+0
+vi
+1. It follows that (A + B)(Aα2 +
+Bβ2) = (Aα + Bβ)2, and since AB ̸= 0, we get α = β, a contradiction. Similarly we have v0 ̸= 0.
+Hence we have two expressions
+xi = Aαi + Bβi = un
+0
+u1
+u0
+i
++ ϵvn
+0
+ v1
+v0
+i
+.
+
+48
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+From Lemma 2.1, we know that the representation is unique. So un
+0 = A, ϵvn
+0 = B, u1
+u0 = α and v1
+v0 = β (exchanging notations
+A with B, and α with β if necessary). It follows that
+ 2sn0
+2tn1
+
+,
+ 2sp0
+2tp1
+
+=
+ u0+v0
+u0−v0
+
+,
+ u1+v1
+u1−v1
+
+. Since α ̸= β, we can show st ̸= 0,
+by the same proof showing u0 ̸= 0 and v0 ̸= 0. Now let ω = v0/u0, then ωn = ±B/A, and
+
+n0
+n1
+
+,
+
+p0
+p1
+
+∼
+
+2sn0
+2tn1
+
+,
+
+2sp0
+2tp1
+
+∼
+
+1 + ω
+1 −ω
+
+,
+α + βω
+α −βω
+
+.
+This completes the proof.
+2
+If the characteristic roots α = β, we have the following lemma:
+Lemma 4.6. Let p = char.F and let A ̸= 0.
+Case 1: p = 0 or p ∤n.
+Brec
+
+Aiαi−1 + Bαi  i = 0, 1,...,n
+
+=
+
+
+1
+B
+
+,
+
+α
+nA + Bα
+
+.
+Case 2: p | n and x0 = 0. In this case, the signature has entries xi = Aiαi−1, with B = 0 in the above form.
+Brec
+
+Aiαi−1  i = 0, 1,...,n
+
+=
+
+
+1
+n1
+
+,
+ α
+p1
+
+∈M
+ n1, p1 ∈F
+
+.
+Case 3: p | n and x0 ̸= 0. In this case the signature [Aiαi−1 + Bαi | i = 0, 1,...,n] is not realizable.
+Remark. If α = 0, and i = 0, we take the convention that iαi−1 = 0, and also αi = 1.
+Proof of Lemma 4.6. In Case 1, from B = x0, A + Bα = x1, we can solve uniquely for A, B. We have A ̸= 0, so Lemma 2.2
+applies. From Lemma 2.2, we know that the representation is unique. From Form 2 of Theorem 2.3 we claim n1 ̸= 0.
+Otherwise, all signature entries xi = 0 for i = 0,...,n −2. Since n ⩾3, we have x0 = x1 = 0, which implies that A = 0,
+contrary to assumption. In the following we assume Form 2 of Theorem 2.3, Form 3 will give an equivalent basis. Then
+we have xi = i(n1p0 −n0p1)nn
+1( p1
+n1 )i−1 + nn0nn−1
+1
+( p1
+n1 )i. So by uniqueness (n1p0 −n0p1)nn
+1 = A,
+p1
+n1 = α, nn0nn−1
+1
+= B. Since
+n1 ̸= 0, under the equivalence relation, we can let n1 = 1, then we have the unique solution n0 = B/n, p1 = α, p0 = A + Bα
+n .
+We omit the proofs for Cases 2 and 3.
+2
+The above list of realizable symmetric signatures for recognizers is complete and mutually exclusive. To see that, by
+Theorem 2.5, we have a recurrence relation for any realizable signature. The case for any degenerate signature, including the
+case n = 1, is handled in Lemma 4.1. Now assume the signature is non-degenerate. The case n = 2 is handled in Lemma 4.2.
+Next we assume the signature is non-degenerate and arity n ⩾3. Then Theorem 2.5 provides a tuple (a,b,c) ̸= 0, unique up
+to a non-zero constant multiple. If c ̸= 0 this deﬁnes a unique second order recurrence relation. If a ̸= 0 this deﬁnes a unique
+second order recurrence relation for the reversal. (If both a = 0 and c = 0, this deﬁnes the signature [A, 0,..., 0, B] where
+AB ̸= 0, due to non-degeneracy. This is included in Lemma 4.4, with α = 0.) Assume c ̸= 0 then the recurrence relation
+is second order and has eigenvalues α and β. Depending on whether it has a pair of distinct eigenvalues or a double
+eigenvalue, we have Lemmas 4.5 and 4.6. The case when the recurrence relation is for the reversal signature results in the
+same expression, except in the case when one of the eigenvalue is 0. And these special cases are handled in Lemmas 4.4
+and 4.3 respectively.
+4.2. Realizability of generators
+The following lemmas give a complete and mutually exclusive list of realizable symmetric signatures for generators. They
+can be proved similarly.
+Lemma 4.7.
+Bgen
+
+λ
+
+an,an−1b,...,bn
+=
+
+
+n0
+−b
+
+,
+
+p0
+a
+  n0, p0 ∈F
+
+.
+Lemma 4.8.
+Bgen
+
+[x0, x1, x2]
+
+=
+
+
+n0
+n1
+
+,
+
+p0
+p1
+
+∈M
+ x0n2
+0 + 2x1n0p0 + x2p2
+0 = 0, x0n2
+1 + 2x1n1p1 + x2p2
+1 = 0
+or x0n0n1 + x1(n0p1 + n1p0) + x2p0p1 = 0
+
+.
+
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+49
+Lemma 4.9. Let λ1 ̸= 0. Let p = char.F. Suppose p = 0, or p ∤n,
+Bgen
+
+[0, 0,..., 0,λ1,λ2]
+
+=
+
+
+−λ2
+1
+
+,
+
+nλ1
+0
+
+.
+For p | n and λ2 = 0, Bgen([0, 0,..., 0,λ1, 0]) =
+ 1
+n1
+
+,
+ 0
+p1
+
+∈M | n1, p1 ∈F
+
+. For p | n and λ2 ̸= 0, then [0, 0,..., 0,λ1,λ2] is
+not realizable.
+Lemma 4.10. For AB ̸= 0,
+Bgen
+
+A, Aα, Aα2,..., Aαn + B
+
+=
+
+ ω −α
+−α −ω
+
+,
+
+1
+1
+  ωn = ± B
+A
+
+.
+Lemma 4.11. For AB ̸= 0 and α ̸= β,
+Bgen
+
+Aαi + Bβi  i = 0, 1,...,n
+
+=
+
+
+βω −α
+−α −βω
+
+,
+
+1 −ω
+1 + ω
+  ωn = ± B
+A
+
+.
+Lemma 4.12. Let p = char.F and let A ̸= 0.
+Case 1: p = 0 or p ∤n.
+Bgen
+
+Aiαi−1 + Bαi  i = 0, 1,...,n
+
+=
+
+
+nA + Bα
+−α
+
+,
+
+−B
+1
+
+.
+Case 2: p | n and x0 = 0. In this case, the signature has entries xi = Aiαi−1, with B = 0 in the above form:
+Bgen
+
+Aiαi−1  i = 0, 1,...,n
+
+=
+
+
+−α
+n1
+
+,
+
+1
+p1
+
+∈M
+ n1, p1 ∈F
+
+.
+Case 3: p | n and x0 ̸= 0. In this case the signature [Aiαi−1 + Bαi | i = 0, 1,...,n] is not realizable.
+4.3. Simultaneous realizability
+Deﬁnition 4.3. The Simultaneous Realizability Problem (SRP):
+Input: A set of symmetric signatures for generators and/or recognizers.
+Output: A common basis of these signatures if any exists; “NO” if they are not simultaneously realizable.
+Algorithm.
+For every signature [x0, x1,... xn], check if it satisﬁes Theorem 2.5.
+If not, output “NO” and halt.
+Otherwise ﬁnd Bgen([x0, x1,... xn]) or Brec([x0, x1,... xn]) according to one of the lemmas.
+Check if these subvarieties have a non-empty intersection.
+Theorem 4.1. This is a polynomial time algorithm for SRP. (If p = char.F is a large prime and is considered part of the input, i.e., input
+size includes log p, then the problem is in RP.)
+Proof. Checking whether every input signature satisﬁes Theorem 2.5 can obviously be done in polynomial time. To ﬁnd the
+right form and then the right lemma for a signature which satisﬁes Theorem 2.5 can also be done in polynomial time as
+they are mutually exclusive.
+Every subvariety of bases from Lemmas 4.1 to 4.6 and from Lemmas 4.7 to 4.12 is of one of three kinds: a ﬁnite set
+of points (of linear size), a line or a quadratic curve. More precisely, consider recognizers; the situation for generators is
+similar. Expressing things in terms of the manifold M shows that: For Lemma 4.1 we get a line with x = const. (in the
+notation deﬁning M). For Lemma 4.2 we get a union of two sets. The ﬁrst is ﬁnite, where both x and y satisfy a quadratic
+polynomial (and by projective closure). Therefore there are at most 4 points in M. The second set is deﬁned by an equation
+of the form Axy + B(x + y) + C = 0 (and by projective closure), where A, B, C are known constants. Note that if we had
+two sets of this type (from Lemma 4.2 and/or Lemma 4.8) we can eliminate A and get a linear equation. (Solving quadratic
+equations over large ﬁnite ﬁeld may require randomized polynomial time.)
+For Lemma 4.3 we have either a single point for p | n or a line “at inﬁnity”. Lemma 4.6 is similar, where we have either
+a point or a line x = const. For Lemma 4.4, we get at most n points from the equation ωn = const. If we are in C (more
+
+50
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+precisely in Q or an algebraic extension ﬁeld of Q) then the computation is clearly in P. For ﬁelds of ﬁnite characteristic,
+since n is given in unary, the computation is in P, provided p is ﬁxed (or at most O(logn)). For large p (the ﬁeld size is
+exponential in n), this can be done in RP (i.e., in randomized polynomial time). We need to be able to solve equations such
+as Xn = const. These can be done in randomized polynomial time; see [1] for more details.
+2
+5. Some not-so-accidental algorithms
+In [30], Valiant gave polynomial time algorithms for #7Pl-Rtw-Mon-3CNF and #7Pl-3/2Bip-VC, and he called them
+“accidental algorithms”. In this section, we show how such algorithms can be developed almost “mechanically”. This ap-
+proach has the advantage that one gains more understanding of what can or cannot be accomplished. With this machinery
+we are able to generalize his result to Pl-Rtw-Mon-kCNF and Pl-k/2Bip-VC, for a general k. We show that there is a unique
+modulus 2k −1 for which we can design such a holographic algorithm which counts the number of solutions. In the case
+of k = 3, this shows why 7 is special.
+5.1. #2k−1Pl-Rtw-Mon-kCNF
+For #Pl-Rtw-Mon-kCNF, we are given a planar formula [16] in kCNF form, where each variable appears positively, and
+each appears in exactly 2 clauses. The problem is to count the number of satisfying assignments. As noted earlier, this
+counting problem is #P-complete already for k = 3.
+To solve the problem by a holographic algorithm, we wish to replace each variable by a generator with the signature
+[1, 0, 1], and each clause by a recognizer with the signature [0, 1, 1,..., 1] (with k 1’s). The symmetric signature [1, 0, 1]
+corresponds to a consistent truth assignment on two edges leading to clauses (i.e. the equality function =2 on two Boolean
+inputs), and [0, 1, 1,..., 1] corresponds to a Boolean OR function for the clause. If we connect the generators and recognizers
+in a natural way, by the Holant Theorem [29] this would solve #Pl-Rtw-Mon-kCNF in polynomial time (if the signatures are
+realizable over Q).
+Then the question boils down to whether there is a basis in M where [1, 0, 1] for a generator and [0, 1, 1,..., 1]
+(with k 1’s) for a recognizer can be simultaneously realized. For this, we use our machinery.
+From Lemma 4.5, with A = 1, B = −1, α = 1, β = 0, we have
+Brec
+
+[0, 1, 1,..., 1]
+
+=
+
+
+1 + ω
+1 −ω
+
+,
+
+1
+1
+  ωk = ±1
+
+.
+We look for some ωk = ±1, such that
+ 1+ω
+1−ω
+
+,
+ 1
+1
+
+∈Bgen([1, 0, 1]).
+According to Lemma 4.8, we want (1 + ω)2 + 1 = (1 −ω)2 + 1 = 0 or (1 + ω)(1 −ω) + 1 = 0.
+The ﬁrst case is impossible, and in the second case we require ω2 = 2. Together with the condition ωk = ±1, we have
+2k −1 = 0. From this we can already see that for every prime p | 2k −1, #pPl-Rtw-Mon-kCNF is computable in polynomial
+time. In particular this is true for every Mersenne prime 2q −1. (Note that ω2 = 2 means that 2 is a quadratic residue.)
+More generally we have:
+Theorem 5.1. There is a polynomial time algorithm for #2k−1Pl-Rtw-Mon-kCNF. Furthermore, any modulus m for which the appropri-
+ate signatures exist must be a divisor of 2k −1.
+Proof. Our discussion above already shows that the modulus 2k −1 is the best we can do. (Formally speaking we should
+present a generalization of the Holant Theorem [29] over a ring such as Z2k−1, which we will omit here.) We now give the
+polynomial algorithms in two cases:
+Case 1. k is even.
+Over the complex numbers C, from Lemmas 4.8 and 4.4, we can see that a generator for [1, 0, 1] and a recognizer for
+[1 + ϵ2k/2, 1, 1,..., 1] (where there are k 1’s, and ϵ = ±1) are simultaneously realizable in the basis β =
+ 1+
+√
+2
+1−
+√
+2
+
+,
+ 1
+1
+
+.
+Setting ϵ = 1 and replacing each variable by a generator and each clause by a recognizer with the corresponding signa-
+tures, we obtain a matchgrid Ω with the underlying weighted planar graph G. Then the Holant Theorem [29] tells us
+Holant(Ω) = PerfMatch(G).
+(8)
+We will denote this value by X.
+From the left-hand side of (8) we know that X is an integer because every entry in the signatures of generators and
+recognizers is an integer. Furthermore we have
+X ≡#Pl-Rtw-Mon-kCNF
+
+mod 1 + 2k/2
+.
+
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+51
+From the right-hand side of (8) we know that X can be computed in polynomial time using the FKT algorithm for perfect
+matchings of a planar graph. The planar graph has weights from the subﬁeld Q(
+√
+2) ⊂C, which poses no problem to the
+Pfaﬃan evaluation of FKT in polynomial time.
+Therefore #2k/2+1Pl-Rtw-Mon-kCNF can be computed in polynomial time. Similarly, setting ϵ = −1, we can compute
+#2k/2−1Pl-Rtw-Mon-kCNF in polynomial time.
+Since (2k/2 + 1, 2k/2 −1) = 1 and 2k −1 = (2k/2 + 1)(2k/2 −1), we can apply Chinese remaindering to get a polynomial
+time algorithm for #2k−1Pl-Rtw-Mon-kCNF.
+Case 2. k is odd.
+Consider the ring Z2k−1. (Formally we could develop the theory over such a ring, and consider invertible elements
+and matrices for the basis manifold. But we will omit this formality; everything we need can be easily done by a slight
+modiﬁcation of the proofs given before.) Let r = 2(k+1)/2 ∈Z2k−1. Then r satisﬁes r2 = 2 in Z2k−1. We denote this r by
+√
+2.
+Then 1 −(
+√
+2)k = 1 −(2k)(k+1)/2 = 0 in Z2k−1.
+Therefore over this ring Z2k−1 and with the basis β =
+ 1+
+√
+2
+1−
+√
+2
+
+,
+ 1
+1
+
+=
+ 1+2(k+1)/2
+1−2(k+1)/2
+
+,
+ 1
+1
+
+, we have a generator for [1, 0, 1]
+and a recognizer for [0, 1, 1,..., 1] (with k 1’s) according to Lemmas 4.8 and 4.4. As a result, we have a polynomial time
+algorithm for #2k−1Pl-Rtw-Mon-kCNF. (It is in this case where k is odd, we need 2 as a quadratic residue in Zp for primes
+p | 2k −1, as discussed in Section 1.)
+2
+5.2. #2k−1Pl-k/2Bip-VC
+In this problem, we are given a planar bipartite graph with left degree k and right degree 2. These are called regular
+(k, 2)-bipartite graphs. We wish to count the number of vertex covers mod 2k −1. The counting problem for this class of
+graphs mod 2 is ⊕P-complete and thus NP-hard [30]. Consider an arbitrary subset S of vertices from the right. Every vertex
+v on the left either has all its k adjacent vertices in S, in which case there are exactly two choices to extend at v to a
+vertex cover, or has some of its k adjacent vertices not in S, in which case there is exactly one choice to extend at v to a
+vertex cover. Thus, following the general recipe for holographic algorithms, we want to construct a generator with signature
+[1, 0, 1] and a recognizer with signature [2, 1, 1,..., 1] (with k 1’s), to be simultaneously realized over some basis.
+From Lemma 4.5, where A = 1, B = 1, α = 1, β = 0, we have:
+Brec
+
+[2, 1, 1,..., 1]
+
+=
+
+
+1 + ω
+1 −ω
+
+,
+
+1
+1
+  ωk = ±1
+
+.
+We realize that this set is exactly the same as Brec([0, 1, 1,..., 1]). Then the proof in Section 5.1 gives us:
+Theorem 5.2. There is a polynomial time algorithm for #2k−1Pl-k/2Bip-VC. Furthermore, any modulus m for which the appropriate
+signatures exist must be a divisor of 2k −1.
+Our general machinery not only can ﬁnd the required signatures when they exist, but also can prove certain desired
+signatures do not exist or cannot be simultaneously realized. As an example, one may wish to extend the previous two
+problems to allow more than Read-twice as in #Pl-Rl-Mon-kCNF, where l > 2. This calls for a simultaneous realizability of
+[1, 0, 0,..., 0, 1] (where there are (l −1) 0’s) and [0, 1, 1,..., 1] (where there are k 1’s). This can be shown to result in an
+empty intersection on M.
+5.3. An edge-vertex cover problem
+Another way to think of a regular (k, 2)-bipartite graph is to identify every degree 2 vertex on the right together with
+its two incident edges as a new edge. Then we obtain precisely the class of k-regular graphs. We say a subset of edges and
+vertices is an edge-vertex cover if every vertex is either in the subset or all of its k incident edges are in the subset. We
+consider the following edge-vertex cover problem #2k−1Pl-k-Reg-EVC: Given a planar k-regular graph G, count the number
+of edge-vertex covers of G mod 2k −1.
+It is clear that this problem is really the same problem as the one in Section 5.2 and thus the same algorithm also gives
+a polynomial time algorithm for this problem.
+Theorem 5.3. There is a polynomial time algorithm for #2k−1Pl-k-Reg-EVC. Furthermore, any modulus m for which the appropriate
+signatures exist must be a divisor of 2k −1.
+
+52
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+5.4. A problem from neural networks
+Consider the following planar two-level neural network N: The input nodes are Boolean variables x1,..., xn. Each xi has
+fan-out 2. The intermediate level nodes v all have fan-in k from the xi’s. The output of v feeds into the top node and can
+have c + 1 different values 0, 1,...,c. If all k inputs of v are 0 then the output of v is 0 (unexcited state). Otherwise, the
+output of v can be any of the c + 1 values (excited state). The problem is to count the total number of output (ﬁring)
+patterns as received at the top node. (In the following, for simplicity we state the result for an odd c. We have a parallel
+set of results for c even, but the statement has some number theoretic complications.)
+#2k−c2NNk/c-Firing-Pattern.
+Input: A two-level neural network with parameters k and c as above.
+Output: The number mod (2k −c2) of all possible ﬁring patterns.
+First we suppose k is even. Then we do it over C by taking ω =
+√
+2. We can use the same basis in Section 5.1 to realize
+the signature [1 + 2k/2, 1, 1,..., 1] (with k 1’s) for a recognizer and the signature [1, 0, 1] for a generator simultaneously.
+This is veriﬁed by ω2 = 2 and ωk = 2k/2.
+Let X be the value of the Holant. With mod 2k/2 −c, the recognizer signature is the same as [1 + c, 1, 1,..., 1]. Thus
+X ≡#NNk/c-Firing-Pattern
+
+mod 2k/2 −c
+
+.
+Similarly we can also achieve the signature [1 −2k/2, 1, 1,..., 1] (with k 1’s) for a recognizer and the signature [1, 0, 1]
+for a generator simultaneously. This is veriﬁed by ω2 = 2 and ωk = −(−2k/2). This recognizer signature is congruent to
+[1 + c, 1, 1,..., 1] mod 2k/2 + c. Thus we can compute in polynomial time some value X′ for a Holant, where
+X′ ≡#NNk/c-Firing-Pattern
+
+mod 2k/2 + c
+
+.
+Then by Chinese remaindering, we can compute the value #NNk/c-Firing-Pattern modulo the l.c.m. of 2k/2 −c and 2k/2 + c.
+Since c is odd, this is 2k −c2.
+Now we suppose k is odd. As c is relatively prime to N = 2k −c2, there exists a c′ such that cc′ ≡1 mod N. Take
+ω = 2(k+1)/2c′. Then ω2 = 2k+1c′2 ≡2 mod N. Also ωk = (2k)(k+1)/2c′k ≡ck+1c′k ≡c mod N. Thus we can construct [1 +
+c, 1, 1,..., 1] (with k 1’s) for a recognizer and the signature [1, 0, 1] for a generator simultaneously in the ring ZN directly.
+6. Some more examples
+In [29] Valiant gave a list of combinatorial problems all of which can be solved by holographic algorithms. In each case,
+a “magic” design of matchgates and signatures were presented to derive the algorithm. With our machinery, we can show
+all these problems can be systematically derived. In particular, we will see how the two mysterious bases b1 and b2 show
+up naturally. The framework here can handle all the problems from [29]. (But for PL-FO-2-COLOR, which uses a basis of
+three vectors, it is more naturally dealt with in the context of more general bases.)
+6.1. Not-All-Equal gate
+In [29], four problems employ the NAE (Not-All-Equal) gate [0, 1, 1, 0]. They are #PL-3-NAE-SAT, #PL-3-NAE-ICE, #PL-3-
+(1, 1)-CYCLECHAIN and PL-NODE-BIPARTITION (this last one uses a generator with signature [x, 1, 1, x]).
+Notice that they have a common restriction of “maximum degree 3”. This is necessary because if k > 3, then
+[0, 1, 1,..., 1, 0] ((k −1) 1’s) is not realizable. This is a result of [5], but it’s easy to see now.
+For the case of degree 3, by Lemma 4.5, taking α, β to be the two roots of x2 −x + 1 = 0 and A/B = −1, we have
+Brec([0, 1, 1, 0]) =
+ 1+ω
+1−ω
+
+,
+ α+βω
+α−βω
+
+| ω3 = ±1
+
+.
+Noticing that α3 = −1 and αβ = 1, letting ω = α, we have (using ∼on M)
+
+1 + ω
+1 −ω
+
+,
+α + βω
+α −βω
+
+=
+
+1 + α
+1 −α
+
+,
+α + βα
+α −βα
+
+=
+
+1
+1
+
+,
+
+1
+−1
+
+.
+This is b2 in [29]. Actually for each of the four problems, in order to intersect with the subvarieties of other generators
+and recognizers, this is the only choice. We omit the details.
+6.2. #k+12/k-X-Matchings
+Input: A planar bipartite graph G = (V 1, V 2, E). Nodes in V 1 and V 2 have degrees 2 and k respectively.
+Output: The number mod (k + 1) of all (not necessarily perfect) matchings.
+
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+53
+This problem is a slight variation on #X-Matchings from [29], which has general weights on edges and uses an unsym-
+metric signature. (We will discuss unsymmetric signatures in Section 7.) The case k = 4 was explicitly stated in [29], but the
+proof there clearly also handles general k. Jerrum [17] showed that counting matchings for planar graphs is #P-complete.
+Vadhan [26] showed that this remains #P-complete for planar bipartite graphs of degree 6.
+For this problem we are looking for a generator with signature [1, 1, 0] and a recognizer with signature [1, 1, 0,..., 0]
+((k −1) 0’s) simultaneously. From Lemma 4.6, with A = B = 1, α = 0, we have: Brec([1, 1, 0,..., 0]) =
+ 1
+1
+
+,
+ 0
+k
+
+. We hope
+that
+ 1
+1
+
+,
+ 0
+k
+
+∈Bgen([1, 1, 0]).
+From Lemma 4.8, we must have k + 1 = 0. So we can only work inside the ring Zk+1.
+Remark. In Zk+1, this basis
+ 1
+1
+
+,
+ 0
+k
+
+in M under the equivalence relation ∼is exactly b1 in [29].
+Theorem 6.1. There is a polynomial time algorithms for #k+12/k-X-Matchings. Any modulus m for which the appropriate signatures
+exist must be a divisor of k + 1.
+6.3. ⊕PL-EVEN-LIN2
+In this problem, we wish to construct generators for [1, x, 1], [x, 1, x], [1, 0, 1], [0, 1, 0], [1, 0, 0,..., 0, 1] and recognizers
+for [1, 0,−1, 0, 1], [0, 1, 0,−1, 0], [1, 0, 1], [0, 1, 0].
+By Lemma 4.5, for A = B = 1/2, α = i, β = −i (here i =
+√
+−1), we have
+Brec
+
+[1, 0,−1, 0, 1]
+
+=
+
+
+1 + ω
+1 −ω
+
+,
+
+i −iω
+i + iω
+  ω4 = ±1
+
+.
+We hope that
+ 1+ω
+1−ω
+
+,
+ i−iω
+i+iω
+
+is also a basis for the recognizer [0, 1, 0].
+By Lemma 4.2, we require that (1 + ω)(i + iω) + (1 −ω)(i −iω) = 0. That is, ω = i, and
+
+1 + ω
+1 −ω
+
+,
+
+i −iω
+i + iω
+
+=
+
+1 + i
+1 −i
+
+,
+
+i + 1
+i −1
+
+=
+
+1
+1
+
+,
+
+1
+−1
+
+.
+We can easily verify that this is also a basis for the other recognizers and generators and we remark that this basis is
+precisely b2 in [29]. One can also prove 2 is the only modulus for this problem.
+7. Beyond symmetric signatures
+The theory of symmetric signatures has been satisfactorily developed. Symmetric signatures are particularly useful be-
+cause they have clear combinatorial meanings. However general (i.e. unsymmetric) signatures have also been used before.
+To understand completely the power of holographic algorithms, we must study unsymmetric signatures as well. (In the
+following, we discuss generators only; the situation for recognizers is similar.)
+Following the framework in [4], a generator is a contravariant tensor of the form G = (gi1i2...in) where the index
+i1i2 ... in ∈{0, 1}n. We also denote G = (g S) where S ⊆[n], and g S = gχS(1)χS(2)...χS(n). A generator signature G is realiz-
+able on a basis β iff the standard signature G′ = β⊗nG can be realized by some planar matchgate. There are two conditions
+for a standard signature (g′S) to be realizable:
+Parity constraints: Either g′S = 0 for all |S| even, or g′S = 0 for all |S| odd.
+Matchgate identities: G′ satisﬁes all the useful Grassmann–Plücker identities.
+Deﬁnition 7.1. A tensor G is admissible as a generator on a basis β iff G′ = β⊗nG satisﬁes the parity constraints. Let B p
+gen(G)
+denote the subset of M for which G is admissible as a generator.
+By deﬁnition we have Bgen(G) ⊆B p
+gen(G) for all G.
+For symmetric signatures, we already observed that there are some different levels of realizability. Some signatures are
+realizable on isolated points, while others are realizable on lines or curves. Any success of getting a holographic algorithm
+typically results from either a generator or a recognizer having more than isolated points of realizability. In terms of M,
+this refers to the dimension of the subvariety Bgen(G) (and the corresponding subvarieties for recognizers). More precisely,
+Deﬁnition 7.2. A generator G is called d-realizable (resp. d-admissible) for an integer d ⩾0 iff Bgen(G) ⊆M (resp. B p
+gen(G) ⊆
+M) is a (non-empty) algebraic subset of dimension at least d.
+By deﬁnition, if a generator G is d-realizable, then it is d-admissible.
+
+54
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+Remark. Since M has dimension two, 2-realizability is universal realizability which means that G is realizable on any basis.
+This is because the conditions deﬁning realizability are polynomial equations (with coeﬃcients from (g S), and variables
+on M). If there is at least one polynomial which is not identically 0, the algebraic set has dimension ⩽1. Using any
+2-realizable signature is a freebie in the design of holographic algorithms; it places no restriction on the rest of the design.
+Therefore they are particularly desirable.
+7.1. Characterization of 2-admissibility
+The following theorem is a complete characterization of 2-admissibility over ﬁelds of characteristic 0. It uses rank esti-
+mates related to the Kneser Graph KG2k+1,k [21–23,12–15].
+Theorem 7.1. G is 2-admissible iff (1) n = 2k is even; (2) all g S = 0 except for |S| = k; and (3) for all T ⊆[n] with |T| = k + 1,
+
+S⊂T,|S|=k
+g S = 0.
+(9)
+The solution space is a linear subspace of dimension
+1
+k+1
+2k
+k
+
+(the Catalan number).
+Consider all subsets of [n] of a certain cardinality. Let 0 ⩽k ⩽ℓ⩽n, and let Ak,ℓ,n denote the
+n
+k
+
+×
+n
+ℓ
+
+Boolean matrix
+indexed by (A, B), where A, B ⊆[n] and |A| = k,|B| = ℓ, and the entry at (A, B) is χ[A⊆B], i.e., it is 1 if A ⊆B and 0
+otherwise. It is known that over the rationals Q , the rank rk(Ak,ℓ,n) = min{
+n
+k
+
+,
+n
+ℓ
+
+} [12–15]. We will not deal with ﬁnite
+characteristics here. The situation with ﬁnite characteristic p is interesting and is more involved. For example, Linial and
+Rothschild [15] proved exact rank formula for characteristic 2 and 3. The rank “defect” compared to the characteristic 0 case
+provides more admissible signatures. This will be discussed in future work.
+We restate the deﬁnition of d-admissibility in more detail.
+Deﬁnition 7.3. G = (g S)S⊆[n] is called d-admissible if the following algebraic variety V has dimension at least d, where
+V = V 0 ∪V 1 ⊆M, and V 0 (resp. V 1) is deﬁned by the set of all parity requirements for the generator signature of an odd
+(resp. even) matchgate.
+More precisely, consider V 0. We take a point (in dehomogenized coordinates)
+ 1 x
+1 y
+
+∈M. We also denote x0 = x, x1 = y.
+Let T ⊆[n] with |T| even. Then we require
+
+n
+
+σ=1
+[1, x[σ∈T]], G
+
+= 0.
+Note that the left-hand side is precise the entry of the standard signature indexed at T , under the (contravariant) basis
+transformation. Similarly we deﬁne V 1, where the equations are over all T with an odd cardinality.
+We note that
+
+n
+
+σ=1
+[1, x[σ∈T]], G
+
+=
+
+0⩽i⩽n−|T|
+0⩽j⩽|T|
+xi y j
+
+A⊆T c,|A|=i
+B⊆T,|B|= j
+g A∪B.
+(10)
+If dim(V ) = 2, then either dim(V 0) = 2 or dim(V 1) = 2. For dim(V 0) = 2, we have the following: For all T ⊆[n] with |T|
+even, and for all 0 ⩽i ⩽n −|T| and 0 ⩽j ⩽|T|,
+
+A⊆T c, B⊆T,|A|=i,|B|= j
+g A∪B = 0.
+(11)
+(If there is one equation not satisﬁed, then there is at least one non-trivial polynomial among the parity requirements,
+which implies dim(V 0) ⩽1.) For dim(V 1) = 2, the above holds for all |T| odd. Continuing with dim(V 0) = 2, by taking i = 0,
+we get for all T ⊆[n] with |T| even, and j ⩽|T|,
+
+S⊆T,|S|= j
+g S = 0.
+(12)
+Also by taking j = 0, we get for all i ⩽n −|T|,
+
+S⊆T c,|S|=i
+g S = 0.
+
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+55
+If S ⊆[n] with |S| even, then we may take T = S and j = |T|, and it follows that
+g S = 0.
+If n is odd, then T is even and T c is odd, and together they range over all possible subsets of [n]. It follows that
+g S = 0,
+for all S ⊆[n]. That is, G is trivial.
+An identical argument also shows that for n odd and dim(V 1) = 2, the trivial G ≡0 is the only possibility.
+Now we assume n = 2k is even, and continuing with dim(V 0) = 2. Both T and T c are even. Pick any T even and
+i = n −|T|, we get
+
+A⊆T c, B⊆T,|A|=i,|B|= j
+g A∪B =
+
+S⊇T c,|S|=i+ j
+g S = 0,
+i.e. for all even T ′ ⊆[n] and all i ⩾|T ′|,
+
+S⊇T ′,|S|=i
+g S = 0.
+(13)
+If |S| = i < k, we form the following system of equations from (12),
+
+S⊆T,|S|=i
+g S = 0,
+where T ranges over all subsets of [n] with |T| = t, and t = i or i + 1, whichever is even. This linear system has rank
+n
+i
+
+. It
+follows that g S = 0 for all |S| < k.
+Similarly if |S| = i > k, we can use (13) with |T| = i or i −1, whichever is even, and summing over all subsets S
+containing T . This linear system also has rank
+n
+i
+
+. It follows that g S = 0 for all |S| > k.
+Therefore the only non-zero entries of G are among g S with half weight |S| = k. Also with dim(V 0) = 2, we may assume
+k is odd. Otherwise, we already know g S = 0 for all |S| even.
+A similar argument for V 1 shows that, in order for dim(V 1) = 2, we must have n = 2k even, all g S = 0 except for |S| = k
+and k is even.
+Summarizing, we have
+Lemma 7.1. If G is 2-admissible, then n = 2k is even, all g S = 0 except for |S| = k. If k is odd (resp. even) then the only possibility is
+dim(V 0) = 2 (resp. dim(V 1) = 2). Moreover, for all T ⊆[n] with |T| = k + 1,
+
+S⊆T,|S|=k
+g S = 0.
+(14)
+Next we prove that the conditions in Lemma 7.1 are also suﬃcient for G being 2-admissible, i.e., we prove (11), thus all
+the polynomials in (10) are identically zero.
+Suppose k odd. We prove dim(V 0) = 2. A similar argument does for k even and dim(V 1) = 2. We only need to verify
+(11) for all i + j = k, namely for all T ⊆[n] with |T| even, and for all 0 ⩽i ⩽n −|T|, and 0 ⩽j = k −i ⩽|T|,
+
+A⊆T c, B⊆T,|A|=i,|B|=k−i
+g A∪B = 0.
+(15)
+Denote by t = |T| and s = n −|T|. By exchanging T and T c (both being even subsets of [n]) we may assume s ⩽t. Since k
+is odd, we have the strict s < t, for otherwise s = t = k would be odd.
+We prove (15) by induction on i ⩾0. The base case is i = 0 and j = k. Let’s consider all U ⊆T with |U| = k + 1. Note
+that as t ⩾k + 1, this is not vacuous. By (14) we have
+
+S⊆U,|S|=k
+g S = 0.
+Summing over all such U, and consider how many times each S ⊆[n] with |S| = k appears in the sum, we get
+
+A⊆T c,|A|=0
+B⊆T,|B|=k
+g A∪B =
+
+S⊆T,|S|=k
+g S =
+1
+t−k
+1
+
+
+U⊆T
+|U|=k+1
+
+S⊆U,|S|=k
+g S = 0.
+(16)
+
+56
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+Inductively we assume (15) has been proved for i −1, for some i ⩾1. Consider i and j = k −i. We may assume i ⩽s;
+otherwise we are done. Also k −i + 1 ⩽k + 1 ⩽t. Consider all subsets U = U1 ∪U2 ⊆[n], where U1 ⊆T c, U2 ⊆T , with
+|U1| = i and |U2| = k −i + 1. Note that |U| = k + 1. We have
+0 =
+
+S⊆U,|S|=k
+g S =
+
+A⊆U1,|A|=i−1
+g A∪U2 +
+
+B⊆U2,|B|=k−i
+gU1∪B,
+as all sets S ⊆U with |S| = k are classiﬁed into two classes according to whether |S ∩U1| = i −1 or i. Then summing over
+all such U,
+0 =
+
+U
+
+S⊆U,|S|=k
+g S =
+s −(i −1)
+1
+
+
+A⊆T c,|A|=i−1
+B⊆T,|B|=k−i+1
+g A∪B +
+t −(k −i)
+1
+
+
+A⊆T c,|A|=i
+B⊆T,|B|=k−i
+g A∪B,
+by considering how many times each S of the two classes appears in the sum 
+U
+
+S. Since the ﬁrst sum is 0 by inductive
+hypothesis, and t −k + i ⩾1, the second sum is also zero. Thus
+
+A⊆T c, B⊆T,|A|=i,|B|=k−i
+g A∪B = 0.
+This proves Theorem 7.1.
+We can further prove:
+Theorem 7.2. If G is 2-admissible with arity 2k, then ∀β =
+ n0 p0
+n1 p1
+
+∈M, β⊗2kG = (n0p1 −n1p0)kG.
+In order to prove this theorem, we ﬁrst prove the following lemma:
+Lemma 7.2. Let G be 2-admissible with arity 2k, S ⊆[2k] with |S| = k, and A ⊆Sc. Then
+
+B⊆S and |B|=k−|A|
+g A∪B = (−1)|A|g S.
+Proof. We prove it by induction on |A| ⩾0.
+The case |A| = 0 is obvious.
+Inductively we assume the lemma has been proved for all |A| ⩽i −1, for some i ⩾1. Letting |A| = i > 0 and letting G
+be 2-admissible, it follows from Lemma 7.1 that we have
+
+C⊆A∪S and |C|=k
+gC = 0.
+Then
+0 =
+
+C⊆A∪S and |C|=k
+gC
+=
+
+B⊆S and |B|=k−|A|
+g A∪B +
+|A|−1
+
+t=0
+
+A1⊆A,|A1|=t
+
+B⊆S,|B|=k−|A1|
+g A1∪B,
+according to t = |A ∩C| = 0, 1,...,|A|. Since |A1| = t ⩽|A| −1, by induction we have:
+
+B⊆S,|B|=k−|A1|
+g A1∪B = (−1)|A1|g S = (−1)t g S.
+So
+0 =
+
+B⊆S and |B|=k−|A|
+g A∪B + g S
+|A|−1
+
+t=0
+(−1)t
+|A|
+t
+
+=
+
+B⊆S and |B|=k−|A|
+g A∪B −(−1)|A|g S.
+From the last equation, we have
+
+B⊆S and |B|=k−|A|
+g A∪B = (−1)|A|g S.
+This completes the proof.
+2
+
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+57
+Corollary 7.1. If G is any 2-admissible signature, then ∀S ⊆[2k], g S = (−1)k g Sc .
+Now we can prove Theorem 7.2.
+Proof. To simplify notations, we use the dehomogenized coordinates β =
+ 1 x
+1 y
+
+=
+ 1 x0
+1 x1
+
+. Some exceptional cases can be
+proved directly.
+First it is obvious that β⊗2kG is also 2-admissible. So for any S ⊆[2k] and |S| ̸= k,
+
+n
+
+σ=1
+[1, x[σ∈S]], G
+
+≡0.
+Now let S ⊆[2k] and |S| = k,
+
+n
+
+σ=1
+[1, x[σ∈S]], G
+
+=
+
+0⩽i⩽k
+xi yk−i
+
+A⊆Sc,|A|=i
+
+B⊆S,|B|=k−i
+g A∪B.
+By Lemma 7.2 and for A ⊆Sc, |A| = i, we have
+
+B⊆S,|B|=k−i
+g A∪B = (−1)i g S.
+So
+
+n
+
+σ=1
+[1, x[σ∈S]], G
+
+=
+
+0⩽i⩽k
+xi yk−i
+
+A⊆Sc,|A|=i
+(−1)i g S = g S 
+0⩽i⩽k
+xi yk−i(−1)i
+k
+i
+
+= (y −x)kg S.
+This completes the proof.
+2
+Since a scaling preserves realizability, the theorem gives:
+Corollary 7.2. If a 2-admissible G is realizable on some basis (e.g., on the standard basis), then it is realizable on any basis, which
+means it is 2-realizable.
+For n = 6, all 2-admissible G’s form a 5-dimensional linear space. Applying the matchgate identities, we ﬁnd that there
+are 5 different 2-realizable signatures (up to scaling). Let G1 and G2 be the following
+gα
+1 =
+ 1,
+α ∈{000111, 011001, 101010, 110100},
+−1,
+α ∈{111000, 100110, 010101, 001011},
+0,
+otherwise,
+gα
+2 =
+ 1,
+α ∈{010101, 011010, 100110, 101001},
+−1,
+α ∈{101010, 100101, 011001, 010110},
+0,
+otherwise.
+Then all the 2-realizable signatures are obtained by cyclically rotating the indices of G1 or G2. (Rotating 3 bits on G1 is G1
+itself up to a scaling factor −1; rotating 2 bits on G2 gives G2 back. So there are 3 different 2-realizable signatures from
+rotating G1 and 2 different ones from rotating G2. See Figs. 1 and 2.)
+It turns out that all of these can be obtained from the planar tensor product operation which we deﬁne next.
+Deﬁnition 7.4. Let Rotr(G) be the tensor obtained by circularly rotating clockwise the coordinates of G by r bits. Let G ⊗G′
+be the tensor product with all indices of G before all indices of G′. A planar tensor product is a ﬁnite sequence of operations
+of Rotr(G) and G ⊗G′.
+By direct constructions and matchgate identities, we can prove the following theorem.
+Theorem 7.3. Bgen(Rotr(G)) = Bgen(G) and Bgen(G1 ⊗G2) = Bgen(G1) ∩Bgen(G2). Thus a planar tensor product preserves Bgen.
+Theorem 7.4. Each of the ﬁve 2-realizable signatures for n = 6 is obtainable as a planar tensor product from (0, 1,−1, 0).
+Valiant [30] already noted that (0, 1,−1, 0) is realizable under all bases, i.e., 2-realizable in our terminology. From
+(0, 1,−1, 0), we can construct a family of 2-realizable signatures for any arity 2k by planar tensor product. It is an open
+question if this family (up to scaling) captures all the 2-realizable signatures. This is true for n ⩽6.
+
+58
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+Fig. 1. One planar tensor product for arity 6.
+Fig. 2. Another planar tensor product for arity 6.
+Deﬁnition 7.5. A signature G is called prime iff it cannot be decomposed as a planar tensor product of two signatures of
+positive arity.
+In particular (0, 1,−1, 0) is a prime 2-realizable signature. The above open problem is essentially whether (0, 1,−1, 0)
+is the unique prime 2-realizable signature (up to scaling).
+7.2. 1-admissibility and 1-realizability
+1-admissibility (resp. 1-realizability) is strictly weaker than 2-admissibility (resp. 2-realizability). In this section, we give
+some constructions of 1-admissible and 1-realizable families which are not in general 2-admissible or 2-realizable. These
+are in fact prime signatures. Planar tensor product can be applied to construct more 1-realizable families.
+First we give a family of 1-admissible generators.
+Theorem 7.5. Letting n = 2k be even, we have all g S = 0 except for those |S| = k. Finally for all S ⊂[n] with |S| = k, g S = g Sc . Then
+G is 1-admissible.
+Proof. We prove this by showing that ∀x,
+ 1
+x
+1 −x
+
+∈V 1, where V 1 is deﬁned in Deﬁnition 7.3. Let T ⊂[n] with |T| odd. Then
+we require the following polynomial to be identically zero:
+
+n
+
+σ=1
+[1, x[σ∈T]], G
+
+≡0,
+
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+59
+where x0 = x and x1 = −x. In the above setting, we have
+
+n
+
+σ=1
+[1, x[σ∈T]], G
+
+= xk
+
+max{0,|T|−k}⩽i⩽min{k,|T|}
+(−1)i
+
+A⊆T c,|A|=k−i
+B⊆T,|B|=i
+g A∪B.
+We assume that k ⩾|T| (the case k < |T| is similar). Then the outer sum is |T|
+i=0. Since |T| is odd, the ﬁrst and the last
+term of the outer sum cancel out. Similarly the second and the second last term cancel out, and so on. There are altogether
+an even number |T| + 1 of terms of this outer sum over i, and the term indexed by i and by |T| −i cancel out. It follows
+that this summation is identically 0. This completes the proof.
+2
+For n = 4, in order to be 1-realizable, the matchgate identities further require g0011g1001 = 0. This gives the following
+two 1-realizable signatures (they are prime for a2 ̸= b2):
+gα =
+a,
+α ∈{0101, 1010},
+b,
+α ∈{0011, 1100},
+0,
+otherwise
+and
+gα =
+a,
+α ∈{0101, 1010},
+b,
+α ∈{1001, 0110},
+0,
+otherwise.
+This family of 1-realizable signatures has been used in a subsequent paper [10] to obtain some surprising holographic
+algorithms.
+Next, we present another family of 1-realizable signatures, which are not subsumed by any of the above. It also has
+some generalized symmetry. It can be viewed as a generalization of Case 2 in Lemma 4.12.
+Theorem 7.6. For any g1, g2,..., gn,α ∈F, where g1 + g2 + ··· + gn = 0, let G = (g S)S⊆[n] be deﬁned as follows
+g S = α|S|−1 
+i∈S
+gi.
+Then G is 1-realizable and
+Bgen(G) =
+
+
+−α
+n1
+
+,
+
+1
+p1
+
+∈M
+ n1, p1 ∈F
+
+.
+Proof. For simplicity, we use the dehomogenized coordinates
+ 1 x
+1 y
+
+where x = −1/α. Some exceptional cases such as α = 0
+can be proved directly (we use the convention that α0 = 1 and 0 · α0−1 = 0 even when α = 0).
+Let T ⊆[n]. If |T| = 0 or |T| = n, by (10) and the deﬁnition of G, it follows easily that
+
+n
+
+σ=1
+[1, x[σ∈T]], G
+
+= 0.
+Otherwise we have
+
+n
+
+σ=1
+[1, x[σ∈T]], G
+
+=
+
+0⩽i⩽n−|T|
+0⩽j⩽|T|
+xi y j
+
+A⊆T c,|A|=i
+B⊆T,|B|= j
+g A∪B
+=
+
+0⩽i⩽n−|T|
+0⩽j⩽|T|
+xi y j
+
+A⊆T c,|A|=i
+B⊆T,|B|= j
+α|A∪B|−1 
+k∈A∪B
+gk
+=
+
+0⩽i⩽n−|T|
+0⩽j⩽|T|
+xi y jαi+ j−1
+
+A⊆T c,|A|=i
+B⊆T,|B|= j
+
+k∈A
+gk +
+
+l∈B
+gl
+
+=
+
+0⩽i⩽n−|T|
+0⩽j⩽|T|
+xi y jαi+ j−1
+|T|
+j
+|T c| −1
+i −1
+ 
+k∈T c
+gk +
+|T c|
+i
+|T| −1
+j −1
+
+l∈T
+gl
+
+
+60
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+Fig. 3. 1-realizability.
+=
+
+k∈T c
+gk
+
+
+0⩽i⩽n−|T|
+0⩽j⩽|T|
+xi y jαi+ j−1
+|T|
+j
+n −|T| −1
+i −1
+
+−
+
+0⩽i⩽n−|T|
+0⩽j⩽|T|
+xi y jαi+ j−1
+n −|T|
+i
+|T| −1
+j −1
+
+=
+
+k∈T c
+gk
+
+x(1 + αx)n−|T|−1(1 + α y)|T| −y(1 + αx)n−|T|(1 + α y)|T|−1
+.
+If |T| < n −1, the above equation is identically 0 when x = −1/α.
+For |T| = n −1, suppose T = [n] −{t}, then at x = −1/α, the value of the above equation is λgt where λ = −(1 +
+α y)n−1/α. This standard signature is realizable by the star (see Fig. 3).
+2
+Remark. When n = 2, this generator is the 2-realizable signature (0, 1,−1, 0).
+Addendum. In this paper we could only prove a characterization of 2-admissibility, some results on 2-realizability and
+constructed some families of 1-admissible and 1-realizable signatures. In a subsequent paper [11], we have proved a com-
+plete characterization of 2-realizability, which conﬁrms the conjecture here. And the characterization of 2-admissibility in
+this paper serves as a good start point of that result. In [11], we also give some characterizations of 1-admissibility and
+1-realizability.
+Acknowledgments
+We would like to thank Leslie Valiant for many comments and discussions. We also thank Eric Bach, Xi Chen, Steve Cook,
+Jon Kleinberg, Edith Hemaspaandra, Lane Hemaspaandra, Joseph Landsberg, Jason Morton, Salil Vadhan, Avi Wigderson and
+Mingji Xia for their comments and interests. We especially thank the anonymous referees for this paper, both for the
+conference version and for the journal version.
+References
+[1] E. Bach, J. Shallit, Algorithmic Number Theory, vol. 1: Eﬃcient Algorithms, MIT Press, 1996.
+[2] S. Cook, The complexity of theorem proving procedures, in: Proceedings of the Third Annual ACM Symposium on Theory of Computing, 1971, pp. 151–
+158.
+[3] J.-Y. Cai, Vinay Choudhary, Some results on matchgates and holographic algorithms, in: Proceedings of ICALP 2006, Part I, in: Lecture Notes in Comput.
+Sci., vol. 4051, 2006, pp. 703–714; Int. J. Software Informatics 1 (1) (2007) 3–36; Also available at Electronic Colloquium on Computational Complexity
+TR06-048, 2006.
+[4] J.-Y. Cai, Vinay Choudhary, Valiant’s Holant Theorem and matchgate tensors, in: Proceedings of TAMC 2006, in: Lecture Notes in Comput. Sci., vol. 3959,
+2006, pp. 248–261; Theoret. Comput. Sci. 384 (1) (2007) 22–32; Also available at Electronic Colloquium on Computational Complexity Report TR05-118.
+[5] J.-Y. Cai, Vinay Choudhary, Pinyan Lu, On the theory of matchgate computations, in: IEEE Conference on Computational Complexity, 2007, pp. 305–318.
+[6] J.-Y. Cai, Pinyan Lu, On symmetric signatures in holographic algorithms, in: Proceedings of STACS 2007, in: Lecture Notes in Comput. Sci., vol. 4393,
+2007, pp. 429–440; Theory Comput. Syst. 46 (3) (2010) 398–415.
+[7] J.-Y. Cai, Pinyan Lu, Holographic algorithms: From art to science, in: Proceedings of STOC, 2007, pp. 401–410.
+[8] J.-Y. Cai, Pinyan Lu, Bases collapse in holographic algorithms, in: IEEE Conference on Computational Complexity, 2007, pp. 292–304, Comput. Complex-
+ity 17 (2) (2008) 254–281.
+[9] J.-Y. Cai, Pinyan Lu, Holographic algorithms: The power of dimensionality resolved, in: Proceedings of ICALP, 2007, pp. 631–642, Theoret. Comput.
+Sci. 410 (18) (2009) 1618–1628.
+[10] J.-Y. Cai, Pinyan Lu, Holographic algorithms with unsymmetric signatures, in: ACM–SIAM Symposium on Discrete Algorithms (SODA), 2008, pp. 54–63.
+[11] J.-Y. Cai, Pinyan Lu, Signature theory in holographic algorithms, in: S.H. Hong, H. Nagamochi, T. Fukunaga (Eds.), Proceedings of ISAAC, in: Lecture Notes
+in Comput. Sci., vol. 5369, Springer, 2008, pp. 568–579.
+[12] W. Foody, A. Hedayat, On theory and applications of BIB designs with repeated blocks, Ann. Statist. 5 (1977) 932–945.
+[13] W. Foody, A. Hedayat, Note: Correction to “On theory and application of BIB designs with repeated blocks”, Ann. Statist. 7 (4) (1979) 925.
+[14] R.L. Graham, S.-Y.R. Li, W.-C.W. Li, On the structure of t-designs, SIAM. J. Algebraic Discrete Methods 1 (1980) 8.
+[15] N. Linial, B. Rothschild, Incidence matrices of subsets—A rank formula, SIAM. J. Algebraic Discrete Methods 2 (1981) 333.
+
+J.-Y. Cai, P. Lu / Journal of Computer and System Sciences 77 (2011) 41–61
+61
+[16] D. Lichtenstein, Planar formulae and their uses, SIAM J. Comput. 11 (2) (1982) 329–343.
+[17] M. Jerrum, Two-dimensional monomer-dimer systems are computationally intractable, J. Stat. Phys. 48 (1987) 121–134; J. Stat. Phys. 59 (1990) 1087–
+1088, Erratum.
+[18] R.M. Karp, Reducibility among combinatorial problems, in: Raymond E. Miller, James W. Thatcher (Eds.), Complexity of Computer Computations,
+Plenum, New York, 1972, pp. 85–103.
+[19] P.W. Kasteleyn, The statistics of dimers on a lattice, Physica 27 (1961) 1209–1225.
+[20] P.W. Kasteleyn, Graph theory and crystal physics, in: F. Harary (Ed.), Graph Theory and Theoretical Physics, Academic Press, London, 1967, pp. 43–110.
+[21] M. Kneser, Aufgabe 360, Jahresber. Deutsch. Math.-Verein. 2 (58) (1955) 27.
+[22] L. Lovász, Kneser’s conjecture, chromatic number, and homotopy, J. Combin. Theory Ser. A 25 (1978) 319–324.
+[23] J. Matoušek, A combinatorial proof of Kneser’s conjecture, Combinatorica 24 (1) (2004) 163–170.
+[24] K. Murota, Matrices and Matroids for Systems Analysis, Springer, Berlin, 2000.
+[25] H.N.V. Temperley, M.E. Fisher, Dimer problem in statistical mechanics – an exact result, Philos. Magazine 6 (1961) 1061–1063.
+[26] S.P. Vadhan, The complexity of counting in sparse, regular, and planar graphs, SIAM J. Comput. 31 (2001) 398–427.
+[27] L.G. Valiant, Quantum circuits that can be simulated classically in polynomial time, SIAM J. Comput. 31 (4) (2002) 1229–1254.
+[28] L.G. Valiant, Expressiveness of matchgates, Theoret. Comput. Sci. 281 (1) (2002) 457–471.
+[29] L.G. Valiant, Holographic algorithms (extended abstract), in: Proc. 45th IEEE Symposium on Foundations of Computer Science, 2004, pp. 306–315;
+A more detailed version appeared in Electronic Colloquium on Computational Complexity Report TR05-099.
+[30] L.G. Valiant, Accidental algorithms, in: Proc. 47th Annual IEEE Symposium on Foundations of Computer Science, 2006, pp. 509–517.
+[31] Mingji Xia, Peng Zhang, Wenbo Zhao, Computational complexity of counting problems on 3-regular planar graphs, Theoret. Comput. Sci. 384 (2007)
+111–125.

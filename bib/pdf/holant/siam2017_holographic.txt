@@ -1,0 +1,4710 @@
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+SIAM J. COMPUT.
+c
+⃝2017 Society for Industrial and Applied Mathematics
+Vol. 46, No. 3, pp. 853–889
+HOLOGRAPHIC ALGORITHMS WITH MATCHGATES CAPTURE
+PRECISELY TRACTABLE PLANAR #CSP∗
+JIN-YI CAI†, PINYAN LU‡, AND MINGJI XIA§
+Abstract. Valiant introduced matchgate computation and holographic algorithms. A number of
+seemingly exponential time problems can be solved by this novel algorithmic paradigm in polynomial
+time. We show that, in a very strong sense, matchgate computations and holographic algorithms
+based on them provide a universal methodology to a broad class of counting problems studied in
+the statistical physics community for decades.
+They capture precisely those problems which are
+#P-hard on general graphs but computable in polynomial time on planar graphs. More precisely,
+we prove complexity dichotomy theorems in the framework of counting CSP problems. The local
+constraint functions take Boolean inputs and can be arbitrary real-valued symmetric functions. We
+prove that every problem in this class belongs to precisely three categories: (1) those which are
+tractable (i.e., polynomial time computable) on general graphs, or (2) those which are #P-hard on
+general graphs but tractable on planar graphs, or (3) those which are #P-hard even on planar graphs.
+The classiﬁcation criteria are explicit. Moreover, problems in category (2) are tractable on planar
+graphs precisely by holographic algorithms with matchgates.
+Key words. holographic algorithms, counting problems, #P, dichotomy theorems
+AMS subject classiﬁcation. 68Q17
+DOI. 10.1137/16M1073984
+1. Introduction. Given a set of functions F, the counting constraint satisfac-
+tion problem #CSP(F) is the following problem: An input instance consists of a set
+of variables X = {x1, x2, . . . , xn} and a set of constraints where each constraint is
+a function f ∈F applied to some variables in X. The output is the sum, over all
+assignments to X, of the products of these function evaluations. This sum-of-product
+evaluation is called the partition function.
+In the special case where f ∈F out-
+puts values in {0, 1} it counts the number of satisfying assignments. But constraint
+functions taking real or complex values are also interesting, called (real or complex)
+weighted #CSP. Our F consists of real or complex valued functions in general. There
+is a deeper reason for allowing this generality: The theory of holographic reductions
+is a powerful tool which operates naturally over C, even if the original problem has
+only 0–1 valued functions.
+A closely related framework for locally constrained counting problems is called
+Holant problems [18, 20]. This framework is inspired by the introduction of holo-
+graphic algorithms by Valiant [45, 44]. In two groundbreaking papers [43, 45] Valiant
+introduced matchgates and holographic algorithms based on matchgates to solve a
+∗Received by the editors May 6, 2016; accepted for publication (in revised form) January 3, 2017;
+published electronically May 11, 2017. The main results in this paper appeared in proceedings of
+FOCS, 2010.
+http://www.siam.org/journals/sicomp/46-3/M107398.html
+Funding: The ﬁrst author was supported by NSF CCF-0511679, CCF-0830488, CCF-0914969,
+and CCF-1217549. The third author was supported by China National 973 program 2014CB340300
+and NSFC 61003030.
+†Department of Computer Sciences, University of Wisconsin–Madison, Madison, WI 53706
+(jyc@cs.wisc.edu).
+‡Corresponding author.
+Shanghai University of Finance and Economics, Shanghai, China
+(lu.pinyan@mail.shufe.edu.cn).
+§State Key Laboratory of Computer Science, Institute of Software, Chinese Academy of Sciences,
+University of Chinese Academy of Sciences, Beijing, China (xmjljx@gmail.com).
+853
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+854
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+number of problems in polynomial time, which appear to require exponential time.
+At the heart of these exotic algorithms is a tensor transformation from a given problem
+to the problem of counting (complex) weighted perfect matchings over planar graphs.
+The latter problem has a remarkable P-time algorithm (FKT-algorithm) [38, 29, 30].
+Planarity is crucial, as counting perfect matchings over general graphs is #P-hard [40].
+Most of these holographic algorithms use a suitable linear basis to realize locally a
+symmetric function with at most three Boolean variables on a matchgate. This work
+has been extended in [14]. In particular we have obtained a complete characterization
+of all realizable symmetric functions by matchgates over the complex ﬁeld C.
+The study of “tractable #CSP” type problems has a much longer history in the
+statistical physics community (under diﬀerent names). Ever since Wilhelm Lenz, who
+invented what is now known as the Ising model, asked his student Ernst Ising [27]
+to work on it, physicists have studied so-called exactly solved models [1, 35].
+In
+the language of modern complexity theory, physicists’ notion of an exactly solvable
+system corresponds to systems with polynomial time computable partition functions
+in spirit. This is captured completely by the computer science notion of “tractable
+#CSP” and “tractable Holant problems.” In physics, many great researchers worked
+to build this intellectual ediﬁce, with remarkable contributions by Ising, Onsager, C.
+N. Yang, T. D. Lee, Fisher, Temperley, Kasteleyn, Baxter, Lieb, Wilson, etc. [27, 36,
+48, 49, 33, 38, 29, 30, 1, 34, 46]. A central question is to identify what “systems” can
+be solved “exactly” and what “systems” are “diﬃcult.” The basic conclusion from
+physicists is that some “systems,” including the Ising model, are “exactly solvable”
+for planar graphs, but they appear diﬃcult for higher dimensions. There does not
+exist any rigorous or provable classiﬁcation. This is partly because the notion of a
+“diﬃcult” partition function had no rigorous deﬁnition in physics. However, in the
+language of complexity theory, it is natural to consider the classiﬁcation problem. In
+this paper we do that, in the general setting of #CSP with real-valued symmetric
+constraint functions. This will also shed light on why the valiant eﬀorts by physicists
+to generalize the “exactly solved” planar system to higher dimensions failed. (In the
+appendix we will give some more background.)
+Now turning from physics to computer science, after Valiant introduced his holo-
+graphic algorithms with matchgates, the following question can be raised: Do these
+novel algorithms capture all P-time tractable counting problems on planar graphs, or
+are there other more exotic algorithmic paradigms yet undiscovered? A suspicion (and
+perhaps an audacious proposition) is that they have indeed captured all tractable pla-
+nar counting problems. If so it would provide a universal methodology to a broad class
+of counting problems studied in statistical physics and beyond. The results of this
+paper can be viewed as an aﬃrmation that within the framework of weighted Boolean
+#CSP problems the answer is YES, for all symmetric real-valued constraint functions.
+While #CSP problems provide a natural framework to address this question, it
+turns out that the deeper reason comes from Holant problems, which can be described
+as follows: An input graph G = (V, E) is given, where each v ∈V is attached a
+function fv ∈F, mapping {0, 1}deg(v) →R or C. We consider all edge assignments
+σ : E →{0, 1}. For each σ, fv takes its input bits from the incident edges E(v) at
+v and evaluates to fv(σ |E(v)). The counting problem on instance G is to compute
+HolantG = P
+σ
+Q
+v∈V fv(σ |E(v)). In eﬀect, in a Holant problem, edges are variables
+and vertices represent constraint functions. This framework is very natural; e.g., the
+problem of Perfect Matching corresponds to attaching the Exact-One function
+at each vertex, taking 0–1 inputs. The class of all Holant problems with function set
+F is denoted by Holant(F).
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+855
+Every #CSP problem can be simulated by a Holant problem.
+Represent any
+instance of a #CSP problem by a bipartite graph where left-hand sides (LHS) are
+labeled by variables and RHS are labeled by constraints. Denote by =k: {0, 1}k →
+{0, 1} the Equality function of arity k, which is 1 on 0k and 1k, and is 0 elsewhere.
+Then we can turn the #CSP instance to an input graph of a Holant problem, by
+replacing every variable vertex v on the LHS by =deg(v).
+Thus #CSP(F) can be
+simulated by Holant(F ∪{=k| k ≥1}). In fact, #CSP(F) is exactly the same as
+Holant(F ∪{=k| k ≥1}). To see this, suppose we are given an instance for Holant(F ∪
+{=k| k ≥1}). If two adjacent vertices u and v are both labeled by Equality, then
+we can contract the edge (u, v) and merge them by a single vertex, labeled by an
+Equality of arity deg(u) + deg(v) −2. Repeat this step until there are no more
+adjacent vertices with Equality functions. Now move all vertices with Equality
+functions to the LHS and rename as variables, and keep all other vertices with labels
+from F on the RHS, we get an equivalent #CSP(F) instance. Thus, #CSP problems
+can be viewed as Holant problems where all Equality functions are available for free,
+or assumed to be present. However, when we wish to discuss some restricted classes
+of counting problems, e.g., for 3-regular graphs, the framework of Holant problems is
+the more natural one. And as it turns out, the main technical breakthrough for our
+dichotomy theorem for planar #CSP comes from Holant problems.
+In this paper we will only consider constraint functions on Boolean variables. For a
+symmetric function f on k variables X = {x1, . . . , xk}, we denote it as [f0, f1, . . . , fk],
+where fi is the value of f on inputs of Hamming weight i, e.g., (=1) = [1, 1],
+(=2) = [1, 0, 1], and (=3) = [1, 0, 0, 1], etc. When we relax Holant problems by al-
+lowing all Equality functions for free, we obtain #CSP. We can also consider other
+relaxations. Let 0 = [1, 0] and 1 = [0, 1] denote the unary (arity 1) pinning functions
+that set a variable to the constant values 0 and 1, respectively. Then Holantc is the
+class of Holant problems where 0 and 1 are freely available. This amounts to comput-
+ing Holant on input graphs where we can set 0 or 1 to some dangling edges (each end
+has degree 1). Another class of Holant problems is called Holant∗problems, where
+we assume all unary functions [u0, u1] are freely available.
+In [20] we obtained a dichotomy theorem for (complex) Holant∗problems and
+(real) Holantc problems for all symmetric constraints. The dichotomy criterion for
+Holant∗problems is still valid for planar graphs. The proofs of dichotomy theorems
+in this paper start from there.
+In section 4, we prove that for any real-valued symmetric function set F, the
+planar Holantc(F) problem is tractable (i.e., computable in P) if either it is tractable
+over general graphs (for which we already have an eﬀective dichotomy theorem [20])
+or it is tractable because every function in F is realizable by a matchgate, in which
+case the planar Holantc(F) problem is computable by matchgates in P-time using
+FKT. In all other cases the problem is #P-hard.1
+Thus, assuming P ̸= #P, the
+tractability criterion is a necessary and suﬃcient condition, i.e., a characterization.
+A crucial ingredient of the proof is a crossover construction whose validity is proved
+algebraically, which seems to defy any direct combinatorial justiﬁcation.
+Our second theorem (section 5) is about planar #CSP problems. We prove that
+for any set of real-valued symmetric functions F, the planar #CSP(F) problem is
+tractable if either it is tractable as #CSP(F) without the planarity restriction (for
+which we have an eﬀective dichotomy theorem [20]) or it is tractable because every
+1Strictly speaking, we must only consider F where functions take computable real numbers; this
+will be assumed implicitly.
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+856
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+function in F is realizable by a matchgate under a speciﬁc holographic basis transfor-
+mation. Thus planar #CSP(F) is solvable by a holographic algorithm in the second
+case. For all other F the problem is #P-hard. Thus, the tractability criterion is again
+a characterization assuming P ̸= #P. The proof of this dichotomy theorem for planar
+#CSP is built on the one for planar Holantc in section 4.
+Our third result is a dichotomy theorem for planar 2–3 regular bipartite Holant
+problems (section 6). (This theorem deals with Holant problems without assuming
+unary 0 and 1.) This includes Holant problems for 3-regular graphs as a special case.
+The tractability criterion is the same: Either it is tractable for general graphs (for
+which we also have an eﬀective dichotomy theorem [12]) or it is tractable by a suitable
+holographic algorithm, which is a holographic reduction to FKT using matchgates.
+In all other cases the problem is #P-hard.
+The three dichotomy theorems are not mutually subsumed by each other and are
+of independent interest. In each framework the respective theorem is a demonstra-
+tion that holographic algorithms with matchgates capture precisely those problems
+expressible within the framework that are #P-hard in general but become polynomial
+time tractable on planar graphs. Following the suggestion of a referee, to help readers
+better understand, we present a roadmap in section 7 explaining how some earlier
+work led to these dichotomy theorems. In an appendix we discuss some connections
+to statistical physics.
+2. Preliminaries.
+2.1. Problem and deﬁnitions. Our functions take values in C by default. The
+framework of Holant problems is deﬁned for functions mapping any [q]k →C for a
+ﬁnite q. Our results in this paper are for the Boolean case q = 2. So we give the
+following deﬁnitions only for q = 2 for notational simplicity.
+A signature grid Ω= (H, F, π) consists of a graph H = (V, E) and a labeling π
+which labels each vertex with a function fv ∈F. The Holant problem on instance
+Ωis to compute HolantΩ= P
+σ
+Q
+v∈V fv(σ |E(v)), a sum over all edge assignments
+σ : E →{0, 1}. A function fv can be represented as a vector of length 2deg(v), or
+a tensor in (C2)⊗deg(v). A function f ∈F is also called a signature. We denote
+by =k the Equality signature of arity k. A symmetric function f on k Boolean
+variables can be expressed by [f0, f1, . . . , fk], where fi is the value of f on inputs
+of Hamming weight i. Thus, (=k) = [1, 0, . . . , 0, 1] (with k −1 zeros). The unary
+functions [1, 0] and [0, 1] are called pinning functions; they set a variable to the values
+0 and 1, respectively. Given a signature f = [f0, f1, . . . , fk], for any 0 ≤i < j ≤k,
+the signature [fi, fi+1, . . . , fj] is called a subsignature of f and can be obtained by
+connecting the pinning functions to f.
+A Holant problem is parameterized by a set of signatures.
+Definition 2.1. Given a set of signatures F, we deﬁne a counting problem
+Holant(F):
+Input: A signature grid Ω= (G, F, π);
+Output: HolantΩ.
+Planar Holant problems are Holant problems on planar graphs.
+Definition 2.2. Given a set of signatures F, we deﬁne a counting problem
+Pl-Holant(F):
+Input: A signature grid Ω= (G, F, π), where G is a planar graph;
+Output: HolantΩ.
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+857
+We would like to characterize the complexity of Holant problems in terms of
+signature sets.2
+For some F, it is possible that Holant(F) is #P-hard, while Pl-
+Holant(F) is tractable. These new tractable cases make dichotomies for planar Holant
+problems more challenging. This is also the focus of this work. Some special families
+of Holant problems have already been widely studied. For example, if F contains
+all Equality signatures {=1, =2, =3, . . .}, then this is exactly the weighted #CSP
+problem. Pl-#CSP denotes the restriction of #CSP to planar structures, i.e., the
+standard bipartite graphs representing the input instances of #CSP are planar. In
+[20], we also introduced the following two special families of Holant problems by
+assuming some signatures are freely available.
+Definition 2.3. Let U denote the set of all unary signatures. Given a set of
+signatures F, we use Holant∗(F) (or Pl-Holant∗(F), respectively) to denote Holant
+(F ∪U) (or Pl-Holant(F ∪U), respectively).
+Definition 2.4. Given a set of signatures F, we use Holantc(F) (or Pl-Holantc
+(F), respectively) to denote Holant(F ∪{[1, 0], [0, 1]}) (or Pl-Holant(F ∪{[1, 0], [0, 1]}),
+respectively).
+Replacing a signature f ∈F by a constant multiple cf, where c ̸= 0, does not
+change the complexity of Holant(F). So we view f and cf as the same signature. An
+important property of a signature is whether it is degenerate.
+Definition 2.5. A signature is degenerate iﬀit is a tensor product of unary
+signatures.
+In particular, a symmetric signature in F is degenerate iﬀit can be
+expressed as λ[x, y]⊗k.
+2.2. F-gate and matchgate. A signature from F is a basic function which
+can be used at a vertex in an input graph. Instead of a single vertex, we can use
+graph fragments to generalize this notion. An F-gate Γ is a tuple (H, F, π), where
+H = (V, E, D) is a graph where the edge set consists of regular edges E and dangling
+edges D. Some nodes of degree 1 are designated as external nodes, and all other nodes
+are internal nodes; a dangling edge connects an internal node to an external node,
+while a regular edge connects two internal nodes. The labeling π assigns a function
+from F to each internal node. The dangling edges deﬁne variables for the F-gate.
+(See Figure 1 for one example.) We denote the regular edges in E by 1, 2, . . . , m and
+denote the dangling edges in D by m + 1, m + 2, . . . , m + n. Then we can deﬁne a
+function for this F-gate Γ = (H, F, π),
+Γ(y1, y2, . . . , yn) =
+X
+x1,x2,...xm
+H(x1, x2, . . . , xm, y1, y2, . . . yn),
+where (y1, y2, . . . , yn) ∈{0, 1}n denotes an assignment on the dangling edges and
+H(x1, x2, . . . , xm, y1, y2, . . . , yn) denotes the value of the signature grid on an assign-
+ment of all edges. We will also call this function the signature of the F-gate Γ. An
+F-gate can be used in a signature grid as if it is just a single node with the particular
+signature.
+2Usually our set of signatures F is a ﬁnite set, and the assertion of either Holant(F) is tractable
+or #P-hard has the usual meaning. However, our dichotomy theorem is actually stronger: we allow
+F to be inﬁnite, e.g., to include {=1, =2, =3, . . .} or all unary signatures. Holant(F) is tractable
+means that it is computable in P even when we include the description of the signatures in the input
+Ωin the input size. Holant(F) is #P-hard means that there exists a ﬁnite subset of F for which the
+problem is #P-hard.
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+858
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+Fig. 1. An F-gate with ﬁve dangling edges.
+Using the idea of F-gates, we can reduce one Holant problem to another in
+polynomial time. Let g be the signature of some F-gate Γ. Then Holant(F ∪{g}) ≤T
+Holant(F). The reduction is quite simple. Given an instance of Holant(F ∪{g}), by
+replacing every appearance of g by an F-gate Γ, we get an instance of Holant(F).
+Since the signature of Γ is g, the values for these two signature grids are identical.
+We note that even for a very simple signature set F, the signatures for all F-
+gates can be quite complicated and expressive. Matchgate signatures are an example.
+Matchgate is introduced by Valiant [43, 42, 45], whose deﬁnition is combinatorial
+in nature. Matchgates can be viewed as a special case of planar F-gates, where F
+contains Exact-One functions of all arities and weight functions ([1, 0, w], w ∈C) on
+edges. (Formally, we replace each matchgate edge of weight w by a path of length 2,
+and the new node on the path is assigned weight function [1, 0, w].) The signature
+function Γ deﬁned above for a matchgate is called a matchgate signature, or a standard
+signature.
+A signature function is realizable by a matchgate if it is the standard
+signature of that matchgate. (After a holographic transformation, a signature function
+is realizable under a basis if it is the transformed signature of a matchgate; see below.)
+2.3. Holographic reduction. To introduce the idea of holographic reductions,
+it is convenient to consider bipartite graphs. This is without loss of generality. For
+any general graph, we can make it bipartite by replacing each edge by a path of length
+two and giving each new vertex the Equality function =2 on 2 inputs. (This is just
+the incidence graph.)
+We use Holant(G|R) to denote all counting problems, expressed as Holant prob-
+lems on bipartite graphs H = (U, V, E), where each signature for a vertex in U or
+V is from G or R, respectively. An input instance for the bipartite Holant problem
+is a bipartite signature grid and is denoted as Ω= (H, G|R, π). Signatures in G are
+denoted by column vectors (or contravariant tensors); signatures in R are denoted by
+row vectors (or covariant tensors) [22].
+One can perform (contravariant and covariant) tensor transformations on the sig-
+natures. We will deﬁne a simple version of holographic reductions, which are invert-
+ible. They are called holographic because they may produce exponential cancellations
+in the tensor space. Suppose Holant(G|R) and Holant(G′|R′) are two Holant prob-
+lems deﬁned for the same family of graphs, and T ∈GL2(C). We say that there
+is an (invertible) holographic reduction from Holant(G|R) to Holant(G′|R′), and T
+is the basis transformation, if the contravariant transformation G′ = T ⊗gG and the
+covariant transformation R = R′T ⊗r map G ∈G to G′ ∈G′ and R ∈R to R′ ∈R′,
+and vice versa, where G and R have arity g and r, respectively. (Notice the reversal
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+859
+of directions when the transformation T ⊗n is applied. This is the meaning of con-
+travariance and covariance.)
+Theorem 2.6 (Valiant’s Holant theorem [45]).
+Suppose there is a holographic
+reduction from Holant(G|R) to Holant(G′|R′), mapping a signature grid Ωto another
+Ω′, then HolantΩ= HolantΩ′.
+In particular,
+for invertible holographic reductions from Holant(G|R) to
+Holant(G′|R′), one problem is in P iﬀthe other one is, and similarly one problem
+is #P-hard iﬀthe other one is also.
+In the study of Holant problems, we will commonly transfer between bipartite
+and nonbipartite settings. When this does not cause confusion, we do not distinguish
+signatures between column vectors (or contravariant tensors) and row vectors (or
+covariant tensors). Whenever we write a transformation as T ⊗nF or TF, we view
+the signature or signatures as column vectors (or contravariant tensors); whenever we
+write a transformation as FT ⊗n or FT, we view the signature or signatures as row
+vectors (or covariant tensors).
+2.4. Some known dichotomy results. In this subsection, we state some known
+dichotomy theorems. We ﬁrst review three dichotomy theorems from [20].
+Theorem 2.7. Let F be a set of symmetric signatures over C. Then Holant∗(F)
+is computable in polynomial time in the following three cases.
+In all other cases,
+Holant∗(F) is #P-hard.
+1. Every signature in F is of arity no more than two.
+2. There exist two constants a and b (not both zero, depending only on F) such
+that for every signature [x0, x1, . . . , xn] ∈F one of the two conditions is
+satisﬁed: (1) for every k = 0, 1, . . . , n −2, we have axk + bxk+1 −axk+2 = 0;
+(2) n = 2 and the signature [x0, x1, x2] is of form [2aλ, bλ, −2aλ].
+3. For every signature [x0, x1, . . . , xn] ∈F, one of the two conditions is satisﬁed:
+(1) For every k = 0, 1, . . . , n −2, we have xk + xk+2 = 0; (2) n = 2 and the
+signature [x0, x1, x2] is of form [λ, 0, λ].
+The same dichotomy criterion also holds for Pl-Holant∗(F).
+Theorem 2.8. Let F be a set of real symmetric signatures, and let F1, F2, and
+F3 be three families of signatures deﬁned as
+F1 = {λ([1, 0]⊗k + ir[0, 1]⊗k)|λ ∈C, k = 1, 2, . . . , r = 0, 1, 2, 3};
+F2 = {λ([1, 1]⊗k + ir[1, −1]⊗k)|λ ∈C, k = 1, 2, . . . , r = 0, 1, 2, 3};
+F3 = {λ([1, i]⊗k + ir[1, −i]⊗k)|λ ∈C, k = 1, 2, . . . , r = 0, 1, 2, 3}.
+Then Holantc(F) is computable in polynomial time if (1) After removing unary sig-
+natures from F, it falls in one of the three classes of Theorem 2.7 (this implies
+Holant∗(F) is computable in polynomial time) or (2) (without removing any unary sig-
+nature but replacing each degenerate signature [x, y]⊗k ∈F by [x, y]) F ⊆F1∪F2∪F3.
+Otherwise, Holantc(F) is #P-hard.
+Here we explicitly list all the real signatures in F1 ∪F2 ∪F3, up to an arbitrary
+scalar factor:
+1. (F1): [1, 0, 0, . . . , 0, 1 (or −1)],
+2. (F2): [1, 0, 1, 0, . . . , 0 (or 1)],
+3. (F2): [0, 1, 0, 1, . . . , 0 (or 1)],
+4. (F3): [1, 0, −1, 0, 1, 0, −1, 0, . . . , 0 (or 1 or −1)],
+5. (F3): [0, 1, 0, −1, 0, 1, 0, −1, . . . , 0 (or 1 or −1)],
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+860
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+6. (F3): [1, 1, −1, −1, 1, 1, −1, −1, . . . , 1 (or −1)],
+7. (F3): [1, −1, −1, 1, 1, −1, −1, 1, . . . , 1 (or −1)].
+Definition 2.9. A k-ary function f(x1, . . . , xk) is aﬃne if it has the form
+λ · χ[AX=0] · i
+Pn
+j=1⟨αj,X⟩,
+where λ ∈C, X = (x1, x2, . . . , xk, 1), and χ is a 0–1 indicator function such that
+χ[AX=0] is 1 iﬀAX = 0. Here the notation ⟨α, X⟩denotes an integer value 0, 1 ∈Z
+by performing a dot product on α and X over Z2. The sum over j on the exponent
+of i = √−1 is an integer sum in Z, or Z4 (but not in Z2). We use A to denote the
+set of all aﬃne functions.
+We use P to denote the set of functions which can be expressed as a product of
+unary functions, binary equality functions ([1, 0, 1] on some two variables), and binary
+disequality functions ([0, 1, 0] on some two variables).
+Theorem 2.10. Suppose F is a set of functions mapping Boolean inputs to com-
+plex numbers. If F ⊆A or F ⊆P, then #CSP(F) is computable in polynomial time.
+Otherwise, #CSP(F) is #P-hard.
+As we mentioned in [20], the class A is a natural generalization of the family of
+symmetric signatures F1 ∪F2 ∪F3. Indeed one can show that F1 ∪F2 ∪F3 consists
+of precisely all scalar multiples of unary or nondegenerate symmetric signatures in A.
+The following dichotomy for 2–3 regular graphs is from [32].
+Theorem 2.11. (see [32]) The problem Holant([y0, y1, y2]|[1, 0, 0, 1]) is #P-hard
+for all y0, y1, y2 ∈C except in the following cases, for which the problem is in P: (1)
+y2
+1 = y0y2; (2) y12
+0
+= y12
+1
+and y0y2 = −y2
+1 ( y1 ̸= 0); (3) y1 = 0; (4) y0 = y2 = 0. If
+we restrict the input to planar graphs, then these four categories are tractable in P, as
+well as a ﬁfth category y3
+0 = y3
+2, and the problem remains #P-hard in all other cases.
+2.5. Characterization of realizable signatures by matchgates. A signa-
+ture f is said to satisfy the even parity condition if the value f at any input of odd
+Hamming weight is 0. It satisﬁes the odd parity condition if the value f at any input
+of even Hamming weight is 0. It satisﬁes the parity condition if it satisﬁes either the
+even parity condition or the odd parity condition.
+A matchgate is called even (respectively, odd) if it has an even (respectively,
+odd) number of vertices. A matchgate signature satisﬁes the parity condition. The
+following two lemmas are from [9].
+Lemma 2.12. A symmetric signature [z0, . . . , zm] is the standard signature of
+some even matchgate iﬀfor all odd i, zi = 0, and there exist r1 and r2 not both
+zero, such that for every even 2 ≤k ≤m,
+r1zk−2 = r2zk.
+Lemma 2.13. A symmetric signature [z0, . . . , zm] is the standard signature of
+some odd matchgate iﬀfor all even i, zi = 0, and there exist r1 and r2 not both
+zero, such that for every odd 3 ≤k ≤m,
+r1zk−2 = r2zk.
+In particular, any symmetric signature of arity at most 3 that satisﬁes the parity
+condition is the standard signature of a matchgate.
+In [17], we characterized all symmetric signatures realizable by matchgates under
+a given basis. Here we state the theorem for a particular basis
+ 1
+1
+1 −1
+
+, which will be
+used in Theorem 5.1.
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+861
+Theorem 2.14. A symmetric signature [x0, x1, . . . , xn] is realizable under the ba-
+sis
+ 1
+1
+1 −1
+
+iﬀit takes one of the following forms:
+• Form 1: there exist constants λ, s, t, and ϵ where ϵ = ±1 such that for all
+i, 0 ≤i ≤n,
+xi = λ[(s + t)n−i(s −t)i + ϵ(s −t)n−i(s + t)i].
+• Form 2: there exist a constant λ such that for all i, 0 ≤i ≤n,
+xi = λ[(n −i)(−1)i + i(−1)i−1].
+• Form 3: there exist a constant λ such that for all i, 0 ≤i ≤n,
+xi = λ[(n −2)i].
+3. Polynomial interpolation. In this section, we discuss the interpolation
+method we will use in this paper. Polynomial interpolation is a powerful tool in the
+study of counting problems initiated by Valiant [41] and further developed by Vadhan
+[39], Dyer and Greenhill [24], and others. The method we use here is essentially the
+same as Vadhan’s [39].
+For some set of signatures F, suppose we want to show that for all unary sig-
+natures f = [x, y], we have Holant(F ∪{[x, y]}) ≤T Holant(F). Let Ω= (G, F ∪
+{[x, y]}, π).
+We want to compute HolantΩin polynomial time using an oracle for
+Holant(F).
+Let Vf be the subset of vertices in G assigned f in Ω. Suppose |Vf| = n. We can
+classify all 0–1 assignments σ in the Holant sum according to the number of vertices
+in Vf whose incident edge is assigned a 0 or a 1.
+Then the Holant value can be
+expressed as
+(1)
+HolantΩ=
+X
+0≤i≤n
+cixiyn−i,
+where ci is the sum over all edge assignments σ, of products of evaluations at all
+v ∈V (G) −Vf, where σ is such that exactly i vertices in Vf have their incident edges
+assigned 0 (and n −i have their incident edges assigned 1.) If we can evaluate these
+ci, we can evaluate HolantΩ.
+Now suppose {Gs} is a sequence of F-gates, and each Gs has one dangling edge.
+Denote the signature of Gs by fs = [xs, ys] for s = 0, 1, . . ..
+If we replace each
+occurrence of f by fs in Ωwe get a new signature grid Ωs, which is an instance of
+Holant(F), with
+(2)
+HolantΩs =
+X
+0≤i≤n
+cixi
+syn−i
+s
+.
+One can evaluate HolantΩs by oracle access to Holant(F). Note that the same set of
+values ci occurs. We can treat ci in (2) as a set of unknowns in a linear system. The
+idea of interpolation is to ﬁnd a suitable sequence {fs} such that the evaluation of
+HolantΩs gives a linear system (2) of full rank, from which we can solve all ci.
+In this paper, the sequence {Gs} will be constructed recursively using suitable
+gadgetry. There are two gadgets in a recursive construction: one gadget has arity
+1, giving the initial signature g = [x0, y0]; the other has arity 2, giving the recursive
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+862
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+Fig. 2. Recursive construction.
+iteration. It is more convenient to use a 2 × 2 matrix A to denote it. So we can
+recursively connect them as in Figure 2 and get {Gs}.
+The signatures of {Gs} have the following relation:
+(3)
+xs
+ys
+
+=
+a11
+a12
+a21
+a22
+ xs−1
+ys−1
+
+,
+where A = [ a11 a12
+a21 a22 ] and g = [ x0
+y0 ].
+We call this gadget pair (A, g) a recursive construction. The next lemma follows
+from Lemma 6.1 in [39].
+Lemma 3.1. Let α, β be the two eigenvalues of A. If the three conditions
+1. det(A) ̸= 0;
+2. g is not a column eigenvector of A (nor the zero vector);
+3. α/β is not a root of unity
+are satisﬁed, then the recursive construction (A, g) can be used to interpolate all unary
+signatures.
+A similar interpolation method also works for signatures with larger arity but
+having two degrees of freedom, for example, all signatures of the form [0, x, 0, y]. This
+is used in the proof of Lemma 4.9.
+Starting from section 4 we will present the three dichotomy theorems of this paper.
+Following the suggestion of a referee, to aid the readers, we will present a “roadmap”
+in section 7, explaining how some earlier work led to these dichotomy theorems, and
+what would help the readers to understand more easily the details of what is done here.
+We will present a “revisionist” perspective, taking into account some understanding
+that has been gained only after the results of this paper appeared in [13]; some of this
+understanding is inﬂuenced by the present paper itself. In order not to interrupt the
+ﬂow we will present this “roadmap” after the three dichotomy theorems are proved.
+However, readers may wish to look at that before reading through the proofs.
+4. Dichotomy for planar Holantc problems. Before presenting the dicho-
+tomy theorem for planar Holantc problems of this paper, Theorem 4.5, we prove the
+following theorem, which is a special case of Theorem 4.5 and plays a crucial role in
+the proof of the more general Theorem 4.5.
+Theorem 4.1. Let a, b ∈R.
+• If ab ̸= 1 then Pl-Holantc([a, 0, 1, 0, b]) is #P-hard.
+• If ab = 1 then Pl-Holantc([a, 0, 1, 0, b]) is solvable in P.
+We ﬁrst prove three lemmas which will be used in the proof of this theorem.
+Lemma 4.2. Let a, b, x ∈R, ab ̸= 0 and x ̸= ±1. Then Pl-Holantc({[a, 0, 0, 0, b],
+[0, 1, 0, x]}) is #P-hard.
+Proof. Let f = [a, 0, 0, 0, b]. First, we show how to realize (=6) = [1, 0, 0, 0, 0, 0, 1]
+by f. The signature f has arity 4 and can be attached to a vertex of degree 4. We can
+take two copies of f; let it be f(x1, x2, x3, x4) and f(y1, y2, y3, y4). We connect three
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+863
+pairs of edges to realize a binary function g(x, y) = P
+u,v,w=0,1 f(x, u, v, w)f(w, v, u, y).
+This is a planar gadget construction, resulting in a symmetric binary signature g =
+[a2, 0, b2].
+If a2 = b2, then we connect one pair of edges from two copies of f and get
+P
+z=0,1 f(x1, x2, x3, z)f(z, y1, y2, y3), which is the symmetric signature [a2, 0, 0, 0, 0,
+0, b2]. This is the same as (=6) = [1, 0, 0, 0, 0, 0, 1] after factoring out the nonzero
+factor a2 = b2.
+If a2 ̸= b2, then being positive, either a2 > b2 > 0 or b2 > a2 > 0.
+Hence
+(a/b)2k = 1 implies that k = 0. We connect [a, 0, 0, 0, b] with a chain of [a2, 0, b2] of
+length i to get [a2i+1, 0, 0, 0, b2i+1]. Because for any i ̸= j, a2i+1/b2i+1 ̸= a2j+1/b2j+1,
+we can realize (=4) = [1, 0, 0, 0, 1] using polynomial interpolation, as follows. Consider
+any signature grid on a planar graph G with n occurrences of =4 together with some
+other signatures. Let xk,ℓbe the sum, over all 0–1 edge assignments σ, of the products
+of all other vertex function values in G except at n vertices with =4, where k, ℓ≥0
+and k + ℓ= n, and in σ exactly k occurrences of =4 have input 0, and exactly ℓ
+occurrences of =4 have input 1. The Holant value is P
+k+ℓ=n xk,ℓ. Now substitute
+each occurrence of =4 by [a2i+1, 0, 0, 0, b2i+1]. The new signature grid has Holant
+value P
+k+ℓ=n xk,ℓ(akbℓ)2i+1. This gives a Vandermonde system from which we solve
+for xk,ℓ. Now we have =4. Then we connect two copies of =4 on one pair of edges to
+get =6.
+Take a vertex of degree 6 in a planar graph attached with =6, where the six
+incident edges are its variables. We will bundle two adjacent variables to form three
+bundles of two edges each. Then if the inputs are restricted to {(0, 0), (1, 1)} on each
+bundle, the function takes value 1 on ((0, 0), (0, 0), (0, 0)) and ((1, 1), (1, 1), (1, 1)) and
+takes value 0 elsewhere. Thus if we restrict the domain to {(0, 0), (1, 1)}, then the
+arity 6 Equality function =6 behaves as the ternary Equality function =3.
+Let F = [0, 1, 0, x] and let H(x1, x2, y1, y2) = P
+z=0,1 F(x1, y1, z)F(z, y2, x2). This
+H is realizable by connecting one pair of edges of two copies of F. (See Figure 3.) We
+will consider H as a function in (x1, x2) and (y1, y2). However, we will only connect
+H externally by connecting (x1, x2) and (y1, y2) to some bundle of two adjacent edges
+of some =6. Since =6 enforces the values on the bundle to be either (0, 0) or (1, 1), we
+will only be interested in the restriction of H to the domain {(0, 0), (1, 1)}. On this
+domain, H is a symmetric function of arity 2 and can be denoted as [1, 1, x2]. (Note
+that H is not a symmetric function of arity 4 on {0, 1}, as H(0, 1, 0, 1) = x.)
+Now we have reduced Pl-Holantc({[1, 0, 0, 1], [1, 1, x2]}) to Pl-Holantc({[a, 0, 0,
+0, b], [0, 1, 0, x]}).
+Using (=3) = [1, 0, 0, 1], we can realize the Equality function =k of any arity
+k ≥3 by a tree gadget composed of k −2 many (=3) nodes. Then we can realize
+[1, 1, x2k] for all k ≥1 as in Figure 3. There are k parallel paths in the ﬁgure. The
+signature at each vertex of degree 2 on the parallel paths is [1, 1, x] and the signatures
+at the two vertices on both sides are =k+1. If x = 0, then we already have [1, 1, 0].
+Fig. 3. The gadget for function H and [1, 1, x2k].
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+864
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+Fig. 4. The gadget for H4.
+Suppose x ̸= 0. Because x2 ̸= 1 and being a positive real number, we can realize
+[1, 1, 0] by interpolation.
+Now we have reduced the problem Pl-Holant([1, 0, 0, 1] |
+[1, 1, 0]) to Pl-Holantc({[1, 0, 0, 1], [1, 1, x2]}). The bipartite problem Pl-Holant([1, 0,
+0, 1] | [1, 1, 0]) is #P-hard since it is counting Vertex Covers on planar 3-regular
+graphs [47]. (This is also a consequence of Theorem 2.11.)
+The following lemma handles a special case of Theorem 4.1.
+The proof uses
+Lemma 4.2.
+Lemma 4.3. Pl-Holantc([0, 0, 1, 0, 0]) is #P-hard.
+Proof. We construct a reduction from Pl-Holantc([1, 0, 0, 0, 1], [0, 1, 0, 0]), which is
+#P-hard by Lemma 4.2, to Pl-Holantc([0, 0, 1, 0, 0]) by polynomial interpolation.
+Let F = [0, 0, 1, 0, 0]. There is a series of planar gadgets (a chain of F) realizing
+the following sequence of functions:
+H2(x1, x2, y1, y2) =
+X
+x3,x4=0,1
+F(x1, x2, x3, x4)F(y1, y2, x3, x4),
+and for i ≥1,
+H2i+2(x1, x2, y1, y2) =
+X
+x3,x4=0,1
+H2i(x1, x2, x3, x4)H2(y1, y2, x3, x4).
+The gadget for H2i is composed of 2i functions F. As an example, the gadget for H4
+is shown in Figure 4.
+By calculation, H2i(0, 0, 0, 0) = H2i(1, 1, 1, 1) = 1, and H2i(0, 1, 0, 1) = H2i(0, 1,
+1, 0) = H2i(1, 0, 0, 1) = H2i(1, 0, 1, 0) = 22i−1, and H2i is zero on other inputs. Again
+we will consider the inputs to H2i as bundled into (x1, x2) and (y1, y2).
+Given a planar graph G as an instance of Pl-Holantc([1, 0, 0, 0, 1], [0, 1, 0, 0]), sup-
+pose there are n vertices in G attached with the function (=4) = [1, 0, 0, 0, 1]. For
+i = 1, 2, . . . , n + 1, we construct an instance Gi of Pl-Holantc([0, 0, 1, 0, 0]) as fol-
+lows: Replace each occurrence of =4 by a copy of H2i, and replace each occurrence
+of [0, 1, 0, 0] by [0, 0, 1, 0, 0] connected with a [0, 1], which exactly realizes [0, 1, 0, 0].
+Note that by replacing =4 with H2i, we have bundled two adjacent edges together (in
+the planar embedding) for each vertex attached with =4.
+Let xa,b denote the summation, over all 0–1 edge assignments σ, of the products
+of all other vertex function values in G except at those n vertices with =4, where
+a, b ≥0 and a+b = n, and in σ exactly a occurrences of =4 have inputs {0000, 1111},
+and exactly b occurrences of =4 have inputs {0101, 0110, 1001, 1010}.
+Note that the Holant value on Gi is
+X
+a+b=n
+xab1a(22i−1)b.
+On the other hand, the value of Pl-Holantc([1, 0, 0, 0, 1], [0, 1, 0, 0]) on G is exactly
+xn,0.
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+865
+Fig. 5. The recursive construction. The signature of every vertex in the gadget is [0, 1, 0, a].
+When we take 1 ≤i ≤n + 1, we get a system of linear equations in xab, whose
+coeﬃcient matrix is a full ranked Vandermonde matrix. Solving this Vandermonde
+system we obtain the value xn,0.
+The following result can be proved by interpolation as well.
+Lemma 4.4. Let a ̸∈{−1, 0, 1} be a real number. Then we can interpolate all
+[x, 0, y, 0] and [0, y, 0, x] for x, y ∈C starting from either [0, 1, 0, a] or [a, 0, 1, 0], in
+Pl-Holantc.
+Proof. From either [0, 1, 0, a] or [a, 0, 1, 0], we can get [0, 1, 0] by pinning. Us-
+ing three copies of the binary Disequality function (̸=2) = [0, 1, 0] we can ﬂip all
+three variables of a ternary function f, and transform between [f0, f1, f2, f3] and its
+reversal [f3, f2, f1, f0]. Hence, we only need to prove how to interpolate [0, y, 0, x]
+from [0, 1, 0, a]. The recursive construction is depicted by Figure 5. By a simple par-
+ity argument, every F-gate Ni has a signature of the form [0, xi, 0, yi]. After some
+calculation, we see that they satisfy the following recursive relation:
+xi+1
+yi+1
+
+=
+3(a2 + 1)
+a3 + a
+3(a3 + a)
+a6 + 1
+ xi
+yi
+
+.
+The signatures we want to interpolate are of arity 3. But since all of them take the
+form [0, xi, 0, yi] with two degrees of freedom, we can use the interpolation method
+in section 3. Now we verify that the conditions of that theorem are satisﬁed. Let
+A = [ 3(a2+1) a3+a
+3(a3+a) a6+1 ]; then (A, [1, a]T) forms a recursive construction. Since det(A) =
+3(a4 −1)2 ̸= 0, the ﬁrst condition holds. Its characteristic equation is X2 −(a6 +
+3a2 + 4)X + 3(a4 −1)2 = 0.
+For this quadratic equation, the discriminant ∆=
+(a6 −3a2 −2)2 + 12(a + a3)2 > 0. So A has two distinct real eigenvalues. The sum
+of the two eigenvalues is trA = a6 + 3a2 + 4 > 0. So they are not opposite to each
+other. Therefore, the ratio of these two eigenvalues is not a root of unity and the
+third condition holds. Consider the second condition: if the initial vector [1, a]T is
+a column eigenvector of A, then we have A [ 1
+a ] = λ [ 1
+a ], where λ is an eigenvalue of
+A. From this (the second entry of A [ 1
+a ] is a times its ﬁrst entry), we will conclude
+that a(a2 −1)(a4 −1) = 0. But this is a contradiction to the given condition that
+a ̸∈{−1, 0, 1}. To sum up, this recursive construction satisﬁes all three conditions of
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+866
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+Fig. 6. The signature of the degree 1 vertex in the gadget is [1, 0] or [0, 1].
+Lemma 3.1 and can be used to interpolate all signatures of the form [0, x, 0, y]. This
+completes the proof.
+Proof of Theorem 4.1. If ab = 1, then [a, 0, 1, 0, b] is realizable by some match-
+gate, by Lemma 2.12. This realizability also holds for the unary functions [1, 0] and
+[0, 1]. Hence the problem Pl-Holantc([a, 0, 1, 0, b]) can be solved in polynomial time by
+matchgate computation via the FKT method [38, 29, 30]. In the following we assume
+that ab ̸= 1 and prove that the problem is #P-hard. The case a = b = 0 is proved in
+Lemma 4.3. Now we can assume at least one of a and b is nonzero, and by symmetry
+we assume a ̸= 0.
+We know from our dichotomy for Holantc problems [20], Theorem 2.8, that
+Holantc([a, 0, 1, 0, b]) for general graphs is #P-hard unless a = b = 1 or a = b = −1,
+in which cases it is tractable. Both of these tractable cases are also included in the
+tractable cases (ab = 1) here for Pl-Holantc. Therefore, if we can realize a cross func-
+tion X of arity 4 with a planar gadget when ab ̸= 1, we can reduce Holantc([a, 0, 1, 0, b])
+for general graphs to Pl-Holantc([a, 0, 1, 0, b]) and ﬁnish the proof. Here a cross func-
+tion X satisﬁes
+X0000 = X0101 = X1010 = X1111 = 1
+and
+Xα = 0 for all other inputs α ∈{0, 1}4.
+If {a, b} ̸⊂{−1, 0, 1}, we can apply the pinning functions [1, 0] and [0, 1] on
+[a, 0, 1, 0, b], and use Lemma 4.4 to interpolate all [x, 0, y, 0], for x, y ∈C. If {a, b} ⊂
+{−1, 0, 1}, then there are only four cases because a ̸= 0 and ab ̸= 1: [1, 0, 1, 0, −1],
+[1, 0, 1, 0, 0], [−1, 0, 1, 0, 1], and [−1, 0, 1, 0, 0]. In all four cases, it is easy to verify that
+we can realize a signature of the form [c1, 0, c2, 0] where c1c2 ̸= 0 and c1 ̸= ±c2 using
+the gadget in Figure 6. (For [1, 0, 1, 0, −1], we get [8, 0, 4, 0] by using [1, 0] for the
+degree 1 vertex in the gadget; for [1, 0, 1, 0, 0], we get [8, 0, 5, 0] by using [1, 0]; for
+[−1, 0, 1, 0, 1], we get [0, 4, 0, 8] by using [0, 1]; and for [−1, 0, 1, 0, 0], we get [0, 1, 0, 3]
+by using [0, 1].) After factoring out a nonzero factor, we have a signature of the form
+[c′, 0, 1, 0], or its reversal, where c′ ∈R and c′ ̸∈{0, ±1}. As a result, by Lemma 4.4,
+we can also interpolate all [x, 0, y, 0], where x, y ∈C.
+Now we can use all signatures of the form [x, 0, y, 0], for arbitrary x, y ∈C,
+to build new gadgets. We also have all [x, 0, y] by connecting [x, 0, y, 0] to a [1, 0].
+By connecting a [ 4p
+t/a, 0,
+4p
+a/t] to each edge of the signature [a, 0, 1, 0, b], we get
+[t, 0, 1, 0, c
+t] for all t ̸= 0, where c = ab ̸= 1. Using all these, we will build a planar
+gadget in Figure 7 to realize the cross function X. In the equations below x, y, t are
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+867
+Fig. 7. This gadget is used to realize the cross function. The signature for the center ver-
+tex (black square) is [t, 0, 1, 0, c
+t ]. The signature for the vertices in the four corners (red circles)
+is [x, 0, 1, 0].
+The signature for the vertices in the middle of the boundaries (green triangles) is
+[y, 0, 1, 0].
+three variables we can set to any complex numbers, with t ̸= 0. The parameter c is
+given and not equal to 1.
+(Of course we presumably could not build a cross function X if c = 1; this is
+exactly when the problem is in P, and this is also exactly when our construction of X
+fails. If a cross function X were to exist when c = 1, by any construction whatsoever,
+then P = #P would follow. However, it is still rather mysterious that algebraically
+c = 1 is exactly when our construction fails, and it succeeds everywhere else. This
+failure condition is by no means obvious from the equations below. We will comment
+more on that later when we present the “roadmap.”)
+We can compute the signature of the gadget in Figure 7. If the input (the four
+bits given to the four external dangling edges) has an odd number of 1s, then the
+value is 0. This is because all nine signatures satisfy the even parity condition. For
+other inputs, note that the gadget is rotationally symmetric. A calculation shows that
+X0000 = x4y4t + t + 4x3y2 + 4x + 4x2y + 2cx2
+t
+,
+(A)
+X1111 = 2y2t + 12y + 2c
+t ,
+(B)
+X0101 = X1010 = 2xy2t + 4x2y2 + 4 + 4xy + 2cx
+t ,
+(C)
+X0011 = X1001 = X1100 = X0110 = x2y3t + yt + 3x2y2 + 3 + 6xy + 2cx
+t .
+(D)
+The construction of the cross function X will succeed if we can prove the following:
+For any c ̸= 1, we can assign suitable complex values to x, y, and t,
+where t ̸= 0, such that A = B = C ̸= 0 and D = 0, where A, B, C,
+and D denote respectively the four functions of x, y, and t listed in
+the four lines above.
+Claim 1. For any c ̸= 1,
+(x −1)2 =
+16
+c −1
+has a solution x ∈C such that x ̸∈{0, +1, −1}. This x satisﬁes
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+868
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+
+2 −x(x + 3)
+x −1
+ x + 3
+x −1
+
++ cx + 6 = 0.
+(4)
+Proof. Clearly x = 1 is not a solution to (x −1)2 =
+16
+c−1. Also the equation has
+two distinct roots in C. When c = 17 there is a solution x = 2 ̸∈{0, +1, −1}. When
+c ̸= 17, clearly x = 0 is not a solution. Hence the equation always has a solution other
+than 0, ±1.
+To verify (4) we have
+(2x −2 −x2 −3x)(x + 3) + (cx + 6)(x2 −2x + 1)
+= −(x3 + 4x2 + 5x + 6) + cx3 + (6 −2c)x2 + (−12 + c)x + 6
+= (c −1)x3 −2(c −1)x2 + (c −17)x
+= (c −1)x[(x −1)2 −16/(c −1)]
+= 0.
+Now we ﬁx x ̸∈{0, +1, −1} satisfying (4) for any given c ̸= 1.
+Claim 2. For any c ̸= 1, we can pick z ̸= ±1 such that
+4z
+(1 + z)2 = x(x + 3)
+x −1 .
+(5)
+Proof. We are given x ̸= 0, ±1. If x = −3, we can pick z = 0. Now suppose
+x ̸= −3. Consider the quadratic equation in z,
+4z(x −1) = x(x + 3)(1 + z)2.
+This is quadratic since x(x+3) ̸= 0. We can check that z = +1 (and −1, respectively)
+is not a solution, as this would force x = −1 (and +1, respectively). However, any
+solution where z ̸= −1 and x ̸= 1 is equivalent to (5). Hence we have a solution
+z ̸= ±1 to (5).
+Now we further ﬁx a z ̸= ±1 satisfying (5), and let y = z/x such that xy ̸= ±1,
+for any c ̸= 1.
+Claim 3. For any c ̸= 1, there exist x ̸∈{0, +1, −1} and y such that xy ̸= ±1
+satisfying
+(6)
+2(1 + x2y2)
+(1 + xy)2
+· x + 3
+x −1 + cx + 6 = 0.
+Proof.
+2(1 + x2y2)
+(1 + xy)2
+· x + 3
+x −1 + cx + 6
+= 2
+
+1 −
+2z
+(1 + z)2
+
+· x + 3
+x −1 + cx + 6
+=
+
+2 −x(x + 3)
+x −1
+
+· x + 3
+x −1 + cx + 6
+= 0.
+Here we used (5) and (4).
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+869
+Now we will set t = 4/(1+xy)2. Since z = xy ̸= −1, this t is well deﬁned. Clearly
+t ̸= 0. We next verify that D = 0. By (5) and (6) we get
+8y(1 + x2y2)
+(1 + xy)4
++ cx + 6 = 0.
+Then
+t2y(1 + x2y2) + 2cx + 3t(1 + xy)2 = 0.
+Thus
+D = yt(1 + x2y2) + 3(1 + xy)2 + 2cx
+t
+= 0.
+Next we show that C = 4(1−xy)2
+1−x
+̸= 0. By D = 0, we have
+C = 2xy2
+4
+(1 + xy)2 + 4(1 + xy)2 −4xy + [−yt(1 + x2y2) −3(1 + xy)2].
+Hence
+C =
+8xy2
+(1 + xy)2 + (1 + xy)2 −4xy −y 4(1 + x2y2)
+(1 + xy)2
+=
+4y
+(1 + xy)2
+
+2xy −1 −x2y2
++ (1 −xy)2
+=
+
+−4y
+(1 + xy)2 + 1
+
+(1 −xy)2
+= 4(1 −xy)2
+1 −x
+̸= 0,
+where the last step uses (5).
+The next task is to show that B = C. We have
+C = 4(1 −xy)2 + xB.
+Hence
+B = 1
+x
+4(1 −xy)2
+1 −x
+−4(1 −xy)2
+
+= 4(1 −xy)2
+x
+
+1
+1 −x −1
+
+= 4(1 −xy)2
+1 −x
+= C.
+Finally we verify A = C as well:
+A = (x4y4 + 1)t + x[C −2xy2t] = C + (x −1)C −2x2y2t + (x4y4 + 1)t
+= C −4(1 −xy)2 + t(x2y2 −1)2 = C.
+Now we come to the dichotomy theorem for Pl-Holantc problems.
+Theorem 4.5. Let F be a set of real symmetric signatures. Pl-Holantc(F) is #P-
+hard unless F satisﬁes one of the following conditions, in which case it is tractable:
+1. Holantc(F) is tractable (for which we have an eﬀective dichotomy [20], The-
+orem 2.8); or
+2. Every signature in F is realizable by some matchgate (for which we have a
+complete characterization [9]).
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+870
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+Before giving the proof of Theorem 4.5, we normalize the signature set F. If
+F contains any identically zero signature we can remove it from F. This is because
+if it appears in any signature grid then the Holant value is 0, and the removal of
+it from F does not change the complexity of Pl-Holantc(F), nor the validity of the
+tractability criterion. So we may assume no signature in F is identically zero. Since
+[1, 0] and [0, 1] are freely available, we can construct any subsignature of a given
+signature. From any degenerate (but not identically zero) signature [x, y]⊗k, we can
+get the unary subsignature xk−1[x, y] and yk−1[x, y] by pinning.
+Either x or y is
+nonzero, hence we can get [x, y].
+On the other hand, one can easily get [x, y]⊗k
+from [x, y]; therefore we can replace any degenerate signature [x, y]⊗k in F by [x, y],
+without changing the complexity of Holantc(F) and Pl-Holantc(F) or the validity of
+the tractability criterion. So in the following we assume that all signatures in F of
+arity greater than 1 are nondegenerate.
+The main idea of the proof is to interpolate all unary functions. If we can do that,
+we can reduce the problem Pl-Holant∗(F) to Pl-Holantc(F) and ﬁnish the proof. We
+note that the dichotomy criterion in Theorem 2.7 for Holant∗(F) is also valid for planar
+graphs. In some cases, we cannot interpolate all unary functions; then we prove the
+theorem separately, mainly using Lemma 4.2 and Theorem 4.1. The following lemma
+is for interpolation of unary functions.
+Lemma 4.6. If Pl-Holantc(F ∪{[a, b, c]}) ≤T Pl-Holantc(F), where the binary
+signature [a, b, c] satisﬁes the condition b2 ̸= ac, b ̸= 0, and a + c ̸= 0, then we can
+interpolate all unary functions,
+Pl-Holantc(F ∪U) ≤T Pl-Holantc(F).
+Remark. If the condition of Lemma 4.6 holds, then Pl-Holantc(F) ≡T Pl-Holantc
+(F ∪U) ≡T Pl-Holant∗(F). Since the dichotomy criterion in Theorem 2.7 for Holant∗
+problems also holds for Pl-Holant∗problems, we have proved a dichotomy for Pl-
+Holantc(F) under this condition. We argue that the dichotomy criterion stated in
+Theorem 4.5 is indeed the correct criterion in this case. If P = #P, then stating
+that Pl-Holantc(F) is in P or is #P-hard are the same thing, and Theorem 4.5 is
+formally valid. Now we suppose P ̸= #P. We have the equivalence Pl-Holantc(F) ≡T
+Pl-Holant∗(F) by Lemma 4.6. We can apply Theorem 2.7, the Holant∗dichotomy.
+If F satisﬁes the tractability criterion of Theorem 2.7 then F also satisﬁes item 1
+of Theorem 4.5 (which refers to Theorem 2.8 of which its item (1) is satisﬁed.) If
+F does not satisfy the tractability criterion of Theorem 2.7 then Pl-Holantc(F) is
+#P-hard by the equivalence and Theorem 2.7.
+Then we claim that F must not
+satisfy the tractability criterion of Theorem 4.5. Otherwise, by the tractability part
+of Theorem 4.5, we would have concluded that Pl-Holantc(F) is in P, a contradiction
+since P ̸= #P.
+There is a subtlety in the argument above. Suppose F fails item (1) of
+Theorem 2.8 (the tractability criterion of Theorem 2.7). It is true that Pl-Holantc(F)
+≡T Pl-Holantc(F ∪U), and U ̸⊆F1 ∪F2 ∪F3. Thus the signature set F ∪U also
+fails item (2) of Theorem 2.8. As well, not all of U are matchgates realizable, and so
+F ∪U fails item 2 of Theorem 4.5. But this argument is deﬁcient, because it applies
+the criteria of Theorem 4.5 on the set F ∪U, but not on F alone. Ideally one should
+prove directly that when we can construct or interpolate [a, b, c] in Pl-Holantc(F) sat-
+isfying the conditions of Lemma 4.6, the set F cannot be a subset of F1 ∪F2 ∪F3 nor
+matchgates realizable. But we do not have such a direct proof. What we presented
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+871
+is an “end run” around it, based on a complexity theoretic argument accounting for
+both logical alternatives of the P = #P question.
+Proof of Lemma 4.6. We use the interpolation method as described in section 3.
+Consider the recursive construction
+ a b
+b c , 1
+0
+
+.
+We use A to denote
+ a b
+b c
+
+.
+Since
+b2 ̸= ac, A is nondegenerate, the ﬁrst condition of Lemma 3.1 is satisﬁed. If [ 1
+0 ] is
+a column eigenvector of A, then b = 0, a contradiction. So it satisﬁes the second
+condition of Lemma 3.1. Since A is a real symmetric matrix, both its eigenvalues are
+real. If the ratio of two real numbers is a root of unity, they must be the same or
+opposite to each other. If the two eigenvalues are the same, since a real symmetric
+matrix is diagonalizable, this would imply that A is a scalar matrix, and we have
+b = 0 and a = c, a contradiction. If the two eigenvalues are opposite to each other,
+then we have the trace a + c = 0, also a contradiction. Therefore, the third condition
+of Lemma 3.1 is also satisﬁed. This completes the proof.
+If we can construct from F a gadget with a binary symmetric signature [a, b, c],
+which satisﬁes all the conditions in Lemma 4.6, then we are done. For most cases,
+we prove the theorem by interpolating all unary signatures. However, in some more
+delicate cases, we are not able to do that. For example, if all signatures from F satisfy
+the parity condition, which includes a proper superset of matchgate signatures, then
+all the unary signatures we can realize also satisfy the parity condition and therefore
+have the form [a, 0] or [0, a]. So we cannot interpolate all unary signatures in this
+case. For such cases, our starting point is Theorem 4.1.
+We deﬁne some families of symmetric signatures, which will be used in our proof.
+G1 = {[a, 0, . . . , 0, b] | ab ̸= 0},
+G2 = {[x0, x1, . . . , xk] | ∀i is even, xi = 0 or ∀i is odd, xi = 0},
+G3 = {[x0, x1, . . . , xk] | ∀i, xi + xi+2 = 0},
+M = { f | f is realizable by some matchgate }.
+All signatures here have arity at least 1. The signatures in G1 are the (nondegenerate)
+Generalized Equalities. The set G2 consists of signatures satisfying the parity
+condition. The signatures in G3 are those that satisfy the second order linear recur-
+rence xi+2 + xi = 0, which is the same recurrence satisﬁed by the signatures in F3,
+having characteristic equation X2 + 1 = 0 with roots ±√−1.
+We note that G1, G2, and G3 are supersets of (not identically 0 signatures of) F1,
+F2, and F3, respectively. (Here we only consider the real part of F2; the nonreal part of
+F2 is not a subset of G2.) Furthermore the matchgate signature set M is sandwiched
+between (the real part of) F2 and G2, i.e., (the real part of) F2 ⊆M ⊆G2. The
+following several lemmas are what we call a “squeeze.” They successively narrow the
+scope of possible F for which we have to prove Theorem 4.5. They all have the form,
+for some class C, “If F ̸⊆C, then the conclusions of Theorem 4.5 hold.” After proving
+each lemma, in subsequent lemmas, we only need to consider the case that F ⊆C.
+Lemma 4.7. If F ̸⊆G1 ∪G2 ∪G3, then the conclusions of Theorem 4.5 hold.
+Proof. Since F ̸⊆G1 ∪G2 ∪G3, there exists an f ∈F and f ̸∈G1 ∪G2 ∪G3.
+Since all unary signatures are in G3, the arity of f is greater than 1, and by our
+normalization of F, f is nondegenerate, in particular not identically zero. There are
+two cases depending on whether f has a zero entry:
+(1) f has some zero entries. If there exists a subsignature of f of the form [0, a, b]
+or [a, b, 0], where ab ̸= 0, then we are done by Lemma 4.6. Otherwise, there
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+872
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+are no two successive nonzero entries. If f has only one nonzero entry then
+it belongs to G2. Hence f has at least two nonzero entries. So the signature
+f has this form [0i0x10i1x20i2 . . . xk0ik], where k ≥2, xj ̸= 0 and for all
+1 ≤j ≤k −1, ij ≥1. If for all 1 ≤j ≤k −1, ij is odd, then f satisﬁes
+the parity condition, and so f ∈G2, a contradiction. Otherwise there exists a
+subsignature of the form [x, 0, . . . , 0, y], where xy ̸= 0 and there are a positive
+even number of 0s between x and y. If this is the entire f, then f ∈G1, a
+contradiction. So there is one 0 before x or after y. By symmetry, we assume
+there is a 0 before x, so we have a subsignature [0, x, 0, . . . , 0, y] which is of
+even arity at least 4. We label its dangling edges 1, 2, . . . , 2k. Then for every
+i = 1, 2, . . . , k−1, we connect dangling edges 2i+1 and 2i+2 together to form
+a regular edge. After that, we have an F-gate with arity 2, and its signature
+is [0, x, y]. Then we are done by Lemma 4.6.
+(2) f has no zero entry. We only need to prove that we can construct a function
+[a′, b′, c′] satisfying the three conditions in Lemma 4.6. Suppose all subsig-
+natures of f with arity 2 do not satisfy all three conditions. Then for each
+sub-signature [a′, b′, c′], either a′ + c′ = 0, or b′2 = a′c′. If all of them satisfy
+a′ +c′ = 0, then f ∈G3, a contradiction. If all of them satisfy b′2 = a′c′, then
+f is degenerate, a contradiction. Without loss of generality, we can assume
+there is a subsignature [a, b, c, d] of f, such that a + c = 0, b + d ̸= 0, and
+c2 = bd. We get this subsignature [a, b, c, d] by [1, 0] and [0, 1]. Connecting
+two copies of [a, b, c, d] by two edges, we can get a binary function [a′, b′, c′] =
+[a2 + 2b2 + c2, ab + 2bc + cd, b2 + 2c2 + d2] = [2(b2 + c2), c(b + d), (b + d)2].
+Since f has no zero entries, we have b′ = c(b + d) ̸= 0, a′ + c′ > 0, and
+a′c′ −b′2 = (b + d)2(2b2 + c2) > 0. We are done by Lemma 4.6.
+The following lemma “squeezes” G2 down to M.
+It uses Theorem 4.1 in an
+essential way, which in turn depends on the cross function.
+Lemma 4.8. If F ̸⊆G1 ∪M ∪G3, then the conclusions of Theorem 4.5 hold.
+Proof. If F ̸⊆G1 ∪G2 ∪G3, then by Lemma 4.7, we are done. Otherwise, there
+exists a signature f ∈F ⊆G1 ∪G2 ∪G3 and f ̸∈G1 ∪M ∪G3. Then it must be
+the case that f ∈G2. Note that every signature with arity at most 3 in G2 (thus
+satisfying the parity condition) is also contained in M, so f has arity greater than 3.
+Let f = [x0, x1, . . . , xn] for some n ≥4. In particular f is nondegenerate. Suppose
+there exists some i ∈{2, 3, . . . , n −2} such that xi ̸= 0. If xi−2xi+2 ̸= x2
+i , then we
+can get [xi−2, 0, xi, 0, xi+2] by [1, 0] and [0, 1] as a subsignature. Then the problem is
+#P-hard by Theorem 4.1 and we are done. Otherwise, we have xi−2xi+2 = x2
+i ̸= 0.
+Then starting from xi−2 ̸= 0 and if i −2 ∈{2, 3, . . . , n −2}, we can get xi−4xi =
+x2
+i−2 ̸= 0.
+Similarly we can start with xi+2 ̸= 0 and get xixi+4 = x2
+i+2 ̸= 0 if
+i + 2 ∈{2, 3, . . . , n −2}. A signature satisfying the parity condition and that is a
+geometric series on the alternate entries is realizable by a matchgate, by Lemmas 2.12
+and 2.13. This is a contradiction.
+Now we may assume xi = 0 for all i ∈{2, 3, . . . , n −2}, and f has the form
+[x0, x1, 0, . . . , 0, xn−1, xn]. If n is odd then n ≥5, and since f ∈G2, either x0 =
+xn−1 = 0 or x1 = xn = 0. In the former case, if x1 = 0 then f would be degenerate,
+and if xn = 0 then f ∈M. Since f is nondegenerate and f ∈G2 −M, we have
+x1xn ̸= 0.
+In the latter case that x1 = xn = 0, by the same argument we have
+x0xn−1 ̸= 0. If n is even, then since f ∈G2, either x0 = xn = 0 or x1 = xn−1 = 0.
+The latter case is impossible because f is nondegenerate and f ∈G2 −G1. In the
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+873
+former case, it must be that x1xn−1 ̸= 0, for otherwise f ∈M. Furthermore in fact
+n ≥6 if n is even, because [0, x1, 0, x3, 0] ∈M, for any x1, x3.
+Therefore, given that f ∈G2 −(M ∪G1), there are only three possible subcases:
+(1) n is odd, n ≥5, x1xn ̸= 0, and x0 = xn−1 = 0; (2) n is odd, n ≥5, x0xn−1 ̸= 0,
+and x1 = xn = 0; (3) n ≥6 is even, x1xn−1 ̸= 0, and x0 = xn = 0. The subcases
+(1) and (2) are reversals of each other and (3) contains a subsignature of form (1).
+By pinning we can get (̸=2) = [0, 1, 0], and therefore we can get reversals. So after
+normalizing (and connecting pairs of edges together if n > 5), we can get a signature
+[0, 1, 0, 0, 0, z] of arity 5, where z ̸= 0. So we have both subsignatures [0, 1, 0, 0] and
+[1, 0, 0, 0, z]. As we proved in Lemma 4.2, the problem is #P-hard and we are done.
+This ﬁnishes the proof.
+Lemma 4.9. If [0, 1, 0, x] ∈F (or [x, 0, 1, 0] ∈F), where x ∈R, x ̸= ±1, then the
+conclusions of Theorem 4.5 hold.
+Proof. By pinning we can get (̸=2) = [0, 1, 0] in either case, so we can get reversal,
+and therefore we only need to consider the case [0, 1, 0, x] ∈F. If x ̸= 0, we can use
+Lemma 4.4 to interpolate [0, 1, 0, 0].
+So we assume we have [0, 1, 0, 0] from F.
+If
+F ̸⊆G1 ∪M ∪G3, then by Lemma 4.8, we are done. If F ⊆M, then the problem is
+tractable and we are done. Otherwise, there exists a signature f ∈F ⊆G1 ∪M ∪G3
+and f ̸∈M. Thus f ∈G1 ∪G3 −M.
+If f ∈G3, then f has the form [x0, x1, −x0, −x1, . . .] having arity ≥1. If x0 or
+x1 = 0, we would have f ∈M by Lemmas 2.12 and 2.13, a contradiction. Hence
+x0x1 ̸= 0. We can get the unary signature [x0, x1] by pinning. Connecting [x0, x1]
+to [0, 1, 0, 0] we get [x1, x0, 0], which satisﬁes all the conditions in Lemma 4.6, and we
+are done.
+Now suppose f ∈G1; then it has the form [1, 0, . . . , 0, y] after normalization,
+where y ̸= 0. If it has arity 1, then connecting [1, y] to [0, 1, 0, 0] we can also ﬁnish
+the proof by Lemma 4.6. If it has arity 2, then [1, 0, y] ∈M, a contradiction. Hence
+f has arity n ≥3. If n is odd, we can connect its edges in pairs except one to get
+a unary signature [1, y]. Then we can use the same argument as above and we are
+done. If n is even, then it is at least 4. After connecting its edges in pairs except
+four of them, we can get [1, 0, 0, 0, y]. Together with [0, 1, 0, 0], we know the problem
+is #P-hard by Lemma 4.2. This completes the proof.
+Now we resume the “squeeze” from M down to (the real part of) F2.
+Lemma 4.10. If F ̸⊆G1 ∪F2 ∪G3, then the conclusions of Theorem 4.5 hold.
+Proof. If F ̸⊆G1 ∪G2 ∪G3, then by Lemma 4.7, we are done. Otherwise, there
+exists a signature f ∈F ⊆G1 ∪G2 ∪G3 and f ̸∈G1 ∪F2 ∪G3. Then it must be the
+case that f ∈G2. Note that every unary or nondegenerate binary signature in G2
+is also contained in G1 ∪G3, so f has arity at least 3. Since f is nondegenerate and
+f ̸∈G1, there is some nonzero in the middle of the signature f. Moreover, by f ∈G2
+(the parity condition), there is a 0 entry just before this nonzero entry as well as a 0
+entry just after it. After normalization, we can assume there is a subsignature of the
+form [0, 1, 0, x] (or [x, 0, 1, 0]). By pinning we can get [0, 1, 0] and take reversal, and so
+we have [0, 1, 0, x]. If x ̸= ±1, then by Lemma 4.9, we are done. Otherwise, for every
+such pattern, we have x = ±1. Thus f consists of alternatingly zero and nonzero
+entries, and all nonzero entries are ±1. The nonzero entries cannot all be of the same
+sign, because f ̸∈F2. Also all nonzero entries of f cannot always strictly alternate
+between +1 and −1 because f ̸∈G3. Hence we can get a subsignature [1, 0, 1, 0, −1]
+or [1, 0, −1, 0, −1] of f, up to a nonzero scalar, by pinning. By taking a reversal, if
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+874
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+necessary, we get [1, 0, 1, 0, −1]. Then by Theorem 4.1, we know that the problem is
+#P-hard and we are done. This completes the proof.
+The next lemma “squeezes” by dropping F2.
+Lemma 4.11. If F ̸⊆G1 ∪G3, then the conclusions of Theorem 4.5 hold.
+Proof. If F ̸⊆G1 ∪F2 ∪G3, then by Lemma 4.10, we are done. Otherwise, there
+exists a signature f ∈F ⊆G1 ∪F2 ∪G3 and f ̸∈G1 ∪G3. Then it must be the case
+that f ∈F2. Note that every (real-valued) signature with arity at most 2 in F2 is also
+contained in G1 ∪G3, so f has arity at least 3. Then f has a subsignature [1, 0, 1, 0]
+or [0, 1, 0, 1]. By pinning we get [0, 1, 0], and then taking reversal, we assume it is
+[1, 0, 1, 0]. If F ⊆F1 ∪F2 ∪F3, then Theorem 4.5 trivially holds and there is nothing
+to prove. If not, there exists a signature g ∈F −F1 ∪F2 ∪F3. By F ⊆G1 ∪F2 ∪G3,
+either g ∈G1 −F1 ∪F2 ∪F3 (⊆G1 −F1) or g ∈G3 −F1 ∪F2 ∪F3 (⊆G3 −F3).
+For the ﬁrst case, g ∈G1 −F1. After a nonzero scalar multiple, g has the form
+[1, 0, . . . , 0, b], where b ̸∈{−1, 0, 1}. If the arity of g is odd, we can realize [1, b] by
+connecting every two adjacent dangling edges into one edge and leave one dangling
+edge. Then connecting this unary signature to one dangling edge of [1, 0, 1, 0], we can
+realize a binary signature [1, b, 1]. Then by Lemma 4.6, Theorem 4.5 holds. If the
+arity of g is even, we can realize [1, 0, b] (leave two dangling edges). By connecting
+one dangling edge of [1, 0, b] to one dangling edge of [1, 0, 1, 0], we have a new ternary
+signature [1, 0, b, 0]. By Lemma 4.9, we are done.
+For the second case g ∈G3 −F3, g has a subsignature of the form [1, b], where
+b ̸∈{−1, 0, 1}. By the same argument as above, Theorem 4.5 holds. This completes
+the proof.
+The next lemma “squeezes” G3 down to F3.
+Lemma 4.12. If F ̸⊆G1 ∪F3, then the conclusions of Theorem 4.5 hold.
+Proof. If F ̸⊆G1 ∪G3, then by Lemma 4.11, we are done. Otherwise, there exists
+a signature f ∈F ⊆G1 ∪G3 and f ̸∈G1 ∪F3. Then it must be the case that f ∈G3,
+and so f has the form [x0, x1, −x0, −x1, . . .]. If either x0 or x1 = 0, then f ∈F3.
+After normalizing x0 = 1, we must have x1 ̸= ±1 for otherwise f ∈F3. The arity of f
+is at least 2, for otherwise f ∈G1. Hence f has a subsignature of the form [1, a, −1],
+where a ̸∈{−1, 0, 1}.
+If F ⊆{[1, 0, 1]}∪G3, then Holant∗(F) is polynomial time computable by Theorem
+2.7 and as a result Theorem 4.5 trivially holds and we are done.
+If not, there exists a signature g ∈F ⊆G1 ∪G3 and g ̸∈{[1, 0, 1]} ∪G3. Then it
+must be the case that g ∈G1. The arity of g is greater than 1, as g ̸∈G3.
+If the arity of g is 2, then g has the form [1, 0, b] by g ∈G1. Here b ̸= 0 by the
+deﬁnition of G1, and b ̸= −1 by g ̸∈G3. That b ̸= 1 is given by g ̸∈{[1, 0, 1]} ∪G3.
+Hence b ̸∈{−1, 0, 1}. Connecting two copies of the signature [1, 0, b] to both sides
+of one binary signature [1, a, −1], we can get a new binary signature [1, ab, −b2]. It
+satisﬁes all the conditions of Lemma 4.6, and we are done. If the arity of g is greater
+than 2, then we can always realize a signature [1, 0, 0, b], where b ̸= 0 (by pinning
+we obtain [1, a] from [1, a, −1], and then connecting the unary signature [1, a] to all
+dangling edges of g except three of them). Then we can use an F-gate in Figure 8. Its
+signature is [1, a2b, b2], and by Lemma 4.6, we are done. This completes the proof.
+By the above lemmas, the only case left we have to handle is that F ⊆G1 ∪F3.
+This ﬁnal “squeeze” is done by the following lemma, which completes the proof of
+Theorem 4.5.
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+875
+Fig. 8.
+The function on degree 2 nodes is [1, a, −1], and the function on degree 3 nodes is
+[1, 0, 0, b].
+Lemma 4.13. If F ⊆G1 ∪F3, then the conclusions of Theorem 4.5 hold.
+Proof. If F ⊆F1 ∪F3, then by Theorem 2.8, part (2), Holantc(F) is computable
+in polynomial time. Similarly, if F ⊆U ∪F3 ∪{[1, 0, 1]}, then by Theorem 2.8, part
+(1), and then by Theorem 2.7, part (3), Holantc(F) is computable in polynomial
+time. Hence in these two cases, Theorem 4.5 holds. Now suppose F ̸⊆F1 ∪F3 and
+F ̸⊆U ∪F3 ∪{[1, 0, 1]}.
+There exists f ∈F −F1 ∪F3. Since F ⊆G1 ∪F3, such an f ∈G1.
+We want to show that we can get a signature of the form [1, 0, a] or [1, 0, 0, a],
+where a ̸∈{−1, 0, 1}. There are two cases. The ﬁrst case is that we have a signature
+f ∈F ∩G1−(F1∪F3) such that f ̸∈U. The arity of f is greater than 1. By connecting
+its dangling edges together except two or three depending on the parity of the arity
+of f, we can assume f has the form [1, 0, a] or [1, 0, 0, a], where a ̸∈{−1, 0, 1}.
+The second case is every f ∈F ∩G1 −(F1 ∪F3) is also in U. By F ̸⊆U ∪
+F3 ∪{[1, 0, 1]}, there exists f1 ∈F −(U ∪F3 ∪{[1, 0, 1]}). Since F ⊆G1 ∪F3, and
+f1 ̸∈F3, we get f1 ∈G1. If f1 ̸∈F1, we could use this f1 as the f above, namely,
+f1 ∈F ∩G1 −(F1 ∪F3 ∪U), a contradiction. Thus f1 ∈F1. Also we still have some
+f2 ∈F −(F1 ∪F3). So f2 ∈G1, since F ⊆G1 ∪F3. Also since we are in this second
+case, certainly f2 ∈U.
+So we have f1, f2 ∈F ∩G1 such that f1 ∈F1 but f1 ̸∈U ∪F3 ∪{[1, 0, 1]}, and
+f2 ∈U but f2 ̸∈F1. The arity of f1 is at least 2. We claim it is greater than 2.
+Otherwise, f1 being from F1 and not [1, 0, 1], it would be f1 = [1, 0, −1] ∈F3, a
+contradiction. So f1 has the form [1, 0, . . . , 0, ±1] of arity at least 3. f2 has the form
+[1, a′], where a′ ̸∈{−1, 0, 1}; this follows from f2 ∈U ∩G1 −F1. By connecting all
+dangling edges of f1 except two with f2, we can construct an F-gate with signature
+of the form [1, 0, a], where a ̸∈{−1, 0, 1}. This is one of the desired forms we want.
+To sum up, in both cases, we have some f of the form [1, 0, a] or [1, 0, 0, a], where
+a ̸∈{−1, 0, 1}.
+If F ⊆G1∪{[0, 1, 0]}∪U, then by Theorem 2.8, part (1), and then by Theorem 2.7,
+part (2) (with a = 0 and b = 1), Holantc(F) is computable in polynomial time
+and Theorem 4.5 holds. Otherwise, there exists g ∈F ⊆G1 ∪F3, and g ̸∈G1 ∪
+{[0, 1, 0]} ∪U. Then g must be in F3 and have one of the following subsignatures:
+[1, 1, −1], [1, −1, −1], [1, 0, −1, 0], [0, 1, 0, −1]; this follows from a careful examination
+of the forms of F3. By symmetry (taking the reversal of both f and g), we only need
+to consider the cases f = [1, 0, a] or [1, 0, 0, a], where a ̸∈{−1, 0, 1}, and g = [1, 1, −1]
+or [1, 0, −1, 0].
+According to f and g, we have four cases. If f = [1, 0, a] and g = [1, 1, −1], then
+connecting them together into a chain of ﬁrst f then g and then f again, we can realize
+[1, a, −a2]. By Lemma 4.6, we are done. If f = [1, 0, a] and g = [1, 0, −1, 0], for each
+dangling edge of g, we extend it by one copy of f. Then we can realize [1, 0, −a2, 0].
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+876
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+So by Lemma 4.9, we are done. If f = [1, 0, 0, a] and g = [1, 1, −1], we can connect
+a unary signature [1, 1] (a subsignature of g) to one dangling edge of f and realize a
+binary signature f = [1, 0, a]. This reduces it to the ﬁrst case, which has been proved.
+If f = [1, 0, 0, a] and g = [1, 0, −1, 0], we can realize a unary signature [1, a] from f by
+connecting two of its dangling edges together and then connect this unary signature
+to one dangling edge of g to realize [1, −a, −1]. Note that [1, −a, −1] ̸∈G1 ∪F3, and
+by Lemma 4.12, we are done.
+5. Dichotomy for planar weighted #CSP. In this section, we prove a di-
+chotomy for planar real weighted #CSP. Compared to the dichotomy for general
+real weighted #CSP, the new tractable cases for planar structures are precisely those
+problems that can be computed by holographic algorithms with matchgates.
+Let EQ = {=k| k ≥1} = {[1, 1], [1, 0, 1], [1, 0, 0, 1], . . .} be the set of Equality
+signatures of all arities.
+A #CSP problem is just a Holant problem with EQ as-
+sumed to be freely available, i.e., #CSP(F) ≡T Holant(F ∪EQ), and Pl-#CSP(F) ≡T
+Pl-Holant(F∪EQ). One can show using the signature theory developed in [14] that the
+only holographic transformation that is relevant in transforming a planar #CSP prob-
+lem to be computable by matchgates is the Hadamard transformation H =
+ 1
+1
+1 −1
+
+.
+(This fact will not be used in the proof of this paper in a logical sense. However, it
+is certainly what led to the formulation of Theorem 5.1. The signature theory de-
+veloped in [14] says that in order to transform all EQ to be realizable by matchgate
+signatures, H can accomplish that, and any other transformation that accomplishes
+that is essentially equivalent to H.)
+Now we present the dichotomy theorem for planar weighted #CSP.
+Theorem 5.1. Let F be a set of real symmetric functions. Pl-#CSP(F) is #P-
+hard unless F satisﬁes one of the following conditions, in which case it is polynomial
+time tractable:
+1. #CSP(F) is polynomial time tractable (for which we have an eﬀective di-
+chotomy [20], Theorem 2.10); or
+2. Every function in F is realizable by some matchgate under basis
+ 1
+1
+1 −1
+
+(for
+which we have a complete characterization [14], Theorem 2.14).
+The main proof idea is to reduce Pl-Holantc problems to Pl-#CSP problems. Pl-
+#CSP(F) is exactly the same as planar Holant with all the Equality functions, i.e.,
+Pl-Holant(F ∪EQ). We can use a holographic reduction H. Note that
+1
+√
+2H is an
+orthogonal matrix, thus (=2)( 1
+√
+2H)⊗2 = (=2) is invariant. Pl-Holant(F ∪EQ) can be
+written as a bipartite Holant problem Pl-Holant(=2| F ∪EQ). Under the transforma-
+tion by H we get the transformed bipartite Holant problem Pl-Holant(=2| HF ∪c
+EQ),
+where c
+EQ = {[1, 0], [1, 0, 1], [1, 0, 1, 0], [1, 0, 1, 0, 1], . . .} is the set of transformed signa-
+tures from EQ by H. Thus the problem Pl-Holant(HF ∪c
+EQ) has the same complexity
+as Pl-#CSP(F).
+This holographic transformation gives us [1, 0] ∈c
+EQ (from [1, 1]).
+If we can
+further realize (or interpolate) [0, 1], then we can view the problem as a Pl-Holantc
+problem and apply Theorem 4.5 to HF ∪c
+EQ to get a proof of Theorem 5.1.
+In
+the following, we show how to realize (or interpolate) [0, 1]. Once we have [0, 1], the
+translation of the criterion of Theorem 4.5 to Theorem 5.1 is straightforward.
+It turns out that to realize (or interpolate) [0, 1] in some cases is diﬃcult. The
+following lemma says that it is also suﬃcient if we can realize (or interpolate) [0, 0, 1] =
+[0, 1]⊗2. The signature [0, 0, 1] can be viewed as two copies of [0, 1]. Intuitively, we
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+877
+will use one copy of [0, 0, 1] to replace two occurrences of [0, 1]. However, there are
+two technical diﬃculties. One is that there may be an odd number of occurrences of
+[0, 1] used in the input instance; the second diﬃculty, which is more subtle, is that we
+have to pair up two copies of [0, 1] while maintaining planarity of the instance.
+For any set of signatures G, let Σ denote the problem Pl-Holantc(G ∪c
+EQ), and
+let Π denote the problem Pl-Holant(G ∪c
+EQ ∪{[0, 1]⊗2}).
+Lemma 5.2. If Σ is in P, then so is Π. If Σ is #P-hard, then so is Π.
+Proof. Both problems have the signature [1, 0]. Problem Σ has [0, 1], which can
+obtain [0, 1]⊗easily. So clearly Π ≤T Σ. Thus if Σ is in P, so is Π.
+We have already proved a dichotomy theorem for Pl-Holantc problems. So if Σ
+is not in P, then it is #P-hard, and there is a reduction guaranteed by Theorem 4.5.
+In this case we prove that Π is also #P-hard.
+We observe that in all the proofs that lead to Theorem 4.5 asserting Σ is #P-hard,
+there is a chain of reductions that ultimately comes from following three problems:
+(a) Pl-Holant([1, 0, 0, 1]|[1, 1, 0]), (b) Pl-Holant([1, 1, 0, 0]), or (c) Holant[0, 1, 0, 0] (re-
+spectively counting Vertex Cover, Matching for planar 3-regular graphs, or
+Perfect Matching for general 3-regular graphs). There are only three reduction
+methods in this reduction chain: direct gadget construction, polynomial interpola-
+tion, and holographic reduction. We further observe that these reduction methods all
+share a certain local property described below.
+Given an instance G of Pl-Holant([1, 0, 0, 1]|[1, 1, 0]), Pl-Holant([1, 1, 0, 0]), or
+Holant[0, 1, 0, 0], notice that the value of Pl-Holant([1, 0, 0, 1]|[1, 1, 0]), Pl-Holant([1, 1,
+0, 0]), or Holant[0, 1, 0, 0] on the instance G is a nonnegative integer. We consider
+the graph G ∪G, which denotes the disjoint union of two copies of G. The value on
+G ∪G is the square of the value on G. So we can compute the value on G uniquely
+from its square. Suppose the reduction chain on the instance G produced instances
+G1, G2, . . . , Gm of the problem Σ. The same reduction applied to G ∪G produces
+instances of the problem Σ of the form G1 ∪G1, G2 ∪G2, . . . , Gm′ ∪Gm′. (This is the
+local property of the reduction. We note that the reduction on G ∪G may produce
+polynomially more instances than on G because of polynomial interpolation.)
+Now we only need to show how to transform instances G1∪G1, G2∪G2, . . . , Gm′ ∪
+Gm′ in the problem Σ to instances of the problem Π with the same values (replacing
+all occurrences of the signature [0, 1] by some [0, 0, 1]). Gi ∪Gi is a planar graph with
+zero or more vertices of degree 1 attached with the function [0, 1] (the total number
+of [0, 1] is clearly even). We want to use one copy of [0, 0, 1] to replace one pair of
+[0, 1], while maintaining planarity.
+Take a spanning tree of the dual graph of Gi. Let the outer face be the root.
+Choose an arbitrary leaf of this tree, which corresponds to a face C of Gi. Suppose C′
+is the face corresponding to the parent of C in the tree. If there are an even number
+of vertices of degree 1 attached with [0, 1] in face C, we can perfectly match them and
+realize them using [0, 0, 1] while maintaining planarity in this face. This can be done
+by matching these dangling vertices of degree 1 in a clockwise fashion on this face C.
+If there are an odd number of [0, 1] in face C, we choose one edge e between C and
+C′, and add a new vertex ve on e, and connect two new vertices of degree 1 to ve. The
+two new vertices are attached [0, 1], and ve has degree 4 and is attached [1, 0, 1, 0, 1].
+The eﬀect of [1, 0, 1, 0, 1] connected by two [0, 1] is the same as the function [1, 0, 1],
+which is exactly the same as the edge e itself. We put one new vertex with [0, 1] in
+face C and the other one in face C′. Now, there are an even number of [0, 1] in face
+C, and we can replace them by [0, 0, 1] in C, as before. We may repeat this process,
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+878
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+until we reach the root in the dual graph of Gi. If we do the same for the two copies
+Gi in Gi ∪Gi, we will have an even number of [0, 1] in the common outer face and
+can at last perfectly match the [0, 1] vertices and realize them by [0, 0, 1]. In the end
+we get an instance of the problem Π, which has the same value.
+To sum up the above discussion, and apply Theorem 4.5, we have the following
+lemma, which is the starting point of our proof of Theorem 5.1.
+Lemma 5.3. If we can realize (or interpolate) [0, 1] or [0, 0, 1] from HF ∪c
+EQ,
+then the conclusion of Theorem 5.1 holds.
+Next we give two lemmas which give a general condition to realize or interpolate
+[0, 1] or [0, 0, 1].
+Lemma 5.4. Let a ∈R. If a ̸∈{0, 1, −1}, then we can interpolate [0, 1] from
+c
+EQ ∪{[1, a]}.
+Proof. For every j ≥1, we can take a function Fj+1 = [1, 0, 1, 0, 1, . . .] of arity
+j + 1 and connect j functions [1, a] to it.
+The row vector form of the function (i.e., a listing of its values) of arity j composed
+of j copies of [1, a] is (1, a)⊗j. The column vector form of Fj+1 is 1/2 [ 1
+1 ]⊗(j+1) +
+1/2 [
+1
+−1 ]⊗(j+1). The 2j ×2 matrix form of Fj+1 is 1/2 [ 1
+1 ]⊗j ⊗(1, 1)+1/2 [
+1
+−1 ]⊗j ⊗
+(1, −1).
+Our gadget realizes
+(1, a)⊗j
+(
+1/2
+ 1
+1
+⊗j
+⊗(1, 1) + 1/2
+
+1
+−1
+⊗j
+⊗(1, −1)
+)
+= (1 + a)j
+2
+(1, 1) + (1 −a)j
+2
+(1, −1).
+Because a ∈R and a ̸∈{0, 1, −1}, (1 + a)/(1 −a) is well deﬁned and is neither
+zero nor a root of unity. We can interpolate any unary function x(1, 1) + y(1, −1), in
+particular [0, 1].
+Lemma 5.5. Let a ∈R. If a ̸∈{0, 1, −1}, then we can interpolate [0, 0, 1] from
+[1, 0, a].
+Proof. The function of a chain of length j composed of [1, 0, a] is [1, 0, aj]. Since
+the real number a ̸∈{0, 1, −1}, we can interpolate all [x, 0, y], and in particular [0, 0, 1],
+by polynomial interpolation.
+Proof of Theorem 5.1. In this proof, we augment the class F1 ∪F2 ∪F3 to include
+those degenerate signatures that can be obtained from tensor products from unary
+signatures in F1 ∪F2 ∪F3. The augmented class is precisely all symmetric signatures
+of the aﬃne class A. For any set of symmetric constraint functions F, to be contained
+in the augmented class of F1 ∪F2 ∪F3 is the same as to be contained in A; however
+the former statement is easier to verify by an inspection of the explicit list in subsec-
+tion 2.4. Note that for a set of symmetric signatures F, the transformed set HF is
+also symmetric.
+If HF ⊆F1 ∪F2 ∪F3 (in the augmented sense), then the problem #CSP(F) is
+tractable (even for general graphs). In this case, in fact F ⊆A, since H−1(F1 ∪F2 ∪
+F3) = F1 ∪F2 ∪F3, and the conclusion of the theorem holds. Now we assume that
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+879
+there exists an f ∈HF −(F1 ∪F2 ∪F3). In the following, we will prove that we can
+realize or interpolate either [0, 1] or [0, 0, 1] from f and c
+EQ in Pl-Holant.
+The general thrust of the proof is to squeeze all possible f into several standardized
+forms and prove the ability to directly realize or interpolate either [0, 1] or [0, 0, 1],
+using Lemma 5.4 or Lemma 5.5. Suppose f = [f0, f1, . . . , fn]. Since we have [1, 0] ∈
+c
+EQ, we can always take any subsignature that is an initial segment of a signature
+we already have. Given a symmetric signature g with arity r > 1, we often use two
+copies of g such that r −1 inputs of them are connected to each other. We call this
+the double gadget from g, which creates a binary symmetric signature. We separate
+two cases according to whether f0 = 0 or f0 ̸= 0, which we normalize to f0 = 1.
+1. f0 = 0.
+As the identically 0 function is in F1 ∪F2 ∪F3, f is not identically 0, and
+thus for some i ≥1, fi ̸= 0. If f0 = 0 and f1 ̸= 0, then we can connect n −1
+functions [1, 0] to f to get [0, f1], which is [0, 1] up to a nonzero factor.
+So we may assume f0 = f1 = 0, then n ≥2. If f2 ̸= 0, then we can connect
+n −2 functions [1, 0] to f to get [0, 0, f2], which is [0, 0, 1] up to a nonzero
+factor.
+So we may assume f0 = f1 = f2 = 0, then n ≥3. Let m ≤n be the ﬁrst
+nonzero, f0 = f1 = f2 = · · · = fm−1 = 0, fm ̸= 0, then m ≥3, and we
+can ﬁrst get [f0, f1, . . . , fm−1, fm] = [0, 0, . . . , 0, fm], which is [0, 1]⊗m, up to
+a nonzero factor fm. Depending on the parity of m, by connecting [1, 0, 1] to
+two dangling edges of it repeatedly we can get either [0, 1] or [0, 0, 1].
+2. f0 = 1.
+By Lemma 5.4, we only need to consider f1, ∈{0, 1, −1}.
+Otherwise, we
+are done.
+(a) f0 = 1 and f1 = ±1.
+If n = 1, then f = [f0, f1] = [1, ±1] ∈F1 ∪F2 ∪F3, a contradiction. So
+n ≥2, we can take its initial part [1, ±1, f2].
+Claim 1. If we have a signature of the form g = [g0, g1, g2] = [1, ±1, g2],
+then either g2 = 1 or we can get [0, 1].
+To prove Claim 1, we connect one edge of g to [g0, g1] = [1, ±1]. This
+gives us a unary signature [g2
+0 + g2
+1, g0g1 + g1g2] = [2, ±(1 + g2)]. By
+Lemma 5.4 either we can get [0, 1] or g2 ∈{1, −1, −3}. We can construct
+another gadget which connects two inputs of [1, 0, 1, 0] ∈c
+EQ by g =
+[g0, g1, g2]. This produces a unary signature [g0 + g2, 2g1] = [1 + g2, ±2].
+It follows that if g2 = −1 then we can get [0, 1]. So we may assume
+g2 ̸= −1. Next consider the double gadget of g, which has signature
+matrix [ g0 g1
+g1 g2 ]2 =
+h
+2
+±(1+g2)
+±(1+g2)
+1+g2
+2
+i
+. If g2 = −3, then this signature is
+[2, ∓2, 10], which is a multiple of [1, ∓1, 5].
+By the ﬁrst part of the
+proof of Claim 1, since 5 ̸∈{1, −1, −3}, we can get [0, 1]. So the only
+possibility left is g2 = 1. We have proved Claim 1.
+By applying Claim 1 to [f0, f1, f2], we conclude that [f0, f1, f2] = [1, ±1, 1].
+Since f ̸∈F1 ∪F2 ∪F3, the arity n of f is greater than 2, and we have
+an initial segment [1, ±1, 1, f3]. Our goal in this case 2(a) is either to
+get [0, 1] or to extend this pattern [1, ±1, 1, . . .]. Since f ̸∈F1 ∪F2 ∪F3,
+this pattern for f cannot be extended indeﬁnitely, and then we will have
+proved that we can get [0, 1].
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+880
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+Claim 2.
+If we have a signature of the form g = [g0, g1, g2, . . . , gm,
+gm+1] = [1, ±1, 1, . . . , gm+1], where m ≥1 and either (1) gj = 1 for all
+j = 0, 1, . . . , m, or (2) gj = (−1)j for all j = 0, 1, . . . , m, then either
+gm+1 = 1 in case (1) or gm+1 = (−1)m+1 in case (2), or we can get [0, 1].
+We prove Claim 2 by induction on m. The base case m = 1 has already
+been proved in Claim 1. Now suppose m ≥2. We connect one edge of g
+to [g0, g1] = [1, ±1] to get [g2
+0 + g2
+1, g0g1 + g1g2, g0g2 + g1g3, . . . , g0gm +
+g1gm+1], which is either (1) [2, 2, . . . , 1+gm+1] or (2) [2, −2, . . . , gm−1 −
+gm, gm−gm+1], both of arity m. In case (1), by the inductive hypothesis,
+we get gm+1 = 1, or we can get [0, 1]. In case (2), the entries starting
+from 2, −2, . . . up to gm−1−gm = ±2 indexed at m−1 strictly alternate.
+Therefore by induction hypothesis, we also either can get [0, 1], or have
+gm −gm+1 = −(gm−1 −gm) = 2gm, hence gm+1 = −gm = (−1)m+1.
+Claim 2 is proved.
+We now apply Claim 2 to f, and since f ̸∈F1 ∪F2 ∪F3, this pattern
+cannot be indeﬁnitely extended, and therefore we can get [0, 1].
+(b) f0 = 1 and f1 = 0.
+Since [1, 0] ∈F2, and f ̸∈F2, we have n > 1.
+If f = [1, 0]⊗n =
+[1, 0, . . . , 0], it would belong to the augmented class of F1 ∪F2 ∪F2. But
+f does not. So f has another nonzero entry other than f0. Suppose
+fm is the ﬁrst nonzero fi other than f0. Then m > 1. By taking the
+initial segment we can get [f0, 0, . . . , 0, fm]. We can connect [1, 0, 1] to
+[f0, 0, . . . , 0, fm] to get [1, fm] or [1, 0, fm] depending on the parity of m.
+Then we may assume fm = ±1 by Lemmas 5.4 and 5.5; otherwise we
+are done. Since f ̸∈F1 we have n > m.
+Next we prove that we may assume m is even, or else we are done. If
+m is odd, we can get [1, fm, fm+1] by connecting some [1, 0, 1]. Since
+fm = ±1, Claim 1 applies. So fm+1 = 1, or else we are done. We can
+also get [1, 0, 0, fm, fm+1], since m > 1, whose double gadget has the
+signature [1 + f 2
+m, fmfm+1, 3f 2
+m + f 2
+m+1] = [2, ±1, 4]. Then we can get
+[2, ±1], and we are done by Lemma 5.4.
+Now we know m must be even.
+Next we show that in fact we may
+assume m = 2. Otherwise, m ≥4 and we can get [1, 0, 0, 0, fm, fm+1]
+by connecting some [1, 0, 1] to f.
+The double gadget of this has the
+signature [1 + f 2
+m, fmfm+1, 4f 2
+m + f 2
+m+1] = [2, ±fm+1, 4 + f 2
+m+1]. From
+this we can get [2, ±fm+1].
+By Lemma 5.4, we can get [0, 1] unless
+fm+1 ∈{0, ±2}. If fm+1 = 0, we have [2, 0, 4]. By Lemma 5.5 we can
+get [0, 0, 1]. If fm+1 = ±2, then we apply Claim 1 to [2, ±fm+1, 4+f 2
+m+1]
+and conclude that we get [0, 1]. Hence m = 2, or we are done.
+We have m = 2 and have reached [1, 0, ±1, f3], whose double gadget has
+the signature [2, ±f3, 2 + f 2
+3 ]. Again by Lemma 5.4 applied to [2, ±f3],
+and by Claim 1, we conclude that f3 = 0, or we are done.
+Now we have the initial segment of f being [1, 0, ±1, 0]. Again since
+f ̸∈F1 ∪F2 ∪F3 we have n > 3. Hence we have [1, 0, ±1, 0, f4]. For
+[1, 0, −1, 0, f4], by connecting two edges with [1, 0, 1], we get [0, 0, f4 −1],
+and we must have f4 = 1, or else we have the signature [0, 0, 1], after
+normalization. For [1, 0, 1, 0, f4], by connecting two edges with [1, 0, 1],
+we get [2, 0, 1+f4], and it follows from Lemma 5.5 that f4 ∈{1, −1, −3}.
+Connecting three edges of [1, 0, 1, 0, f4] to three edges of [1, 0, 1, 0, 1] ∈
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+881
+c
+EQ, we get [4, 0, 3 + f4], which rules out f4 = −1, by Lemma 5.5 again.
+The double gadget of [1, 0, 1, 0, f4] gives [4, 0, 3 + f 2
+4 ], which rules out
+f4 = −3. To sum up, we get f4 = 1, or else we are done.
+Since f ̸∈F1 ∪F2 ∪F3, we have n > 4. We have reached [1, 0, ±1, 0, 1,
+f5, . . .], from which we can get an initial segment [1, 0, ±1, 0, 1, f5]. The
+rest of the proof is similar to the induction proof for case 2(a) but by
+skipping all entries with an odd index. Formally we have the next claim.
+Claim 3. Suppose we have a signature of the form g = [g0, g1, g2, . . . ,
+gm, gm+1] = [1, 0, ±1, 0, 1, . . . , gm+1], where m ≥2, gj = 0 for all odd
+1 ≤j ≤m, and either (1) g2j = 1 for all 0 ≤j ≤m/2 or (2) g2j = (−1)j
+for all 0 ≤j ≤m/2. Then either we can get one of [0, 1] or [0, 0, 1] or
+we can conclude the following hold: If m is even then gm+1 = 0, and
+if m is odd then either gm+1 = 1 in case (1) or gm+1 = (−1)m+1 in
+case (2).
+Another way to state the pattern is that the entries of the signature
+g satisfy the second order recurrence gi = gi−2 for all i ≥2, or the
+recurrence gi = −gi−2 for all i ≥2, with initial values g0 = 1 and
+g1 = 0. The claim is that from this pattern holding up to i ≤m, it must
+also hold for the entry at gm+1, or else we can get or interpolate [0, 1]
+or [0, 0, 1].
+We prove Claim 3 by induction on m.
+The base cases m = 2 and
+m = 3 are proved by repeating the argument above on f applied to g.
+Inductively assume m ≥4, and for all smaller values of m Claim 3 holds.
+First consider case (2), where the even indexed entries of g alternate up
+to gm. We connect [1, 0, 1] to two inputs of [g0, g1, . . . , gm+1] to get a
+signature of arity m−1 ≥3. This signature has the form [0, . . . , 0, gm−1+
+gm+1]. If gm−1 + gm+1 ̸= 0, we can get either [0, 1] or [0, 0, 1]. Hence we
+may assume gm+1 = −gm−1. By the induction hypothesis, this shows
+that gm+1 = 0 if m is even, or gm+1 = (−1)(m+1)/2 if m is odd,
+Now consider case (1).
+We also connect [1, 0, 1] to two inputs of
+[g0, g1, . . . , gm+1] to get a signature of arity m −1 ≥3. The last en-
+try of this signature at index m −1 is gm−1 + gm+1. Before this last
+entry, the signature entries alternate between 2 and 0, starting with
+g0 + g2 = 2.
+If m is even, then gm−1 = 0, and this signature has
+the form [2, 0, 2 . . . , 0, 2, gm+1]. By the induction hypothesis, we have
+gm+1 = 0 or we can get one of [0, 1] or [0, 0, 1]. If m is odd, then this
+signature has the form [2, 0, 2 . . . , 2, 0, gm−1 + gm+1]. Again by the in-
+duction hypothesis, we have gm−1 + gm+1 = 2 or we are done. It follows
+that gm+1 = 1, completing the induction.
+Then we apply Claim 3 to the signature f ̸∈F1 ∪F2 ∪F3, and since this
+pattern cannot continue indeﬁnitely for f, we conclude that we can get
+[0, 1] or [0, 0, 1].
+This completes the proof.
+6. Dichotomy for planar 2–3 regular graphs. In this section we prove a
+dichotomy for Holant on planar 2–3 regular graphs. This setting is very interesting
+for at least two reasons. From a dichotomy theorem point of view, this is the simplest
+nontrivial setting and always serves as the starting point of more general dichotomy
+theorems as in [20, 12]. This was also a focus of several previous works [18, 31, 19, 32],
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+882
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+whose result is the starting point of this theorem. From the holographic algorithms
+point of view, most of the known holographic algorithms [45, 44] are essentially for
+planar 2–3 regular graphs.
+The dichotomy theorem here explains the reason why
+they are special and why many variations of them are #P-hard.
+In the previous
+two dichotomies for Pl-Holantc and Pl-#CSP, the new tractable cases for planar are
+also done by holographic algorithms with matchgates. However, only special basis
+transformations are used since we assume some signatures are freely available. In this
+planar 2–3 regular graphs setting, no additional signatures are assumed to be freely
+available. Therefore all possible bases can be used in tractable cases.
+Theorem 6.1. Let [y0, y1, y2] and [x0, x1, x2, x3] be two complex symmetric sig-
+natures with arity 2 and 3, respectively. Then Pl-Holant([y0, y1, y2]|[x0, x1, x2, x3]) is
+#P-hard unless [y0, y1, y2] and [x0, x1, x2, x3] satisfy one of the following conditions,
+in which case it is tractable:
+1. Holant([y0, y1, y2]|[x0, x1, x2, x3]) is tractable (for which we have an eﬀective
+dichotomy [12]); or
+2. There exists a basis T such that both [y0, y1, y2](T −1)⊗2 and T ⊗3[x0, x1, x2, x3]
+are realizable by some matchgates (for which we have a complete characteri-
+zation [14]).
+Proof. If [x0, x1, x2, x3] or [y0, y1, y2] is degenerate, the problem is tractable, even
+for the nonplanar case, and so this falls in condition 1. Now we assume that they
+are both nondegenerate.
+As proved in [20], we can choose an invertible T1 such
+that [x0, x1, x2, x3] (or its reversal, which is similar and we omit that case) can be
+written as T ⊗3
+1
+[1, 0, 0, 1] or T ⊗3
+1
+[1, 1, 0, 0]. Therefore by a holographic reduction, we
+can always reduce the problem equivalently to one of the following two problems:
+(1) Pl-Holant([z0, z1, z2]|[1, 0, 0, 1]) and (2) Pl-Holant([z0, z1, z2]|[1, 1, 0, 0]). So it is
+suﬃcient to prove the theorem for these two cases.
+For Pl-Holant([z0, z1, z2]|[1, 0, 0, 1]), by [32], Theorem 2.11, the only case which
+is hard for general graphs and tractable for planar graphs is z3
+0 = z3
+2. This condi-
+tion is exactly the same as the condition that there exists a basis T such that both
+[y0, y1, y2](T −1)⊗2 and T ⊗3[1, 0, 0, 1] are realizable by some matchgates. (This state-
+ment follows from the explicit transformation formulae from the signature theory
+developed for matchgates in [14].) This proves Theorem 6.1 for case (1).
+Now we consider Pl-Holant([z0, z1, z2]|[1, 1, 0, 0]). If z0 = 0, the problem is triv-
+ially tractable even for general graphs. This can be seen by a simple counting argu-
+ment: in a bipartite graph the LHS vertices all have the signature [0, z1, z2] and thus at
+least half the edges must be 1, while the RHS vertices all have the signature [1, 1, 0, 0]
+and thus less than half the edges are 1. This is also the only case where the problem is
+not #P-hard for general graphs when the RHS has [1, 1, 0, 0] by [12]. Now we assume
+z0 ̸= 0. Then it is suﬃcient to prove that either the problem is #P-hard or there exists
+a basis transformation T such that [1, 1, 0, 0]T ⊗3 and (T −1)⊗2[z0, z1, z2] are realizable
+by some matchgates. Let T =
+h
+√z0
+0
+z1/√z0
+√
+(z0z2−(z1)2)/z0
+i
+. Note that T is well deﬁned
+and invertible since z0 ̸= 0 and [z0, z1, z2] is nondegenerate ( i.e., z0z2 −(z1)2 ̸= 0).
+Then we can verify that
+[1, 1, 0, 0]T ⊗3 = [√z0(z0 + 3z1),
+p
+z0(z0z2 −(z1)2), 0, 0]
+and
+(T −1)⊗2[z0, z1, z2] = [1, 0, 1].
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+883
+Fig. 9. All vertex signatures are [v, 1, 0, 0].
+Fig. 10. All vertex signatures are [v, 1, 0, 0].
+We note that
+p
+z0(z0z2 −(z1)2) ̸= 0. If √z0(z0 + 3z1) = 0, then both [√z0(z0 +
+3z1),
+p
+z0(z0z2 −(z1)2), 0, 0] and [1, 0, 1] can be realized by matchgates and the
+problem for planar graphs is tractable. We denote v =
+√z0(z0+3z1)
+√
+z0(z0z2−(z1)2) ̸= 0. Then the
+problem is equivalent to (nonbipartite) Pl-Holant([v, 1, 0, 0]). Now it is suﬃcient to
+prove the following claim.
+Claim. Let v ̸= 0 be a complex number. Then Pl-Holant([v, 1, 0, 0]) is #P-hard.
+We can realize [v3 + 3v, v2 + 1, v, 1] by connecting three copies of [v, 1, 0, 0]’s as
+illustrated in Figure 9. If we can prove that Pl-Holant([v3+3v, v2+1, v, 1]) is #P-hard,
+then we are done. In tensor product notation this signature is
+[v3 + 3v, v2 + 1, v, 1]T = 1
+2
+  v + 1
+1
+⊗3
++
+ v −1
+1
+⊗3!
+.
+Then the following reduction chain holds:
+Pl-Holant([v3 + 3v, v2 + 1, v, 1]) ≡T Pl-Holant([1, 0, 1]|[v3 + 3v, v2 + 1, v, 1])
+≡T Pl-Holant([v2 + 2v + 2, v2, v2 −2v + 2]|[1, 0, 0, 1]),
+where the second step is a holographic reduction using [ v+1 v−1
+1
+1 ]. This transforms
+the problem to our ﬁrst case where the RHS all have [1, 0, 0, 1]. The only possible
+exceptional case happens when (v2 + 2v + 2)3 = (v2 −2v + 2)3. Since (v2 + 2v + 2)3 −
+(v2 −2v + 2)3 = 4v(3v4 + 16v2 + 12) and v ̸= 0, we will have proved the claim as long
+as 3v4 + 16v2 + 12 ̸= 0. There are four roots for the equation 3v4 + 16v2 + 12 = 0,
+and for these four exceptional values of v, we prove it separately as follows.
+In addition to the gadget in Figure 9, we can construct a gadget in Figure 10
+with a binary signature [v2 + 2, v, 1]. Now it is enough to prove that Pl-Holant([v2 +
+2, v, 1]|[v3 + 3v, v2 + 1, v, 1]) is #P-hard. Under the same basis [ v+1 v−1
+1
+1 ], we will
+get an equivalent problem Pl-Holant([X, Y, Z] | [1, 0, 0, 1]), where X = (v2 + 2)
+(v2 + 2v + 1) + 2v(v + 1) + 1, Y = (v2 + 2)(v2 −1) + 2v2 + 1, and Z = (v2 +
+2)(v2 −2v + 1) + 2v(v −1) + 1. Again this transforms the problem to our ﬁrst case,
+and it is easy to verify that any root of 3v4 + 16v2 + 12 = 0 is not a tractable case
+here. This completes the proof of the claim and also the proof of the theorem.
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+884
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+7. A roadmap. Holographic algorithms using matchgates were introduced by
+Valiant [45, 44]. Initially these novel algorithms appeared rather mysterious, and their
+success appeared to be equal parts miraculous and coincidental, as perhaps suggested
+by the title of the paper [44].
+Intrigued by this beautiful development, some of us embarked on a systematic
+study to understand the power of these new algorithms. Perhaps our ﬁrst result was
+not a new result in a traditional theoretical computer science sense [8]. This paper
+mainly examined the breakthrough in [45] and reformulated it in a framework of
+covariant and contravariant tensor transformations, and then gave a tensor theoretic
+proof of Valiant’s Holant theorem. While there are few “new” tangible results in a
+traditional sense, casting the theory in this new perspective sets the stage for a deeper
+understanding of holographic transformations and algorithms.
+After this, the ﬁrst technical inroads were made (1) to capture what exactly
+matchgates can express and (2) to capture under a holographic transformation what
+matchgates can be. After the initial work in [42], task (1) was largely accomplished
+in [7, 9] with a characterization of matchgate signatures by the so-called matchgates
+identities (also see [10] for a simpliﬁed and more streamlined treatment). Building on
+that, and after the preliminary work in [17], task (2) was largely accomplished in [14]
+(with extension in [16]). This signature theory is the basis for a more systematic
+understanding of the power of holographic algorithms with matchgates. It gives a
+more “explanatory” account for the success in [45, 44].
+These results paved the way for classiﬁcation theorems such as those in this paper.
+Inspired by the work in [45, 44], we introduced Fibonacci gates [18], which give another
+class of holographic algorithms diﬀerent from the ones based on matchgates. In [18, 20]
+we introduced the Holant framework and proved some dichotomy theorems for Holant∗
+problems (for complex-valued symmetric signature sets—Theorem 2.7), for Holantc
+problems (for real-valued symmetric signature sets—Theorem 2.8), and for #CSP
+problems
+(for
+complex-valued
+not
+necessarily
+symmetric
+signature
+sets—
+Theorem 2.10). Two tractable families were isolated, the signatures of product type
+P and the signatures of aﬃne type A. It turns out that Fibonacci gates are essentially
+what are transformable to P by an orthogonal holographic transformation. Also the
+symmetric part of A is captured by F1 ∪F2 ∪F3 (augmented by tensor powers of
+unary members of F1 ∪F2 ∪F3).
+The form of the Holant∗dichotomy stated in Theorem 2.7 is presented in [20] and
+is very concrete. This has the advantage of being easy to apply in speciﬁc cases. In
+later work we have come to realize that perhaps a better conceptual understanding is
+as follows [11]: Problems of tractable class 1 of Theorem 2.7 are those with arity at
+most 2 as stated, and they are computable by matrix product and taking trace. Prob-
+lems of tractable class 2 are those orthogonally transformable to P, plus an additional
+type that will be identiﬁed as belonging to the so-called vanishing signatures [26, 11].
+Problems of tractable class 3 are those transformable to P by the transformation
+Z =
+ 1 1
+i −i
+
+. Theorem 2.10 gives a dichotomy for #CSP, where the tractable classes
+are P and A. Theorem 2.8 gives a dichotomy for Holantc problems where the tractable
+classes are those for Holant∗and those belonging to the aﬃne class A.
+Our results in sections 4 and 5 depend on these results. Theorem 2.11 is not
+used in sections 4 and 5 but is used for the results in section 6.
+In subsequent
+work this portion of the research (Holant problems on regular graphs) also plays an
+important role. This line of results started in [19]. But for the understanding of a
+signiﬁcant fraction of the results, e.g., for results in sections 4 and 5, this portion is
+not needed.
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+885
+The crucial technical advance for the dichotomy of sections 4 and 5 is Theorem 4.1.
+The proof is a combinatorial gadget that is not terribly tricky, followed by a purely
+algebraic demonstration of the remarkable fact that, precisely when the parameters
+are right for being matchgates realizable, the construction for the cross function fails.
+When the cross function can be constructed, there is no diﬀerence in the complexity
+of planar versus nonplanar counting problems. When it is matchgates realizable, then
+the FKT algorithm can solve the problem in polynomial time for planar instances
+of the problem that is #P-hard in general. This theorem was our ﬁrst glimpse that
+matchgates could be universal for #CSP type problems that are #P-hard in general
+but polynomial time computable on planar graphs. Moreover it gave us the courage
+that such a theorem might be provable with the knowledge and tools already at hand.
+We also feel that the algebraic proof of Theorem 4.1, and many subsequent sim-
+ilar results, suggests something more fundamental. These algebraic proofs seem to
+be devoid of any intuitive combinatorial explanation; the success at such a sharp de-
+marcation between P and #P-hard seems most unreal if it were the case that #P
+collapses to P. If #P were equal to P, then it is most mysterious why these algebraic
+systems would “know” exactly where to stop being solvable (which is where we hap-
+pen to know a clever algorithm, e.g., FKT), so that we cannot prove #P-hardness
+for a problem known in P, although by #P = P, every such problem has a polyno-
+mial time algorithm. It is as if some all-powerful adversary conspires to maintain
+this illusion: wherever we know an algorithm the algebraic system will not be solv-
+able such that, e.g., our construction of the cross function fails, which stops us from
+proving #P-hardness in this case. And yet everywhere else when we do not know an
+algorithm the adversary will allow us to prove #P-hardness. This is the import and
+consequence of a dichotomy theorem. It seems the only “rational” explanation is that
+while we can’t prove it, #P is indeed diﬀerent from P. The sharp boundary of success
+and failure algebraically in these proofs is a manifestation of this reality, of which the
+closest nature has allowed us so far is this glimpse of its silhouette.
+In the proofs of these dichotomies, we have often used the conjecture P ̸= #P as a
+guide in predicting which algebraic system has a solution and which one does not and
+have designed proof strategies accordingly, much like one reasons about the behavior
+of primes assuming the Riemann Hypothesis. Perhaps this aspect will develop to be
+a concrete contribution by computer science back to mathematics, as is often said to
+be the case with physics.
+Appendix:
+Some connections to statistical physics. In this section we
+describe some background and connections from statistical physics. Our discussion
+is necessarily a superﬁcial one, both due to our limited knowledge and because the
+primary aim of this work is complexity theoretic. The purpose is to illustrate that
+even at such a superﬁcial level, a strong connection exists, and that our complexity
+results may shed some light on the venerable question from physics: Exactly what
+“systems” can be solved “exactly” and what “systems” are “diﬃcult.”
+The Ising model was named after Ernst Ising [27]. Wilhelm Lenz invented this
+model and gave it to his student Ising to work on. The model consists of a discrete
+set of variables, called spins, that can be assigned one of two values (states). These
+spins are usually placed on a lattice structure or a graph, and each spin interacts with
+its nearest neighbors.
+Denoting the values each spin i can take as σi = +1 and −1, the energy (the
+Hamiltonian) of the Ising model is H(σ) = −P
+edge{i,j} Ji,jσiσj. The interaction
+between spins i and j is called ferromagnetic if Ji,j > 0, antiferromagnetic if Ji,j < 0,
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+886
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+and noninteracting if Ji,j = 0. For example, if all the spins are placed on a one-
+dimensional lattice, then the antiferromagnetic one-dimensional Ising model (with the
+same value Ji,j = J < 0) has the energy function H = P
+i σiσi+1, after normalization.
+The ferromagnetic two-dimensional Ising model on a square lattice (with the same
+value Ji,j = J > 0) has energy H = −P
+i,j(σi,jσi,j+1 + σi,jσi+1,j). The Ising model
+may be modiﬁed by magnetic ﬁelds, which amounts to a unary function at each spin
+H = −P
+edge{i,j} Ji,jσiσj −P
+i hiσi.
+The model is a statistical model. The central premise of statistical physics is
+that the probability of each conﬁguration σ is given by the Boltzmann distribution,
+e−H(σ)/kT / P
+σ e−H(σ)/kT , where k is Boltzmann constant and T is the (absolute)
+temperature. This focuses attention on the partition function
+Z =
+X
+σ
+e−H(σ)/kT .
+Note that the exponential e−H(σ)/kT turns this into a sum-of-product function exactly
+as we discussed in #CSP.
+In 1925, Ising solved the one-dimensional Ising model [27]. The two-dimensional
+square lattice Ising model with zero magnetic ﬁeld was solved by Onsager in 1944 [36].
+Onsager
+announced
+the
+formula
+for
+the
+spontaneous
+magnetization
+for
+the
+two-dimensional model in 1949 but did not give a derivation [37]. Yang (in 1952)
+gave the ﬁrst published proof of this formula [48], using a limit formula for Fredholm
+determinants, proved in 1951 by Szeg¨o in direct response to Onsager’s work. There
+are many extensions to the basic Ising model [35, 1].
+Another landmark achievement is the exact computation of the number of perfect
+matchings (dimer problem) on any planar graph using Pfaﬃans. This was indepen-
+dently discovered by Kasteleyn [29, 30] and by Temperley and Fisher [38].
+This
+problem can also be nicely expressed by a partition function in our Holant frame-
+work, where this time the Boolean variables are the edges (to include an edge or not),
+and the local constraint function at each vertex is the Exact-One function. Freed-
+man, Lov´asz, and Schrijver [25] recently proved that this partition function cannot be
+expressed as a graph homomorphism function, where the vertices are variables as in
+the Ising model. However, in the framework of Holant problems we can ﬁnd a unity
+for all these problems.
+We note the following. In the paper [14] we gave a complete characterization of
+matchgate realizable symmetric signatures. The following lemma is proved [14].
+Lemma A.1. The set of bases under which the signature [x0, x1, x2] is realizable
+as a signature by some matchgate is
+n0
+n1
+
+,
+p0
+p1
+
+∈GL2(C)
+
+x0p2
+1 −2x1p1n1 + x2n2
+1 = 0, x0p2
+0 −2x1p0n0 + x2n2
+0 = 0
+or
+x0p0p1 −x1(n0p1 + n1p0) + x2n0n1 = 0
+
+.
+This has the consequence that under the basis [( n0
+n1 ), ( p0
+p1 )] = [( 1
+1 ), ( 1
+−1 )], the
+signature [x, y, x] is realizable by a matchgate, for all values x and y. In terms of
+the Ising model, when two interacting spins i and j take the same assignment value
+σi = σj = ±1, the contribution to the Hamiltonian is −Ji,j, and when they take
+the opposite assignment σi = −σj = ±1, the contribution is Ji,j. Translating this
+to the contributions to the partition function we get exactly the local constraint
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+887
+evaluation x = eJi,j/kT when inputs are 00 or 11 and y = e−Ji,j/kT when inputs are
+01 and 10.
+Then, the theory of holographic algorithms tells us that for planar graphs, this
+Ising model is exactly solvable by a holographic reduction to the FKT algorithm.
+The present paper, especially Theorem 5.1, tells us why this is exactly where
+physicists stopped, and attempts to generalize this to nonplanar systems have not
+been successful in the past 85 years.
+Istrail [28] showed that computing the free energy of an arbitrary subgraph of an
+Ising model on a lattice of dimension three or more is NP-hard; see a nice article by
+Cipra in the SIAM News [21]. A very partial list of a great deal of research on this
+and related models, from a computational complexity perspective, can be found in
+[2, 3, 4, 7, 17, 20, 19, 23, 31, 5, 6, 16, 15, 14].
+Acknowledgments. We thank many colleagues for their interest and helpful
+comments: Xi Chen, Martin Dyer, Alan Frieze, Sean Hallgren, Leslie Goldberg, Sorin
+Istrail, Richard Lipton, Jason Morton, Dana Randall, Leslie Valiant, and Santosh
+Vempala. We want to thank particularly the anonymous referees and the editor for
+informative comments and many suggestions that helped us improve the presentation.
+Finally we thank Dr. Zhiguo Fu for a careful reading of the revised version for us and
+insightful comments on the presentation.
+REFERENCES
+[1] R. J. Baxter, Exactly Solved Models in Statistical Mechanics, Academic Press, London, 1982.
+[2] A. A. Bulatov, The complexity of the counting constraint satisfaction problem, in Proceedings
+of ICALP, L. Aceto, I. Damg˚ard, L. A. Goldberg, M. M. Halld´orsson, A. Ing´olfsd´ottir,
+and I. Walukiewicz, eds., Lecture Notes in Comput. Sci. 5125, Springer, New York, 2008,
+pp. 646–661.
+[3] A. A. Bulatov and V. Dalmau, Towards a dichotomy theorem for the counting constraint
+satisfaction problem, in Proceedings of FOCS, IEEE, 2003, pp. 562–571.
+[4] A. A. Bulatov and M. Grohe, The complexity of partition functions, in Proceedings of
+ICALP, J. D´ıaz, J. Karhum¨aki, A. Lepist¨o, and D. Sannella, eds., Lecture Notes in Comput.
+Sci. 3142, Springer, New York, 2004, pp. 294–306.
+[5] A. A. Bulatov and M. Grohe, The complexity of partition functions, Theoret. Comput. Sci.,
+348 (2005), pp. 148–186.
+[6] J.-Y. Cai, X. Chen, and P. Lu, Graph homomorphisms with complex values: A dichotomy
+theorem, SIAM J. Comput., 42 (2013), pp. 924–1029.
+[7] J.-Y. Cai and V. Choudhary, Some results on matchgates and holographic algorithms, in
+Proceedings of ICALP, M. Bugliesi, B. Preneel, V. Sassone, and I. Wegener, eds., Lecture
+Notes in Comput. Sci. 4051, Springer, New York, 2006, pp. 703–714.
+[8] J.-Y. Cai and V. Choudhary, Valiant’s holant theorem and matchgate tensors, Theoret.
+Comput. Sci., 384 (2007), pp. 22–32.
+[9] J.-Y. Cai, V. Choudhary, and P. Lu, On the theory of matchgate computations, in CCC
+’07: Proceedings of the 22nd Annual IEEE Conference on Computational Complexity,
+Washington, DC, 2007, pp. 305–318, https://doi.org/10.1109/CCC.2007.22.
+[10] J.-Y. Cai and A. Gorenstein, Matchgates revisited, Theory Comput., 10 (2014), pp. 167–197,
+http://theoryofcomputing.org/articles/v010a007/.
+[11] J.-Y. Cai, H. Guo, and T. Williams, A complete dichotomy rises from the capture of vanish-
+ing signatures: Extended abstract, in Proceedings of the Symposium on Theory of Com-
+puting Conference, Palo Alto, CA, 2013, pp. 635–644.
+[12] J.-Y. Cai, S. Huang, and P. Lu, From holant to #CSP and back: Dichotomy for holantc
+problems, Algorithmica, 64 (2012), pp. 511–533.
+[13] J.-Y. Cai, P. Lu, and M. Xia, Holographic algorithms with matchgates capture precisely
+tractable planar #CSP, in Proceedings of the 51th Annual IEEE Symposium on Founda-
+tions of Computer Science, 2010, pp. 427–436.
+[14] J.-Y. Cai and P. Lu, Holographic algorithms: from art to science, in Proceedings of the 39th
+Annual ACM Symposium on Theory of Computing, New York, ACM, 2007, pp. 401–410,
+https://doi.org/10.1145/1250790.1250850.
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+888
+JIN-YI CAI, PINYAN LU, AND MINGJI XIA
+[15] J.-Y. Cai and P. Lu, Bases collapse in holographic algorithms, Comput. Complexity, 17 (2008),
+pp. 254–281.
+[16] J.-Y. Cai and P. Lu, Holographic algorithms with unsymmetric signatures, in Proceedings
+of the 19th Annual ACM-SIAM Symposium on Discrete Algorithms, Philadelphia, 2008,
+pp. 54–63.
+[17] J.-Y. Cai and P. Lu, On symmetric signatures in holographic algorithms, Theory Comput.
+Syst., 46 (2010), pp. 198–415.
+[18] J.-Y. Cai, P. Lu, and M. Xia, Holographic algorithms by ﬁbonacci gates and holographic re-
+ductions for hardness, in Proceedings of the 49th Annual IEEE Symposium on Foundations
+of Computer Science, Washington, DC, IEEE, 2008.
+[19] J.-Y. Cai, P. Lu, and M. Xia, A computational proof of complexity of some restricted counting
+problems, in Proceedings of TAMC, J. Chen and S. B. Cooper, eds., Lecture Notes in
+Comput. Sci. 5532, Springer, New York, 2009, pp. 138–149.
+[20] J.-Y. Cai, P. Lu, and M. Xia, Holant problems and counting CSP, in Proceedings of STOC,
+M. Mitzenmacher, ed., ACM, New York, 2009, pp. 715–724.
+[21] B. A. Cipra, The Ising model is NP-complete, SIAM News, 33 (2000).
+[22] C. T. J. Dodson and T. Poston, Tensor Geometry, Grad. Texts in Math. 130, Springer-
+Verlag, New York, 1991.
+[23] M. E. Dyer, L. A. Goldberg, and M. Paterson, On counting homomorphisms to directed
+acyclic graphs, J. ACM, 54 (2007), Article 27.
+[24] M. E. Dyer and C. S. Greenhill, The complexity of counting graph homomorphisms, Random
+Structures Algorithms, 17 (2000), pp. 260–289.
+[25] M. Freedman, L. Lov´asz, and A. Schrijver, Reﬂection positivity, rank connectivity, and
+homomorphism of graphs, J. AMS, 20 (2007), pp. 37–51.
+[26] H. Guo, P. Lu, and L. G. Valiant, The complexity of symmetric boolean parity holant prob-
+lems, SIAM J. Comput., 42 (2013), pp. 324–356, https://doi.org/10.1137/100815530.
+[27] E. Ising, Beitrag zur theorie des ferromagnetismus, Z. Phys. A Hadrons Nuclei, 31 (1925),
+pp. 253–258.
+[28] S. Istrail, Statistical mechanics, three-dimensionality and NP-completeness: I. Universality
+of intracatability for the partition function of the ising model across non-planar surfaces
+(extended abstract), in Proceedings of STOC, 2000, pp. 87–96.
+[29] P. W. Kasteleyn, The statistics of dimers on a lattice, Physica, 27 (1961), pp. 1209–1225.
+[30] P. W. Kasteleyn, Graph theory and crystal physics, in Graph Theory and Theoretical Physics,
+F. Harary, ed., Academic Press, London, 1967, pp. 43–110.
+[31] M. Kowalczyk, Classiﬁcation of a class of counting problems using holographic reductions, in
+Proceedings of COCOON, H. Q. Ngo, ed., Lecture Notes in Comput. Sci. 5609, Springer,
+New York, 2009, pp. 472–485.
+[32] M. Kowalczyk and J.-Y. Cai, Holant problems for regular graphs with complex edge functions,
+in Proceeding of STACS, 2010, pp. 525–536.
+[33] T. D. Lee and C. N. Yang, Statistical theory of equations of state and phase transitions. II.
+Lattice gas and Ising model, Phys. Rev., 87 (1952), pp. 410–419.
+[34] E. H. Lieb and A. D. Sokal, A general Lee-Yang theorem for one-component and multicom-
+ponent ferromagnets, Commun. Math. Phys., 80 (1981), pp. 153–179.
+[35] B. M. McCoy and T. T. Wu, The Two-Dimensional Ising Model, Harvard University Press,
+Cambridge, MA, 1973.
+[36] L. Onsager, Crystal statistics. I. A two-dimensional model with an order-disorder transition,
+Phys. Rev., 65 (1944), pp. 117–149.
+[37] L. Onsager, Discussion, Nuovo Cimento (suppl.), 2 (1949), p. 261.
+[38] H. N. V. Temperley and M. E. Fisher, Dimer problem in statistical mechanics—an exact
+result, Philosophical Mag., 6 (1961), pp. 1061–1063.
+[39] S. P. Vadhan, The complexity of counting in sparse, regular, and planar graphs, SIAM J.
+Comput., 31 (2001), pp. 398–427.
+[40] L. G. Valiant, The complexity of computing the permanent, Theoret. Comput. Sci., 8 (1979),
+pp. 189–201.
+[41] L. G. Valiant, The complexity of enumeration and reliability problems, SIAM J. Comput., 8
+(1979), pp. 410–421.
+[42] L. G. Valiant, Expressiveness of matchgates, Theoret. Comput. Sci., 289 (2002), pp. 457–471.
+[43] L. G. Valiant, Quantum circuits that can be simulated classically in polynomial time, SIAM
+J. Comput., 31 (2002), pp. 1229–1254.
+[44] L. G. Valiant, Accidental algorthims, in Proceedings of the 47th Annual IEEE Symposium on
+Foundations of Computer Science, Washington, DC, 2006, pp. 509–517, https://doi.org/
+10.1109/FOCS.2006.7.
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+HOLOGRAPHIC ALGORITHMS AND PLANAR #CSP
+889
+[45] L. G. Valiant, Holographic algorithms, SIAM J. Comput., 37 (2008), pp. 1565–1594, https:
+//doi.org/10.1137/070682575.
+[46] D. Welsh, Complexity: Knots, Colourings and Counting, Cambridge University Press, Cam-
+bridge, UK, 1993.
+[47] M. Xia, P. Zhang, and W. Zhao, Computational complexity of counting problems on 3-regular
+planar graphs, Theoret. Comput. Sci., 384 (2007), pp. 111–125.
+[48] C. N. Yang, The spontaneous magnetization of a two-dimensional Ising model, Phys. Rev., 85
+(1952), pp. 808–816.
+[49] C. N. Yang and T. D. Lee, Statistical theory of equations of state and phase transitions.
+I. Theory of condensation, Phys. Rev., 87 (1952), pp. 404–409.
+Downloaded 10/15/17 to 202.120.2.30. Redistribution subject to SIAM license or copyright; see http://www.siam.org/journals/ojsa.php

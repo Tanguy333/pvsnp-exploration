@@ -1,0 +1,740 @@
+The Complexity of Weighted Boolean #CSP
+Modulo k
+Heng Guo1, Sangxia Huang2, Pinyan Lu3, and Mingji Xia4
+1
+University of Wisconsin-Madison
+Madison, WI 53706, USA
+hguo@cs.wisc.edu
+2
+KTH — Royal Institute of Technology
+Stockholm, Sweden
+sangxia@csc.kth.se
+3
+Microsoft Research Asia
+Beijing, China
+pinyanl@microsoft.com
+4
+Institute of Software, Chinese Academy of Sciences
+Beijing 100190, China
+xmjljx@gmail.com
+Abstract
+We prove a complexity dichotomy theorem for counting weighted Boolean CSP modulo k for
+any positive integer k > 1. This generalizes a theorem by Faben for the unweighted setting. In
+the weighted setting, there are new interesting tractable problems. We ﬁrst prove a dichotomy
+theorem for the ﬁnite ﬁeld case where k is a prime. It turns out that the dichotomy theorem for
+the ﬁnite ﬁeld is very similar to the one for the complex weighted Boolean #CSP, found by [Cai,
+Lu and Xia, STOC 2009]. Then we further extend the result to an arbitrary integer k.
+1998 ACM Subject Classiﬁcation F.2 [Theory of Computation] Analysis of Algorithms and
+Problem Complexity
+Keywords and phrases #CSP, dichotomy theorem, counting problems, computational complex-
+ity
+Digital Object Identiﬁer 10.4230/LIPIcs.STACS.2011.249
+1
+Introduction
+The complexity of counting problems is a fascinating subject. Valiant deﬁned the class #P
+to capture most of these counting problems [21]. Several other related complexity classes
+are also well studied. One example is the ⊕P class, which consists of language L where
+there is a polynomial time nondeterministic Turing machine that on input x ∈L has an odd
+number of accepting computations, and on input x ̸∈L has an even number of accepting
+computations [20, 18]. This class ⊕P can also be formulated as computing the parity of
+counting problems. In general, for any integer k, we may consider the counting problems
+modulo k, and the corresponding complexity class is denoted by #kP. The class ⊕P is in
+fact #2P.
+Beyond the complexity of individual problems, there has been a great deal of interest in
+ﬁnding complexity dichotomy theorems which state that for a wide class of counting problems,
+every problem in the class is either computable in polynomial time (tractable) or hard (either
+NP-hard or #P-hard) [13, 12, 6, 15]. Such dichotomies do not hold without restrictions [17],
+assuming that the larger complexity class strictly contains P. The restrictions for which
+© Heng Guo, Sangxia Huang, Pinyan Lu and Mingji Xia;
+licensed under Creative Commons License NC-ND
+28th Symposium on Theoretical Aspects of Computer Science (STACS’11).
+Editors: Thomas Schwentick, Christoph Dürr; pp. 249–260
+Leibniz International Proceedings in Informatics
+Schloss Dagstuhl – Leibniz-Zentrum für Informatik, Dagstuhl Publishing, Germany
+
+250
+The Complexity of Weighted Boolean #CSP Modulo k
+dichotomy theorems are known can be framed in terms of local constraints, most importantly,
+Constraint Satisfaction Problems (CSP) [19, 10, 3, 4, 5, 11, 9, 14]. In this paper we address
+weighted #CSP problems, modulo any integer k, denoted by #kCSP.
+Here we give a brief description of #kCSP. Let F be a set of functions, where each
+F ∈F is a function mapping Boolean variables to a value. The weighted #CSP problem
+#CSP(F) is deﬁned as follows: The input is a ﬁnite set of constraints on Boolean variables
+x1, x2, . . . , xn of the form F(xi1, xi2, . . . , xik), where F ∈F. The output is
+X
+x1,x2,...,xn∈{0,1}
+Y
+F ∈F
+F(xi1, xi2, . . . , xik).
+If each F takes values 0, 1, then this counts the number of assignments “satisfying” all the
+Boolean constraints. Generally speaking, functions F ∈F could take arbitrary values. What
+we consider, #kCSP, is the case that all F take integer values and the output is computed
+modulo k.
+For #CSP, the complexity dichotomy theorem was ﬁrst obtained for the unweighted
+case [10], and was later generalized to non-negative values [11]. Cai, Lu and Xia proved a
+dichotomy theorem for Boolean #CSP, where functions F ∈F take arbitrary complex val-
+ues [8]. Independently, a dichotomy theorem for real weighted functions was also obtained[2].
+In these proofs, there are three extensively used reduction techniques: (1) Gadget construc-
+tion, (2) polynomial interpolation, and (3) holographic transformation. As pointed out by
+Valiant [23], for ﬁnite ﬁelds, holographic transformations and interpolation both appear to
+oﬀer less ﬂexibility than they do for general counting problems.
+There do exist several problems for which counting the number of solutions is #P-complete
+whereas computing it modulo some integer k is polynomial time computable. One prime
+example is computing the permanent of a 0/1 matrix, which is #P-complete [20]. The parity
+version of this problem corresponds to computing the permanent modulo 2, which is the
+same as the determinant modulo 2, and is therefore computable in polynomial time via linear
+algebra computations. Some more such tractable parity problems were recently given by
+Valiant [23]. Furthermore, the characteristic of the ﬁnite ﬁeld may aﬀect the tractability.
+For example, Valiant showed that #7Pl-Rtw-Mon-3CNF (counting the number of satisfying
+assignments of a planar read-twice monotone 3CNF formula, modulo 7) is solvable in P
+by a holographic algorithm [22], while the parity or general version of the same problem is
+⊕P-hard or #P-hard, respectively.
+These two facts (some useful techniques cannot be adopted in ﬁnite ﬁelds and there exist
+some more complicated tractable cases) make it more challenging to obtain a dichotomy
+for #kCSP problems. In [14], Faben obtained a dichotomy theorem for unweighted #kCSP.
+Essentially, there is no additional tractable case in his dichotomy theorem (except one
+obvious case). However, when we allow functions to take weights in the ring Zk, some new
+non-trivial tractable cases do emerge, which is similar to weighted vs unweighted #CSP
+without modulus. When moving from unweighted to real or complex weighted cases, the
+presence of both positive and negative values, and more generally, complex numbers, oﬀers
+the opportunity of interesting cancelations, which could lead to eﬃcient algorithms. In all
+such dichotomy theorems, roots of unity plays an essential roles [15, 8, 2, 7]. In ﬁnite ﬁelds,
+interesting cancelations do appear and every nonzero element is a root of unity. For general
+k, which may not be a prime, another subtlety is that the computation is performed in a
+ring Zk rather than a ﬁeld, where some nice property of a ﬁeld no longer holds.
+Our result starts from the ﬁnite ﬁeld case, where the modulus k is an odd prime. In this
+case, the ﬁnal result is algebraically the same as the dichotomy for complex weighted #CSP.
+
+H. Guo, S. Huang, P. Lu and M. Xia
+251
+The imaginary unit i = √−1 plays an important role in the dichotomy for the complex
+weighted #CSP [8]. Here by “algebraically", we mean that we view i as a fourth primitive
+root of unit which is also well deﬁned in a ﬁnite ﬁeld (or its extension). Then the dichotomy
+for #kCSP is identical to that for complex weighted #CSP. Some of the proof techniques
+are fairly similar to those in the proof for the complex weighted case [8], while others are
+completely diﬀerent. For example, the polynomial interpolation is one of the most important
+techniques in [8], but it is not available for the ﬁnite ﬁeld.
+Hereby we brieﬂy explain why the polynomial interpolation does not work. Consider
+the simplest case where one would like to realize a unary function [1, x] by polynomial
+interpolation. The answer to an instance of #pCSP including [1, x], is a polynomial in the
+variable x. The degree of this polynomial is the number of occurrences of this function [1, x].
+After replacing all of its occurrences by some realizable unary functions, we can evaluate
+the polynomial in other points of the variable. Given enough such evaluations, we can get
+a system of linear equations in the coeﬃcients. The hope is to recover all coeﬃcients by
+solving this system as long as its not singular. Then we can evaluate the polynomial in the
+original point x. In ﬁnite ﬁeld Zp, we can reduce the degree of the polynomial to p −1 by
+Fermat’s Little Theorem. So we have p diﬀerent coeﬃcients to recover. To get a non-singular
+linear system, we need to evaluate the polynomial on at least p points, which means we need
+to construct at least p diﬀerent unary functions. However, in Zp, there are only p essentially
+diﬀerent unary functions of the form [1, x], and thus the interpolation is not even needed if
+we could construct all of them!
+Another diﬀerence between the proof here and the one in [8] is that the norm of a complex
+number is used in [8]. This is an analytical, rather than algebraical, property of complex
+numbers, and is not available at all in ﬁnite ﬁelds. Such kinds of similarity and diﬀerence
+between ﬁelds with characteristic zero and ﬁnite p is one main theme of algebraical geometry
+[16]. It is interesting to observe similar phenomena in the complexity theory.
+For general k, let k = pr1
+1 pr2
+2 · · · prm
+m , where pi’s are distinct primes, be the prime factor-
+ization of k. By the Chinese Remainder Theorem, to solve the problem of #kCSP(F) is
+equivalent to solving all the #p
+ri
+i CSP(F). For #prCSP and p being an odd prime, we prove
+a surprising result that #prCSP(F) is tractable iﬀ#pCSP(F) is, assuming #P is not equal
+to P. One direction is trivial, namely if #prCSP(F) can be solved in polynomial time, so
+can #pCSP(F). The reduction in the other direction is not of the black box style. We need
+the dichotomy for #pCSP(F) to state all the tractable cases, assuming #P is not equal to
+P, and we also need to explicitly use algorithms to solve such tractable cases. The algorithm
+for #prCSP(F) has a time complexity which is nr times larger than that of the algorithm
+for #pCSP(F). We use a diﬀerent treatment to solve the case that p = 2.
+2
+Preliminaries
+Let k be a given constant integer. In this paper we address the following type of counting
+problems, called weighted Boolean #kCSP. Let F be a set of functions, where each f ∈F
+is a function f : {0, 1}r →Z, mapping Boolean variables to integers. We call r the arity of
+f. The problem #kCSP(F) is deﬁned as follows: The input is a ﬁnite set of constraints
+on Boolean variables x1, x2, . . . , xn of the form fj(xij,1, xij,2, . . . , xij,rj ), where fj ∈F. The
+output is
+
+
+X
+x1,x2,...,xn∈{0,1}
+Y
+j
+fj(xij,1, xij,2, . . . , xij,rj )
+
+mod k.
+(1)
+STACS’11
+
+252
+The Complexity of Weighted Boolean #CSP Modulo k
+Since we are only interested in the ﬁnal value modulus k, it is equivalent to view that all the
+functions take values in the ring Zk.
+A symmetric function f of arity r on Boolean variables can be expressed by [f0, f1, . . . , fr],
+where fj is the value of f on inputs of weight j. We also use ∆0, ∆1 to denote [1, 0] and [0, 1]
+respectively. A binary function f is also expressed by the matrix
+f(0, 0)
+f(0, 1)
+f(1, 0)
+f(1, 1)
+
+.
+Suppose f is a function on input variables x1, x2, . . . , xr. f xs=c denotes the function
+f xs=c(x1, . . . , xs−1, xs+1, . . . , xr) = f(x1, . . . , xs−1, c, xs+1, . . . , xr), and f xs=∗denotes the
+function f xs=∗= f xs=0 + f xs=1.
+The underlying relation of f is given by Rf = {X ∈{0, 1}r|f(X) ̸= 0}. We also view
+relations as functions from {0, 1}r to {0, 1}. In this way, Rf could be viewed as the unweighted
+version of f. If the modulus k is a prime, we could copy f k −1 times to get f k−1 which, by
+Fermat’s Little Theorem, is the unweighted version of it. In this way, we would be able to
+use some existing results for unweighted #kCSP problems.
+A relation R ⊆{0, 1}r being aﬃne means it is the aﬃne linear subspace composed of
+solutions of a system of aﬃne linear equations, equivalently, if a, b, c ∈R, then a ⊕b ⊕c ∈R.
+If Rf is aﬃne, we say f has aﬃne support.
+One important starting point of our work are the hardness results for unweighted #kCSP
+[14]. For the unweighted case, every function f takes 1 if the input X ∈Rf, and takes 0
+otherwise.
+▶Theorem 1. [14] Given an unweighted function set F, and an integer k, #kCSP(F)
+is computable in polynomial time if all the relations in F are aﬃne, or if k = 2 and all
+functions in F are closed under complement. Otherwise it is #kP-hard 1.
+As a corollary, we have the following hardness result.
+▶Corollary 2. #kCSP({[0, 1, 1]}) and #kCSP({[1, 1, 0]}) are #kP-hard for all k.
+We also need the following Pinning Lemma for #kCSP.
+▶Lemma 3. For every F and odd prime k, #kCSP(F ∪{[1, 0], [0, 1]}) ≤T #kCSP(F).
+The proof is similar to that in [2].
+We regard a function f and c·f as the same function, where c is a constant relatively prime
+to the modulus k. Our study on #kCSP(F) starts with prime modulus. Doing computation
+modulo a prime is similar to computing with complex numbers in many aspects. For a
+given k, we deﬁne ik as an element that satisﬁes i2
+k ≡−1 (mod k). In some circumstances,
+ik is an element of Zk, while in other situations, we need to extend the ﬁeld and consider
+Zk[x]/(x2 + 1). There are essentially two elements satisfying this property, but it doesn’t
+matter which one we pick as ik.
+We further deﬁne two classes of functions, for which the #kCSP problems are tractable.
+Let X be an r+1 dimensional column vector (x1, x2, . . . , xr, 1) over Boolean ﬁeld F2. Suppose
+A is a Boolean matrix. χAX denotes the aﬃne relation on inputs x1, x2, . . . , xr, whose value
+is 1 if AX is the zero vector, 0 if AX is not the zero vector.
+Ak denotes all functions which have the form χAXiL1(X)+L2(X)+···+Ln(X)
+k
+in modulo k,
+where Lj is a 0-1 indicator function χ⟨αj,X⟩, αj is a r + 1 dimensional vector, and the inner
+1 We keep the statement as in Faben’s paper. Technically, in the case that k = 2k′ where k′ > 1 is odd,
+and F are closed under complement and not all aﬃne, we believe that we can only claim the problem is
+#k′P-hard.
+
+H. Guo, S. Huang, P. Lu and M. Xia
+253
+product ⟨·, ·⟩is over Z2. The additions among Lj(X) are just the usual addition in Z. Since
+it is the power of i, it can be computed modulo 4, but not modulo 2. (Since we ignore the
+global constant, all functions that are constant multiples of these functions are also in this
+class.)
+Pk denotes the class of functions which, in modulo k, can be expressed as a product of
+unary functions, binary equality function ([1, 0, 1]), and binary disequality function ([0, 1, 0]).
+It is often useful to view a #kCSP instance as a bipartite graph G = (U, V, E) where
+U corresponds to the set of constraints and V corresponds to the set of variables. Edge
+(u, v) ∈E iﬀvariable v appears in constraint u. A subgraph of G is simply a certain
+combination of constraints in terms of CSP, and is sometimes called gadget. It is easy to see
+that if there are several connected components in G, then the result of the whole instance
+is exactly the product of that in the connected components. Therefore, it is suﬃcient to
+consider connected #kCSP instances.
+We also need some knowledge from number theory to deal with prime powers. Given k,
+a is a quadratic residue modulo k if there exists y such that y2 ≡a (mod k). Thus, ik exists
+in Zk if and only if −1 is a quadratic residue modulo k.
+▶Lemma 4. Let p be an odd prime and k = pr. −1 is a quadratic residue modulo p if and
+only if it is a quadratic residue modulo k.
+Proof. The “if” direction is obvious. If there exist some ip ∈[p] that i2
+p ≡−1 (mod p), we
+consider the number jt = ip+tp, where t is an integer ranging from 0 to pr−1−1. If there exist
+t and t′ that j2
+t ≡j2
+t′ (mod pr), it is easy to compute that pr−1|(p(t+t′)+2ip)(t−t′), because
+|t −t′| < pr−1, p|p(t + t′) + 2ip. We get p|2ip, which is impossible. Thus the pr−1 values {j2
+t
+(mod pr)} are distinct and there must exist some t such that j2
+t ≡−1 (mod pr).
+◀
+3
+Complexity in the ﬁnite ﬁeld Zp
+In this section, we deal with the complexity of counting CSP problems in the ﬁnite ﬁeld
+Zp. The parity case that p = 2, which is in fact the same as the unweighted case, has been
+solved in [14] (Theorem 1). In the following we always assume that p is an odd prime. All
+computations are done in the ﬁnite ﬁeld Zp. For convenience, we often use the usual notation
+= instead of ≡(mod p).
+The counting CSP problem for Pp or Ap is tractable. The algorithm for Pp is based on
+decomposing functions into separated components that is easy to solve. The algorithm for
+Ap is similar to that for the complex weighted #CSP problems. We need the following two
+lemmas. The proof for the modulo case here is similar to the complex weighted case in [8].
+▶Lemma 5. Let F(x1, x2, . . . , xk) = χAXiL1(X)+L2(X)+···+Ln(X) ∈A .
+If AX = 0 is
+infeasible over Z2, then P
+x1,x2,...,xk F = 0. If AX = 0 is feasible, then in polynomial time,
+we can construct another function H(y1, y2, . . . , ys) = iL′
+1(Y )+L′
+2(Y )+···+L′
+n(Y ) ∈A , such that
+0 ≤s ≤k, and P
+x1,x2,...,xk F = P
+y1,y2,...,ys H.
+▶Lemma 6. Let F(x1, x2, . . . , xk) = iL1(X)+L2(X)+···+Ln(X). Exactly one of the following
+two statements hold:
+1. (Congruity) There exists a constant c ∈{1, −1, i, −i} such that for all x2, x3, . . . , xk ∈
+{0, 1} we have F x1=1/F x1=0(x2, x3, . . . , xk) = c;
+2. (Semi-congruity) There exists a constant c ∈{1, i} and an aﬃne subspace S of dimension
+k −2 on T = {(x2, x3, . . . , xk) | xi ∈Z2}, such that F x1=1/F x1=0(x2, x3, . . . , xk) = c on
+S, and F x1=1/F x1=0(x2, x3, . . . , xk) = −c on T −S.
+STACS’11
+
+254
+The Complexity of Weighted Boolean #CSP Modulo k
+We ﬁrst apply Lemma 5 to get rid of the χAX factor, and then use the congruity or
+semi-congruity property of constraint functions proved in Lemma 6 to eliminate variables
+one by one. Details can be found in [8].
+We will then show that for any other functions the problem is hard. Before the hardness
+proof we will mention two constructions, which will be used throughout our proofs.
+Given a function f and any positive integer k, we can simulate a function g such that
+any entry of g is the corresponding entry of f to the kth power. This is done by connecting
+corresponding edges of k copies of f with an equality of arity k + 1. Figure 1 is a simple
+example when k = 2 and the arity of f is 3. The other construction is for binary functions.
+Given two binary functions f and g, whose matrices are F and G respectively, we connect
+them directly via a binary equality as shown in Figure 2. It is easy to check that the matrix
+of the resulting function is FG.
+f
+f
+=3
+=3
+=3
+Figure 1 Duplicate two copies of f
+g
+f
+=2
+Figure 2 Directly connect two binary func-
+tions
+The starting point of our hardness proof is the following lemma. In the rest of this section
+we may omit the subscripts of Ap and Pp when it is clear from context.
+▶Lemma 7. If [a, b, c] ̸∈A ∪P, #pCSP({[a, b, c]}) is #pP-hard. To be explicit, all tractable
+functions [a, b, c] from A ∪P have one of the following forms: [x, 0, y], [0, x, 0], [x2, xy, y2],
+x[1, ±i, 1] or x[1, ±1, −1].
+This lemma says, if restricted to one single symmetric binary function, a dichotomy
+theorem holds. The same lemma also served as the hardness starting point for the complex
+weighted dichotomy [8]. However, the proof techniques are completely diﬀerent. The main
+proof tool for the complex weighted dichotomy [8] is polynomial interpolation, which is not
+available here as was explained in Section 1. Before proving this lemma, we state several
+useful facts.
+▶Lemma 8. For any symmetric binary function [0, b, c] and a prime number p, where bc ̸≡0
+(mod p), #pCSP({[0, b, c]}) is #pP-hard.
+Proof. Via the construction mentioned above, we can realize [0, bk, ck]. Taking k = p −1,
+by Fermat’s Little Theorem, it becomes [0, 1, 1]. By Corollary 2, the #pCSP problem is
+#pP-hard.
+◀
+We also need the following lemma to realize new binary functions. The new binary
+functions are not by an explicit construction but an existent argument, which crucially uses
+the ﬁniteness of the ﬁeld.
+
+H. Guo, S. Huang, P. Lu and M. Xia
+255
+▶Lemma 9. For any non-degenerate 2 × 2 matrix A in Zp, there exists k such that Ak ≡I
+(mod p) where I is the identity matrix.
+Proof. Since Zp is ﬁnite, there are ﬁnitely many non-degenerate 2 × 2 matrices. Thus, by
+Pigeonhole Principle, there exists p and q such that p < q and Ap ≡Aq (mod p). Taking
+the smallest such pair and letting k = q −p, it is easy to see that Ak ≡I (mod p).
+◀
+▶Corollary 10. For any non-degenerate 2 × 2 matrix A in Zp, there exists a positive integer
+k such that Ak ≡A−1 (mod p).
+▶Lemma 11. Let F be a function of matrix
+a
+b
+c
+d
+
+, where p ∤abcd and a2d2 ̸≡b2c2
+(mod p). #pCSP({F}) is #pP-hard.
+Proof. We can realize
+ a2
+c2
+b2
+d2
+
+by two copies of the function. Since a2d2 ̸= b2c2, this
+matrix is non-degenerate. Thus by Corollary 10, we can realize (a2d2−b2c2)−1
+
+d2
+−c2
+−b2
+a2
+
+.
+As we consider the problem in the ﬁeld Zp, (a2d2 −b2c2)−1 is just a constant factor and we
+may ignore it. By the pinning Lemma 3, we can realize [d2, −c2], and hence [d2, 0, −c2], by
+connecting it to a =3. Then the following function
+ a
+b
+c
+d
+  d2
+0
+0
+−c2
+  a
+c
+b
+d
+
+=
+ a2d2 −b2c2
+acd2 −bc2d
+acd2 −bc2d
+0
+
+,
+or [a2d2 −b2c2, cd(ad −bc), 0] is realizable.
+Since p ∤abcd and a2d2 ̸= b2c2, we have
+a2d2 −b2c2 ̸= 0 and cd(ad −bc) ̸= 0. By Lemma 8, #pCSP({F}) is #pP-hard.
+◀
+Now we can prove Lemma 7.
+Proof. (Lemma 7) If a = 0, we know bc ̸= 0, otherwise it is in one of the ﬁve exceptional
+cases. So by Lemma 8, #pCSP({[a, b, c]}) is #pP-hard . The case c = 0 is symmetric. Since
+[a, b, c] ̸∈A ∪P, we know b ̸= 0. Therefore we will assume in the following that abc ̸= 0.
+By Lemma 11, #pCSP({[a, b, c]}) is #pP-hard if b4 ̸= a2c2. Moreover, if b2 = ac, then
+[a, b, c] ∈P. Therefore in the following, we assume that b2 = −ac. Since [a, b, c] /∈A ∪P,
+we must have that a ̸= ±c.
+Next we connect two copies of [a, b, c] to realize [a2 + b2, ab + bc, b2 + c2]. Since b2 = −ac,
+we actually have [a(a −c), b(a + c), c(c −a)] ≜[a′, b′, c′]. It is easy to verify that b′4 ̸= a′2c′2,
+and thus #pCSP({[a, b, c]}) ≥T #pCSP({[a′, b′, c′]}), which is #pP-hard .
+◀
+▶Lemma 12. If RF is not aﬃne, then #pCSP({F}) is #pP-hard.
+Proof. We can easily reduce the unweighted case to the weighted one, the hardness follows.
+◀
+Now we come to the two key lemmas for the hardness proof. Both proofs inductively
+reduce the arity of a function. Suppose F ̸⊆A and F ̸⊆P. Thus there exists F ̸∈A
+and G ̸∈P, where F, G ∈F. (It is possible that G = F). From F and G, we recursively
+simulate functions with smaller arity, keeping the property of being not in A and not in P
+respectively. The proofs of these two lemmas are very similar to those in [8]. Due to space
+limitation, we give a sketch of proof for Lemma 14 in the Appendix and omit the proof for
+Lemma 13.
+STACS’11
+
+256
+The Complexity of Weighted Boolean #CSP Modulo k
+▶Lemma 13. If F ̸∈A , then either #pCSP({F}) is #pP-hard, or we can simulate a unary
+function H /∈A , that is, there is a reduction from #pCSP({F, H}) to #pCSP({F}).
+▶Lemma 14. For any function F ̸∈P, either #pCSP({F}) is #pP-hard , or we can
+simulate, using F, a function [a, 0, 1, 0] (or [0, 1, 0, a]), where a ̸= 0, or a binary function
+H ̸∈P having no zero values.
+Now we are ready to prove the main lemma.
+▶Lemma 15. Let p be an odd prime, and F a class of functions mapping Boolean inputs
+to [p]. If F ⊆A or F ⊆P, #pCSP(F) is computable in polynomial time. Otherwise,
+#pCSP(F) is #pP-hard .
+Proof. For A and P, their polynomial time algorithms are given above.
+If F ̸⊆A and F ̸⊆P, by Lemma 13, either #pCSP(F) is #pP-hard , or we can
+simulate a function F = [1, λ] /∈A . In particular λ /∈{0, ±1, ±i}. By Lemma 14, either
+#pCSP(F) is #pP-hard , or we can simulate a function P = [a, 0, 1, 0], or P ′ = [0, 1, 0, a],
+where a ̸= 0, or a binary function H ̸∈P having no zero values.
+Firstly, we prove #pCSP({F, P}) is #pP-hard .
+Clearly P x1=∗= [a, 1, 1].
+If a ̸∈
+{1, −1}, it is #pP-hard
+by Lemma 7.
+If a ∈{1, −1}, we can construct Q(x1, x2) =
+P
+x3 P(x1, x2, x3)F(x3) = [a, λ, 1], which is [±1, λ, 1].
+Both of them are #pP-hard
+by
+Lemma 7. The proof for #pCSP({F, P ′}) is the same.
+Secondly, we prove #pCSP({F, H}) is #pP-hard . After normalizing, we may suppose
+H =
+1
+x
+y
+z
+
+, where xyz ̸= 0, and z ̸= xy. There are two cases, depending on whether
+z = −xy.
+For the case z ̸= −xy, we conclude that it is hard by applying Lemma 11 on H.
+For the case z = −xy, we construct some binary functions with an integer parameter s
+as follows:
+X
+x3
+H(x1, x3)H(x2, x3)(F(x3))s
+=
+[1 + λsx2, (y + λsxz), (y2 + λsz2)]
+=
+[1 + λsx2, y(1 −λsx2), y2(1 + λsx2)].
+As λ is not a power of i, at most one of the two values x2 and λx2 can be a power of i. Now
+we choose s = 0 or s = 1 above so that λsx2 ̸∈{±1, ±i}.
+After normalizing, we may write the function [1 + λsx2, y(1 −λsx2), y2(1 + λsx2)] as
+[1, y(1 −λsx2)(1 + λsx2)−1, y2], noticing that 1 + λsx2 ̸= 0. We claim that this function is
+not one of the ﬁve tractable cases from Lemma 7. Since there are no zero entries, clearly it is
+not the ﬁrst two cases. It has rank 2, therefore it is not the third case. If it were the fourth
+tractable case [1, ±i, 1], then y = ±1, and (1 −λsx2)(1 + λsx2)−1 = ±i. This implies that
+λsx2 = ±i, which is impossible. If [1, y(1 −λsx2)(1 + λsx2)−1, y2] = [1, ±1, −1], the ﬁfth
+tractable case, then y = ±i, and again (1 −λsx2)(1 + λsx2)−1 = ±i, also impossible.
+◀
+4
+Dichotomy for a general integer k
+We ﬁrst deal with the case when k is a power of an odd prime. Then we use Chinese
+Remainder Theorem to prove hardness for other composite numbers. Beigel and Gill have
+shown that the class #prP is the same as #pP and for a composite k having two or more
+prime factors, the modulo counting class is a union of counting classes modulo each of its
+prime factors [1]. Therefore, we only talk about #pP-hard for prime p.
+
+H. Guo, S. Huang, P. Lu and M. Xia
+257
+▶Lemma 16. Suppose p is an odd prime, k = pr for some integer r ≥1. F is a ﬁnite set
+of constraint functions. If, after taking modulus p, F ⊆Ap or F ⊆Pp, #kCSP(F) has
+polynomial time algorithms. Otherwise, #kCSP(F) is #pP-hard .
+Proof. If #pCSP(F) is #pP-hard, then #kCSP(F) must be #pP-hard. Therefore we only
+need to show the tractable part. We decompose every function f ∈F into the sum of two
+functions gf and hf, such that all values of hf are multiples of p, and gf ∈Pk or gf ∈Ak,
+depending on whether f ∈Pp or f ∈Ap. Such a decomposition is always possible. If
+f ∈Pp, assuming that f = Q fi, where fi is either unary, or binary equality or disequality,
+the we can simply take gf = Q fi in modulo k. Since gf ≡f (mod p), we can see that values
+of hf = f −gf are multiples of p. On the other hand, if f ∈Ap, then f could be expressed
+as f = χAXi
+P
+Li(X)
+p
+. Let gf = χAXi
+P
+Li(X)
+k
+. It is easy to see that gf ≡f (mod p), and hf
+satisﬁes our condition.
+Given the decomposition, we can express the ﬁnal summation in the following way
+X
+x1,x2,...,xn∈{0,1}
+Y
+f(xi1, xi2, . . . , xir) mod k
+=
+X
+x1,x2,...,xn∈{0,1}
+Y
+(gf(xi1, xi2, . . . , xir) + hf(xi1, xi2, . . . , xir)) mod k
+=
+X
+f ′
+1∈{gf1,hf1}
+· · ·
+X
+f ′n∈{gfn,hfn}
+
+
+X
+x1,x2,...,xn∈{0,1}
+Y
+f ′
+i(xi1, xi2, . . . , xir)
+
+mod k
+We only need to consider the assignments of functions such that the summation in the
+parenthesis is nonzero. To ensure that this is nonzero, no more than r of the functions f ′
+i
+can be assigned hfi. The total number of such combinations is of order O(nr+1).
+For every such combination, assume that f ′
+1, . . . , f ′
+r are assigned. Since F is ﬁnite, the
+degree of the functions is bounded. Therefore, constantly many variables are involved in f ′
+1,
+. . . , f ′
+r. We can list all assignments to these variables in constant time. We can express each
+assignment with the help of Lemma 3, and obtain a new instance in #kCSP(F ′) such that
+F ′ ⊆A or F ′ ⊆P, depending on the case of F. Therefore, we can compute the value of
+these instances in polynomial time, and thus we can compute the value of the whole instance
+eﬃciently.
+◀
+Now we deal with k = 2r. We need the following claim to establish the connection
+between the weighted and unweighted case.
+▶Lemma 17. For any positive integer r and t, (1 + 2t)2r ≡1 (mod 2r).
+Therefore, we only need to duplicate the weighted functions k = 2r times to obtain an
+unweighted function. Note this process actually converts all odd values to 1, and all even
+values to 0. Then we have the following result for k = 2r.
+▶Lemma 18. If k = 2r and r > 1, then #kCSP(F) is #2P-hard, unless all functions in
+F are aﬃne modulo 2, for which we have a polynomial time algorithm.
+Proof. Hardness can be proved by considering the unweighted version of F and applying
+Theorem 1. Algorithm for an aﬃne F is similar to that in Lemma 16, except that for a
+given combination and assignment, we calculate the value of the gadget directly instead of
+applying the Pinning Lemma. This can be done eﬃciently according to [8].
+◀
+Based on Lemma 15, Lemma 16, Lemma 18 and the Chinese Remainder Theorem, we
+conclude with our main result:
+STACS’11
+
+258
+The Complexity of Weighted Boolean #CSP Modulo k
+▶Theorem 19. Let k = 2r0pr1
+1 pr2
+2 · · · prm
+m , where pi’s are distinct odd primes, r0 ≥0, and
+ri ≥1 for i = 1, 2, ..., m. Let F be a set of functions. #kCSP(F) is in P if one of the
+following three conditions is satisﬁed.
+1. r0 = 0. F ⊆Api or F ⊆Ppi for all i ∈[m].
+2. r0 = 1. F ⊆A2 or every function in F are closed under complement after mod 2.
+F ⊆Api or F ⊆Ppi for all i ∈[m].
+3. r0 ≥2. F ⊆A2. F ⊆Api or F ⊆Ppi for all i ∈[m].
+Otherwise the problem is #pP-hard for some p|k. More speciﬁc, we have
+For i ∈[m], if F ̸⊆Api and F ̸⊆Ppi, then #kCSP(F) is #piP-hard.
+If r0 = 1, F ̸⊆A2, and it is not the case that every function in F are closed under
+complement after mod 2, then #kCSP(F) is #2P-hard.
+If r0 ≥2 and F ̸⊆A2, then #kCSP(F) is #2P-hard.
+The statement of the main theory is a little complicated due to technique reason 2 . In
+terms of dichotomy, we have a simple statement.
+▶Theorem 20. Let k > 1 and F be a set of functions. Then #kCSP(F) is either in P or
+#pP-hard for some p|k.
+Acknowledgements
+Work partly done when Heng Guo was a master student in Peking
+University, and Sangxia Huang was an intern student at Microsoft Research Asia and an
+undergraduate student of Shanghai Jiao Tong University. Sangxia Huang is supported by
+ERC Advanced investigator grant 226203. Mingji Xia is supported by NSFC 61003030 and
+60970003, the CAS start-up fund for CAS President Scholarship winner, the Hundred-Talent
+program of Chinese Academy of Sciences under Angsheng Li, and the Grand Challenge
+Program “Network Algorithms and Digital Information” of ISCAS.
+References
+1
+Richard Beigel and John Gill. Counting classes: Thresholds, parity, mods, and fewness.
+Theor. Comput. Sci., 103(1):3–23, 1992.
+2
+A. Bulatov, M. Dyer, L.A. Goldberg, M. Jalsenius, and D. Richerby. The complexity of
+weighted boolean #CSP with mixed signs. Theoretical Computer Science, 410(38-40):3949–
+3961, 2009.
+3
+Andrei A. Bulatov.
+A dichotomy theorem for constraint satisfaction problems on a 3-
+element set. J. ACM, 53(1):66–120, 2006.
+4
+Andrei A. Bulatov. The complexity of the counting constraint satisfaction problem. In Luca
+Aceto, Ivan Damgård, Leslie Ann Goldberg, Magnús M. Halldórsson, Anna Ingólfsdóttir,
+and Igor Walukiewicz, editors, ICALP (1), volume 5125 of Lecture Notes in Computer
+Science, pages 646–661. Springer, 2008.
+5
+Andrei A. Bulatov and Víctor Dalmau. Towards a dichotomy theorem for the counting
+constraint satisfaction problem. In FOCS, pages 562–571. IEEE Computer Society, 2003.
+6
+Andrei A. Bulatov and Martin Grohe. The complexity of partition functions. In Josep Díaz,
+Juhani Karhumäki, Arto Lepistö, and Donald Sannella, editors, ICALP, volume 3142 of
+Lecture Notes in Computer Science, pages 294–306. Springer, 2004.
+2 The statement of our dichotomy is slightly diﬀerent with Faben’s [14]. The dichotomy by Faben stated
+that a problem is either P or #kP-hard. This is because in the unweighted case, the criterion for
+diﬀerent odd prime p is identical.
+
+H. Guo, S. Huang, P. Lu and M. Xia
+259
+7
+Jin-Yi Cai, Xi Chen, and Pinyan Lu. Graph homomorphisms with complex values: A di-
+chotomy theorem. In Samson Abramsky, Cyril Gavoille, Claude Kirchner, Friedhelm Meyer
+auf der Heide, and Paul G. Spirakis, editors, ICALP (1), volume 6198 of Lecture Notes in
+Computer Science, pages 275–286. Springer, 2010.
+8
+Jin-Yi Cai, Pinyan Lu, and Mingji Xia. Holant problems and counting CSP. In Michael
+Mitzenmacher, editor, STOC, pages 715–724. ACM, 2009.
+9
+N. Creignou, S. Khanna, and M. Sudan. Complexity classiﬁcations of boolean constraint
+satisfaction problems. SIAM Monographs on Discrete Mathematics and Applications, 2001.
+10
+Nadia Creignou and Miki Hermann. Complexity of generalized satisﬁability counting prob-
+lems. Inf. Comput., 125(1):1–12, 1996.
+11
+Martin E. Dyer, Leslie Ann Goldberg, and Mark Jerrum.
+The complexity of weighted
+boolean #CSP. SIAM J. Comput., 38(5):1970–1986, 2009.
+12
+Martin E. Dyer, Leslie Ann Goldberg, and Mike Paterson. On counting homomorphisms
+to directed acyclic graphs. J. ACM, 54(6), 2007.
+13
+Martin E. Dyer and Catherine S. Greenhill. The complexity of counting graph homomorph-
+isms. Random Struct. Algorithms, 17(3-4):260–289, 2000.
+14
+John Faben. The complexity of counting solutions to generalised satisﬁability problems
+modulo k. CoRR, abs/0809.1836, 2008.
+15
+Leslie Ann Goldberg, Martin Grohe, Mark Jerrum, and Marc Thurley.
+A complexity
+dichotomy for partition functions with mixed signs. In STACS, pages 493–504, 2009.
+16
+R. Hartshorne. Algebraic geometry. springer Verlag, 1977.
+17
+Richard E. Ladner. On the structure of polynomial time reducibility. J. ACM, 22(1):155–
+171, 1975.
+18
+Christos H. Papadimitriou and Stathis Zachos. Two remarks on the power of counting.
+In Proceedings of the 6th GI-Conference on Theoretical Computer Science, pages 269–276,
+1982.
+19
+T.J. Schaefer. The complexity of satisﬁability problems. In Proceedings of the tenth annual
+ACM symposium on Theory of computing, page 226. ACM, 1978.
+20
+Leslie G. Valiant.
+The complexity of computing the permanent.
+Theor. Comput. Sci.,
+8:189–201, 1979.
+21
+Leslie G. Valiant. The complexity of enumeration and reliability problems. SIAM J. Com-
+put., 8(3):410–421, 1979.
+22
+Leslie G. Valiant. Accidental algorthims. In FOCS ’06: Proceedings of the 47th Annual
+IEEE Symposium on Foundations of Computer Science, pages 509–517, Washington, DC,
+USA, 2006. IEEE Computer Society.
+23
+Leslie G. Valiant. Some observations on holographic algorithms. In Alejandro López-Ortiz,
+editor, LATIN, volume 6034 of Lecture Notes in Computer Science, pages 577–590. Springer,
+2010.
+A
+Proof of Lemma 14
+Proof. Suppose F has arity r. Since P contains all unary functions and F ̸∈P, r ≥2.
+Deﬁne an |RF |×r {0, 1}-matrix whose rows list every element of RF , and columns correspond
+to x1, . . . , xr.
+We ﬁrst remove any column which is all-0 or all-1 and update the table to RF xi=0 or
+RF xi=1, respectively. If two columns are identical or are complementary in every bit, we
+remove one of them and update the table to RF xj =∗, where j corresponds to the column
+removed. We remove columns as long as possible. It is easy to see that this removal process
+maintains the property of not belonging to P.
+STACS’11
+
+260
+The Complexity of Weighted Boolean #CSP Modulo k
+Now we suppose there is some G ̸∈P where no more columns can be removed by the
+above process. There must be some columns left in the table, otherwise the function just
+before the last column removal is a unary function, hence in P. In fact G being not in P,
+the arity of G is ≥2. For simplicity we still denote it by r. We have two cases:
+Case 1: |RG| < 2r. By Lemma 12, we may assume RG is aﬃne, given by an aﬃne linear
+system AX = 0. We have shown that |RG| ̸= 0, as some columns remain. Since G is not
+unary, the table has more than one columns. If |RG| = 1, any two columns (of length one)
+must be identical or complementary and the removal process should have continued. Thus
+|RG| > 1. W.l.o.g. assume x1, . . . , xs are free variables in AX = 0 and xs+1, . . . , xk are
+dependent variables. |RG| = 2s is a power of 2. We have shown that s ≥1. By |RG| < 2r,
+s < r. We claim s ≥2. If instead s = 1, then every x2, . . . , xr is dependent on x1 on RG, so
+the column at x2 must be an all-0 or all-1 column, or be identical or complementary to x1.
+The expression of xr in terms of x1, . . . , xs must involve at least two non-zero coeﬃcients;
+otherwise the column at xr must be an all-0 or all-1 column, or be identical or complementary
+to another column. W.l.o.g., say the coeﬃcients of x1, x2 are non-zero.
+Let P(x1, x2, xr) = Gx3=0,...,xs=0,xs+1=∗,...,xr−1=∗(these two lists of variables could be
+empty). It can be veriﬁed that RP = χx1⊕x2⊕xr=c for some c ∈Z2.
+The aﬃne linear equation x1 ⊕x2 ⊕xr = c is symmetric. Now we deﬁne a “symmetrized”
+function H(x1, x2, xr) = Q
+σ∈S3 P(xσ(1), xσ(2), xσ(r)), where S3 is the symmetry group on
+three letters {1, 2, k}.
+This H is a symmetric function on (x1, x2, xr) and has support
+RH = RP . Thus, after normalizing, H = [a, 0, 1, 0] or [0, 1, 0, a] where a ̸= 0. We remark
+that this ternary function H ̸∈P.
+Case 2: |RG| = 2r. If for all 1 ≤i ≤r, the ratio Gxi=1/Gxi=0 is a constant function
+ci, (since |RG| = 2r there are no divisions by zeros), then G = c0 · Q
+1≤i≤r Ui(ci), where the
+constant c0 = Gx1=0,...,xr=0, and Ui(ci) is the unary function [1, ci] on xi. This gives G ∈P,
+a contradiction.
+Now suppose for some i, Gxi=1/Gxi=0 is not a constant function. W.l.o.g., assume that
+i = 1. The Boolean hypercube on (x2, . . . , xr) ∈{0, 1}r−1 is connected by edges which ﬂip
+just one bit. W.l.o.g., suppose that
+Gx1=1/Gx1=0(0, a3, . . . , ar) ̸= Gx1=1/Gx1=0(1, a3, . . . , ar). Set x3 = a3, . . . , xr = ar, we
+get a binary function H(x1, x2) = G(x1, x2, a3, . . . , ar). We have that H(1, 0)/H(0, 0) ̸=
+H(1, 1)/H(0, 1), hence the rank of H =
+H(0, 0)
+H(0, 1)
+H(1, 0)
+H(1, 1)
+
+is 2.
+If H were in P, then partition the variable set according to connectivity by binary
+equality and disequality functions. If any connected component has at least 2 variables, we
+can set values to these 2 variables so that H = 0. But H is never zero. Then each component
+must be a single variable and H is deﬁned by a product of unary functions. But such a
+function has rank 1. This contradiction completes our proof.
+◀

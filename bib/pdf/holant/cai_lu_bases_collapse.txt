@@ -1,0 +1,1619 @@
+Bases Collapse in Holographic Algorithms
+Jin-Yi Cai1 and Pinyan Lu2
+1 Computer Sciences Department, University of Wisconsin
+Madison, WI 53706, USA
+jyc@cs.wisc.edu
+2 Department of Computer Science and Technology, Tsinghua University
+Beijing, 100084, P. R. China
+lpy@mails.tsinghua.edu.cn
+Abstract
+Holographic algorithms are a novel approach to design polynomial time computations using linear
+superpositions. Most holographic algorithms are designed with basis vectors of dimension 2. Recently
+Valiant showed that a basis of dimension 4 can be used to solve in P an interesting (restrictive SAT)
+counting problem mod 7. This problem without modulo 7 is #P-complete, and counting mod 2 is
+NP-hard.
+We give a general collapse theorem for bases of dimension 4 to dimension 2 in the holographic
+algorithms framework. We also deﬁne an extension of holographic algorithms to allow more general
+support vectors. Finally we give a bases folding theorem showing that in a natural setting the support
+vectors can be simulated by basis of dimension 2.
+1
+Introduction
+The most fundamental dichotomy in computational complexity is polynomial time versus exponential
+time computation. Various methods have been devised to achieve exponential speed-ups for a speciﬁc
+problem or a class of problems. This includes the methods of dynamic programming, linear program-
+ming, semideﬁnite programming, randomization, quantum algorithms etc. The theory of holographic
+algorithms introduced recently by Valiant [16] is another attempt at exponential speed-ups for certain
+computations.
+In this methodology it is possible to give polynomial time algorithms for some problems which seem
+to require exponential time. At the heart of a holographic algorithm, one tries to devise a custom made
+process of exponential cancellations. This process is carried out by representing meaningful compu-
+tational information in a superposition of linear vectors, somewhat analogous to quantum computing.
+Here these superpositions of vectors are processed in a classical way. Ultimately they are transformed
+by the Holant Theorem [16] to an evaluation of the perfect matching polynomial PerfMatch for planar
+graphs, which is then computed by the elegant FKT method [9, 10, 13]. This remarkable algorithm
+counts the number of perfect matchings in a planar graph in polynomial time.
+There are two main ingredients in the design of a holographic algorithm. First, a collection of planar
+matchgates. Second, a choice of a linear basis vectors, through which the computation is expressed
+and interpreted.
+In this framework, Valiant obtained polynomial time algorithms for a number of
+combinatorial problems which were not known to be in P and minor variations are known to be NP-
+hard. In [2, 1] several other problems were shown to be solvable in this framework.
+Because the underlying basic computation is ultimately reduced to perfect matchings, the set of
+linear basis vectors which express the computation are necessarily of dimension 2k, where k is called
+1
+
+the size of the basis. In almost all cases [16, 2, 1], the successful design of a holographic algorithm was
+accomplished by a basis of size 1. Typically there are two basis vectors n and p in dimension 2, which
+represent the truth values True and False, and their tensor product will represent a combination of 0-1
+bits. It is the superpositions of these vectors in the tensor product space that are manipulated by a
+holographic algorithm in the computation.
+However, utilizing bases of a higher dimension is always a theoretical possibility which may allow us
+to devise more holographic algorithms that are not feasible with bases of size 1. Indeed in [19], Valiant
+used a basis of size 2 to show #7Pl-Rtw-Mon-3CNF ∈P. This problem is a very restrictive Satisﬁability
+counting problem. It counts the number of satisfying assignments of a planar read-twice monotone
+3CNF formula, modulo 7. Even though the form of the Boolean formulae is severely restricted, it is
+known that the counting problem for these formulae without the modulo 7 is #P-complete. Also, the
+counting problem modulo 2, i.e., to decide whether there are an even or an odd number of satisfying
+assignments for these formulae is ⊕P-complete (thus NP-hard by randomized reductions). Put in this
+context, the solvability in P of the counting problem modulo 7 is very surprising. This opens up the
+realistic possibility that bases of size 2 may be in fact more powerful.
+In a forthcoming paper [4] we have shown, among other things, that for the particular problem #7Pl-
+Rtw-Mon-3CNF, this use of bases of size 2 is unnecessary. There is another basis of size 1, for which
+one can devise a holographic algorithm which also solves #7Pl-Rtw-Mon-3CNF. The main result in [4]
+is a characterization of all the realizable symmetric signatures over all bases of size 1. The holographic
+algorithm for #7Pl-Rtw-Mon-3CNF using bases of size 1 follows as a consequence.
+This leaves open whether bases of size 2 can always be replaced by bases of size 1. We settle this
+problem aﬃrmatively in this paper. It turns out that technically this collapse is subtle. To explain this
+we need some more terminologies.
+A (planar) matchgate is a planar undirected weighted graph Γ = (G, X), where G = (V, E, W), and
+X ⊆V is a subset of m external nodes, considered as inputs/outputs. If all vertices in X are output
+nodes then Γ is called a generator. If all vertices in X are input nodes then Γ is a recognizer. To each
+matchgate Γ we assign a standard signature which has 2m entries Gi1i2...im = PerfMatch(G −Z), where
+Z ⊆X has the characteristic sequence χZ = i1i2 . . . im.
+These signatures transform under various
+basis transformations, which make it possible to assume certain desired values. These matchgates are
+connected to form a matchgrid for which one can deﬁne a Holant. It is the Holant that expresses the
+desired computational value. Meanwhile by the remarkable Holant Theorem [16], Holant(Γ) is always
+computable in polynomial time by the FKT method. The idea is then to ﬁnd appropriate matchgates
+and a basis, such that we can realize the desired signatures. (For more background, please see [16, 2, 1].)
+Consider the problem #Pl-Rtw-Mon-3CNF, i.e., counting the number of satisfying assignments of
+a planar read-twice monotone 3CNF formula. Given a 3CNF formula ϕ as a planar graph Gϕ where
+variables and clauses are represented by vertices. For each variable x we wish to ﬁnd a generator G
+with signature G00 = 1, G01 = 0, G10 = 0, G11 = 1. or (1, 0, 0, 1) for short. It is indeed possible to
+construct a matchgate which consists of a path of length 3 and all weights 1. Note that when we remove
+exactly one of the two external nodes we get 3 vertices left and therefore the value of PerfMatch is 0.
+If we remove both or none of the two external nodes we get the value 1. We can replace the vertex
+for x in the planar formula by this generator G. This signature (1, 0, 0, 1) intuitively corresponds to a
+truth assignment: its outputs will be a consistent assignment of either 0 or 1. We also wish to ﬁnd a
+recognizer R with 3 inputs having signature (0, 1, 1, 1, 1, 1, 1, 1). This signature intuitively corresponds
+to a Boolean OR. The matchgrid is formed by connecting the generator outputs to the recognizer inputs
+as given in Gϕ. If we could ﬁnd this recognizer, we would have shown #Pl-Rtw-Mon-3CNF ∈P, and
+therefore P#P = P.
+It can be shown by a simple parity argument that a recognizer with the standard signature (0, 1, 1, 1, 1, 1, 1, 1)
+does not exist. However, under a suitable basis transformation this signature is in fact realizable by
+2
+
+some recognizer. Indeed this is simultaneously realizable together with a generator having the signature
+(1, 0, 0, 1), over the ﬁled Z7 (but not over Q). This gives the surprising result that #7Pl-Rtw-Mon-3CNF
+∈P.
+Now we can explain the subtlety of whether it is possible to universally replace a basis of size 2
+by a basis of size 1. It turns out that if we only focus on the recognizers, bases of size 2 are in fact
+provably more powerful than bases of size 1. It is only in the context of simultaneous realizability of
+both generators and recognizers that we are able to achieve this universal bases collapse. Due to this
+subtlety, the proofs are delicate.
+Utilizing bases of higher dimensions is one way to extend the reach of holographic algorithms. There
+is another way in which the basic framework of holographic algorithms could be extended. With the
+additional dimension in the basis vectors, comes the extra freedom of having more than two linearly
+independent basis vectors. One can introduce a notion of a set of support vectors. If all the generators
+have one set of support vectors, while all the recognizers have another set of support vectors, then one
+can deﬁne the Holant of the matchgrid just as before, whose value will only depend on the intersection
+of the two sets of support vectors.
+In this case the Holant Theorem is still valid and we can still
+evaluate the Holant by the FKT method. This extension provides another degree of freedom in the
+design of holographic algorithms, and thus an opportunity to solve more problems this way. Holographic
+algorithms without this extension can be considered as a special case. This extension to more varied
+support vector sets is particularly interesting when we have basis size k > 1.
+Regarding the extension with support vectors, for basis size k = 2 we prove a folding bases theorem
+in Section 5. This theorem says that in a natural and interesting case, this notion of support vectors
+can be simulated by holographic algorithms with bases of size 1.
+The results in this paper have the general implication that a more extended version of holographic
+algorithms can be simulated by holographic algorithms on bases of size 1. However, the case with higher
+bases size ≥3 is still open. As well, the general case with arbitrary support vectors is also open. We
+also remark that, from an algorithm design point of view, even if everything collapses to bases of size
+1, these extensions (of basis size k > 1 and with support vectors) might still be interesting as useful
+options in ﬁnding a holographic algorithm. However, from a strict complexity theory point of view,
+especially for proving lower bounds, these extensions no longer have any importance, and we should
+focus only on bases of size 1.
+This paper is organized as follows. In Section 2, we give a brief summary of background information
+and a proof outline. In Section 3, we prove a general theorem about degenerate bases and degenerate
+signatures of (planar) matchgates. In Section 4, we give the proof of the main theorem, namely, every
+holographic algorithm on some basis of size 2 using at least one non-degenerate generator can be realized
+on some basis of size 1. In Section 5, we prove the folding bases theorem.
+2
+Background and Proof Outline
+2.1
+Background
+We give a brief recap of deﬁnitions.
+Let G = (V, E, W) be a weighted undirected planar graph. A generator matchgate Γ is a tuple
+(G, X) where X ⊆V is a set of external output nodes. A recognizer matchgate Γ′ is a tuple (G, Y )
+where Y ⊆V is a set of external input nodes. The external nodes are ordered counter-clock wise on the
+external face. Γ (or Γ′) is called an odd (resp. even) matchgate if it has an odd (resp. even) number of
+nodes.
+Each matchgate is assigned a signature tensor. A generator Γ with m output nodes is assigned a
+contravariant tensor G of type
+m
+0
+
+. Under the standard basis, it takes the form G with 2m entries,
+3
+
+where
+Gi1i2...im = PerfMatch(G −Z),
+and where Z is the subset of the output nodes having the characteristic sequence χZ = i1i2 . . . im. G is
+called the standard signature of the generator Γ. We can view G as a column vector.
+Similarly a recognizer Γ′ = (G′, Y ) with m input nodes is assigned a covariant tensor R of type
+ 0
+m
+
+.
+Under the standard basis, it takes the form R with 2m entries, where
+Ri1i2...im = PerfMatch(G′ −Z),
+where Z is the subset of the input nodes having χZ = i1i2 . . . im. R is called the standard signature of
+the recognizer Γ′. We can view R as a row vector.
+A basis T contains 2 vectors (t0, t1) (also denoted as n, p), each of them has dimension 2k (size k).
+We use the following notation:
+T = (tα
+i ), where i ∈{0, 1} and α ∈{0, 1}k.
+(Also denoted as [nα, pα] where α ∈{0, 1}k. We follow the convention that upper index i is for row and
+lower index j is for column [6].) We assume rank(T) = 2 in the following discussion because a basis of
+rank(T) = 1 is useless.
+Under a basis T, we can talk about non-standard signatures (or general signatures, or simply sig-
+natures).
+Deﬁnition 2.1. The contravariant tensor G of a generator Γ has signature G under basis T iﬀG =
+T ⊗mG is the standard signature of the generator Γ.
+We have
+Gα1α2···αn =
+X
+i1,i2,··· ,in∈{0,1}
+Gi1i2···intα1
+i1 tα2
+i2 · · · tαn
+in ( where αj ∈{0, 1}k).
+(1)
+Deﬁnition 2.2. The covariant tensor R of a recognizer Γ′ has signature R under basis T iﬀR = RT ⊗m,
+where R is the standard signature of the recognizer Γ′.
+We have
+Ri1i2···in =
+X
+α1,α2,··· ,αn∈{0,1}k
+Rα1α2···αntα1
+i1 tα2
+i2 · · · tαn
+in ( where ij ∈{0, 1} for j = 1, 2, · · · , n).
+(2)
+Remark: Under a basis of size k, if a general signature is of arity n, then the standard signature is of
+arity nk. nk is also the number of external nodes in the matchgate. So a standard generator signature
+G (resp. a standard recognizer signature R) can also be viewed as a contravariant (resp. covariant)
+tensor in V n
+0 (resp. V 0
+n) where V is a vector space of dim(V ) = 2k (here we use standard notations
+V ℓ
+k for tensor spaces [6]). It is convenient to view it blockwise when we discuss its transformation or
+symmetry, and to view it bitwise when we discuss its parity or realizability.
+Deﬁnition 2.3. A contravariant tensor G ∈V n
+0 (resp. covariant tensor R ∈V 0
+n ) is realizable on a
+basis T iﬀthere exists a generator Γ (resp. a recognizer Γ′) such that G (resp. R) is the signature of Γ
+(resp. Γ′) under basis T.
+For a string α ∈{0, 1}n, we use the notation wt(α) to denote its Hamming weight. A signature G
+or R on index α = α1α2 . . . αn, where each αi ∈{0, 1}k, is symmetric iﬀthe value of Gα or Rα only
+depends on the number of k-bit patterns of αi. For k = 1 it only depends on the Hamming weight of
+4
+
+its index wt(α). For k = 1, we can denote a symmetric signature by the notation [z0, z1, . . . , zn], where
+i is the Hamming weight.
+A matchgrid Ω= (A, B, C) is a weighted planar graph consisting of a disjoint union of: a set of g
+generators A = (A1, . . . , Ag), a set of r recognizers B = (B1, . . . , Br), and a set of f connecting edges
+C = (C1, . . . , Cf), where each Ci edge has weight 1 and joins an output node of a generator with a input
+node of a recognizer, so that every input and output node in every constituent matchgate has exactly
+one such incident connecting edge.
+Let G(Ai, T) be the signature of generator Ai under the basis
+T and R(Bj, T) be the signature
+of recognizer Bj under the basis
+T. And Let G = Ng
+i=1 G(Ai, T) and R = Nr
+j=1 R(Bj, T). Then
+Holant(Ω) is deﬁned to be the contraction of these two product tensors, where the corresponding indices
+match up according to the f connecting edges Ck.
+Valiant’s Holant Theorem is
+Theorem 2.1 (Valiant). For any matchgrid Ωover any basis T, let G be its underlying weighted graph,
+then
+Holant(Ω) = PerfMatch(G).
+Standard signatures (of either generators or recognizers) are characterized by the following two sets
+of conditions. (1) The parity requirements: either all even weight entries are 0 or all odd weight entries
+are 0. This is due to perfect matchings. (2) A set of Matchgate Identities (MGI) [1, 3]: Let G be a
+realizable standard signature of arity n (we use G here, it is the same for R). A pattern α is an n-bit
+string, i.e., α ∈{0, 1}n. A position vector P = {pi}, i ∈[l], is a subsequence of {1, 2, . . . , n}, i.e., pi ∈[n]
+and p1 < p2 < · · · < pl. We also use p to denote the pattern, whose (p1, p2, . . . , pl)-th bits are 1 and
+others are 0. Let ei ∈{0, 1}n be the pattern with 1 in the i-th bit and 0 elsewhere. Let α + β be the
+pattern obtained from bitwise XOR the patterns α and β. Then for any pattern α ∈{0, 1}n and any
+position vector P = {pi}, i ∈[l], we have the following identity:
+l
+X
+i=1
+(−1)iGα+epiGα+p+epi = 0.
+(3)
+The following simple Proposition 4.3 of [16] is due to Valiant and gives an equivalence relation on
+basis of size 1. Let F be a ﬁeld.
+Proposition 2.1 (Valiant). [16] If there is a generator (recognizer) with certain signature for size one
+basis {(n0, n1)T, (p0, p1)T} then there is a generator (recognizer) with the same signature for size one
+basis {(xn0, yn1)T, (xp0, yp1)T} or {(xn1, yn0)T, (xp1, yp0)T} for any x, y ∈F and xy ̸= 0.
+2.2
+An Outline
+In [19], Valiant employed a basis of size 2: n = (1, 1, 2, 1)T, p = (2, 3, 6, 2)T, and showed that #7Pl-Rtw-
+Mon-3CNF is in P. He found that, in the notation for symmetric signatures, a generator for [1, 0, 1] and
+a recognizer for [0, 1, 1, 1] over Z7 are simultaneously realizable on this basis of size 2. In [4], we showed
+that a generator for [1, 0, 1] and a recognizer for [0, 1, 1, 1] over Z7 can also be simultaneously realized
+on the following basis of size 1:
+1
+6
+
+,
+3
+5
+
+. The natural question is whether this is luck or this is
+universally true.
+It turns out that if we only focus on realizable signatures for recognizers, there do exist some
+signatures which are realizable on a basis of size 2, but not realizable on any basis of size 1.
+The
+following basis of size 2 is such an example: n = (1, 2, 3, 4)T, p = (5, 6, 7, 8)T. (We omit the particular
+5
+
+matchgate and signature that witness this, since it is not particularly illuminating for the rest.) The
+next key insight is that when we have a holographic algorithm, given by a matchgrid consisting of a
+set of generators and recognizers, we need to have a basis on which their signatures are simultaneously
+realizable. For some bases such as n = (1, 2, 3, 4)T, p = (5, 6, 7, 8)T, no generator is realizable on them.
+This is a new phenomenon. In the case of bases of size 1, any
+n0
+n1
+
+,
+p0
+p1
+
+∈GL2(F) can be a
+potential basis (for which some generator can be realized). But this is not true for an arbitrary n =
+(n00, n01, n10, n11)T, p = (p00, p01, p10, p11)T. Informally speaking, the underlying reason for this is the
+following fact. If a generator G is realizable on n = (n00, n01, n10, n11)T, p = (p00, p01, p10, p11)T, then G is
+also realizable on the following 4 bases of size 1:
+n00
+n01
+
+,
+p00
+p01
+
+,
+n00
+n10
+
+,
+p00
+p10
+
+,
+n01
+n11
+
+,
+p01
+p11
+
+,
+n10
+n11
+
+,
+p10
+p11
+
+. This constraint forces that the values n00, n01, n10, n11, p00, p01, p10 and p11 can not
+be arbitrary. After ruling out a degenerate case, we can prove that this requires the above 4 bases of
+size 1 to be equivalent in the sense of Proposition 2.1. Up to this equivalence we can deﬁne it to be the
+embedded basis of size 1. Such bases of size 2 are called valid bases. It implies that n00p11 −n11p00 = 0
+and n01p10 −n10p01 = 0.
+Now one can expect some kind of collapse property focusing only for valid bases. Then on a valid
+basis of size 2, are there any more realizable recognizers which are not realizable on bases of size 1? This
+we answer in the negative. We prove that any recognizer which is realizable on a size 2 valid basis can
+also be realized on a size 1 basis. More precisely, it can be realized on its embedded size 1 basis. For
+the above example, we notice that n = (1, 1, 2, 1)T, p = (2, 3, 6, 2)T is valid. Furthermore its 4 embedded
+bases of size 1:
+1
+1
+
+,
+2
+3
+
+,
+1
+2
+
+,
+2
+6
+
+,
+1
+1
+
+,
+3
+2
+
+,
+2
+1
+
+,
+6
+2
+
+and our basis
+1
+6
+
+,
+3
+5
+
+are
+all equivalent in the sense of Proposition 2.1, over Z7.
+The above result is proved by ruling out a degenerate case, which happens when the size 2 basis
+are of the form n = (n00, 0, 0, n11)T, p = (p00, 0, 0, p11)T, or n = (0, n01, n10, 0)T, p = (0, p01, p10, 0)T.
+We call such bases degenerate. It turns out that degenerate cases are tricky technically. In fact, on a
+degenerate basis, there is no general collapse for recognizers, i.e., there do exist some recognizers which
+are realizable on a degenerate basis of size 2, but not realizable on any basis of size 1. Furthermore, there
+are some generators realizable on some degenerate bases. But we can show that the only generators
+realizable on a degenerate basis are trivial. They are essentially only tensors of arity 1 (technically
+they can only be a tensor product of some arity 1 generators; we call such generators degenerate). We
+will argue that holographic algorithms which only use degenerate generators are not interesting. They
+essentially degenerate into ordinary algorithms, without any holographic superpositions.
+In the next section we start with degenerate bases.
+3
+Degenerate Bases
+Deﬁnition 3.1. A basis T is degenerate iﬀtα = 0 for all wt(α) even (or for all wt(α) odd).
+Deﬁnition 3.2. A generator tensor G ∈V n
+0 (where dim(V ) = 2) is degenerate iﬀit has the following
+form:
+G = G1 ⊗G2 ⊗· · · ⊗Gn,
+(4)
+where Gi ∈V .
+Remark: Every generator with arity 1 is trivially degenerate. G is degenerate iﬀG completely factors
+into a tensor product of arity 1 tensors. This means that there is no interaction or interference between
+6
+
+the output bits of the generator. Such generators should really be considered as n separate one-bit
+generators.
+Now we prove a general theorem showing that a degenerate basis can only accommodate degenerate
+generators. The proof uses Matchgate Identities in an essential way. Therefore it depends crucially on
+the fact that we are dealing with planar matchgates (or for readers who are familiar with the character
+theory of general matchgates, it ultimately depends on the properties of Pfaﬃans and the equivalence of
+the signature theory of planar matchgates and the character theory of general matchgates [14, 16, 1, 3]).
+Theorem 3.1. If a basis T is degenerate and rank(T) = 2, then every generator G ∈V n
+0 realizable on
+the basis T is degenerate.
+Proof:
+Since T is degenerate, we assume tα = 0 for all wt(α) odd. The other case is similar. Let
+G = T ⊗nG. Then G can be realized as the standard signature of a planar matchgate and from (1)
+we know that it has the following property: for every non-zero entry Gα1α2···αn, wt(αj) is even for
+j = 1, 2, · · · , n.
+If G ≡0, i.e., G is identically 0, then the Theorem is obviously true. Otherwise there exists some
+β ∈{0, 1}nk such that Gβ ̸= 0. We can assume β = 00 · · · 0, and further assume G00···0 = 1. This
+is because we may let G′α = Gα⊕β/Gβ, then G′00···0 = 1. Then the proof works for G′. In terms of
+G = T ⊗nG, this becomes G′ = (T1 ⊗T2 ⊗· · ·⊗Tn)G, where each Ti is obtained from T by a permutation
+of its rows determined by αi. In the following we assume G00···0 = 1.
+Since G is realizable, it can be realized as some matchgate Γ with nk external nodes. View its k
+external nodes in the i-th block still as external nodes and other nodes as internal, we have a matchgate
+Γi with k external nodes. This is our Gi. By deﬁnition we have
+Giα = G00···0α00···0 where the position of α in the RHS is the i-th block of G.
+We want to prove that
+Gα1α2···αn = G1α1G2α2 · · · Gnαn.
+(5)
+If any wt(αi) is odd, then both sides are 0 and this equation is satisﬁed.
+Now we prove (5) by induction on wt(α1α2 · · · αn) ≥0 and all wt(αi) are even.
+If wt(α1α2 · · · αn) = 0, we have the only case that α1α2 · · · αn = 00 · · · 0. In this case (5) is obvious.
+If wt(α1α2 · · · αn) = 2, since we require that all wt(αj) are even, the two 1’s must be in the same
+block. Then (5) is obvious too.
+Inductively we assume (5) has been proved for all wt(α1α2 · · · αn) ≤2(i −1), for some i ≥2. Now
+wt(α1α2 · · · αn) = 2i > 0. W.l.o.g, we can assume α1 ̸= 00 · · · 0, a block a k 0’s. Let t be the position of
+the ﬁrst 1 in α1. Using the pattern α1α2 · · · αn + et and positions α1α2 · · · αn (we denote it as P = {pj}
+where j = 1, 2, . . . , 2i), we have the following matchgate identity:
+Gα1α2···αn =
+2i
+X
+j=2
+(−1)jGα1α2···αn+et+epj Get+epj .
+Let w = wt(α1). Then when j ≥w + 1, Get+epj = 0 because the weight of its ﬁrst block is 1, which
+is odd. Therefore, we have
+Gα1α2···αn =
+w
+X
+j=2
+(−1)jG(α1+et+epj )α2···αnG(et+epj )00···0.
+Here for convenience we consider et, epj ∈{0, 1}k.
+7
+
+Since every Gα in the RHS has weight wt(α) ≤2i −2, we can apply (5) to them, and get:
+Gα1α2···αn = G2α2 · · · Gnαn
+w
+X
+j=2
+(−1)jG1
+α1+et+epj G1
+et+epj .
+The matchgate identity for G1 using pattern α1 + et and positions α1 gives us
+G1α1 =
+w
+X
+j=2
+(−1)jG1
+α1+et+epj G1
+et+epj .
+It follows that
+Gα1α2···αn = G1α1G2α2 · · · Gnαn.
+We can rewrite it as
+G = G1 ⊗G2 ⊗· · · ⊗Gn.
+(6)
+To prove (4), we apply a transformation. Since rank(T) = 2, there exists a 2 × 2k matrix ˜T such
+that ˜TT = I2. Therefore
+G = ( ˜TT)⊗nG = ˜T ⊗nT ⊗nG = ˜T ⊗nG.
+Substituting (6) in this, we have
+G = ˜T ⊗n(G1 ⊗G2 ⊗· · · ⊗Gn) = ( ˜TG1) ⊗( ˜TG2) ⊗· · · ⊗( ˜TGn).
+Let Gj = ˜TGj, we have
+G = G1 ⊗G2 ⊗· · · ⊗Gn.
+If we take into account the transformation from G to G′, then we must use a permuted ˜Ti for each
+Ti separately. This completes the proof.
+Deﬁnition 3.3. A basis T is valid iﬀthere exists some non-degenerate generator realizable on T.
+Corollary 3.1. A valid basis is non-degenerate.
+In the main collapse theorem, we will rule out the case that a holographic algorithm only employs
+degenerate generators. This is justiﬁed as follows.
+Let there be given a matchgrid Ωin a holographic algorithm consisting of a number of generators
+G1, G2, . . . , Gs and recognizers R1, R2, . . . , Rt. If all the generators G1, G2, . . . , Gs are degenerate then
+we can decompose every generator as in Theorem 3.1 without changing the value for the Holant of the
+matchgrid. After that every generator has arity 1. So every generator connects to a unique recognizer.
+Suppose the arity of Ri is ni, we rename the generator (after decomposition) which connects to the
+j-th node of Ri as Gi,j, where i ∈[t], j ∈[ni]. Then the Holant can be evaluated for each recognizer
+separately and then multiplied:
+Holant(Ω) =
+tY
+i=1
+
+
+X
+x1,x2,...,xni∈{0,1}
+(Ri)x1,x2,...,xniGx1
+i,1Gx2
+i,2 · · · G
+xni
+i,ni
+
+.
+This means that the value of Holant(Ω) can be completely decomposed into the local components of
+the individual recognizer matchgate Ri, without any interation between these matchgates. For example,
+if this is a Satisﬁability problem and the recognizers correspond to clauses. Then the sum for a single
+recognizer corresponding to a clause is to count all the satisfying assignments to that clause.
+This
+is trivial if all its input variables do not have any interaction with any other clauses. In general we
+assume the combinatorial problem is deﬁned in such a way that the notion that corresponds to a local
+component is suﬃciently simple, so that the sum for the matchgate signature for that local component
+alone is computable in polynomial time. This is in particular true if the size of the local component is
+at most O(log N), where N is the input size to the problem.
+8
+
+4
+Collapse Bases of Size 2
+In this section, we develop a general collapse result for bases of size 2. Some of the lemmas are generally
+true for any size k, in such cases, we state the results for arbitrary k.
+First we give the following simple lemmas:
+Lemma 4.1. If a generator G is realizable on a basis T = [n, p] of size k, then for all α ∈{0, 1}k and
+i ∈[k], G is also realizable on the following size 1 basis:
+ nα
+nα+ei
+
+,
+ pα
+pα+ei
+
+.
+Proof: The fact that G is realizable on the basis T = [n, p] means that there exists a matchgate Γ with
+kn external nodes with a standard signature G = T ⊗nG. We construct a new matchgate as follows:
+First, for every block and every j ∈[k], if the j-th bit of α is 1, add an additional edge of weight 1
+between j and an additional nodes j′. Then viewing nodes i (if the i-th bit of α is 0) or i′ (if the i-th
+bit of α is 1) in every block as external nodes and all the other nodes as internal nodes, we have a new
+matchgate Γ′ with n external nodes.
+From (1), we know that the standard signature of Γ′ is exactly
+ nα
+nα+ei
+
+,
+ pα
+pα+ei
+⊗n
+G.
+It follows that G is also realizable on the size 1 basis:
+ nα
+nα+ei
+
+,
+ pα
+pα+ei
+
+.
+Lemma 4.2. If a non-degenerate symmetric generator is realizable on two linearly independent bases
+of size 1:
+ n
+n1
+
+,
+ p
+p1
+
+and
+ n
+n2
+
+,
+ p
+p2
+
+, then n1p2 −n2p1 = 0.
+Proof: In the paper [5] we have obtained a complete characterization of symmetric realizable generators
+and recognizers on bases of size 1. The purpose of Lemma 4.1 is precisely to be able to apply this
+information. Being non-degenerate means that G is not of the form of Lemma 8.1 in [5]. And we can
+check with Lemma 8.2–Lemma 8.6 in [5] to verify that in every other case the statement of this Lemma
+is true. (For reader’s convenience, we include the relevant Lemmas from [5] in an Appendix.)
+Lemma 4.3. Let T = [n, p] be a non-degenerate basis of size k, (and as usual assume Rank(T) = 2.)
+Then there exist i and j, such that wt(i) is even, wt(j) is odd and nipj −njpi ̸= 0.
+We denote by vα = (nα, pα) in the following.
+Proof:
+We assume for a contradiction that for every i and j, with wt(i) even and wt(j) odd, nipj −
+njpi = 0.
+Since T is non-degenerate, there exist i0 and j0 such that wt(i0) is even, wt(j0) is odd, vi0 ̸= (0, 0),
+and vj0 ̸= (0, 0). From the assumption, we know that there exists a λ, such that vj0 = λv(i0). Now for
+any r ∈{0, 1}k, if wt(r) is odd, by assumption there exists some λr such that vr = λrvi0; if wt(r) is
+even, there exists some λ′
+r such that vr = λ′
+rvj0 = λ′
+rλvj0.
+Therefore, every two vectors vi, vj are linearly dependent. As a result Rank(T) = 1. This contra-
+diction completes the proof.
+Lemma 4.4. Suppose a generator G is realizable on the basis T = [n, p] of size k. Let G = T ⊗nG be the
+standard signature of G. If wt(α) is even, wt(β) is odd and the two non-zero vectors (nα, pα), (nβ, pβ)
+are linearly dependent, then whenever α or β occurs as some αi in α1α2 · · · αn, we have Gα1α2···αn = 0.
+Proof:
+Suppose α or β occurs as some αi in α1α2 · · · αn. From (1), when we replace either α with
+β or β with α at one place, the value of G is changed by a non-zero factor, because vα and vβ are
+linearly dependent and non-zero. But their parities are diﬀerent. By the parity requirements of standard
+signatures, one of them is 0. So the only possibility is Gα1α2···αn = 0.
+9
+
+Lemma 4.5. If a non-degenerate symmetric generator G is realizable on a basis T = [n, p] of size 2,
+then nipj −njpi = 0 for all wt(i), wt(j) having the same parity.
+Proof:
+First, notice that every even pattern diﬀers from every odd pattern of {00, 01, 10, 11} by
+exactly one bit. From Lemma 4.1, we have for every even wt(i) and odd wt(j), the standard signature
+ni
+nj
+
+,
+pi
+pj
+⊗n
+G, is realizable.
+From Lemma 4.3, w.l.o.g, we assume v00 and v01 are linearly independent, i.e., n00p01 −n01p00 ̸= 0.
+(If it is the pair (v00, v10) we can just exchange the ﬁrst with the second bit. It is similar with the case
+where it is the vector v11 instead of v00 (for the even weight i from Lemma 4.3).) We use the notation
+D(u, v) to say the vectors u and v are linearly dependent. Then from Lemma 4.2, if ¬D(v00, v10) then
+D(v01, v10), and if ¬D(v11, v01) then D(v00, v11). As a result, both v10 and v11 are in the following
+three cases: (1) a non-zero multiple of v00, (2) a non-zero multiple of v01, or (3) the zero vector (0, 0).
+In order to prove Lemma 4.5 we only need to rule out the following cases:
+• Case 1: v11 = (0, 0), and v10 is a non-zero multiple of v00.
+In this case, from Lemma 4.4, any occurrence of 00 or 10 will make Gα1α2···αn = 0. Since v11 =
+(0, 0), from eqn. (1) any occurrence of 11 will also make Gα1α2···αn = 0. So the only possible
+non-zero entry of G is G01,01,··· ,01. Then G is degenerate, and so is G. A contradiction.
+• Case 2: v10 is (0, 0), and v11 is a non-zero multiple of v01. This case is similar with Case 1.
+• Case 3: v10 is a non-zero multiple of v00, and v11 is a non-zero multiple of v01.
+As in Case 1, any occurrence of 00 or 10 will make Gα1α2···αn = 0. And also any occurrence
+of 11 or 01 will make Gα1α2···αn = 0. Therefore G is trivial. It follows that G is also trivial, a
+contradiction.
+• Case 4: v10 and v11 are both non-zero multiples of v00.
+In this case, from Lemma 4.4, any occurs of 00, 10 or 11 will make Gα1α2···αn = 0. So the only
+possible non-zero entry of G is G01,01,···01. Then G is degenerate, so is G. A contradiction.
+• Case 5: v10 and v11 are both non-zero multiples of v01.
+This case is similar to Case 4. We can show that the only possible non-zero entry of G is G00,00,···00.
+This completes the proof.
+Remark: It seems that the “degeneracy” of having some identically 0 vectors in the basis does present
+additional technical diﬃculty in the proof. The main contour of the proof of the Collapse Theorem is
+simpler in spirit, when one does not have to deal with these zero vectors. In a way, all the preceding
+lemmas are handling some “border line cases”. However we can not dismiss these bases of “border
+line cases” from the theory, for in fact most successes of holographic algorithms have utilized these
+“accidental” bases.
+Now we can prove the following theorem.
+Theorem 4.1. For every valid basis T = [n, p] of size 2, we have D(vi, vj), i.e., vi and vj are linearly
+dependent, for all wt(i), wt(j) having the same parity.
+Proof:
+Since T = [n, p] is valid, by deﬁnition, there exists a non-degenerate generator G which is
+realizable on T. From Corollary 3.1, we know T = [n, p] is non-degenerate.
+10
+
+Let T0 =
+n00
+n11
+
+,
+p00
+p11
+
+and T1 =
+n01
+n10
+
+,
+p01
+p10
+
+.
+Then all we need to prove is det(T0) = det(T1) = 0.
+According to the parity of the arity n and the parity of the matchgate realizing G, we have four
+cases:
+Case 1: even n and odd matchgate
+From the parity constraint, we have T ⊗n
+0
+G = 0 and T ⊗n
+1
+G = 0. Since G ̸≡0 (i.e., G is not identically
+0), we have det(T0) = det(T1) = 0.
+Case 2: odd n and odd matchgate
+From the parity constraint, we have T ⊗n
+0
+G = 0. Since G ̸≡0, we have det(T0) = 0. Since the basis is
+not degenerate, from Lemma 4.3, we know that there exist i and j, such that wt(i) is even, wt(j) is odd
+and ¬D(vi, vj).
+From the parity constraint, for all t ∈[n −2], we also have
+(T ⊗t
+1
+⊗[ni, pi] ⊗[nj, pj] ⊗T ⊗n−2−t
+1
+)G = 0,
+(T ⊗t
+1
+⊗[nj, pj] ⊗[ni, pi] ⊗T ⊗n−2−t
+1
+)G = 0.
+Subtract these two equations we get:
+(nipj −njpi)(T ⊗t
+1
+⊗[0, 1, −1, 0] ⊗T ⊗n−2−t
+1
+)G = 0.
+Since nipj −njpi ̸= 0, we have
+(T ⊗t
+1
+⊗[0, 1, −1, 0] ⊗T ⊗n−2−t
+1
+)G = 0.
+Let Gt be a tensor of V n−2
+0
+such that
+Gi1i2...in−2
+t
+= Gi1i2...it−101itit+1...in−2 −Gi1i2...it−110itit+1...in−2.
+Then we have T ⊗(n−2)
+1
+Gt = 0.
+If there exists any t ∈[n −2] such that Gt ̸≡0, we have det(T1) = 0.
+Otherwise ∀t ∈[n −2] we have Gt ≡0. This implies that G is symmetric. Then from Lemma 4.5,
+we have det(T1) = 0.
+Case 3: odd n and even matchgate
+This case is similar to Case 2. We apply the argument for T0 to T1, and apply the argument for T1 to
+T0.
+Case 4: even n and even matchgate
+This case is also similar to Case 2 and Case 3. We simply apply the same argument for T1 as in Case 2
+and the same argument for T0 as in Case 3.
+From this theorem, we know that for any valid basis T =
+
+
+
+
+
+
+n00
+n01
+n10
+n11
+
+
+
+,
+
+
+
+
+p00
+p01
+p10
+p11
+
+
+
+
+
+, there exist (n0, p0),
+(n1, p1), λ00, λ01, λ10 and λ11, such that vij = λij(nb, pb), where i, j = 0, 1 and b = i + j mod 2.
+From Lemma 4.3, we know that (n0, p0), (n1, p1) are linearly independent, and each is determined
+up to a scalar multiplier.
+Deﬁnition 4.1. We call ˆT =
+n0
+n1
+
+,
+p0
+p1
+
+an embedded size 1 basis of T.
+11
+
+By Lemma 4.3 for at least one pair of indices ij and i′j′, one is of odd weight and the other of even
+weight, such that both λij, λi′j′ ̸= 0. Then by Lemma 4.1 and apply Proposition 2.1, we have
+Theorem 4.2. If a generator G is realizable on a valid basis T of size 2, then it is also realizable on
+its embedded size 1 basis ˆT.
+Now we address recognizers.
+Theorem 4.3. If a recognizer R is realizable on a valid basis T of size 2, then it is also realizable on
+its embedded size 1 basis ˆT.
+Proof:
+Suppose ˆT =
+n0
+n1
+
+,
+p0
+p1
+
+, and we have vij = λij(nb, pb), where i, j = 0, 1 and b =
+i + j mod 2.
+Let Γ be a matchgate realizing R, where R = RT ⊗n. Γ has 2n external nodes. For every block of
+two nodes in Γ, we use the following gadget to extend Γ to get a new matchgate Γ′ of arity n.
+The
+x
+x
+x
+x
+x
+f
+a
+x
+@
+@
+@
+@@
+c
+b
+d
+e
+g
+parameters a, b, c, d, e, f, g satisfy daf = λ11, cf = λ01, ae = λ10, be + cg = λ00.
+These equations are satisﬁable as follows. If λ10 = 0, we set e = 0, c = 1, f = λ01, and g = λ00.
+Note importantly, when λ10 = 0, we have λ01 ̸= 0. This follows from Lemma 4.3. So then we can let
+a = 1 and d = f −1λ11. If λ10 ̸= 0, we set e = f = 1, and g = 0. Then c = λ01, a = λ10 and d = a−1λ11.
+Note the following: If the right most vertex of this gadget is removed, then there are exactly two
+perfect matching fragments of Γ′, with weight cf and ae respectively, which correspond to the bit
+patterns 01 and 10 respectively in the original matchgate Γ. If the right most vertex is kept, then there
+are exactly three perfect matching fragments of Γ′, the ﬁrst with weight daf which corresponds to the
+bit pattern 11 in Γ, and the second and third with weight be and cg, both correspond to the bit pattern
+00 in Γ.
+Let R′ be the standard signature of Γ′. Then we have the exponential sum for all i1, i2, . . . , in = 0, 1:
+R′
+i1i2...in =
+X
+jr+j′r=ir
+Rj1j′
+1,j2j′
+2,··· ,jnj′nλj1j′
+1λj2j′
+2 · · · λjnj′n.
+(The summation jr + j′
+r = ir in the index is done in Z2.)
+We want to prove that R′ in the basis
+n0
+n1
+
+,
+p0
+p1
+
+and R in the basis
+
+
+
+
+
+
+n00
+n01
+n10
+n11
+
+
+
+,
+
+
+
+
+p00
+p01
+p10
+p11
+
+
+
+
+
+give
+the same recognizer R.
+For the summation notation below, we use (ti
+l) and (¯tjj′
+l ) to represent the above two bases, where
+l, i, j, j′ ∈{0, 1}. Here l = 0 is for the n· vectors and l = 1 is for the p· vectors. Then ¯tjj′
+l
+is the product
+of λjj′ and tj+j′
+l
+.
+12
+
+Now from (2) we have
+Rl1l2···ln =
+X
+jr,j′r∈{0,1}
+Rj1j′
+1,j2j′
+2,··· ,jnj′n¯tj1j′
+1
+l1
+¯tj2j′
+2
+l2
+· · · ¯tjnj′
+n
+ln
+=
+X
+ir∈{0,1}
+X
+jr+j′r=ir
+Rj1j′
+1,j2j′
+2,··· ,jnj′n¯tj1j′
+1
+l1
+¯tj2j′
+2
+l2
+· · · ¯tjnj′
+n
+ln
+=
+X
+ir∈{0,1}
+X
+jr+j′r=ir
+Rj1j′
+1,j2j′
+2,··· ,jnj′nλj1j′
+1tj1+j′
+1
+l1
+λj2j′
+2tj2+j′
+2
+l2
+· · · λjnj′ntjn+j′
+n
+ln
+=
+X
+ir∈{0,1}
+ti1
+l1ti2
+l2 · · · tin
+ln
+X
+jr+j′r=ir
+Rj1j′
+1,j2j′
+2,··· ,jnj′nλj1j′
+1λj2j′
+2 · · · λjnj′n
+=
+X
+ir∈{0,1}
+ti1
+l1ti2
+l2 · · · tin
+lnR′
+i1i2···in
+= R′
+l1l2···ln.
+This completes the proof.
+Together from Theorems 4.1 to 4.3, we have the following main theorem:
+Theorem 4.4. (Bases Collapse Theorem) Any holographic algorithm on basis of size 2 which employs
+at least one non-degenerate generator can be done in basis of size 1.
+More precisely, if generators
+G1, G2, . . . , Gs and recognizers R1, R2, . . . , Rt are simultaneously realizable on a size 2 basis, and not
+all generators are degenerate, then all the generators and recognizers are simultaneously realizable on a
+basis of size 1.
+Proof:
+Suppose generators G1, G2, . . . , Gs and recognizer R1, R2, . . . , Rt are simultaneously realizable
+on the size 2 basis T =
+
+
+
+
+
+
+n00
+n01
+n10
+n11
+
+
+
+,
+
+
+
+
+p00
+p01
+p10
+p11
+
+
+
+
+
+. Since some Gi is not degenerate, we know that T is valid.
+Let ˆT =
+n0
+n1
+
+,
+p0
+p1
+
+be the embedded size 1 basis of ˆT. From Theorem 4.2, we know that all the
+generators G1, G2, . . . , Gs are realizable on ˆT. From Theorem 4.3, we know that all the recognizers
+R1, R2, . . . , Rt are also realizable on ˆT. This completes the proof.
+5
+More General Support Vectors
+In this section we consider an extension to the basic model of holographic algorithms. The present
+set-up at a technical level–where the rubber meets the road–can be described as follows.
+We have
+a collection of planar matchgates which are endowed with their standard signatures G.
+These are
+deﬁned by the PerfMatch polynomial. Then we look for a suitable linear basis [n, p] on which we can
+express the standard signatures of the matchgates (superpositions). More precisely for a generator of
+arity n we have a contravariant tensor G, when viewed as a column vector G, it satisﬁes the relation
+G = [n, p]⊗nG. Similarly we have recognizers as covariant tensors, and they satisfy R = R[n, p]⊗n,
+where R is the standard signature of the recognizer and R is the signature under this basis. (We view
+G and G as column vectors and view R and R as row vectors.) We then form tensor products of the
+13
+
+signatures in the order speciﬁed by the matchgrid. With an abuse of notation we still denote by G and
+R the signatures for the matchgrid.
+The Holant is the contraction of R on G.
+This is also, when viewed as an inner product of
+row/column vectors, equal to ⟨R, G⟩. Abstractly the Holant Theorem is just
+⟨R, G⟩= ⟨R, G⟩.
+To solve a combinatorial problem we design matchgates and ﬁnd a basis so that the entries of R
+and G have the desired combinatorial meanings. Then the Holant ⟨R, G⟩expresses the computational
+value one wishes to compute, which is usually an exponential sum. And the Holant Theorem tells us
+that this is the same as ⟨R, G⟩, which can then be computed by the FKT method in polynomial time.
+Consider a matchgrid using a basis t0, t1 of size 2. Let’s extend the basis to a 4×4 invertible matrix
+T = (ti
+j) where i, j ∈{0, 1, 2, 3}. Here it would be convenient to use the convention that upper index i
+is for row and lower index j is for column. We will use this convention consistently [6]. We also denote
+by eT = T −1 = (˜ti
+j).
+To say a generator tensor G is realizable is to have G = [t0, t1]⊗nG being a standard signature of a
+planar matchgate, which are constrained by the PerfMatch polynomial. Viewed in terms of t0, t1, t2, t3,
+we say the generator tensor G is supported on the subset {t0, t1}. This is the same as to say G can be
+augmented to ˆG with zero entries, whenever the index involves 2 and 3, and then G = [t0, t1, t2, t3]⊗n ˆG.
+Now suppose we don’t know how to construct some desired signature G as above, and yet we ﬁnd
+some ˆG = (Gi1,...in)ir=0,1,3 which is supported on t0, t1, t3. This means that [t0, t1, t3]⊗n ˆG is realizable
+as a standard signature of a planar matchgate.
+Furthermore suppose when we restrict to t0, t1, ˆG
+restricts to G, i.e., if we restrict all entries of ˆG whose indices are 0 or 1 (but not 3) we get G.
+Let’s also consider recognizers. Suppose we wish to construct some desired signature R. Yet we
+can only ﬁnd some ˆR = (Ri1,...in′)ir=0,1,2 which restricts to R on ˜t0,˜t1, and which is supported on
+˜t0,˜t1,˜t2. This means that R = ˆR
+
+
+˜t0
+˜t1
+˜t2
+
+
+⊗n′
+is realizable as a standard signature of a planar matchgate.
+Equivalently we can say that the inner product of R with any column in T ⊗n′ having indices involving
+3 is zero.
+In this case, the Holant, as the contraction ⟨ˆR, ˆG⟩, is equal to the desired value ⟨R, G⟩.
+Also
+the Holand can still be computed in polynomial time via the same FKT algorithm. Therefore as an
+algorithmic tool, this provides more freedom in the design of holographic algorithms.
+While this is an extension of the mechanism of holographic algorithm designs, the complexity the-
+ory question is whether this provides an inherent extension of the expressive power for holographic
+algorithms.
+In this section, we show that, in the context we outlined above, this does not provide an inherent
+extension. We will show that every holographic algorithm on bases of size 2, where the generators
+are supported on t0, t1, t3 and recognizers are supported on ˜t0,˜t1,˜t2, can be simulated by another
+holographic algorithm using a basis of size 1.
+(In the following for notational convenience in the proofs, we will exchange the notation of G and ˆG.)
+Theorem 5.1. Suppose G is supported by {t0, t1, t3} and is realizable.
+bG is G restricted on the ﬁrst
+two basis vectors. Then bG is also realizable with the following basis of size 1:
+τ 0
+0 = t0
+0t3
+3 −t3
+0t0
+3,
+τ 1
+0 = t1
+0t2
+3 −t2
+0t1
+3,
+14
+
+τ 0
+1 = t0
+1t3
+3 −t3
+1t0
+3,
+τ 1
+1 = t1
+1t2
+3 −t2
+1t1
+3.
+Proof:
+Let G be supported by {t0, t1, t3} and realizable, where the basis has size 2. This means
+that G = [t0, t1, t3]⊗nG is realizable as the standard signature of some planar matchgate Γ with 2n
+external nodes. We design a new matchgate Γ′ of n external nodes using either one of the following two
+gadgets.
+If t1
+3 and t2
+3 are not both 0, we use the gadget to the left. If both t1
+3 = t2
+3 = 0 we use the
+x
+x
+x
+x
+x
+f
+a
+x
+@
+@
+@
+@@
+c
+b
+d
+e
+g
+x
+x
+x
+x
+x
+x
+1
+−t0
+3
+t3
+3
+1
+gadget to the right. Each block of two output nodes of Γ are connected to the left hand side of a copy
+of this gadget and produces a single output node which is the right most vertex of the gadget. The
+parameters a, b, c, d, e, f and g satisfy daf = −t0
+3, ae = −t1
+3, cf = t2
+3, be + cg = t3
+3. These can be shown
+to be satisﬁable as before. We omit the details.
+For convenience, we will use two bits as superscript indices for t. Then the standard signature G′
+of Γ′ is related to the standard signature G of Γ by the following exponential sum:
+G′l1l2···ln =
+X
+jr+j′r=lr
+Gj1j′
+1,j2j′
+2,··· ,jnj′
+n(−1)j1t
+¯j1 ¯j′
+1
+3
+(−1)j2t
+¯j2 ¯j′
+2
+3
+· · · (−1)jnt
+¯jn ¯j′n
+3
+,
+(7)
+where jr + j′
+r = lr is done in Z2 and ¯j denotes the complement bit of j.
+By deﬁnition of support vectors,
+Gj1j′
+1,j2j′
+2,··· ,jnj′
+n =
+X
+ir∈{0,1,3}
+Gi1i2···intj1j′
+1
+i1
+tj2j′
+2
+i2
+· · · tj2j′
+2
+i2
+.
+Substituting this in (7), we have
+G′l1l2···ln =
+X
+jr+j′r=lr
+(−1)j1t
+¯j1 ¯j′
+1
+3
+(−1)j2t
+¯j2 ¯j′
+2
+3
+· · · (−1)jnt
+¯
+jn ¯
+j′n
+3
+X
+ir∈{0,1,3}
+Gi1i2···intj1j′
+1
+i1
+tj2j′
+2
+i2
+· · · tj2j′
+2
+i2
+=
+X
+ir∈{0,1,3}
+Gi1i2···in
+X
+jr+j′r=lr
+(−1)j1t
+¯j1 ¯j′
+1
+3
+tj1j′
+1
+i1
+(−1)j2t
+¯j2 ¯j′
+2
+3
+tj2j′
+2
+i2
+· · · (−1)jnt
+¯
+jn ¯
+j′n
+3
+tjnj′
+n
+in
+=
+X
+ir∈{0,1,3}
+Gi1i2···in
+n
+Y
+r=1
+
+
+X
+jr+j′r=lr
+(−1)jrt
+¯jr ¯j′r
+3
+tjrj′
+r
+ir
+
+
+Let’s look at the inner sum. If ir = 3,
+X
+jr+j′r=lr
+(−1)jrt
+¯jr ¯j′r
+3
+tjrj′
+r
+ir
+= t1¯lr
+3 t0lr
+3
+−t0lr
+3 t1¯lr
+3
+= 0.
+15
+
+If ir ∈{0, 1},
+X
+jr+j′r=lr
+(−1)jrt
+¯jr ¯j′r
+3
+tjrj′
+r
+ir
+= t1¯lr
+3 t0lr
+ir −t0lr
+3 t1¯lr
+ir = τ lr
+ir .
+Substituting this in the above equation, we see that the outer sum is over ir ∈{0, 1}, and we get
+G′l1l2···ln =
+X
+ir∈{0,1}
+Gi1i2···inτ l1
+i1 τ l2
+i2 · · · τ ln
+in .
+Notice that for ir ∈{0, 1}, Gi1i2···in = bGi1i2···in, since G restricts to bG. The above equation is exactly
+G′ = τ ⊗n bG. So bG is realizable on τ. This completes the proof.
+Similarly, we have:
+Theorem 5.2. (Folding Bases Theorem) Suppose R is supported by {˜t0,˜t1,˜t2} and is realizable. R′ is
+R restricted on the ﬁrst two basis vectors. Then R′ is also realizable at the following size 1 basis:
+˜τ ′0
+0 = ˜t0
+0˜t2
+3 −˜t0
+3˜t2
+0,
+˜τ ′0
+1 = ˜t0
+1˜t2
+2 −˜t0
+2˜t2
+1,
+˜τ ′1
+0 = ˜t1
+0˜t2
+3 −˜t1
+3˜t2
+0,
+˜τ ′1
+1 = ˜t1
+1˜t2
+2 −˜t1
+2˜t2
+1.
+Theorem 5.3. If the basis
+τ 0
+0
+τ 1
+0
+
+,
+τ 0
+1
+τ 1
+1
+
+in Theorem 5.1 is linearly independent, then the two bases
+of size 1 in Theorem 5.1 and 5.2 are inverses of each other, up to the equivalence relation in the sense
+of Proposition 2.1.
+Therefore the extended holographic algorithms using such support vectors can be simulated by holo-
+graphic algorithms on bases of size 1 without such extension.
+We remark that if bG is realizable on τ and yet the basis τ is not linearly independent, then bG is
+trivial and uninteresting.
+Proof:
+By Proposition 2.1, we only need to prove that τ 0
+0 ˜τ ′0
+1 + τ 0
+1 ˜τ ′1
+1 = τ 1
+0 ˜τ ′0
+0 + τ 1
+1 ˜τ ′1
+0 = 0. We show
+this by the following calculation.
+τ 0
+0 ˜τ ′0
+1 + τ 0
+1 ˜τ ′1
+1
+=
+(t0
+0t3
+3 −t3
+0t0
+3)(˜t0
+1˜t2
+2 −˜t0
+2˜t2
+1) + (t0
+1t3
+3 −t3
+1t0
+3)(˜t1
+1˜t2
+2 −˜t1
+2˜t2
+1)
+=
+t3
+3(t0
+0(˜t0
+1˜t2
+2 −˜t0
+2˜t2
+1) + t0
+1(˜t1
+1˜t2
+2 −˜t1
+2˜t2
+1)) −t0
+3(t3
+0(˜t0
+1˜t2
+2 −˜t0
+2˜t2
+1) + t3
+1(˜t1
+1˜t2
+2 −˜t1
+2˜t2
+1))
+=
+t3
+3(˜t2
+2(t0
+0˜t0
+1 + t0
+1˜t1
+1) −˜t2
+1(t0
+0˜t0
+2 + t0
+1˜t1
+2)) −t0
+3(˜t2
+2(t3
+0˜t0
+1 + t3
+1˜t1
+1) −˜t2
+1(t3
+0˜t0
+2 + t3
+1˜t1
+2))
+=
+−t3
+3(˜t2
+2(t0
+2˜t2
+1 + t0
+3˜t3
+1) −˜t2
+1(t0
+2˜t2
+2 + t0
+3˜t3
+2)) + t0
+3(˜t2
+2(t3
+2˜t2
+1 + t3
+3˜t3
+1) −˜t2
+1(t3
+2˜t2
+2 + t3
+3˜t3
+2))
+=
+−t3
+3(˜t2
+2t0
+3˜t3
+1 −˜t2
+1t0
+3˜t3
+2) + t0
+3(˜t2
+2t3
+3˜t3
+1 −˜t2
+1t3
+3˜t3
+2)
+=
+0.
+Here the 4th equality uses the fact that ˜T = T −1.
+Similarly, we have τ 1
+0 ˜τ ′0
+0 + τ 1
+1 ˜τ ′1
+0 = 0.
+Even though we prove that in this natural setting, the use of more general support vectors can
+be simulated by holographic algorithms which do not use this extra freedom, we should not therefore
+conclude that this notion is useless.
+Logically this is not dissimilar to that of deterministic ﬁnite
+automata and non-deterministic ﬁnite automata. Moreover our proof here does not address the more
+general possibilities of two support vector sets intersecting at [t0, t1]. This situation is open.
+16
+
+References
+[1] J-Y. Cai and Vinay Choudhary. Some Results on Matchgates and Holographic Algorithms. In
+Proceedings of ICALP 2006, Part I. Lecture Notes in Computer Science vol. 4051. pp 703-714.
+Also available at Electronic Colloquium on Computational Complexity TR06-048, 2006.
+[2] J-Y. Cai and Vinay Choudhary.
+Valiant’s Holant Theorem and Matchgate Tensors (Extended
+Abstract).
+In Proceedings of TAMC 2006: Lecture Notes in Computer Science vol. 3959, pp
+248-261. Also available at Electronic Colloquium on Computational Complexity Report TR05-118.
+[3] J-Y. Cai and Vinay Choudhary. On the Theory of Matchgate Computations . Submitted. Also
+available at Electronic Colloquium on Computational Complexity Report TR06-018.
+[4] J-Y. Cai and Pinyan Lu. On Symmetric Signatures in Holographic Algorithms. To appear in STACS
+2007. Also available at Electronic Colloquium on Computational Complexity Report TR06-135.
+[5] J-Y. Cai and Pinyan Lu. Holographic Algorithms: From Art to Science. Submitted.
+[6] C. T. J. Dodson and T. Poston. Tensor Geometry, Graduate Texts in Mathematics 130, Second
+edition, Springer-Verlag, New York, 1991.
+[7] D. Lichtenstein. Planar formulae and their uses. SIAM J. Comput. 11, 2:329-343.
+[8] M. Jerrum. Two-dimensional monomer-dimer systems are computationally intractable. J. Stat.
+Phys. 48 (1987) 121-134; erratum, 59 (1990) 1087-1088
+[9] P. W. Kasteleyn. The statistics of dimers on a lattice. Physica, 27: 1209-1225 (1961).
+[10] P. W. Kasteleyn. Graph Theory and Crystal Physics. In Graph Theory and Theoretical Physics,
+(F. Harary, ed.), Academic Press, London, 43-110 (1967).
+[11] E. Knill. Fermionic Linear Optics and Matchgates.
+At http://arxiv.org/abs/quant-ph/0108033
+[12] K. Murota. Matrices and Matroids for Systems Analysis, Springer, Berlin, 2000.
+[13] H. N. V. Temperley and M. E. Fisher. Dimer problem in statistical mechanics – an exact result.
+Philosophical Magazine 6: 1061– 1063 (1961).
+[14] L. G. Valiant.
+Quantum circuits that can be simulated classically in polynomial time.
+SIAM
+Journal of Computing, 31(4): 1229-1254 (2002).
+[15] L. G. Valiant. Expressiveness of Matchgates. Theoretical Computer Science, 281(1): 457-471 (2002).
+[16] L. G. Valiant. Holographic Algorithms (Extended Abstract). In Proc. 45th IEEE Symposium on
+Foundations of Computer Science, 2004, 306–315. A more detailed version appeared in Electronic
+Colloquium on Computational Complexity Report TR05-099.
+[17] L. G. Valiant. Holographic circuits. In Proc. 32nd International Colloquium on Automata, Lan-
+guages and Programming, 2005, 1–15.
+[18] L. G. Valiant.
+Completeness for parity problems.
+In Proc. 11th International Computing and
+Combinatorics Conference, 2005, 1–8.
+[19] L. G. Valiant. Accidental Algorithms. In Proc. 47th Annual IEEE Symposium on Foundations of
+Computer Science 2006, 509–517.
+17
+
+6
+Appendix
+In [4], we gave a characterization of all the realizable symmetric signatures over all bases of size 1.
+Theorem 6.1. A symmetric signature [x0, x1, · · · , xn] is realizable on some basis of size 1 iﬀthere
+exists three constants a, b, c (not all zero), such that ∀k, 0 ≤k ≤n −2,
+axk + bxk+1 + cxk+2 = 0.
+(8)
+Based on this theorem, the following Lemmas in [5] gave a complete and mutually exclusive list of
+realizable symmetric signatures for generators, in terms of the exact set of bases of size 1 on which a
+signature is realized.
+In the following, the basis manifold M is deﬁned to be the set of all possible size 1 bases modulo
+the equivalence relation from Proposition 2.1. And the notation Bgen([x0, x1, . . . , xn]) is deﬁned to be
+the set of all possible bases in M on which a symmetric signature [x0, x1, . . . , xn] for a generator is
+realizable.
+Lemma 6.1.
+Bgen([an, an−1b, · · · , bn]) =
+n0
+−b
+
+,
+p0
+a
+
+∈M
+ n0, p0 ∈F
+
+.
+Lemma 6.2.
+Bgen([x0, x1, x2]) =
+n0
+n1
+
+,
+p0
+p1
+
+∈M
+
+x0n2
+0 + 2x1n0p0 + x2p2
+0 = 0, x0n2
+1 + 2x1n1p1 + x2p2
+1 = 0
+or x0n0n1 + x1(n0p1 + n1p0) + x2p0p1 = 0
+
+.
+Lemma 6.3. Let λ1 ̸= 0. Suppose p = char.F ̸ |n,
+Bgen([0, 0, · · · , 0, λ1, λ2]) =
+−λ2
+1
+
+,
+nλ1
+0
+
+.
+Lemma 6.4. For AB ̸= 0,
+Bgen([A, Aα, Aα2, · · · , Aαn + B]) =
+ ω −α
+−α −ω
+
+,
+1
+1
+ ωn = ±B
+A
+
+.
+Lemma 6.5. For AB ̸= 0 and α ̸= β,
+Bgen({Aαi + Bβi|i = 0, 1, · · · , n}) =
+ βω −α
+−α −βω
+
+,
+1 −ω
+1 + ω
+ ωn = ±B
+A
+
+.
+Lemma 6.6. Let A ̸= 0 and suppose p = char.F ̸ |n.
+Bgen({Aiαi−1 + Bαi|i = 0, 1, · · · , n}) =
+nA + Bα
+−α
+
+,
+−B
+1
+
+.
+18

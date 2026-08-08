@@ -1,0 +1,2027 @@
+Dichotomy for Holant∗Problems of Boolean Domain
+Jin-Yi Cai∗
+Pinyan Lu†
+Mingji Xia‡
+Abstract
+Holant problems are a general framework to study
+counting problems. Both counting Constraint Satisfac-
+tion Problems (#CSP) and graph homomorphisms are
+special cases. We prove a complexity dichotomy the-
+orem for Holant∗(F), where F is a set of constraint
+functions on Boolean variables and output complex val-
+ues. The constraint functions need not be symmetric
+functions. We identify four classes of problems which
+are polynomial time computable; all other problems are
+proved to be #P-hard. The main proof technique and
+indeed the formulation of the theorem use holographic
+algorithms and reductions. By considering these count-
+ing problems over the complex domain, we discover sur-
+prising new tractable classes, which are associated with
+isotropic vectors, i.e., a (non-zero) vector whose inner
+product with itself is zero.
+1
+Introduction
+Many graph counting problems can be formulated as
+computing partition functions.
+For example Inde-
+pendent Set can be formulated as follows:
+Given
+a graph G = (V, E), attach to every edge e ∈E
+the Nand function fe.
+For any vertex assignment
+σ : V →{0, 1}, deﬁne the weight function wt(σ) =
+Q
+e={u,v}∈E fe(σ(u), σ(v)). Then wt(σ) ̸= 0 iﬀσ−1(1)
+is an independent set.
+The counting problem is to
+compute the partition function of spin-system Z(G) =
+P
+σ wt(σ).
+By varying the edge functions fe, other
+problems can be stated in a uniform way, e.g., Vertex
+Cover corresponds to the Boolean Or function, and
+3-Coloring corresponds to the Disequality function
+on domain size 3.
+The functions fe need not be 0-1
+valued. Nonnegative values are the most natural com-
+binatorially, but negative or complex values are also
+interesting. E.g., let H =
+³
+1
+1
+1
+−1
+´
+be the Hadamard
+∗University of Wisconsin-Madison and Beijing University.
+jyc@cs.wisc.edu.
+Supported by NSF CCF-0830488 and CCF-
+0511679.
+†Microsoft Research Asia. pinyanl@microsoft.com
+‡Institute
+of
+Software,
+Chinese
+Academy
+of
+Sciences.
+mingji@ios.ac.cn. Supported by the Grand Challenge Program
+“Network Algorithms and Digital Information” of ISCAS. Sup-
+ported by NSFC 61003030 and 60970003.
+matrix, which deﬁnes a function H(0, 0) = H(0, 1) =
+H(1, 0) = 1 and H(1, 1) = −1. The weight function
+wt(σ) = ±1, and is −1 precisely when the induced sub-
+graph on σ−1(1) has an odd number of edges. Therefore,
+(2n −Z(G))/2 is the number of induced subgraphs with
+an odd number of edges. We will demonstrate in this
+paper that, at a deeper level, by considering general
+complex valued functions1 we gain a more structural
+understanding mathematically, even for 0-1 valued con-
+straint fucntions.
+When every edge is attached the same symmet-
+ric edge function it is called a graph homomorphism
+problem [30, 21]. There is also a long history in sta-
+tistical physics community in the study of partition
+functions. Ever since Wilhelm Lenz asked his student
+Ernst Ising [22] to work on what’s now known as the
+Ising model, physicists have studied so-called “Exactly
+Solved Models” [2, 32]. In computer science language,
+physicists’ notion of an “exactly solvable” system cor-
+responds to systems with polynomial time computable
+partition functions.
+Many physicists (Ising, Onsager,
+Fisher, Temperley, Kasteleyn, C. N. Yang, T. D. Lee,
+Baxter, Lieb, Wilson e.t.c. [22, 33, 44, 45, 28, 37, 25, 26,
+2, 29, 43]) contributed to this intellectual ediﬁce. But
+the physicists lacked a formal notion of what it means
+to be not “exactly solvable”, which should correspond
+to #P-hardness. Great progress has been made on the
+complexity of partition functions, giving classiﬁcation
+theorems [16, 4, 20, 38, 6, 15, 5] in terms of polynomial
+time tractability or #P-hardness. A major further re-
+search direction is when a #P-hard partition function
+can be approximated [23, 14, 12, 24, 31, 34, 19].
+Now consider the problem of counting perfect
+matchings. Given a graph G = (V, E), attach a local
+constraint function fv to every vertex v ∈V . For per-
+fect matchings, let fv be the Exact-One function. We
+now consider edges to be variables. For any assignment
+σ : E →{0, 1}, let wt(σ) = Q
+v∈V fv(σ |E(v)), where
+E(v) are the incident edges at v. For fv = Exact-One,
+the weight function wt(σ) ̸= 0 iﬀσ−1(1) is a perfect
+matching. We deﬁne Holant(G) = P
+σ:E→{0,1} wt(σ).
+Given a choice of local constraint functions, a Holant
+1To avoid any diﬃculties with models of computation, we
+restrict to functions taking algebraic numbers in C.
+1714
+Copyright © by SIAM. 
+Unauthorized reproduction of this article is prohibited.
+
+problem on G is to evaluate Holant(G).
+Holant problems were deﬁned in [8], and the name
+was inspired by the introduction of Holographic Algo-
+rithms by L. Valiant [42, 41] (who ﬁrst used the term
+Holant). It is easy to simulate a partition function by
+Holant. In fact Holant problems can simulate all #CSP
+problems.
+A #CSP problem is speciﬁed by a bipar-
+tite graph G = (V, W, E) where each v ∈V is a vari-
+able, each w ∈W has a constraint function fw, and
+N(w) = {v ∈V | (v, w) ∈E} is the (ordered) set of
+variables fw applies to. The computational problem of
+a #CSP instance is to evaluate P
+σ
+Q
+w fw(σ |N(w)), a
+sum, over all assignments σ on V , of the products of all
+function evaluations fw on N(w). The partition func-
+tion of a spin system is a special case of #CSP where
+every w ∈W has degree 2. On the other hand, given
+any #CSP instance, if we assign Equality functions
+at every v ∈V , and consider E as variables, then the
+#CSP problem on G is reduced to a Holant problem2.
+To study which counting problems are computable
+in polynomial time (tractable) and which are not (in-
+tractable), we try to characterize this by the function
+sets used as local constraints.
+An ideal outcome in
+this line of research is to be able to classify, within
+a broad class of functions, every function set either
+leads to tractable problems or is #P-hard.
+This is
+called a dichotomy theorem [35, 10, 36] (By an ana-
+logue of Ladner’s theorem [27], such a dichotomy is
+false for the whole #P, unless P = P#P.) Dichotomy
+theorems have been obtained for counting graph ho-
+momorphisms for successively broader class of func-
+tions [16, 4, 20, 38, 6, 15, 5]. A sweeping dichotomy
+theorem for all #CSP with 0-1 constraint functions over
+any ﬁnite domain was given by Bulatov [3]. An alterna-
+tive proof is given in [11]. It can be extended to func-
+tions taking non-negative rational values [1]. However
+in general when negative values are allowed, cancela-
+tions occur, and this could lead to surprising P-time
+algorithms. Holographic Algorithms precisely take ad-
+vantages of such cancelations. By operating without re-
+striction to non-negative values, some deeper underlying
+mathematical structures become visible (cf. [20, 6]).
+For any set of functions F, we use Holant(F) to
+denote the class of Holant problems using F. Similarly
+#CSP(F) is the class of #CSP problems using F.
+Let EQ = {=k| k ≥1} denote the set of Equality
+functions. (The function =k takes k inputs and output
+1 if all inputs are equal, and output 0 otherwise.) Then
+#CSP(F) = Holant(F ∪EQ) (i.e., #CSP = Holant with
+EQ for free.)
+2On the other hand, Freedman, Lov´asz, and Schrijver [18]
+showed that counting perfect matchings cannot be expressed as
+graph homomorphisms.
+It turns out that allowing Equality functions for
+free has a major inﬂuence on tractability. By making
+the presence of these Equality functions explicit, the
+Holant framework makes a ﬁner complexity classiﬁca-
+tion than #CSP. While #CSP is Holant with EQ for
+free, we can consider other special cases of Holant prob-
+lems. It turns out that the set U of all unary functions
+are structurally important. Tensor products by unary
+functions constitute the so-called degenerate functions,
+which are particularly weak, and have played a crucial
+role in many classiﬁcation theorems. Holant∗is the class
+of Holant problems where all unary functions are free,
+i.e., Holant∗(F) = Holant(F ∪U).
+Previously we have studied Holant∗problems for
+any set F of symmetric functions on Boolean vari-
+ables [9]. This study led to a complexity dichotomy the-
+orem for all #CSP(F), where F is any set of complex-
+valued constraint functions on Boolean variables [9].
+This improves previously the strongest dichotomy for
+Boolean #CSP(F) by Dyer, Goldberg and Jerrum [13],
+which applies to nonnegative-valued constraint func-
+tions. The extension to complex-valued constraint func-
+tions not only extends the scope formally, it also discov-
+ers inherent structural properties not visible for nonneg-
+ative numbers.
+The main result in this paper is to prove a di-
+chotomy theorem for all Holant∗(F), where F is any set
+of complex-valued functions on Boolean variables, and
+these functions need not be symmetric. This research is
+strongly inﬂuenced by the development of holographic
+algorithms and reductions [40, 41, 7, 8]. Indeed, they
+not only provide the main proof techniques but also aid
+in the discovery and formulation of the theorem.
+The theorem identiﬁes four classes of functions
+F where Holant∗(F) is polynomial time computable.
+These can be roughly described as follows: The ﬁrst
+class F1 is tractable due to its arity, and the computa-
+tion is done by matrix product and taking trace. The
+second tractable class F2 is a generalization of the so-
+called Fibonacci gates introduced in [8], and denoted
+by F. These are symmetric functions and Holant∗(F)
+is tractable. F2 generalizes this to functions that are
+not necessarily symmetric. Here holographic transfor-
+mations become crucial, which allow us to discover and
+to express this class in a succinct and elegant way. It is
+basically Fibonacci gates under an orthogonal transfor-
+mation3.
+The third and fourth tractable classes F3 and
+F4 depend even more fundamentally on holographic
+transformations.
+It is also here that the complex
+3In this paper, we actually present it slightly diﬀerently, in
+order to give a more succinct proof.
+1715
+Copyright © by SIAM. 
+Unauthorized reproduction of this article is prohibited.
+
+domain C becomes essential.
+Over C there are so-
+called isotropic vectors v ̸= 0 which satisfy vTv = 0.
+(No nonzero real vector has this property.) F3 (resp.
+F4) are Fibonacci gates (resp. Matching gates, a class
+related to weighted matchings), after a holographic
+transformation correlated with isotropic vectors.
+Our dichotomy here is a generalization of the di-
+chotomy in [9] for symmetric Holant∗Problems. The
+symmetric dichotomy can be viewed as a special case
+of the dichotomy in this paper and on the other hand
+also serves as the starting point for our reduction. Fur-
+thermore, by proving a dichotomy theorem in this more
+general setting, we also gain a deeper and clearer under-
+standing of the tractable cases for the symmetric ones.
+In Section 2, we give some formal deﬁnitions and
+state the main theorem.
+In Section 3, we prove the
+tractability results.
+Section 4 gives an outline of the
+hardness proof.
+In Section 5, we prove some useful
+algebraic lemmas. In Sections 6 and 7, we prove that,
+assuming P ̸= P#P, we have found all the tractable
+Holant∗(F).
+2
+Deﬁnition and statement
+A (constraint) function F, or synonymously a signature,
+of arity n ≥0, is a mapping from {0, 1}n to C.
+A
+function of arity 0 is a constant. A function of arity
+1 is called a unary function. We use the same symbol
+F to denote the column vector indexed by {0, 1}n as
+an expression of F, listing all its values in lexicographic
+order. When we use it as a row vector we write F T.
+Sometimes it is also convenient to partition the variable
+set into two parts {x1, x2, . . . , xn} = I ∪J, and write F
+as a matrix with rows indexed by {0, 1}|I| and columns
+indexed by {0, 1}|J|.
+This is particularly useful for a
+binary function F(x, y), whose matrix form F = Fx,y is
+a 2 × 2 matrix, with row index x and column index y
+both range over {0, 1}. For example, Fx1x2,x3 is a 4 × 2
+matrix.
+Suppose c ∈C is a nonzero number. As constraint
+functions F and cF are equivalent in terms of the
+complexity of Holant problems they deﬁne. Hence we
+will consider functions F and cF to be interchangeable,
+denoted by F ∼= cF. The notation F ∼= 0 means that F
+is (identically) zero.
+We denote by =k the Equality function of arity
+k. A symmetric function f on k Boolean variables can
+be expressed by [f0, f1, . . . , fk], where fi is the value
+of f on inputs of Hamming weight i.
+Thus, (=k) =
+[1, 0, . . . , 0, 1] (with k −1 zeros), and (=2) = [1, 0, 1]
+(= (1, 0, 0, 1) in row vector form).
+A signature grid Ω= (G, F, π) consists of a graph
+G = (V, E), and a labeling π of each vertex v ∈V with
+a function fv ∈F. The Holant problem on instance Ωis
+to compute HolantΩ= P
+σ:E→{0,1}
+Q
+v∈V fv(σ |E(v)). A
+Holant problem is parameterized by a set of signatures.
+Definition 2.1. Given a set of signatures F, we deﬁne
+a counting problem Holant(F):
+Input: A signature grid Ω= (G, F, π);
+Output: HolantΩ.
+We would like to characterize the complexity of
+Holant problems in terms of its signature sets4.
+Definition 2.2. Let U denote the set of all unary
+signatures. Then Holant∗(F) = Holant(F ∪U).
+A degenerate signature is a tensor product of unary
+signatures. Since all unary signatures can be used for
+free in Holant∗(F), we assume the arity of every signa-
+ture in F is greater than one. And since any degenerate
+signature can be decomposed to unary signatures, we
+also assume that every signature in F is non-degenerate.
+In [9], we proved a dichotomy theorem when F is a
+set of symmetric signatures.
+Theorem 2.1. Let F be a set of non-degenerate sym-
+metric signatures over C.
+Then Holant∗(F) is com-
+putable in polynomial time in the following three
+Classes. In all other cases, Holant∗(F) is #P-hard.
+1. Every signature in F is of arity no more than two;
+2. There exist two constants a and b (not both zero,
+depending only on F), such that for all signatures
+[x0, x1, . . . , xn] ∈F one of the two conditions is
+satisﬁed: (1) for every k = 0, 1, . . . , n −2, we have
+axk + bxk+1 −axk+2 = 0; (2) n = 2 and the
+signature [x0, x1, x2] is of the form [2aλ, bλ, −2aλ].
+3. For every signature [x0, x1, . . . , xn] ∈F one of
+the two conditions is satisﬁed: (1) For every k =
+0, 1, . . . , n −2, we have xk + xk+2 = 0; (2) n = 2
+and the signature [x0, x1, x2] is of the form [λ, 0, λ].
+The dichotomy is still valid even if the inputs are
+restricted to planar graphs.
+An F-gate Γ, or a gadget, is a tuple (H, F, π),
+where H = (V, E, D) is a graph with some dangling
+edges D.
+(See Figure 1 for one example.)
+Other
+than these dangling edges, an F-gate is the same as
+a signature grid.
+The role of dangling edges is to
+provide input/output variables. This is similar to the
+4We allow F to be an inﬁnite set. Holant(F) is tractable means
+that it is computable in P even when we include the description
+of the signatures in the input Ωin the input size. Holant(F) is
+#P-hard means that there exists a ﬁnite subset of F for which
+the problem is #P-hard.
+1716
+Copyright © by SIAM. 
+Unauthorized reproduction of this article is prohibited.
+
+H
+Figure 1: An example of an F-gate with ﬁve dangling
+edges.
+notion of external nodes for matchgates in Valiant’s
+deﬁnition [39, 42], however we allow more than one
+dangling edges for a node. In H = (V, E, D) each node
+is assigned a function in F by the mapping π (we do not
+consider “dangling” leaf nodes at the end of a dangling
+edge among these), E is the set of regular edges, denoted
+as 1, 2, . . . , m, and D is the set of dangling edges,
+denoted as m+1, m+2, . . . , m+n. Then we can deﬁne
+a function for this F-gate Γ = (H, F, π),
+Γ(y1, . . . , yn) =
+X
+x1,...,xm∈{0,1}
+H(x1, . . . , xm, y1, . . . yn),
+where (y1, y2, . . . , yn)
+∈
+{0, 1}n denotes an assign-
+ment on the dangling edges and H(x1, x2, . . . , xm,
+y1, y2, . . . , yn) denotes the value of the signature grid
+on an assignment of all edges.
+We will also call this
+function the signature of the F-gate Γ. An F-gate can
+be used in a signature grid as if it is just a single node
+with the particular signature.
+Let g be the signature of some F-gate Γ.
+Then
+Holant(F ∪{g}) ≤T Holant(F). The reduction is quite
+simple.
+Given an instance of Holant(F ∪{g}), by
+replacing every appearance of g by an F-gate Γ, we get
+an instance of Holant(F). Since the signature of Γ is
+g, the values for these two signature grids are identical.
+We say g is realized by the gadget Γ.
+The most direct and general way to express a
+gadget and its function, is the graph of the gadget.
+But in order to reason about this function, we need
+some simple and intuitive notations, especially for two
+basic compositional constructions. The ﬁrst operation is
+identifying two variables. We use F xi=xj to denote the
+function of arity n −2 realized by a function F of arity
+n ≥2, such that the two dangling edges corresponding
+xi and xj are merged to become one (internal) edge.
+(See Figure 2 for one example.)
+The second operation is called juxtaposition. Sup-
+Figure 2: An example of F x1=x2.
+pose F is a function of arity n and I = {I1, . . . , Ik}
+is a partition of [n].
+If F(X) = Qk
+j=1 Fj(X|Ij) for
+some functions F1, . . . , Fk, where X = {x1, . . . , xn} and
+X|Ij = {xs|s ∈Ij} (we also denote it by Xj), then
+we say F can be decomposed into type I, or sim-
+ply F has type I.
+We denote such an F by F =
+N
+I(F1, . . . , Fk). If each Fj is the function of some gad-
+get, then N
+I(F1, . . . , Fk) is the function of the gadget
+which is the disjoint union of these gadgets for Fj, with
+variables arranged according to I. When the indexing
+is clear, we also use notation F1 ⊗· · · ⊗Fk. Note that
+this tensor product notation ⊗is consistent with tensor
+product of matrices. (See Figure 3 for one example.)
+This deﬁnition of F = N
+I(F1, . . . , Fk) can be easily
+generalized to the case where I = {I1, . . . , Ik} is a par-
+tition of an arbitrary ﬁnite set of indices.
+Figure 3: An example of juxtaposition N
+I(F, G), where
+I = {{1, 4}, {2, 3, 5}}.
+We use F xj1=U1,...,xjk =Uk to denote the function of
+arity n −k realized by a function F of arity n such
+that its input variable xjs is connected with the unary
+function Us, s = 1, . . . , k.
+F xj=0, F xj=1 and FU
+are respectively abbreviations for F xj=[1,0], F xj=[0,1]
+and F xj=U (where xj is clear from the context for
+FU). Note that [1, 0] and [0, 1] are two special unary
+functions.
+We also use matrix multiplication, especially when
+gadgets are sequentially chained together. For example,
+suppose A = Ax1,x2, B = Bx3,x4 and C = Cx5,x6
+1717
+Copyright © by SIAM. 
+Unauthorized reproduction of this article is prohibited.
+
+are three binary functions. Then ABC expresses the
+function (A ⊗B ⊗C)x2=x3,x4=x5, which has the matrix
+form exactly the matrix product ABC, indexed by x1
+(for row) and x6 (for column).
+Note that A∅,x1Bx2,∅
+or ATB is the inner product of unary functions A and
+B. Similarly, Ax1,∅B∅,x2 or ABT is the matrix form of
+the tensor product function N
+{{1},{2}}(A, B) (or just
+A ⊗B) of unary functions A and B.
+When we discuss function sets F, whenever a
+function f(X) ∈F, where |X| = n, we may change
+the names of the variables, i.e., we consider f(X′) also
+belongs to F, where X′ is another set of variables,
+|X′| = |X|. We say a function set F is closed under
+tensor product (or more precisely under juxtaposition),
+if for any functions A and B on two disjoint sets of
+variables indexed by I and J respectively, A, B ∈F
+implies that N
+I(A, B) ∈F, where I = {I, J}. Tensor
+closure ⟨F⟩of a set F is the minimum set containing
+F, closed under tensor product.
+This closure exists,
+being the set of all functions obtained by taking a ﬁnite
+sequence of tensor products from F.
+Next we deﬁne several important sets of functions
+on Boolean variables. U is the set of all unary functions.
+E is the set of all functions F such that F is zero
+except on two inputs (a1, . . . , an) and (¯a1, . . . , ¯an) =
+(1−a1, . . . , 1−an). In other words, F ∈E iﬀits support
+is contained in a pair of complementary points.
+We
+think of E as a generalized form of Equality. M is
+the set of all functions F such that F is zero except on
+n+1 inputs whose Hamming weight is at most 1, where
+n is the arity of F. The name M is given for matching.
+T is the set of all functions of arity at most 2. Note
+that U is a subset of E, M and T .
+The class ⟨U⟩is called the degenerate signatures.
+A binary function belongs to ⟨U⟩iﬀits matrix form is
+singular.
+A ternary function F(x1, x2, x3) belongs to
+⟨T ⟩iﬀF xj=U ∼= 0 for some 1 ≤j ≤3 and some unary
+U ̸∼= 0. If furthermore the ternary function F(x1, x2, x3)
+is symmetric, then the following statements are all
+equivalent: (1) F ∈⟨T ⟩; (2) F ∈⟨U⟩; (3) F = [a, b]⊗3
+for some unary [a, b]; and (4) FU ∼= 0 for some unary
+U ̸∼= 0 (take U = [b, −a] if [a, b] ̸∼= 0, or any unary U ̸∼= 0
+if [a, b] ∼= 0).
+Suppose F is a function set and M is a 2×2 matrix.
+We use M◦F to denote the set consisting of all functions
+in F transformed by a matrix M,
+M ◦F = {M ⊗rF F|F ∈F, rF = arity(F)}.
+M ⊗rF F
+is called a holographic transformation of
+the
+function
+F.
+In
+the
+notation
+M ⊗rF F
+we
+write F as a column vector of dimension 2rF .
+If
+f(x1, . . . , xn, y1, . . . , ym) is a function on n+m variables,
+and if we use F to denote its representation as a column
+vector of dimension 2n+m, and use Fn,m to denote its
+representation as a 2n×2m matrix, then the holographic
+transformation M ⊗(n+m)F has its representation in ma-
+trix notation M ⊗nFn,m(M T)⊗m. In particular if f is a
+binary function with a 2 × 2 matrix form Fx,y, then its
+holographic transformation by M is MFx,yM T in ma-
+trix form.
+Deﬁne
+Z1 =
+³
+1
+1
+i
+−i
+´
+and
+Z2 =
+³
+1
+1
+−i
+i
+´
+.
+If the transformation matrix M is an orthogonal
+matrix, then we denote it by H; if M is one of Z1 or
+Z2, we denoted it by Z. Note that (1, ± i) is isotropic.
+The following sets of functions will play a pivotal
+role: H ◦E, Z ◦E and Z ◦M. Our main theorem is
+the following complete classiﬁcation of the complexity of
+Holant∗problems for constraint functions over Boolean
+variables.
+Theorem 2.2. Let F
+be any set of complex val-
+ued functions in Boolean variables.
+The problem
+Holant∗(F) is polynomial time computable, if (1) F ⊆
+⟨T ⟩, or (2) there exists an orthogonal matrix H such
+that F ⊆⟨H ◦E⟩, or (3) there exists a matrix Z such
+that F ⊆⟨Z ◦E⟩, where Z = Z1 or Z2, or (4) there ex-
+ists a matrix Z such that F ⊆⟨Z ◦M⟩, where Z = Z1
+or Z2. In all other cases, Holant∗(F) is #P-hard. The
+dichotomy is still valid even if the inputs are restricted
+to planar graphs.
+3
+Tractability
+The tractability part is given by the following theorem.
+Theorem 3.1. The following classes of Holant∗prob-
+lems are polynomial time computable.
+• Holant∗(⟨T ⟩)
+• Holant∗(⟨H ◦E⟩);
+• Holant∗(⟨Z ◦E⟩); and
+• Holant∗(⟨Z ◦M⟩)
+Proof. By “decoupling” a vertex v into several vertices
+according to its tensor product factors of the function at
+v, one can trivially reduce Holant∗(⟨F⟩) to Holant∗(F),
+for any F.
+Firstly, to show the tractability of Holant∗(T ), we
+consider any input graph G. G has maximum degree
+2, so each connected component is either a path or a
+cycle.
+So we only need to compute some m steps of
+matrix multiplications and trace operations, where m is
+the number of edges in G. This is clearly polynomial
+time computable.
+1718
+Copyright © by SIAM. 
+Unauthorized reproduction of this article is prohibited.
+
+Secondly, we prove the tractability of Holant∗(H ◦
+E). We ﬁrst reformulate it as a bipartite Holant problem
+Holant(=2 |H◦E) (since U = H◦U ⊂H◦E, we can drop
+the ∗notation in Holant). Here the edges are replaced
+by the binary Equality function (=2) = [1, 0, 1].
+Now we perform a holographic reduction by the basis
+transformation H−1 on the RHS. This (contravariant)
+transformation on the RHS is accompanied by the
+(covariant) transformation [1, 0, 1] 7→[1, 0, 1]H⊗2. One
+can verify that an orthogonal H keeps [1, 0, 1] invariant,
+namely [1, 0, 1]H⊗2 = [1, 0, 1]. To wit: let H =
+³
+a
+b
+c
+d
+´
+,
+then
+[1, 0, 1]H⊗2
+=
+¡
+(1, 0)⊗2 + (0, 1)⊗2¢
+H⊗2
+=
+((1, 0)H)⊗2 + ((0, 1)H))⊗2
+=
+(a, b)⊗2 + (c, d)⊗2
+=
+(a2 + c2, ab + cd, ab + cd, b2 + d2)
+=
+(1, 0, 0, 1) = [1, 0, 1]
+Note that unary functions are transformed to unary
+functions.
+Hence, after a holographic reduction, our
+problem becomes Holant∗(E). This is clearly polyno-
+mial time computable: If a unary function U is con-
+nected to some F ∈E, we may absorb this U and use
+FU. Note that FU ∈E. If a unary U1 is connected
+to another unary U2, then they must form a connected
+component alone, and its value is trivially computed,
+which contributes a global factor. After eliminating all
+unaries, we have an instance of Holant(E−U), which can
+be computed on each connected component by uniquely
+propagating exactly two assignments on an edge. So,
+Holant∗(H ◦E) is polynomial time computable.
+The third class is Holant∗(Z◦E). Because U ⊆Z◦E,
+it is a bipartite Holant problem Holant(=2 |Z ◦E). We
+perform a holographic reduction by the basis transfor-
+mation Z−1 on the RHS. This contravariant transforma-
+tion on the RHS is accompanied by the covariant trans-
+formation [1, 0, 1] 7→[1, 0, 1]Z⊗2 ∼= [0, 1, 0]. To verify
+the latter, we have
+[1, 0, 1]Z⊗2
+=
+¡
+(1, 0)⊗2 + (0, 1)⊗2¢
+Z⊗2
+=
+((1, 0)Z)⊗2 + ((0, 1)Z))⊗2
+=
+(1, 1)⊗2 + (i, −i)⊗2 ∼= (0, 1, 1, 0).
+As an aside, for us in this paper, these holographic
+transformations demonstrate a main proof technology
+as well as a tool in the discovery and formulation of our
+dichotomy theorems. Just as the Equality function
+=2 can be “factored” by an orthogonal H, and thus
+“contributes” an orthogonal H to the RHS in this
+holographic transformation:
+Holant(=2 |H ◦F) ←→Holant(=2 |F),
+the binary Disequality function ̸=2 can be “factored”
+by Z = Z1 in matrix form (same for Z = Z2)
+(̸=2) =
+³
+0
+1
+1
+0
+´
+∼= ZT
+1Z1 =
+³
+1
+i
+1
+−i
+´³
+1
+1
+i
+−i
+´
+and thus “contributes” a Z to the RHS in the following
+holographic transformation:
+Holant(=2 |Z ◦F) ←→Holant(̸=2 |F).
+Hence, after a holographic reduction, our problem
+Holant∗(Z ◦E) becomes Holant({̸=2}|E).
+(Note U ⊂
+E.)
+However (̸=2) ∈E, and thus we have reached a
+restriction of the tractable Holant∗(E).
+Finally we prove the tractability of the fourth class
+Holant∗(Z ◦M).
+After a holographic reduction by
+Z−1 on the RHS, it becomes Holant({̸=2}|M).
+We
+ﬁrst eliminate all unary functions as follows. A unary
+function [x, y] connected with ̸=2 is simply another
+unary function [y, x], which we will replace the pair
+[x, y] and ̸=2. If F ∈M and U ∈U, then FU ∈M,
+since the function value of FU on any input with
+Hamming weight ≥2 is certainly 0. A unary connected
+to another unary forms a trivial connected component
+and contributes a global factor.
+Recursively apply
+these replacement steps until there are no more unary
+functions left.
+Hence, we only need to show that
+Holant({̸=2}|M −U) is tractable. The input graph is
+a bipartite graph.
+Because all functions on the LHS
+vertex set are ̸=2, in order to have a non-zero evaluation,
+any assignment must have exactly half of all edges
+assigned 0 and the other half assigned 1. All functions
+on the RHS vertex set are from M −U.
+If there is
+a vertex of degree more than 2 belonging to the RHS
+vertex set, then this side requires that strictly less than
+half of edges are 1, so the value of this problem is 0.
+Thus we only need to calculate on graphs where all
+vertices have degree 2 (a cycle), which is tractable by
+matrix multiplication and taking trace.
+We remark that ⟨H ◦E⟩is a proper generalization
+of Fibonacci gates F [8].
+Recall that a (symmetric)
+signature [f0, f1, . . . , fk] is called a Fibonacci gate of
+arity k if it satisﬁes fi+2 = fi+1 + fi, for 0 ≤i ≤k −2.
+Remarkably Holant∗(F) is tractable [8].
+E.g., the
+following counting problem is in P on 3-regular graphs
+G: Attach at every vertex the signature [1, 0, 1, 1] ∈F.
+Then Holant(G) is the number of edge 2-colorings (Blue
+or Green) such that every vertex does not have exactly
+one Blue incident edge.
+1719
+Copyright © by SIAM. 
+Unauthorized reproduction of this article is prohibited.
+
+Let φ = 1+
+√
+5
+2
+be the golden ratio, and ¯φ = 1−
+√
+5
+2
+.
+Then
+
+
+1
+√
+1+φ2
+1
+√
+1+ ¯φ2
+φ
+√
+1+φ2
+¯φ
+√
+1+ ¯
+φ2
+
+
+⊗k "
+a
+µ
+1
+0
+¶⊗k
++ b
+µ
+0
+1
+¶⊗k#
+=
+a′
+µ1
+φ
+¶⊗k
++ b′
+µ1
+¯φ
+¶⊗k
+transforms
+the
+symmetric
+signature
+a
+³
+1
+0
+´⊗k
++ b
+³
+0
+1
+´⊗k
+=
+[a, 0, . . . , 0, b]
+∈
+E
+to a Fi-
+bonacci gate [f0, f1, . . . , fk] ∈F.
+(Note that the
+matrix is orthogonal (1, φ) · (1, ¯φ) = 0. The signature
+is fi = a′φi + b′ ¯φi, and satisﬁes fi+2 = fi+1 + fi.)
+The theorem shows a far reaching generalization of
+Fibonacci gates F to asymmetric signatures ⟨H ◦E⟩.
+Our dichotomy theorem will say that this is the correct
+generalization.
+4
+Outline of the Hardness Proof
+Starting from this section, we prove the hardness part
+of Theorem 2.2, that is, if F ̸⊆⟨T ⟩, F ̸⊆⟨H ◦E⟩,
+F ̸⊆⟨Z ◦E⟩, F ̸⊆⟨Z ◦M⟩, then Holant∗(F) is #P-
+hard. The proof is quite involved and we give an outline
+in this section.
+The main idea is to reduce the general Holant∗
+problems to the symmetric ones, for which we already
+have a dichotomy theorem [9].
+However, it is not
+easy to do that when functions have large arities. In
+Section 6, we ﬁrst establish an arity reduction theorem.
+We show that starting from any F ∈F which is not
+contained in any of the four tractable families F′, we can
+construct a function Q such that (1) Holant∗(F ∪{Q})
+≡T Holant∗(F), (2) Q ̸∈F′, and (3) Q has a reduced
+arity. So assuming that the given set of functions is not
+a subset of any of the four tractable families (otherwise,
+we are done since it is tractable by Section 3), we can
+keep on doing arity reductions. This will eventually in a
+ﬁnite number of steps produce the following: In the case
+of ⟨T ⟩, we will end up with an arity 3 signature which is
+not in ⟨T ⟩. For the other three families ⟨H ◦E⟩, ⟨Z ◦E⟩,
+⟨Z ◦M⟩, we can get a signature of arity 2 which is not
+in the respective family.
+Having these functions with small arities (2 or 3)
+in hand, we can construct some simple gadgets to get
+symmetric functions, which we do in Section 7.
+The
+hope is that these symmetric functions are also out of
+various tractable families. However, we come cross some
+diﬃculties by doing this. For example, using a single
+function of arity 3 which is not in ⟨T ⟩, it seems not
+easy to construct a symmetric arity 3 function which is
+not in ⟨T ⟩either. In our proof, we get help from other
+signatures. Namely, we not only use a signature of arity
+3 which is not in ⟨T ⟩, but also some binary signatures
+which are not in ⟨H ◦E⟩, ⟨Z◦E⟩or ⟨Z◦M⟩, respectively,
+to construct a symmetric signature of arity 3 which is
+not in ⟨T ⟩. This is proved in Lemma 7.3. Similarly,
+in Lemma 7.4, we prove that we can also construct
+binary symmetric signatures which are not in ⟨H ◦E⟩,
+⟨Z ◦E⟩or ⟨Z ◦M⟩, respectively. Then by the symmetric
+dichotomy, we know that this ternary signature is either
+already #P-hard or belongs to ⟨H◦E⟩, ⟨Z◦E⟩or ⟨Z◦M⟩.
+If it is #P-hard, then we are done. Otherwise, since
+we have a binary signature which is not in the same
+family, we also get the hardness result by the symmetric
+dichotomy [9]. We note that, all our starting problems
+for hardness are already hard for planar graphs and all
+the gadgets we use in the reduction are planar. As a
+result, our ﬁnal dichotomy also holds for planar graphs.
+In the proofs later, we will not explicitly state this every
+time.
+One technical lemma is used extensively in both
+Section 6 and 7, which substantially simpliﬁed the proof.
+We call it the Separation Lemma, which is stated and
+proved in Section 5.
+5
+Separation Lemma
+In this section, we introduce a simple lemma which is
+used frequently in the proofs, and its main purpose
+is proof simpliﬁcation.
+This lemma is applied in the
+following situation. We have identiﬁed a ﬁnite set of
+requirements, the violation of each requirement can be
+expressed as a system of polynomial equations. Then
+to show all these requirements can be simultaneously
+satisﬁed, we only need to prove each requirement can be
+individually satisﬁed, without regard to the consistency
+of the satisfying variable assignments.
+The following lemma is well-known. For complete-
+ness we give a proof.
+Lemma 5.1. Suppose {P1, P2, . . . , Pm} is a ﬁnite set of
+nonzero polynomials in F[x1, x2, . . . , xn], where F is an
+inﬁnite ﬁeld. There exist values a1, a2, . . . , an ∈F such
+that Pi(a1, a2, . . . , an) ̸= 0 for all 1 ≤i ≤m.
+Proof. For n = 1, the conclusion holds obviously.
+Suppose the conclusion holds for n −1.
+Let
+Pi
+=
+Pmi
+j=0 pi,j(x1, . . . , xn−1)xj
+n.
+Because
+Pi
+is
+not the zero polynomial, we may assume pi,mi is
+a nonzero polynomial in F[x1, x2, . . . , xn−1].
+By
+induction,
+there
+exist
+values
+a1, a2, . . . , an−1
+∈
+F
+such
+that
+pi,mi(a1, a2, . . . , an−1)
+̸=
+0,
+and
+Pi(a1, a2, . . . , an−1, xn) ∈F[xn] is a non-zero polyno-
+mial in xn, where 1 ≤i ≤m.
+It follows that there
+exists an ∈F such that all Pi(a1, a2, . . . , an) ̸= 0.
+We will give various gadget constructions which use
+some unary functions Uk = [xk, yk], k = 1, 2, . . . , m.
+1720
+Copyright © by SIAM. 
+Unauthorized reproduction of this article is prohibited.
+
+Technically the gadget is only deﬁned when speciﬁc val-
+ues for xk, yk have been chosen. A signature is expressed
+as an ordered set of values; this is true for the given
+constraint functions as well as the signature of the con-
+structed gadget.
+The entries of the signature of the
+constructed gadget can be expressed as polynomials in
+xk, yk (the coeﬃcients depend on the given constraint
+functions). Frequently we have a ﬁnite set of conditions,
+the negation of each condition is expressible as polyno-
+mial equations on xk, yk. A construction succeeds if we
+satisfy all these conditions. The following lemma lets us
+deal with these conditions separately.
+Lemma 5.2. Let F be the function realized by a gadget
+construction, whose arity is n, and each entry of the
+signature of F is a polynomial in xk and yk, k =
+1, 2, . . . , m.
+Suppose S1, S2, . . . , SN are sets of functions of arity
+n, where a function K ∈Si iﬀthe signature entries
+of K satisfy a ﬁnite system of polynomial equations
+{Pi,1, Pi,1, . . . , Pi,mi}.
+Assume for every assignment σ of xk and yk, k =
+1, 2, . . . , m, there exists a 1 ≤iσ ≤N, such that F ∈Siσ
+under σ, then there exists a 1 ≤i ≤N, such that for
+all σ, F ∈Si.
+Proof. F ∈Si is expressed by a ﬁnite set of polynomial
+equations {Pi,1, Pi,1, . . . , Pi,mi} on xk and yk.
+If the
+conclusion of the lemma is false, then for all 1 ≤i ≤N,
+there exists a polynomial Pi,s(i) which is not the zero
+polynomial. By Lemma 5.1, there exist values of xk and
+yk, such that Pi,s(i) ̸= 0 for all 1 ≤i ≤N, contradicting
+the condition.
+The following lemma is another direct corollary of
+lemma 5.1.
+Lemma 5.3. Suppose a gadget construction using unary
+functions Uk = [xk, yk], k = 1, 2, . . . , m succeeds if it
+satisﬁes a ﬁnite set of properties Ri, i = 1, 2, . . . , N.
+Suppose violation of each property Ri is speciﬁed by a
+ﬁnite set of polynomial equations. If for each i we can
+ﬁnd unary functions Uk = [xk, yk] to satisfy property
+Ri, then we can ﬁnd unary functions Uk = [xk, yk] so
+that the construction succeeds.
+We call it the Separation Lemma in the proofs.
+6
+Arity reduction
+The next two sections prove the hardness part of
+Theorem 2.2, that is, if F ̸⊆⟨T ⟩, F ̸⊆⟨H ◦E⟩,
+F ̸⊆⟨Z ◦E⟩, F ̸⊆⟨Z ◦M⟩, then Holant∗(F) is #P-
+hard.
+In this section, we show that starting from any
+F
+∈F which is not contained in any of the four
+tractable families F′, we can construct a function Q
+such that (1) Holant∗(F ∪{Q}) ≡T Holant∗(F), (2)
+Q ̸∈F′, and (3) Q has a reduced arity.
+Lemma 6.1. Let F′ be any one of ⟨T ⟩, or ⟨H ◦E⟩, or
+⟨Z ◦E⟩, or ⟨Z ◦M⟩. Let r = 3 if F′ = ⟨T ⟩, and r = 2
+in the other three cases. Suppose function F ∈F −F′.
+If r < arity(F), then we can realize a function Q by
+connecting F with some unary functions, such that
+(1) Holant∗(F ∪{Q}) ≡T Holant∗(F); (2) Q ̸∈F′ and
+(3) r ≤arity(Q) < arity(F).
+The proof of this lemma is divided into following
+several lemmas. Firstly, we show that any type speciﬁca-
+tion in a tensor product decomposition can be described
+by a system of polynomial equations. A type speciﬁca-
+tion is given by a type I, and is the requirement that
+a signature (or a set of signatures all) have the given
+type. Note that the type of a signature is not unique;
+e.g., if J is a reﬁnement of I, then a signature having
+type J also has type I.
+Lemma 6.2. For any type speciﬁcation I, there is a
+ﬁnite set of polynomial equations EI in the entries of
+a signature F, such that F has type I iﬀF satisﬁes
+EI.
+Proof. If I = {[n]}, there is no requirement on F to
+have type I.
+We can use a trivial equation such as
+0 = 0.
+Consider the case I = {I1, I2}.
+Suppose F has
+type I. Then obviously, for any two values a1, b1 of X1
+and any two values a2, b2 of X2, F(a1, a2)F(b1, b2) =
+F(a1, b2)F(b1, a2) (W.o.l.o.g., we assume the indices in
+I1 all precede those of I2.) Hence the collection of all
+these equations E{I1,I2} is a necessary condition that F
+has type I. It is also a suﬃcient condition. Arrange
+the values of F into a matrix FX1,X2 = F(X1, X2),
+where the row indices (resp.
+column indices) are all
+possible values of X1 (resp.
+X2).
+The conditions
+F(a1, a2)F(b1, b2) = F(a1, b2)F(b1, a2) for all a1, b1 and
+all a2, b2 imply that any 2 by 2 submatrix of F is
+singular, and so rank(FX1,X2) ≤1. Hence, FX1,X2 is
+the product of a column vector and a row vector, and
+F has type I.
+Now consider a general partition I = {I1, . . . , Ik},
+and
+again
+suppose
+F
+has
+type
+I.
+It
+follows
+that
+for
+any
+1
+<
+i
+≤
+k,
+any
+ﬁxed
+values
+ai+1, . . . , ak for Xi+1, . . . , Xk, F Xi+1=ai+1,...,Xk=ak has
+type {Si−1
+j=1 Ij, Ii}. We deﬁne the following set of equa-
+tions: ∀1 < i ≤k, and for all assignments ai+1, . . . , ak
+for Xi+1, . . . , Xk, include the equations in E{Si−1
+j=1 Ij,Ii}.
+This is a ﬁnite set of polynomial equations. Obviously,
+this is a necessary condition for F has type I.
+1721
+Copyright © by SIAM. 
+Unauthorized reproduction of this article is prohibited.
+
+We prove that it is also a suﬃcient condition. If F
+is the zero function, then F has type I trivially. As-
+sume F is not the zero function. Let i = k, by what has
+been proved when k = 2, F = N
+{Sk−1
+j=1 Ij,Ik}(Pk−1, Fk).
+Because F is not the zero function, there exists a value
+ak for Xk such that Fk(ak) ̸= 0. The remaining condi-
+tions, for 1 < i ≤k−1, yield a ﬁnite set of homogeneous
+equations for F Xk=ak = Pk−1Fk(ak). After canceling
+the non-zero factor Fk(ak), by induction, we obtain the
+necessary and suﬃcient conditions that Pk−1 has type
+{I1, . . . , Ik−1}. Hence F has type I.
+Next, we prove a property of this decomposi-
+tion.
+This property is used throughout in the proof
+of Lemma 6.1.
+Lemma 6.3. Suppose there exists some type I
+=
+{I1, . . . , Ik} over [n −1], such that for all unary func-
+tions U
+=
+[x, y], FU
+=
+xF xn=0 + yF xn=1 has
+the same type I.
+Furthermore, suppose F xn=0
+=
+N
+I(F1, F2, . . . , Fk) and F xn=1 = N
+I(K1, K2, . . . , Kk)
+are linearly independent as two vectors. Then there ex-
+ists at most one index i ∈[k] such that Fi, Ki are lin-
+early independent.
+Proof. For a contradiction, suppose there are two dis-
+tinct indices i ∈[k], with the property that Fi, Ki are
+linearly independent.
+W.o.l.o.g., let i = 1, 2 respec-
+tively.
+Because F xn=0, F xn=1 are linearly independent, Fj
+and Kj are not the zero function for any j ∈[k]. For any
+j ∈[k] −{1, 2}, by Lemma 5.2, there exist |Ij| unary
+functions such that both Fj and Kj become nonzero
+constants when combined with them. After combining
+F xn=0 and F xn=1 with these unary functions, we obtain
+respectively the functions c0F1 ⊗F2 and c1K1 ⊗K2 over
+the variables in I1 ∪I2, where c0, c1 ̸= 0.
+Suppose U
+= [x, y] and xy ̸= 0.
+If we com-
+bine FU = xF xn=0 + yF xn=1 with the same set of
+¯¯¯Sk
+j=3 Ij
+¯¯¯ many unary functions, the resulting function
+is c0xF1 ⊗F2 + c1yK1 ⊗K2. By the assumption on FU
+having the same type I, this function has type {I1, I2}.
+However, we will show that, for any xy ̸= 0, this func-
+tion does not have type {I1, I2}. The matrix form (row
+index is X|I1, column index is X|I2) of this function is
+¡
+F1
+K1
+¢ µ c0x
+0
+0
+c1y
+¶ µ F T
+2
+KT
+2
+¶
+. Since F1, K1 are
+linearly independent, and F2, K2 are linearly indepen-
+dent, this matrix has rank two. If this function has type
+{I1, I2}, its matrix form would have rank at most one.
+This contradiction proves the Lemma.
+Proof of Lemma 6.1: F′ = ⟨T ⟩
+Suppose F ∈F −⟨T ⟩, with arity(F) > 3. Being
+out of ⟨T ⟩, F is not the zero function.
+If for some
+unary function U = [x, y], FU ̸∈⟨T ⟩, then we are done
+by setting Q = FU. Hence we assume for any unary
+function U = [x, y], FU = xF xn=0 + yF xn=1 has some
+type J , where each set Jj ∈J has size at most 2. For
+the ﬁxed arity(F), there are only ﬁnitely many such
+types, which are speciﬁable by a ﬁnite set of polynomial
+equations in x, y. It follows from Lemma 5.2 that, there
+exists some type I = {I1, . . . , Ik}, where each |Ij| ≤2,
+such that for all x, y, FU has the same type I.
+In
+particular, both F xn=0 and F xn=1 have type I.
+If F xn=0 and F xn=1 are linearly dependent, then
+F ∈⟨T ⟩, having type I ∪{{n}}.
+So we assume F xn=0 = N
+I(F1, F2, . . . , Fk) and
+F xn=1 = N
+I(K1, K2, . . . , Kk) are linearly independent.
+Being linearly independent, none of the tensor factors of
+F xn=0 and F xn=1 can be the zero function. By Lemma
+6.3, there is at most one pair of linearly independent
+tensor factors, w.o.l.o.g., F1 and K1. Expressing Ki in
+terms Fi, for i ≥2, there exists a nonzero constant c,
+such that F xn=1 = N
+I(cK1, F2, . . . , Fk). If |I1| = 1,
+that is, F1 and K1 are unary functions, then F ∈⟨T ⟩,
+of type {I1 ∪{n}, I2, . . . , Ik}. Thus, |I1| = 2.
+W.o.l.o.g., assume I1 = {1, 2}.
+We can ﬁx the
+variables of F in I2, . . . , Ik to some values, such that
+F2, . . . , Fk each contributes a nonzero factor. We get
+a ternary function Q in variables x1, x2, xn.
+F
+=
+Q ⊗F2 ⊗· · · ⊗Fk. Then we claim that Q ̸∈⟨T ⟩, for
+otherwise, if Q ∈⟨T ⟩, then F ∈⟨T ⟩.
+Proof of Lemma 6.1: F′ = ⟨H ◦E⟩and ⟨Z ◦E⟩
+For any function F and invertible matrix M, F ∈
+⟨M ◦E⟩iﬀ(M −1)
+⊗nF ∈⟨E⟩. (Note that ⟨M ◦E⟩=
+M ◦⟨E⟩.)
+Since we will realize our function Q of a
+lower arity than F by connecting F with some unary
+functions, and since unary functions are transformed to
+other unary functions under any invertible holographic
+transformation, we only need to prove for ⟨E⟩. Suppose
+F
+̸∈⟨E⟩, and arity(F) = n > 2.
+F is not the
+zero function. If for some unary function U = [x, y],
+FU ̸∈⟨E⟩, we are done with Q = FU.
+Hence we
+assume for any unary function U
+= [x, y], FU
+=
+xF xn=0 + yF xn=1 ∈⟨E⟩.
+For any partition I = {I1, . . . , Ik} of [n], and any
+A = {A1, . . . , Ak}, such that Aj ∈{0, 1}|Ij|, we deﬁne a
+set of functions (I, A). Each Aj is a 0-1 string of length
+|Ij|. What we use in the deﬁnition is the set {Aj, ¯Aj},
+so we may normalize the ﬁrst bit of Aj to be 0. We say
+a function P belongs to the set (I, A) iﬀP has type I,
+that is, P = N
+I(P1, P2, . . . , Pk), and for any j ∈[k],
+Pj(X|Ij) is zero if X|Ij ̸∈{Aj, ¯Aj}. Thus, Pj ∈E for
+each j ∈[k].
+Functions in ⟨E⟩of arity n is the union of these
+1722
+Copyright © by SIAM. 
+Unauthorized reproduction of this article is prohibited.
+
+ﬁnitely many function sets (I, A). Obviously, functions
+in (I, A) can be described by a ﬁnite system of poly-
+nomial equations (Lemma 6.2).
+Since FU ∈⟨E⟩for
+all U = [x, y], by Lemma 5.2, there must exist one
+(I, A), such that for any x, y, FU belongs to the same
+set (I, A).
+If F xn=0 and F xn=1 are linearly dependent, then
+obviously, F ∈⟨E⟩.
+Let F xn=0 = N
+I(F1, F2, . . . , Fk) and F xn=1 =
+N
+I(K1, K2, . . . , Kk) be linearly independent.
+Being
+linearly independent, none of the tensor factors of
+F xn=0 and F xn=1 can be the zero function. By Lemma
+6.3, there is at most one pair of linearly independent
+tensor factors, w.o.l.o.g., F1 and K1.
+They must
+be indeed linearly independent, otherwise F xn=0 and
+F xn=1 are also linearly dependent.
+Expressing Ki in
+terms Fi, for i ≥2, there exists a nonzero constant c,
+such that F xn=1 = N
+I(cK1, F2, . . . , Fk).
+We can ﬁx the variables of F in I2, . . . , Ik to some
+values, such that F2, . . . , Fk each contributes a nonzero
+factor.
+We obtain a function K.
+Kxn=0 = F1 and
+Kxn=1 = cK1, where c ̸= 0.
+K evaluates to zero,
+except on possibly four inputs {A10, ¯A10, A11, ¯A11}.
+Combine the middle |I1| −1 variables of K (that is,
+except xn and the ﬁrst variable in I1) with the function
+[1, 1], we get a binary function in matrix form Q =
+µ K(A10)
+K(A11)
+K( ¯A10)
+K( ¯A11)
+¶
+, where we index the row by
+the ﬁrst variable in I1 and the column by xn.
+Note
+that we have used the deﬁnition of (I, A).
+Because
+F1 and K1 are linearly independent, Q is nonsingular.
+We claim this Q ̸∈⟨E⟩.
+For otherwise, being non-
+degenerate, Q ∈E, and this implies that K ∈E, and
+hence F = K ⊗F2 ⊗· · · ⊗Fk ∈⟨E⟩.
+Proof of Lemma 6.1: F′ = ⟨Z ◦M⟩
+Again we only need to prove for ⟨M⟩.
+Suppose
+F ̸∈⟨M⟩, and arity(F) = n > 2.
+Again we may
+assume for any unary function U
+= [x, y], FU
+=
+xF xn=0 + yF xn=1 ∈⟨M⟩; otherwise, we are done.
+For any U = [x, y], FU ∈⟨M⟩has some type I, and
+each tensor factor belongs to M, that is, it is zero except
+on inputs of Hamming weight at most one. Each type
+I can be speciﬁed by a system of polynomial equations
+(Lemma 6.2).
+The requirement associated with each
+type I consists of these polynomial equations together
+with the zero requirements on all entries of each tensor
+factor whose Hamming weight is greater than one. (For
+example, if we require that (ai,j) is a tensor product
+(bi) ⊗(cj), where 1 ≤i ≤n, 1 ≤j ≤m, and for some
+subset B ⊆[ℓ], C ⊆[m], [∀i ∈B, ∀j ∈C, bi = cj = 0],
+then we include the equations from Lemma 6.2 together
+with [ai,j = 0, ∀i ∈B, or ∀j ∈C].
+The equations
+from Lemma 6.2 implies that a tensor factorization
+(ai,j) = (bi) ⊗(cj) exists.
+If for all i ∈[ℓ], bi = 0,
+then ai,j is identically 0. Similarly if for all j ∈[m],
+cj = 0. On the other hand, if for some i0 ∈[ℓ], and
+j0 ∈[m], bi0 ̸= 0 and cj0 ̸= 0, Then bi = ai,j0/cj0 = 0
+for all i ∈B. Similarly cj = 0 for all j ∈C.)
+Applying Lemma 5.2, we conclude that there is
+one type I such that for any x, y, FU has the same
+decomposition associated with I with tensor factors
+from M.
+If F xn=0 and F xn=1 are linearly dependent, obvi-
+ously, F ∈⟨M⟩.
+Let F xn=0 = N
+I(F1, F2, . . . , Fk) and F xn=1 =
+N
+I(K1, K2, . . . , Kk) be linearly independent. As before
+none of the tensor factors of F xn=0 and F xn=1 can be
+the zero function, and exactly one pair among Fi and Ki
+are linearly independent, w.o.l.o.g., F1 and K1. We can
+ﬁx the variables of F in I2, . . . , Ik to some values, such
+that F2, . . . , Fk contribute a nonzero factor. We get a
+function in matrix form K =
+µ F T
+1
+cKT
+1
+¶
+, where the row
+index is xn = 0, 1, columns are indexed by {0, 1}|I1|,
+and c ̸= 0. Here the ﬁrst row is Kxn=0 = F T
+1 . The
+second row is Kxn=1 = cKT
+1. Columns are indexed by
+A ∈{0, 1}|I1|. If the weight of A is greater than 1, then
+the Ath column is zero. Let S0 denote the (0 · · · 0)th
+column, and Si denote the column indexed by the bit
+sequence A ∈{0, 1}m, where only the ith bit of A is 1.
+For
+simplicity
+of
+notations,
+assume
+I1
+=
+{1, 2, . . . , m}.
+There exists a 0-1 string A ∈{0, 1}m
+of Hamming weight 1, such that K1(A) ̸= 0; other-
+wise, K ∈M and F ∈⟨M⟩.
+That is, there is a
+column Si, 1 ≤i ≤m, whose second entry is not
+zero. W.l.o.g., we assume this Si is Sm. Because F1
+and K1 are linearly independent, There exists a col-
+umn Sj linearly independent with the nonzero column
+Sm. If S0 is such a column, let Q = Kx1=0,...,xm−1=0 =
+(S0, Sm) on {xn, xm}, since the index for the column
+Sm is A = (0 · · · 01) ∈{0, 1}m.
+Otherwise, S0 is
+linearly dependent with Sm.
+Then for some 1 ≤
+j ≤m −1, Sj is linearly independent with Sm. Let
+Q = Kx1=0,...,xj−1=0,xj=[x,y],xj−1=0,...,xm−1=0 = (xS0 +
+ySj, xSm), where x ̸= 0 and y ̸= 0. (Here in Q, the
+row index is by xn and column index is by xm.) We
+have obtained our Q such that Q is not degenerate and
+Q(1, 1) ̸= 0, i.e., Q ̸∈⟨M⟩.
+7
+From asymmetric to symmetric
+In this section, we show how to get a symmetric function
+from some asymmetric functions, keeping the property
+that F does not belong to any one of the four tractable
+classes, ⟨T ⟩, ⟨H ◦E⟩, ⟨Z ◦E⟩or ⟨Z ◦M⟩.
+Suppose c ∈C is nonzero.
+We may consider
+functions F and cF being the same function, i.e., F ∼=
+1723
+Copyright © by SIAM. 
+Unauthorized reproduction of this article is prohibited.
+
+cF. In the following lemma, when we count the number
+of solutions, we count in terms of equivalence classes
+under ∼= (i.e., we count in projective space).
+Lemma 7.1. For any ternary function F, F x3=U ∼= 0
+for some U ̸∼= 0 iﬀF has type {{1, 2}, {3}}.
+Let a ternary function F ̸∈⟨T ⟩. Then F x3=U ̸∼=
+0 for any nonzero unary function U, and there exist
+exactly one or two nonzero U = [x, y] such that F x3=U
+is degenerate.
+Proof. If F has type {{1, 2}, {3}}, F = T ⊗[a, b]. If
+a = b = 0 then F is identically 0, and F x3=U ∼= 0
+for any unary U.
+If [a, b] ̸∼= 0, then F x3=U ∼= 0 for
+U = [b, −a] ̸∼= 0. Conversely, if F x3=U ∼= 0 for some
+U ̸∼= 0, then F x3=0 and F x3=1 are linearly dependent,
+and hence F has type {{1, 2}, {3}}.
+It follows that
+if F ̸∈⟨T ⟩, then F x3=U ̸∼= 0 for any nonzero unary
+function U.
+F x3=U
+is
+degenerate
+iﬀ
+FU(0, 0)FU(1, 1)
+=
+FU(0, 1)FU(1, 0). (Here FU(0, 0) is the value of the
+binary function FU on (0, 0).) Let U = [x, y], then the
+entries of FU are linear homogeneous polynomials of
+x, y, so the equation is a quadratic homogeneous equa-
+tion. Either it has one or two solutions, or it is iden-
+tically zero and all x, y are solutions. We only need to
+prove the latter case contradicts F ̸∈⟨T ⟩.
+Suppose FU is degenerate for all U, then we let
+U = [1, 0] and [0, 1], and get in particular F[1, 0] =
+F1 ⊗F2 and F[0, 1] = K1 ⊗K2. If F[1, 0] and F[0, 1]
+are linearly dependent, then F ∈⟨T ⟩. If F[1, 0] and
+F[0, 1] are linearly independent, then by Lemma 6.3,
+at most one of the two pairs of functions {F1, K1} and
+{F2, K2} are linearly independent. W.o.l.o.g., suppose
+{F2, K2} are linearly dependent. Then F is the tensor
+product of F2 and one binary function on the remaining
+two variables {x1, x3}, and so F ∈⟨T ⟩.
+For any ternary function F(x1, x2, x3) ̸∈⟨T ⟩, the
+conclusion of Lemma 7.1 certainly applies to all three
+variables. There is a simple relationship, among 1 ≤i ≤
+3, between the nonzero unary functions Ui such that
+F xi=Ui is degenerate. Suppose F x1=U1 is degenerate,
+where U1 ̸∼= 0, then F x1=U1 = L ⊗R, where L and R
+are unary functions on x2 and x3 respectively. Since
+F x1=U1 ̸∼= 0, both L and R ̸∼= 0. It follows that the
+decomposition L ⊗R is unique under ∼=. If we deﬁne
+[x, y]⊥= [y, −x], then F x1=U1,x2=U2 is identically 0,
+where U2 = L⊥. Thus F x2=U2 is degenerate. Similarly
+for x3.
+This mapping from U1 7→U2 = L⊥is well-
+deﬁned under ∼=. It is also 1-1: Suppose F x1=U1,x2=U2
+and F x1=U ′
+1,x2=U2 are both identically 0. Then F x2=U2
+is degenerate, and expressible as A(x1) ⊗B(x3), where
+A and B are nonzero unary functions. It follows that
+both U1 ∼= A⊥and U ′
+1 ∼= A⊥.
+Thus U1 ∼= U ′
+1.
+By
+symmetry the inverse map is also well-deﬁned.
+We summarize this in the following lemma. Suppose
+a ternary function F ̸∈⟨T ⟩. Let
+Ui = {U | F xi=U is degenerate}
+for 1 ≤i ≤3.
+Lemma 7.2. There is a one-to-one correspondence be-
+tween U1, U2, and U3, as follows.
+For {i, j, k} =
+{1, 2, 3}, each Ui ∈Ui gives a unique factorization
+F xi=Ui = Vj(xj) ⊗Vk(xk), where V ⊥
+j
+∈Uj and V ⊥
+k
+∈
+Uk. In particular |U1| = |U2| = |U3| = 1 or 2.
+Now we will prove a crucial lemma for the hardness
+part of Theorem 2.2.
+Lemma 7.3. Suppose in Holant∗(F), we can realize the
+following functions
+1. F ̸∈⟨T ⟩of arity 3;
+2. For any orthogonal matrix H, some PH ̸∈⟨H ◦E⟩
+of arity 2;
+3. For both Z = Z1 or Z2, some PZ ̸∈⟨Z ◦E⟩of arity
+2; and
+4. For both Z = Z1 or Z2, some SZ ̸∈⟨Z ◦M⟩of
+arity 2.
+Then we can realize a symmetric ternary function Q ̸∈
+⟨T ⟩in Holant∗(F).
+Proof. We use the gadget shown in Figure 4 to realize
+a symmetric ternary function Q. (In some cases we will
+need to modify it to deﬁne Q; this will be discussed
+later.) This gadget consists of 9 copies of the function
+F, 3 copies of a unary function U1 and 3 copies of
+a unary function U2.
+The unary functions are to be
+determined later.
+Each shaded triangle labeled with
+F in a central inner triangle represents the function
+F(x1, x2, x3) ̸∈⟨T ⟩. The labels 1, 2, 3 inside the shaded
+triangle indicate which edge corresponds to variables
+x1, x2, x3. This gadget remain unchanged if we rotate
+it
+2π
+3
+or
+4π
+3 .
+Hence, Q(x1, x2, x3) = Q(x2, x3, x1) =
+Q(x3, x1, x2).
+It follows that Q is symmetric (notice
+that this conclusion uses the fact that each variable xi
+is a Boolean variable).
+Our goal is to prove that there exist nonzero unary
+functions U1 and U2, such that Q ̸∈⟨T ⟩. Since Q is
+symmetric, this is equivalent to: there exists no nonzero
+unary function U satisfying Qx1=U ∼= 0, by Lemma 7.1.
+To prove this, we divide the gadget into two parts,
+as shown by the dashed line in Figure 4.
+We estab-
+lish two properties, one property for each part respec-
+tively. The upper part is a ternary function, denoted by
+1724
+Copyright © by SIAM. 
+Unauthorized reproduction of this article is prohibited.
+
+Figure 4: Gadget to realize a symmetric ternary func-
+tion.
+S. The ﬁrst property is that if U ̸∼= 0, then Sx1=U ̸∼=
+0.
+The matrix form of Sx1=U is the matrix product
+F x1=U2
+x2,x3 F x1=U1
+x2,x3 F x1=U
+x3,x2 F x1=U2
+x2,x3 F x1=U1
+x2,x3 , where F x1=∗
+x2,x3 de-
+notes the matrix form of F x1=∗with row index x2 and
+column index x3.
+Because F ̸∈⟨T ⟩, if U ̸∼= 0, then
+F x1=U ̸∼= 0, by Lemma 7.1. To satisfy this property
+on S, we only need some U1 and U2 such that F x1=U1
+and F x1=U2 are nonsingular. By Lemma 7.1, there exist
+such U1 and U2.
+The lower part is a function of arity 4, denoted
+by P. Two inputs of P are the original inputs x2, x3
+of Q, corresponding to the lower left and lower right
+corners of the gadget respectively. The other two inputs
+correspond to edges connecting P with S, denoted by
+y2, y3 respectively. The second property is that the 4×4
+matrix Px2x3,y2y3 is nonsingular.
+If there exist U1 and U2 such that both properties
+hold, then for any nonzero function U, the vector form
+of Qx1=U is Px2x3,y2y3Sx1=U, where Sx1=U takes its
+vector form as a vector of dimension 4. Hence Qx1=U
+is not the zero function, because Sx1=U is a nonzero
+column vector (the ﬁrst property) and Px2x3,y2y3 is a
+nonsingular matrix (the second property). This proves
+Q ̸∈⟨T ⟩.
+To establish the two properties, we can apply the
+Separation Lemma 5.3, and prove the two properties
+individually.
+We have proved the ﬁrst one.
+Now we
+prove the second one. (The Separation Lemma allows
+us to choose unary functions U1 and U2 separately for
+the two parts in order to satisfy the two properties,
+even though in the actual gadget construction the 3
+occurrences of U1 must be the same, and similarly for
+U2, in order to produce a symmetric Q.)
+The idea for the proof of the second property on P
+will be counter intuitive. Our goal is to choose unary
+functions U1 and U2 such that the function P has a
+full-rank matrix. We will do this by a nonzero unary
+function U1 such that F x1=U1 has a singular matrix.
+(This could be surprising as we seem to go the opposite
+direction.)
+However once F x1=U1 is degenerate, this
+eﬀectively severs the bottom path in this gadget P.
+(This entanglement on the bottom makes it diﬃcult to
+analyze P.) Consequently the matrix Px2x3,y2y3 become
+a tensor product of two matrices Ax2,y2 ⊗Bx3,y3. We
+then aim to guarantee that both Ax2,y2 and Bx3,y3 are
+nonsingular 2 × 2 matrices.
+Since F ̸∈⟨T ⟩, by Lemma 7.1 there exists a nonzero
+U1 such that F x1=U1 is degenerate, and F x1=U1 = LL ⊗
+RL, or in more detail, F x1=U1(z3, z2) = LL(z3)RL(z2).
+LL and RL are not the zero function. We also want the
+matrix form Ax2,y2 of F x3=LL to be nonsingular. In the
+notation of Lemma 7.2, by the one-to-one correspon-
+dence from U1 to U3, U1 ∈U1 gives LL and then gives
+a corresponding L⊥
+L ∈U3. Thus we want some unary
+U ∈U3, such that U ⊥= LL ̸∈U3. Such a U ∈U3, by
+the inverse map of the one-to-one correspondence, gives
+us the desired U1 ∈U1.
+We have the similar requirement for U2 and B =
+F x2=RR, on the right half of the gadget P: U2 ∈U1,
+F x1=U2 = LR ⊗RR, and RR ̸∈U2.
+In fact, writing
+in matrix form for P from left to right (Figure 4),
+P = Fx1x2,x3(LLRT
+L)(LRRT
+R)Fx2,x1x3. Taking out the
+inner product value RT
+LLR (a scalar), the remainder
+of the function can be written as F x3=LL ⊗F x2=RR.
+Now writing P in the matrix form with rows indexed
+by the original inputs x2, x3 of Q and columns indexed
+by the edges y2, y3 connecting P to S, the 4 × 4 matrix
+Px2x3,y2y3 is (RT
+LLR)Ax2,y2 ⊗Bx3,y3, where Ax2,y2 and
+Bx3,y3 are the matrix form for F x3=LL and F x2=RR.
+(Figure 5). So we also require RT
+LLR ̸= 0.
+Figure 5: Replace F x1=U1 by LL ⊗RL, and F x1=U2 by
+LR ⊗RR.
+To summarize for P, for the second property, we
+1725
+Copyright © by SIAM. 
+Unauthorized reproduction of this article is prohibited.
+
+identify three conditions whose conjunction is suﬃcient.
+Condition (1): F x1=U1 = LL ⊗RL is degenerate and
+F x3=LL is nondegenerate.
+Condition (2): F x1=U2 =
+LR ⊗RR is degenerate and F x2=RR is nondegenerate.
+Condition (3): RT
+LLR ̸= 0.
+There are three cases, depending on U3, where one
+cannot pick U1 to satisfy Condition (1). (We will deal
+with Conditions (2) and (3) separately.)
+a. |U3| = 1 and for the unique U ∈U3, it also holds
+that U ⊥∈U3.
+b. |U3| = 2 and for both U ∈U3, it also holds that
+U ⊥= U ∈U3.
+c. |U3| = 2 and U3 = {U, U ⊥}.
+In case (a.): U ⊥∼= U, and thus U ∼= [1, i] or [1, −i].
+If U ∼= [1, i] (resp.
+[1, −i]), we show that SZ1U
+(resp. SZ2U) does not belong to U3. Because the binary
+SZ1 ̸∈⟨Z1 ◦M⟩in matrix form SZ1 = Z1TZT
+1 for
+some T ̸∈M, that is T(1, 1) ̸= 0. Then U TSZ1U =
+U TZ1TZT
+1U ∼= (0, 1)T
+µ 0
+1
+¶
+= T(1, 1) ̸= 0.
+Hence,
+SZ1U ̸∼= [1, i], and SZ1U ̸∼= [0, 0]. In this case, F x3=SZ1U
+is nondegenerate, and we will modify the construction in
+Figure 4 by adding the binary gadget with signature SZ1
+to replace the three edges whose endpoints are triangles
+marked by 3 in the gadget. (This change does not aﬀect
+what has been proved for S, since SZ1 is nondegenerate.
+The same is true for case (b.) and (c.)) The proof for
+SZ2U is similar.
+In case (b.), U3 = {[1, i], [1, −i]}.
+We show in this case, one of PZ1[1, i] or PZ1[1, −i] ̸∈
+U3.
+Because PZ1 ̸∈⟨Z1 ◦E⟩, in matrix form PZ1 =
+Z1TZT
+1 for some T ̸∈⟨E⟩.
+One of the two columns
+of T is
+µ e
+f
+¶
+, such that e ̸= 0 and f ̸= 0.
+If the
+ﬁrst (resp. second) column has this property, PZ1[1, −i]
+(resp. PZ1[1, i]) does not belong to U3. In this case,
+F x3=PZ1[1,−i] (resp. F x3=PZ1[1,i]) is nondegenerate, and
+we will modify the construction in Figure 4 by adding
+the binary gadget with signature PZ1 to replace the
+three edges whose endpoints are triangles marked by
+3 in the gadget.
+In case (c.), As U ̸∼= U ⊥, U and U ⊥are linearly
+independent. Then U ̸⊥U, otherwise U ∼= 0. Hence
+the inner product U TU ̸= 0, and w.o.l.o.g, we assume
+U = [a, b] and U ⊥= [c, d] are unit vectors.
+Let
+H =
+µ a
+c
+b
+d
+¶
+, H is an orthogonal matrix. We show
+that one of PH[a, b] or PH[c, d] does not belong to U3.
+The proof is similar with case (b.).
+In case (c.)
+we
+will modify the construction in Figure 4 by adding the
+binary gadget with signature PH to replace the three
+edges whose endpoints are triangles marked by 3 in the
+gadget.
+The proof for Condition (2) is similar to Condition
+(1). The replacement in the construction of Figure 4
+happens at the three edges connecting the copy of F
+with U2 and the corner F.
+Now consider Condition (3). If RL = LR = [1, i]
+or [1, −i], then RT
+LSZ1LR ̸= 0 or RT
+LSZ2LR ̸= 0.
+If
+RL = [a, b]⊥LR = [c, d] and RL ̸∈{[1, i], [1, −i]},
+then one of RT
+LPHLR and RT
+LP T
+HLR is not zero, where
+H =
+µ a
+c
+b
+d
+¶
+. For Condition (3), the replacement in
+the construction of Figure 4 happens at the three edges
+connecting the copy of F with U1 with the copy of F
+with U2.
+If Conditions (1) (2) (3) all hold, then the gadget
+satisﬁes the second property, and the lemma is proved.
+For each condition, if it does not hold, all possible
+cases are analyzed, and some binary function is added
+to rectify the construction, which are available by the
+conditions of the lemma. With these modiﬁcations to
+the construction in Figure 4, the proof of the lemma is
+complete.
+We will prove the hardness part of Theorem 2.2 by
+appealing to our dichotomy theorem [9] for symmetric
+Holant∗problems. For that purpose we need to con-
+struct appropriate symmetric binary signatures.
+Lemma 7.4. Let F denote any one of the function sets
+⟨H ◦E⟩(for an orthogonal matrix H), ⟨Z◦E⟩or ⟨Z◦M⟩
+(for the matrix Z = Z1 or Z2). Suppose we can realize
+a symmetric ternary function F ∈F −⟨T ⟩and a binary
+function P ̸∈F.
+Then we can realize a symmetric
+binary function Q ̸∈F.
+Proof. The matrix form of the symmetric binary func-
+tion Q is PF x1=UP T, for some unary function U. Q is
+realizable by a gadget linking P followed by F x1=U and
+then followed by P.
+The essence of the proof is an appropriate holo-
+graphic transformation.
+Denote M = H or Z, sup-
+pose P
+= MP1M T, and F
+= M ⊗3F1.
+F
+̸∈⟨T ⟩
+implies that F1
+̸∈⟨T ⟩.
+We also have F x1=U
+=
+MF x1=MU
+1
+M T.
+Then the matrix form of Q
+=
+MP1M TMF x1=MU
+1
+M TMP T
+1 M T. Let Q = MQ1M T.
+Case (1) F is ⟨H ◦E⟩.
+We take M = H.
+Since H is orthogonal, Q =
+HP1F x1=HU
+1
+P T
+1 HT. We have F1 ̸∈⟨T ⟩. P1 ̸∈⟨E⟩, since
+P ̸∈⟨H ◦E⟩. Also by F ∈⟨H ◦E⟩, we have F1 ∈⟨E⟩. By
+the nondegeneracy condition F1 ̸∈⟨T ⟩, we have F1 ∈E.
+Being symmetric and nondegenerate, F1 = [u, 0, 0, v],
+where u ̸= 0 and v ̸= 0. We only need to prove Q1 =
+1726
+Copyright © by SIAM. 
+Unauthorized reproduction of this article is prohibited.
+
+P1F x1=HU
+1
+P T
+1 ̸∈⟨E⟩, which is the same as Q ̸∈⟨H ◦E⟩.
+Because we can pick any U ′ = HU, for any x, y, we can
+realize F x1=HU
+1
+= [x, 0, y]. Suppose P1 =
+µ a
+b
+c
+d
+¶
+.
+Then Q1 =
+µ a2x + b2y
+acx + bdy
+acx + bdy
+c2x + d2y
+¶
+.
+We need Q1 ̸∈⟨E⟩. That is, Q1 is nonsingular, Q1 is
+not of [∗, 0, ∗] form, and Q1 is not of [0, ∗, 0] form. By the
+Separation Lemma, we only need to prove that there is
+some [x, y] to satisfy each property. If x ̸= 0 and y ̸= 0,
+F x1=HU
+1
+= [x, 0, y] and P1 are both nonsingular. Thus
+Q1 is nonsingular. Because P1 ̸∈⟨E⟩, either ac ̸= 0 or
+bd ̸= 0. There exists some [x, y] such that acx+bdy ̸= 0.
+Similarly, we can prove there exists some [x, y] such that
+a2x + b2y ̸= 0 and c2x + d2y ̸= 0 simultaneously.
+Case (2) F is ⟨Z ◦E⟩.
+Take M = Z. Note that ZTZ ∼= (̸=2). We have
+Q ∼= ZP1(̸=2)F x1=ZU
+1
+(̸=2)P T
+1 ZT = ZQ1ZT.
+We have
+F1 ̸∈⟨T ⟩, F1 ∈E, and P1 ̸∈⟨E⟩.
+We only need to
+prove Q1 ̸∈⟨E⟩. For any x, y, we can pick U to realize
+(̸=2)F x1=ZU
+1
+(̸=2) = [x, 0, y]. This is seen by the fact
+that (̸=2)[x, 0, y](̸=2) = [y, 0, x]. The remaining proof is
+the same as Case (1) for ⟨H ◦E⟩.
+Case (3) F is ⟨Z ◦M⟩.
+Take M = Z. Since ZTZ ∼= (̸=2), we have Q1 ∼=
+P1(̸=2)F x1=ZU
+1
+(̸=2)P T
+1 .
+We have F1 ̸∈⟨T ⟩, and F1 ∈M. Being symmetric
+and nondegenerate, F1 has the form F1 ∼= [f, 1, 0, 0].
+Let P1 =
+µ a
+b
+c
+d
+¶
+, and P1 ̸∈⟨M⟩. For any x, there
+is some U, such that F x1=ZU
+1
+= [x, 1, 0]. We only need
+to prove Q1 = P1(̸=2)F x1=ZU
+1
+(̸=2)P T
+1 ̸∈⟨M⟩.
+Because P1 ̸∈⟨M⟩, Q1 is not singular. Also d ̸= 0.
+There exists x such that Q1(1, 1) = 2cd + d2x ̸= 0.
+Hence, Q1 ̸∈⟨M⟩.
+Proof of Theorem 2.2 (hardness part)
+If F ̸⊆⟨T ⟩, F ̸⊆⟨H ◦E⟩, F ̸⊆⟨Z ◦E⟩, and
+F ̸⊆⟨Z ◦M⟩, by Lemma 6.1, we can realize functions
+of arity of 2 or 3 not belonging to these function sets
+respectively.
+The conditions in Lemma 7.3 are satisﬁed, so we can
+realize a symmetric ternary function Q3 ̸∈⟨T ⟩(with
+the help of those binary functions). If Holant∗({Q3})
+is hard, then the theorem is proved. Otherwise, by the
+dichotomy theorem for the symmetric case [9] (Theorem
+2.1), Q3 belongs to one of the special function families
+from Theorem 2.1.
+It can be shown that these are
+precisely restrictions of ⟨H ◦E⟩, ⟨Z ◦E⟩or ⟨Z ◦M⟩
+to symmetric signatures. By Lemma 7.4, we can realize
+a symmetric binary function Q2 not in this set.
+By
+Theorem 2.1, Holant∗(F) is #P-hard.
+Acknowledgements
+We sincerely thank the anonymous referees for their
+careful reading and perceptive comments.
+We also
+thank Heng Guo, Les Valiant and Tyson Williams for
+their comments.
+References
+[1] Leslie Ann Goldberg Markus Jalsenius Mark Jerrum
+Andrei Bulatov, Martin Dyer and David Richerby.
+The complexity of weighted and unweighted #csp.
+manuscript, 2010.
+[2] R.J. Baxter. Exactly solved models in statistical me-
+chanics. Academic press London, 1982.
+[3] Andrei A. Bulatov.
+The complexity of the count-
+ing constraint satisfaction problem.
+In Luca Aceto,
+Ivan Damg˚ard, Leslie Ann Goldberg, Magn´us M.
+Halld´orsson, Anna Ing´olfsd´ottir, and Igor Walukiewicz,
+editors, ICALP (1), volume 5125 of Lecture Notes in
+Computer Science, pages 646–661. Springer, 2008.
+[4] Andrei A. Bulatov and Martin Grohe.
+The com-
+plexity of partition functions. In Josep D´ıaz, Juhani
+Karhum¨aki, Arto Lepist¨o, and Donald Sannella, edi-
+tors, ICALP, volume 3142 of Lecture Notes in Com-
+puter Science, pages 294–306. Springer, 2004.
+[5] Jin-Yi Cai and Xi Chen.
+A decidable dichotomy
+theorem on directed graph homomorphisms with non-
+negative weights. to appear in FOCS, 2010.
+[6] Jin-Yi Cai, Xi Chen, and Pinyan Lu. Graph homomor-
+phisms with complex values: A dichotomy theorem. To
+appear in ICALP.
+[7] Jin-Yi Cai and Pinyan Lu.
+Holographic algorithms:
+from art to science.
+In STOC ’07:
+Proceedings of
+the thirty-ninth annual ACM symposium on Theory of
+computing, pages 401–410, New York, NY, USA, 2007.
+ACM.
+[8] Jin-Yi Cai, Pinyan Lu, and Mingji Xia. Holographic al-
+gorithms by ﬁbonacci gates and holographic reductions
+for hardness.
+In FOCS ’08: Proceedings of the 49th
+Annual IEEE Symposium on Foundations of Computer
+Science, Washington, DC, USA, 2008. IEEE Computer
+Society.
+[9] Jin-Yi Cai, Pinyan Lu, and Mingji Xia.
+Holant
+problems and counting csp. In Michael Mitzenmacher,
+editor, STOC, pages 715–724. ACM, 2009.
+[10] Nadia Creignou and Miki Hermann:
+Complexity
+of Generalized Satisﬁability Counting Problems. Inf.
+Comput. 125(1): 1-12 (1996)
+[11] Martin Dyer and David Richerby. On the complexity
+of #CSP. STOC, 2010.
+[12] Martin E. Dyer, Leslie Ann Goldberg, Markus Jalse-
+nius, and David Richerby. The complexity of approxi-
+mating bounded-degree boolean #CSP. In Jean-Yves
+Marion and Thomas Schwentick, editors, STACS, vol-
+ume 5 of LIPIcs, pages 323–334. Schloss Dagstuhl -
+Leibniz-Zentrum fuer Informatik, 2010.
+1727
+Copyright © by SIAM. 
+Unauthorized reproduction of this article is prohibited.
+
+[13] Martin E. Dyer, Leslie Ann Goldberg, and Mark
+Jerrum.
+The complexity of weighted boolean #csp.
+CoRR, abs/0704.3683, 2007.
+[14] Martin E. Dyer, Leslie Ann Goldberg, and Mark
+Jerrum.
+An approximation trichotomy for boolean
+#csp. J. Comput. Syst. Sci., 76(3-4):267–277, 2010.
+[15] Martin E. Dyer, Leslie Ann Goldberg, and Mike Pater-
+son. On counting homomorphisms to directed acyclic
+graphs. J. ACM, 54(6), 2007.
+[16] Martin E. Dyer and Catherine S. Greenhill. The com-
+plexity of counting graph homomorphisms (extended
+abstract). In SODA, pages 246–255, 2000.
+[17] G. David Forney, Jr.
+Codes on graphs:
+Normal
+realizations, IEEE Trans. Inform. Theory, vol. 47, pp.
+520548, Feb. 2001.
+[18] M. Freedman, L. Lov´asz, and A. Schrijver. Reﬂection
+positivity, rank connectivity, and homomorphism of
+graphs. J. AMS, 20:37–51, 2007.
+[19] Leslie Ann Goldberg and Mark Jerrum. Approximat-
+ing the partition function of the ferromagnetic potts
+model. CoRR, abs/1002.0986, 2010.
+[20] L. A. Goldberg, M. Grohe, M. Jerrum, and M. Thur-
+ley.
+A complexity dichotomy for partition functions
+with mixed signs. In Proceedings of the 26th Interna-
+tional Symposium on Theoretical Aspects of Computer
+Science, pages 493–504, 2009.
+[21] P. Hell and J. Neˇsetˇril.
+On the complexity of h-
+coloring. Journal of Combinatorial Theory, Series B,
+48(1):92–110, 1990.
+[22] E.
+Ising.
+Beitrag
+zur
+theorie
+des
+ferromag-
+netismus. Zeitschrift f¨ur Physik A Hadrons and Nuclei,
+31(1):253–258, 1925.
+[23] M.R. Jerrum and A.J. Sinclair. Polynomial-time ap-
+proximation algorithms for the Ising model.
+SIAM
+Journal on Computing, 22: 10871116, 1993.
+[24] M.R. Jerrum and A.J. Sinclair,
+The Markov Chain
+Monte Carlo Method: An Approach to Approximate
+Counting and Integration. Approximation Algorithms
+for NP-Hard Problems, D.S. Hochbaum, ed., PWS
+Publishing, 1997, pp. 482520.
+[25] P. W. Kasteleyn. The statistics of dimers on a lattice.
+Physica, 27:1209–1225, 1961.
+[26] P. W. Kasteleyn. Graph theory and crystal physics.
+In (F. Harary, editor, Graph Theory and Theoretical
+Physics, pages 43–110. Academic Press, London, 1967.
+[27] Richard E. Ladner.
+On the structure of polynomial
+time reducibility. J. ACM, 22(1):155–171, 1975.
+[28] T.D. Lee and C.N. Yang. Statistical theory of equa-
+tions of state and phase transitions. II. Lattice gas and
+Ising model. Physical Review, 87(3):410–419, 1952.
+[29] E.H. Lieb and A.D. Sokal. A general Lee-Yang theorem
+for one-component and multicomponent ferromagnets.
+Communications in Mathematical Physics, 80(2):153–
+179, 1981.
+[30] L. Lov´asz.
+Operations with structures.
+Acta Math.
+Hung., 18:321–328, 1967.
+[31] N. Madras and D. Randall. Markov chain decomposi-
+tion for convergence rate analysis. Annals of Applied
+Probability, 12: 581606, 2002.
+[32] B.M. McCoy and T.T. Wu. The two-dimensional Ising
+model. Harvard University Press Cambridge, 1973.
+[33] L. Onsager.
+Crystal statistics. I. A two-dimensional
+model with an order-disorder transition.
+Physical
+Review, 65(3-4):117–149, 1944.
+[34] D. Randall. Mixing. The 44th Symposium on Founda-
+tions of Computer Science (FOCS) : 4-15.
+[35] T. Schaefer.
+The Complexity of Satisﬁability Prob-
+lems. STOC 1978. pp. 216226.
+[36] N. Creignou, S. Khanna, and M. Sudan.
+Complex-
+ity Classiﬁcations of Boolean Constraint Satisfaction
+Problems. Siam Monographs On Discrete Mathemat-
+ics And Applications. 2001. ISBN:0-89871-479-6.
+[37] H. N. V. Temperley and M. E. Fisher. Dimer problem
+in statistical mechanics c an exact result. Philosophical
+Magazine, 6:1061C 1063, 1961.
+[38] Marc Thurley. The complexity of partition functions
+on hermitian matrices. CoRR, abs/1004.0992, 2010.
+[39] Leslie G. Valiant.
+Quantum circuits that can be
+simulated classically in polynomial time.
+SIAM J.
+Comput., 31(4):1229–1254, 2002.
+[40] Leslie G. Valiant.
+Holographic algorithms (extended
+abstract).
+In FOCS ’04:
+Proceedings of the 45th
+Annual IEEE Symposium on Foundations of Computer
+Science, pages 306–315, Washington, DC, USA, 2004.
+IEEE Computer Society.
+[41] Leslie G. Valiant.
+Accidental algorthims.
+In FOCS
+’06: Proceedings of the 47th Annual IEEE Symposium
+on Foundations of Computer Science, pages 509–517,
+Washington, DC, USA, 2006. IEEE Computer Society.
+[42] Leslie G. Valiant. Holographic algorithms. SIAM J.
+Comput., 37(5):1565–1594, 2008.
+[43] DJA Welsh. Complexity: knots, colourings and count-
+ing. Cambridge Univ Pr, 1993.
+[44] C.N. Yang. The spontaneous magnetization of a two-
+dimensional Ising model. Physical Review, 85(5):808–
+816, 1952.
+[45] C.N. Yang and T.D. Lee. Statistical theory of equa-
+tions of state and phase transitions. I. Theory of con-
+densation. Physical Review, 87(3):404–409, 1952.
+1728
+Copyright © by SIAM. 
+Unauthorized reproduction of this article is prohibited.

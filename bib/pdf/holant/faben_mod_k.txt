@@ -1,0 +1,580 @@
+arXiv:0809.1836v1  [cs.CC]  10 Sep 2008
+The complexity of counting solutions to
+Generalised Satisﬁability Problems modulo k ∗
+John Faben†
+October 31, 2018
+Abstract
+Generalised Satisﬁability Problems (or Boolean Constraint Satis-
+faction Problems), introduced by Schaefer in 1978, are a general class
+of problem which allow the systematic study of the complexity of satis-
+ﬁability problems with diﬀerent types of constraints. In 1979, Valiant
+introduced the complexity class parity P, the problem of counting the
+number of solutions to NP problems modulo two. Others have since
+considered the question of counting modulo other integers.
+We give a dichotomy theorem for the complexity of counting the
+number of solutions to Generalised Satisﬁability Problems modulo in-
+tegers. This follows from an earlier result of Creignou and Hermann
+which gave a counting dichotomy for these types of problem, and the
+dichotomy itself is almost identical. Speciﬁcally, counting the number
+of solutions to a Generalised Satisﬁability Problem can be done in
+polynomial time if all the relations are aﬃne. Otherwise, except for
+one special case with k = 2, it is #kP-complete.
+1
+Introduction
+The complexity class LP (pronounced ‘parity P’) was ﬁrst introduced by
+Valiant in [9]. It formalises the question of counting the parity of the number
+∗Supported by EPSRC grant No.EP/E064906/1, ‘The Complexity of Counting in Con-
+straint Satisfaction Problems’
+†School of Mathematical Sciences, Queen Mary, University of London, Mile End Road,
+London, E1 4NS, UK
+1
+
+of solutions to NP problems. Formally, it is the class of languages S such
+that there is a polynomial time Turing Machine which on input x ∈S has an
+odd number of accepting computations and on x ̸∈S has an even number.
+In this paper, we will also deal with the problem of counting the number of
+solutions to NP problems modulo other integers. We will give details of the
+complexity classes used to deal with this problems in section 2. There have
+been some interesting recent results in this area, with Valiant proving that
+there exist problems which are complete for LP but for which counting the
+number of solutions modulo 7 can be done in polynomial time [10].
+Generalised Satisﬁability Problems (also referred to as Boolean Con-
+straint Satisfaction Problems) are a very general class of problem, which
+provide the base cases for the reductions in a wide variety of complexity the-
+oretic proofs. They were ﬁrst studied by Schaefer in [8], where he proved
+a dichotomy theorem for the decision version of these problems (assuming
+P̸=NP). The Generalised Satisﬁability Problem is this: given a set S of
+boolean relations, the S-satisﬁability problem is the question of determining
+whether or not a given S-formula is satisﬁable, where an S-formula is a con-
+junction of S-relations. The set of all satisﬁable S-formulae is denoted by
+SAT(S). For example, if S were the set of all eight 3-ary boolean relations,
+SAT(S) would be the well-known 3-SAT language. Schaefer showed that the
+decision versions of Generalised Satisﬁability Problems can be divided into
+two classes - those which are NP-complete, and those which can be solved
+in polynomial time, depending on what type of logical relations is contained
+in the set S. This is in contrast with a result of Ladner that, under the
+assumption P ̸= NP, there is an inﬁnite hierarchy of problems of increasing
+complexity between problems in P and problems which are NP complete [4].
+A dichotomy theorem for the counting version was proved by Creignou
+and Hermann in [2]. They show that the counting version of a Generalised
+Satisﬁability Problem #SAT(S) can be solved in polynomial time if the all
+the relations in S are aﬃne; if not, #SAT(S) is #P-complete. A revised
+version of their proof appears in the monograph [6], results from which are
+used in section 4.
+Given this counting dichotomy, we are motivated to pose the question:
+among those Satisﬁability problems for which the counting problem is known
+to be #P-complete are there any for which the number of solutions is easy
+to count modulo some integer k?
+The answer is almost always no.
+The
+dichotomy we ﬁnd in this paper is identical to that found in [6] except for
+one diﬀerence for the case k = 2.
+2
+
+2
+The classes #kP
+Previous work dealing with the complexity of counting modulo integers (e.g.
+[1] [3]) has tended to deﬁne the relevant complexity class as ModkP, the set of
+languages which have non-zero number of accepting paths modulo k for some
+Turing Machine M. Formally, ModkP contains for every function f ∈#P
+the language
+{x ∈Σ∗| f(x) ̸≡0
+(mod k)}
+For the purposes of the work in this paper, we have chosen to deﬁne a
+slightly diﬀerent set of classes, which we refer to here as #kP, and which we
+think more intuitively capture the notion of counting modulo k. Analogous
+to #P, we deﬁne #kP to be class of problems “compute f(x) modulo k”
+where f(x) is the number of accepting paths of a polynomial time Turing
+Machine. Like #P, this is a class of function problems rather than a class of
+decision problems. Formally:
+Deﬁnition 2.1. Let #accMk be the function mapping from an input x to
+the number of accepting paths of the non-deterministic Turing Machine M
+on input x modulo k. The class #kP consists of all functions #accMk for
+all non-deterministic Turing Machines M with polynomial length accepting
+paths on input x.
+It seems intuitively that there should be problems for which determining
+the number of solutions modulo k exactly is harder than determining whether
+the number of solutions modulo k is non-zero. We have been able to construct
+artiﬁcial examples of such problems, but whether any natural problems with
+this property exist is an open question.
+It should be noted that previous papers have used both #kP and ModkP
+to refer to the decision class deﬁned above as ModkP.
+We will need use the notion of a reduction which is parsimonious modulo
+k; just as a parsimonious reduction from one counting problem to another is
+one which preserves the number of solutions exactly, so a reduction which is
+parsimonious modulo k is one which preserves exactly the number of solutions
+modulo k. We note in passing that a reduction which is parsimonious is also
+parsimonious modulo k for all k.
+Deﬁnition 2.2. Given two counting problems #A and #B, we say there
+is a parsimonious reduction from #A to #B if there exists a function f
+3
+
+computable in polynomial time such that for all x, |{y : (x, y) ∈A}| = {z :
+(f(x), z) ∈B}|.
+Deﬁnition 2.3. Given two #kP counting problems, #A and #B, we say
+there is a parsimonious reduction modulo k (a #k-reduction) from #A to #B
+if there exists a polynomially computable function f such that |{y : (x, y) ∈
+A}| ≡|{z : (f(x), z) ∈B}| (mod k). In this case we say #A ≤#k #B.
+Again, in an analogy with #P completeness, we deﬁne the notion of #kP-
+completeness to with respect to Turing reducibility. Essentially, a problem
+#kA is #kP-complete if every problem in #kP can be solved in polynomial
+time given an oracle for #kA.
+Deﬁnition 2.4. A counting problem #kA ∈#kP is #kP-complete if for all
+other problems #kB ∈#kP, #kB can be solved in polynomial time with a
+#kP oracle for #kA.
+3
+Preliminaries
+In [6], the counting dichotomy for Generalised Satisﬁability Problems is es-
+tablished via reductions to problems referred to in that paper as #SAT(OR0),
+#SAT(OR1) and #SAT(OR2). These are the problems of counting the num-
+ber of satisfying assignments of boolean formulae whose constraints are de-
+ﬁned by functions of the form xi ∨xj, ¯xi ∨xj and ¯xi ∨¯xj respectively. In
+this paper, we will use essentially the same reductions to ﬁnd a dichotomy
+for counting modulo k for all integer k. We therefore begin by proving the
+following #k-hardness result.
+Theorem 3.1. The problems #kSAT(OR0), #kSAT(OR1) and #kSAT(OR2)
+are #kP-complete for all k.
+The proof of this theorem will be in several stages, and will be by re-
+duction of the satisﬁability problems to counting the number of independent
+sets in various classes of graph. Speciﬁcally, to #kINDEPENDENT-SET, the
+problem of counting the number of independent sets in a general graph mod-
+ulo k and to #kBIPARTITE-INDEPENDENT-SET, the problem of counting
+the number of independent sets in a bipartite graph modulo k.
+We begin by noting that #kSAT(OR2) is trivially reducible to #kSAT(OR0),
+simply by taking the negation of each literal in the formula. We then make
+4
+
+use of the following lemma, which simply states a well-known equivalence
+between the two problems:
+Lemma 3.2. #kINDEPENDENT-SET ≤#k #kSAT(OR2) for all k.
+Proof. With a graph G on vertices {v1, . . . , vn} we associate the OR2 formula
+F on the variables {x1, . . . , xn} such that the clause ¯xi ∨¯xj appears in F if
+and only if there is an edge between vertices vi and vj in G. Then given
+an independent set, I in G, the truth assignment, s, which satisﬁes s(xi) =
+true
+⇐⇒
+vi ∈I is a satisfying assignment for F, and vice versa, given
+a satisfying assignment, the corresponding vertex set is independent.
+So
+the satisfying assignments of F are in one-to-one correspondence with the
+independent sets of G, and the reduction is parsimonious.
+Since the reduction given above is parsimonious, it is parsimonious mod-
+ulo k for all k.
+We will also make use of the following lemma.
+Lemma 3.3. #kBIPARTITE-INDEPENDENT-SET ≤#k #kSAT(OR1) for
+all k.
+Proof. The reduction given by Linial in [5] preserves the number of solutions
+exactly, and so preserves the number of solutions modulo k for all k.
+In the rest of this section, we will show that the problems, #kINDEPENDENT-
+SET and #kBIPARTITE-INDEPENDENT-SET are both #k-complete for
+all integer k. This will be done by reduction from the problem #kSAT, which
+we deﬁne as the problem of counting the number of satisfying assignments
+of a boolean formula in constructive normal form modulo k. This problem is
+known to be #k-complete since the reduction used in Cook’s Theorem can
+be made parsimonious [7].
+The reductions used in the proofs which follow all have the same basic
+structure. Given a SAT-formula, we produce a graph in which the indepen-
+dent sets with a certain property all correspond to satisfying assignments
+of F, and in which the independent sets which do not have this property
+can be partitioned into k subsets of equal size, the total number of which is
+therefore zero modulo k. This allows us to produce a formula for the number
+of independent sets modulo k, as described in lemma 3.4.
+In the following, I(G), where G is a graph will denote the set of indepen-
+dent sets of G. We will also use I(G; X), where X is a set of vertices in a
+5
+
+graph G to denote the set of independent sets of G all of whose vertices lie
+in X. We will also use N(x) to represent the (open) neighbourhood in G of
+a vertex x and NG(H) to represent the (open) neighbourhood of a subset,
+X ⊂V (G).
+Lemma 3.4. Consider a graph G with the following structure:
+G consists of a set of vertices X, along with n copies of a graph H,
+{H1, . . . , Hn}, each of which contains distinguished vertex hi. The edges in
+G either go between vertices in one copy of H, between vertices in X or
+between some distinguished vertex hi and a vertex in X. Furthermore, H has
+the property that the total number of independent sets in H is congruent to
+zero modulo k.
+The total number of independent sets in G is congruent modulo k to:
+X
+I0∈I(G;X)
+n
+Y
+i=1
+min{|I0 ∩NG(Hi)|, 1} × |I(G; Hi\{hi})|
+(1)
+Proof. The relevant intuition for this proof is that if we have two sets of
+vertices, say X and Y , satisfying NG(X) ∩Y = ∅then |I(G; X ∪Y )| =
+|I(G; X)|×|I(G; Y )|. This is because any independent set which lies entirely
+in X ∪Y is the union of an independent set in X and an independent set
+in Y , and each such union in an independent set by the condition on the
+neighbourhoods.
+We note that if J ∈I(G) is an independent set in G then I = J ∩X is
+an independent set in X. We partition the independent sets of G according
+to their intersection with X - we then count the number of independent sets
+in each partition modulo k and take the sum.
+Let I be an independent set in X and let [I] denote the set of independent
+sets in G whose intersection with X is I. Now we consider two cases.
+First, assume that there is some subgraph Hi such that the neighbourhood
+of Hi does not share any vertices with I (i.e. such that I∩NG(Hi) = ∅). Now,
+any independent set in [I] can be written as the union of an independent set
+in Hi and an independent set in G\Hi the intersection of which with X is I.
+Furthermore, every such union is an independent set in [I]. Then the total
+number of independent sets in [I] is congruent modulo k to |I(Hi)| multiplied
+by the number of independent sets in G\Hi whose intersection with X is I,
+but since |I(Hi)| is congruent to zero modulo k, then |[I]| is congruent to
+zero modulo k. Note that in this case the product term in the summation
+6
+
+above always evaluates to zero - giving a correct count modulo k of the size
+of [I].
+Now, assume that for all i, the neighbourhood of Hi (and therefore the
+neighbourhood of hi does contain some vertex in I (I ∩N(Hi) ̸= ∅). Then
+any independent set in [I] can be written as the union of I and n diﬀerent
+independent sets {J1.., Jn} such that Ji is entirely contained in V (Hi\{hi})
+and, once again, each such union is an independent set in [I]. The total num-
+ber of such unions is clearly Qn
+i=1 |I(G; Hi\{hi})|, and since the minimum
+of |I ∩NG(Hi)| and 1 is equal to 1 for all i in this case, this is equal to the
+product given in the theorem.
+The theorem 3.5 which we prove next is in fact a consequence of the
+theorem 3.7 which we prove below. However, since the reduction used here
+is probably easier to follow, and is similar in structure to that used in the
+later proof, we will give the construction of this reduction explicitly.
+Theorem 3.5. LINDEPENDENT-SET is LP-complete
+Proof. We precede by reduction from LSAT. Given a CNF formula F with
+clauses {C1, . . . Cm} and variables {x1, . . . xn}, considered as an instance of
+LSAT, we construct a graph, G, with vertices {vi, ¯vi, pi | i ∈{1, . . . , n}}, cor-
+responding to each variable in F. There are also vertices {cj | j = 1, . . . , m},
+each corresponding to one clause in F. There are three types of edges in the
+graph. Each pair (vi, ¯vi) is linked by an edge, and each vertex pi is linked by
+an edge to both vi and ¯vi. Finally, a vertex vi (¯vi) is linked to a vertex cj if
+and only if the literal xi ( ¯xi) appears in the clause Cj. An example of the
+graph derived from the SAT formula with the single clause x1 ∨¯x2 is given
+in ﬁgure 3. We claim that the parity of the number of independent sets in G
+is equal to the parity of the number of satisfying assignments of F.
+This graph satisﬁes the conditions of lemma 3.4. The special subgraph
+H is the graph on one vertex, which has 2 ≡0 (mod 2) independent sets as
+required. The pi and cj are the copies of H and the set X is the vertices
+vi, ¯vi, i ∈{1...n}. It therefore suﬃces for us to show that the independent
+sets, I, of G which satisfy I ∩NG(pi) ̸= ∅and I ∩NG(cj) ̸= ∅for all i and j
+are in one-to-one correspondence with the satisfying assignments of F.
+We note that an independent set, I, with the required property must
+contain exactly one of vi and ¯vi for each i. It must contain at least one in
+order to ensure that pi has a neighbour in I, and it cannot contain more than
+one as (vi, ¯vi) ∈E(G). We now consider the assignment of truth values to
+7
+
+variables in F given by setting s(xi) to true if vi ∈I and setting it to false if
+¯vi ∈I. To see that this assignment is satisfying, let Cj be a clause in F, then
+the vertex cj has some neighbour in I, which is either vi or ¯vi for some i, and
+the literal xi or ¯xi, which appears in Cj, is set to true by the construction of
+s.
+Now using the formula in lemma 3.4, we see that the number of indepen-
+dent sets of G modulo 2 is equal to the number of satisfying assignments of
+F modulo 2, giving the desired reduction.
+v1
+¯v1
+p1
+C1
+¯v2
+v2
+p2
+Figure 1: Graph derived from formula x1 ∨¯x2
+Theorem 3.6. #k-INDEPENDENT-SET is #k-complete for all k
+Proof. Whilst it is possible to give a construction along the lines of that given
+above (the special subgraphs being copies of Kp), this theorem is again an
+immediate consequence of theorem 3.7, so this time we will not detail the
+construction explicitly.
+As noted above, the problem of counting independent sets in a bipartite
+graph is parsimoniously reducible to the problem of counting the number of
+satisfying assignments of an OR1 formula. In order to use OR1 as a base
+problem for our counting reduction in the next section, we prove theorem
+3.7.
+Theorem 3.7. #kBIPARTITE-INDEPENDENT-SET is #k-complete for
+all k
+Proof. We begin by noting that it actually suﬃces to show that the problem
+of counting modulo p is #p-complete for all prime p, since counting modulo
+8
+
+k for any composite number k is at least as hard as counting modulo any of
+the prime factors of k.
+We proceed by reduction from #p-SAT. Given a SAT formula F with
+clauses {C1, . . . Cm} and variables {x1, . . . xn} and a prime number p, we
+construct a graph as described below.
+With each variable xi in F, we associate a subgraph of G as follows, the
+subgraph contains special vertices vi, ¯vi the presence or absence of which in
+an independent set will correspond to the truth or otherwise of the literals
+xi,¯(xi) of F, there are also vertices pi and ¯pi - these are connected to vi and
+¯vi respectively, and are both connected by an edge to one vertex, hi in Hi.
+Where Hi is a copy of H, a bipartite graph with a distinguished vertex h,
+having the property that the number of independent sets in H is a multiple
+of p and that the number of independent sets in H\{h} is non-zero modulo
+p. There is also another copy of the same graph, H∗
+i , one vertex of which,
+h∗
+i is linked by an edge to each of vi and ¯vi. Finally for each clause Cj in
+F we add another copy of this bipartite graph H, denoted Cj, one vertex of
+which, cj is linked to each of the vertices representing the literals present in
+the clause Cj.
+Formally then, the vertex set of G will be {vi, ¯vi, pi, ¯pi | i = 1 . . . n}.
+Along with {V (Hi), V (Hi)∗| i = 1 . . . n} and {V (Cj) | j = 1 . . . m} copies
+of H. The edge set will be the edges of Hi, H∗
+i and Cj along with the edges
+{(vi, pi), (¯vi, ¯pi), (pi, hi), (¯pi, hi), (vi, h∗
+i ), (¯vi, hi) | i = 1 . . . n} and the edges
+(vi, cj), (¯vi, cj) such that the literals xi, ¯xi respectively appear in the clause
+cj.
+An example of the subgraph associated with a variable xi lying in the
+clause Cj is given in ﬁgure 3.
+Using lemma 3.4 it suﬃces to show that the independent sets, I, of G
+which satisfy I ∩N(Hi) ̸= ∅for all i are in one-to-one correspondence with
+the satisfying assignments of F, and that we can produce a bipartite graph
+H with the desired property. Since we are able to divide by any non-zero
+constant modulo p, the formula given in the lemma will then allow us to
+derive the number of satisfying assignments of F modulo p from the number
+of independent sets of G modulo p, giving the required reduction. That such
+H can be constructed for all prime p is shown in lemma 3.8 below.
+Let I be an independent set in G with the relevant property. Then for
+all i, either {vi, ¯pi} ⊂I or {¯vi, pi} ⊂I. To see this, we note that both hi and
+h∗
+i have some neighbour in I by assumption, but then the only neighbours
+of hi in X are vi and ¯vi, so one of these two must be in I. Similarly, the
+9
+
+Hi
+Cj
+H∗
+i
+vi
+¯vi
+pi
+¯pi
+hi
+h∗
+i
+cj
+Figure 2: Subgraph associated with the variable xi
+neighbours of h∗
+i in G are pi and ¯pi - so one of this pair must be in I, but
+then since I is independent and (vi, pi), (¯vi, ¯pi) ∈E(G) we have the stated
+result. Let s be the assignment of truth values to variables in F given by
+s(xi) = true ⇐⇒vi ∈I. We claim that this is a satisfying assignment of
+F.
+Indeed, let Cj be a clause of F. Then there is some element of I which
+is a neighbour of cj, the distinguished node in Cj. This is either vi or ¯vi for
+some i, but then the literal xi ( ¯xi) appears in the clause Cj, and this literal
+is true by construction of s, therefore the clause Cj is satisﬁed.
+Similarly, if s is a satisfying assignment of F, then the independent set
+constructed analogously to that above (with {vi, ¯pi} ⊂I if s(xi) = true
+and {¯vi, pi} ⊂I otherwise) is an independent set of X with the required
+property.
+Lemma 3.8. For all prime p it is possible to construct a bipartite graph H,
+containing a distinguished node h, with the following properties.
+(i) The number of independent sets in H is congruent to zero modulo p.
+10
+
+(ii) The number of independent sets in H\{h} is not congruent to zero
+modulo p.
+Furthermore, for p > 2, the graph K(p−2),(p−2) is such an H (any node of the
+graph can be chosen as the distinguished node, since they are indistinguish-
+able).
+Example 3.9. An example of a subgraph H which would satisfy the above
+conditions for p = 2 is the graph on one vertex, where the distinguished ver-
+tex, h will clearly be the unique vertex in the graph. This graph has precisely
+2 independent sets (∅and {h}), whereas H\{h} = ∅has precisely one.
+Proof of Lemma 3.8. We note that the graph K1 provides an example of such
+a graph for p = 2 (as explained in example 3.9), and therefore restrict our
+attention to the case p > 2.
+Consider the graph Kn,n, the complete bipartite with two classes of n
+vertices each.
+This graph has 2(n+1) −1 independent sets.
+To see this,
+simply note that any independent set in Kn,n is contained entirely in one
+of the two vertex classes, and that every subset of one of the vertex classes
+in independent. Then there are 2n independent sets in each class, but the
+empty set is in both, so there are in fact 2n+1 −1 independent sets in Kn,n.
+Now let n = p −2, then Kn,n has 2p−1 −1 independent sets. But by Fer-
+mat’s little theorem, 2p−1 ≡1 (mod p), therefore the number of independent
+sets of Kp−2,p−2 is congruent to zero modulo p.
+Finally, the number of independent sets in Kp−2,p−3 (which is H with a
+vertex deleted) is equal to 2p−2 + 2p−3 −1, but this is just (2p−1 −1) −2p−3,
+and since 2 ̸≡0 (mod p), we have that 2p−3 ̸≡0 (mod p), and so (2p−1 −
+1) −2p−3 ≡−2p−3 ̸≡0 (mod p).
+Proof of theorem 3.1. This follows immediately from the theorems 3.6 and
+3.7 along with lemmas 3.2 and 3.3.
+4
+The classes #k-SAT
+We now know that #kSAT(OR0), #kSAT(OR1) and #kSAT(OR2) are #kP-
+complete for all integer k. We proceed to give reductions from these base
+problems to Generalised Satisﬁability Problems - the reductions are in most
+cases identical to those used by Creignou et. al. in [6].
+11
+
+We will make use of the functions T and F which are the functions of one
+variable which evaluate to true and false respectively, as well as XOR(x, y),
+the function which evaluates to true when exactly one of x and y is true
+and false otherwise. We will say that a constraint set F is C-closed if every
+constraint function f in F is such that if f(x) is true then f(1-x) is also true,
+in other words, such that the set of satisfying assignments of an F-constraint
+is closed under complement. We will say that a constraint set, F, is 0-valid
+(1-valid) if setting all of the variables in any F-formula to 0 (1) results in
+the formula evaluating to true. Finally, a constraint set is aﬃne if each of
+the constraints in the set can be expressed as a system of linear equations in
+GF2.
+Deﬁnition 4.1. A family of constraints, F, over a set of variables x, y,
+faithfully implements a boolean function f(x) iﬀthere exists an F-collection
+of constraints, C such that there is exactly one way to satisfy each constraint
+in C whenever f(x) evaluates to true, and no ways to satisfy them all when-
+ever f(x) evaluates to false. The variables x are called function variables,
+and the variables y auxiliary variables.
+We note that for our purposes a slightly weaker deﬁnition of faithful
+implementation would suﬃce, with “exactly one” replaced with “exactly one
+modulo k”. However, it turns out that the reductions we need are faithful in
+the original sense, and therefore we use this deﬁnition in order to be able to
+appeal directly to the results of [6].
+Example 4.2. The constraint family {OR0, F} faithfully implements the
+function T(x) through the constraint applications {OR0(x, y), ¯y}, y is an
+auxiliary variable.
+Lemma 4.3. Given an integer k and a constraint set F, if #kSAT(F) is
+#kP-hard and every constraint of F can be faithfully implemented by F ′,
+then #kSAT(F ′) is also #kP-hard.
+Proof. This proof is essentially identical to the proof of theorem 5.15 in
+[6].
+Given an F-collection of constraint applications on a variable set x,
+say C, we transform this using faithful implementations to an F ′-collection
+of constraint applications on a new variable set, (x, y), say C′. Since the
+implementations are faithful, each satisfying assignment of C can be extended
+in a unique way to a satisfying assignment of C′. Therefore there is a one-
+to-one correspondence between satisfying assignments of C and satisfying
+12
+
+assignments of C′. This gives a parsimonious reduction from #SAT(F) to
+#SAT(F ′), which clearly implies the desired result.
+We will make use of the following lemmas, taken from [6] and stated here
+without proof.
+Lemma 4.4. [6] If a constraint family F is not 0-valid (1-valid) and
+(i) if F is C-closed, then F faithfully implements XOR.
+(ii) if F is not C-closed, then F faithfully implements T (F).
+Lemma 4.5. [6] Take a function f. If f is not aﬃne, then {f, F, T} faith-
+fully implements at least one of the three functions OR0, OR1 and OR2. Fur-
+thermore, if f is 0-valid (1-valid) then {f, F} ({f, T}) faithfully implements
+one of OR1 or OR2 (OR0 or OR1).
+Lemma 4.6. Let F be a non-C-Closed family of functions. Then if F is
+both 0-valid and 1-valid, F faithfully implements OR1.
+We also need the following lemmas, which have been adapted from the
+versions given in [6].
+Lemma 4.7. Let F be a set of C-Closed functions. If p is an odd prime,
+and if #pSAT(F ∪{F, T}) is #pP-hard and if F can faithfully implement
+the XOR function, then #pSAT(F) is #pP-hard.
+Proof. We will use the following reduction: Let C be an F ∪{F, T}-collection
+of constraint applications on variables x let y0, y1 be two new variables, and
+replace with y0 any variable constrained to be false, and replace with y1 any
+variable constrained to be true. Now add the constraint XOR(y0, y1). We
+now have, C′ an F ∪XOR collection of constraint applications on variables
+x, y0, y1. Clearly any satisfying assignment of C can be extended to a satis-
+fying assignment of C′ by setting s′(y0) = 0 and s′(y1) = 1. Conversely, let
+s′ be a satisfying assignment of F ′ then either s′(y0) = 0 and s′(y1) = 1, in
+which case s′ restricted to x is a satisfying assignment of C or s′(y0) = 1 and
+s′(y1) = 0, in which case it is easy to check that s(x) = 1 −s′(x) satisﬁes all
+constraints in C. So C′ has precisely twice as many satisfying assignments as
+C.
+Now since p is prime and p ≥2, we can divide by two modulo p, giving
+a Turing reduction from #pSAT(F ∪{F, T}) to #pSAT(F. Finally, since
+F can faithfully implement XOR, we have #pP-hardness of #pSAT(F) by
+lemma 4.3.
+13
+
+Lemma 4.8. Let F be a set of C-Closed functions. For all integer k, if
+#2k−1SAT(F ∪{F, T}) is #2k−1P-hard and if F can faithfully implement the
+XOR function then #2kSAT(F) is #2kP-hard.
+Proof. The reduction used is the same as in the previous proof. Now, given
+a F ∪{F, T}-formula, F, we have constructed a F formula, F ′ with twice as
+many satisfying assignments as F. Now, any algorithm which could count
+the number of solutions of F ′ modulo 2k in polynomial time could clearly be
+used to count the number of solutions of F modulo 2k−1 in polynomial time.
+Therefore #2k−1P-hardness of #2k−1SAT(F ∪{F, T}) implies #2kP-hardness
+of #2kSAT(F) as required.
+Lemma 4.9. Let F be a set of C-Closed functions. If p is an odd prime,
+and if #pSAT(F ∪{F}) is #pP-hard and if F then #pSAT(F) is #pP-hard.
+Proof. We construct a F formula from a given F ∪{F} formula by replacing
+all variables which are constrained to be false with a new variable x0. This
+formula then has twice as many satisfying assignments as the original, and
+we proceed as in the proof of lemma 4.7.
+Lemma 4.10. Let F be a set of C-Closed functions. For all integer k, if
+#2k−1SAT(F ∪{F}) is #2k−1P-hard then #2kSAT(F) is #2kP-hard.
+Proof. Using the same reduction as in the proof of the previous lemma, and
+then the same reasoning as in the proof of lemma 4.8 we obtain the desired
+result.
+Finally, we require the observation that for C-Closed functions, the num-
+ber of satisfying assignments modulo 2 is always equal to zero - as for any
+satisfying assignment s, the assignment 1-s is also satisfying.
+Theorem 4.11. Given a constraint set F, and an integer k, the problem
+#kSAT(F) is in FP if F is an aﬃne family of constraints, or if k = 2 and
+F is C-closed, and it is otherwise #kP-complete.
+Proof. There are several cases to consider, ﬁrst we note that #kSAT(F) is
+clearly in #kP. Now, if every constraint in F is aﬃne, then we can consider
+solving #SAT(F) as the problem of solving a system of linear equations of
+GF(2), this can be done using Gaussian elimination in polynomial time. Since
+we can solve #SAT(F) in polynomial time, we can clearly solve #kSAT(F)
+in polynomial time.
+Also, if F is C-closed, then clearly F has an even
+14
+
+number of satisfying assignments, so the problem #2SAT(F) is trivial, and
+can certainly be solved in polynomial time.
+Now, suppose F contains a function, g, which is not aﬃne, and that if
+k = 2 then F is not C-closed. There are 3 cases.
+g is neither 0-valid nor 1-valid Then family {g,F,T} can faithfully im-
+plement one of OR0, OR1 and OR2 (Lemma 4.5). Hence by lemma
+4.3 and theorem 3.1, #kSAT(F ∪{F,T}) is #kP-complete for all k. If
+F contains a function which is not C-closed, we can faithfully imple-
+ment F and T by lemma 4.4 so we get #k-hardness for #kSAT(F).
+Otherwise we can faithfully implement XOR by lemma 4.4 and we get
+#p-hardness for all odd primes p using lemma 4.7, and #2l-hardness
+for all l ≥2 using lemma 4.8. Now we have #k-hardness for all k ≥3
+(as all k ≥3 have as a factor either some odd prime or some power of
+two greater than or equal to four, and counting modulo k is at least as
+hard as counting modulo any factor of k).
+g is 0-valid but not 1-valid (or vice versa) In this case, {g,F} can faith-
+fully implement one of the functions OR1 or OR2 (lemma 4.5). Also,
+clearly g itself can faithfully implement F since it is 0-valid but not
+1-valid. Thus F can faithfully implement one of OR1 or OR2. Then
+by the lemma 4.3 and theorem 3.1, we get #k-hardness for #kSAT(F).
+Note that in this case g itself is not C-Closed as g(0) = true and g(1) =
+false so we don’t need to deal with the possibility that F is C-Closed.
+g is 0-valid and 1-valid Then if g is not C-closed, g can faithfully imple-
+ment OR1 (lemma 4.6) which gives #k-hardness for #kSAT(F). Oth-
+erwise {g, F} can faithfully implement one of OR1 or OR2 (lemma
+4.5), which gives #k-hardness of #kSAT(F, F). Therefore we can use
+lemmas 4.9 and 4.10 to get #k-hardness of #kSAT(F).
+References
+[1] J. Cai and L. A. Hemachandra. On the power of parity polynomial time.
+In Proceedings of the 6th Annual Symposium on Theoretical Aspects of
+Computer Science on STACS 89, pages 229–239, New York, NY, USA,
+1989. Springer-Verlag New York, Inc.
+15
+
+[2] Nadia Creignou and Miki Hermann. Complexity of generalized satisﬁa-
+bility counting problems. Inf. Comput., 125(1):1–12, 1996.
+[3] U. Hertrampt.
+Relations among mod-classes.
+Theor. Comput. Sci.,
+74(3):325–328, 1990.
+[4] Richard E. Ladner. On the structure of polynomial time reducibility. J.
+ACM, 22(1):155–171, 1975.
+[5] Nathan Linial. Hard enumeration problems in geometry and combina-
+torics. SIAM J. Algebraic Discrete Methods, 7(2):331–335, 1986.
+[6] Sanjeev Khanna Nadia Creignou and Madhu Sudan. Complexity classi-
+ﬁcations of boolean constraint satisfaction problems. SIAM Monographs
+on Discrete Mathematics and Applications 7, 2001.
+[7] Janos Simon. On some central problems in computational complexity.
+PhD thesis, Ithaca, NY, USA, 1975.
+[8] T.J.Schaefer. The complexity of satisﬁability problems. Proceedings,
+10th Symposium on Theory of Computing, San Diego CA, 1978.
+[9] Leslie G. Valiant. The complexity of computing the permanent. Theo-
+retical Computer Science, (8):189–201, 1978.
+[10] Leslie G. Valiant. Accidental algorthims. In FOCS ’06: Proceedings
+of the 47th Annual IEEE Symposium on Foundations of Computer Sci-
+ence (FOCS’06), pages 509–517, Washington, DC, USA, 2006. IEEE
+Computer Society.
+16

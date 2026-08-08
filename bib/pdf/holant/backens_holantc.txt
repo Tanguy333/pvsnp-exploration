@@ -1,0 +1,922 @@
+A complete dichotomy for complex-valued Holantc
+Miriam Backens
+School of Mathematics, University of Bristol, UK
+m.backens@bristol.ac.uk
+Holant problems are a family of counting problems on graphs, parametrised by sets of complex-
+valued functions of Boolean inputs. HOLANTc denotes a subfamily of those problems, where any
+function set considered must contain the two unary functions pinning inputs to values 0 or 1. The
+complexity classiﬁcation of Holant problems usually takes the form of dichotomy theorems, show-
+ing that for any set of functions in the family, the problem is either #P-hard or it can be solved in
+polynomial time. Previous such results include a dichotomy for real-valued HOLANTc and one for
+HOLANTc with complex symmetric functions.
+Here, we derive a dichotomy theorem for HOLANTc with complex-valued, not necessarily sym-
+metric functions. The tractable cases are the complex-valued generalisations of the tractable cases
+of the real-valued HOLANTc dichotomy. The proof uses results from quantum information theory,
+particularly about entanglement.
+1
+Introduction
+Holant problems are a framework for the analysis of counting complexity problems deﬁned on graphs.
+They encompass and generalise other counting complexity frameworks like counting constraint satisfac-
+tion problems (#CSP) [7, 9] and counting graph homomorphisms [8, 3].
+A Holant instance is deﬁned by assigning a function from a speciﬁed set to each vertex of a graph,
+with the edges incident on that vertex corresponding to inputs of the function. The counting problem is
+a sum-of-products computation: multiplying all the function values and then summing over the different
+assignments of input values to the edges [8]. Here, we consider complex-valued functions of Boolean
+inputs. Throughout, all numbers are assumed to be algebraic.
+Problems that can be expressed in the Holant framework include counting matchings or counting
+perfect matchings, counting vertex covers [8], or counting Eulerian orientations [14]. A Holant prob-
+lem can also be thought of as the problem of contracting a tensor network; from that perspective, each
+function corresponds to a tensor with one index for each input.
+The main goal in the analysis of Holant problems is the derivation of dichotomy theorems, showing
+that all problems in a certain family are either polynomial time solvable or #P-hard. Families of Holant
+problems are often deﬁned by assuming that the function sets contain speciﬁc functions, which are said to
+be ‘freely available’. As an example, the problem #CSP(F) for a function set F effectively corresponds
+to the Holant problem HOLANT (F ∪{=n| n ∈N∗}), where (=1) : {0,1} →C is the function that is 1
+on both inputs, and, for n ≥2, (=n) : {0,1}n →C is the function satisfying:
+(=n)(x1,x2,...,xn) =
+(
+1
+if x1 = x2 = ... = xn
+0
+otherwise.
+The problem HOLANTc (F) is the Holant problem where the unary functions pinning edges to values 0
+or 1 are available in addition to the elements of F:
+HOLANTc (F) = HOLANT (F ∪{δ0,δ1}),
+arXiv:1704.05798v2  [quant-ph]  21 Apr 2017
+
+2
+A complete dichotomy for complex-valued Holantc
+with δ0(0) = 1, δ0(1) = 0 and conversely for δ1 [8]. Another important family is HOLANT∗, in which all
+unary functions are freely available [2].
+Known Holant dichotomies include a full dichotomy for HOLANT∗[2], a dichotomy for HOLANTc
+with symmetric functions, i.e. where all functions in the sets considered depend only on the Hamming
+weight of the input [7], and a dichotomy for real-valued HOLANTc, where functions need not be sym-
+metrical but must take values in R instead of C [10]. Both existing results about HOLANTc are proved
+via dichotomies for #CSP problems with complex-valued, not necessarily symmetric functions: in the
+ﬁrst case, a dichotomy for general #CSP problems, and in the second case, a dichotomy for #CSPc
+2, a
+subfamily of #CSP in which each variable must appear an even number of times and variables can be
+pinned to 0 or 1.
+While many dichotomies have been derived for functions taking values in some smaller set, we
+consider complex-valued functions to be the natural setting for Holant problems. This is motivated in part
+by connecting Holant problems to quantum computation, where complex numbers naturally arise: the
+problem of classically simulating a quantum circuit with ﬁxed input and output states can immediately be
+expressed as a Holant problem. The second justiﬁcation for considering complex numbers is that many
+tractable sets ﬁnd a more natural expression over C. An example of this are the ‘afﬁne functions’ (see
+Section 3.1): they were originally discovered as several distinct tractable sets for a smaller codomain,
+but their deﬁnition is vastly more straightforward when expressed in terms of complex values [9].
+We therefore build on the existing work to derive a HOLANTc dichotomy for complex-valued, not
+necessarily symmetric functions. In the process, we employ notation and results from quantum informa-
+tion theory. This approach was ﬁrst used in a recent paper [1] to derive a dichotomy for HOLANT+, in
+which four unary functions are freely available, including the ones available in HOLANTc:
+HOLANT+ (F) = HOLANT (F ∪{δ0,δ1,δ+,δ−}),
+where δ+(x) = 1 for both inputs (i.e. it is the same as the unary equality function) and δ−(x) = (−1)x.
+A core part of quantum theory, and also of the quantum approach to Holant problems, is the notion
+of entanglement. A pure1 quantum state of n qubits, the quantum equivalents of bits, is represented by a
+vector in the space (C2)⊗n, which consists of n tensor copies of C2. Such a vector is called entangled if
+it cannot be written as a tensor product of vectors from each copy of C2.
+An n-ary function f : {0,1}n →C can be considered as a vector in C2n by treating each input as
+an element of an orthonormal basis for that space and using the function values as coefﬁcients in a
+linear combination of those basis vectors (cf. Section 2). This vector space C2n is isomorphic to (C2)⊗n,
+allowing functions to be brought into correspondence with quantum states. We thus call a function
+entangled if the associated vector is entangled. Identifying this property in Holant problems lets us
+apply some of the large body of work on quantum entanglement to Holant problems [18, 12, 11, 16].
+The resulting complexity classiﬁcation of Holant problems remains non-quantum, we simply employ a
+different set of mathematical tools to analyse them.
+In the HOLANT+ dichotomy, it was shown how to construct a gadget for a ternary entangled function,
+given an n-ary entangled function with n ≥3 and using the freely-available unary functions. Furthermore,
+in most cases it was shown to be possible to realise a ternary symmetric function from this [1]. We show
+how to adapt those constructions to the HOLANTc framework, where only two unary functions are freely
+available. This does not always work, yet all cases in which the construction fails turn out to be ones
+that were identiﬁed in the dichotomy for real-valued HOLANTc: in those cases, either the problem is
+1There are also mixed quantum states, which have a different mathematical representation, and which are not considered
+here.
+
+Miriam Backens
+3
+tractable by the HOLANT∗dichotomy or it can be reduced to #CSPc
+2. With these adaptations, we extend
+the dichotomy theorem for real-valued HOLANTc to arbitrary complex-valued functions.
+In the following, Section 2 contains the formal deﬁnition of Holant problems and an overview over
+common strategies used in classifying their complexity. We recap existing results in Section 3. The new
+dichotomy and its constituent lemmas are proved in Section 4. Section 5 contains the conclusions and
+outlook.
+2
+Holant problems
+Holant problems are a framework for counting complexity problems deﬁned on graphs, ﬁrst introduced
+in [8]. Let G = (V,E) be a graph with vertices V and edges E and let F be a set of complex-valued
+functions of Boolean inputs. Throughout, when we refer to complex numbers we mean algebraic com-
+plex numbers. Let π be a function that assigns to each degree-n vertex v in the graph an n-ary function
+fv ∈F and also assigns one edge incident on the vertex to each input of the function. This determines a
+complex value associated with the tuple (F,G,π), called the Holant and deﬁned as follows:
+Holant(F,G,π) =
+∑
+σ:E→{0,1}∏
+v∈V
+f
+σ|E(v)
+
+.
+Here, σ is an assignment of a Boolean value to each edge in the graph and σ|E(v) is the restriction of σ
+to the edges incident on vertex v. The tuple (F,G,π) is called a signature grid.
+The associated counting problem is HOLANT (F): given a signature grid (F,G,π) for the ﬁxed set
+of functions F, ﬁnd Holant(F,G,π).
+It is often useful to think of the functions, also called signatures, as vectors or tensors [4]. The n-ary
+functions can be put in one-to-one correspondence with vectors in C2n as follows: pick an orthonormal
+basis for C2n and label its elements {|x⟩}x∈{0,1}n, i.e. each basis vector is labelled by one of the 2n n-bit
+strings.2 Then assign to each f : {0,1}n →C the vector |f⟩= ∑x∈{0,1}n f(x)|x⟩. Conversely, any vector
+|ψ⟩∈C2n corresponds to an n-ary function ψ : {0,1}n →C :: x 7→⟨x|ψ⟩, where ⟨·|·⟩denotes the inner
+product of two vectors.3 The product of two functions of disjoint sets of variables corresponds to the
+tensor product of the associated vectors. Where no confusion arises, we drop the tensor product symbol
+and sometimes even combine labels into a single ‘ket’ |·⟩: for example, instead of writing |0⟩⊗|0⟩, we
+may write |0⟩|0⟩or |00⟩. If g is a unary signature, we sometimes write ⟨g|l |f⟩to indicate that the l-th
+input of f is connected to a vertex with signature g.
+The vector perspective is particularly useful for bipartite Holant problems. Those arise on bipartite
+graphs if we choose to assign functions from two different signature sets to the vertices in the two
+different partitions. Then the Holant becomes the inner product between two vectors corresponding to
+the two partitions. Formally: let G = (V,W,E) be a bipartite graph with vertex partitions V and W, and
+let F,G be two sets of signatures. Suppose π is a function that assigns elements of F to vertices from
+V and elements of G to vertices from W and otherwise acts as described above. Then:
+Holant(F|G ,G,π) =
+ 
+O
+v∈V
+(|fv⟩)T
+! 
+O
+w∈W
+|gw⟩
+!
+,
+2The |·⟩notation for vectors is the Dirac or bra-ket notation commonly used in quantum theory.
+3Strictly speaking, this notation refers to the complex inner product, i.e. ⟨x| is the conjugate transpose of |x⟩, but the
+distinction is irrelevant if all coefﬁcients of |x⟩are real.
+
+4
+A complete dichotomy for complex-valued Holantc
+where we assume the two tensor products are arranged so that the appropriate components of the two
+vectors meet. A bipartite Holant problem over signature sets F and G is denoted HOLANT (F | G ).
+Any Holant instance can be made bipartite without changing the value of the Holant by inserting an
+additional vertex in the middle of each edge and assigning it the binary equality signature =2. Thus:
+HOLANT (F) ≡T HOLANT (F | {=2}),
+i.e. the two problems have the same complexity. Formally, we write A ≤T B if there exists a polynomial-
+time reduction from problem B to problem A. We write A ≡T B if (A ≤T B)∧(B ≤T A).
+In the following, we use the function and vector perspectives on signatures interchangeably.
+2.1
+Complexity classiﬁcation
+Most complexity results about the Holant problem take the form of dichotomies, showing that for all
+signature sets in a speciﬁc family, the problem is either #P-hard or in FP. Such a dichotomy is not
+expected to be true for all counting complexity problems, i.e. it is assumed that there are problems in
+#P\FP which are not #P-hard [2].
+A number of polynomial-time reduction techniques are commonly used in Holant problems.
+The technique of holographic reductions is the origin of the name Holant. Let M be a 2 by 2 invertible
+complex matrix and deﬁne M◦f = M⊗arity(f) |f⟩, where M⊗1 = M and M⊗n+1 = M⊗M⊗n. Furthermore,
+let M ◦F = {M ◦f | f ∈F}; this is called a holographic transformation. Consider a bipartite graph and
+signature sets F and G . These satisfy:
+HOLANT (F | G ) ≡T HOLANT
+M ◦F | (M−1)T ◦G
+
+.
+This is because the two transformations cancel out in the inner product: let (F | G ,G,π) be the set-
+up for a Holant instance and let (M ◦F | (M−1)T ◦G ,G,π′) be its analogue where π′ assigns M ◦f
+whenever π assigns f on vertices of the left partition, and (M−1)T ◦g instead of g on the right. Then in
+fact Holant(F|G ,G,π) = Holant(M◦F|(M−1)T ◦G ,G,π′); this is Valiant’s Holant Theorem [19].
+A second technique is that of gadgets. Consider a subgraph of the original graph, which is connected
+to the larger graph by n edges. This subgraph can be replaced by a single vertex with an appropriate
+signature without changing the value of the overall Holant. Conversely, consider some set of signatures
+F and suppose g is an n-ary signature with g /∈F. If there exists some subgraph with signatures taken
+from F such that the effective signature for that subgraph is g, then [2]:
+HOLANT (F ∪{g}) ≤T HOLANT (F).
+This is because any occurrence of a vertex with signature g can be replaced by the subgraph without
+changing the value of the overall Holant. The graph increases in size by an amount linear in the number
+of occurrences of g, as the subgraph contains a constant number of vertices, and the resulting signature
+grid contains only signatures from F. Thus if HOLANT (F) can be solved in polynomial time, so can
+HOLANT (F ∪{g}). We say g is realisable over F. As multiplying a signature by a non-zero constant
+does not change the complexity of a Holant problem, we also consider g realisable if we can construct a
+gadget with effective signature cg for some c ∈C\{0}.
+In bipartite signature grids, we may distinguish between left-hand side (LHS) gadgets and right-
+hand side (RHS) gadgets, which can be used as if they are signatures for the left and right partitions,
+respectively.
+
+Miriam Backens
+5
+Finally, there is the technique of polynomial interpolation [8]. This works for signatures of any arity,
+though for simplicity we will explain the process as applied to a unary signature. Let F be a set of
+signatures and let |g⟩= x|0⟩+ y|1⟩be such that g /∈F and there is no gadget over F with effective
+signature g. Consider a signature grid Ω= (F ∪{g},G,π) in which g is assigned n times. By pulling
+out the dependence on g, the corresponding Holant can be written as:
+HolantΩ= ∑
+j+k=n
+cjkx jyk,
+where the cjk are (as yet unknown) constants. Now suppose it is possible to ﬁnd polynomially many
+gadgets over F, having distinct unary signatures {am |0⟩+bm |1⟩}m∈N, and with the size of each gadget
+bounded by a polynomial. By replacing all occurrences of g in Ωwith am |0⟩+ bm |1⟩, we construct a
+new signature grid Ωm which only uses signatures from F. Its Holant is:
+HolantΩm = ∑
+j+k=n
+cjkaj
+mbk
+m.
+If we can determine the Holant values for sufﬁciently many distinct Ωm with sufﬁciently nice properties,
+we can set up a system of linear equations for the coefﬁcients cjk, and thus compute those in time
+polynomial in n. Those coefﬁcients, in turn, can be used to compute HolantΩ, again in polynomial time.
+In this case, we say that g can be interpolated over F and conclude:
+HOLANT (F ∪{g}) ≤T HOLANT (F).
+A more detailed deﬁnition can be found in [8].
+2.2
+Properties of signatures
+We now introduce some deﬁnitions and terminology that will be used throughout the paper.
+A signature is called symmetric if its value as a function depends only on the Hamming weight of
+the inputs – in other words, it is invariant under any permutation of the inputs. Symmetric functions are
+often written in the short-hand notation f = [f0, f1,..., fn], where fk is the value f takes on inputs of
+Hamming weight k.
+Using language from quantum theory, a signature is entangled if it cannot be written as a tensor
+product of unary signatures. For example, |01⟩+ |11⟩is not entangled because it can be rewritten as
+(|0⟩+ |1⟩) ⊗|1⟩. On the other hand, the binary equality signature |00⟩+ |11⟩is entangled. If k ≥2, a
+k-ary signature can be partially decomposable into a tensor product, e.g. |0⟩⊗(|00⟩+ |11⟩). We say a
+signature is genuinely entangled if there is no way of decomposing it as a tensor product of signatures
+of any arity. When the meaning is clear from context, we may sometimes drop the word ‘genuinely’. A
+genuinely entangled signature of arity at least 3 is said to be multipartite entangled (as opposed to the
+bipartite entanglement in a signature of arity 2). A non-genuinely entangled signature has multipartite
+entanglement if it has a tensor factor corresponding to a genuinely entangled signature of arity at least 3.
+Among genuinely entangled ternary signatures, we distinguish two types, also known as ‘entangle-
+ment classes’ [11]. Let:
+|f⟩= a0 |000⟩+a1 |001⟩+a2 |010⟩+a3 |011⟩+a4 |100⟩+a5 |101⟩+a6 |110⟩+a7 |111⟩,
+where a0,...,a7 ∈C. Then |f⟩has GHZ type if the following polynomial in the coefﬁcients is non-zero:
+(a0a7 −a2a5 +a1a6 −a3a4)2 −4(a2a4 −a0a6)(a3a5 −a1a7).
+
+6
+A complete dichotomy for complex-valued Holantc
+The signature |f⟩has W type if the above polynomial is zero, and furthermore the following expression
+is true:
+((a0a3 ̸= a1a2)∨(a5a6 ̸= a4a7)) ∧((a1a4 ̸= a0a5)∨(a3a6 ̸= a2a7)) ∧((a3a5 ̸= a1a7)∨(a2a4 ̸= a0a6)).
+If the polynomial is zero and the above expression evaluates to false, then the signature is not genuinely
+entangled [16].
+All GHZ-type signatures can be transformed to |GHZ⟩= |000⟩+ |111⟩by some local holographic
+transformation, i.e. if |f⟩has GHZ type then there exist 2 by 2 invertible matrices A,B,C such that
+|GHZ⟩= (A⊗B⊗C)|f⟩. Similarly all W-type signatures can be transformed to |W⟩= |001⟩+|010⟩+
+|100⟩by a local holographic transformation [11].
+We also consider generalised GHZ signatures of the form |GHZn⟩= |0⟩⊗n +|1⟩⊗n for n ∈N∗. These
+are the same as the n-ary equality signatures, i.e. |GHZn⟩= |=n⟩.
+There are many other types of genuinely entangled signatures for higher arities [15, 20], but those
+are not directly relevant to this paper.
+Given a set of signatures that contains multipartite entanglement, we can assume without loss of
+generality that we have a genuinely multipartite-entangled signature. To see this, consider a non-zero
+signature |ψ⟩that has multipartite entanglement, and suppose |ψ⟩= |ψ1⟩⊗|ψ2⟩. Then at least one of the
+tensor factors must have multipartite entanglement, assume this is |ψ1⟩. Now, |ψ⟩is non-zero, so ⟨x|ψ2⟩
+must be non-zero for some bit string x. Thus we can realise |ψ1⟩by connecting all inputs associated with
+|ψ2⟩to |0⟩or |1⟩, as appropriate.
+3
+Existing results
+It is difﬁcult to determine the complexity of the general Holant problem. Thus, all existing dichotomies
+make use of one or more simplifying assumptions: either they assume the availability of certain sig-
+natures in all signature sets considered [2, 4], or they only consider signature sets containing functions
+taken from more restricted families, e.g. symmetric functions [7, 6] or functions taking only real [10] or
+even non-negative real values [17].
+Among others, the following variants of the Holant problem have been considered:
+• HOLANT∗(F) = HOLANT (F ∪U ), where U is the set of all unary signatures [2],
+• HOLANT+ (F) = HOLANT (F ∪{|0⟩,|1⟩,|+⟩,|−⟩}), where |±⟩= |0⟩±|1⟩[1], and
+• HOLANTc (F) = HOLANT (F ∪{|0⟩,|1⟩}) [7, 10].
+Several variants of complex-weighted Boolean counting constraint satisfaction problems (#CSP) have
+also been expressed in the Holant framework. These include:
+• #CSP(F) = HOLANT (F | G ), where G is the set containing all equality signatures [9]:
+G =
+
+|0⟩⊗n +|1⟩⊗n n ∈N∗	
+= {|0⟩+|1⟩,|00⟩+|11⟩,|000⟩+|111⟩,...},
+• #R3-CSP(F) = HOLANT (F | {|0⟩+|1⟩,|00⟩+|11⟩,|000⟩+|111⟩}) [9],
+• #CSPc
+2(F) = HOLANT(F | {|0⟩,|1⟩}∪{|0⟩⊗2n +|1⟩⊗2n | n ∈N∗}) [10].
+Unlike the general #CSP framework, #R3-CSP problems contain only equality signatures of arity three
+or less. The #CSPc
+2 problems contain only equality signatures of even arity, but also the signatures
+pinning inputs to 0 or 1, respectively.
+
+Miriam Backens
+7
+Existing results include full dichotomies for HOLANT∗[2], HOLANT+ [1], and all three #CSP vari-
+ants mentioned above [9, 10]. There are also dichotomies for HOLANTc with symmetric complex-valued
+signatures [2], HOLANTc with arbitrary real-valued signatures [10], HOLANT with symmetric complex-
+valued signatures [6], and HOLANT with arbitrary non-negative real-valued signatures [17].
+We build in particular on the dichotomies for HOLANT+ and real-valued HOLANTc, as well as on
+other results classifying the hardness of Holant problems with symmetric signatures on 3-regular graphs
+[7].
+3.1
+Preliminary deﬁnitions
+The following deﬁnitions will be used throughout the dichotomy theorems. Write:
+T =
+1
+0
+0
+eiπ/4
+
+,
+X =
+0
+1
+1
+0
+
+and
+K =
+1
+1
+i
+−i
+
+,
+(1)
+where i2 = −1. Then let:
+• T be the set of all unary and binary signatures,
+• E the set of all signatures that are non-zero only on two inputs x and ¯x, where ¯x denotes the bit-wise
+complement of x,
+• M the set of all signatures that are non-zero only on inputs of Hamming weight at most 1,
+• A the set of all afﬁne signatures, i.e. functions of the form f(x) = cil(x)(−1)q(x)χ, where c ∈C,
+l(x) is a linear Boolean function, q(x) is a quadratic Boolean function, and χ is the indicator
+function for an afﬁne space, and
+• L the set of all signatures f with the property that, for any bit string x in the support of f:
+ arity(f)
+O
+j=1
+T x j
+!
+|f⟩∈A .
+Denote by ⟨F⟩the closure of the signature set F under tensor products. It is straightforward to see that
+A = ⟨A ⟩and L = ⟨L ⟩, i.e. these signature sets are already closed under tensor products.
+If n is a positive integer, we denote by [n] the set {1,2,...,n}.
+3.2
+Dichotomies for Holant variants
+The Holant dichotomies build up on each other. Dichotomies with fewer freely-available signatures refer
+to dichotomies for problems with more freely-available signatures, e.g. the dichotomy for HOLANT+
+incorporates the dichotomy for HOLANT∗. We recap those theorems that will be used in deriving the
+dichotomy for HOLANTc.
+Theorem 1 (Theorem 2.2, [2]). Let F be any set of complex valued functions in Boolean variables. The
+problem HOLANT∗(F) is polynomial time computable if:
+• F ⊆⟨T ⟩, or
+• F ⊆⟨O◦E ⟩, where O is a complex orthogonal 2 by 2 matrix, or
+• F ⊆⟨K ◦E ⟩, or
+
+8
+A complete dichotomy for complex-valued Holantc
+• F ⊆⟨K ◦M ⟩or F ⊆⟨KX ◦M ⟩.
+In all other cases, HOLANT∗(F) is #P-hard.
+Theorem 2 (Theorem 6, [7]). Let F be a set of complex symmetric signatures. HOLANTc (F) is #P-
+hard unless F satisﬁes one of the following conditions, in which case it is tractable:
+• HOLANT∗(F) is tractable, or
+• there exists a 2 by 2 matrix S ∈S such that F ⊆S◦A , where:
+S =
+
+S
+(ST)⊗2(|00⟩+|11⟩),ST |0⟩,ST |1⟩∈A
+	
+.
+(2)
+A list of elements of S is contained in an appendix of the full version of [7].
+Theorem 3 (Theorem 13, [1]). Let F be a set of complex-valued signatures. HOLANT+ (F) is in FP if
+F satisﬁes one of the following conditions:
+• HOLANT∗(F) is in FP, or
+• F ⊆A .
+In all other cases, the problem is #P-hard.
+Theorem 4 (Theorem 4.1, [10]). A #CSPc
+2(F) problem has a polynomial time algorithm if one of the
+following holds:
+• F ⊆⟨E ⟩,
+• F ⊆A ,
+• F ⊆T ◦A , or
+• F ⊆L .
+Otherwise, it is #P-hard.
+The preceding results all apply to complex-valued signatures, but the following theorem is restricted
+to real-valued ones.
+Theorem 5 (Theorem 5.1, [10]). Let F be a set of real-valued signatures. Then HOLANTc (F) is
+#P-hard unless F is a tractable family for HOLANT∗or #CSPc
+2.
+3.3
+Complexity results for ternary signatures
+In addition to the above-mentioned Holant dichotomies, there are also some dichotomies speciﬁc to sym-
+metric signatures on three-regular graphs. For signature sets containing a ternary GHZ-type signature,
+there is furthermore a direct relationship to #CSP, which allows a more general complexity classiﬁca-
+tion. When deriving the HOLANTc dichotomy, our general approach will be to attempt to construct a
+gadget for an entangled ternary signature and then use the following results.
+Theorem 6 (Theorem 3.4, [7]). Holant([y0,y1,y2]|[x0,x1,x2,x3]) is #P-hard unless [x0,x1,x2,x3] and
+[y0,y1,y2] satisfy one of the following conditions, in which case the problem is in FP:
+• [x0,x1,x2,x3] is degenerate, or
+• there is a 2 by 2 matrix M such that:
+– [x0,x1,x2,x3] = M ◦[1,0,0,1] and (MT)−1 ◦[y0,y1,y2] is in A ∪⟨E ⟩,
+– [x0,x1,x2,x3] = M ◦[1,1,0,0] and (MT)−1 ◦[y0,y1,y2] is of the form [0,∗,∗],
+
+Miriam Backens
+9
+– [x0,x1,x2,x3] = M ◦[0,0,1,1] and (MT)−1 ◦[y0,y1,y2] is of the form [∗,∗,0],
+with ∗denoting an arbitrary complex number.
+The signature |000⟩+|111⟩is invariant under holographic transformations of the form
+ 1 0
+0 ω
+
+, where
+ω3 = 1. Therefore, a binary signature is considered to be ω-normalised if y0 = 0, or there does not
+exist a primitive (3t)-th root of unity λ, where gcd(t,3) = 1, such that y2 = λy0. Similarly, a unary
+signature [a,b] is ω-normalised if a = 0, or there does not exist a primitive (3t)-th root of unity λ, where
+gcd(t,3) = 1, such that b = λa.
+Theorem 7 (Theorem 4.1, [7]). Let G1,G2 be two sets of signatures and let [y0,y1,y2] be a ω-normalised
+and non-degenerate signature. In the case of y0 = y2 = 0, further assume that G1 contains a unary
+signature [a,b] which is ω-normalised and satisﬁes ab ̸= 0. Then:
+HOLANT ({[y0,y1,y2]}∪G1 | {[1,0,0,1]}∪G2) ≡T #CSP({[y0,y1,y2]}∪G1 ∪G2).
+(3)
+More speciﬁcally, HOLANT ({[y0,y1,y2]}∪G1 | {[1,0,0,1]}∪G2) is #P-hard unless:
+• {[y0,y1,y2]}∪G1 ∪G2 ⊆⟨E ⟩, or
+• {[y0,y1,y2]}∪G1 ∪G2 ⊆A ,
+in which cases the problem is in FP.
+The following lemmas show how to construct symmetric ternary entangled signatures from non-
+symmetric ones.
+Lemma 8 (Lemma 18, [1]). Let |ψ⟩be a ternary GHZ-type signature, i.e. |ψ⟩= (A ⊗B ⊗C)|GHZ⟩
+for some invertible 2 by 2 matrices A,B,C. Then at least one of the three possible symmetric triangle
+gadgets constructed from three copies of |ψ⟩is non-degenerate, unless |ψ⟩∈K ◦E and is furthermore
+already symmetric.
+Lemma 9 (Lemma 19, [1]). Let |ψ⟩be a ternary W-type signature, i.e. |ψ⟩= (A⊗B⊗C)|W⟩for some
+invertible 2 by 2 matrices A,B,C. If |ψ⟩∈K ◦M (or |ψ⟩∈KX ◦M ), assume that we also have a
+binary entangled signature |φ⟩that is not in K ◦M (or KX ◦M , respectively). Then we can construct a
+symmetric ternary entangled signature.
+3.4
+Results about binary and 4-ary signatures
+Besides the above results about ternary signatures, we will also make use of the following result about
+realising or interpolating the 4-ary equality signature from a more general 4-ary signature.
+Lemma 10 (Lemma 2.38, [5]). Suppose F contains a signature f of arity 4 with:
+|f⟩= a|0000⟩+b|0011⟩+c|1100⟩+d |1111⟩,
+where M =
+ a b
+c d
+
+has full rank. Then:
+PL-HOLANT({=4}∪F) ≤T PL-HOLANT(F).
+Here, PL-HOLANT refers to the Holant problem for planar graphs. The lemma can of course also be
+used in the non-planar setting.
+Sometimes we can realise a 4-ary generalised equality, i.e. a signature of the form a|x1x2x3x4⟩+
+b|¯x1 ¯x2 ¯x3 ¯x4⟩with a,b ∈C\{0} and xk ∈{0,1} for k ∈[4]. Then the following lemma is helpful.
+
+10
+A complete dichotomy for complex-valued Holantc
+Lemma 11 (Lemma 5.2, [10]). Suppose F contains a 4-ary generalised equality, then HOLANT (F) ≡T
+#CSP2(F).
+The next result arises from the study of entanglement in quantum information theory; we translate it
+into the terminology and notation used throughout this paper.
+Theorem 12 ([18, 12, 1]). Let |ψ⟩be an n-ary genuinely entangled signature with n ≥2. For any
+choice of inputs j,k ∈[n] there exist unary signatures |φl⟩∈{|0⟩,|1⟩,|±⟩} with l ∈[n]\{j,k} such that
+(N
+l ⟨φl|l)|ψ⟩is a binary entangled signature.
+In other words, given a genuinely entangled n-ary signature and the unary signatures |0⟩,|1⟩,|+⟩and
+|−⟩, we can realise a binary entangled signature.
+4
+The dichotomy
+In [10], Cai et al. derive a dichotomy for real-valued HOLANTc. Much of their proof – in particular
+the dichotomy for #CSPc
+2, which is crucial to the HOLANTc dichotomy – applies to complex-valued
+signatures. They only switch to considering real-valued signatures towards the end of the paper. There
+appear to be two barriers to extending their dichotomy to complex values: ﬁrstly, some of the hardness
+results for not necessarily symmetric ternary entangled signatures in [10] use techniques that only apply
+to real values. Secondly, some cases of the proof of the main theorem rely on being able to interpolate all
+unary signatures, again using techniques that have only been shown to work for real-valued signatures.
+We avoid these barriers by adapting techniques from the dichotomy for HOLANT+ [1]: in particular,
+techniques for realising symmetric ternary entangled signatures from not-necessarily symmetric ones
+(cf. Lemmas 8 and 9). Because of this, we never need to interpolate arbitrary unary signatures. In one
+subcase, we may require several unary signatures other than |0⟩and |1⟩, but we give a new construction
+for realising sufﬁciently many such signatures by gadgets. We also point out that one of the interpolations
+used for real-valued signatures in the proof of Theorem 5 can straightforwardly be extended to complex-
+valued signatures by Lemma 10.
+The general proof strategy in the dichotomy theorem is to attempt to realise an entangled ternary
+signature and then a symmetric entangled ternary signature. In some cases, the symmetric constructions
+and subsequent hardness proofs require a little extra work in the HOLANTc setting as compared to the
+HOLANT+ setting; we deal with those issues in Section 4.1.
+If we cannot construct a ternary entangled signature, either F ⊆⟨T ⟩, in which case the problem is
+tractable by Theorem 1, or we can construct a 4-ary entangled signature of a speciﬁc form. Again, this
+is analogous to the real-valued case in [10]. Given this 4-ary signature, we realise or interpolate a 4-ary
+equality signature by Lemma 10, which reduces the problem to #CSPc
+2 by Lemma 11.
+The main theorem and its proof are given in Section 4.2.
+4.1
+Hardness proofs involving a ternary entangled signature
+First, we prove several lemmas that give a complexity classiﬁcation for HOLANTc problems in the pres-
+ence of a ternary entangled signature. The following results supersede Lemmas 5.1, 5.3, and 5.5–5.7
+of [10]. Whereas the last three of those only apply to real-valued signatures, the new results work for
+complex values, too.
+Lemma 13. Let |ψ⟩∈F be an entangled ternary signature. Then HOLANTc (F) is #P-hard unless:
+• HOLANT∗(F) is tractable, or
+
+Miriam Backens
+11
+• F ⊆S◦A for some S ∈S , as deﬁned in (2).
+In both of those cases, the problem HOLANTc (F) is tractable too.
+Proof. First, suppose |ψ⟩is symmetric.
+If |ψ⟩is of GHZ type, insert an extra vertex in the middle of each edge and assign it the signature
+|00⟩+|11⟩. This leaves the Holant invariant, i.e.:
+HOLANTc (F) ≡T HOLANT (F ∪{|0⟩,|1⟩})
+≡T HOLANT (F ∪{|0⟩,|1⟩} | {|00⟩+|11⟩})
+Furthermore, we have:
+HOLANT (F ∪{|0⟩,|1⟩} | {|00⟩+|11⟩}) ≡T HOLANT (F ∪{|0⟩,|1⟩} | {|00⟩+|11⟩,|0⟩,|1⟩}).
+The ≤T direction is immediate; for the other direction, note that any occurrence of |0⟩or |1⟩on the RHS
+can be replaced by a gadget consisting of a LHS copy of the unary signature connected to |00⟩+|11⟩.
+Let M be an invertible 2 by 2 complex matrix such that M⊗3 |ψ⟩= |GHZ⟩and ((M−1)T)⊗2(|00⟩+
+|11⟩) is ω-normalised. Then, if ((M−1)T)⊗2(|00⟩+|11⟩) is not of the form c(|01⟩+|10⟩) for some c ∈C,
+by Theorem 7:
+HOLANTc (F) ≡T #CSP
+
+M ◦(F ∪{|0⟩,|1⟩})∪
+M−1T ◦{|00⟩+|11⟩,|0⟩,|1⟩}
+
+(4)
+Now, ((M−1)T)⊗2(|00⟩+ |11⟩) = c(|01⟩+ |10⟩) implies that M−1 = KD or M−1 = KXD for some in-
+vertible diagonal matrix D, as shown in [1]. In either case, all components of M−1 are non-zero, so
+(M−1)T |0⟩= a|0⟩+ b|1⟩for some a,b,∈C \ {0}. It is then possible to choose M so that (M−1)T |0⟩
+is ω-normalised, satisfying the condition of Theorem 7. Hence, again, (4) holds. In either case, M is
+determined up to non-zero scalar factor and post-multiplication by X, which do not affect any of the
+subsequent arguments.
+Thus, HOLANTc (F) is #P-hard unless:
+M ◦(F ∪{|0⟩,|1⟩})∪
+M−1T ◦{|00⟩+|11⟩,|0⟩,|1⟩}
+is a subset of either ⟨E ⟩or A . All entangled binary signatures in ⟨E ⟩are of the form α |00⟩+β |11⟩or
+α |01⟩+ β |10⟩for some α,β ∈C \ {0}. Hence the signatures can be in ⟨E ⟩only if M = DO for some
+diagonal matrix D and orthogonal matrix O, or M = DKT or M = DXKT. In those cases, F ⊆⟨O◦E ⟩
+or F ⊆⟨K ◦E ⟩, so we have tractability by the HOLANT∗dichotomy.
+For the signatures to be in A , we require in particular:
+((M−1)T)⊗2(|00⟩+|11⟩), (M−1)T |0⟩, (M−1)T |1⟩∈A .
+(5)
+That is just the deﬁnition of M−1 ∈S , cf. (2). We also require M |0⟩,M |1⟩∈A . Now if M =
+ a b
+c d
+
+with a,b,c,d ∈C and ad −bc ̸= 0, then M |0⟩= a|0⟩+c|1⟩and (M−1)T |1⟩=
+1
+ad−bc(−c|0⟩+a|1⟩), so
+M |0⟩and (M−1)T |1⟩are orthogonal to each other (under the inner product that does not involve complex
+conjugation). The same holds for M |1⟩and (M−1)T |0⟩. It is straightforward to see that if |φ⟩∈A is
+unary and (
+φ ⊥
+)T |φ⟩= 0, then
+φ ⊥
+is also afﬁne. So M−1 ∈S already implies M |0⟩,M |1⟩∈A .
+The remaining condition is M ◦F ⊆A ; since M is invertible, this is equivalent to F ⊆M−1 ◦A .
+To conclude, in the GHZ case the problem is tractable if F ⊆⟨O◦E ⟩for some orthogonal 2 by 2
+matrix O, if F ⊆⟨K ◦E ⟩, or if there exists S ∈S such that F ⊆S ◦A . In all other cases, the problem
+is #P-hard by reduction from #CSP.
+If |ψ⟩is of W type, then:
+
+12
+A complete dichotomy for complex-valued Holantc
+• If |ψ⟩/∈K ◦M ∪KX ◦M , HOLANT (|ψ⟩) is #P-hard by Theorem 6.
+• If F ⊆K ◦M or F ⊆KX ◦M , the problem is tractable by the HOLANT∗dichotomy.
+• If |ψ⟩∈K ◦M but F ̸⊆K ◦M , the problem is #P-hard by Lemma 14, and analogously with KX
+instead of K.
+Now assume |ψ⟩is not symmetric. If |ψ⟩/∈K ◦M ∪KX ◦M , we can construct a symmetric ternary
+signature by Lemmas 8 and 9 and then proceed as above. If F ⊆K ◦M or F ⊆KX ◦M , the problem
+is tractable by the HOLANT∗dichotomy.
+Finally, if |ψ⟩∈K ◦M but F ̸⊆K ◦M , or |ψ⟩∈KX ◦M but F ̸⊆KX ◦M , use Lemma 14.
+This covers all cases.
+Lemma 14. Let |ψ⟩∈F ∩K ◦M be a ternary entangled signature, and assume F ̸⊆K ◦M . Then
+HOLANTc (F) is #P-hard. The same holds if |ψ⟩∈F ∩KX ◦M and F ̸⊆KX ◦M .
+Proof. We consider the case |ψ⟩∈F ∩K ◦M and F ̸⊆K ◦M , the proof for the second case is analo-
+gous.
+As F ̸⊆K ◦M , we can ﬁnd |ϕ⟩∈F \K ◦M . Then |ϕ⟩has arity at least 2, as all unary signatures
+are in K ◦M . Without loss of generality, assume |ϕ⟩is genuinely entangled.
+If |ϕ⟩has arity 2, we can realise a symmetric ternary entangled signature by Lemma 9. If that
+symmetric ternary signature is of GHZ type, we can apply Theorem 7. If it is of W type and not in
+K ◦M ∪KX ◦M , the problem is #P-hard by Theorem 6.
+Finally, if the symmetric ternary signature is in K ◦M , then we can use it and |ϕ⟩to realise a
+symmetric binary signature that is not in K ◦M by an argument analogous to that in Lemma 21 of [1].
+While that Lemma assumes availability of four unary signatures, there is only one value for which the
+construction fails, so it sufﬁces to have two unary signature available. With a symmetric binary signature
+that is not in K ◦M , hardness follows by Theorem 6.
+Now assume |ϕ⟩is an n-ary entangled signature with n > 2. Note that we can write the ternary
+signature |ψ⟩as K⊗3(a|000⟩+b|001⟩+c|010⟩+d |100⟩), where bcd ̸= 0. With a self loop on a vertex
+assigned signature |ψ⟩, we can therefore construct unary signatures 2(b + c)(|0⟩+ i|1⟩, 2(b + d)(|0⟩+
+i|1⟩) and 2(c+d)(|0⟩+i|1⟩). As bcd ̸= 0, at least one of those gadgets is non-zero. Thus we can realise
+|0⟩+i|1⟩.
+The remainder of the argument will be more straightforward after a holographic transformation. We
+have:
+HOLANTc (F) = HOLANT (F ∪{|0⟩,|1⟩}) ≡T HOLANT (F | {|0⟩,|1⟩,|00⟩+|11⟩})
+as subgraphs that contain only the signatures |0⟩,|1⟩,|00⟩+ |11⟩must contribute a factor 0 or 1 to the
+Holant, and it is straightforward to determine that factor. Therefore, by a holographic transformation:
+HOLANTc (F) ≡T HOLANT
+K−1 ◦F | KT ◦{|0⟩,|1⟩,|00⟩+|11⟩}
+
+≡T HOLANT
+K−1 ◦F | {|+⟩,|−⟩,|01⟩+|10⟩}
+
+.
+As|ϕ⟩,|ψ⟩∈F, after the transformation, we have:
+ψ′
+= (K−1)⊗3 |ψ⟩= a|000⟩+b|001⟩+c|010⟩+d |100⟩
+and |ϕ′⟩= K−1 ◦|ϕ⟩on the LHS. On the RHS, in addition to the already listed signatures, we have
+KT(|0⟩+i|1⟩) .= |1⟩from the self-loop gadget described above.
+
+Miriam Backens
+13
+By plugging |+⟩or |−⟩into |ψ′⟩, we can realise a LHS gadget with signature:
+(a±b)|00⟩+c|01⟩+d |10⟩.
+There is a choice of sign making the coefﬁcient of |00⟩non-zero. Then two such gadgets can be combined
+into a symmetric one, which (up to scalar factor) has signature z|00⟩+|01⟩+|10⟩, where z = 2
+c(a±b) ̸=
+0. A chain of n of these gadgets connected to |±⟩at one end gives a RHS gadget with signature:
+|0⟩+(nz±1)|1⟩.
+Whatever the value of z, we can realise polynomially many different unary signatures on the RHS. These
+can be used to realise a binary entangled LHS gadget by the following argument, which is similar to
+Lemma 20 in [1]. Nevertheless, the differences are signiﬁcant enough to give the entire proof here.
+From Theorem 12, we know that there exist |φk⟩∈{|0⟩,|1⟩,|±⟩} for k ∈{3,4,...,n} such that
+⟨φ3|3 ...⟨φn|n |ϕ′⟩is entangled. The entanglement condition for binary signatures is:
+⟨0|1 ⟨0|2 ⟨φ3|3 ...⟨φn|n
+ϕ′
+⟨1|1 ⟨1|2 ⟨φ3|3 ...⟨φn|n
+ϕ′
+−⟨0|1 ⟨1|2 ⟨φ3|3 ...⟨φn|n
+ϕ′
+⟨1|1 ⟨0|2 ⟨φ3|3 ...⟨φn|n
+ϕ′
+̸= 0.
+(6)
+Furthermore, as |ϕ′⟩/∈M , there exists a bit string y of Hamming weight at least 2 such that ⟨y|ϕ′⟩̸= 0.
+Without loss of generality, assume y1 = y2 = 1. Then:
+⟨1|1 ⟨1|2 ⟨y3|3 ...⟨yn|n
+ϕ′
+̸= 0.
+(7)
+for some y3,...,yk ∈{0,1}.
+We show how to realise a binary gadget whose signature is not in K ◦M . Consider the inputs of |ϕ′⟩
+one by one, starting with the third. For the k-th input:
+• If |φk⟩= |yk⟩= |1⟩, leave it and move on to the (k +1)-th input.
+• Otherwise, replace both |φk⟩and |yk⟩with |0⟩+αk |1⟩, where αk ∈C\{0} is as yet undetermined.
+Then the LHS of (7) is a linear polynomial in αk, which does not vanish identically, and the LHS
+of (6) is a quadratic polynomial in αk, which also does not vanish identically. Thus, there are at
+most three values of αk for which one or both of the polynomials are zero. We can therefore realise
+a signature |0⟩+αk |1⟩such that both polynomials are non-zero. Replace |φk⟩and |yk⟩by this new
+signature. Then move on to the (k +1)-th input.
+Once all (but the ﬁrst two) inputs have been considered in this way, we have a recipe for a gadget
+construction whose signature is binary, entangled, and not in K ◦M . Therefore we can proceed as in the
+case where |ϕ⟩is binary.
+4.2
+Main theorem
+We now have all the components required to prove the main dichotomy for HOLANTc. The theorem
+generalises Theorem 5.1 of [10], which applies only to real-valued signatures. Our proof follows the
+original one fairly closely.
+Theorem 15. Let F be a set of complex-valued signatures. Then HOLANTc (F) is #P-hard unless:
+• F is a tractable family for HOLANT∗,
+• there exists S ∈S such that F ⊆S◦A , or
+
+14
+A complete dichotomy for complex-valued Holantc
+• F ⊆L .
+In all of the exceptional cases, HOLANTc (F) is tractable.
+Proof. If F is one of the tractable families for HOLANT∗or F ⊆S ◦A for some S ∈S , or F ⊆L ,
+tractability of HOLANTc (F) follows using the same algorithms as employed in the dichotomy proofs
+for HOLANT∗, #CSP (possibly after a holographic transformation), or #CSPc
+2. So assume otherwise. In
+particular, this implies that F ̸⊆⟨T ⟩, i.e. F has multipartite entanglement.
+Without loss of generality, we may focus on genuinely entangled signatures. So assume that there is
+some genuinely entangled signature |ψ⟩∈F of arity n ≥3. If the signature has arity 3, we are done by
+Lemma 13. Hence assume n ≥4. As |ψ⟩is genuinely entangled, there exist two distinct n-bit strings x
+and y such that ⟨x|ψ⟩⟨y|ψ⟩̸= 0.
+As in [10], let:
+D0 = min{d(x,y) | x ̸= y,⟨x|ψ⟩̸= 0,⟨y|ψ⟩̸= 0},
+where d(·,·) is the Hamming distance, and distinguish cases according to the values of D0.
+Case D0 ≥4 and D0 is even: Pick a pair of bit strings x,y with minimal Hamming distance. Pin all
+inputs where the two bit string agree (without loss of generality, we always assume bit strings agree on
+the last n −D0 bits). This realises a signature of the form a(ND0
+k=1 |xk⟩) + b(ND0
+k=1 |¯xk⟩), where ab ̸= 0
+and xk ∈{0,1} for k ∈[D0]. Via self-loops, the arity of this signature can be reduced in steps of 2 to
+realise a 4-ary generalised equality signature, i.e. a signature of the form a|x1x2x3x4⟩+b|¯x1 ¯x2 ¯x3 ¯x4⟩. Then
+#P-hardness follows by Lemma 11.
+Case D0 ≥3 and D0 is odd: Pin analogously to the previous case to realise a signature a|x1x2x3⟩+
+b|¯x1 ¯x2 ¯x3⟩with ab ̸= 0 and x1,x2,x3 ∈{0,1}. Then #P-hardness follows by Lemma 13.
+Case D0 = 2: We can realise a signature a|00⟩+b|11⟩by pinning. Following the proof in [10], let
+A1 be the set of bit strings x = x3x4 ...xn for which |φx⟩:= (⟨x3|3 ...⟨xn|n)|ψ⟩is a non-zero scaling of
+a|00⟩+b|11⟩. Let B1 be the set of bit strings y = y3 ...yn for which |φy⟩is not a scaling of a|00⟩+b|11⟩.
+This excludes bit strings for which |φy⟩= 0. Both A1 and B1 must be non-empty as |ψ⟩is entangled.
+Furthermore, A1 ∩B1 = /0. Thus we can deﬁne:
+D1 = min{d(x,y) | x ∈A1,y ∈B1}.
+Note that the assumption D0 = 2 implies that either ⟨01|φy⟩= ⟨10|φy⟩= 0 or ⟨00|φy⟩= ⟨11|φy⟩= 0 for
+all y ∈B1. We now distinguish cases according to the values of D1.
+• If D1 ≥3, pick a pair x,y with minimal Hamming distance and pin wherever they are equal, as in
+the cases where D0 ≥3. This realises a signature:
+(a|00⟩+b|11⟩)
+ D1
+O
+k=1
+|xk⟩
+!
++(c|00⟩+d |11⟩)
+ D1
+O
+k=1
+|¯xk⟩
+!
+or
+(a|00⟩+b|11⟩)
+ D1
+O
+k=1
+|xk⟩
+!
++(c|01⟩+d |10⟩)
+ D1
+O
+k=1
+|¯xk⟩
+!
+,
+where xk ∈{0,1} for k ∈[D1], c,d ∈C are not both zero, and, in the ﬁrst case, ad −bc ̸= 0.
+– In the ﬁrst case, suppose c ̸= 0. Then we can pin the ﬁrst two inputs to 00 to get a signature
+a(ND1
+k=1 |xk⟩)+c(ND1
+k=1 |¯xk⟩), at which point we proceed as in the cases D0 ≥4 or D0 ≥3. If
+c = 0 then d ̸= 0 and we can pin to 11 instead for an analogous argument.
+
+Miriam Backens
+15
+– In the second case, suppose c ̸= 0. Then we can pin the ﬁrst input to 0 to realise:
+a|0⟩
+ D1
+O
+k=1
+|xk⟩
+!
++c|1⟩
+ D1
+O
+k=1
+|¯xk⟩
+!
+at which point we again proceed as in the cases D0 ≥4 or D0 ≥3. If c = 0 then d ̸= 0 and
+we can pin to 1 instead for an analogous argument.
+• If D1 = 2 and the signature after projecting is a|0000⟩+ b|1100⟩+ c|0111⟩+ d |1011⟩, we can
+realise a ternary signature as in the second subcase above, and then apply Lemma 13. If the
+signature after pinning is a|0000⟩+ b|1100⟩+ c|0011⟩+ d |1111⟩with ab ̸= 0 and ad −bc ̸= 0,
+apply Lemma 10. Here, the original proof in [10] used a different technique requiring real values.
+• If D1 = 1, we can realise an entangled ternary signature and then apply Lemma 13.
+Case D0 = 1: We can realise a|0⟩+b|1⟩for some ab ̸= 0. Let A2 be the set of bit strings x = x2x3 ...xn
+for which |ϕx⟩:= (⟨x2|2 ...⟨xn|n)|ψ⟩is a non-zero scaling of a|0⟩+b|1⟩. Let B2 be the set of bit strings
+y for which |ϕy⟩is not a scaling of a|0⟩+b|1⟩. Then let:
+D2 = min{d(x,y) | x ∈A2,y ∈B2}.
+• If D2 ≥3, we can pin to realise a signature:
+(a|0⟩+b|1⟩)
+ D2
+O
+k=1
+|xk⟩
+!
++(c|0⟩+d |1⟩)
+ D2
+O
+k=1
+|¯xk⟩
+!
+where c,d ∈C, ad −bc ̸= 0, and xk ∈{0,1} for k ∈[D2]. If c ̸= 0, pin the ﬁrst input to 0 and then
+proceed as before. If c = 0 then d ̸= 0, so we can pin to 1 instead.
+• If D2 = 2, we get an entangled ternary signature so we are done by Lemma 13. This is another
+change compared to the proof in [10], where hardness was only shown for a real-valued signature
+of the given form.
+• If D2 = 1, we can realise an entangled binary signature a|00⟩+b|01⟩+c|10⟩+d |11⟩with ad −
+bc ̸= 0. Unlike in [10], we do not attempt to use this binary signature for interpolation. Instead we
+immediately proceed to deﬁning A3, B3, and D3 analogous to before.
+– If D3 ≥3, we can realise a signature:
+(a|00⟩+b|01⟩+c|10⟩+d |11⟩)
+ D3
+O
+k=1
+|xk⟩
+!
++(a′ |00⟩+b′ |01⟩+c′ |10⟩+d′ |11⟩)
+ D3
+O
+k=1
+|¯xk⟩
+!
+where (a′,b′,c′,d′) and (a,b,c,d) are linearly independent. If aa′ = bb′ = cc′ = dd′ = 0, then
+it must be the case that c = 0 and c′d ̸= 0, or d = 0 and cd′ ̸= 0. This is because a′,b′,c′,d′
+cannot all be zero simultaneously, and a,b are non-zero by assumption. In the former case,
+pin the ﬁrst input to 1 to get:
+d |1⟩
+ D3
+O
+k=1
+|xk⟩
+!
++c′ |0⟩
+ D3
+O
+k=1
+|¯xk⟩
+!
+,
+
+16
+A complete dichotomy for complex-valued Holantc
+then proceed as before. In the latter case, the same approach works, although the resulting
+signature is different.
+Otherwise, there exists a pair of primed and unprimed coefﬁcients of the same label that are
+both non-zero. If these are a and a′, pin the ﬁrst two inputs to 00 to get a generalised equality.
+If the non-zero pair are b and b′, pin to 01, and so on.
+– If D3 = 2, as shown in the original theorem, we can realise the following signature:
+(a|00⟩+b|01⟩+c|10⟩+d |11⟩)|x1x2⟩+(a′ |00⟩+b′ |01⟩+c′ |10⟩+d′ |11⟩)|¯x1 ¯x2⟩,
+where ab ̸= 0, ad −bc ̸= 0, x1,x2 ∈{0,1}, and (a′,b′,c′,d′) is linearly independent from
+(a,b,c,d). We can realise a genuinely entangled ternary signature by connecting a|0⟩+b|1⟩
+to the last input, at which point we can apply Lemma 13. This is a change compared to
+the original proof in [10], where the hardness lemma only applied to real values and the
+construction did not employ the signature a|0⟩+b|1⟩.
+– If D3 = 1, we get an entangled ternary signature so we are done by Lemma 13. This is
+another change from [10], where multiple cases were distinguished and the hardness lemmas
+only applied to real-valued signatures.
+We have covered all cases, hence the proof is complete.
+5
+Conclusions
+Building on the existing dichotomies for real-valued HOLANTc and for complex-valued HOLANT+, we
+have derived a dichotomy for complex-valued HOLANTc. The tractable cases are the complex generali-
+sations of the tractable cases of the real-valued HOLANTc dichotomy. The question of a dichotomy for
+complex-valued, not necessarily symmetric HOLANTc problems had been open since the deﬁnition of
+HOLANTc in 2009.
+Several steps in the dichotomy proof use knowledge from quantum information theory, particularly
+about entanglement. We expect this approach of bringing together Holant problems and quantum infor-
+mation theory to yield further insights into both areas of research in the future. The ultimate goals include
+a dichotomy for general Holant problems on the one hand, building up on existing results for symmetric
+functions [6] and non-negative real-valued, not necessarily symmetric functions [17]. On the other hand,
+we are hoping to gain more understanding of the complexity of classically simulating quantum circuits.
+In fact, HOLANTc is a natural setting for the latter as many circuit-based quantum computation
+schemes assume the availability of |0⟩and |1⟩, called the computational basis states. On the other hand,
+quantum computation usually distinguishes between three phases: preparation of input states (often in
+the computational basis), unitary transformations, and measurement (again, often in the computational
+basis). This distinction is not natural or easy to impose in the Holant framework. The tractable sets
+related to ⟨E ⟩and ⟨K ◦M ⟩do not contain any interesting unitary operations, and ⟨T ⟩does not contain
+any multipartite entanglement. Therefore the only non-trivial tractable classes of quantum computations
+arising from the HOLANTc dichotomy are those related to afﬁne signatures. That family of signatures
+is known in quantum theory as stabilizer quantum mechanics, and it has been known to be efﬁciently
+simulable on classical computers for nearly two decades [13].
+Nevertheless, if it is possible to translate the distinction between state preparation, unitary operations,
+and measurements into the Holant framework – e.g. by considering directed graphs – it may still be
+possible to learn more about the complexity of classically simulating other interesting classes of quantum
+
+Miriam Backens
+17
+computations. It may also be useful to look at HOLANTc on planar graphs, or to consider other restricted
+classes of graphs.
+Acknowledgements
+I would like to thank Pinyan Lu for pointing out a ﬂaw in the original statement of the main theorem.
+Many thanks also to Ashley Montanaro and William Whistler for helpful comments on earlier versions
+of this paper. I acknowledge funding from EPSRC via grant EP/L021005/1.
+References
+[1] Miriam Backens (2017): A new Holant dichotomy inspired by quantum computation. arXiv:1702.00767
+[quant-ph]. Available at http://arxiv.org/abs/1702.00767.
+[2] J. Cai, P. Lu & M. Xia (2011): Dichotomy for Holant* Problems of Boolean Domain. In: Proceedings
+of the Twenty-Second Annual ACM-SIAM Symposium on Discrete Algorithms, Proceedings, Society for
+Industrial and Applied Mathematics, pp. 1714–1728, doi:10.1137/1.9781611973082.132.
+[3] Jin-Yi Cai, Xi Chen & Pinyan Lu (2010): Graph Homomorphisms with Complex Values: A Dichotomy Theo-
+rem. In Samson Abramsky, Cyril Gavoille, Claude Kirchner, Friedhelm Meyer auf der Heide & Paul G. Spi-
+rakis, editors: Automata, Languages and Programming, Lecture Notes in Computer Science 6198, Springer
+Berlin Heidelberg, pp. 275–286, doi:10.1007/978-3-642-14165-2 24.
+[4] Jin-Yi Cai & Vinay Choudhary (2006): Valiant’s Holant Theorem and Matchgate Tensors. In Jin-Yi Cai,
+S. Barry Cooper & Angsheng Li, editors: Theory and Applications of Models of Computation, Lecture
+Notes in Computer Science 3959, Springer Berlin Heidelberg, pp. 248–261, doi:10.1007/11750321 24.
+[5] Jin-Yi Cai & Zhiguo Fu (2016): Holographic Algorithm with Matchgates Is Universal for Planar $\#$CSP
+Over Boolean Domain. arXiv:1603.07046 [cs]. Available at http://arxiv.org/abs/1603.07046.
+[6] Jin-Yi Cai, Heng Guo & Tyson Williams (2013): A Complete Dichotomy Rises from the Capture of Vanishing
+Signatures: Extended Abstract. In: Proceedings of the Forty-ﬁfth Annual ACM Symposium on Theory of
+Computing, STOC ’13, ACM, New York, NY, USA, pp. 635–644, doi:10.1145/2488608.2488687.
+[7] Jin-Yi Cai, Sangxia Huang & Pinyan Lu (2012):
+From Holant to #CSP and Back:
+Dichotomy for
+Holantc Problems.
+Algorithmica 64(3), pp. 511–533, doi:10.1007/s00453-012-9626-6.
+Full version at
+arXiv:1004.0803.
+[8] Jin-Yi Cai, Pinyan Lu & Mingji Xia (2009): Holant Problems and Counting CSP. In: Proceedings of the
+Forty-ﬁrst Annual ACM Symposium on Theory of Computing, STOC ’09, ACM, New York, NY, USA, pp.
+715–724, doi:10.1145/1536414.1536511.
+[9] Jin-Yi Cai, Pinyan Lu & Mingji Xia (2014): The complexity of complex weighted Boolean #CSP. Journal of
+Computer and System Sciences 80(1), pp. 217–236, doi:10.1016/j.jcss.2013.07.003.
+[10] Jin-Yi Cai, Pinyan Lu & Mingji Xia (2017): Dichotomy for Real Holant$ˆc$ Problems. arXiv:1702.02693
+[cs]. Available at http://arxiv.org/abs/1702.02693.
+[11] W. D¨ur, G. Vidal & J. I. Cirac (2000): Three qubits can be entangled in two inequivalent ways. Physical
+Review A 62(6), p. 062314, doi:10.1103/PhysRevA.62.062314.
+[12] Mariami Gachechiladze & Otfried G¨uhne (2017): Completing the proof of Generic quantum nonlocality.
+Physics Letters A 381(15), pp. 1281–1285, doi:10.1016/j.physleta.2016.10.001.
+[13] Daniel Gottesman (1998): The Heisenberg Representation of Quantum Computers. arXiv:quant-ph/9807006.
+Available at http://arxiv.org/abs/quant-ph/9807006. Group22: Proceedings of the XXII Interna-
+tional Colloquium on Group Theoretical Methods in Physics, eds. S. P. Corney, R. Delbourgo, and P. D.
+Jarvis, pp. 32-43 (Cambridge, MA, International Press, 1999).
+
+18
+A complete dichotomy for complex-valued Holantc
+[14] Sangxia Huang & Pinyan Lu (2016): A Dichotomy for Real Weighted Holant Problems. computational
+complexity 25(1), pp. 255–304, doi:10.1007/s00037-015-0118-3.
+[15] L. Lamata, J. Len, D. Salgado & E. Solano (2006): Inductive classiﬁcation of multipartite entanglement
+under stochastic local operations and classical communication.
+Physical Review A 74(5), p. 052336,
+doi:10.1103/PhysRevA.74.052336.
+[16] Dafa Li, Xiangrong Li, Hongtao Huang & Xinxin Li (2006): Simple criteria for the SLOCC classiﬁcation.
+Physics Letters A 359(5), pp. 428–437, doi:10.1016/j.physleta.2006.07.004.
+[17] Jiabao Lin & Hanpin Wang (2016): The Complexity of Holant Problems over Boolean Domain with Non-
+negative Weights. arXiv: 1611.00975 [cs]. Available at http://arxiv.org/abs/1611.00975.
+[18] Sandu Popescu & Daniel Rohrlich (1992): Generic quantum nonlocality. Physics Letters A 166(56), pp.
+293–297, doi:10.1016/0375-9601(92)90711-T.
+[19] L. Valiant (2008):
+Holographic Algorithms.
+SIAM Journal on Computing 37(5), pp. 1565–1594,
+doi:10.1137/070682575.
+[20] F. Verstraete, J. Dehaene, B. De Moor & H. Verschelde (2002): Four qubits can be entangled in nine different
+ways. Physical Review A 65(5), p. 052112, doi:10.1103/PhysRevA.65.052112.

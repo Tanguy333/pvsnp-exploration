@@ -98,6 +98,41 @@ exactement le fanout 2, mesurée par calcul, par deux instruments
 indépendants concordants**. La réserve « un seul cycle d'instruction /
 lecture unique » de la fiche est LEVÉE pour le volet calcul.
 
+## 1 ter. Retours de l'audit fondateur A-021 (ajout du 2026-08-08, même jour)
+
+L'audit A-021 (`bib/holant_paysage.md`, 17 textes in extenso) a rendu
+sur les pièces de cette instruction :
+
+1. **PROMOTION DES INSTRUMENTS** : à l'arité ≤ 3, la condition de
+   parité est nécessaire ET SUFFISANTE (matchgate ⟺ parité — Cai-Fu,
+   Lemma 2.27 d'arXiv:1603.07046, source première Inf. Comput. 2014 ;
+   re-démontré exécutablement par l'agent : MGI k ≤ 3 identiquement
+   nulles sous parité). **Les verdicts « faisable » de PR-003/PR-001
+   sont donc des RÉALISABILITÉS PROUVÉES, plus des candidatures** —
+   la réserve « périmètre parité seule » ne subsiste que pour
+   l'arité ≥ 4.
+2. **Folklore-check des faits mesurés** : le fait (i) ({OR₃,=₂} à
+   p = 7 seul) est un THÉORÈME PUBLIÉ (Valiant FOCS 2006 Th. 4.1 —
+   témoins explicites — + Cai-Lu JCSS 2011 Th. 5.1 : le module divise
+   2³ − 1, « why 7 is special ») → statut : réplication vérifiante
+   par deux instruments indépendants. Le fait (ii) (frontière
+   fanout-2) est ÉNONCÉ par Cai-Lu (§5.2 : « empty intersection on
+   M », « can be shown ») SANS preuve détaillée → nos certificats
+   (1 ∈ idéal char 0, exhaustif GL₂(F_p)) sont la première
+   vérification exécutable avec certificats rencontrée par l'audit
+   pour (l, k) = (3, 3) — la valeur est le certificat, pas l'énoncé.
+   Le compte 72 bases : non recensé ; lecture d'audit = 2 orbites × 36
+   du manifold M (calculable, non vérifiée).
+3. **Correction d'identification** : « Accidental Algorithms » = FOCS
+   **2006** (pas 2004 — erreur de la candidature reconduite par
+   l'instruction ; FOCS 2004 = « Holographic algorithms (extended
+   abstract) »). La méthode historique de découverte est le solveur
+   formel (Singular) — notre instrument est une instance du SRP de
+   Cai-Lu (problème nommé, décidable en P, Th. 4.1 JCSS 2011) :
+   légitimité totale, originalité nulle, déclarée.
+4. **La ligne 19 est CRÉÉE** (la condition du §3 est remplie) — voir
+   la matrice et `bib/holant_paysage.md`.
+
 ## 2. Positionnement et recevabilité (grille PR-001)
 
 | Champ | État |

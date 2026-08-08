@@ -1,0 +1,1907 @@
+Basis Collapse for Holographic Algorithms Over All Domain Sizes
+Sitan Chen∗
+sitanchen@college.harvard.edu
+July 16, 2018
+Abstract
+The theory of holographic algorithms introduced by Valiant represents a novel approach
+to achieving polynomial-time algorithms for seemingly intractable counting problems via a re-
+duction to counting planar perfect matchings and a linear change of basis. Two fundamental
+parameters in holographic algorithms are the domain size and the basis size. Roughly, the do-
+main size is the range of colors involved in the counting problem at hand (e.g. counting graph
+k-colorings is a problem over domain size k), while the basis size ℓcaptures the dimensionality
+of the representation of those colors. A major open problem has been: for a given k, what is
+the smallest ℓfor which any holographic algorithm for a problem over domain size k “collapses
+to” (can be simulated by) a holographic algorithm with basis size ℓ? Cai and Lu showed in 2008
+that over domain size 2, basis size 1 suﬃces, opening the door to an extensive line of work on the
+structural theory of holographic algorithms over the Boolean domain. Cai and Fu later showed
+for signatures of full rank that over domain sizes 3 and 4, basis sizes 1 and 2, respectively, suﬃce,
+and they conjectured that over domain size k there is a collapse to basis size ⌊log2 k⌋. In this
+work, we resolve this conjecture in the aﬃrmative for signatures of full rank for all k.
+1
+Introduction
+1.1
+Matchgates and Holographic Algorithms
+In [19, 20], Valiant introduced the notion of matchgate computation as a method for classically
+simulating certain quantum gates in polynomial time and asked whether matchgates could be used
+to derive other polynomial-time algorithms. Given a counting problem, one might hope that its
+local combinatorial constraints can be encoded by graph fragments Gi so that there exists a bijection
+between the number of solutions to that counting problem and the number of perfect matchings of an
+amalgamation Ωof those graph fragments. The celebrated Fisher-Kasteleyn-Temperley algorithm
+[13, 17] then computes the latter in polynomial time if Ωis planar.
+The drawback of the above approach is that if one seeks a one-to-one reduction to counting per-
+fect matchings in a planar graph, a matchgate-based solution might not necesssarily exist because
+the range of encodable local constraints is too limited. Valiant’s insight in [21, 22] was to extend this
+range by looking instead for a many-to-many reduction. In his new framework, multiple strands of
+computation get combined in a “holographic” mixture with exponential, custom-built cancellations
+speciﬁed by a choice of basis vectors to produce the ﬁnal answer. With this change-of-basis ap-
+proach, Valiant [21, 22, 23, 24] found polynomial-time solutions to a number of counting problems,
+∗Harvard University Department of Mathematics & Harvard John A. Paulson School of Engineering and Applied
+Sciences
+1
+arXiv:1511.00778v1  [cs.CC]  3 Nov 2015
+
+minor variants of which are known to be intractable, and noted that the only criterion for their ex-
+istence was the solvability of certain ﬁnite systems of polynomial equations. As a notable example,
+whereas counting the number of satisfying assignments to planar, read-twice, monotone 3-CNFs
+is #P-complete and even the same problem modulo 2 is NP-hard under randomized reductions,
+the same problem modulo 7, known as #7Pl-Rtw-Mon-3CNF, has a polynomial-time holographic
+solution [21].
+Given the dearth of strong unconditional circuit lower bounds to support the prevailing belief
+that P ̸= NP, we might question whether our current inability to devise polynomial-time solutions
+to NP-complete problems is suﬃcient to justify such a belief. After all, it would also have justiﬁed
+the belief that #7Pl-Rtw-Mon-3CNF is intractable. This suggests that to arrive upon the desired
+separation of P and NP, we need a better understanding of the possibilities of polynomial-time
+computation.
+For this reason, determining the ultimate capabilities of holographic algorithms
+appears to be a crucial step.
+To this end, one major direction has been to study the kinds of local constraints that matchgates
+can encode.
+Cai and his collaborators initiated a systematic study of the structural theory of
+holographic algorithms over the Boolean domain [1, 2, 3, 4, 5, 6, 7, 8, 9, 10], compiling what
+amounts to a catalogue of such constructions that turns the process of ﬁnding basic holographic
+reductions into something essentially algorithmic. For example, as a corollary to their results in [7],
+they noted that the modulus 7 appears in #7Pl-Rtw-Mon-3CNF because it is a Mersenne prime and
+that more generally, there is a polynomial-time holographic algorithm for #2k−1Pl-Rtw-Mon-kCNF.
+1.2
+Basis Collapse Theorems
+Another direction of study concerns better understanding the power aﬀorded by the change of
+basis, speciﬁcally the relationship between two important parameters of holographic algorithms: the
+dimension and number of basis vectors. Because holographic algorithms reduce counting problems
+to counting perfect matchings, the dimension of the k basis vectors specifying the abovementioned
+“holographic mixture” must be of the form 2ℓ. We say that ℓis the basis size and k is the domain
+size. The domain size should be interpreted as the range over which variables in the counting
+problem can take values, so for instance, problems related to counting certain k-colorings in a
+graph are problems over domain size k. The basis size should then be interpreted roughly as the
+number of bits needed to encode each of these k colors.
+The ﬁrst holographic algorithms studied were on domain size 2, dealing with counting problems
+involving matchings, 2-colorings, graph bipartitions, and Boolean satisfying assignments, and used
+bases of size 1. The original holographic algorithm for #7Pl-Rtw-Mon-3CNF was the ﬁrst to use a
+basis of size 2, and at the time it may have been tempting to believe that increasing basis size adds
+power to the holographic approach. In [8], Cai and Lu showed to the contrary that on domain size
+2, any nontrivial holographic algorithm with basis of size ℓ≥2 can be simulated by one with basis
+of size 1. In other words, for all ℓ, the class of domain size 2 problems solvable with basis size ℓ
+collapses to the class solvable with basis size 1.
+In [5], Cai and Fu further showed that holographic algorithms on domain sizes 3 and 4 using at
+least one full-rank signature collapse to basis sizes 1 and 2 respectively. They conjectured that for
+domain size k, we get a collapse to basis size ⌊log2 k⌋and suggested a heuristic explanation that
+for domain size k = 2K, we only need log2 k bits to encode each of the k colors.
+1.3
+Our Results and Techniques
+We prove Cai and Fu’s conjecture in the aﬃrmative for all domain sizes.
+2
+
+Theorem 1.1. Any holographic algorithm on domain size k using at least one matchgate with
+signature of rank k can be simulated by a holographic algorithm with basis size ⌊log2 k⌋.
+As Cai and Fu noted in [5], their “information-theoretic” explanation for the collapse theorems
+on domain sizes up to 4 is insuﬃcient to explain why holographic algorithms on domain size 3
+collapse to basis size 1 and not just 2.
+To prove their collapse theorem on domain size 3, Cai and Fu actually showed that the bases of
+holographic algorithms on domain size 3 which use at least one full-rank signature must be of rank
+2 rather than 3. They then invoked the main result of Fu and Yang [12] which reduces holographic
+algorithms on domain size k with bases of rank 2 to ones on domain size 2.
+Our key observation is that this phenomenon occurs at a much larger scale. As a bit of informal
+background, the standard signature of a matchgate G is a vector encoding the perfect matching
+properties of G. By indexing appropriately, we can regard the standard signature as a matrix Γ.
+The entries of this matrix are known [6] to satisfy a collection of quadratic polynomial identities
+called the Matchgate Identities (MGIs), and by using these identities together with some multilinear
+algebra, we prove the following:
+Theorem 1.2 (Rank Rigidity Theorem). The rank of the standard signature matrix Γ is always a
+power of two.
+We can then conclude that the basis of a nontrivial holographic algorithm on domain size k
+must be of rank 2ℓ, where ℓis the largest integer for which 2ℓ≤k.
+With this step, together
+with a generalization of Fu and Yang’s result to bases of rank k, we show it is enough to prove a
+collapse theorem for holographic algorithms on domain sizes that are powers of two. Cai and Fu [5]
+achieved such a collapse theorem for domain size 4 by proving that 1) any standard signature of rank
+4 contains a full-rank 4 × 4 submatrix whose entries have indices are “close” in Hamming distance,
+2) full-rank 4 × 22n−2 standard signatures have right inverses that are also standard signatures.
+For 1), the proof in [5] used algebraic techniques involving the matchgate identities, but these
+methods seem to work only for domain size 4. We instead show that the required generalization of
+1) to arbitrary domain sizes almost trivially follows from the rank rigidity theorem and the MGIs.
+Roughly, we prove the following:
+Theorem 1.3 (Cluster Existence - informal). If Γ is a 2ℓ×2(n−1)ℓmatrix of rank at least k realizable
+as the standard signature of some matchgate, then there exists a 2⌈log2 k⌉×2⌈log2 k⌉submatrix of full
+rank in Γ whose column (resp. row) indices diﬀer in at most ⌈log2 k⌉bits.
+For 2), the proof in [5] nonconstructively veriﬁes that the set of all invertible 4 × 4 matrices
+satisfying the matchgate identities up to sign forms a group under multiplication. 4 × 4 matrices
+are easy to handle because there is only one nontrivial MGI in this case. Rather than generalizing
+this approach, we note that Li and Xia [15] proved a very similar but more general result under a
+diﬀerent framework of matchgate computation known as character theory, showing that the set of all
+invertible 2K × 2K matrices realizable as matchgate characters forms a group under multiplication
+for all K. It turns out their technique carries over with minor modiﬁcations into the framework of
+signature theory that we consider, and we use it to show the following:
+Theorem 1.4 (Group Property - informal). If G is a generator matchgate with 2K × 2(n−1)K
+standard signature G of rank 2K, then there exists a recognizer matchgate with 2K(n−1)×2K standard
+signature R such that G · R = I2K, where I2K denotes the 2K × 2K identity matrix.
+Our general collapse theorem then follows from our generalizations of 1) and 2). This result
+gives a way forward for the development of the structural theory of holographic algorithms on higher
+3
+
+domain sizes in the same vein as Cai et al.’s work on domain size 2. In [24], Valiant gave examples
+of holographic algorithms on domain size 3, but holographic algorithms on higher domain sizes
+have yet to be explored. Our result shows that for domain size k, we can focus on understanding
+changes of basis in M2⌊log2 k⌋×k(C) rather than over an inﬁnite set of dimensions, just as the collapse
+theorem of Cai and Lu [8] showed that on the Boolean domain, they could focus on understanding
+changes of basis in GL2(C).
+1.4
+Organization
+In Section 2, we introduce the necessary notation and background, including a brief overview
+of holographic algorithms.
+In Section 3, we state the matchgate identities and some of their
+key consequences.
+In Section 4, we prove Theorems 1.2 and 1.3.
+In Section 5, we then prove
+Theorem 1.4. In Section 6, we generalize the main result of Fu and Yang [12] to bases of rank k
+and reduce proving a collapse theorem on all domain sizes to proving one on domain sizes equal
+to powers of two. Finally, in Section 7, we prove the desired collapse theorem, Theorem 1.1, on
+domain sizes equal to powers of two by invoking the results from Section 4.
+2
+Preliminaries
+2.1
+Background
+Denote the Hamming weight of string α by wt(α), and deﬁne the parity of α to be the parity of
+wt(α). Given 1 ≤i ≤m, deﬁne ei ∈{0, 1}m to be the bitstring with a single nonzero bit in position
+i. The parameter m is implicit, and when this notation is used, m will be clear from the context.
+Denote by 1m the length-m bitstring consisting solely of 1’s.
+We review some basic deﬁnitions and results about holographic algorithms. For a comprehensive
+introduction to this subject, see [22].
+Deﬁnition 2.1. A matchgate Γ = (G, X, Y ) is deﬁned by a planar embedding of a planar graph
+G = (V, E, W), input nodes X ⊆V , and output nodes Y ⊆V , where X ∩Y = ∅. We refer to X ∪Y
+as the external nodes of Γ.
+We say that Γ has arity |X| + |Y |. In the planar embedding of G, the input and output nodes
+are arranged such that if one travels counterclockwise around the outer face of G, one encounters
+ﬁrst the input nodes labeled 1,2,...,|X| and then the output nodes |Y |,...,2,1.
+If Γ has exclusively output (resp. input) nodes, we say that Γ is a generator (resp. recognizer).
+Otherwise, we say that Γ is an |X|-input, |Y |-output transducer.
+Deﬁnition 2.2. A basis of size ℓon domain size k is a 2ℓ× k matrix M = (aα
+i ), where rows and
+columns are indexed by α ∈{0, 1}ℓand i ∈[k] respectively.
+Deﬁnition 2.3. The standard signature of a matchgate Γ of arity nℓis a vector of dimension 2nℓ
+which will be denoted by Γ, where for αi ∈{0, 1}ℓ, Γα1···αn denotes the entry of Γ indexed by
+α1 ◦· · · ◦αn. If Z is the subset of the external nodes of Γ for which α1 ◦· · · ◦αn is the indicator
+string, then
+Γα1···αn = PerfMatch(Γ\Z).
+Here, if A = (Aij) is the adjacency matrix of Γ, PerfMatch is the polynomial in the entries of A
+deﬁned by
+PerfMatch(A) =
+X
+M
+Y
+(i,j)∈M
+Aij,
+4
+
+with the sum taken over the set M of all perfect matchings of Γ.
+The following lemma follows from the deﬁnition of standard signatures.
+Lemma 2.4. Suppose R is the standard signature of a recognizer of arity nℓand T the standard
+signature of a transducer with s inputs and ℓoutputs. Then R′ = RT ⊗n is the standard signature
+of a recognizer matchgate of arity ns.
+Deﬁnition 2.5. A column (resp. row) vector of dimension kn is said to be a generator (resp. rec-
+ognizer) signature realizable over a basis M if there exists a generator (resp. recognizer) matchgate
+Γ satisfying M⊗nG = G (resp. RM⊗n = R). We say that a collection of recognizer and generator
+signatures R1, ..., Ra, G1, ..., Gb is simultaneously realizable if they are realizable over a common
+basis M.
+In particular, if M is square, the signature of a matchgate with respect to the standard basis is
+the standard signature. Also note that in terms of coordinates, we have that
+Gα1···αn =
+X
+j1,...,jn∈[k]
+Gj1···jnaα1
+j1 · · · aαn
+jn
+and
+Rj1···jn =
+X
+α1,...,αn∈{0,1}ℓ
+Rα1···αnaα1
+j1 · · · aαn
+jn .
+Deﬁnition 2.6. A matchgrid Ω= (G, R, W) is a weighted planar graph consisting of a set of
+g generators G = {G1, ..., Gg}, a set of r recognizers R = {R1, ..., Rr}, and a set of w wires
+W = {W1, ..., Ww}, each of which has weight 1 and connects the output node of a generator to the
+input node of a recognizer so that every input and output node among the matchgates in G ∪R
+lies on exactly one wire.
+Deﬁnition 2.7. Suppose Ω= (G, R, W) is a matchgrid with g generators, r recognizers, and w
+wires, and let M be a basis for Ω. Deﬁne the Holant to be the following quantity:
+Holant(Ω) =
+X
+z∈[k]w
+
+
+g
+Y
+i=1
+Gyi
+i
+r
+Y
+j=1
+Rxj
+j
+
+.
+Here, z = y1 ◦· · · ◦yg = x1 ◦· · · ◦xr such that yi ∈[k]|Yi| and xj ∈[k]|Xj| for Yi the output
+nodes of Gi and Xj the input nodes of Rj, and Gi and Rj denote the signatures of their respective
+matchgates under basis M.
+Valiant’s Holant theorem states the following.
+Theorem 2.8 (Theorem 4.1, [22]). If Ωis a matchgrid over a basis M, then Holant(Ω) =
+PerfMatch(Ω).
+As the Fisher-Kasteleyn-Temperley algorithm [13, 17] can compute the number of perfect match-
+ings of a planar graph in polynomial time, Holant(Ω) can be computed in polynomial time as long
+as Ωis planar.
+5
+
+2.2
+Matrix Form of Signatures
+It will be convenient to regard signatures not as vectors but as matrices.
+Deﬁnition 2.9. For generator signature G, the t-th matrix form G(t) (1 ≤t ≤n) is a k × kn−1
+matrix where the rows are indexed by 1 ≤jt ≤k and the columns are indexed by j1 · · · jt−1jt+1 · · · jn
+in lexicographic order.
+Deﬁnition 2.10. For recognizer signature R, the t-th matrix form R(t) (1 ≤t ≤n) is a kn−1 × k
+matrix where the rows are indexed by j1 · · · jt−1jt+1 · · · jn in lexicographic order and the columns
+are indexed by 1 ≤jt ≤k.
+We would also like to regard standard signatures as matrices; if basis M is square, the following
+deﬁnitions are special cases of the above.
+Deﬁnition 2.11. For standard signature G, the t-th matrix form G(t) (1 ≤t ≤n) is a 2ℓ×2(n−1)ℓ
+matrix where the rows are indexed by αt and the columns are indexed by α1 · · · αt−1αt+1 · · · αn.
+Deﬁnition 2.12. For standard signature R, the t-th matrix form R(t) (1 ≤t ≤n) is a 2(n−1)ℓ× 2ℓ
+matrix where the rows are indexed by α1 · · · αt−1αt+1 · · · αn and the columns are indexed by αt.
+One can check that G(t) and G(t), and R(t) and R(t), are related as follows.
+Lemma 2.13. If G = M⊗nG, then
+G(t) = MG(t)(MT )⊗(n−1).
+Lemma 2.14. If R = RM⊗n, then
+R(t) = (MT )⊗(n−1)R(t)M.
+We will denote by G(t)σ the row vector indexed by σ, G(t)ζ the column vector indexed by ζ,
+and G(t)σ
+ζ the entry of G in row σ and column ζ. We use analogous notation for matrices R, G, and
+R. In general, if Γ is any matrix, we will sometimes refer to the entry Γσ
+ζ as the “entry (indexed
+by) (σ, ζ).”
+In general, if Γ is a matrix with rows indexed by {0, 1}a and columns indexed by {0, 1}b, and
+S ⊂{0, 1}a (resp. S ⊂{0, 1}b), we will let ΓS (resp. ΓS) denote the submatrix of Γ consisting of
+rows (resp. columns) indexed by S. Where Γ is clear from context, we will denote the row span of
+ΓS (resp. column span of ΓS) by span(S).
+Lastly, a column/row is called odd (resp. even) if its index is odd (resp. even).
+2.3
+Degenerate and Full Rank Signatures
+Deﬁnition 2.15. A signature G (generator or recognizer) is degenerate iﬀthere exist vectors γi
+(1 ≤i ≤n) of dimension k for which G = γ1 ⊗· · · ⊗γn.
+Lemma 2.16 (Lemma 3.1, [5]). A signature G is degenerate iﬀrank(G(t)) ≤1 for 1 ≤t ≤n.
+Deﬁnition 2.17. A signature G is of full rank iﬀthere exists some 1 ≤t ≤n for which rank(G(t)) =
+k.
+6
+
+By Lemma 2.13, if signature G is of full rank, then for the corresponding standard signature
+G, we have that rank(G(t)) = k for some t. Over domain size 2, by Lemma 2.16, all signatures
+not of full rank are degenerate, and holographic algorithms exclusively using such signatures are
+trivial because degenerate generators can by deﬁnition be decoupled into arity-1 generators. Over
+domain size k ≥3 however, it is unknown to what extent holographic algorithms exclusively using
+signatures not of full rank trivialize. In [5], the collapse theorems over domain sizes 3 and 4 were
+proved under the assumption that at least one signature is of full rank, so we too make that
+assumption.
+2.4
+Clusters
+One of the key results in our proof of the general collapse theorem is the existence within any matrix-
+form standard signature of a full-rank square submatrix whose entries have indices satisfying certain
+properties. In this section we make precise those properties.
+Deﬁnition 2.18. A set of 2m distinct bitstrings Z = {x1, ..., x2m} ⊂{0, 1}n is an (m, n)-cluster if
+there exists s ∈{0, 1}n and positions p1, ..., pm ∈[n] such that for each i ∈[2m], xi = s⊕
+L
+j∈J epj
+
+for some J ⊂{p1, ..., pm}. We write Z as s + {ep1, ..., epm}. Note that for a ﬁxed cluster, s is only
+unique up to the bits outside of positions p1, ..., pm. If a cluster Z′ is a subset of another cluster Z,
+we say that Z′ is a subcluster of Z.
+Deﬁnition 2.19. In Γ, a 2m × 2m submatrix Γ′ is a m-cluster submatrix if there exist (m, ℓ)- and
+(m, (n −1)ℓ)-clusters Σ and Z such that Γ′ = (Γσ
+ζ )σ∈Σ
+ζ∈Z (here we omit the parameters n and ℓin the
+notation as they will be clear from context).
+3
+Matchgate Identities and Consequences
+3.1
+Parity Condition and Matchgate Identities
+The most obvious property that standard signatures satisfy is the parity condition: because a graph
+with an odd number of vertices has no perfect matchings, the indices of the nonzero entries in G
+have the same parity. It trivially follows that in G(t), columns G(t)ζ and G(t)η, if both nonzero,
+are linearly independent if ζ and η are of opposite parities. The same holds for the rows of G(t).
+In [6] it is shown algebraically that the parity condition in fact follows from the so-called
+matchgate identities which we present below, quadratic relations which together form a necessary
+and suﬃcient condition for a vector to be the standard signature of some matchgate.
+As in Cai and Fu’s proof of the collapse theorem for domain size 4, we will make heavy use
+of the matchgate identities stated below. Wherever we invoke them, they will be for generator
+matchgates, so we focus on this case.
+Theorem 3.1 (Theorem 2.1, [6]). A 2ℓ× 2(n−1)ℓmatrix Γ is the t-th matrix form of the standard
+signature of some generator matchgate iﬀfor all ζ, η ∈{0, 1}(n−1)ℓand σ, τ ∈{0, 1}ℓ, the following
+matchgate identity holds. Let ζ ⊕η = eq1 ⊕· · ·⊕eqd′ and σ⊕τ = ep1 ⊕· · ·⊕epd, where q1 < · · · < qd′
+and p1 < · · · < pd. Then
+d
+X
+i=1
+(−1)i+1Γ
+(σ⊕ep1⊕epi)
+ζ
+Γ
+(τ⊕ep1⊕epi)
+η
+=
+d′
+X
+j=1
+±Γ
+(σ⊕ep1)
+(ζ⊕eqj ) Γ
+(τ⊕ep1)
+(η⊕eqj ).
+(1)
+7
+
+Here the ± signs depend on both j and, if qj is after the t-th block, the parity of d. If d is even,
+d
+X
+i=1
+(−1)i+1Γ
+(σ⊕ep1⊕epi)
+ζ
+Γ
+(τ⊕ep1⊕epi)
+η
+= ϵζ,η
+d′
+X
+j=1
+(−1)j+1Γ
+(σ⊕ep1)
+(ζ⊕eqj ) Γ
+(τ⊕ep1)
+(η⊕eqj ),
+(2)
+where ϵζ,η ∈{±1} is positive (resp. negative) if the number of qj preceding the t-th block is odd
+(resp. even).
+Remark 3.2. If d + d′ is odd, (1) is trivial by the parity condition.
+We will be making extensive use of the matchgate identities in this paper, but we will typically
+not care about the ϵζ,η sign on the right-hand side of (2). For this reason, it will be convenient to
+make the following deﬁnition.
+Deﬁnition 3.3. A 2ℓ× 2m matrix M is a pseudo-signature if for all σ, τ for which wt(σ ⊕τ) is
+even, its entries satisfy the corresponding identity (2) up to a factor of ±1 on the right-hand side.
+Standard signatures and cluster submatrices are all examples of pseudo-signatures.
+Observation 1. If M is a pseudo-signature, then its transpose MT is a pseudo-signature.
+3.2
+Matchgate Identities and Determinants
+We now derive from the matchgate identities some basic linear algebraic properties of the columns
+of pseudo-signatures. By Observation 1, these also apply for the rows.
+Firstly, we have the following immediate consequence of Theorem 3.1. We speciﬁcally consider
+the case where wt(ζ⊕η) is even and, by Remark 3.2, wt(σ⊕τ) is even. So write ζ⊕η = eq1⊕· · ·⊕eq2d′
+and σ ⊕τ = ep1 ⊕· · · ⊕ep2d.
+Reverse the roles of ζ and η in (2). Subtract the resulting equation from (2) to ﬁnd
+2d
+X
+i=1
+(−1)i+1 
+Γ
+(σ⊕ep1⊕epi)
+η
+Γ
+(τ⊕ep1⊕epi)
+ζ
+−Γ
+(σ⊕ep1⊕epi)
+ζ
+Γ
+(τ⊕ep1⊕epi)
+η
+
+=
+ϵζ,η
+2d′
+X
+j=1
+(−1)j+1 
+Γ
+(σ⊕ep1)
+(ζ⊕eqj ) Γ
+(τ⊕ep1)
+(η⊕eqj ) −Γ
+(σ⊕ep1)
+(η⊕eqj ) Γ
+(τ⊕ep1)
+(ζ⊕eqj )
+
+,
+or equivalently,
+2d
+X
+i=1
+(−1)i+1
+
+Γ
+(σ⊕ep1⊕epi)
+ζ
+Γ
+(σ⊕ep1⊕epi)
+η
+Γ
+(τ⊕ep1⊕epi)
+ζ
+Γ
+(τ⊕ep1⊕epi)
+η
+ = ϵζ,η
+2d′
+X
+j=1
+(−1)j+1
+
+Γ
+(σ⊕ep1)
+(ζ⊕eqj )
+Γ
+(σ⊕ep1)
+(η⊕eqj )
+Γ
+(τ⊕ep1)
+(ζ⊕eqj )
+Γ
+(τ⊕ep1)
+(η⊕eqj )
+
+(3)
+Example 3.4. Suppose d = d′ = 1. Then (3) becomes
+2
+
+Γσ
+ζ
+Γσ
+η
+Γτ
+ζ
+Γτ
+η
+ = 2ϵζ,η
+
+Γ
+σ⊕ep1
+ζ⊕eq1
+Γ
+σ⊕ep1
+ζ⊕eq2
+Γ
+σ⊕ep2
+ζ⊕eq1
+Γ
+σ⊕ep2
+ζ⊕eq2
+ ,
+so in particular, the matrix on the left is singular iﬀthe latter is.
+8
+
+More generally, only suppose that d = 1. Then (3) becomes
+2
+
+Γσ
+ζ
+Γσ
+η
+Γτ
+ζ
+Γτ
+η
+ = ϵζ,η
+2d′
+X
+j=1
+(−1)j+1
+
+Γ
+(σ⊕ep1)
+(ζ⊕eqj )
+Γ
+(σ⊕ep1)
+(η⊕eqj )
+Γ
+(σ⊕ep2)
+(ζ⊕eqj )
+Γ
+(σ⊕ep2)
+(η⊕eqj )
+
+(4)
+so in particular, the matrix on the left-hand side is singular if all 2d′ matrices on the right-hand
+side are singular.
+In other words, if ℓ= 2 so that Γ only has four rows, columns ζ and η as deﬁned above are
+linearly dependent if all pairs of neighboring columns are linearly dependent. We shall see in the
+next section (Corollary 3.6) that this is true even when Γ has an arbitrary number of rows.
+3.3
+Wedge Products of Columns
+Motivated by Example 3.4, we’d like to study the set of all 2 × 2 determinants
+
+Γσ
+ζ
+Γσ
+η
+Γτ
+ζ
+Γτ
+η
+ given
+two column vectors Γζ and Γη of the same parity. These are merely the coeﬃcients of the wedge
+product Γζ ∧Γη under the standard basis {vσ ∧vτ}σ,τ∈{0,1}2ℓ, σ<τ (where the relation σ < τ denotes
+lexicographic ordering) of V2 C2ℓ, the second exterior power of C2ℓ. The matchgate identities imply
+the following consequence about the relationships among the wedge products Γζ ∧Γη as ζ and η
+vary.
+Lemma 3.5. If ζ1, η1, ζ2, η2, ..., ζm, ηm are even indices for which
+m
+X
+ν=1
+aν (Γζν ∧Γην) = 0
+(5)
+for some a1, ..., am ∈C, then
+m
+X
+ν=1
+ϵζν,ηνaν
+ 2dν
+X
+i=1
+(−1)j+1Γζν⊕epν
+i ∧Γην⊕epν
+i
+!
+= 0,
+(6)
+where for each ν, wt(ζν ⊕ην) = 2dν and ζν ⊕ην = epν
+1 ⊕· · · ⊕epν
+2dν .
+Proof. For convenience, we will denote ϵζν,ην by ϵν. First, we rewrite (6) in terms of coordinates as
+m
+X
+ν=1
+ϵνaν
+ 2dν
+X
+i=1
+(−1)i+1 X
+σ<τ
+
+Γσ
+ζν⊕epν
+i
+Γσ
+ην⊕epν
+i
+Γτ
+ζν⊕epν
+i
+Γτ
+ην⊕epν
+i
+ (vσ ∧vτ)
+!
+= 0,
+(7)
+where σ < τ denotes lexicographical ordering. Note that the determinants that appear in the
+left-hand side of (7) are zero when σ and τ are of opposite parity. Moreover, depending on the
+parity of the signature Γ, either all such determinants are also zero for σ and τ even, or they are
+all zero for σ and τ odd.
+Rearranging the order of summations in (7), the desired identity becomes
+X
+σ<τ
+(vσ ∧vτ) ·
+ m
+X
+ν=1
+ϵνaν
+2dν
+X
+i=1
+(−1)i+1
+
+Γσ
+ζν⊕epν
+i
+Γσ
+ην⊕epν
+i
+Γτ
+ζν⊕epν
+i
+Γτ
+ην⊕epν
+i
+
+!
+= 0.
+(8)
+9
+
+For a ﬁxed pair σ < τ, let wt(σ ⊕τ) = 2d′ and σ ⊕τ = eq1 ⊕· · · ⊕eq2d′. If we apply (3) and
+rearrange the order of summation once more, the coeﬃcient of vσ ∧vτ above becomes
+m
+X
+ν=1
+aν ·
+2d′
+X
+j=1
+(−1)j+1
+
+Γ
+σ⊕eqj
+ζν
+Γ
+σ⊕eqj
+ην
+Γ
+τ⊕eqj
+ζν
+Γ
+τ⊕eqj
+ην
+ =
+2d′
+X
+j=1
+(−1)j+1
+m
+X
+ν=1
+aν
+
+Γ
+σ⊕eqj
+ζν
+Γ
+σ⊕eqj
+ην
+Γ
+τ⊕eqj
+ζν
+Γ
+τ⊕eqj
+ην
+ .
+But note that if we expand (5) in terms of coordinates, the term
+aν
+
+Γ
+σ⊕eqj
+ζν
+Γ
+σ⊕eqj
+ην
+Γ
+τ⊕eqj
+ζν
+Γ
+τ⊕eqj
+ην
+
+is precisely the coeﬃcient of vσ⊕eqj ∧vτ⊕eqj in the expansion of (5) in terms of coordinates and
+hence zero by assumption, so (8) holds as desired.
+Corollary 3.6. Let ζ, η ∈{0, 1}(n−1)ℓbe such that ζ ⊕η = L2d
+j=1 epi. If column Γ(ζ⊕epi) is linearly
+dependent with column Γ(η⊕epi) for 1 ≤i ≤2d, then column Γζ is linearly dependent with column
+Γη.
+Corollary 3.7. Let ζ, η ∈{0, 1}(n−1)ℓbe such that ζ ⊕η = L2d
+i=1 epi. If there exists i ∈[2d′] such
+that column Γζ⊕epi is linearly dependent with column Γη⊕epi for i = 1, ...,ˆj, ..., 2d′, where ˆj denotes
+omission of index j, and if Γζ is also linearly dependent with column Γη, then Γζ⊕epj and Γη⊕epj
+are linearly dependent.
+Lemma 3.5 says that any linear relation among wedges of even columns yields a linear relation
+among wedges of odd columns, and vice versa.
+Lastly, we need the following elementary result in multilinear algebra.
+Lemma 3.8. If v1, ..., vn are linearly independent in vector space V , then the set of all vi ∧vj for
+i < j are linearly independent in V2 V .
+Combining this with Lemma 3.5 yields the following key ingredient to the analysis in Section 4.
+Lemma 3.9. Suppose ζ0, η ∈{0, 1}K such that ζ0 ̸= η, and the indices in T = {ζ1, ..., ζm} ⊂{0, 1}K
+are distinct and have the same parity. Suppose further that ζ0 ̸= ζ1, ..., ζm. Let ζi⊕η = epi
+1⊕· · ·⊕epi
+di
+for 0 ≤i ≤m, where di := wt(ζi ⊕η). Deﬁne
+S :=
+[
+0≤i≤m,1≤j≤di
+{η ⊕epi
+j, ζi ⊕epi
+j} ⊂{0, 1}K
+not in the sense of multisets, that is, we throw out duplicates so that the strings in S are all distinct.
+Suppose the columns indexed by S are linearly independent. Then
+Γζ0 ̸∈span(Γζ1, ..., Γζm)
+(9)
+If wt(η ⊕ζ0) ≥4 and j∗∈[d0], then (9) holds even if only the columns indexed by S′ :=
+S\{ζ0 ⊕ep0
+j∗} are linearly independent.
+10
+
+Proof. We ﬁrst prove the claim without the assumption that wt(η ⊕ζ0) ≥4.
+Suppose to the
+contrary that Γζ0 = Pm
+i=1 aiΓζi so that Γζ0 ∧Γη −Pm
+i=1 aiΓζi ∧Γη = 0. By Lemma 3.5, this linear
+relation implies the following linear relation among wedges of columns of the other parity:
+ϵζ0,η
+
+
+d0
+X
+j=1
+(−1)j+1Γζ0⊕ep0
+j ∧Γη⊕ep0
+j
+
+−
+m
+X
+i=1
+ϵζi,ηai
+
+
+di
+X
+j=1
+(−1)j+1Γζi⊕epi
+j ∧Γη⊕epi
+j
+
+= 0
+(10)
+We claim this is a nontrivial linear relation contradicting the linear independence of the columns
+indexed by S. For each of the m + 1 sums indexed by 1 ≤j ≤di appearing in (10), if di = 2,
+rewrite Pdi
+j=1(−1)j+1Γζi⊕epi
+j ∧Γη⊕epi
+j as 2Γζi⊕epi
+1 ∧Γη⊕epi
+1.
+After this consolidation, note that the wedge products in (10) are now all distinct. Certainly for
+any j, j′ ∈[di] where di ≥4, Γζi⊕epi
+j ∧Γη⊕epi
+j and Γζi⊕epi
+j′ ∧Γη⊕epi
+j′ are linearly independent. For i, i′
+such that di = 2 and di′ > 2, 2Γζi⊕epi
+1 ∧Γη⊕epi
+1 and any Γζi′⊕epi′
+j
+∧Γη⊕epi′
+j
+are linearly independent
+as ζi⊕η ̸= ζi′ ⊕η, contradicting the assumption that {ζ1, ..., ζm} are distinct. Similarly, for i, i′ such
+that di > 2 and di′ > 2, any Γζi⊕epi
+j ∧Γη⊕epi
+j and any Γζi′⊕epi′
+j′ ∧Γη⊕epi′
+j′ are linearly independent
+as ζi ⊕η ̸= ζi′ ⊕η.
+We conclude that (10), after consolidating sums for which di = 2, consists of a nonzero number
+of linearly independent wedge products of columns indexed by S, so (10) is indeed a nontrivial
+linear relation among the wedge products Γs ∧Γs′ for s, s′ ∈S. But all columns indexed by S are
+linearly independent by assumption, so this linear relation contradicts Lemma 3.8 and the linear
+independence of columns indexed by S.
+For the second part of Lemma 3.9, we claim that (10) is still a nontrivial relation. Pick any
+k ̸= j∗inside [d0]. Because d0 ≥4,
+ζ0 ⊕ep0
+k, η ⊕ep0
+k ̸= η ⊕ep0
+j∗.
+(11)
+We have already taken care of the case where Γζ0+ep0
+j∗̸∈span(S′) above, so suppose instead
+that
+Γζ0+ep0
+j∗=
+X
+s∈S′
+bsΓs.
+(12)
+If we consolidate sums for which di = 2 in (10) as above and substitute (12) into the resulting
+equation, the wedge products that (10) now contains also include ones of the form Γs ∧Γη+ep0
+j∗,
+which cannot be linearly dependent with Γζ0⊕ep0
+k ∧Γη⊕ep0
+k by (11).
+Every other wedge product in (10) is of the form Γζi⊕epi
+j ∧Γη⊕epi
+j and also cannot be linearly
+dependent with ±Γζ0⊕ep0
+k ∧Γη⊕ep0
+k or else, as before, we’d ﬁnd that ζi ⊕η = ζk ⊕η, contradicting
+the assumption that {ζ1, ..., ζm} are distinct.
+It follows that if we rewrite the left-hand side of (10) in the form P
+s,s′∈S′ bs,s′Γs ∧Γs′ (uniquely
+because by Lemma 3.8 the Γs ∧Γs′ are linearly independent), bζ0⊕ep0
+k
+,η⊕ep0
+k ̸= 0. So (10) is still a
+nontrivial linear relation, contradicting Lemma 3.8 and the linear independence of columns indexed
+by S.
+4
+Rigidity and Cluster Existence
+In this section, we will prove the rigidity theorem and the cluster existence theorem, informally
+stated as Theorems 1.2 and 1.3. Now that we have introduced the appropriate terminology, we
+11
+
+ﬁrst state both precisely.
+Theorem 4.1 (Rank Rigidity - formal). If Γ is a 2ℓ× 2m pseudo-signature, then rank(Γ) is a
+power of 2. Equivalently, for all κ ≥1,
+rank(Γ) ≥2κ + 1 ⇒rank(Γ) ≥2κ+1
+(13)
+Theorem 4.2 (Cluster Existence - formal). If Γ = G(t) for some matchgate G of arity nℓ, and
+rank(Γ) ≥k, then there is a ⌈log2 k⌉-cluster submatrix of full rank.
+To prove Theorem 4.2, we claim it is enough to show the following:
+Theorem 4.3. If Γ is a 2ℓ× 2m pseudo-signature such that rank(Γ) ≥k, then there exists a
+(⌈log2 k⌉, m)-cluster Z for which ΓZ is of full rank.
+Equivalently, for all κ ≥1,
+rank(Γ) ≥2κ + 1 ⇒∃(κ + 1, m)-cluster Z such that rank(ΓZ) = 2κ+1
+(14)
+Proof of Theorem 4.2. Apply Theorem 4.3 to Γ to obtain ΓZ.
+By Observation 1, ΓT
+Z is also a
+pseudo-signature. Apply Theorem 4.3 to ΓT to get the desired cluster submatrix.
+Note that for ﬁxed κ, (14) implies (13). We will jointly prove Theorem 4.1 and Theorem 4.3 by
+induction on k. Cai and Fu have already shown both for k ≤4; we take these results as our base
+case. We complete the following two inductive steps.
+Inductive Step 1. If implication (14) holds for 1 ≤κ ≤K −1, then implication (13) holds for
+1 ≤κ ≤K.
+Inductive Step 2. If implication (13) holds for 1 ≤κ ≤K and implication (14) holds for
+κ ≤K −1, then implication (14) also holds for κ = K.
+Note that once we have proven the rigidity and cluster existence theorems, we additionally
+obtain the following.
+Corollary 4.4. If G is a full-rank matchgate signature on domain size k, it is only realizable over
+bases M of rank at most 2⌊log2 k⌋.
+Proof. If k is a power of two, the claim is trivial.
+If not, assume G is a generator (standard
+signatures of recognizer are also pseudo-signatures, so the argument in that case is analogous). If
+rank(G(t)) = k and rank(M) ≥2⌊log2 k⌋+ 1, then by Lemma 2.14, 2⌊log2 k⌋+ 1 ≤rank(G(t)) ≤k.
+But Theorem 4.1 would then imply rank(G(t)) ≥2⌊log2 k⌋+1 > k, a contradiction.
+4.1
+Rank Rigidity Theorem
+In this subsection, we complete the former inductive step, and in the next, we complete the latter.
+Before we prove Inductive Step 1 in its entirety, we take care of the case where m = K+1. While
+this might appear to be the simplest case because m is minimal, it will turn out that cases where
+m is greater will reduce to this case. For this reason, the wedge product machinery introduced in
+Section 3 is used exclusively in the proof of this case.
+12
+
+Once we take care of this case, we will essentially show that if standard signature Γ is any wider,
+i.e. if m > K + 1, then if Z is a cluster of size greater than 2K indexing columns of rank at least
+2K + 1, we can always ﬁnd a proper subcluster also indexing columns of rank at least 2K + 1, or
+else the matchgate identities would erroneously imply that certain columns which are known to be
+linearly independent are linearly dependent.
+We begin with the case of m = K + 1.
+Theorem 4.5. If Γ is a 2ℓ× 2K+1 pseudo-signature such that rank(Γ) ≥2K + 1, then rank(Γ) =
+2K+1.
+Proof. Because we assume implication (14) holds for κ = K −1, Γ contains a (K, m)-cluster
+Z = s ⊕{e1, ..., ˆej, ..., eK+1} of linearly independent columns; denote the even indices of Z by Z0
+and the odd ones by Z1. Because rank(Γ) > 2K, there exists t ̸∈Z for which Γt ̸∈span(Z). Denote
+the parity of t by b ∈{0, 1}, and denote by b the opposite parity.
+Select any t′ = t⊕ei∗for i∗̸= j and apply Lemma 3.9 to ζ0 = t′, η = t⊕ej, T = Zb to conclude
+that Γt′ ̸∈span(Zb).
+Let Sd1,d2 denote the set of column indices ζ ̸∈Z for which wt(ζ ⊕t) = d1 and wt(ζ ⊕t′) = d2.
+Note that because wt(t ⊕t′) = 1, Sd1,d2 is empty if |d1 −d2| ̸= 1.
+We will show by induction on D that the columns indexed by
+SD
+d=0 Sd,d+1 ∪Sd+1,d
+
+∪Z are
+linearly independent for all 0 ≤D ≤K. The deﬁnition of t and the argument above for t′ give the
+base case of D = 0.
+For the inductive step, for each d let d0 and d1, respectively denote the even and odd value in
+{d, d + 1}. As columns indexed by Sd0,d1 and columns indexed by Sd1,d0 have opposite parity, it
+suﬃces to show that the columns indexed by T 0
+D :=
+SD
+d=0 Sd0,d1
+
+∪Zb are linearly independent,
+and that the columns indexed by T 1
+D :=
+SD
+d=0 Sd1,d0
+
+∪Zb are linearly independent.
+Within this inductive step, we will further induct on the elements within SD0,D1 and SD1,D0.
+Speciﬁcally, suppose we have already proven that for some subset S′
+D0,D1 ⊂SD0,D1, all columns
+indexed by T 0
+D−1∪S′
+D0,D1 are linearly independent, and that for S′
+D1,D0 := {u⊕ei∗: u ∈S′
+D0,D1} ⊂
+SD1,D0, all columns indexed by T 1
+D−1 ∪S′
+D1,D0 are linearly independent. Select any u ̸∈S′
+D0,D1 and
+apply Lemma 3.9 to ζ0 = u, η = t′ ⊕ej, T = T 0
+D−1 ∪S′
+D0,D1 to see that Γu ̸∈span(T 0
+D−1 ∪S′
+D0,D1).
+Note that when wt(ζ0 ⊕η) ≥4, we do not yet know that Γζ0⊕ei∗= Γu⊕ei∗lies outside span(T 1
+D−1 ∪
+S′
+D1,D0), that is, we do not know whether all the columns indexed by the set S deﬁned in Lemma 3.9
+are linearly independent, but the second part of Lemma 3.9 says that we may still conclude that
+Γu ̸∈span(T 0
+D−1 ∪S′
+D0,D1) because the columns indexed by S\{u ⊕ei∗} are linearly independent.
+Lastly, apply Lemma 3.9 to ζ0 = u ⊕ei∗, η = t ⊕ej, T = T 1
+D−1 ∪S′
+D1,D0 to see that Γu⊕ei∗̸∈
+span(T 1
+D−1 ∪S′
+D1,D0). Note that here we only need to invoke the ﬁrst part of Lemma 3.9 we already
+know that Γζ0⊕e∗= Γu lies outside span(T 0
+D−1 ∪S′
+D0,D1).
+We are now ready to complete Inductive Step 1.
+Completion of Inductive Step 1. As we remarked earlier, implication (14) for a ﬁxed value of κ
+implies implication (13) for that value of κ, so we just need to show that implication (13) also holds
+for κ = K.
+Suppose to the contrary that there exists pseudo-signature Γ of rank k such that 2K + 1 ≤k <
+2K+1. Without loss of generality, we may assume that for all clusters Z ⊊{0, 1}m, rank(ΓZ) ≤2K;
+otherwise, replace Γ by ΓZ for some small enough cluster Z such that rank(ΓZ) ≥2K + 1 and
+rank(ΓZ′) ≤2K for all subclusters Z′ ⊊Z. Furthermore, by Theorem 4.5, we may assume m >
+K + 1.
+13
+
+Lemma 4.6. If Z = s + {ep1, ..., epK} is a (K, m)-cluster of linearly independent columns in Γ,
+then any column Γt for which ti = si for some i ̸= p1, ..., pK lies in the span of the columns indexed
+by Z.
+Proof. If to the contrary there existed such a Γt not lying in the span of Z so that ti = si for some
+i ̸= p1, ..., pK, then if Z′ is the (m−1, m)-cluster of column indices ζ for which ζi = si, ΓZ′ contains
+t and all of Z and thus has rank at least 2K + 1, contradicting our assumption on the ranks of the
+proper subclusters of Γ.
+By the inductive hypothesis, Γ contains a (K, m)-cluster Z of linearly independent columns
+s+{ep1, ..., epK}. As s is only uniquely deﬁned modulo the bits in positions p1, ..., pK, we will leave
+those bits of s unspeciﬁed for now.
+Because k > 2K, there exists t ̸∈Z for which all columns indexed by Z ∪{t} are linearly
+independent. Moreover, by Lemma 4.6, tj = sj for all j ̸∈{p1, ..., pK}. Let Z′ denote the cluster
+t+{ep1, ..., epK}. Set si = ti for i ∈{p2, ..., pK}; we will set sp1 to be 0 or 1 depending on the parity
+of the number m −K of bits outside of positions p1, ..., pK.
+Case 1. m −K is even.
+Set sp1 = tp1 so that s and t have the same parity.
+Claim 4.7. If u ̸∈Z′ and ui = si for each i ∈{p1, ..., pK}, then Γu and Γs are linearly dependent.
+Proof. For each i ∈{p1, ..., pK} and j ̸∈{p1, ..., pK}, let Ti denote the cluster of all column indices
+u for which ui = si, and let T j
+i denote the cluster of all column indices u for which ui = si and
+uj = sj. Let Zi = Z ∩Ti; obviously Zi ⊂T j
+i ⊂Ti.
+Because T j
+i is a cluster properly contained in {0, 1}m, we inductively know that rank(ΓT j
+i ) ≤2K.
+And because Zi ⊂T j
+i , rank(ΓT j
+i ) ≥2K−1.
+But if rank(ΓT j
+i ) ≥2K−1 + 1, then by inductive
+hypothesis (14) applied to ΓT j
+i for κ = K −1, rank(ΓT j
+i ) ≥2K. In other words, rank(ΓT j
+i ) is either
+2K−1 or 2K.
+We will show that the latter is impossible. Suppose to the contrary that rank(ΓT j
+i ) = 2K.
+Then because T j
+i ⊂Ti and rank(ΓTi) = 2K = rank(ΓT j
+i ), it follows that span(Ti) = span(T j
+i ).
+For any u ∈T j
+i , Γu ∈span(Z) by Lemma 4.6, so
+span(Z) ⊃span(T j
+i ) = span(Ti).
+But Ti contains t, and by deﬁnition Γt ̸∈span(Z), a contradiction.
+We conclude that rank(ΓT j
+i ) = 2K−1.
+Then because Zi ⊂T j
+i and rank(ΓZi) = 2K−1 =
+rank(ΓT j
+i ), it follows that span(Zi) = span(T j
+i ).
+In particular, all columns indexed by TK
+k=1 T j
+pk lie in TK
+k=1 span(Zpk) = span({s}). Our choice
+of j was arbitrary, so we get the desired claim.
+From the above claim and the fact that we’re assuming m > K + 1, we conclude that Γs⊕ej for
+any j ̸∈{p1, ..., pK} lies in the span of Γs. But s and s ⊕ej are of opposite parity, so by the parity
+condition, Γs⊕ej = 0 for all such j. Applying Corollary 3.6 to s and t, it follows that Γs and Γt are
+linearly dependent, a contradiction.
+Case 2. m −K is odd.
+Set sp1 = tp1 so that s and t have the same parity.
+14
+
+Claim 4.8. For any u ∈{0, 1}m, if u ̸∈Z′ and ui = si for all i ∈{p2, ..., pK}, then:
+1. If u and s have the same parity, then Γu and Γs are linearly dependent.
+2. If u and s have the opposite parity, then Γu and Γs⊕ep1 are linearly dependent.
+Proof. The proof is the same as that of Claim 4.7, the only subtlety being that s and t now
+only necessarily agree on bits p2, ..., pK. By the argument there, all columns indexed by T j
+i lie in
+span(Zi) for i = p2, ..., pK. In particular, for all j ̸∈{p1, ..., pK}, all columns indexed by TK
+k=2 Sj
+pk
+lie in TK
+k=2 span(Zpk) = span({s, s ⊕ep1}).
+So given u ̸∈Z′, write Γu = αΓs +βΓs⊕ep1. If u and s have the same parity, β = 0 by the parity
+condition, so Γu ∈span({s}). If u and s have the opposite parity, α = 0 by the parity condition,
+so Γu ∈span({s ⊕ep1}).
+Pick any j ̸∈{p1, ..., pK} and deﬁne s∗= s ⊕ej and t∗= t ⊕ej. s∗and t∗both satisfy the
+hypotheses of Claim 4.8 and have parity opposite to that of s, so by the latter case of Claim 4.8,
+they are both linearly dependent with Γs⊕ep1. But Γs⊕ep1 ̸= 0 because s⊕ep1 ∈Z and the columns
+indexed by Z are linearly independent, so Γs∗and Γt∗are linearly dependent with each other.
+To show Γs and Γt are linearly dependent, we wish to apply Corollary 3.7 to s∗, t∗, noting that
+s∗⊕t∗= ej ⊕P
+j′̸∈{j,p2,...,pk} ej.
+For any j′ ̸∈{j, p2, ..., pK}, note that s∗⊕ej′ and t∗⊕ej′ both satisfy the hypotheses of Claim 4.8
+and have the same parity as s, so by the former case of Claim 4.8, they are both linearly dependent
+with Γs. But Γs ̸= 0 because s ∈Z and the columns indexed by Z are linearly independent, so
+Γs∗⊕ej′ and Γt∗⊕ej′ are linearly dependent with each other.
+Applying Corollary 3.7 to s∗and t∗, it follows that Γs and Γt are linearly dependent, a contra-
+diction.
+4.2
+Existence of Cluster Submatrix
+Completion of Inductive Step 2. As in inductive step 1, we may assume without loss of generality
+that for all clusters Z ⊊{0, 1}m, rank(ΓZ) ≤2K. If m = K + 1, then by the inductive hypothesis
+that (13) holds for κ = K, we’re done. So suppose m > K + 1.
+By the second part of the inductive hypothesis, implication (14) holds for 1 ≤κ ≤K −1, so Γ
+contains a (K, m)-cluster Z of linearly independent columns s + {ep1, ..., epK}.
+As in inductive step 1, we can apply Lemma 4.6 to Z to see that all columns outside the span of
+the columns indexed by Z must be indexed by Z′ = t+{ep1, ..., epK}, where t =
+
+s ⊕L
+i̸=p1,...,pK ei
+
+.
+But |Z′| = |Z| = 2K, and rank(Γ) ≥2K+1 by implication (13) for κ = K, so the columns indexed
+by Z ∪Z′ are linearly independent. Because m > K + 1, there exist columns not indexed by either
+Z or Z′, and by Lemma 4.6 applied once to Z and once to Z′, these columns are in both span(Z)
+and span(Z′) and thus must be zero.
+If s and t are of the same parity, apply Corollary 3.6 to s and t to ﬁnd that Γs and Γt are
+linearly dependent, a contradiction.
+If s and t are of opposite parity, apply Corollary 3.7 to s⊕ej and t⊕ej⊕ep1 for any j ̸∈{p1, ..., pK}
+to ﬁnd that Γs and Γt⊕ep1 are linearly dependent, a contradiction.
+15
+
+5
+Group Property of Standard Signatures
+We will now prove the following generalization of the group property result over domain size 4 due
+to Cai and Fu (Theorem 5.5, [5]):
+Theorem 5.1. If G is a generator matchgate of arity Kn with standard signature G, and rank(G(t)) =
+2K for some t, then there exists a recognizer matchgate of arity Kn such that G(t)R(t) = I2K.
+Roughly, we invoke Theorem 4.3 to obtain a full-rank K-cluster submatrix G′ of G(t) with
+column indices belonging to cluster ζ + {ep1, ..., epK}.
+Assume without loss of generality that
+ζpi = 0 for all i ∈[K]. We will show that the matrix obtained by replacing G′ in G(t) with (G′)−1
+and the remaining entries with zeroes is the standard signature of some arity-Kn recognizer.
+We ﬁrst ﬁx some notation. Denote G(t) by Γ. Suppose that nodes p1 < · · · < pm ∈[Kn]
+belong to blocks before the t-th, and nodes pm+1 < · · · < pK ∈[Kn] belong to blocks after the t-th.
+For expository purposes, we wish to use a particular permutation (q1, ..., qK) of (p1, ..., pK), so for
+i ≤m, let qi = pm−i+1, and for i > m, let qi = pK+m−i+1 (see Figure 1). If the column indices of
+Γ are of the form i1 · · · iK(n−1), those of G′ are of the form ip1 · · · ipK.
+In [15], Li and Xia gave a constructive proof that in the character theory of matchgates, the
+2K ×2K character matrices of invertible K-input, K-output matchgates form a group under matrix
+multiplication. One can check that their construction carries over to show that the 2K×2K standard
+signatures of such matchgates likewise form a group, but unfortunately this is not enough to prove
+Theorem 5.1, as G′ alone is merely a pseudo-signature and may not be realizable as the standard
+signature of a K-input, K-output matchgate. That said, Theorem 5.1 can still be proved with
+minor modiﬁcations to Li and Xia’s approach.
+We begin with a toy example motivating the notation in the previous paragraphs. Suppose
+that for each i ∈[K], there exists an edge of weight 1 such that the i-th external node in block t
+and external node qi are both incident only to this edge. Note that in this case, G′ is a symmetric
+permutation matrix and thus equal to its own inverse. We can easily construct a recognizer R out
+of G for which G(t)R(t) = I2K as follows. Remove all non-external nodes of G, as well as all edges
+incident to nodes outside of block t and nodes q1, ..., qK. For external node i outside of block t
+such that i ̸∈{q1, ..., qK}, if ζi = 0, attach a distinct edge of weight 1 to node i and designate the
+other endpoint of the edge as the ith external node of R; if ζi = 1, attach a distinct path graph of
+length 2 consisting of two edges of weight 1, and denote the other endpoint of the path as the ith
+external node of R. By construction, in the 2K(n−1) × 2K matrix R(t), the submatrix indexed by
+rows q1, ..., qK is equal to G′, and all other entries are zero. Because G′ = (G′)−1, G(t)R(t) = I2K
+as desired.
+See Figure 1 for an example of this construction.
+Deﬁnition 5.2. For i ∈[K], if i ≤m (resp. i > m), G is reduced at i if there exists an edge of
+weight 1 in G connecting the i-th external node in block t and external node qi such that these two
+nodes are both incident only to that edge.
+To prove Theorem 5.1, it is enough to reduce to the special case of the toy example above where
+Γ is realizable by a generator G reduced at all i ∈[K]. The rest of this section will be dedicated to
+proving the following:
+Lemma 5.3. If Γ is the standard signature of a generator of arity Kn reduced at 1, ..., i, there
+exist nonsingular K-input, K-output transducers L1, ..., Lr and K(n −1)-input, K(n −1)-output
+transducers R1, ..., Rs such that Lr · · · L1 · Γ · R1 · · · Rs is the standard signature of a generator
+reduced at 1, ..., i + 1.
+16
+
+Figure 1: Toy example of G reduced at i = 1, ..., K. Here, ℓ= 5, K = 5, m = 3. Black nodes in
+G denote nodes 1, ..., K in block t and nodes q1, ..., qK. External nodes of G and R are shown in
+black/gray.
+We ﬁrst give a suﬃcient characterization of standard signatures of matchgates reduced at 1, ..., i
+in terms of the entries of their standard signatures.
+The following terminology is borrowed from [15].
+Deﬁnition 5.4. Let M be any 2r × 2c matrix whose rows and columns are indexed by σ ∈{0, 1}r
+and τ ∈{0, 1}c respectively. Γσ
+τ is an edge entry of M iﬀr + c −2 ≤wt(σ) + wt(τ) < r + c.
+Lemma 5.5. Γ is the standard signature of a generator G that is reduced at i if Γ satisﬁes the
+following:
+1. (G′)1K
+1K = (G′)1K⊕ei
+1K⊕eqi = 1.
+2. (G′)σ
+τ = 0 for all other edge entries of G′ for which σ ∈{1K, 1K ⊕ei} or τ ∈{1K, 1K ⊕eqi}.
+17
+
+To show this, it suﬃces to prove the following useful consequence of the matchgate identities,
+ﬁrst observed in [4] and translated below to our setting of standard signatures in matrix form.
+Lemma 5.6 (Theorem 4.2, [4]). If (G′)1K
+1K ̸= 0, the entries of G′ are uniquely determined by (G′)1K
+1K
+and the edge entries of G′.
+Proof. Assume that these entries uniquely determine all entries Γσ
+τ for which wt(σ) + wt(τ) ≥m
+for some m ≤n −2. We proceed by downward induction on m (by the parity condition, if m is
+even, the case of m + 1 follows immediately from that of m). Then for σ, τ ∈{0, 1}K such that
+wt(σ) + wt(τ) = m −2, apply (2) from Theorem 3.1 to σ := σ, ζ := τ, τ := 1K, and η := 1K. One
+can check that the resulting identity consists of (G′)σ
+τ · (G′)1K
+1K and terms which have already been
+uniquely determined by the inductive hypothesis, so because (G′)1K
+1K ̸= 0, we conclude that (G′)σ
+τ
+is also uniquely determined.
+Observation 2. If Γ is the standard signature of a generator reduced at i, (G′)σ⊕ei
+τ⊕eqi = (G′)σ
+τ , and
+if σi ̸= τqi, (G′)σ
+τ = 0.
+Proof. By hypothesis, external node i of block t and external node qi are only connected to each
+other. If σi ̸= τqi, (G′)σ
+τ counts the number of perfect matchings of Γ where, among other conditions,
+exactly one of these two nodes is removed, and no such matching exists. On the other hand, if
+σi = τqi, then (G′)σ
+τ and (G′)σ⊕ei
+τ⊕eqi count the number of perfect matchings in which, among other
+conditions, both of these two nodes are removed, or neither is. The number of perfect matchings
+in either scenario is the same.
+Let G′
+i be the 2K−i × 2K−i submatrix of G′ consisting of entries (G′)σ
+τ for which σj = 0 for
+j = 1, ..., i and τj = 0 for j = q1, ..., qi.
+If the row and column indices of G′ are of the form
+i1 · · · iK and ip1 · · · ipK respectively, the row and column indices of G′
+i are of the form ii+1 · · · iK and
+ipi+1 · · · ipK respectively. When referring to the row (resp. column) of G′ containing a row ii+1 · · · iK
+(resp. column ipi+1 · · · ipK) of G′
+i, we use the notation 0i◦ii+1 · · · iK (resp. 0i◦ipi+1 · · · ipK) to denote
+its index in G′. For example, column 0i ◦1K−i of G′ is the column of G′ indexed by σ ∈{0, 1}K
+for which σq1 = · · · = σqi = 0 and σqi+1 = · · · = σqK = 1, and this contains column 1K−i of G′
+i.
+Corollary 5.7. If Γ is the standard signature of a generator that is reduced at 1, ..., i, then Γ is
+the standard signature of a generator reduced at 1, ..., i + 1 if Γ satisﬁes the following:
+1. (G′
+i)1K−i
+1K−i = (G′
+i)1K−i⊕ei+1
+1K−i⊕eqi+1 = 1
+2. (G′
+i)σ
+τ = 0 for all other edge entries of G′
+i such that σ ∈{1K−i, 1K−i ⊕ei+1} or τ ∈
+{1K−i, 1K−i ⊕eqi+1}.
+Proof. Apply Observation 2 to each of 1, ..., i, and invoke Lemma 5.5.
+Proof of Lemma 5.3. We execute the transformation Γ = Γ(0) ⇒Γ(1) ⇒Γ(2) ⇒Γ(3) ⇒Γ(4)
+outlined below.
+1. (Γ(0) ⇒Γ(1)): Turn the entry indexed by (1K−i, 1K−i) in G′
+i to 1.
+2. (Γ(1) ⇒Γ(2)): Turn edge entries of G′
+i in row or column 1K−i to 0.
+3. (Γ(2) ⇒Γ(3)): Turn entry (1K−i ⊕ei+1, 1K−i ⊕eqi+1) in G′
+i to 1.
+18
+
+4. (Γ(3) ⇒Γ(4)): Turn all other edge entries in G′
+i in row 1K−i ⊕ei+1 or column 1K−i ⊕eqi+1 to
+zero.
+We need not care what these transformations do to entries outside of G′, but we must ensure
+they preserve the fact that Γ is the standard signature of a generator reduced at 1, ..., i. To do this,
+for each matrix M by which we left- or right-multiply Γ, if σ does not index a row (resp. column)
+of G′
+i, the only nonzero entry of M in row (resp. column) σ will be 1 in column (resp. row) σ.
+In each step j, we will for convenience refer to Γ(j−1) as Γ.
+1
+i
+i+1
+i+2
+j-1
+j
+j+1
+K
+(a) Cj
+1
+j-1
+j
+j+2
+k-1
+k
+k+1
+K
+-b
+(b) Lj,k
+3
+1
+i
+i+1
+i+2
+j-1
+j
+j+1
+K
+(c) L4
+1
+i
+i+1
+i+2
+j-1
+j
+j+1
+K
+-b
+(d) Lj
+5
+Figure 2: Transducers realizing row/column operations in steps 1-4
+Step 1. (Γ(0) ⇒Γ(1)): Turn the entry indexed by (1K−i, 1K−i) in G′
+i to 1.
+We ﬁrst show how to move a nonzero entry c := (G′
+i)σ∗
+τ ∗of G′
+i into entry (1K−i, 1K−i) of G′
+i.
+19
+
+For each j for which i < j ≤K, we would like a 2K × 2K standard signature Cj such that
+left-multiplication of Γ by Cj interchanges row σ in G′ with σ ⊕ej for all σ ∈{0, 1}K, and a
+2K(n−1) × 2K(n−1) standard signature Dj such that right-multiplication of Γ by Dj interchanges
+column τ in G′ with τ ⊕eqj. We could then deﬁne L1 = Q
+j:σ∗
+j =0 Cj and R1 = Q
+j:τ ∗
+j =0 Dj, and
+L1 ·ΓR1 would have nonzero entry c at index (1K−i, 1K−i) of G′
+i and still be the standard signature
+of a matchgate reduced at 1, ..., i.
+Cj (resp. Dj) is the permutation matrix whose only nonzero entry in row σ ∈{0, 1}K (resp.
+σ ∈{0, 1}K(n−1)) is 1 in column σ ⊕ej (resp. column σ ⊕eqj) if G′
+i contains entries from Γσ (resp.
+Γσ), and 1 in column σ otherwise. Cj and Dj are certainly nonsingular.
+To construct the K-input, K-output transducer realizing Cj as a standard signature, begin with
+a (K, K)-bipartite graph where for every ν ̸= j, left node ν and right node ν are connected by
+an edge of weight 1. Add an extra vertex between left node j and right node j, and draw a path
+of length two connecting these three vertices, where both edges of the path have weight 1. This
+construction is shown in Figure 2a.
+The K(n−1)-input, K(n−1)-output transducer realizing Dj as a standard signature is similarly
+constructed, the only diﬀerence being that the bipartite graph has left and right vertex sets of size
+K(n −1), and the path of length two is drawn between left node qj and right node qj.
+Next, we want to scale all of the entries of L1ΓR1 by a factor of 1/c, so deﬁne L2(c) to be
+the diagonal matrix whose entry at index 1K−i is 1/c and whose entries at all other indices are
+1.
+Obviously L2(c) is nonsingular and satisﬁes the matchgate identities (2).
+We take Γ(1) =
+L2(c)L1Γ(0)R1.
+Step 2. (Γ(1) ⇒Γ(2)): Turn edge entries of G′
+i in row or column 1K−i to 0.
+We demonstrate how to do this for edge entries in column 1K−i. Firstly, edge entries (1K−i ⊕
+ej, 1K−i) in G′
+i are already zero by the parity condition.1 To set each of the remaining edge entries
+in this column to zero, we will proceed in reverse lexicographic order over the rows 1K−i ⊕ej ⊕ek
+of G′
+i and at each step left-multiply Γ by a matrix Lj,k
+3
+which corresponds in Γ to subtracting
+b := (G′
+i)1K−i⊕ej⊕ek
+1K−i
+times row 0i ◦1K−i of G′ from row 0i ◦(1K−i ⊕ej ⊕ek) of G′.
+Lj,k
+3
+must be a matrix whose nonzero entries include diagonal entries equal to 1 and entry
+(0i ◦(1K−i ⊕ej ⊕ek), 0i ◦1K−i) equal to −b. A standard signature satisfying these conditions can
+be realized by the following matchgate: construct a (K, K)-bipartite graph in which left node ν
+and right node ν are connected by an edge of weight 1 for all ν, and left nodes j and k are also
+connected by an edge of weight −b. The standard signature of this matchgate is nonsingular. The
+construction is shown in Figure 2b.
+Lj,k
+3
+additionally has nonzero entries (σ ⊕ej ⊕ek, σ) equal to −b for all σ ∈{0, 1}K, i.e.
+left-multiplication by Lj,k
+3
+corresponds to subtracting b times row σ from row σ ⊕ej ⊕ek. These
+extraneous side eﬀects do not however aﬀect any of the progress we’ve made as the rows 1K−i⊕ej⊕ek
+of G′
+i are taken in reverse lexicographic order.
+The only issue is that the matchgate we have constructed is not necessarily planar. But by
+Lemma A.1 in Appendix A, there exists a planar matchgate with standard signature equal to Lj,k
+3 ,
+except at nonzero oﬀ-diagonal entries other than (0i ◦(1K−i ⊕ej ⊕ek), 0i ◦1K−i), where it may
+diﬀer from Lj,k
+3
+by a factor of −1, but by the reasoning in the previous paragraph, this does not
+matter. Denote the standard signature of this planar matchgate by L′j,k
+3
+.
+1As characters of general matchgates with omittable nodes do not satisfy the parity condition necessarily, the
+proof of the group property in [15] requires an extra construction to turn edge entries (1K−i ⊕ej, 1K−i) to zero. This
+is an instance where our proof of the group property for signatures is easier than that for characters.
+20
+
+To achieve step 2 for edge entries in rows 1K−i as well, we can deﬁne matrices R′j,k
+3
+analogously.
+We can thus take Γ(2) =
+Q
+i+2≤j,k≤K L′j,k
+3
+
+· Γ(1) ·
+Q
+i+2≤j,k≤K R′j,k
+3
+
+, where the indexing in the
+products respects the abovementioned reverse lexicographic order.
+Step 3. (Γ(2) ⇒Γ(3)): Turn entry (1K−i ⊕ei+1, 1K−i ⊕eqi+1) in G′
+i to 1.
+Note that c′ := (G′
+i)1K−i⊕ej
+1K−i⊕eqk must be nonzero for some j, k ∈[K] or else (G′
+i) is singular. As in
+Step 1, we will ﬁrst left-multiply Γ by some L4 to move this nonzero entry to row 1K−i ⊕ei+1 and
+then right-multiply by some R4 to move it to column 1K−i ⊕eqi+1. Unfortunately, multiplying by
+Cj or Dj deﬁned in Step 1 would interfere with the progress made so far in Steps 1 and 2.
+Instead, L4 must be a matrix whose only nonzero entry in row (resp. column) 0i ◦(1K−i ⊕ej)
+is 1 in column (resp. row) 0i ◦(1K−i ⊕ei+1), and whose only nonzero entry in row (resp. column)
+0i ◦(1K−i ⊕ei+1) is 1 in column (resp. row) 0i ◦(1K−i ⊕ej). A signature satisfying these conditions
+can be realized by the following matchgate: construct a (K, K)-bipartite graph in which left node
+ν and right node ν are connected by an edge of weight 1 for all ν ̸= j, i + 1. Connect left node j to
+right node i + 1 and left node i + 1 to right node j with edges of weight 1. The standard signature
+L4 of this is nonsingular. The construction is shown in Figure 2c.
+L4 also has nonzero entries (i1 · · · ij · · · ii+1 · · · iK, i1 · · · ii+1 · · · ij · · · iK), so left-multiplication by
+L4 corresponds to switching row 0i◦(i1 · · · ii+1ii+2 · · · ij · · · iK) with row 0i◦(i1 · · · ijii+2 · · · ii+1 · · · iK)
+for all ii+1, ..., iK ∈{0, 1}. Multiplication by L4 aﬀects neither the progress we’ve made on entry
+(1K−i, 1K−i) of G′
+i because all bits in the row and column indices are equal, nor the progress on
+the edge entries in row 1K−i and column 1K−i of G′
+i because these get swapped with each other
+and were already all zero, keeping them equal to zero.
+As before, the only issue is that the matchgate constructed is not planar. But by Lemma A.2
+in Appendix A, there exists a planar matchgate whose standard signature agrees with L4 at every
+entry up to sign. By the above, that the nonzero entries other than (0i ◦1K−i ⊕ej, 0i ◦1K−i ⊕ei+1)
+and (0i ◦1K−i ⊕ei+1, 0i ◦1K−i ⊕ej) may be −1 does not matter. Furthermore, if either entry
+(0i ◦1K−i ⊕ej, 0i ◦1K−i ⊕ei+1) or (0i ◦1K−i ⊕ei+1, 0i ◦1K−i ⊕ej) were −1, at worst we may
+eventually need to replace c′ with −c′, but the argument still holds. Denote the standard signature
+of this planar matchgate by L′
+4. We can analogously deﬁne R′
+4.
+Next, we scale entry (1K−i ⊕ei+1, 1K−i ⊕eqi+1) of G′
+i by a factor of 1/c′, so we take Γ(3) =
+L2(c′)L′
+4Γ(2)R′
+4.
+Step 4. (Γ(3) ⇒Γ(4)): Turn all other edge entries in G′
+i in row 1K−i ⊕ei+1 or column 1K−i ⊕eqi+1
+to zero.
+We demonstrate how to do this for edge entries in column 1K−i ⊕eqi+1 of G′
+i. To set each
+of the edge entries in this column to zero, we will proceed in reverse lexicographic order over
+the row indices 1K−i ⊕ej of G′
+i and at each step left-multiply Γ by a matrix Lj
+5 which subtracts
+b := (G′
+i)1K−i⊕ej
+1K−i⊕eqi+1 times row 0i ◦1K−i of G′ from row 0i ◦(1K−i ⊕ej) of G′.
+Lj
+5 is a matrix whose nonzero entries include diagonal entries equal to 1 and entry (0i ◦(1K−i ⊕
+ej), 0i ◦(1K−i ⊕ei+1)) equal to −b. A signature satisfying these conditions can be realized by the
+following matchgate: construct a (K, K)-bipartite graph in which left node ν and right node ν are
+connected by an edge of weight 1 for all ν, and connect left node j to right node i + 1 by an edge
+of weight −b. The standard signature of this matchgate is nonsingular. The construction is shown
+in Figure 2d.
+Lj
+5 additionally has nonzero entries (0i ◦(σ ⊕ej ⊕ei+1), 0i ◦σ) equal to −b for all σ ∈{0, 1}K−i
+such that σj = 1 and σi+1 = 0, i.e.
+for all such σ, left-multiplication by Lj
+5 corresponds to
+21
+
+subtracting b times row 0i ◦σ of G′ from row 0i ◦σ ⊕ej ⊕ei+1 of G′. As before, these extraneous
+side eﬀects do not aﬀect the progress we’ve made in this step because the edge entries in column
+1K−i ⊕eqi+1 of G′
+i are being taken in reverse lexicographic order. They also certainly do not aﬀect
+row 1K−i, nor do they aﬀect column 1K−i as 1K−i does not satisfy the above criteria for σ.
+Again, the issue is that the matchgate constructed is not planar, but by Lemma A.3 in Ap-
+pendix A, there exists a planar matchgate with standard signature equal to Lj
+5 except possibly at
+the nonzero oﬀ-diagonal entries other than (0i ◦(1K−i ⊕ej), 0i ◦(1K−i ⊕ei+1)), where it may diﬀer
+by a factor of −1. Denote the standard signature of this planar matchgate by L′j
+5 .
+To achieve step 4 for edge entries in rows 1K−i ⊕ei+1 as well, we can deﬁne matrices R′j
+5
+analogously. We can thus take Γ(4) =
+Q
+i+2≤j≤K L′j
+5
+
+· Γ(3) ·
+Q
+i+2≤j≤K R′j
+5
+
+, where the products
+respect the abovementioned reverse lexicographic order.
+6
+Reducing to Domain Size 2K
+In this section we use Theorem 4.1 to reduce proving a basis collapse theorem over all domain sizes
+to proving one over domain sizes 2K. The result we will prove is the following generalization of the
+main result in [12] whose strategy we follow.
+Theorem 6.1. Suppose Theorem 1.1 has been proven for domain size r. If recognizer signatures
+R1, ..., Ra and generator signatures G1, ..., Gb on domain size k > r belonging to matchgrid Ωare
+simultaneously realizable on a 2ℓ× k basis M of rank r and R1 is of full rank, then there exists a
+basis M′ of size at most ⌊log2 r⌋on which they are simultaneously realizable.
+We’ll need some preliminaries before we can prove this. Express M as
+α1
+α2
+· · ·
+αk
+
+where
+each αi is a 2ℓ-dimensional column vector. Let i1, ..., ir ∈[k] be column indices of M for which
+Mi1···ir :=
+αi1
+αi2
+· · ·
+αir
+
+is of full rank. Deﬁne sub-signature Ri1···ir to consist of entries
+(Rj1···jn) of R ranging over all j1, ..., jn ∈{i1, ..., ir} ⊂[k]. We can deﬁne the sub-signature Gi1···ir
+of a generator analogously. Equivalently,
+Ri1···ir = R(Mi1···ir)⊗n
+(15)
+Lemma 6.2. For a recognizer R realizable on basis M, if there exists t for which rank(R(t)) ≥r,
+then rank(Ri1···ir(t)) = r.
+Proof. By Lemma 2.14, R(t) = (MT )⊗(n−1)R(t)M, so rank(R(t)) ≥r. By (15) and Lemma 2.13,
+Ri1···ir(t) = ((Mi1···ir)T )⊗(n−1)R(t)Mi1···ir, so rank(Ri1···ir(t)) = r.
+For such a recognizer R, deﬁne for each w ∈[k] a nkn−1-dimensional column vector bw by
+bw =
+Rw1···11
+· · ·
+Rwk···kk
+R1w···11
+· · ·
+Rkw···kk
+· · ·
+R11···1w
+· · ·
+Rkk···kw
+T
+(16)
+and deﬁne Ai1···ir to be the nk(n−1) × r matrix whose jth column is bij.
+Observation 3. rank(Ai1···ir) = r.
+Proof. Ri1···ir(t) is a submatrix of Ai1···ir and already has rank r by Lemma 6.2.
+Observation 4. As M has rank r, every column αw can be expressed as a linear combination
+Pr
+j=1 xijwαij.
+22
+
+Denote the r × k matrix
+
+xijw
+
+of these coeﬃcients by Xi1···ir.
+Lemma 6.3. For each w ∈[k], Ai1···irX = bw has the unique solution X =
+xi1
+w
+· · ·
+xirw
+T .
+Proof. A solution for X exists and is unique because rank(Ai1···ir) = r by Observation 3. To check
+that the purported solution for X is correct, pick any entry Rj1···jt−1wjt···jn of bw. By deﬁnition of
+recognizer signatures,
+Rj1···jt−1wjt···jn = ⟨R, αj1 ⊗· · · ⊗αjt−1 ⊗αw ⊗αjt+1 ⊗· · · ⊗αjn⟩
+= ⟨R, αj1 ⊗· · · ⊗αjt−1 ⊗
+
+
+r
+X
+j=1
+xijwαij
+
+⊗αjt+1 ⊗· · · ⊗αjn⟩
+=
+r
+X
+j=1
+xijw ·
+
+R, αj1 ⊗· · · ⊗αjt−1 ⊗αij ⊗αjt+1 ⊗· · · ⊗αjn
+
+=
+r
+X
+j=1
+xijwRj1···jt−1ijjt+1···jn.
+Here ⟨·, ·⟩denotes the inner product.
+The content of Lemma 6.3 is that to any such R we can get a matrix Xi1···ir without needing
+to know the actual basis M realizing R.
+Lemma 6.4. If rank(R1(t)) ≥r for some t, then recognizers R1, ..., Ra are simultaneously realizable
+on some basis of rank r iﬀthe following conditions hold:
+1. rank(Ri1···ir
+1
+(t)) = r for some i1, ..., ir ∈[k].
+2. There exists a unique r × k matrix Xi1···ir = (xijw) such that Ai1···irX = bw has the solution
+X =
+xi1
+w
+· · ·
+xirw
+T for each w ∈[k].
+3. There exists a 2ℓ× r basis M(r) such that the Ri1···ir
+j
+are simultaneously realizable on M(r) for
+all j ∈[a].
+4. Rj = Ri1···ir
+j
+X⊗n
+i1···ir for all j ∈[a].
+Proof. Suppose R1, ..., Ra are simultaneously realizable are some basis M.
+Conditions 1 and 2
+follow from Lemma 6.2 and Lemma 6.3 respectively. Take M(r) to be Mi1···ir, and condition 3
+follows from the deﬁnition of sub-signature. By Observation 4, Xi1···ir satisﬁes M(r)Xi1···ir = M,
+so Rj = RjM⊗n = RjM⊗n
+(r) X⊗n
+i1···ir = Ri1···ir
+j
+X⊗n
+i1···ir, and condition 4 follows.
+Conversely, suppose conditions 1-4 hold. Condition 3 tells us that there is some M(r) for which
+Ri1···ir
+j
+= Rj
+M(r)
+⊗n for all j ∈[a]. Then
+Rj = Ri1···ir
+j
+X⊗n
+i1···ir = Rj(M(r))⊗nX⊗n
+i1···ir = Rj(M(r)Xi1···ir)⊗n,
+so R1, ..., Ra are simultaneously realizable on M := M(r)Xi1,...,ir.
+23
+
+Theorem 6.5. If recognizer signatures R1, ..., Ra and generator signatures G1, ..., Gb in matchgrid
+Ωare simultaneously realizable on a basis of rank r and there exists t for which rank(R1(t)) ≥r,
+then there exist recognizer signatures ˇR1, ..., ˇRa and generator signatures ˇG1, ..., ˇGb in matchgrid Ω′
+over domain size r that are simultaneously realizable on a 2ℓ× r basis M(r). Furthermore,
+Holant(Ω) = Holant(Ω′).
+(17)
+Proof. We ﬁrst construct ˇR1, ..., ˇRa, ˇG1, ..., ˇGb. Xi1,...,ir obtained from R1 via Lemma 6.3 has rank
+r, so let X′
+i1···ir be the k × k invertible matrix for which Xi1···irX′
+i1···ir =
+Ir | 0r×(k−r)
+
+, where Ir
+is the r × r identity matrix and 0r×(k−r) denotes the r × (k −r) matrix consisting solely of zeroes.
+For each j ∈[a], let R′
+j = Rj(X′
+i1,...,ir), and let ˇRj be the sub-signature (R′
+j)1···r. Likewise, for each
+j ∈[b], let G′
+j be deﬁned by Gj = (X′
+i1···ir)⊗nG′
+j, and let ˇGj be the sub-signature (G′
+j)1···r.
+Claim 6.6. For all j, ˇRj = Ri1···ir
+j
+and ˇGj = Gi1···ir
+j
+.
+Proof. We need to check that
+ˇRj = Rj(Mi1···ir)⊗n
+(18)
+(Mi1···ir)⊗n ˇGj = Gj.
+(19)
+Indeed,
+R′
+j = RjM⊗n(X′
+i1···ir)⊗n
+= Rj(Mi1···ir)⊗nX⊗n
+i1···ir(X′
+i1···ir)⊗n
+= Rj
+Mi1···ir | 0r×(k−r)
+⊗n ,
+proving (18). Similarly,
+Gj = M⊗nGj
+= M⊗n(X′
+i1···ir)⊗nG′
+j
+=
+Mi1···ir | 0r×(k−r)
+⊗n G′
+j,
+proving (19).
+We conclude that ˇR1, ..., ˇRa, ˇG1, ..., ˇGb are simultaneously realizable on the basis M(r) := Mi1···ir.
+To check that the Holants agree, ﬁrst note that if R′
+1, ..., R′
+a, G′
+1, ..., G′
+b lie in a corresponding
+matchgrid Ω′′, Holant(Ω) = Holant(Ω′′) because we’re just applying a basis change from M to
+MX′
+i1···ir. And Holant(Ω′) = Holant(Ω′′) because the operation of taking sub-signatures does not
+lose any information in this case, i.e. (R′
+j)σ = 0 for all σ ∈[k]n\[r]n.
+For the next two results, suppose recognizer signatures R1, ..., Ra and generator signatures
+G1, ..., Gb in matchgrid Ωare simultaneously realizable on a basis of rank r and there exists t for
+which rank(R1(t)) ≥r.
+Theorem 6.7. If the recognizer signatures ˇR1, ..., ˇRa and generator signatures ˇG1, ..., ˇGb con-
+structed in Theorem 6.5 are also simultaneously realizable on a 2ℓ′ × r basis M′
+(r) of rank r, then
+recognizer signatures R1, ..., Ra and generator signatures G1, ..., Gr are simultaneously realizable on
+the 2ℓ′ × k basis M′
+(r)Xi1···ir, where Xi1···ir is obtained from R1 by Lemma 6.3.
+24
+
+Proof.
+Rj = Ri1···ir
+j
+X⊗n
+i1···ir = ˇRjX⊗n
+i1···ir = R(M′
+(r)Xi1···ir)⊗n,
+where the ﬁrst equality holds by condition 4 of Lemma 6.4, the second by Claim 6.6, the third by
+deﬁnition of M′
+(r). Likewise, because
+ˇGj =
+Ir | 0r×(k−r)
+
+G′
+j = Xi1···irX′
+i1···irG′
+j,
+we have that
+Gj = M⊗n
+(r) ˇGj = (M(r)Xi1···ir)⊗nX′⊗n
+i1···irG′
+j = (M(r)Xi1···ir)⊗nGj,
+so we conclude that R1, ..., Ra, G1, ..., Gb are indeed simultaneously realizable on M(r)Xi1···ir.
+We are now ready to prove Theorem 6.1.
+Proof of Theorem 6.1. By Theorem 6.5, signatures ˇR1, ..., ˇRa and ˇG1, ..., ˇGb on domain size r are
+simultaneously realizable on a 2ℓ× r basis.
+By deﬁnition, ˇR1 = Ri1···ir
+1
+, and because R1 was assumed to be full-rank, Lemma 6.2 tells us
+that ˇR1 is full-rank. Then by the hypothesis that Theorem 1.1 has already been proven for domain
+size r, there exists a 2⌊log2 r⌋× r basis M′
+(r) on which ˇR1, ..., ˇRa and ˇG1, ..., ˇGb are simultaneously
+realizable. By Theorem 6.7, R1, ..., Ra and G1, ..., Gb are simultaneously realizable on 2⌊log2 r⌋× k
+basis M′ := M′
+(r)Xi1···ir.
+By Corollary 4.4 and Theorem 6.1, it remains to prove collapse theorems for holographic al-
+gorithms on domain sizes k = 2K and over bases of full rank, after which we get the following
+corollary.
+Corollary 6.8. Any holographic algorithm on a basis of size ℓand domain size k not a power of 2
+which uses at least one generator signature of full rank can be simulated on a basis of size at most
+2⌊log2 k⌋.
+7
+Collapse Theorem For Domain Size 2K
+The following is a direct generalization of the argument from Section 5.3 of [5], but we include it
+for completeness. We will take G to be a generator signature of full rank on domain size k = 2K,
+basis M to be a 2ℓ× 2K matrix of rank 2K, and G = M⊗nG to be the corresponding standard
+signature of arity nℓ.
+By Theorem 4.2 applied to the transpose of G(t), there exists a cluster
+Z = s + {ep1, ..., epK} of rows of full rank in G(t). Denote by MZ the submatrix of M consisting
+of rows with indices in Z.
+Lemma 7.1. MZ is invertible.
+Proof. The (k, nℓ) cluster submatrix of G(t) of full rank whose existence is guaranteed by Theo-
+rem 4.2 is a submatrix of MZG(t)(MT )⊗(n−1), so MZ has rank at least 2K. But MZ is a 2K × 2K
+matrix, so MZ is invertible.
+Following the notation of [5], now denote the column vector (MZ)⊗nG of dimension 2Kn by
+G∗←Z and the column vector (MZ)⊗(t−1) ⊗M ⊗(MZ)⊗(n−t) · G of dimension 2Kn+ℓ−K by Gtc←Z.
+Because MZ and G(t) both have rank 2K, G∗←Z and Gtc←Z also have rank 2K. We check that
+these can be realized as standard signatures.
+Lemma 7.2. G∗←Z is the standard signature of a generator matchgate of arity Kn.
+25
+
+Proof. Take the matchgate G, and in each block, attach an edge of weight 1 to external node i
+(1 ≤i ≤ℓ) if si = 1. In the matchgate G′ we get from these operations, designate external nodes
+p1, ..., pK in each block as the new external nodes of G′. The resulting matchgate realizes G∗←Z.
+Lemma 7.3. Gtc←Z is the standard signature of a generator matchgate of arity Kn −K + ℓ.
+Proof. The proof of Lemma 7.3 is almost identical to that of Lemma 7.2, except block t is treated
+diﬀerently. Take the matchgate G, and in each block except the t-th one, attach an edge of weight
+1 to external node i (1 ≤i ≤ℓ) if si = 1. In the matchgate G′ we get from these operations, take
+the external nodes to be all ℓexternal nodes in block t, as well as nodes p1, ..., pK in every other
+block. The resulting matchgate realizes Gtc←Z.
+Now deﬁne T = M(MZ)−1.
+Here is the key step of the collapse theorem, making use of
+Theorem 5.1.
+Lemma 7.4. T is the standard signature of a K-input, ℓ-output transducer.
+Proof. We ﬁrst express T in terms of G∗←Z and Gtc←Z. If the entries of Gtc←Z are indexed by
+(i1,1 · · · i1,K) · · · (it−1,1 · · · it−1,K)(i′
+1 · · · i′
+ℓ)(it+1,1 · · · it+1,ℓ) · · · (in,1 · · · in,K), denote by Gtc←Z(t) the
+matrix form of Gtc←Z in which the rows are indexed by i′
+1 · · · i′
+ℓand the columns are indexed by
+(i1,1 · · · i1,K) · · · (it−1,1 · · · it−1,K)(it+1,1 · · · it+1,ℓ) · · · (in,1 · · · in,K).
+Observe that
+G = M⊗nG = T ⊗n(MZ)⊗nG = T ⊗nG∗←Z
+so that
+Gtc←Z = (T Z)⊗(t−1) ⊗T ⊗(T Z)⊗(n−t)G∗←Z.
+(20)
+Putting both sides of (20) in matrix form, we conclude that
+Gtc←Z(t) = TG∗←Z(t).
+(21)
+Applying Theorem 5.1 to the arity-Kn standard signature G∗←Z, we have a recognizer whose
+standard signature R satisﬁes G∗←Z(t)R(t) = I2K. Right-multiplying both sides of (21) by R(t),
+we ﬁnd that
+Gtc←Z(t)R(t) = T.
+Say that the generator realizing Gtc←Z as a standard signature has external nodes Xi,1, Xi,2,
+..., Xi,K in block i for each i ̸= t, and external nodes Yt,1 ,..., Yt,ℓin block t. Say that the generator
+realizing R as a standard signature has external nodes Zi,1, ..., Zi,K in each block i.
+Construct the transducer Γ realizing T as a standard signature by connecting Xi,j with Zi,j for
+all i ̸= t, j ∈[K]. Designate Yt,1, ..., Yt,ℓto be the output nodes of Γ and Zt,1, ..., Zt,K to be the
+input nodes of Γ.
+From Theorem 7.4 we obtain the collapse theorem for domain size 2K.
+Theorem 7.5. Any holographic algorithm on a basis of size ℓand domain size 2K which uses at
+least one generator signature of full rank can be simulated on a basis of size K.
+Proof. Suppose the holographic algorithm in question uses signatures Ri, Gj (1 ≤i ≤r, 1 ≤j ≤g)
+deﬁned by RiM⊗mi = Ri and Gj = M⊗njGj over basis M.
+Say that G1 has full rank, and
+let Z = s + {ep1, ..., epK} denote the full-rank (K, ℓ)-cluster of rows in G1 which must exist by
+Theorem 4.3.
+By Lemma 7.4, T := M(MZ)−1 is the standard signature of some transducer
+matchgate Γ. Let R′
+i = RiT ⊗mi and G′
+j = G∗←Z
+j
+; by Lemma 2.4, R′
+i is the standard signature of
+some recognizer, and by Lemma 7.3, G′
+j is the standard signature of some generator. We conclude
+that the Ri, Gj can be simultaneously realized on the basis MZ of size K.
+26
+
+8
+Acknowledgments
+I would like to thank Professor Leslie Valiant for patiently advising me throughout the course of this
+project and providing much valuable feedback as well as suggestions on papers to read. I am also
+extremely indebted to Professor Jin-Yi Cai for his incredibly extensive and important comments
+on drafts of this paper.
+References
+[1] J.-Y. Cai and V. Choudhary. Some results on matchgates and holographic algorithms, Au-
+tomata, languages, and programming. Part 1, Lecture Notes in Comput. Sci., vol 4051,
+Springer, Berlin, 2006, pp. 703-714.
+[2] J.-Y. Cai and V. Choudhary. Valiant’s holant theorem and matchgate tensors, Theory and
+applications of models of computation, Lecture Notes in Comput. Sci., vol. 3959, Springer,
+Berlin, 2006, pp. 248-261.
+[3] J.-Y. Cai and V. Choudhary. Valiant’s holant theorem and matchgate tensors, Theoret. Com-
+put. Sci. 384 (2007), no. 1, 22-32.
+[4] J.-Y. Cai, V. Choudhary, and P. Lu. On the theory of matchgate computations, Theory Com-
+put. Syst., 45(1):108132, 2009. Preliminary version in CCC’07.
+[5] J.-Y. Cai and Z. Fu. (2014). A collapse theorem for holographic algorithms with matchgates
+on domain size at most 4. Information and Computation, 239, 149-169.
+[6] J.-Y. Cai and A. Gorenstein. Matchgates revisited. CoRR, abs/1303.6729, 2013.
+[7] J.-Y. Cai and P. Lu. Holographic algorithms: from art to science, STOC ‘07– Proceedings
+of the 39th Annual ACM Symposium on Theory of Computing, AMC, New York, 2007, pp.
+401-410.
+[8] J.-Y. Cai and P. Lu: Holographic algorithms: the power of dimensionality resolved. In: Arge,
+L., Cachin, C., Jurdzinski, T. et al. (eds.) Proceedings of ICALP. Lecture Notes in Computer
+Science, vol. 4596, pp. 631642. Springer, Berlin (2007)
+[9] J.-Y. Cai and P. Lu. On symmetric signatures in holographic algorithms, STACS 2007, Lecture
+Notes in Comput. Sci., vol. 4393, Springer, Berlin, 2007, pp. 429-440.
+[10] J.-Y. Cai and P. Lu. Basis collapse in holographic algorithms, Computational Complexity 17
+(2008), no. 2, 254-281.
+[11] J.-Y. Cai, P. Lu, and M. Xia. Holographic reduction, interpolation and hardness. Computa-
+tional Complexity, 21(4):573604, 2012.
+[12] Z. Fu, F. Yang: Holographic algorithms on bases of rank 2. http://arxiv/abs/1303.7361.
+In submission.
+[13] P.W. Kasteleyn: The statistics of dimers on a lattice. Physica 27, 12091225 (1961)
+[14] J. Landsberg, J. Morton, and S. Norine. Holographic algorithms without matchgates. preprint
+arXiv:0904.0471, 2009.
+27
+
+[15] A. Li and M. Xia: A theory for Valiant’s matchcircuits (extended abstract). In Proc. 25th
+Symp. Theoretical Aspects of Comp. Sci. (STACS’08), pp. 491502. Schloss Dagstuhl, 2008.
+[16] K. Mulmuley and M. Sohoni. Geometric complexity theory I: An approach to the P vs. NP
+and related problems. In SIAM J. Comput., vol 31, no. 2, 496-526, 2001.
+[17] H.N.V. Temperley and M.E. Fisher. Dimer problem in statistical mechanicsan exact result.
+Philos. Mag. 6, 10611063 (1961)
+[18] S.P. Vadhan. The complexity of counting in sparse, regular and planar graphs, SIAM J. Com-
+put. 31(2): 398427, 2001.
+[19] L.G. Valiant. Expressiveness of matchgates, Theoret. Comput Sci. 289 (2002), no. 1, 457-471.
+[20] L.G. Valiant. Quantum circuits that can be simulated classically in polynomial time. SIAM J.
+Comput., 31(4):12291254, 2002. Preliminary version in STOC’01.
+[21] L.G. Valiant. Accidental algorithms. In FOCS, pages 509517. IEEE Computer Society, 2006.
+[22] L.G. Valiant. Holographic algorithms (extended abstract). In Proc. 45th IEEE Symposium on
+Foundations of Computer Science, pp. 306315 (2004).
+[23] L.G. Valiant. Holographic circuits, Automata, languages and programming, Lecture Notes in
+Comput. Sci., vol. 3580, Springer, Berlin, 2005, pp. 1-15.
+[24] L.G. Valiant. Some observations on holographic algorithms, Proc. 9th Latin American Theo-
+retical Informatics Symposium, LATIN 2010. LNCS, Vol 6034 Springer-Verlag (2010), 577-590.
+[25] M. Xia, P. Zhang, and W. Zhao, The complexity of counting on 3-regular planar graphs,
+Theoret. Comput. Sci., 384 (2007), pp. 111125.
+A
+Planarizing Matchgates
+In the proof of Lemma 5.3, we made several initial constructions of transducers to achieve certain
+row and column operations but noted that those constructions, speciﬁcally those shown in Fig-
+ures 2b, 2c, 2d, needed to be modiﬁed because they were not planar. Following the technique of
+Cai and Gorenstein [6], we planarize those matchgates by replacing every edge crossing with the
+so-called crossover gadget X shown in Figure 3.
+Figure 3: Crossover gadget. Unlabeled edges are of weight 1; labeled vertices are external nodes.
+Figure from [6].
+Because the standard signature X of the crossover gadget is given by X0000 = 1, X0101 = 1,
+X1010 = 1, X1111 = −1, and Xσ = 0 for all other σ ∈{0, 1}4 so that the standard signature
+28
+
+remains invariant under any cyclic permutation of the external nodes, the orientation of the copy
+of X placed over an edge crossing does not matter.
+We ﬁrst make precise our operation of planarizing matchgates, following the terminology of [6].
+If an edge {u, v} of weight w crosses t other edges, replace each of the t crossings by a crossover
+gadget and replace the edge by t + 1 edges connecting adjacent crossover gadgets. Of these t + 1
+edges, assign t of them to have weight 1 and the remaining one to have weight w. Call the union
+of the t + 1 edges the u-v-passage.
+Given a non-planar matchgate Γ, denote the matchgate obtained from planarizing Γ by Γ′.
+Observation 5. Let M be a perfect matching of Γ′ whose contribution c to PerfMatch(Γ′) is
+nonzero, and let M′ ⊂M denote the edges not belonging to crossover gadgets. Then M′ is the
+union of u-v-passages corresponds to a perfect matching of Γ whose contribution to PerfMatch(Γ)
+is ±c.
+Proof. If an edge incident to one of the external nodes, say node 1, of a crossover gadget is present
+in M, then the edge incident to node 3 of the crossover gadget must be present in M as well, as
+Xσ = 0 if σ1 ̸= σ3. We conclude that M is a union of u-v-passages. The corresponding perfect
+matching of Γ has contribution ±c because each of the nonzero entries of X is ±1.
+We need to verify that the entries of Γ and Γ′ are equal except for a select number of entries
+which diﬀer by a factor of −1.
+Lemma A.1. Let Γ be the K-input, K-output transducer shown in Figure 2b with signature Lj,k
+3 .
+There exists a planar matchgate whose standard signature agrees with Γ on the main diagonal
+entries and entry (1K ⊕ej ⊕ek, 1K), and agrees with Γ everywhere else up to sign.
+Proof. Take the desired matchgate to be Γ′. Note that every subgraph of Γ has at most one perfect
+matching. In other words, each entry of Γ arises from at most a single perfect matching. Therefore,
+by Observation 5, Γ and Γ′ agree everywhere up to sign. Now consider any main diagonal entry
+Γ′σ
+σ = PerfMatch(Γ′\Z). If M is a perfect matching of Γ′\Z making a nonzero contribution to
+PerfMatch(Γ′\Z), it corresponds to a perfect matching of Γ\Z making a nonzero contribution to
+PerfMatch(Γ\Z). But the only such perfect matching does not contain the edge between left node
+j to and left node k. Thus, the contribution of this matching and that of M are both equal to 1.
+If Γ and Γ′ disagree on entry (1K ⊕ej ⊕ek, 1K), modify Γ by multiplying the weight of the
+edge connecting left nodes j and k by −1, and take the desired matchgate to be the corresponding
+Γ′.
+Lemma A.2. Let Γ be the K-input, K-output transducer shown in Figure 2c with signature L4.
+There exists a planar matchgate whose standard signature agrees with Γ everywhere up to sign.
+Proof. Take the desired matchgate to be Γ′. As in the proof of Lemma A.1, every subgraph of Γ
+has at most one perfect matching, so we already know Γ and Γ′ agree everywhere up to sign.
+Lemma A.3. Let Γ be the K-input, K-output transducer shown in Figure 2d with signature Lj
+5.
+There exists a planar matchgate whose standard signature agrees with Γ on the main diagonal
+entries and entry (1K ⊕ej, 1K ⊕eqi+1), and agrees with Γ everywhere else up to sign.
+Proof. Take the desired matchgate to be Γ′. As in the proof of Lemma A.1, every subgraph of Γ
+has at most one perfect matching and Γ and Γ′ agree on the main diagonal entries. If they disagree
+on entry (1K ⊕ej, 1K ⊕eqi+1), modify Γ by multiplying the weight of the edge connecting left node
+j to right node i + 1 by −1, and take the desired matchgate to be the corresponding Γ′.
+29

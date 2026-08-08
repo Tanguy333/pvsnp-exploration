@@ -1,0 +1,1602 @@
+On the Theory of Matchgate Computations
+Jin-Yi Cai ∗
+Computer Sciences Dept.
+University of Wisconsin
+Madison, WI 53706. USA.
+jyc@cs.wisc.edu
+Vinay Choudhary †
+Computer Sciences Dept.
+University of Wisconsin
+Madison, WI 53706. USA.
+vinchr@cs.wisc.edu
+Pinyan Lu‡
+Dept. of Computer Sc. & Tech.
+Tsinghua University
+Beijing, 100084, P. R. China
+lpy@mails.tsinghua.edu.cn
+Abstract
+Valiant has proposed a new theory of algorithmic com-
+putation based on perfect matchings and Pfafﬁans.
+We
+study the properties of matchgates—the basic building
+blocks in this new theory. We give a set of algebraic iden-
+tities which completely characterizes these objects for ar-
+bitrary numbers of inputs and outputs.
+These identities
+are derived from Grassmann-Pl¨ucker identities. The 4 by
+4 matchgate character matrices are of particular interest.
+These were used in Valiant’s classical simulation of a frag-
+ment of quantum computations. For these 4 by 4 match-
+gates, we use Jacobi’s theorem on compound matrices to
+prove that the invertible matchgate matrices form a multi-
+plicative group. Our results can also be expressed in the
+theory of Holographic Algorithms in terms of realizable
+standard signatures. These results are useful in establishing
+limitations on the ultimate capabilities of Valiant’s theory of
+matchgate computations and Holographic Algorithms.
+1
+Introduction
+Recently Valiant [12] has introduced a new method of de-
+signing algorithms based on perfect matchings and Pfafﬁ-
+ans. The basic building blocks in this new theory are called
+matchgates. Each matchgate deﬁnes a character matrix,
+with entries deﬁned in terms of the Pfafﬁan, which captures
+the properties of the matchgate under the consideration of
+(perfect) matchings when certain input and/or output nodes
+are retained or removed. (Formal deﬁnitions will be given
+in the next section.)
+These matchgates can be combined to form matchcir-
+cuits. Certain global properties of these matchcircuits can
+∗Supported by NSF CCR-0208013 and CCR-0511679.
+†Supported by NSF CCR-0208013.
+‡Supported by NSF CCR-0511679 and by the National Natural Science
+Foundation of China Grant 60553001 and the National Basic Research
+Program of China Grant 2007CB807900, 2007CB807901.
+be interpreted as realizing computations which, prima facie,
+take exponential time. However, due to the way the match-
+circuits are constructed and the algebraic properties of the
+Pfafﬁan, these properties can actually be computed in poly-
+nomial time in the size of the matchcircuit. The crucial ob-
+servation behind this is a compositional theorem, which is
+algebraic in nature, and states that the product of the charac-
+ters of two constituent matchgates is the character of a com-
+posite matchgate. Matchcircuits represent a new algorith-
+mic method to construct polynomial time algorithms per-
+forming certain seemingly exponential time computations.
+Valiant [12] used these matchcircuits to show that a non-
+trivial, though restricted, fragment of quantum circuits can
+be simulated classically in polynomial time. It is not clear
+at the moment what is the class of all quantum circuits that
+can be simulated classically in this framework. More gen-
+erally it is not clear what are the ultimate capabilities and
+limitations of this new class of algorithms.
+Subsequently, Valiant [13] further introduced the notion
+of Holographic Algorithms. This theory is also based on
+matchgates, but with the additional ingredient of a choice of
+a set of linear basis vectors, through which the computation
+can be expressed and interpreted. In this theory the match-
+gates used are restricted to be planar matchgates. Instead of
+a character matrix, a planar matchgate is associated with a
+signature. The computation is ultimately carried out by the
+elegant FKT method [6, 7, 10]. Valiant obtained polynomial
+time holographic algorithms for a number of problems, mi-
+nor variations of which are NP-hard. The new algorithms
+in this framework are quite exotic, e.g., in [16] a certain re-
+stricted counting problem for SAT is shown be #P-hard and
+its mod 2 version is ⊕P-hard, and yet its mod 7 version is
+solvable in P by holographic algorithms. Again the ultimate
+capabilities and limitations of holographic algorithms are
+not clear at this time. It is precisely this uncertainty that is
+most exciting to us.
+Will this new algorithmic paradigm lead to a collapse
+of complexity classes? The kinds of algorithms that are
+produced by matchgate computations are quite unlike any-
+
+thing before (aside from quantum algorithms). Valiant sug-
+gested [13], “any proof of P ̸= NP may need to explain, and
+not only to imply, the unsolvability” of NP-hard problems
+using this approach. Our paper is a systematic investiga-
+tion of the capabilities and limitations of the basic building
+blocks of this theory, namely the matchgates.
+It turns out that there is a rich internal structure to the
+matchgates as expressed by the algebraic properties of Pfaf-
+ﬁan.
+In [12, 11], Valiant has found 5 equations, called
+matchgate identities, which are necessary conditions for all
+4 by 4 matchgate characters. With a slight restriction, these
+5 matchgate identities are also sufﬁcient for the case of 4
+by 4 characters. The paper [8] also discusses matchgates as
+related to quantum computing. The 4 by 4 matchgate char-
+acters are important because they are used in the simulation
+of quantum circuits.
+The main results of this paper are concerned with this
+internal structure, and provide a fairly complete picture
+of general matchgates. The aim of this paper is theory-
+building, not problem solving. We believe a solid founda-
+tion for the theory is needed to obtain further positive, and
+more importantly, negative results.
+We state our main ﬁndings. It turns out that matchgates
+of every size form an algebraic variety. We ﬁrst ﬁnd a sym-
+metry as realized by a group action on the rows and columns
+of the 4 by 4 character matrices, and express matchgate
+identities in terms of determinantal minors. Then we ﬁnd
+a total of 10 matchgate identities. We prove that they con-
+stitute a complete set of matchgate identities for 4 by 4 char-
+acters. Then we use Jacobi’s theorem on compound matri-
+ces to prove that the invertible 4 by 4 matchgate matrices
+form a multiplicative group. That it is closed under matrix
+multiplication is used in [12] as the basis for the quantum
+simulation. Here we prove that if the character matrix is
+invertible, its inverse is also the character matrix of some
+matchgate.
+More importantly we give results for general matchgates.
+We deﬁne matchgate identities for matchgates with arbi-
+trary k-inputs and l-outputs. Then we show that a set of
+useful Grassmann-Pl¨ucker identities [11] gives a complete
+set of matchgate identities for any general matchgate.
+Combined with results from [1], these characterizations
+also apply to planar matchgates and their (standard) signa-
+tures in the holographic algorithm framework. These have
+been used as a foundation in the investigation of matchgrid
+computations and holographic algorithms [4, 5]. In partic-
+ular we include here a characterization of symmetric signa-
+tures, which follows from these matchgate identities.
+Our results have important implications for both upper
+and lower bounds. By deﬁnition, even with a ﬁxed number
+of input and output nodes, a matchgate may consist of an ar-
+bitrarily large number of internal nodes. Thus one can prove
+the existence of a matchgate fulﬁlling certain computational
+requirements by construction. But one cannot prove in this
+way the non-existence of such a matchgate. An interesting
+consequence of our proof is that when a required match-
+gate exists, it can be realized by a weighted complete graph
+consisting of essentially the external nodes plus at most one
+omittable node. Thus the design of a required matchgate
+boils down to the choice of
+k+l
+2
+
+weights, where k and l are
+the numbers of input and output nodes. This makes it fea-
+sible both to search, and in case of non-existence to prove
+that this is so. The ﬁrst negative results (lower bounds) in
+this area all rely on this result [1, 16] (a preliminary ver-
+sion of this paper appeared as ECCC TR06-018.) In [1] we
+used results here to give non-existence theorems for certain
+holographic algorithms. In a paper titled “Accidental Al-
+gorithms” [16] Valiant showed a surprising mod 7 counting
+problem solvable in P, as well as some lower bounds for
+certain Satisﬁability problem using holographic algorithms.
+The lower bound proof relies on the results proved here.
+In [3] we show, using results developed here and in [1], that
+mod 7 is the only modulus for which Valiant’s “Accidental
+Algorithm” exists for that problem. In [4, 5], the charac-
+terization theorems of general matchgates developed in this
+paper, namely Matchgate Identities, are also used in an es-
+sential way. The results presented here serve as a foundation
+for an in-depth study of the rich theory of matchcircuit and
+holographic algorithms.
+2
+Background
+Before we can describe our results, we will require quite a
+few deﬁnitions. Most of these deﬁnitions have been intro-
+duced by Valiant in [12, 13, 11]. We will give a brief recap
+here.
+We will be dealing with weighted undirected graphs
+G = (V, E, W), which are represented by skew-symmetric
+adjacency matrices M. The Pfafﬁan of an n × n skew-
+symmetric matrix M is a polynomial function computable
+in polynomial time, satisfying (Pf(M))2 = det(M). We
+assume the reader is acquainted with Pfafﬁans and Pfaf-
+ﬁan Sums; otherwise please take a brief look at the ﬁrst
+section of Appendix. We omit the deﬁnitions of Pfafﬁans
+and Pfafﬁan Sums here, and our recap of other deﬁnitions
+is brief. We remark that the use of Pfafﬁan Sums is only
+needed when one allows the so-called omittable nodes. For
+the most part one can ignore this complication, and consider
+only matchgates without omittable nodes and consequently
+no Pfafﬁan Sums, but only Pfafﬁans.
+2.1
+Grassmann-Pl¨ucker Identities
+Let M be a skew-symmetric matrix, and A = {i1, . . . , ir}
+where i1 < . . . < ir. PfM(i1, . . . , ir), or when M is clear
+from the context, simply Pf(i1, . . . , ir) or Pf(A), is deﬁned
+
+as the Pfafﬁan of the matrix obtained by restricting M to
+rows and columns present in A, namely i1, . . . , ir. When
+the set notation A is used, we implicitly assume the indices
+are in increasing order. If i1, . . . , ir are not in increasing
+order, the sign will vary according to the parity of the per-
+mutation
+
+1
+2
+. . .
+r
+i1
+i2
+. . .
+ir
+
+, e.g., PfM(i2, i1, . . . , ir) =
+−PfM(i1, i2, . . . , ir) and so on. If i1, i2, . . . , ir are not all
+distinct, then PfM(i1, . . . , ir) is deﬁned to be zero. The
+notation PfM[i1, . . . , ir] will denote the Pfafﬁan after re-
+moving the rows and columns of {i1, . . . , ir}. Note that
+PfM[i1, . . . , ir] is the same as Pf(M[A]), where M[A] de-
+notes the matrix M with rows and columns from A re-
+moved. Also, in the index list, we denote by ˆi, the omission
+of index i. For example, Pf(1, 2, ˆ3, 4, 5) = Pf(1, 2, 4, 5)
+etc.
+The following theorem states the Grassmann-Pl¨ucker
+(GP) identities.
+Theorem 2.1.
+[9] For any n × n skew-symmetric ma-
+trix M, and for any I = {i1, . . . , iK} ⊆[n] and J =
+{j1, . . . , jL} ⊆[n], the following is called the Grassmann-
+Pl¨ucker identity (generated by I and J),
+0 =
+L
+X
+l=1
+(−1)lPf(jl, i1, . . . , iK)Pf(j1, . . . , ˆjl, . . . , jL)
++
+K
+X
+k=1
+(−1)kPf(i1, . . . , ˆik, . . . , iK)Pf(ik, j1, . . . , jL). (1)
+We will use the notation Pf(t ◦I) to denote the Pfafﬁan
+Pf(t, i1, . . . , iK), assuming I = {i1, . . . , iK} is listed in
+increasing order.
+2.2
+Matchgates and Matchcircuits
+A matchgate Γ is a quadruple (G, X, Y, T ) where G =
+(V, E, W) is a graph, X ⊆V is a set of input nodes,
+Y ⊆V is a set of output nodes, and T ⊆V is a set of
+omittable nodes such that X, Y and T are pairwise disjoint,
+and ∀i ∈T , if j ∈X then j < i and if j ∈Y then j > i.
+We call the set X ∪Y the external nodes. Furthermore,
+each external node is assumed to have exactly one incident
+external edge. For nodes in X, the other end point of the
+external edge is assumed to have index less than any node
+in V and for nodes in Y , the other end point has index more
+than any node in V . The allowed matchings will be those
+that saturate all the unomittable nodes and also an arbitrary
+(possibly empty) subset of T . Whenever we refer to the
+Pfafﬁan Sum (denoted by PfS) of a matchgate fragment,
+we assume that λi = 1, if i ∈T , and 0 otherwise (See the
+deﬁnition of Pfafﬁan Sum in the Appendix). We say that a
+matchgate Γ has normal numbering if the numbers of nodes
+in V are consecutive from 1 to |V | and X, Y have minimal
+and maximal numbers, respectively.
+For Z ⊆X ∪Y , the character χ(Γ, Z) of Γ with re-
+spect to Z is deﬁned to be the value µ(Γ, Z)PfS(G −Z),
+where G −Z denotes the graph obtained after deleting the
+vertices in Z together with their incident edges from G and
+the modiﬁer µ(Γ, Z) ∈{−1, 1} counts the parity of the
+number of overlaps between matched edges in G −Z and
+matched external edges. Here, the nodes in Z are assumed
+to be matched externally. Since the index numbers of input
+nodes are always less than any omittable node and those of
+output nodes always greater, it can be shown that the mod-
+iﬁer is well-deﬁned as it depends only on Z and not on the
+actual matchings in G −Z.
+The character matrix χ(Γ) is deﬁned to be the 2|X|×2|Y |
+matrix where rows are indexed by subsets X′ ⊆X and
+columns by subsets Y ′ ⊆Y and the entries are χ(Γ, Z) for
+various Z = X′ ∪Y ′. To deﬁne the ordering of the rows
+and columns of this matrix precisely, we need to deﬁne a
+1-1 correspondence between subsets of X (and respectively
+subsets of Y ) and the rows (and respectively columns) of
+the matrix. Here, we assume that the character matrices
+are normally ordered i.e. rows and columns are indexed by
+binary bit strings of length |X| and |Y | respectively, and
+they correspond to subsets in lexicographic order. Consider
+an entry (i, j) of χ(Γ), where 0 ≤i < 2|X| and 0 ≤j <
+2|Y |. The subset X′ ⊆X corresponding to i is obtained
+as follows. If v ∈X is the mth smallest input vertex, then
+v ∈X′ iff the mth bit from the right in the binary expansion
+of i is 1. Similarly, the mth largest output vertex is in Y ′
+iff the mth bit from the right in j is 1. And Z = X′ ∪
+Y ′. E.g., if X = {1, 2} and Y = {n −1, n}, where n =
+|V | is the number of vertices in Γ. Then the ordering of
+rows is ∅, {1}, {2}, {1, 2}, and the ordering of columns is
+∅, {n}, {n −1}, {n −1, n}.
+A matchcircuit is a way of combining matchgates us-
+ing connecting edges. Informally, all inputs/outputs of con-
+stituent matchgates have an external edge.
+The external
+edges are connected to each other with an odd number of
+connecting edges. The matchgates are arranged in a layered
+fashion from left to right where the connecting edges sep-
+arate these layers. The edges above or below a matchgate
+are referred to as parallel edges. The attachment of mod-
+iﬁers to a character is to ensure that all “overlaps” in the
+evaluation of the Pfafﬁan of the entire matchcircuit works
+out properly. Figure 2 shows a typical matchcircuit. We do
+not present the detailed deﬁnition here because we won’t be
+dealing too much with matchcircuits. Note that the relative
+ordering of all the vertices are carefully placed in a layered
+matchcircuit, and is schematically depicted in Figure 2 as
+well as in Figure 1. In Figure 1, one can verify that ev-
+ery edge on the top line outside of the matchgates Γ1, Γ′
+and Γ4 (there are 16 of them) always incurs collectively an
+
+even number of overlaps with all such edges from the bot-
+tom line, except those 2 parallel edges above Γ2 and Γ3 (see
+Theorem 3.2). We refer the reader to [12] for a more formal
+deﬁnition. The character of a matchcircuit is deﬁned in the
+same way as the character of a matchgate except that there
+is no modiﬁer µ as we do not consider the matchcircuit it-
+self to have any external edges. Another difference is that
+1 and 0 have opposite meanings with respect to deletion of
+external nodes in matchgates and matchcircuits.
+In [13] Valiant also introduced planar matchgates in the
+framework of holographic algorithms. A planar matchgate
+Γ with m external nodes comes with a planar embedding,
+where the external nodes are ordered counter-clockwise on
+the external face. For a planar matchgate Γ with m external
+nodes, we assign a standard signature which has 2m entries
+Gi1i2...im = PerfMatch(G −Z),
+where PerfMatch(G −Z) = P
+M
+Q
+(i,j)∈M wij, is a sum
+over all perfect matchings M in G −Z, and Z is the sub-
+set of removed external nodes having the characteristic se-
+quence χZ = i1i2 . . . im. (If there are omittable nodes in
+Γ they must be on the external face, and then the sum over
+M may range over matchings which saturate all the unomit-
+table nodes.) PerfMatch is called the perfect matching poly-
+nomial.
+In many ways, the deﬁnitions for planar matchgates and
+signatures are more intuitive than general matchgates and
+characters. It is a remarkable fact proved in [1] that these
+two categories of objects are essentially the same. Planar
+matchgates and signatures have seen more research activi-
+ties; but this does not render the character theory useless. In
+fact the only way we know how to prove the fundamental
+structural properties of signatures is through results of this
+paper, in terms of the character theory with Pfafﬁans. Also
+certain constructions of planar matchgates and signatures
+are known to exist (by our general theory) and are explicitly
+known only via the proof of the general realizability theo-
+rem in this paper (followed by transformations from [1]). In
+short, what we prove here for matchgates and characters ap-
+ply to planar matchgates and standard signatures, and that
+is the only known proof route for these theorems on signa-
+tures.
+3
+2-input 2-output Matchgates
+3.1
+Complete Set of Identities
+In [11], Valiant presented a set of ﬁve equations on the en-
+tries of the character matrix of 2-input, 2-output matchgates.
+These were called matchgate identities. (In the explicit list-
+ing of Valiant’s equations, we will retain Valiant’s notation
+and number the rows and columns of the 4 by 4 character
+matrix from 1 to 4, instead of 0 to 3 written in binary bits 00
+to 11, as from Sec. 2.2.) It was shown that the character of
+every 2-input, 2-output matchgate satisﬁes these equations.
+Furthermore, if a matrix B satisﬁes all these identities and
+an additional constraint, namely B44 ̸= 0, then there is a
+matchgate having character B.
+Let Γ be a 2-input, 2-output matchgate having charac-
+ter B. Assume that the matchgate is normally numbered
+and its character is normally ordered. Then Valiant’s ﬁve
+matchgate identities are quoted as follows [11]:
+B11B44 −B22B33 −B14B41 + B23B32
+=
+0
+B21B44 −B22B43 −B41B24 + B23B42
+=
+0
+B31B44 + B33B42 −B41B34 −B32B43
+=
+0
+B13B44 + B33B24 −B14B43 −B23B34
+=
+0
+B12B44 −B22B34 −B14B42 + B32B24
+=
+0
+It turns out that there are interesting symmetries buried
+in this set of identities. For example, B11B44 −B14B41
+is the determinant of the submatrix of B obtained by re-
+moving rows and columns 2 and 3. And the ﬁrst matchgate
+identity asserts that this is equal to the minor of B at rows
+and columns 2 and 3.
+We will express this in a more compact notation. De-
+note by D(ij, kl) the determinant of the 2 × 2 submatrix
+of B consisting of rows i and j, and columns k and l, i.e.,
+D(ij, kl) is the following determinant, where i < j and
+k < l,
+
+Bik
+Bil
+Bjk
+Bjl
+
+We note that all ﬁve identities above can be written as the
+determinant of a 2×2 matrix being equal to the determinant
+of another 2 ×2 matrix. These matrices are (not necessarily
+contiguous) sub-matrices of the character matrix. In this
+notation, we can write the identities above as
+D(14, 14) = D(23, 23)
+D(24, 14) = D(24, 23)
+D(34, 14) = D(34, 23)
+D(14, 34) = D(23, 34)
+D(14, 24) = D(23, 24)
+The symmetry is as follows:
+We consider the set
+of
+4
+2
+
+unordered pairs of {1, 2, 3, 4}, denoted by S =
+{{1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 4}, {3, 4}}.
+An involu-
+tion ρ ﬂips the pair {1, 4} and {2, 3}, and leaves everything
+else ﬁxed. Thus ρ is the permutation
+
+{1, 2}
+{1, 3}
+{1, 4}
+{2, 3}
+{2, 4}
+{3, 4}
+{1, 2}
+{1, 3}
+{2, 3}
+{1, 4}
+{2, 4}
+{3, 4}
+
+In terms of this ρ, the above ﬁve identities can all be
+written as
+D(p, q) = D(ρ(p), ρ(q)),
+
+where the ordered pair (of unordered pairs) (p, q)
+=
+(14, 14), (24, 14), (34, 14), (14, 34) and (14, 24), respec-
+tively.
+It turns out that we may apply the permutation ρ to
+any ordered pair (p, q), where p, q ∈S.
+In order that
+(ρ(p), ρ(q)) is not identical to (p, q), (lest we get a trivial
+statement,) we must have at least either p or q (or both)
+equal to {1, 4} or {2, 3}. In terms of a permutation group,
+we have an action by the involution ρ × ρ on the set S × S,
+which has 10 non-trivial orbits of two elements each (and
+16 ﬁxed points).
+This suggests that there are 10 matchgate identities. It
+turns out that indeed one can prove these 10 matchgate iden-
+tities are all valid for all 2-input 2-output matchgates. The
+proof uses the Grassmann-Pl¨ucker identities and is omitted
+here. Here are the 5 additional identities:
+D(12, 14) = D(12, 23)
+D(13, 14) = D(13, 23)
+D(14, 12) = D(23, 12)
+D(14, 13) = D(23, 13)
+D(14, 23) = D(23, 14)
+More succinctly,
+D(p, q) = D(ρ(p), ρ(q)),
+(2)
+for any (p, q) ∈S × S.
+Theorem 3.1. If B is the character matrix of a 2-input 2-
+output matchgate over any ﬁeld F, then B satisﬁes the 10
+matchgate identities.
+Now we show the completeness of these identities.
+(From now on, it will be more convenient to use binary
+bit strings to index rows and columns as stated in Sec. 2.2.
+Thus, in the next Theorem, rows and columns are indexed
+from 0 = 00 to 3 = 11.)
+Theorem 3.2. Let B be a 4 × 4 matrix over a ﬁeld F satis-
+fying the 10 matchgate identities. Then there exists a match-
+gate Γ such that χ(Γ) = B.
+Proof. The main idea of this proof is simple. If B is iden-
+tically 0 then it is trivially realizable. If B11,11 ̸= 0, we
+can use the proof from [12]. If B11,11 = 0 but some other
+entry is not 0, then we try to transform B to B′ such that
+B′
+11,11 ̸= 0, while still satisfying all the 10 matchgate iden-
+tities. The proof below is not the most efﬁcient for this spe-
+cial case of 4 by 4. But this method can be generalized to
+prove Theorem 4.2.
+Our general technique is to compose matchgates to form
+a matchcircuit, which is then transformed into a matchgate
+that realizes the given matrix.
+We assume B is not the zero matrix, and suppose Brc ̸=
+0. Let r be written as a binary bit string in {0, 1}2. Let r =
+r ⊕11 be the bit-wise XOR of r with 11. Deﬁne a bijection
+αr : {0, 1}2 →{0, 1}2, which maps x 7→x ⊕r. It is clear
+that αr(r) = 11, and αr is an involution, i.e., αr = α−1
+r .
+Also its action on any bit of x is independent of other bits.
+Let αc be similarly deﬁned in terms of c ∈{0, 1}2. Let B′
+be the matrix obtained after applying the transformations αr
+and αc, respectively, to the (indices of) rows and columns
+of B. We now have, B′
+11,11 ̸= 0. Since αr and αc are their
+own inverses, applying them to B′ yields B.
+It can be veriﬁed (essentially because the actions of ρ
+and that of αr and of αc commute) that the above set (2)
+of matchgate identities is invariant under any such trans-
+formation. If B satisﬁes the matchgate identities, then so
+does B′. From the construction in [12] there is a match-
+gate Γ′ that realizes B′. Now to construct the matchgate Γ
+to realize B, we ﬁrst make a matchcircuit Γ′′ with charac-
+ter matrix B as shown in Figure 1. Each of the matchgates
+Γ1, Γ2, Γ3, Γ4 is either Γ(1) or Γ(2), deﬁned below, depend-
+ing on whether that bit of r (or c) is 1 or 0. All the par-
+allel edges above any gate equal to Γ(2) are given weight
+−1. (This factor of −1 is needed to compensate for an odd
+number of overlaps.) Here, Γ(1), Γ(2) are 1-input, 1-output
+matchgates where Γ(1) simply “transmits” its input and Γ(2)
+“ﬂips” its input. The character matrix of Γ(1) is the identity
+matrix and the character matrix of Γ(2) is
+
+0
+1
+1
+0
+
+. More
+concretely, Γ(2) consists of a single edge of weight 1; Γ(1)
+consists of a path of 2 edges each of weight 1.
+The Main Theorem in [12] (the basis for the quantum
+simulation) can be extended to prove the Extended Main
+Theorem, given in the Appendix. It can be veriﬁed that the
+construction here satisﬁes the conditions of the Extended
+Main Theorem.
+Therefore, the character matrix of this
+matchcircuit is the product of the character matrices of the
+ﬁve constituent matchgates, each extended to two inputs,
+two outputs. (Here “extending” a one-bit matchgate to two
+bits means algebraically a tensor product with the 2 by 2
+identity matrix.) This product is B. To see that, we look
+at the matchcircuit in a slightly different way. The overall
+action of the matchcircuit on its inputs is the composition of
+the actions of the matchgates. The action of Γ′ is described
+by B′. Therefore, the character matrix of Γ′′ is B.
+Now the matchgate Γ is obtained by deleting the input
+and output nodes of the matchcircuit and the edges incident
+to them. The new leftmost/rightmost nodes are now consid-
+ered as input/output nodes. The edges that we deleted have
+no overlap among themselves, and they are now considered
+as external edges of the matchgate Γ. Recall that 1 and 0
+have opposite meanings with respect to deletion of external
+nodes in matchgates and matchcircuits, and since match-
+gates are assumed to have external edges while matchcir-
+cuits don’t, the character of Γ is exactly the same as that of
+Γ′′. Hence Γ realizes B.
+
+3.2
+Group Property
+We show that the subset of invertible character matrices
+of two input, two output matchgates forms a multiplica-
+tive group. It is relatively easy to see that the product of
+two character matrices is itself a character matrix [12] by
+composing two matchgates in sequence.
+The composed
+matchgate has the product matrix as its character matrix,
+because enumerating all (perfect) matchings in the com-
+posed matchgate is precisely reﬂected by matrix multipli-
+cation. This is an essential ingredient in Valiant’s classical
+simulation of a fragment of quantum computation. Here we
+prove a more surprising result that the inverse of a character
+is also a character. We hope that this will provide a better
+understanding of the scope of what is computable by these
+matchgates, including the scope of quantum operations they
+can simulate.
+Let A be an m×n matrix. A minor of order k of A is the
+determinant of a k by k submatrix of A. The kth compound
+matrix of A is a matrix A[k] of order
+m
+k
+
+×
+n
+k
+
+, where we
+arrange all the minors of A of order k in lexicographic order.
+The matchgate identities have an elegant expression in
+terms of the compound.
+Theorem 3.3. If B is a 4 × 4 character matrix of a match-
+gate, then the matchgate identities state precisely that B[2]
+is invariant under the following operation: simultaneously
+interchange row 3 with row 4 and column 3 with column 4.
+Proof. The relevant rows and columns are illustrated below.
+The proof follows from the matchgate identities.
+2
+666664
+D(12, 14)
+D(12, 23)
+D(13, 14)
+D(13, 23)
+D(14, 12)
+D(14, 13)
+D(14, 14)
+D(14, 23)
+D(14, 24)
+D(14, 34)
+D(23, 12)
+D(23, 13)
+D(23, 14)
+D(23, 23)
+D(23, 24)
+D(23, 34)
+D(24, 14)
+D(24, 23)
+D(34, 14)
+D(34, 23)
+3
+777775
+Theorem 3.4. Let B be a 4 × 4 matrix over a ﬁeld F that
+satisﬁes the matchgate identities. Suppose that B is invert-
+ible. Then B−1 also satisﬁes the matchgate identities.
+We omit the proof here, which uses Jacobi’s Theorem on
+compound matrices. (It is also possible to give a brute force
+veriﬁcation by computer algebra, using the results from the
+previous section that the 10 matchgate identities are neces-
+sary and sufﬁcient.)
+In case when B is not an invertible matrix, we have the
+following:
+Corollary 3.1. Let B be a 4 × 4 matrix over a ﬁeld F that
+satisﬁes the matchgate identities. Then adj(B) also satisﬁes
+the matchgate identities.
+4
+General Matchgates
+We now move on to general k-input, l-output matchgates.
+Speciﬁcally, our goal is to ﬁnd out whether there is a set
+of equations that completely characterizes the characters of
+general matchgates, just like the 10 equations we obtained
+for 2-input, 2-output matchgates.
+Basically, what we aim to prove is that the GP identi-
+ties characterize all the character matrices. But we have to
+be careful. There are various kinds of Pfafﬁans that occur in
+the GP identities. In particular, there are Pfafﬁans of subma-
+trices obtained by deleting rows and columns corresponding
+to some internal nodes of the matchgate. These Pfafﬁans do
+not correspond to any entries of the character matrix. We
+have to carefully choose the identities that we want to clas-
+sify as matchgate identities for general matchgates.
+Consider a normally numbered, normally ordered k-
+input, l-output matchgate Γ having n ≥k + l vertices. We
+will only consider matchgates without omittable nodes; the
+case with matchgates having omittable nodes will be dis-
+cussed in the Appendix. Let M be its skew-symmetric ad-
+jacency matrix. Its character matrix B is a 2k × 2l matrix
+with rows and columns indexed from 0 through 2k −1 and
+2l −1, respectively. Let U be the set of nodes which are
+not inputs or outputs. Since there are no omittable node,
+each entry of B is either 0 or the Pfafﬁan of a submatrix
+multiplied with the modiﬁer. Let i1 = 1, . . . , ik = k be the
+inputs of Γ and let o1 = n, . . . , ol = n−l+1 be its outputs.
+We need to introduce a little more compact notation.
+Given a row index r where 0 ≤r ≤2k −1. Let X′ be
+the subset of inputs corresponding to the 1’s in the binary
+expansion of r. We will use r to refer to the index r as well
+as the set X′ whenever the intended meaning is clear from
+the context. For example, PfM[X′] and PfM[r] denote the
+same thing. Similar notation applies to the column indices.
+Also, note that row indices and column indices refer to dis-
+joint set of nodes in Γ. So we can combine these two to-
+gether. For example, if r is a row index and c is a column
+index, then PfM[rc] denotes the Pfafﬁan of M with all rows
+and columns corresponding to the 1’s in r and c deleted. For
+any entry of the character B, the modiﬁer µ depends only
+on the row index and the column index. Let µr denote the
+contribution of row index r to the modiﬁer value, and let µc
+denote the contribution of the column index. The modiﬁer
+at entry Brc is µrc = µrµc. In this notation, we can write
+Brc = µrcPfM[rc] or simply Brc = µrcPf[rc].
+Now consider all the GP identities stated in (1) obtained
+from subsets I and J of {1, . . . , n}. To be able to consider
+this as a matchgate identity (i.e. in terms of the entries of the
+character matrix instead of the Pfafﬁans), it needs to satisfy
+the following two properties:
+1. Every non-zero Pfafﬁan of (1) should be the Pfafﬁan
+of a submatrix obtained by deleting only (rows and
+
+columns corresponding to) some inputs and outputs of
+Γ.
+2. The GP identity should be independent of n.
+(The
+identity may depend on k and l, but not on the num-
+ber of internal nodes.)
+The ﬁrst property can be satisﬁed if we restrict ourselves
+to the GP identities obtained from I and J such that U ⊆
+I ∩J. Any such GP identity will be referred to as useful.
+Lemma 4.1. If U ⊆I ∩J, then all non-zero Pfafﬁans in the
+GP identity are Pfafﬁans with only some inputs or outputs
+deleted.
+Proof. All the summands in a GP identity are products of
+two Pfafﬁans which are on subsets obtained by moving
+some element from I to J or from J to I. If any element
+of U is moved from I to J (or from J to I), then that will
+appear twice in J (or I) and hence that term is zero. If any
+other element is moved, both the Pfafﬁans contain all of U,
+having only some inputs or outputs deleted.
+To prove that all the useful GP identities are independent
+of n is slightly more difﬁcult. First we have to state a lit-
+tle more precisely what we mean by being independent of
+n. For this purpose, ﬁrst we represent all the Pfafﬁans in a
+GP identity by the indices that are deleted, rather than us-
+ing the indices that are retained as in (1). In other words,
+we use the Pf[ ] notation instead of Pf( ). All the indices
+that now appear are indices of inputs or outputs. We replace
+these indices by the symbols i1, . . . ik, and o1, . . . , ol. We
+claim that the GP identity is now independent of n. Ba-
+sically this means that the coefﬁcient of every term in the
+sum (which is either +1 or −1) is independent of n. We
+note that the number of terms clearly only depends on k and
+l, being determined by the respective subsets of {i1, . . . ik}
+and {o1, . . . , ol}.
+Lemma 4.2. All the useful GP identities are independent of
+n.
+Proof. Let I and J be supersets of U. Suppose i′
+1 < . . . <
+i′
+a are the inputs in I and o′
+1 > . . . > o′
+b are the outputs in
+I. Similarly, let i′′
+1 < . . . < i′′
+c and o′′
+1 > . . . > o′′
+d be the
+inputs and outputs in J. Consider the GP identity obtained
+from I and J. Let’s look at a term where input i′
+e is moved
+from I to J. The case of moving from J to I is symmetric.
+This term can be written as
+(−1)ePf(I −{i′
+e})Pf(i′
+e ◦J).
+(Recall that in this notation the elements in J, but not i′
+e, are
+assumed to be listed in increasing order.) To write this term
+in Pf[ ] notation, we have to ﬁrst arrange the terms in the
+second Pfafﬁan in increasing order. This requires moving i′
+e
+to its appropriate position in J. This position depends on the
+input i′
+e and the inputs i′′
+1, . . . , i′′
+c in J which is independent
+of n. The sign (−1)e only depends on the inputs in I which
+is again independent of n. Therefore, the coefﬁcient of this
+term is independent of n.
+Now let’s consider what happens when we move an out-
+put o′
+f from I to J. The term in the GP identity is
+(−1)a+|U|+b−f+1Pf(I −{o′
+f})Pf(o′
+f ◦J).
+The only part in (−1)a+|U|+b−f+1 which depends on n is
+(−1)|U|. Again, we need to move o′
+f to its correct position
+so that the indices in the second Pfafﬁan are in increasing
+order. This involves moving o′
+f across all inputs in J, all
+elements of U, and some of the outputs in J. Again, the
+only part that depends on n is moving across elements of
+U which contributes a sign (−1)|U|. The overall sign is,
+therefore, independent of n.
+Now we know that all the useful GP identities are truly
+matchgate identities. We still need to replace the Pfafﬁans
+by entries of the character B. To do that, we’ll need some
+notation. Suppose I is a superset of U. We want to deﬁne
+the sign µI. Let IR be the set of inputs not in I. Let IC
+be the set of outputs not in I. Consider IR as binary bits,
+µIR is deﬁned earlier as a ± contribution to the modiﬁer.
+Similarly µIC is deﬁned. Then we let µI = µIRµIC. Given
+an input t, let αI
+t be the number of inputs in I less than t
+and βI
+t be the number of inputs more than t which are not
+in I.
+Fix some I and J such that U ⊆I ∩J, As before, sup-
+pose i′
+1 < . . . < i′
+a are the inputs and o′
+1 > . . . > o′
+b are
+the outputs in I and i′′
+1 < . . . < i′′
+c and o′′
+1 > . . . > o′′
+d
+are the inputs and outputs in J. The non-zero terms in the
+GP identity generated by I and J will only involve moving
+some t ∈I∆J, the symmetric difference. Now consider an
+input t ∈I −J. The term corresponding to moving t from
+I to J can be written as: (where we write B∗= BIR∪{t},IC
+and B∗∗= BJR−{t},JC, and for notational convenience, we
+write the negation of (1) i.e., starting the sum with +)
+(−1)αI
+t Pf(I −{t})Pf(t ◦J)
+=
+(−1)αI
+t (−1)αJ
+t Pf(I −{t})Pf(J ∪{t})
+=
+(−1)αI
+t (−1)αJ
+t µI(−1)αI
+t (−1)βI
+t B∗Pf(J ∪{t})
+=
+(−1)αJ
+t µI(−1)βI
+t B∗Pf(J ∪{t})
+=
+(−1)αJ
+t µI(−1)βI
+t B∗µJ(−1)αJ
+t (−1)βJ
+t B∗∗
+=
+(−1)βI
+t (−1)βJ
+t µIµJB∗B∗∗
+Here in the ﬁrst equality the factor (−1)αJ
+t comes from
+moving t in t◦J to its proper place in J ∪{t}. In the second
+equality we replace Pf(I −{t}) by µIB∗, but we need to
+make an additional modiﬁcation on the modiﬁer µI by the
+
+factor (−1)αI
+t (−1)βI
+t . The two factors (−1)αI
+t cancel in the
+third equality. In the fourth equality we replace Pf(J ∪{t})
+by µJB∗∗, but again we need to make an additional mod-
+iﬁcation on the modiﬁer µJ by the factor (−1)αJ
+t (−1)βJ
+t .
+Finally the two factors (−1)αJ
+t cancel in the ﬁfth equality.
+Since µI and µJ appear in all terms of this GP identity,
+we can drop this term. So, the term obtained by moving
+input t from I to J can be written as
+(−1)βI
+t (−1)βJ
+t BIR∪{t},ICBJR−{t},JC.
+(3)
+We can write a similar expression when t is an output.
+The above form will allow us to prove an important prop-
+erty of the GP identities. Let b be an input bit position be-
+tween 1 and k. Consider a permutation σb on the rows of
+the character matrix B which, given a row r, maps it to
+row r′ such that r and r′ differ only in the bth bit. I.e. σb
+ﬂips the bth bit. This induces a transformation ρb on the GP
+identities. We have the following lemma.
+Lemma 4.3. Given any b, 1 ≤b ≤k, ρb is a permutation
+on the GP identities. Similarly ρb is a permutation for any
+output node b.
+Proof. Given a set I. Deﬁne the set I′ = I∆{b} to be the
+symmetric difference. We claim the following: If G1 is the
+GP identity generated by I and J, then G2 = ρb(G1) is the
+GP identity generated by I′ and J′.
+First, let’s forget about the signs of the terms appearing
+in G1 and G2. Then G1 maps to G2 term-for-term. Con-
+sider the case when b ∈I ∩J. Then, any non-zero term in
+G1 involves moving an element t ̸= b, from I to J (or from
+J to I). This term maps to the term in G2 that is obtained
+by moving t from I′ to J′ (or from J′ to I′). This also holds
+when b ∈I −J and t ̸= b. The term obtained by moving
+b ∈I −J from I to J maps to the term obtained by moving
+b ∈J′ −I′ from J′ to I′. The other cases when b /∈I ∪J
+or b ∈J −I are similar.
+Now we need to show that the signs are also the same.
+For now, let’s consider a term in G1 obtained by moving an
+input t from I to J. As we saw above, the sign of this term
+in G1 is (−1)βI
+t +βJ
+t and of the corresponding term in G2
+is (−1)βI′
+t +βJ′
+t . Our analysis depends on b. First, if b is an
+output vertex, or an input such that b ≤t, then βI
+t = βI′
+t and
+βJ
+t = βJ′
+t
+because these only depend on the inputs more
+than t. And if b > t is an input vertex, then b is counted
+exactly once in βI
+t together with βI′
+t , and also exactly once
+in βJ
+t together with βJ′
+t . Thus, it is counted exactly twice
+among βI
+t , βJ
+t , βI′
+t , βJ′
+t . It follows that in any case, the sum
+βI
+t + βJ
+t + βI′
+t + βJ′
+t
+is always even. Therefore, the signs
+are also the same.
+The case when t is an output node is similar and is omit-
+ted here. This completes the proof.
+Observe that now we can allow a permutation of the ma-
+trix entries which is a composition of several input/output
+bit-ﬂips because all these are independent of each other.
+The ﬁnal induced transformation on the GP identities is still
+a permutation on the set of GP identities. This gives the
+following theorem.
+Theorem 4.1. If B is a 2k × 2l matrix that satisﬁes all the
+matchgate identities. Let B′ be the matrix obtained from B
+by applying, possibly more than one, bit-ﬂips on the rows
+and columns. Then B′ also satisﬁes the matchgate identi-
+ties.
+Now we are ready to prove the completeness theorem.
+We say that a 2k × 2l matrix B is realizable if there is a
+matchgate Γ such that χ(Γ) = B. We say that a matrix is
+even (odd) if Bij = 0 whenever H(i) + H(j) is odd (even)
+where H(i) denotes Hamming weight, i.e., the number of
+1’s in the binary expansion of i. The character matrix of
+a matchgate without omittable nodes is either even or odd
+depending on whether n is even or odd.
+Theorem 4.2. Let k, l be non-negative integers. Let B be a
+2k × 2l matrix which is either even or odd. Then B is the
+character matrix of a k-input, l-output matchgate Γ if and
+only if B satisﬁes all the useful GP identities.
+Proof. We only need to prove the “if” part. If the matrix
+B is identically zero, it is realizable by a matchgate. So we
+can assume that B is not identically zero.
+First assume that B2k−1,2l−1 = 1. If B2k−1,2l−1 = α is
+non-zero but not 1, then we can simply divide all the entries
+in B by α. Once we obtain a matchgate for that, we add
+two new internal vertices with an edge of weight α between
+them. The two new vertices have consecutive indices so
+that there are no overlaps with anything else. This will have
+character B.
+For B2k−1,2l−1 = 1, the matchgate Γ is a complete
+graph on k + l vertices.
+It has k inputs and l outputs
+(and no internal nodes).
+Suppose i and j are two ver-
+tices. Consider the row r and column c such that rc =
+{1, . . ., k + l} −{i, j}, i.e. the entry Brc of the matrix
+corresponds to all nodes except i and j being deleted. The
+weight of the edge (i, j) is simply µrcBrc. Let the skew-
+symmetric adjacency matrix of Γ be M.
+We claim that the character matrix of Γ, χ(Γ), is equal to
+B. By construction, all the entries of B with total Hamming
+weight (i.e. Brc where the total number of 1’s in rc is) at
+least k + l −2 are equal to those in χ(Γ). (By convention,
+the Pfafﬁan of a 0 by 0 matrix is 1.) Now we proceed by
+downward induction on the total Hamming weight H(r) +
+H(c). Consider any entry Brc such that m = H(r) + H(c)
+is less than k + l −2, and assume that the claim holds for
+all entries of weight > m. Let a1 < . . . < am be the
+bits that are 1 in rc. Let 1 ≤a′ ≤k + l be an index
+
+not equal to any of these. Consider the GP identity with
+I = {1, . . . , k + l} −{a1, . . . , am, a′} and J = {a′}. This
+identity is of the form:
+PfM[a1, . . . , am]PfM()
+=
+X
+b̸=a′,a1,...,am
+(±)PfM[b, a′, a1, . . . , am]PfM(b, a′)
+Note that PfM() = 1 = χ(Γ)2k−1,2l−1 = B2k−1,2l−1. The
+right hand side is a sum of products of two terms. Each term
+is the Pfafﬁan of M with a superset of a1, . . . , am removed.
+These correspond to entries of χ(Γ) and B in positions with
+total Hamming weight strictly more than m. (Note that k +
+l −2 > m.) Since B is equal to χ(Γ) on all such entries
+and since B and χ(Γ) both satisfy the GP identities, we see
+that Brc = χ(Γ)rc. This completes the proof for the case
+B2k−1,2l−1 ̸= 0.
+Now suppose B is not identically zero but B2k−1,2l−1 =
+0. Let Bij be a non-zero entry in B. We use bit-ﬂips to map
+i and j to 2k −1 and 2l −1 respectively to get a matrix B′
+such that B′
+2k−1,2l−1 ̸= 0. By Theorem 4.1, B′ also sat-
+isﬁes the GP identities. Let Γ′ be a matchgate that realizes
+B′. Then we can construct Γ that realizes B by using a con-
+struction similar to what we used in the 2-input, 2-output
+case, as shown in Figure 1.
+Actually, the proof of the above theorem also works in
+the case when we allow omittable nodes too i.e. the ma-
+trix is neither even nor odd. First note that any matchgate
+is equivalent to a matchgate with an even number of nodes
+and exactly one omittable node which has a number less
+than the output nodes but more than all other nodes ([12]).
+We need to change the deﬁnition of useful GP identity to
+mean that every Pfafﬁan has only some inputs/outputs and
+possibly, the omittable node deleted. In that case, we can in-
+terpret any such Pfafﬁan as a Pfafﬁan sum of the matchgate
+with some inputs/outputs deleted which then corresponds
+to the character entries. By using similar arguments, we can
+prove that all useful GP identities are independent of n and
+the analog of theorem 4.1 that input/output bit-ﬂips induce
+a permutation on the GP identities. The completeness theo-
+rem is proved in the Appendix.
+From the proofs of theorem 4.2 and theorem 7.1 (in the
+appendix), we see that we need only O(k + l) vertices to
+realize B. This is interesting because in the deﬁnition of
+matchgates, we allow a k-input, l-output matchgate to have
+an arbitrary number of internal nodes. We now know that
+any such matchgate is equivalent to another with only O(k+
+l) nodes. This makes it possible to prove the non-existence
+of certain matchgates.
+Corollary 4.1. Let Γ be any k-input, l-output matchgate.
+Then there is another matchgate Γ′ having only O(k + l)
+vertices such that χ(Γ) = χ(Γ′).
+5
+Realizability of Signatures
+In [13] Valiant introduced the theory of Holographic Al-
+gorithms. Here the basic objects are planar matchgates and
+their signatures. (In this paper we do not consider signatures
+of a planar matchgate under a basis transformation. Without
+this transformation, we only consider the standard signa-
+tures as deﬁned in Sec. 2. Also for simplicity in the follow-
+ing discussion we will not consider omittable nodes.) These
+planar matchgates are connected to form matchgrids which
+are the counter parts to matchcircuits. As mentioned ear-
+lier in Section 2, we have accomplished a uniﬁcation of the
+matchcircuit/character theory and the matchgrid/signature
+theory in [1].
+Roughly speaking, this uniﬁcation is accomplished as
+follows. Given a planar matchgate with a signature G, de-
+ﬁned by the perfect matching polynomial PerfMatch, one
+uses the FKT algorithm to show that each entry of G is
+equal to a corresponding Pfafﬁan of the submatrix of a sin-
+gle skew-symmetric matrix M, where the submatrix is ob-
+tained by removing the appropriate rows and columns of M.
+The skew-symmetric matrix M is obtained from the given
+skew-symmetric adjacency matrix of the planar matchgate
+graph, by running the FKT algorithm. The FKT algorithm
+is applied once to the planar matchgate graph with no ver-
+tex removed; but conceptually one can think of it being
+applied simultaneously to the exponentially many induced
+subgraphs of the matchgate with various external nodes re-
+moved. By the property of the FKT algorithm, which only
+assigns a ±1 factor to each edge, this gives a single consis-
+tent weighted altered graph. To each entry of the signature
+G, the corresponding Pfafﬁan of the submatrix becomes an
+entry of the character of a matchgate, without the modiﬁer.
+This is called the naked character in [1].
+In many ways, it is simpler to discuss the structural prop-
+erties of a naked character [1] than a character with the mod-
+iﬁers, in particular with the Matchgate Identities. The mod-
+iﬁers µ are deﬁned in order to account for additional cross-
+overs when matchgates are connected within a matchcircuit.
+But in terms of the character matrix, the modiﬁers amount
+to a multiplication of a ±1 factor along every row and ev-
+ery column, where the value of each row (column) factor is
+determined by the row (column) index. Thus the set of all
+Matchgate Identities is transformed to the set of Matchgate
+Identities for naked characters, in a one-to-one fashion.
+Now we discuss the technically more interesting reverse
+direction from (naked) characters to signatures. We take a
+general (not necessarily planar) matchgate Γ with a naked
+character χ(Γ), and realize it as the signature of a planar
+matchgate. This is done by a speciﬁc embedding of all the
+vertices of Γ on a semi-circle [1], and then replacing each
+physical crossing of a pair of edges by a crossover gadget
+from [13]. This produces a planar matchgate Γ′. One then
+
+argues that the PerfMatch value for each signature entry of
+Γ′ is the same as the corresponding Pfafﬁan value of the
+naked character of Γ.
+It follows that Theorem 4.2 also applies to planar match-
+gates and their signatures. More speciﬁcally, a set of val-
+ues can be the standard signature of a planar matchgate
+(without omittable nodes) iff they satisfy all the parity re-
+quirements and all the useful Grassmann-Pl¨ucker identities.
+Thus, we have the following three categories of objects all
+equivalent to each other: Signatures of planar matchgates,
+naked characters of planar matchgates, and naked charac-
+ters of general (not necessarily planar) matchgates. And of
+course, characters and naked characters are related to each
+other by the modiﬁers (which are, in some sense, external
+to the matchgates). The character theory can be viewed as
+primarily algebraic, while signatures of planar matchgates
+can be viewed as its geometric realization. Another useful
+observation derived from this dual perspective is that one
+can really unify the notions of input and output nodes of a
+general matchgate; the salient feature is its circular ordering
+as external nodes of a planar matchgate represented by its
+signature.
+However, there is a subtle point concerning the equiv-
+alence of signatures and (naked) characters expressed as
+Pfafﬁans. To a signature tensor G satisfying all the Match-
+gate Identities (and the parity requirements), Theorem 4.2
+gives a realization via the character of a complete graph
+without internal nodes. (Technically this is the case with
+G11...1 = 1. In general, we need to “ﬂip” some external
+nodes, thus introduce a linear number of internal nodes.)
+However, the realization as a planar matchgate for the sig-
+nature G may have some internal nodes, necessitated by the
+introduction of the cross-over gadgets (see below). Thus it
+is not the case that we can realize G as a signature without
+internal nodes. If G has arity m, this process may introduce
+O(m2) internal nodes.
+Let’s consider exactly how Matchgate Identities are ex-
+pressed for the signatures. Let G be the signature of a pla-
+nar matchgate with m external nodes. Since each signature
+entry can be viewed as a Pfafﬁan (via the FKT) we have
+one useful Grassmann-Pl¨ucker identity for each pair of sub-
+sets I and J both containing all the internal nodes. It is
+clear that the only non-zero terms in the Grassmann-Pl¨ucker
+identity involve moving elements in the symmetric differ-
+ence I∆J, which is a subset of the external nodes. We now
+ignore the internal nodes and consider I and J as subsets
+of the external nodes, (under a circular shift) identiﬁed with
+[m] = {1, 2, . . ., m}. Suppose
+I∆J = {i1, . . . , ik1, ik1+1, . . . , ik2, ik2+1, . . . , ik3, . . .},
+where i1 < · · · < ik1 < ik1+1 < · · · < ik2 < ik2+1 <
+· · · < ik3 < . . . in the order of the index set {1, 2, . . ., m},
+and where i1, . . . , ik1 ∈I −J, ik1+1, . . . , ik2 ∈J −I,
+ik2+1, . . . , ik3 ∈I −J, and so on.
+Every non-zero term in (1) involves moving either an el-
+ement from I −J to J or from J −I to I. For ij, j =
+1, . . . , k1, the term in (1) is (−1)jPf(I −{ij})Pf(ij ◦J).
+Note that ij is already in its right place with respect to J
+within ij ◦J. For ij, j = k1 + 1, . . . , k2, the term in (1)
+is (−1)j−k1Pf(ij ◦I)Pf(J −{ij}). When we move ij to
+its right place with respect to I within ij ◦I, namely k1
+places to the right, this incurs (−1)k1. Thus the term be-
+comes (−1)jPf(I ∪{ij})Pf(J −{ij}), where I ∪{ij} is
+assumed to be in increasing order.
+In this way it is easy to see that all the useful matchgate
+identities on a realizable standard signature G of arity m
+can be expressed as follows:
+Matchgate Identities for Signatures: A pattern α is an
+m-bit string, i.e., α ∈{0, 1}m. A position vector P =
+{pi}, i ∈[l], is a subsequence of {1, 2, . . ., m}, i.e., pi ∈
+[m] and p1 < p2 < · · · < pl. We also use p to denote the m-
+bit string, whose (p1, p2, . . . , pl)-th bits are 1 and others are
+0. Let ei ∈{0, 1}m be the pattern with 1 in the i-th bit and
+0 elsewhere. Let α + β denote the pattern obtained from
+bitwise XOR the patterns α and β. Then for any pattern
+α ∈{0, 1}m and any position vector P = {pi}, i ∈[l], we
+have the following identity:
+l
+X
+i=1
+(−1)iGα+epi Gα+p+epi = 0.
+(4)
+More symmetrically, let α, β ∈{0, 1}m be any patterns,
+and let P = {pi} = α + β, i ∈[l], be their bitwise XOR as
+a position vector. Then
+l
+X
+i=1
+(−1)iGα+epi Gβ+epi = 0.
+(5)
+Theorem 4.2 says that a tensor G = (Gi1,...,im) is realiz-
+able as the standard signature of some planar matchgate iff
+it satisﬁes all the parity requirements and (4) for all α and
+P (or equivalently (5) for all α and β).
+A signature is called a symmetric signature if its entries
+only depend on the cardinality of the subset of removed ex-
+ternal vertices. Let zi be the value with a subset of cardi-
+nality i removed. Then a symmetric signature can be de-
+noted more succinctly as [z0, . . . , zm]. In the framework
+of holographic algorithms, symmetric signatures are partic-
+ularly important, because they have a clear combinatorial
+meaning. For standard symmetric signatures we have
+Lemma 5.1. Suppose Γ is an even matchgate with sym-
+metric standard signature [z0, . . . , zm]. Then for all odd i,
+zi = 0, and there exist r1 and r2 not both zero, such that for
+every even 2 ≤k ≤m,
+r1zk−2 = r2zk.
+
+Proof. The parity condition is obvious.
+For m ≤3 the condition r1zk−2 = r2zk is always satis-
+ﬁable for some r1 and r2 not both zero.
+Let m ≥4, we use matchgate identities (4). Consider
+the pattern 1000α where α has Hamming weight 2i, and
+0 ≤2i ≤m −4. Let the position vector be 11110 . . .0.
+Then (4) gives
+0
+= G0000αG1111α −G1100αG0011α
++G1010αG0101α −G1001αG0110α.
+It follows from symmetry that the last two terms cancel and
+we get z2iz2i+4 = (z2i+2)2.
+Also, if m is even then consider the pattern 1000α and
+the position vector 1111β, where α = 0m−4 and β =
+1m−4. Then we have
+0 = G0000αG1111β −G1100αG0011β
++G1010αG0101β −G1001αG0110β ± . . . .
+The terms cancel except the ﬁrst two, from which we get
+z0zm = z2zm−2.
+Similarly if m is odd, we consider the pattern 1000 . . .0
+and the position vector 1111 . . .10 and we can get
+z0zm−1 = z2zm−3.
+The lemma follows from this.
+Similarly one can prove
+Lemma 5.2. Suppose Γ is an odd matchgate, with sym-
+metric standard signature [z0, . . . , zm]. Then for all even i,
+zi = 0, and there exist r1 and r2 not both zero, such that for
+every odd 3 ≤k ≤m,
+r1zk−2 = r2zk
+Using the fact that the signatures are symmetric, it can be
+proved that the set of useful Grassmann-Pl¨ucker Identities
+considered here already constitutes a complete set. It fol-
+lows from the characterization theorem for matchgates, that
+the requirements of Lemma 5.1, and Lemma 5.2 are both
+necessary and sufﬁcient.
+Another way to express this is
+Theorem 5.1. A symmetric signature [z0, . . . , zm] of a pla-
+nar matchgate with even cardinality is realizable iff for all
+odd i, zi = 0, and there exist constants r1, r2 and λ, such
+that z2i = λ · (r1)⌊m/2⌋−i · (r2)i, for 0 ≤i ≤⌊m
+2 ⌋.
+A symmetric signature [z0, . . . , zm] of a planar match-
+gate with odd cardinality is realizable iff for all even i,
+zi = 0, and there exist constants r1, r2 and λ, such that
+z2i−1 = λ · (r1)⌈m/2⌉−i · (r2)i−1, for 1 ≤i ≤⌈m
+2 ⌉.
+Given an array of values forming a kind of geometric
+progression as above, the general theory guarantees that
+there exists a planar matchgate whose signature is the given
+array. It is a curious fact that the only construction realiz-
+ing this planar matchgate is via the general proof, and thus
+via Pfafﬁan, as follows: We ﬁrst construct a complete graph
+with every edge having the same weight. This is given by
+the proof of Theorem 4.2. For that graph it can be checked
+that the Pfafﬁan values are the correct values, as in a (naked)
+character. Then the planar embedding and the crossover
+gadget from [1, 13] are used to produce a planar match-
+gate with the given signature. In particular there will be
+some O(m2) extra internal nodes if m is the number of ex-
+ternal nodes (arity) of the matchgate. We do not know of
+any direct construction of a planar matchgate with the given
+signature, even for this simple case.
+6
+Conclusions
+Valiant’s new theory of matchgate computations is an ex-
+traordinarily fresh attempt at exploring and devising new
+algorithmic approaches to problems. It has already yielded
+highly non-trivial results, such as his classical simulation
+of a fragment of quantum circuits, and his holographic al-
+gorithms. But a full account of the capabilities of match-
+gate computations is far from being clear. We presented in
+this paper some fundamental results concerning the building
+blocks of his theory, namely the matchgates. Our goal here
+is theory-building, not so much as problem-solving. We be-
+lieve that it is essential to gain a better understanding of
+these matchgates before one can get a full picture of match-
+gate computations [1, 16]. It is hoped that results in this pa-
+per will pave the way for some in-depth study of Valiant’s
+new theory. In [1], we applied our results on matchgates
+to obtain some negative results of holographic algorithms.
+In [16] Valiant has obtained some important lower bound
+for holographic algorithms using results of this paper.
+References
+[1] Jin-Yi Cai and Vinay Choudhary. Some Results on
+Matchgates and Holographic Algorithms. In Proceed-
+ings of ICALP 2006, Part I. LNCS vol. 4051. pp 703-
+714. Also available at ECCC TR06-048, 2006.
+[2] Jin-Yi Cai and V. Choudhary. Valiant’s Holant Theo-
+rem and Matchgate Tensors (Extended Abstract). In
+Proceedings of TAMC 2006: LNCS vol. 3959, pp
+248-261. Also available at ECCC Report TR05-118.
+[3]
+J-Y. Cai and Pinyan Lu. On Symmetric Signatures
+in Holographic Algorithms.
+In the proceedings of
+STACS 2007, LNCS Vol 4393, pp 429–440. Also
+available at on Computational Complexity ECCC Re-
+port TR06-135.
+
+[4] Jin-Yi Cai and Pinyan Lu. Holographic Algorithms:
+From Art to Science. To appear in STOC 2007. Also
+available at ECCC Report TR06-145.
+[5] Jin-Yi Cai and Pinyan Lu. Bases Collapse in Holo-
+graphic Algorithms. In these proceedings. Also avail-
+able at ECCC Report TR07-003.
+[6] P. W. Kasteleyn. The statistics of dimers on a lattice.
+Physica, 27: 1209-1225 (1961).
+[7] P. W. Kasteleyn. Graph Theory and Crystal Physics.
+In Graph Theory and Theoretical Physics, (F. Harary,
+ed.), Academic Press, London, 43-110 (1967).
+[8] E. Knill. Fermionic Linear Optics and Matchgates.
+At http://arxiv.org/abs/quant-ph/0108033
+[9] K. Murota. Matrices and Matroids for Systems Anal-
+ysis, Springer, Berlin, 2000.
+[10] H. N. V. Temperley and M. E. Fisher. Dimer problem
+in statistical mechanics – an exact result. Philosophi-
+cal Magazine 6: 1061– 1063 (1961).
+[11] L. G. Valiant. Expressiveness of Matchgates. The-
+oretical Computer Science, 281(1): 457-471 (2002).
+See also 299: 795 (2003).
+[12] L. G. Valiant. Quantum circuits that can be simulated
+classically in polynomial time. SIAM Journal of Com-
+puting, 31(4): 1229-1254 (2002).
+[13] L. G. Valiant. Holographic Algorithms (Extended Ab-
+stract). In Proc. 45th IEEE Symposium on Founda-
+tions of Computer Science, 2004, 306–315. A more
+detailed version appeared in ECCC Report TR05-099.
+[14] L. G. Valiant. Holographic circuits. In Proc. 32nd In-
+ternational Colloquium on Automata, Languages and
+Programming, 1–15, 2005.
+[15] L. G. Valiant. Completeness for parity problems. In
+Proc. 11th International Computing and Combina-
+torics Conference, 2005.
+[16] L. G. Valiant. Accidental Algorithms. In Proc. 47th
+Annual IEEE Symposium on Foundations of Computer
+Science 2006, 509–517.
+Acknowledgments
+We would like to thank Leslie Valiant for very encouraging
+comments and discussions. We also thank Andrew Yao, and
+his group of students in Tsinghua University, for listening
+to the lectures by the ﬁrst author on this material. We also
+thank in particular Rakesh Kumar and Anand Kumar Sinha
+for many interesting discussions on this and related topics,
+and to the anonymous referees for their helpful comments.
+Appendix
+Graphs and Pfafﬁans
+Let G = (V, E, W) be a weighted undirected graph, where
+V is the set of vertices represented by integers, E is the
+set of edges and W are the weights of the edges. In gen-
+eral, V = {k1, . . . , kn} where k1 < . . . < kn. We repre-
+sent the graph by a skew-symmetric matrix M, called the
+(skew-symmetric adjacency) matrix of G, where M(i, j) =
+w(ki, kj) if i < j, M(i, j) = −w(ki, kj) if i > j, and
+M(i, i) = 0. From here on, we will use G to represent
+both the graph and its matrix, whenever the meaning is clear
+from the context.
+The Pfafﬁan of an n × n skew-symmetric matrix M is
+deﬁned to be 0 if n is odd, 1 if n is 0, and if n = 2k where
+k > 0 then it is deﬁned as
+Pf(M) =
+X
+π
+ǫπw(i1, i2)w(i3, i4) . . . w(i2k−1, i2k),
+where
+• π =
+
+1
+2
+. . .
+n
+i1
+i2
+. . .
+in
+
+, is a permutation.
+• summation is over all permutations π where i1 <
+i2, i3 < i4, . . . , i2k−1 < i2k and i1 < i3 < . . . <
+i2k−1, and
+• ǫπ ∈{−1, 1} is the sign of the permutation π. An-
+other equivalent deﬁnition of ǫπ is that it is the sign
+or parity of the number of overlapping pairs where a
+pair of edges (i2r−1, i2r), (i2s−1, i2s) is overlapping
+iff i2r−1 < i2s−1 < i2r < i2s or i2s−1 < i2r−1 <
+i2s < i2r.
+The Pfafﬁan is computable in polynomial time. In particular
+(Pf(M))2 = det(M).
+A matching is a subset of edges such that no two edges
+share a common vertex. A vertex is said to be saturated if
+there is a matching edge incident to it. A perfect matching
+is a matching which saturates all vertices.
+There is a graph-theoretic interpretation of the Pfaf-
+ﬁan.
+If M is the matrix of a graph G, then there is
+a one-to-one correspondence between monomials in the
+Pfafﬁan and perfect matchings in G.
+The monomial
+w(i1, i2) . . . w(i2k−1, i2k) in Pf(M) corresponds to the
+perfect matching {(i1, i2), . . . , (i2k−1, i2k)} in G. The con-
+dition on the permutation implies that every perfect match-
+ing corresponds to exactly one monomial. The coefﬁcient
+ǫπ of this monomial is the parity of the number of overlap-
+ping pairs of edges, in the sense deﬁned earlier.
+If M is an n × n matrix and A = {i1, . . . , ir} ⊆
+{1, . . ., n}, then M[A] denotes the matrix obtained after
+deleting from M, the rows and columns indexed by ele-
+ments of A. We also denote by M(A) = M[A], where A is
+
+the complement of A. The Pfafﬁan Sum of M is a polyno-
+mial over indeterminates λ1, λ2, . . . , λn deﬁned as
+PfS(M) =
+X
+A
+ Y
+i∈A
+λi
+!
+Pf(M[A])
+where the summation is over the 2n submatrices obtained
+from M by deleting some subset A of indices. The Pfafﬁan
+Sum of M is also computable in polynomial time for any
+values of λi. We will only need instances where each λi is
+ﬁxed to be 0 or 1.
+Extended Main Theorem
+In this Appendix, we give an extension of the Main Theo-
+rem proved by Valiant in [12]. It is a minor extension which
+was needed in Section 3.
+Let Γ = (G, X, Y, T ) be a matchgate. Let us call Γ, an
+even matchgate if PfS(G\Z) is zero whenever Z ⊆X ∪Y
+has odd size and call it odd if PfS(G\Z) is zero whenever
+|Z| is even. Let us modify the deﬁnition of a matchcircuit to
+allow parallel edges to have weight −1. Then we can prove
+the following Extended Main Theorem.
+Theorem 7.1. [Extended Main Theorem] Consider a
+matchcircuit Γ composed of gates as in [12]. Suppose that
+every gate is:
+1. a gate with diagonal character matrix,
+2. an
+even
+gate
+applied
+to
+consecutive
+bits
+xi, xi+1, . . . , xi+j for some j ≥0,
+3. an
+odd
+gate
+applied
+to
+consecutive
+bits
+xi, xi+1, . . . , xi+j for some j ≥0, or
+4. an arbitrary gate on bits x1, . . . , xj for some j ≥1.
+Suppose also that every parallel edge above any odd match-
+gate, if any, has weight −1 and all other parallel edges have
+weight 1. Then the character matrix of Γ is the product of
+the character matrices of the constituent matchgates, each
+extended to as many inputs/outputs as those of Γ.
+Proof. The only kind of overlap that we need to worry
+about in the proof of the Main Theorem in [12] is that be-
+tween parallel and external edges of a matchgate. By the
+deﬁnition of an odd gate, the only non-zero in its charac-
+ter matrix can be in positions which correspond to an odd
+number of inputs/outputs being matched externally. Any
+parallel edge above a matchgate has an overlap with any of
+its external edges that are present. Since only those match-
+ings make a non-zero contribution when there are an odd
+number nodes matched externally, any such parallel edge
+overlaps with an odd number of external edges; thus con-
+tributing a −sign which cancels with its own weight of −1.
+The rest of the proof is exactly as in [12]
+Identities
+for
+Matchgates
+with
+Omittable
+Nodes
+Lemma 7.1. Consider any GP identity such that all the
+Pfafﬁans appearing in it are Pfafﬁans of sub-matrices with
+some input/output nodes and/or the omittable node deleted.
+Remove any terms which have an odd number of indices
+deleted. Write each remaining term as a Pfafﬁan sum of a
+matrix with a subset of inputs/outputs deleted. Then it is a
+useful identity and is independent of n. Therefore, it is a
+matchgate identity.
+Theorem 7.2. Let k, l be non-negative integers. Let B be a
+2k ×2l matrix. Then B is the character matrix of a k-input,
+l-output matchgate Γ if and only if B satisﬁes all the GP
+identities.
+Proof. The proof is almost the same as for the case with-
+out omittable nodes. As earlier, let’s assume, WLOG, that
+B2k−1,2l−1 = 1. The matchgate Γ is a complete graph
+k + l + 1 vertices. It has k inputs and l outputs and one
+omittable node. The weight of the edge joining nodes i and
+j is the appropriate modiﬁer times the entry of the matrix
+B which corresponds to i, j being deleted. Note that now,
+this entry might have total Hamming weight (as far as in-
+puts/outputs are concerned) either k + l −1 or k + l −2,
+depending on whether either i or j is the omittable node or
+not. Let the skew-symmetric adjacency matrix of Γ be M.
+We claim that the character matrix of Γ, say A, is equal to
+B. By deﬁnition, all the entries of B with total Hamming
+weight at least k + l −2 are equal to those in A. Now
+we proceed by downward induction on the total Hamming
+weight H(i) + H(j). Consider any other entry Bij such
+that H(i) + H(j) is less than k + l −2.
+Let a1 ≤. . . ≤ar be the bits that are 1 in i and j.
+Depending on the parity of r, we either need to delete the
+omittable node, say a, or keep it. Let S be the set of nodes
+that we need to delete to get this entry of B. Let 1 ≤a′ ≤
+k + l be an index not in S. Consider the GP identity with
+I = Γ −S ∪{a′} which we’ll denote by I = { ˆS, ˆa′} and
+let J = {a′}. This identity looks like the following:
+PfM[S]PfM() =
+X
+b∈I
+(±)PfM[{b, a′} ∪S]PfM(b, a′)
+Note that PfM() = 1 = A2k−1,2l−1 = B2k−1,2l−1. The
+right hand side is a sum of products of two terms. Each
+term is the Pfafﬁan sum of M with a superset of a1, . . . ar
+removed. These correspond to entries of A and B in po-
+sitions with total Hamming weight more than r. Since B
+is equal to A on all such entries and since B satisﬁes the
+GP identities, we see that Bij = Aij. This completes the
+proof.
+
+Figures
+B
+B
+B
+B
+BB
+
+
+
+
+
+..................
+..................
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+..................
+..................
+r
+r
+r
+r
+r r
+r
+r
+r r
+..................
+..................
+r
+r
+r
+r
+r
+r
+r
+r
+r
+r
+..................
+..................
+r
+r
+r r
+r
+r
+r
+r
+r
+r
+Γ′
+Γ3
+Γ4
+Γ1
+Γ2
+-1
++1
+Figure 1. The ﬁgure shows the matchcircuit Γ′′ used in the proof of theorem 3.2. Suppose αr ﬂips
+the second bit only and αc ﬂips the ﬁrst bit only. Then Γ2 and Γ4 are equal to Γ(2) i.e. they ﬂip their
+input; and Γ1 and Γ3 simply transmit their input. Therefore, the parallel edge above Γ2 has weight −1
+and all other parallel edges, in particular the one above Γ3 have weight 1. In the general case when
+there are k-inputs and l-outputs, if any matchgate ﬂips its input, all the parallel edges above it have
+a weight −1.
+A
+B
+C
+Figure 2. An example of a matchcircuit composed of matchgates A, B and C. A is a 3-input, 3-output
+matchgate while B and C are 2-input, 2-output matchgates. The boldest line represent parallel edges,
+the lightest represent connecting edges and the rest are external edges. The nodes in the matchcircuit
+are numbered in increasing order from left to right. The ﬁve leftmost nodes are its inputs and the ﬁve
+rightmost ones are its outputs.

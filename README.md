@@ -46,12 +46,13 @@ pourquoi les grandes familles d'attaques connues ne peuvent pas la donner.
 
 ## Le livrable central : la matrice barrières × approches
 
-**[`atlas/matrice_barrieres.md`](atlas/matrice_barrieres.md)** — 18 familles
+**[`atlas/matrice_barrieres.md`](atlas/matrice_barrieres.md)** — 19 familles
 d'approches (de la diagonalisation à GCT, de la méthode polynomiale modulaire
 à la hardness magnification, la méta-complexité moderne, les polynômes
-toriques, la complexité des preuves, le range avoidance, le lifting, et la
+toriques, la complexité des preuves, le range avoidance, le lifting, la
 méta-complexité des classes profondeur-2 — la ligne 18, où vit le front MC
-du dépôt) croisées avec les 4 barrières connues
+du dépôt — et les algorithmes holographiques de Valiant-Cai — la ligne 19,
+première ligne en direction P = NP) croisées avec les 4 barrières connues
 (relativisation, preuves naturelles, algébrisation, monotone) plus une
 colonne « **verrou réel** » : ce qui bloque effectivement chaque approche
 aujourd'hui. Les cellules renvoient à leur pièce justificative — audit `bib/`
