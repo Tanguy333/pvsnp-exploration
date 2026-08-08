@@ -293,6 +293,28 @@ MC-001 :
   composées et compression. Réserve : MC-011 est postérieure à VER-MC-1 —
   ses preuves attendent la prochaine passe tierce. Pièces :
   `tasks/done/MC-011.md`, `checks/mc011_induction_o.py`.
+  **[Contre-vérifié par VER-MC-2, 2026-08-08 — avec un avertissement
+  armé : le lemme singleton est FAUX à m ≥ 1 (21 contre-exemples), tout
+  usage futur doit passer par la réduction M d'abord.]**
+- **LA PASSE ADVERSE TIERCE n°2 (VER-MC-2, 2026-08-08) — le bloc
+  MC-011..013 TIENT : statut CONTRE-VÉRIFIÉ.** Trois vérificateurs
+  indépendants (deux re-dérivations complètes des six preuves + une
+  triple ré-implémentation : booléens de signe, encodage Möbius, force
+  brute) : zéro faille dans les preuves, zéro écart lois/vérité (148
+  paires ν ≤ 4 sous trois méthodes, 19 cœurs jusqu'à ν = 7, 5/5
+  certificats ν = 8 rejoués), aucun bug de validité dans les scripts —
+  et la chaîne d'assemblage trans-fiches (« la couture qui devait
+  lâcher ») confirmée : la base vaut pour un séparateur arbitraire, la
+  trichotomie est exhaustive via ω_l ≥ 1. Vérifications PLUS FORTES que
+  celles du dépôt sur deux points (contre-exemple au lemme singleton
+  cherché par solveur jusqu'à ref+4 : INFEASIBLE ; borne interne de la
+  branche 3 (1,1) prouvée EXACTE, 3o+2). **Prises, toutes traitées** :
+  une correction de consignation (l'« EXACTEMENT la construction
+  linéaire » de MC-012 — propriété d'un run, pas des cœurs — corrigée),
+  l'avertissement m ≥ 1 (bandeau posé sur MC-011 §1), le prérequis
+  ω_l ≥ 1 explicité (MC-013 §3), trois imprécisions mineures. Résidu :
+  les INFEASIBLE ν ≥ 5 restent des assertions de solveur ; relecture
+  humaine = étalon supérieur. Pièces : `tasks/done/VER-MC-2.md`.
 - **La base linéaire est fermée au sol (MC-012, 2026-08-07) — THÉORÈME
   F(1, b, 0, 0) = b + 2** : forçage d'égalité (si W ≤ b+1 : c = 1,
   E_j = 1 partout, pas de hauts-B ; puis cascade — c = 1 interdit

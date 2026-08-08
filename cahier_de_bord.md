@@ -1291,6 +1291,31 @@ calcul** du fil AS n'avaient pas atteint.
 >   trou de contrôle est revenu au niveau déclencheur : **VER-MC-2
 >   recommandée avant la base couronne.** Fiche : `tasks/done/MC-013.md` ;
 >   script : `checks/mc013_bandes.py`.
+> - [x] **VER-MC-2 (fait, 2026-08-08)** — **la passe adverse tierce n°2 :
+>   le bloc MC-011..013 TIENT, statut CONTRE-VÉRIFIÉ.** Trois
+>   vérificateurs indépendants (deux re-dérivations complètes des six
+>   preuves + triple ré-implémentation — booléens de signe, encodage
+>   Möbius, force brute ; une extinction du PC en cours de passe,
+>   surmontée par relance) : zéro faille, zéro écart lois/vérité (148
+>   paires ν ≤ 4 sous trois méthodes, 19 cœurs jusqu'à ν = 7, 5/5
+>   certificats ν = 8 rejoués), aucun bug de validité dans les scripts ;
+>   la chaîne d'assemblage trans-fiches — « la couture qui devait
+>   lâcher » — confirmée (base valable pour séparateur arbitraire,
+>   trichotomie exhaustive via ω_l ≥ 1) ; deux vérifications PLUS FORTES
+>   que celles du dépôt (contre-exemple au lemme singleton cherché par
+>   solveur : INFEASIBLE à ref+4 ; borne interne de la branche 3 (1,1)
+>   prouvée EXACTE : 3o+2). **Prises, toutes traitées le jour même** :
+>   une correction de consignation (MC-012 : « les optima réalisent
+>   EXACTEMENT la construction linéaire » — propriété d'un run, pas des
+>   cœurs — réfutée au rejeu et corrigée ; durées cumulées) ;
+>   **avertissement armé : le lemme singleton est FAUX à m ≥ 1**
+>   (21 contre-exemples — bandeau posé sur MC-011 §1, tout usage futur
+>   passe par la réduction M d'abord) ; prérequis ω_l ≥ 1 explicité
+>   (MC-013 §3) ; trois imprécisions mineures. Résidu : les INFEASIBLE
+>   ν ≥ 5 restent des assertions de solveur ; relecture humaine = étalon
+>   supérieur. **Le front est à jour de ses relectures** — chaînons
+>   restants : base couronne (a ≥ 2), fibres composées, compression.
+>   Fiche : `tasks/done/VER-MC-2.md`.
 >
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le

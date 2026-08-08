@@ -13,7 +13,9 @@ Modes :
   lemme : teste le lemme interne DIRECTEMENT au solveur — min poids d'un
       séparateur du cube (1+b variables) sous les contraintes de bandes
       (domaines interdits via AddLinearExpressionInDomain), pour
-      b = 2..4, o = 0..4 ; attendu : exactement b + 2 + o.
+      b = 2..4, o = 0..4 ; la borne REQUISE est ≥ b + 2 + o (le minimum
+      MESURÉ vaut b + 2 + 2o — correction VER-MC-2 du docstring initial
+      qui annonçait « exactement b + 2 + o »).
   certificats : décision au cap = loi − 1 sur la grille (1, b, o) jusqu'à
       la frontière ν = 8 — INFEASIBLE attendu partout.
 """
