@@ -1500,7 +1500,14 @@ calcul** du fil AS n'avaient pas atteint.
 >   ATLAS-013) ; calibration canonique {OR₃,=₂} ; décision utilisateur
 >   attendue. Dossier : `tours/candidature_ligne19_holographique.md` ;
 >   script : `checks/pr003_holographique.py` ; fiche :
->   `tasks/done/PR-003.md`.
+>   `tasks/done/PR-003.md`. **[Ajout même jour : CONTRE-VÉRIFICATION
+>   CROISÉE — second instrument indépendant côté utilisateur
+>   (convention duale, `checks/pr001_sl19_holographique.py`), répliqué
+>   par la session : concordance totale (72 = 36 + 36 bases ;
+>   {OR₃,=₂}/ℂ complétée infaisable 4/4 ; frontière du miracle mod 7 =
+>   fanout 2, deux instruments concordants). Réserve « instrument
+>   unique » levée ; §1 bis du dossier ; prompt PR-001 révisé (19
+>   familles, §2 bis).]**
 >
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le

@@ -72,6 +72,32 @@ et sature det ≠ 0.
    de branches à la main des deux parties ont chacune fauté une fois
    dans cette instruction ; seul le calcul exhaustif a fait foi.)
 
+## 1 bis. Contre-vérification croisée indépendante (ajout du 2026-08-08, même jour)
+
+Un SECOND instrument, écrit indépendamment côté utilisateur
+(`checks/pr001_sl19_holographique.py`), avec la **convention DUALE**
+(générateur ↔ reconnaisseur inversés : =_k transformé par T⊗k, OR₃
+par l'adjugate — la bijection T ↔ (Tᵀ)⁻¹ prédit l'équivalence), a été
+RÉPLIQUÉ par la session. **Concordance totale, case par case** :
+
+| case | instrument Réfuteur (pr003) | instrument utilisateur (pr001_sl19, répliqué) |
+|---|---|---|
+| {OR₃,=₃} sur ℂ | infaisable 4/4 (1 ∈ idéal) | infaisable 4/4 (1 ∈ idéal) |
+| {OR₃,=₃} sur F₇ | infaisable (exhaustif) | infaisable 4/4 (exhaustif) |
+| {OR₃,=₂} sur ℂ | — (contrôle char p seul) | **infaisable 4/4 (1 ∈ idéal)** — complète le tableau |
+| {OR₃,=₂} sur F₇ | FAISABLE, 72 bases, témoin [[1,2],[1,3]] | FAISABLE, 72 = 36 (pair/pair, témoin T = (1,1,2,3)) + 36 (pair/impair) |
+
+Le compte 72 concorde à travers les deux conventions ; le second
+instrument ajoute le découpage par combinaison de parités et ferme
+AUSSI {OR₃,=₂} sur ℂ (la case que pr003 n'avait testée qu'en char p).
+Les deux lectures du même fait — « calibration mal spécifiée » (§1,
+prise de l'instruction) et « découverte bonus : le miracle exige le
+lu-deux-fois » (lecture utilisateur) — sont équivalentes ; la
+formulation de cellule retenue : **la frontière du miracle mod 7 est
+exactement le fanout 2, mesurée par calcul, par deux instruments
+indépendants concordants**. La réserve « un seul cycle d'instruction /
+lecture unique » de la fiche est LEVÉE pour le volet calcul.
+
 ## 2. Positionnement et recevabilité (grille PR-001)
 
 | Champ | État |
