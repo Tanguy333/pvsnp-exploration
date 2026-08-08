@@ -1,0 +1,1935 @@
+The FPNP versus #P dichotomy for #EO
+Boning Meng 1 /envel⌢pe
+Key Laboratory of System Software (Chinese Academy of Sciences) and State Key Laboratory of
+Computer Science, Institute of Software, Chinese Academy of Sciences; University of Chinese
+Academy of Sciences, Beijing 100080, China
+Juqiu Wang /envel⌢pe
+Key Laboratory of System Software (Chinese Academy of Sciences) and State Key Laboratory of
+Computer Science, Institute of Software, Chinese Academy of Sciences; University of Chinese
+Academy of Sciences, Beijing 100080, China
+Mingji Xia /envel⌢pe
+Key Laboratory of System Software (Chinese Academy of Sciences) and State Key Laboratory of
+Computer Science, Institute of Software, Chinese Academy of Sciences; University of Chinese
+Academy of Sciences, Beijing 100080, China
+Abstract
+The complexity classification of theHolant problem has remained unresolved for the past fifteen
+years. Counting complex-weighted Eulerian orientations problems, denoted as #EO, is regarded as
+one of the most significant challenges to the comprehensive complexity classification of theHolant
+problem. This article presents anFPNP vs. #P dichotomy for #EO, demonstrating that #EO
+defined by a signature set is either #P-hard or polynomial-time computable with a specific NP
+oracle. This result provides a comprehensive complexity classification for #EO, and potentially leads
+to a dichotomy for the Holant problem. Furthermore, we derive three additional dichotomies related
+to the Holant problem from the dichotomy for#EO.
+Keywords and phrasesComplexity dichotomy, Counting, Holant problem, Eulerian Orientation, #P
+Funding All authors are supported by National Key R&D Program of China (2023YFA1009500),
+NSFC 61932002 and NSFC 62272448.
+Acknowledgements We previously posted an independent open problem: finding a polynomial-time
+algorithm for #EO(f56). Although it remains unsolved, we sincerely appreciate Yaonan Jin, Pinyan
+Lu, Shuai Shao and Zhuxiao Tang for their interest and insights. We also appreciate Jin Soo Ihm
+and Zhuxiao Tang for pointing out a mistake in the proof of Lemma 40 in an early online version.
+1 Introduction
+Counting complexity is an essential aspect of computational complexity. In the study of
+counting complexity,Holant [11] is considered as one of the most significant frameworks.
+This is becauseHolant is capable of expressing a substantial number of counting problems,
+such as counting the number of perfect matchings in a weighted graph (#PM) and counting
+the number of solutions in a weightedCSP instance (#CSP). Nevertheless, a complete
+classification of the complexity of complexHolant over Boolean domain has remained unsolved
+for the past fifteen years.
+As outlined in [8], within the Boolean domain, five intermediate problems are identified
+as being closely related to complexHolant and have the potential to lead to a complete
+classification of its complexity. These are symmetric complexHolant, complexHolantc, real
+Holant, eight-vertex model and complex#EO. The complexity of the first four problems
+1 The authors share first-author status; therefore, this alphabetical order cannot be used to reject the
+score-sharing scheme, deny annual student recruitment applications, or similar processes under the
+institute’s regulations.
+arXiv:2502.02012v2  [cs.CC]  2 Apr 2025
+2 The FP NP versus #P dichotomy for #EO
+has been fully classified as four FP vs. #P dichotomies by [10, 2, 25, 7] respectively. In
+each dichotomy, the corresponding problem is either polynomial-time computable or #P-
+hard, given a set of signatures that defines the problem. On the other hand, despite the
+advancements made in the study of the complexity of complex #EO [9, 8, 26, 18], a complete
+classification for complex #EO remains unsolved.
+Complex #EO, which is an abbreviation of counting complex-weighted Eulerian orienta-
+tions problems, asks for the sum of the weights of all Eulerian orientations in a given graph.
+This problem is derived from the partition function of the ice-type model in statistical physics
+[22], and was generalized into a mathematical problem in [19]. Furthermore, this problem
+has been extended to a weighted version in [9] under the framework ofHolant. Please refer
+to Definition 3 for a detailed version of this definition.
+In this article, we always restrict counting problems to Boolean domain and complex range
+by default. We present anFPNP vs. #P dichotomy for complex #EO. In this dichotomy,
+we demonstrate that for each signature setF that defines #EO, #EO(F) is either #P-hard
+or can be computed in polynomial time with a specific NP oracle. We remark that the NP
+oracle we use here might be replaced with a polynomial-time algorithm, hence this dichotomy
+has the potential to achieve an FP vs. #P dichotomy. This dichotomy generalizes the former
+results presented in [9, 8, 26, 18], with the exception of some polynomial-time algorithms
+developed therein. Furthermore, we illustrate that threeFPNP vs. #P dichotomies forHolant
+problems defined onHW≥, HW≤and single-weighted signatures, respectively, can also be
+obtained from this dichotomy.
+1.1 Introduction of the counting problems
+In this section, we present an informal version of the definitions ofHolant, #EO and #CSP.
+See Definition 4, 3 and 7 for their detailed definitions. A signaturef :{0, 1}k→C is defined
+as anEO signature ifk is even andf(α) = 0 whenever the number of0′s does not equal
+to that of1′s in the stringα. An orientation variable is a Boolean variable that assigns
+one of two possible orientations to an undirected edge. In this context, the orientation is
+represented by the value0 assigned to the tail and the value1 assigned to the head of the
+edge.
+▶ Definition 1(Holant, #EO and#CSP). Holant is defined by a signature setF, denoted
+as Holant(F). An instance (input) ofHolant(F) is a graphG = (V,E ), with eachv∈V
+assigned a signature fromF and eache∈E represents a Boolean variable. The output is the
+sum of the product of the values of all the signatures, calculated over all possible assignments
+to the variables.
+The definition of#EO is identical to that ofHolant, with the exception that eachv∈V
+is assigned anEO signature and eache∈E represents an orientation variable.
+The definition of #CSP is identical to that ofHolant, with the exception thatG is a
+hypergraph, which means that eache∈E may be incident tok≥1 vertices inV instead of
+exactly two of them.
+Holant and #CSP play a pivotal role in the field of counting complexity, due to their
+capacity to express a diverse range of natural counting problems. For example, counting
+the number of independent sets in a graph as well as counting the number of solutions in a
+3-CNF formula can be expressed as a #CSP problem, while counting the number of perfect
+matchings and in a graph, #CSP as well as #EO can be transformed intoHolant problems.
+Though the complexity classification for #CSP has been presented as a dichotomy by [12],
+the complexity ofHolant remains uncertain. In particular, #EO captures a specific category
+B. Meng, J. Wang, M. Xia 3
+of problems related to vanishing signatures inHolant. By contrast, its complexity remains
+undetermined. This leads us to the necessity of studying the complexity of #EO.
+1.2 Significance of #EO
+As illustrated in Section 1.1, the complexity classification of #EO has the potential to lead to
+a complete dichotomy forHolant. Apart from that, #EO also plays a pivotal role in the field
+of statistical physics and combinatorics. In statistical physics, the output of #EO is denoted
+as the partition function of the ice-type model when the underlying graphG is restricted
+to some specific graph classes [22, 27, 24], and in particular as the partition function of
+the classical six-vertex model whenG is restricted to a finite region of the square lattice
+[22]. An exact solution of the classical six-vertex model with periodic boundary conditions
+was demonstrated by Lieb, which is a considerable milestone in statistical physics[16]. In
+combinatorics, the resolution of the alternating sign matrix conjecture is also related to the
+classical six-vertex model [14, 20, 28, 15, 5]. Furthermore, the stochastic six-vertex model is
+defined by a specific signature grid of #EO in the quadrantZ≥1×Z≥1 [4], whose partition
+function has an intriguing connection with the Hall-Littlewood processes [3] and q-Whittaker
+processes [21].
+1.3 Our results
+Our main result can be stated as follows.
+▶Theorem 2.LetF be a set of EO signatures. Then#EO(F) is either inFPNP or #P-hard.
+A detailed version of Theorem 2, which presents the explicit criterion for this dichotomy, is
+stated as Theorem 26 in Section 3. It is noteworthy that two distinct types of extension
+have been applied to Theorem 2, resulting in three additional dichotomies forHW≥, HW≤
+and single-weighted signatures, respectively, as presented in Corollary 67 and 68. It is our
+contention that this dichotomy has the potential to classify the complexity of more cases
+within the framework ofHolant, due to the fact that a dichotomy for realHolant [25] is
+based on the research of#EO problems defined by signatures with ARS property [8], and
+a dichotomy for eight-vertex model [7] is based on the research of#EO problem known as
+six-vertex model [9].
+We also remark that anFPNP vs. #P dichotomy does separate the complexity of#EO.
+The definitions of complexity classes in the following can be found in [1]. If #P⊆FPNP,
+then we have
+PH⊆FP#P⊆FPFPNP
+= FPNP = ∆ P
+2,
+which indicates that the complexity class PH collapses at the second level. Conversely, if
+we assume PH does not collapse, it follows that a #P-hard problem cannot be solved by an
+FPNP algorithm.
+Furthermore, the complexity classification of the problem that defines the NP oracle
+leads us to the study of Boolean constraint satisfaction problems [13]. Nevertheless, it is
+regrettable that the complexity of the problem defining the NP oracle has not been addressed
+by existing research.
+4 The FP NP versus #P dichotomy for #EO
+1.4 Our approaches
+In the proof of the dichotomy for #EO, we notice that the pinning signature∆ , which has
+the ability to fix a variable to 0 and another to 1 at the same time, is of great significance.
+Based on this observation, our proof basically consists of 2 parts, which are realizing∆ and
+proving a dichotomy with the existence of∆ .
+In the first part of the proof, we develop a generating process to realize∆ . Using this
+process, we may realize∆ , mainly through gadget constructions and polynomial interpolation.
+In particular, sometimes we also realize∆ by duplicating a single disposable∆ via gadget
+constructions. Nevertheless, there are circumstances in which it is not possible to realize
+∆ . However, it is fortunate that in such cases, either the signature set can induce the
+#P-hardness, or is composed of signatures with the ARS property ignoring a constant, whose
+complexity has already been classified by [9]. Consequently, we may assume the existence of
+∆ in the subsequent proofs.
+In the second part of the proof, we find out that the bitwise addition of three strings
+belonging to the support of the signature is the most appropriate criterion for the categoriza-
+tion of situations. For the hardness part of the proof, this criterion can capture the certificate
+indicating that the support is not affine, and thereby a reduction similar to that used in
+the dichotomy for #CSP can be applied. For the algorithm part of the proof, this criterion
+establishes the closure property to certain kind of signatures, which ultimately gives rise to
+an FPNP algorithm. Furthermore, the dichotomy for pure signatures demonstrated in [18]
+can also be applied under this criterion.
+Furthermore, by the fact that an orientation assigns equal number of 0’s and 1’s to the
+variables, a dichotomy forHW≥and HW≤signatures, respectively, can be obtained from
+the dichotomy for #EO. Moreover, the addition of a suitable number of pinning signatures
+can transform each single-weighted signature into anEO signature, and this process can
+consequently lead to a dichotomy for single-weighted signatures.
+1.5 Organization
+In Section 2, we introduce preliminaries needed in our proof. In Section 3, we present a
+detailed version of the dichotomy for #EO. In Section 4, we reduce#EOc to #EO. In Section
+5, we demonstrate anFPNP vs. #P dichotomy for #EOc. In Section 6, we extend the
+dichotomy for #EO to other signature sets. In Section 7, we conclude our results.
+2 Preliminary
+2.1 Definitions and notations
+A Boolean variableis defined over a Boolean domain, commonly represented by the symbols
+{0, 1}. This is sufficient for defining Boolean counting problems. However, in certain contexts,
+it is necessary to regard Boolean domain as the finite fieldF2 to identify particular classes of
+tractable signatures.
+A signaturef with r variables is a mapping from{0, 1}r to C, wheref(α) or fαdenotes
+the value off on input stringα. We briefly callαa string for convenience. The set of
+variables off is denoted byVar(f), and its size is denoted byarity(f). The support of f,
+denoted by supp(f), is the set of all strings on whichf takes non-zero values.
+For any binary stringαand s∈{0, 1}, #s(α) represents the number ofs’s inα. #1(α)
+is widely known as theHamming weightof α. We useLen(α) to denote the length andαi
+to denote theith bit ofα. We useαto denote thedual string of α, obtained by flipping
+B. Meng, J. Wang, M. Xia 5
+every bit ofα. We useDist(α,β) to denote thedistance betweenαand β, which means the
+number of different bits of the two strings. There are specific sets defined as the following:
+HW= ={α|#1(α) = #0(α)}and HW ≥={α|#1(α)≥#0(α)}.
+A signaturef is referred to as aHW= signature, or simply anEO signature, ifsupp(f)⊆
+HW=. By definition, this implies that arity(f) is even. The term "EO signature" was
+introduced in [8] as an abbreviation forEulerian Orientation signature. If supp(f)⊆HW≥,
+we refer tof as anHW≥signature. Similar notations are also defined, which replace "≥"
+with "≤", "<", or ">" in defining formulas and names.
+There is an important operation between strings calledbitwise addition, usually denoted
+by⊕. For two stringsαand β, the bitwise additionα⊕βis a stringγ, such thatγi =
+(αi +βi) mod 2. SupposeA is a set of strings. We callA affine when for any three strings
+α,β,γ∈A (no need to be distinct),α⊕β⊕γ∈A. For a setS of 01-strings of lengthk, the
+affine spanof S is defined as the minimal affine space that containsS. For a signaturef, we
+denote the affine span of its support by Span(f).
+A signaturef is symmetric when its values are merely related to the Hamming weight of
+inputs. In this context, a symmetric signaturef of arityr is represented as[f0,f 1,...,fr],
+where fi is the evaluation off on all input strings with Hamming weighti. By swapping
+the symbols in the Boolean domain, we obtain thedual signature off, denoted by˜f =
+[˜f0,˜f1,...,˜fr] = [fr,fr−1,...,f 0]. A signature f is called self-dual if f = ˜f. A special
+unary signature denoted by ∆ 0 is [1, 0], with its dual represented by∆ 1 = [0, 1]. The
+binary disequality signature, denoted by̸=2, is represented as[0, 1, 0], which is also self-dual.
+The notions of dual and self-dual can be naturally extended to asymmetric signatures, sets
+of signatures, Boolean domain counting problems, and tractable classes within dichotomy
+theorems.
+We denotetensor multiplicationof signatures by⊗.
+Several classes of frequently used signatures are defined as follows. We useEQ to represent
+the set ofequality signatures, whereEQ ={=1, =2,..., =r,...}. Here, =r represents an arity
+r signature [1, 0,..., 0, 1], taking the value 1 when the input is either all 0’s or all 1’s, and
+the value 0 otherwise. Adisequality signatureof arity 2d, denoted by̸=2d, is an asymmetric
+signature. Under the condition that its variables are specifically ordered, it takes value 1
+when x1 =x2 =...=xd̸=xd+1 =xd+2 =...=x2d and 0 otherwise. We useDEQ ={̸=2
+,̸=4,...,̸=2n,...}to denote the set of all disequality signatures. It is worth noticing that
+DEQ is closed under variable permutation. For any permutationπ∈S2d, a signaturef that
+takes value 1 whenxπ(1) =xπ(2) =...=xπ(d)̸=xπ(d+1) =xπ(d+2) =...=xπ(2d) (and 0
+otherwise) is also regarded as a disequality signature.
+An alternative definition of disequality signatures applies toEO signatures: iff is anEO
+signature of arity2dwith a stringα∈HW= such thatsupp(f) ={α,α}andf(α) =f(α) = 1,
+thenf is a disequality signature. It is straightforward to verify that this alternative definition
+is equivalent to the original one.
+f is called ageneralized disequality signature, denoted by̸=a,b
+2d , when it is anEO signature
+of arity 2d such that there exists a stringα∈HW= satisfying supp(f) ={α,α}, where
+f(α) =a and f(α) =b.
+Now we provides a formal definition of counting weighted Eulerian orientations problems
+(#EO problems), Holant problems, and counting constraint satisfaction problems (#CSP
+problems) and outlines their relationships. We largely refer to [6, Section 1.2] and [8, Section
+2.1].
+LetF denote a fixed finite set ofEO signatures. An EO-signature grid, Ω(G,π), overF
+6 The FP NP versus #P dichotomy for #EO
+is constructed from an Eulerian graphG = (V,E ) without isolated vertices, which means
+that every vertex has a positive even degree. Here,πassigns each vertexv∈V a signature
+fv∈F, along with a fixed linear order of its incident edges. The arity of eachfv matches the
+degree ofv, with each incident edge corresponding to a variable offv. For any Eulerian graph
+G, letEO(G) denote the set of all possible Eulerian orientations ofG. Given an orientation
+in EO(G), each edge is assigned a direction. For each edge with two ends, we assign0 to the
+head and 1 to the tail, so each Eulerian orientation corresponds to an assignment of Boolean
+values to the edges’ ends, ensuring an equal number of0’s and1’s incident to each vertex.
+Under this assignment, a vertexv contributes a weight, based onfv and the local assignment
+to its incident edges. Eachσ∈EO(G) provides an evaluation∏
+v∈V fv(σ|E(v)), whereσ|E(v)
+is the restriction ofσto the edges’ ends incident tov. More specifically speaking,σ|E(v)
+assigns 0 to an incoming edge and 1 to an outgoing edge.
+▶ Definition 3(#EO problems). [8] A #EO problem #EO(F), parameterized by a setF of
+EO signatures, is defined as follows: Given an instanceI, or equivalently anEO-signature
+grid Ω(G,π) overF, the output is the partition function ofΩ,
+Z(I) = #EOΩ =
+∑
+σ∈EO(G)
+∏
+v∈V
+fv(σ|E(v)).
+Six-vertex model can be seen as a special case of#EO problems defined by a single quaternary
+EO signature. Moreover, #EO problems constitute a subclass ofHolant problems. A (general)
+signature grid over an arbitrary setF of signatures (not limited toEO signatures) follows
+a similar definition. Here,G is a general graph, andπassigns a signature to each vertex,
+along with an order on its incident edges. We consider all possible{0, 1}-assignments
+σ:E(G)→{0, 1}|E|, and each assignmentσgives an evaluation∏
+v∈V fv(σ|E(v)).
+▶ Definition 4(Holant problems). A Holant problem, Holant(F), parameterized by a setF
+of complex-valued signatures, is defined as follows: Given an instanceI, or equivalently a
+signature grid Ω(G,π) overF, the output is the partition function ofΩ,
+Z(I) = HolantΩ =
+∑
+σ:E→{0,1}
+∏
+v∈V
+fv(σ|E(v)).
+The bipartite Holant problem Holant(F | G) is a specific case whereG is bipartite, say
+G(U,V,E ), with vertices inU assigned signatures fromF and vertices inV assigned signatures
+fromG. We denoteU as the left-hand side, or LHS for short. We denoteV as the right-hand
+side, or RHS for short.
+In this article, thesize of an instanceI = Ω(G,π) is defined as|G|. We use≤T and≡T
+to denote polynomial-time Turing reductions and equivalences, respectively. Notably, it is
+known that #EO problems can be represented as a special case of bipartiteHolant problems,
+which can be obtained by operating a holographic transformation byZ = 1√
+2
+(1 1
+i −i
+)
+on
+Holant problems.
+▶ Lemma 5. [8] #EO(F)≡T Holant(̸=2|F).
+▶ Lemma 6. [25] Holant(̸=2|F)≡T Holant(Z−1F).
+Finally, we introduce counting constraint satisfaction problems (#CSP).
+B. Meng, J. Wang, M. Xia 7
+▶ Definition 7. A #CSP problem is defined by a finite setF of signatures, where each
+signature has complex values and is defined on the Boolean domain. Given an instance of
+#CSP(F) consisting of a finite set of variables{x1,x 2,...,xn}and a set of clausesC. Each
+clause inC includes a signaturef fromF and a selection of variables from{x1,x 2,...,xn}
+(repetitions allowed). Suppose the ith clauseCi includes a signaturefi =f of arityk, thenk
+relevant variables arexi1,xi2,...,xik. The output is given by
+∑
+x1,x2,...,xn∈{0,1}
+∏
+(f,xi1,xi2,...,xik)∈C
+f(xi1,xi2,...,xik).
+It is well-known that#CSP problems can also be expressed asHolant problems. Specifically,
+from [6, Lemma 1.2], we have:
+▶ Lemma 8. [6] #CSP(F)≡T Holant(EQ∪F).
+2.2 Gadget construction and signature matrix
+This subsection introduces two fundamental concepts:gadget constructionand the signature
+matrix, both of which play critical roles in complexity classification through reduction
+techniques. Gadget construction is essential for constructing reductions, while the signature
+matrix provides an intuitive representation of a signature, linking gadget construction to
+matrix multiplication.
+LetF be a set of signatures. AnF-gate resembles a signature gridΩ(G,π) but differs in
+that G = (V,E,D ) includes two types of edges: internal edges (connecting 2 vertices inV
+and contained inE) and dangling edges (connecting to only 1 vertex inV and contained
+in D). AnF-gate represents a signature, with variables corresponding to the edges inD.
+Suppose|E|=n and|D|=m, and let the edges inE represent variables{x1,x 2,...,xn}
+while edges inD represent variables{y1,y 2,...,ym}. TheF-gate then defines a signaturef
+as:
+f(y1,y 2,...,ym) =
+∑
+σ:E→{0,1}
+∏
+v∈V
+fv(ˆσ|E(v)),
+where (y1,y 2,...,yn)∈{0, 1}n denotes the assignment to the variables represented by the
+dangling edges, ˆσextends σby incorporating this assignment, andπassigns fv to each
+vertexv∈V. The signaturef obtained by anF-gate is referred to as being realizable from
+F through gadget construction. When no internal edges exist in anF-gate, the resulting
+signature becomes the tensor product of several signatures. The operation called tensor
+multiplication is denoted by⊗.
+As shown in [6, Lemma 1.3], if a signaturef is realizable byF, it follows that:
+Holant(F)≡T Holant(F∪{f}),
+which is a powerful tool toward reductions. In addition, the closure property under gadget
+construction is widely used. As shown in [6, Chapter 3], the famous classesA and P are
+closed under gadget construction, implying that ifF⊆A or P, then allF-gates belong to
+A or P, respectively.
+In the setting of#EO problems, the concept ofF-gate is slightly different since#EO(F)
+can be viewed as a bipartiteHolant problems, Holant(̸=2|F). For each internal edge, an
+additional vertex assigned̸=2 is added, and we view this modified signature grid as a general
+Holant gate. In this paper,F-gate is defined this way by default in the analysis of#EO
+8 The FP NP versus #P dichotomy for #EO
+problems. As an application of gadget construction, in this paper, when we construct̸=a,b
+4
+with ab̸= 0, we can further construct̸=4 by connecting two edges between two copies of
+̸=a,b
+4 properly. We formalize this fact as a lemma for future reference.
+▶ Lemma 9. Suppose̸=a,b
+4 ∈F,ab̸= 0. Then #EO(F∪{̸=4})≤T #EO(F).
+Proof. Without loss of generality letsupp(̸=a,b
+4 ) ={0101, 1010}. By connecting the third
+variables of 2 copies of̸=a,b
+4 and then the fourth variables of these 2 copies via̸=2, we realize
+the̸=4 signature. ◀
+Next we introduce the matrix form of signatures. The signature matrix serves as an organized
+expression of all possible values for a given signature, providing a convenient way to calculate
+gates. Supposef is a signature mapping{0, 1}r to C. First, assign an order to all variables
+of f, sayx1,x 2,...,xr. The signature matrix with parameterl is a 2l×2r−l matrix for
+some integer0≤l≤r, where the values ofx1,x 2,...,xl form the row indices and those of
+xl+1,xl+2,...,xr form the column indices. The entries are corresponding values off given
+the input string that combines the row index and the column index. For even arity signatures,
+we often takel = r
+2. The matrix is denoted as M(f)x1x2···xl,xl+1xl+2···xr, sometimes for
+convenience we call itMf without causing ambiguity.
+We present two examples of signature matrix:
+1. Binary signature: For a binary signaturef = (f00,f 01,f 10,f 11), the matrix form is:
+Mf =Mx1,x2 =
+(f00 f01
+f10 f11
+)
+.
+2. Quaternary signature: For an arity-4 signatureg, we have:
+Mg =Mx1x2,x3x4 =
+
+
+g0000 g0001 g0010 g0011
+g0100 g0101 g0110 g0111
+g1000 g1001 g1010 g1011
+g1100 g1101 g1110 g1111
+
+.
+We then introduce the relation Between matrix multiplication and gadget construction.
+Consider twoF-gates f and g given some setF, of arityn and m, respectively. Let
+Var(f) = {x1,x 2,...,xn}and Var(g) = {y1,y 2,...,ym}. We construct a new gadget by
+connecting part of their dangling edges corresponding to subsets{xn−l+1,...,xn}and
+{y1,y 2,...,yl}of Var(f) and Var(g), respectively, wherel∈Z+. The resulting signatureh
+is also anF-gate withVar(h) ={x1,...,xn−l,yl+1,...,ym}, and by the definition of gadget
+construction and matrix multiplication, it is easily verified that:
+Mh =Mx1...xn−l,yl+1...ym =Mx1...xn−l,xn−l+1...xn·My1...yl,yl+1...ym =Mf·Mg.
+In the setting of#EO problems, each edge is viewed as̸=2 rather than =2, leading to the
+slightly different form:
+Mh =Mf·̸=⊗l
+2 ·Mg.
+This notation is frequently used in subsequent discussions without further explanation.
+Two particular constructions are especially notable:
+1. Adding self-loop: In#EO problems, adding a self-loop to a signaturef means selecting
+two variables, sayx1 and x2, and adding an internal edge between them to form a new
+signature f′. If Var(f) ={x1,x 2,...,xn}, the new signaturef′is:
+B. Meng, J. Wang, M. Xia 9
+f′(x3,...,xn) =f(0, 1,x 3,...,xn) +f(1, 0,x 3,...,xn),
+often denoted byfx1̸=x2.
+One can directly verify that gadget construction can be seen as a combination of tensor
+multiplication and adding self-loops. In addition, the result of adding a self-loop to a binary
+signature is a complex number, which is also the partition function of this simple signature
+grid.
+We then generalize this operation by a binary signature denoted by̸=a,b
+2 , which has the
+matrix form
+(0 a
+b 0
+)
+, and is referred to as a generalized binary disequality. The process,
+called adding a self-loop by̸=a,b
+2 on f, resembles previous operations but differs in that the
+internal edge is not directly added betweenx1 andx2. Instead, an additional vertex assigned
+̸=a,b
+2 is added, and we connect two dangling edges incident tox1 and x2 respectively to the
+dangling edges of̸=a,b
+2 . This construction can be viewed as a weighted self-loop. Notably,
+there are two possible situations, that is either
+f′(x3,...,xn) =af(0, 1,x 3,...,xn) +bf(1, 0,x 3,...,xn),
+or
+f′(x3,...,xn) =bf(0, 1,x 3,...,xn) +af(1, 0,x 3,...,xn),
+depending on the direction of̸=a,b
+2 .
+2. Pinning: The pinning operation fixes a variable to a specific value. In the setting of
+Holant or #CSP problems, pinning a variable to 0 or 1 is represented by connect∆ 0 = (1, 0)
+or ∆ 1 = (0, 1) to its corresponding edge. In#EO problems, pinning means adding a self-loop
+by̸=1,0
+2 . For variablesx and y in Var(f), by the pinning operation we can fixx to 1 andy
+to 0 at the same time, maintaining theEO property. The resulting signature is denoted by
+fxy=10. We can also fix more than2 variables of a signaturef, say(x1x2...xt) is fixed toσ,
+where σis a 01-string with lengtht, then the resulting signature is denoted byfx1x2...xt=σ,
+or briefly denoted byfσwithout causing ambiguity. In this paper, when referring to the
+pinning signature ∆ , we mean̸=1,0
+2 .
+2.3 Previous results
+In this section we present several previous results, which are foundations of our work.
+First we present the dichotomy theorem for#CSP problems. To describe the tractability
+conditions of signatures in#CSP problems, we introduce two significant tractable classes,A
+and P.
+LetX denotea (d+1)-dimensionalcolumnvectorover F2, suchthatX = (x1,x 2,...,xd, 1)T,
+and supposeA is a matrix overF2. The functionχAX takes value 1 whenAX = 0 and value
+0 otherwise. This function describes an affine relation on the variablesx1,x 2,...,xd.
+▶ Definition 10. We denote by A the set of signatures which have the form λχAX·
+iL1(X)+L2(X)+···+Ln(X), where i =√−1, λ∈C, n∈Z+, eachLj is a 0-1 indicator function
+of the form⟨αj,X⟩, whereαj is a (d + 1)-dimensional vector overF2, and the dot product
+⟨·,·⟩is computed overF2.
+▶ Definition 11. We denote byP the set of all signatures which can be expressed a product
+of unary signatures, binary equality signatures (=2) and binary disequality signatures (̸=2)
+(on not necessarily disjoint subsets of variables).
+10 The FP NP versus #P dichotomy for #EO
+Now we can state a pivotal theorem that classifies Boolean#CSP problems as follows:
+▶ Theorem 12([12, Theorem 3.1]). SupposeF is a finite set of signatures mapping Boolean
+inputs to complex numbers. IfF⊆A orF⊆P, then#CSP(F) is computable in polynomial
+time. Otherwise, #CSP(F) is #P-hard.
+Both classes A and P are self-dual and defined by signatures with affine supports.
+The requirement for affine supports is a necessary tractability condition here, with further
+restrictions on signature weights (forA) or more specialized form of support (forP).
+This pattern, which implies that the affine support may somehow contribute to tractability,
+will serve as a critical idea in the analysis of other dichotomies. Specifically, for the six-vertex
+model, this necessary structural conditions extend the idea of affine support in novel ways,
+as is observed in [9]. In the#EO framework, we can generalize this observation to a more
+universal form as follows, while present the relationship between#EO and #CSP problems.
+Letf be anEOsignature of arity2dand over a variable setVar(f) ={x1,x 2,...,x 2d}. For
+an arbitrary perfect pairingP of Var(f), sayP ={{xi1,xi2},{xi3,xi4},...,{xi2d−1,xi2d}},
+we defineEOP as the subset of{0, 1}2d satisfying the following condition:
+EOP ={α∈{0, 1}2d|αi1̸=αi2,...,αi2d−1̸=αi2d}.
+When supp(f)⊆EOP, f is referred to as anEOP signature, corresponding to a fixedP.
+If there exists some perfect pairingP for whichf meets this requirement, we refer tof as a
+pairwise opposite (defined specifically in [8]) orEOM signature.
+For a givenEOP signature f, we defineτf (or τ(f)) as the set consisting of arity-d
+signatures under the disequality constraints:
+τf ={f(xj1, 1−xj1,xj2, 1−xj2,...,xjd, 1−xjd)|xjk∈{xi2k−1,xi2k},k∈N+}.
+Notably, variables in one pair can be exchanged freely without changingP, therefore|τf|= 2d.
+An inverse mappingπcan also be defined. Supposeg is an arbitrary signature of arityd,
+πg (or π(g)) is defined as:
+πg(x1,y 1,x 2,y 2,...,xd,yd) =g(x1,x 2,...,xd)·̸=2 (x1,y 1)···̸=2 (xd,yd).
+It can be easily verified thatπg is anEOP signature corresponding to the perfect pairing
+P ={{x1,y 1},{x2,y 2},...,{xd,yd}}, in particular,τ(π(g)) contains g. πand τcan both
+maintain the property of having an affine support and the additional condition corresponding
+to A and P. The following lemma can be directly verified by definition.
+▶ Lemma 13. For anEOM signature (even anEO signature)f, f∈A (or P) is equivalent
+to thatτ(f)⊆A (or P). For a signatureg, g∈A (or P) is equivalent to thatπg∈A
+(or P).
+Furthermore,τ(π(g)) contains all signatures attainable from flipping part ofg’s variables
+using̸=2. This mapping ensures computational equivalence between#EO and #CSP with a
+free binary disequality.
+▶ Theorem 14([8, Theorem 6.1]). For any signature setF,
+#CSP(F)≡T #EO(π(F)).
+B. Meng, J. Wang, M. Xia 11
+This equivalence along with Theorem 12 implies a dichotomy for#EO problems defined
+by EOM signatures. The dichotomy with two tractable classes based onA and P types can
+be stated as follows: iff is anEOM signature, and it satisfies the conditionτ(f)⊆A or
+τ(f)⊆P, then #EO(f) is polynomial-time computable, otherwise it is #P-hard. Noticing
+that two tractable classes share the property thatf is EOM and each signature inτ(f) is
+affine. In fact, the former one is equivalent to thatf is EO and supp(f) is affine.
+▶ Lemma 15([8, Lemma 5.7] ). If an EO signaturef has affine support, thenf is a pairwise
+opposite signature (EOM signature).
+Now we introduce some definitions for the currently known dichotomies for specific#EO
+problems. M is the set of all ternary signatures whose supports only contain strings of
+Hamming weight exactly 1. In other words, a quaternaryEO signature f∈M⊗∆ 1, if and
+only ifsupp(f)⊆{1}×{100, 010, 001}={1100, 1010, 1001}. ˜M is defined similarly, except
+that the Hamming weights of the supports are exactly 2. We also define
+MA ={f∈M|the quotient of any two non-zero values off belongs to{±1,±i}}.
+MA⊗∆ 1 can be seen asM⊗∆ 1 with the A type requirement. Similarly, we define
+˜MA ={f∈˜M|the quotient of any two non-zero values of f belongs to{±1,±i}}.
+With these definitions, we present the dichotomy for the six-vertex model [9], along with
+its generalized form that is#EO problems defined by a set of binary or quaternary signatures
+[18].
+▶ Theorem 16([9]). Let f be a quaternaryEO signature, then Holant(̸=2|f) is #P-hard
+except for the following cases:
+a. f∈P (equivalently,f∈EOM and τ(f)⊆P);
+b. f∈A (equivalently,f∈EOM and τ(f)⊆A);
+c. f∈M⊗∆ 1;
+d. f∈˜M⊗∆ 0;
+in which casesHolant(̸=2|f) is computable in polynomial time.
+▶ Theorem 17([18]). SupposeF is a set of Eulerian signatures of arity less than or equal
+to 4, mapping Boolean inputs to complex numbers. ThenHolant(̸=2|F) is #P-hard unless
+one of the following conditions holds:
+a.F⊆P∪M⊗∆ 1;
+b.F⊆A∪MA⊗∆ 1;
+c.F⊆P∪˜M⊗∆ 0;
+d.F⊆A∪˜MA⊗∆ 0,
+in which cases the problem can be computed in polynomial time.
+In addition, some progress has been made towardsEO signatures with larger arity. A
+special property is called ARS. A signaturef satisfying ARS [8] if and only iff(α) =f(α),
+where f(α) denotes the complex conjugation off(α). The dichotomy for signatures with
+ARS is presented as follows.
+▶ Theorem 18([8, Theorem 3.1] ). LetF be a set ofEO signatures satisfying ARS. Then
+#EO(F) is #P-hard unlessF ⊆A orF ⊆P, in which cases it can be computed in
+polynomial time.
+12 The FP NP versus #P dichotomy for #EO
+Another typical kind ofEO signatures is introduced in [18], called the pure signatures.
+▶ Definition 19. An EO signaturef is pure-up, ifSpan(f)⊆HW≥. A signature setF is
+a pure-up EO signature, if each signature in it is pure-up. Similarly, AnEO signaturef is
+pure-down, ifSpan(f)⊆HW≤. A signature setF is pure-down, if each signature in it is a
+pure-down EO signature.
+Both pure-up and pure-down signatures are collectively referred to as pure signatures.
+We denote the property of pure-up by the symbol∀k↑, which means for each odd integer
+k, the bitwise addition of any arbitraryk strings fromsupp(f) is inHW≥. Similarly, the
+property pure-down is denoted by∀k↓.
+We now introduce a significant definition, which looses the restriction on supports but
+require the affine part to be more specific.
+▶ Definition 20.Supposef is an arity2d EO signature andS⊆HW=. f|S is the restriction
+of f to S, which means whenα∈S, f|S(α) =f(α), otherwisef|S(α) = 0.
+If for any perfect pairingP of Var(f), f|EOP∈A, then we say thatf is EOA.
+Similarly, if for any perfect pairingP of Var(f), f|EOP∈P, thenf is EOP.
+The following lemma can be easily verified by Definition 20, 10 and 11.
+▶ Lemma 21. Supposef is an EO signature. Iff∈A, thenf is EOA. Iff∈P, thenf
+is EOP.
+Given these definitions, we present the following dichotomy for pure signatures.
+▶ Theorem 22([18]). SupposeF is a set of pure-up (or pure-down)EO signatures. Then
+#EO(F) is #P-hard unless all signatures inF are EOA or all of them areEOP, in which
+cases it can be computed in polynomial time.
+Another concept named rebalancing is also defined in [18]. In addition, a polynomial-time
+algorithm is also presented with some conditions.
+▶ Definition 23. An EO signature f of arity 2d, is called 0-rebalancing(1-rebalancing
+respectively), when the following recursive conditions are met.
+d = 0: No restriction.
+d≥1: For any variablex in X = Var(f), there exists a variabley =ψ(x) different from
+x, such that for anyα∈{0, 1}X, ifαx =αy = 0(αx =αy = 1 respectively) thenf(α) = 0.
+Besides, the arity2d−2 signaturefx=0,y=1 is 0-rebalancing(fx=1,y=0 is 1-rebalancing
+respectively).
+For completeness we view all nontrivial signatures of arity 0, which is a non-zero constant,
+as 0-rebalancing(1-rebalancing) signatures. Moreover, anEO signature setF is said to be
+0-rebalancing(1-rebalancing respectively) if each signature inF is 0-rebalancing(1-rebalancing
+respectively).
+▶ Theorem 24([18]). The #EO problem, defined over a finite setF of Boolean signatures,
+is solvable in polynomial time if eachf∈Fis 0-rebalancing (or 1-rebalancing), and all
+signatures inF belong to EOA or all belong toEOP.
+In this paper, we aim to make a complete complexity classification for complex weighted
+#EO problems, based on the hypothesis thatFPNP̸= #P. We remark that the algorithm for
+rebalancing signatures are covered by this dichotomy, however the algorithm to be present in
+Section 5 needs a specific NP oracle.
+B. Meng, J. Wang, M. Xia 13
+3 Detailed version of Theorem 2
+We first introduce some definitions of great significance, which is also needed in the detailed
+version of our main result.
+▶ Definition 25. For an EO signaturef, if there existsα,β,γ∈supp(f) and δ=α⊕β⊕γ,
+such thatδ∈HW= and δ /∈supp(f), then we sayf is a∃3 ↛ signature. Ifδ∈HW> (or
+δ∈HW<) instead, we sayf is a∃3↑signature (or a∃3↓signature). Iff is neither a∃3 ↛
+signature nor a∃3↑signature (or a∃3↓signature), we say it is a∀3 signature (or a∀3
+signature).
+We remark that these definitions also motivate us to denote the pure-up signature as a
+∀k↑signature. Besides, a signature is both∀3 and∀3 if and only if it is anEOM signature
+by definition. Our main result is presented as follows.
+▶ Theorem 26. LetF be a set ofEO signatures. Then #EO(F) is #P-hard, unless all
+signatures inF are∀3 signatures or all signatures inF are∀3 signatures, andF⊆EOA
+orF⊆EOP, in which cases it is in FPNP.
+In particular, if the aforementioned condition holds, then#EO(F) is polynomial-time
+computable, unlessF is neither 0-rebalancing nor 1-rebalancing.
+We remark that Theorem 26 also presents the largest class of signature sets that induce
+a polynomial-time algorithm in #EO and have been identified to date, which is originally
+established in [18]. Using Theorem 26, two more dichotomies for specific signature sets can
+be obtained as corollaries, stated as Corollary 67 and 68. The proof of 26 involves two
+theorems proved in Section 4 and 5 respectively, stated as follows. We use#EOc(F) to
+denote #EO(F∪{∆}).
+▶ Theorem 27. SupposeF is a set ofEO signatures. Then one of the following holds:
+1. All signatures inF are EO signatures satisfying ARS, ignoring a constant;
+2. #EOc(F)≡T #EO(F).
+▶ Theorem 28(Dichotomy for #EOc). LetF be a set ofEO signatures. Then #EOc(F)
+is #P-hard, unless all signatures inF are∀3 signatures or all signatures inF are∀3
+signatures, andF⊆EOA orF⊆EOP, in which cases it is in FPNP.
+Proof of Theorem 26.The polynomial-time computable result is obtained from Theorem
+24. Now we focus on theFPNP vs. #P dichotomy. TheFPNP algorithm is given by Lemma
+55. By Theorem 27, one of the following cases holds.
+Case 1: All signatures inF are EO signatures satisfying ARS, ignoring a constant. If
+furtherF⊆A orF⊆P, then all signatures inF have affine supports. By Lemma 15,
+all signatures inF are EOM, and consequently are both∀3 and∀3 . Furthermore, all
+signatures inF are EOA or EOP by Lemma 21. Consequently, ifF does not satisfy the
+criteria for theFPNP algorithm, thenF ⊈ A andF ⊈ P by the inverse negative proposition.
+In this case we are done by Theorem 18.
+Case 2: #EOc(F)≡T #EO(F). Then we are done by Theorem 28. ◀
+4 Reduce #EOc to #EO
+In this section, we prove Theorem 27. It should be noted that in the subsequent analysis, the
+proof sometimes demonstrates that#EO(F) is #P-hard. In this case,#EOc(F)≡T #EO(F)
+holds by the trivial reduction.
+14 The FP NP versus #P dichotomy for #EO
+Firstly, we define a specific generating process to construct binary signatures with a single
+signature f in Section 4.1. These generated binary signatures can be regarded as materials
+to realize ∆ . Based on what kind of binary signatures can be generated, our proof is then
+separated into three parts.
+4.1 A specific generating process
+We begin with defining the normalization for a non-zero binary signature. We can suppose
+without loss of generality that a nonzero binary signature is of the form̸=a,b
+2 , wherea̸= 0
+and|a|>|b|. Except for changing the partition function by a constant, it works equivalently
+as̸=1,r
+2 , wherer = b
+a and|r|≤1. As a result,̸=1,r
+2 is regarded as thenormalized formof
+̸=a,b
+2 . In this subsection, a root of unity is briefly called a root. Notably, the whole setting is
+under #EOproblems, which implies that all connecting operations are using̸=2. We usen to
+denote the size of the instanceI.
+▶ Definition 29(Generating process). Given a signaturef of arity 2d, we recursively define
+a sequence of sets:
+I. B0(f) ={̸=2}.
+II. GivenBi−1(f), Ai(f) is composed of all binary signatures, realized by addingd−1
+self-loops on arbitrary2d−2 variables off by signatures arbitrarily chosen fromBi−1(f).
+III. GivenAi(f),Bi(f) is defined as{̸=
+1,
+∏
+1≤j≤krj
+2 |̸=1,rj
+2 ∈Ai(f) and k∈Z+}. Signatures
+in Bi(f) can be realized by connectingk signatures fromAi(f) as a path.
+LetB(f) =
+∞⋃
+i=1
+Bi. The whole process is called the generating process off.
+Based on the generating process, the proof is structured as follows.
+1. If a binary signature̸=1,r
+2 can be generated by somef∈F, wherer is not a root of unity,
+then we realize∆ by the standard polynomial interpolation reduction in Section 4.2.
+2. If we can generate infinite binary signatures with somef∈F, and each of them can
+be normalized to̸=1,r
+2 with r as a root of unity, we will analyze the efficiency of the
+generating process and evaluating the size of gadget constructions, then operate the
+polynomial-time interpolation reduction in Section 4.3.
+3. If we can only generate a finite number of different binary signatures for eachf∈F, and
+each generated signature can be normalized to̸=1,r
+2 with r as a root of unity, then we
+make classifications and deal with each case in Section 4.4.
+We remark that for the second case, the generating process may not stop, but we will
+show that we only need polynomial time to generate all the signatures we need for the
+interpolation forI. Furthermore, ifB(f) is finite, then there exists a constanti≥0 such
+that Bi(f) = Bi+1(f), and we stop the generating process at the(i + 1)th step inO(1)
+time. In this case, we then choose the next signature fromF and perform the generating
+process. Consequently, given a signature setF, we can always stop the generating process in
+polynomial time, and decide which statement of Theorem 27 we apply.
+4.2 Not a root of unity
+Suppose x is not a root and̸=1,x
+2 is generated in theith step by somef∈F. Therefore,
+givenf, we can realize̸=1,x
+2 of constant size, hence#EO(F∪{̸=1,x
+2 })≤T #EO(F). In the
+following, we prove that#EOc(F)≤T #EO(F∪{̸=1,x
+2 }). Ifx = 0, the reduction trivially
+holds. Now we assumex̸= 0.
+B. Meng, J. Wang, M. Xia 15
+Suppose I is an instance of#EOc(F) withn vertices, and∆ appears m times inI, where
+m≤n. When we replace each∆ in I with̸=1,a
+2 , wherea is a complex variable, Z(I,a ) can
+be viewed as anm-arity polynomial ofa. In other words, Z(I,a ) =∑m
+i=0ciai, in whichci is
+the sum of the evaluations in which there arei pairs of variables assigned the value to make
+̸=1,a
+2 contribute ana to Z(I). In particular, Z(I) = Z(I, 0).
+By connectingi copies of̸=1,x
+2 we can get̸=1,xi
+2 , i∈{1, 2,...,m+ 1}. After replacing
+each ∆ with̸=1,xi
+2 , the number of vertices in the modified instance areO(n2), which is a
+polynomial ofn. Then we use thesem + 1 binary signatures to replace∆ in I respectively,
+which actually forms a linear system
+
+
+x0 x1 ... x m
+x1×0 x1×1 ... x1×m
+... ... ... ...
+xm×0 xm×1 ... xm×m
+
+
+
+
+c0
+c1
+...
+cm
+
+=
+
+
+Z(I,x )
+Z(I,x 2)
+...
+Z(I,xm)
+
+.
+We denote this linear system asAX = Z for short. Using the oracle of#EO(f∪{̸=1,x
+2 }), we
+know the value ofZ. Furthermore, the coefficient matrixA is Vandermonde sincex is not
+a root and allxi’s are distinct. AsA is invertible, we can solveX in polynomial time. In
+particular, Z(I) =c0. As a result,#EOc(F)≤T #EO(f∪{̸=1,x
+2 })≤T #EO(F).It’s obvious
+that #EO(F)≤T #EOc(F), hence we have#EOc(F)≡T #EO(F).
+4.3 Infinitely many roots of unity
+The content of this subsection happens to be highly related to the computation models.
+We study complex weighted version of this problem, to capture nontrivial, general forms of
+certain tractable classes. However, we encounter with a gap between the standard discrete
+Turing Machine model and the representation and computation of complex numbers. Rather
+than addressing this gap in detail, we outline two approaches to overcome this difficulty.
+One approach is to consider an finite extension field ofQ, which includes all weights
+appearing in the problem, following the discussion on models of computation in [6, Section
+1.4]. In the commonly used computational model, we can restrict all possible weights to
+algebraic numbers instead of the entire field of complex numbers. In this case, as the function
+f involves only finitely many algebraic numbers, the relevant extension field of the problem
+#EO(f) would be a finite algebraic extension containing all possible weights of all gadgets.
+This restriction prevents the occurrence of infinitely many roots. Consequently, when focusing
+on algebraic numbers, the problem naturally fits in the standard discrete Turing Machine
+model, and further discussion within this subsection becomes unnecessary.
+Alternatively, we may consider computational models capable of handling real numbers
+directly, representing complex numbers as two-dimensional vectors. For instance, the Real
+RAM model as discussed in [23] could be used for computations involving real numbers.
+For our purposes in this subsection, a “Complex RAM” model would be required, where
+basic operations on complex numbers, such as addition, multiplication, and the logarithm
+function, are treated as single computational steps. Assume such model is available, in the
+following we will finish the reduction from the perspective of mathematics, avoiding any
+further discussions on the computational model.
+The general reduction framework also relies on polynomial interpolation, similar to the
+process described in Section 4.2. We also needN =n + 1different binary signatures, wheren
+is the size of instance given. We only have to show how to get them efficiently in the current
+situation.
+16 The FP NP versus #P dichotomy for #EO
+Now there are infinitely many binary signatures that can be generated. All of them have
+parameters as roots of unity after normalization, that is, they are all of the form̸=1,x
+2 , where
+x is a root of unity.
+We first characterize the structure of all sets generated. By Definition 29 we have that
+when there is ani satisfying Bi = Bi+1, then allBj with j > iare the same. At this
+situation, the number of signatures generated is finite, which can be covered by Section 4.4.
+Therefore, for alli∈N+, Bi ⫋Bi+1. In addition, since there are finitely many ways to use
+Bi to constructAi+1 and all members ofAi+1 are parameterized by roots of unity, by spiral
+induction we have allAi and Bi are finite sets.
+For preparation, we introduce a lemma that characterize how roots of unity interact.
+▶ Lemma 30. Assumea and b are relatively prime positive integers, for any givent, there
+exist 0≤r<a and 0≤s<b , such that{r
+a + s
+b}={t
+ab}. In the statement{·}denotes the
+decimal part function. Additionally,r and s can be found inO(ab) time.
+Proof. Without loss of generality, we can assume that0≤t<ab , then the equation becomes
+{r
+a + s
+b}= t
+ab
+After reduction of fractions and with the basic arithmetic property of{·}we have
+as +br≡t (mod ab) (1)
+With Bézout’s identity and the method of successive division, we can get the answerr′and
+s′for the equationas +br =t, in whichr′, s′are integers, inO(ab) time. Here the time
+complexity can be further optimized, butO(ab) is sufficient for our analysis. Then we adjust
+these two answers to what we want by lettingr′′=r′+k1a and s′′=s′+k2b, in whichk1,
+k2 are integers. Noticing that for anyk1 and k2, r′′and s′′are answers to 1, therefore, we
+can assign proper values to them to make0≤r<a and 0≤s<b . The adjusting also can
+be done inO(ab) time. ◀
+▶ Remark 31. We use gcd to denote the greatest common divisor and lcm to denote the least
+common multiple. Noticing that whengcd(p,q ) = 1,{0
+p, 1
+p,..., p−1
+p }={0·q
+p , q
+p,..., (p−1)q
+p }.
+Therefore, as a corollary of lemma 30, for any givent, there exist0≤r<a and 0≤s<b ,
+such that{rc
+a + sd
+b}={t
+ab}, wheregcd(a,c ) = gcd(b,d ) = 1. r and s can also be found in
+O(ab) time.
+▶ Remark 32. Another thing we have to notice is that there are exactlyab choices of(r,s),
+which is the same number as the number of integers in the range of[0,ab ), so they are
+one-to-one correspondence.
+When a and b are not relatively prime, assumeb =b′d, whered = gcd(a,b ). We can see
+that{{s
+b + r
+a}|0≤r <a}={{s+b′
+b + r
+a}|0≤r <a}is correct for all0≤s≤b′−1. And
+{{s
+b + r
+a}|0≤r<a, 0≤s≤b′−1}has exactlyab′= lcm(a,b ) members, therefore they are
+also one-to-one corresponding to{t
+lcm(a,b)|0≤t< lcm(a,b )}, which is important when we
+need to list all members in the latter set.
+Furthermore,{{sd
+b +r
+a}|0≤r<a, 0≤s≤b′−1}also has exactlyab′= lcm(a,b ) different
+terms, wheregcd(b,d ) = 1. Suppose otherwise, there exist{sd
+b + r
+a}={s′d
+b + r′
+a}, where
+0≤r,r′<a, 0≤s,s′≤b′−1 and (r,s)̸= (r′,s′). Then (s−s′)da′= (r′−r)b′+klcm(a,b )
+is correct for some integerk. We haveb′|(s−s′) so s−s′must be 0. Thena|(r′−r) so
+r′−r = 0, which causes a contradiction.
+B. Meng, J. Wang, M. Xia 17
+We now make a basic assumption that there is af∈Fwith the property that by the
+generating process it can generate infinitely many binary signatures, parameterized by roots
+of unity. The reason why we can make this assumption without loss of generality is our main
+concern is to restrict the increasing size of gadgets, so we won’t worry about using signatures
+other thanf to generate binary signatures. Because every time we use a new signature in
+F to generate signatures, the size of gadgets begin to increase from 1 all over again, as is
+implied by the proof in the rest of this subsection.
+Assume the arity off is 2d. The generating process gives a series of finite setsB0,A1,B1,
+A2, B2, .... Parameters of all signatures in those sets are roots of unity. For convenience, in
+the rest of this subsection, we briefly denote̸=1,e
+2πqi
+p
+2 as q
+p, without causing ambiguity.
+By Definition 29 and Lemma 30 we have that for alli∈N,Bi contains all binary signatures
+parameterized by roots of unity with the same order. By the generator of one set we mean
+signatures that can be combined to generate the whole set. We use the generator ofBi to
+denote it, such asBi = (1, q1
+p1
+,...,
+qbi−1
+pbi−1
+), wherebi is the number of generators. Naturally,
+Bi contains all signatures parameterized by roots of unity of the order lcm(p1,...,pbi−1).
+We modify the generating process for clearer analysis. We change the II step into: Given
+Bi−1 = (1, q1
+p1
+,...,
+qbi−1−1
+pbi−1−1
+), wherei∈N and i> 0, we enumerate all possible ways to add
+(d−1) self-loops onf, until a binary signatures̸=
+1,q
+p
+2 satisfying p ∤ lcm(p1,...,pbi−1−1) is
+found. We add̸=
+1,q
+p
+2 toBi−1, and call itAi. The other part of the process remains unchanged.
+Intuitively speaking, instead of finding all new binary signatures usingBi−1, we find one
+and stop. It can be verified that following the modified generating process, the number of
+generators increases exactly by 1 fromBi−1 to Bi, that isbi =i + 1.
+Notably, in the new generating process we delay the time of the appearance of some
+binary signatures, which will only cause the size of gadgets to be larger, therefore making
+this modification is reasonable. This statement will also be illustrated by the following
+computation of the size of gadgets.
+Now we begin to analyze the size of gadgets. Through the generating process, Sup-
+pose Bi = (1, q1
+p1
+,..., qi
+pi
+), which implies thatBi contains all roots of unity with the order
+lcm(p1,...,pi) and the new signature added toAi is qi
+pi
+. Suppose any signatures inBi can
+be represented by a gadget with at mostni vertices, andAi with at mostmi vertices. There
+exists ani0 such thatBi0 contains more thann roots of unity. Sincepi ∤ lcm(p1,...,pi−1),
+we havei0≤logn
+2 + 2.
+For all 1≤i≤i0, we letNi = lcm(p1,...,pi) that is also the size ofBi. Naturally
+we haveNi0≥n and Ni = Ni−1pi/gcd(Ni−1,pi). We regardpi/gcd(Ni−1,pi) as a whole
+named p′
+i and particularlyp′
+1 =p1. For any arbitrary signaturek
+Ni
+in Bi, where 0≤k<N i,
+by repeatedly using the third paragraph of 32 from the backward, we know that for each
+signature we need at mostp′
+j copies of thepj signature for all1≤j≤i combined to gadget
+construct it.
+By the analysis above, we havemi ≤(d−1)ni−1 + 1 and ni ≤∑i
+j=0mjp′
+j. Let
+n0 = 1 and p′
+0 =p0 = 1. We now use induction to prove thatni≤∑i
+j=0dj∏j
+k=0p′
+k and
+mi≤di∏i−1
+k=1p′
+k. It can be verified that wheni = 1 the statement is correct. Assumeni−1
+satisfies the disequality, then
+mi≤(d−1)ni−1 + 1 = (d−1)
+i−1∑
+j=0
+dj
+j∏
+k=0
+p′
+k + 1≤di
+i−1∏
+k=0
+p′
+k,
+and
+18 The FP NP versus #P dichotomy for #EO
+ni≤
+i∑
+j=0
+mjp′
+j≤
+i∑
+j=0
+dj
+j∏
+k=0
+p′
+k.
+Then the spiral induction is done. Furthermore, ifi<i 0, we havemi≤ndi.
+Since i0≤logn
+2 + 2 and i0 is the smallest integer such that|Bi0|>n , all members inAi0
+can be constructed by less thandi0
+∏i0−1
+k=0 p′
+k≤ndi0 vertices, which are all poly(n)-size. For
+the newly constructed signaturepi0∈Ai0, we first let there are0 copies ofpi0, then we can
+get Ni0−1 independent signatures using poly(n)-size gadget constructions. Then we let there
+are 1 copy, and so on, until we getn + 1signatures. According to Lemma 30 and Remark 32,
+we get independentn + 1signature with this method. The number of vertices in their gadget
+constructions are smaller thannmi0 +ni0−1≤n2di0 +∑i0−1
+j=0 dj∏j
+k=0p′
+k <n 2di0 +d2i0. It’s
+still poly(n)-size.
+Noticing that the enumeration ofAi by Bi−1 are essentially listing poly(n) members,
+connecting them and comparing them, under the computation model with the logarithm
+function treated as single computation steps. Combining all analysis above, the whole process
+can be done in poly(n) time. Therefore, combined with polynomial interpolation method, at
+this situation, we get#EOc(F)≡T #EO(F).
+4.4 Finitely many roots of unity
+Before the main part of this subsection, we give the definition of a specific#EO problems,
+where some of its signatures can only appear a limited number of times. We then prove some
+useful reduction results based on it. It’s noticeable that this definition is an extension of [25,
+Definition 8.8].
+▶ Definition 33. LetF be a set ofEO signatures andf be a EO signature. The problem
+#EO(F,f≤k) contains all instances of#EO(F∪{f}) where the signaturef appears at most
+k times.
+▶ Lemma 34. LetF be a finite set ofEO signatures. We have
+#EO(F, ∆≤1)≤T #EO(F).
+Proof. Suppose I1 is an instance of#EO(F, ∆≤1). If ∆ does not appear inI1, the reduction
+trivially holds. Now suppose∆ appears exactly once, and it is incident tox1 and x2 via̸=2.
+That is to say the input of∆ is x1,x2. Also let∆(x1,x2) = 1 when x1 = 0,x 2 = 1. In other
+words, (x1,x 2) is pinned to(0, 1) in I1. We denote the partition functionZ(I1) byZ1.
+Now we construct another instanceI2 by reversing the direction of∆ in I1. In other
+words, I2 is same asI1 except that ∆(x1,x2) = 1 when x1 = 1,x 2 = 0. We denote the
+partition functionZ(I2) byZ2. We then construct an instanceI3 by removing∆ from I1
+and connectx1,x 2 via̸=2. We denote the partition functionZ(I3) byZ3. By Definition 3
+we haveZ3 =Z1 +Z2. In addition, by removing∆ from I1, we construct a binaryF-gate
+whose signature is̸=Z1,Z2
+2 .
+If the signatures of all binaryF-gates are of the formλ̸=2,λ∈C, then we have
+Z1 =Z2 and consequentlyZ1 =Z3/2. AsI3 is an instance of#EO(F), the reduction holds.
+Consequently we may assume there exists a binaryF-gate whose signature is̸=a,b
+2 ,a̸=b .
+We also remark that the size of thisF-gate is bounded by a constant due to the existence of
+the corresponding gadget construction. Now we construct another instanceI4 by replacing∆
+B. Meng, J. Wang, M. Xia 19
+in I1 with̸=a,b
+2 . We denote the partition functionZ(I4) byZ4 and we haveZ4 =aZ1 +bZ2.
+Since a̸=b, together withZ3 =Z1 +Z2 we can solve the linear equations to computeZ1.
+As I4 is also an instance of#EO(F), the reduction holds. ◀
+▶ Remark 35. In fact, deciding whether all binaryF-gates are of the formλ̸=2,λ∈C can
+be done in constant time. We will explain this in Section 4.4.2.
+▶ Lemma 36([8, Lemma 5.1]). #EO(F∪DEQ)≤T #EO(F∪{̸=4}).
+▶Lemma37. LetF is a finite set ofEO signatures and̸=4∈F. Then #EOc(F)≤T #EO(F).
+Proof. By Lemma 34 and 36 we have #EO(F∪DEQ, ∆≤1) ≤T #EO(F∪DEQ) ≤T
+#EO(F∪{̸=4}). Now we realize unlimited∆ by a single∆ and a signature inDEQ. Given
+an instance of#EOc(F), assume ∆ has appearedk times. Then by properly connecting two
+edges of a∆ to a̸=2k+2, we can realize the signature∆⊗k, which meets our requirements.
+Therefore we have#EOc(F)≤T #EO(F). ◀
+We also need the following lemma in our proof, whose idea comes from [17].
+▶ Lemma 38. Letf be a signature andF be a set of signatures. Then for anyd∈N+,
+Holant(̸=2|F∪{f})≡T Holant(̸=2|F∪{f⊗d})
+Proof. We prove this by induction. The lemma is trivial whend = 1. Assume the lemma
+holds for all1≤d<k . Now we consider the case whend =k. In the following, we prove
+Holant(̸=2|F∪{f})≤T Holant(̸=2|F∪{f⊗k}) as Holant(̸=2|F∪{f⊗k})≤T Holant(̸=2|
+F∪{f}) is trivial.
+Suppose there exists an instanceI of Holant(̸=2|F∪{f}) such that Z(I)̸= 0 and f
+appears ak−b times inI, wherea∈N+ and 0<b<k are two integers. Usinga manyf⊗k
+and signatures fromF, we may construct the instanceI withb manyf unused. This actually
+forms a gadget on RHS, whose signature isf⊗b multiplied by Z(I). Then by induction
+we haveHolant(̸=2|F∪{f})≤T Holant(̸=2|F∪{f⊗b})≤T Holant(̸=2|F∪{f⊗k}) since
+0<b<k .
+Otherwise, for any instanceI of Holant(̸=2|F∪{f}), iff doesn’t appear a multiple
+of k times, Z(I) = 0 and the reduction is trivial. And if f appears a multiple of k
+times, we simply replace eachk many f in I with a f⊗k signature. This implies that
+Holant(̸=2|F∪{f})≤T Holant(̸=2|F∪{f⊗k}). ◀
+We also present a lemma to deal with a special case in our analysis.
+▶ Lemma 39. Suppose f is a non-trivial EO signature of arity2d >2 and α∈supp(f).
+Then there exists a signatureg obtained by adding a self-loop such thatg is non-trivial.
+Proof. Without loss of generality, we writeαas α= 100δ. Considerβ= 010δand γ= 001δ.
+Let f(α) = x, f(β) = y and f(γ) = z. If x +y̸= 0, we add a self-loop onx1 and x2 to
+realize a signatureg such thatg(0δ)̸= 0. If x +z̸= 0 (or y +z̸= 0), we similarly add a
+self-loop onx1 and x3 (or onx2 and x3) to realizeg. If x +z =x +y =y +z = 0, then
+x = 0, which contradictsα∈supp(f). ◀
+Now we are ready to analyze the following cases.
+20 The FP NP versus #P dichotomy for #EO
+4.4.1 Generating more than 2 signatures
+We consider the case that there exists an integerk≥3 such thatB(f) ={̸=1,ω
+2 |ωk = 1},
+where f∈F. We commence with the property of suchf.
+▶ Lemma 40. Assumef is a signature with even arity andk≥3 is an integer. IfB(f) =
+{̸=1,ω
+2 |ωk = 1}, then for arbitraryα,β∈supp(f), f(α)k =f(α)k, f(α)f(α) =f(β)f(β).
+Proof. We actually prove a stronger statement: Assumef is a signature with even arity
+and k≥3 is an integer. IfB(f)⊆{̸=1,ω
+2 |ωk = 1}, and all signatures in{̸=1,ω
+2 |ωk = 1}are
+available (meaning that these signatures can be used in the generating process), then for
+arbitrary α,β∈supp(f), f(α)k =f(α)k, f(α)f(α) =f(β)f(β).
+We prove this statement by induction. First, we prove thatf(α)k =f(α)k. We can easily
+verify that for binaryEO signatures the statement trivially holds. Assume for allf of arity
+less than 2d the statement holds, whered≥2. Now suppose arity(f) = 2d.
+Without loss of generality, supposeα= 100δ,β= 010δ,γ= 001δare three strings with
+Hamming weightd. Supposef(α) =a, f(α) =a′, f(β) =b, f(β) =b′, f(γ) =c, f(γ) =c′,.
+We add a self-loop betweenx1 and x2 via̸=1,ω
+2 ,ωk = 1 to realizef12, then by the induction
+hypothesis we have(a+ωb)k =fk
+12(0δ) =fk
+12(0δ) = (ωa′+b′)k sinceB(f12)⊆{̸=1,ω
+2 |ωk = 1}.
+By the Binomial Formula Expansion we have:
+(ak +bk−a′k−b′k)+ω
+( k
+1
+)
+(ak−1b−a′b′k−1)+...+ωk−1
+( k
+k−1
+)
+(abk−1−a′k−1b′) = 0.
+Suppose ω0 =e
+2πi
+k . With all possible assignments ofωwe have:
+
+
+1 1 1 ... 1
+1 ω0 ω2
+0 ... ωk−1
+0
+1 ω2
+0 ω4
+0 ... ω2(k−1)
+0
+...
+...
+... ... ...
+1 ωk−1
+0 ω2(k−1)
+0 ... ω(k−1)2
+0
+
+
+
+
+ak +bk−a′k−b′k
+( k
+1
+)
+(ak−1b−a′b′k−1)
+( k
+2
+)
+(ak−2b2−a′2b′k−2)
+...( k
+k−1
+)
+(abk−1−a′k−1b′)
+
+
+= 0.
+The coefficient matrix is a Vandermonde matrix, thus the system of linear equations has only
+one solution 0. We haveak +bk =a′k +b′k andak−ibi =a′ib′k−i, where1≤i≤k−1,i∈N.
+Similarly by adding a self-loop between(x1,x 3)and (x2,x 3)respectively, we haveak+ck =
+a′k +c′k andbk +ck =b′k +c′k. Solving these linear equations we haveak =a′k. The choice
+of αis arbitrary, so for allα∈supp(f), f(α)k =f(α)k, the first property is proved.
+Then, we prove thatf(α)f(α) = f(β)f(β). We prove this property by introducing
+another induction. Ifα,β∈supp(f), thena,b̸= 0. Since k≥3, we haveak−1b =a′b′k−1
+and ak−2b2 = a′2b′k−2, and consequently aa′= bb′. Here we actually proved that for
+α,β∈supp(f) with Dist(α,β) = 2, f(α)f(α) =f(β)f(β), which is the starting point of our
+induction.
+Nowsuppose f(α)f(α) =f(β)f(β)holdsforarbitrary α,β∈supp(f)satisfyingDist(α,β)<
+2t. For α,β∈supp(f) satisfying Dist(α,β) = 2 t, without loss of generality assume
+α= 01γ,β= 10δ. If α′= 10γ∈supp(f), by induction we havef(α)f(α) = f(α′)f(α′) =
+f(β)f(β). Similarly ifβ′= 01δ∈supp(f), by induction we havef(α)f(α) =f(β′)f(β′) =
+B. Meng, J. Wang, M. Xia 21
+f(β)f(β). Now we assumeα′,β′/∈supp(f). By adding a self-loop onx1 andx2 we realize the
+signatureg of arity2d−2, and consequentlyf(α)f(α) =g(γ)g(γ) =g(δ)g(δ) =f(β)f(β). ◀
+Notice that, the condition "k≥3" is not necessary for the first statement "f(α)k =f(α)k" in
+the proof of Lemma 40. Consequently, we may generalize the first statement as the following
+lemma for future reference.
+▶ Lemma 41. Assume f is a signature with even arity and k ≥1 is an integer. If
+B(f) ={̸=1,ω
+2 |ωk = 1}, then for arbitraryα∈supp(f), f(α)k =f(α)k.
+Now we are ready to prove thatf satisfies ARS ignoring a constant.
+▶Lemma 42.Assumef an EO signatures andk≥3 is an integer. IfB(f) ={̸=1,ω
+2 |ωk = 1},
+then f satisfies ARS ignoring a constant.
+Proof. By Lemma 40, we may assume that for eachα∈supp(f), f(α)f(α) = λ2,λ̸= 0.
+Furthermore,fk(α) =fk(α). Thenf(α)/λand f(α)/λare conjugate complex numbers for
+eachα∈supp(f). Sof =λ·g and g satisfies ARS. ◀
+4.4.2 Generating no more than 2 signatures
+Next we consider the case that⋃
+f∈FB(f) ={̸=2,̸=1,−1
+2 }. It is necessary to distinguish this
+case with the case thatB(f) ={̸=2}, so we commence with the characterization of the latter
+case. If for allα∈supp(f), f(α) = f(α), then we sayf is domain-symmetric, or simply
+D-sym. By Lemma 41 we have the following lemma.
+▶ Lemma 43. Supposef is an EO signature of arity2d, andB(f) ={̸=2}, thenf is D-sym.
+Now we can further explain the claim we raised in Remark 35. It’s noticeable that when
+all signatures inF are D-sym, allF-gates are also D-sym, since the tensor operation and
+adding self-loop operation maintain this property. Therefore, if each signature inF can
+only realize̸=2 in the generating process, we can equivalently say that it is D-sym, and
+consequently all binaryF-gates are of the formλ̸=2. Deciding whether a signature is D-sym
+can obviously be done in constant time, thus the statement in Remark 35 is true.
+We then state a stronger property for signatures that can generate̸=1,−1
+2 through the
+generating process. Supposef is anEO signature. If for allα∈supp(f), f(α) =−f(α),
+then we sayf is domain-anti-symmetric, or simplyDA-sym.
+▶ Lemma 44. Supposef is an EO signature of arity2d, andB(f) ={̸=2,̸=1,−1
+2 }, thenf is
+DA-sym.
+Proof. The proof is similar to that of Lemma 40. By Lemma 41, for everyα∈supp(f),
+f(α)/f(α) =±1. We use induction to prove the following statement: For arbitraryα,β∈
+supp(f), ifB(f)⊆{̸=2,̸=1,−1
+2 }, and̸=2,̸=1,−1
+2 are available, thenf(α)/f(α) =f(β)/f(β).
+When 2d = 2 the statement is trivially correct. Assume the statement is true for signatures
+of arity less than2d, we then considerf of arity2d.
+We now introduce another induction onDist(α,β). We first consider α= 01δ,β=
+10δ∈supp(f). According to Lemma 41, after adding a self-loop onx1 and x2, we have
+(f(α) +f(β))2 = (f(α) +f(β))2 and (f(α)−f(β))2 = (f(α)−f(β))2. Solving this we have
+f(α)/f(α) =f(β)/f(β).
+Now suppose f(α)/f(α) = f(β)/f(β) holds for arbitrary α,β∈supp(f) satisfying
+Dist(α,β) < 2t. For α,β∈supp(f) satisfying Dist(α,β) = 2t, without loss of generality
+assume α= 01γ,β= 10δ. If α′= 10γ∈supp(f), by induction we havef(α)/f(α) =
+22 The FP NP versus #P dichotomy for #EO
+f(α′)/f(α′) =f(β)/f(β). Similarlyif β′= 01δ∈supp(f), by induction we havef(α)/f(α) =
+f(β′)/f(β′) =f(β)/f(β). Now we assumeα′,β′/∈supp(f). By adding a self-loop onx1 and
+x2 we realize the signatureg of arity 2d−2, and consequentlyf(α)/f(α) = g(γ)/g(γ) =
+g(δ)/g(δ) =f(β)/f(β) since B(g)⊆{̸=2,̸=1,−1
+2 }.
+As a result, there exists a constant λ∈ {1,−1}, such that for each α∈supp(f),
+f(α)/f(α) = λ. If λ= 1, thenf is D-sym, and consequentlyB(f) ={̸=2}, a contradic-
+tion.Thus we have that for allα∈supp(f), f(α) =−f(α). ◀
+Now we specify all arity4 signatures that satisfyB(f)⊆{̸=2,̸=1,−1
+2 }.
+▶ Lemma 45. Letf∈Fbe an EO signature of arity4. IfB(f) ={̸=2}, then ignoring a
+constant,f = (̸=2)⊗2, orf = (̸=1,−1
+2 )⊗2 , or #EOc(F)≤T #EO(F).
+Proof. By Lemma 43,f is D-sym. And by Theorem 16, we can assume that|supp(f)|= 2
+or 4, since otherwise#EO(f) is #P-hard. By Lemma 43, for eachα∈supp(f),f(α) =f(α).
+If|supp(f)|= 2, thenf can be written as̸=4. By Lemma 37,#EOc(f)≤T #EO(f).
+If|supp(f)|= 4, thenf is of the form
+
+
+0 0 0 0
+0 1 a 0
+0 a 1 0
+0 0 0 0
+
+. Iff∈P, then it should be the
+tensor product of two same binary signatures, thereforea2 = 1. Iff∈A, by the definition of
+A we havea2 =±1. With these two facts, we have thata =±1,±i, since otherwise#EO(f)is
+#P-hardbyTheorem16. If a =±i, by
+
+
+0 0 0 0
+0 1 ±i 0
+0 ±i 1 0
+0 0 0 0
+
+
+
+
+0 0 0 1
+0 0 1 0
+0 1 0 0
+1 0 0 0
+
+
+
+
+0 0 0 0
+0 1 ±i 0
+0 ±i 1 0
+0 0 0 0
+
+=
+
+
+0 0 0 0
+0 ±2i 0 0
+0 0 ±2i 0
+0 0 0 0
+
+we realize̸=4, and consequently by Lemma 37#EOc(F)≤T #EO(F).
+If a = 1, thenf = (̸=⊗2
+2 ) ignoring a constant. Ifa =−1, thenf = (̸=1,−1
+2 )⊗2 ignoring a
+constant. ◀
+▶ Lemma 46. Assumef∈Fis an EO signature of arity4, andB(f) ={̸=2,̸=1,−1
+2 }, then
+f = (̸=2)⊗(̸=1,−1
+2 ) ignoring a constant, or#EOc(F)≤T #EO(F).
+Proof. As B(f) ={̸=2,̸=1,−1
+2 }, f is not D-sym. We discuss several situations based on the
+size ofsupp(f). With Lemma 41 we can know that|supp(f)|is even. We only consider the
+case that #EO(f) is tractable, otherwise#EO(f) is #P-hard and the reduction trivially
+holds.
+If|supp(f)|= 2, f is of the form̸=1,−1
+4 by Lemma 44. By Lemma 9, we may realize̸=4.
+Therefore by Lemma 37 we have#EOc(F)≤T #EO(F).
+If|supp(f)|= 4, as f is not D-sym, without loss of generality suppose it is of the
+form
+
+
+0 0 0 0
+0 1 a 0
+0 −a −1 0
+0 0 0 0
+
+. If f∈P, then it should be the tensor product of two binary
+signatures, therefore−a2 =−1. Iff∈A, by Definition 10 we havea2 =±1. With these two
+facts, we have thata =±1,±i, since otherwise#EO(f) is #P-hard by Theorem 16. Ifa = i,
+B. Meng, J. Wang, M. Xia 23
+by
+
+
+0 0 0 0
+0 1 i 0
+0 −i −1 0
+0 0 0 0
+
+
+
+
+0 0 0 1
+0 0 1 0
+0 1 0 0
+1 0 0 0
+
+
+
+
+0 0 0 0
+0 1 i 0
+0 −i −1 0
+0 0 0 0
+
+=
+
+
+0 0 0 0
+0 0 −2 0
+0 −2 0 0
+0 0 0 0
+
+we
+realize̸=4, and consequently by Lemma 37#EOc(F)≤T #EO(F). Ifa =−i, the analysis is
+similar by symmetry. Ifa =±1, thenf = (̸=2)⊗(̸=1,−1
+2 ) ignoring a constant. ◀
+Now we analyze the general cases.
+▶ Lemma 47. Assumef∈Fis an EO signature of arity2d. IfB(f)⊆{̸=2,̸=1,−1
+2 }, thenf
+satisfies ARS ignoring a constant, or#EOc(F)≤T #EO(F∪{̸=2,̸=1,−1
+2 }).
+Proof. For convenience, whenαand βsatisfy that f(α)f(β)̸= 0 and f(α)/f(β) /∈R,
+we denote byα∼β. On the other hands we useα≁ βto denote the case that either
+f(α)f(β) = 0 orf(α)/f(β)∈R. We then use induction to prove that ifB(f)⊆{̸=2,̸=1,−1
+2 },
+then for arbitraryα,β∈supp(f), α≁β, or otherwise#EOc(F)≤T #EO(F∪{̸=2,̸=1,−1
+2 }).
+First, we prove that if there existsα,β∈supp(f) such thatα∼β, then #EOc(F)≤T
+#EO(F∪{̸=2,̸=1,−1
+2 }). By Lemma 45 and 46 we know that for all signatures of arity2 and
+4 the statement is true. Assume the statement holds for all signatures of arity less than2d,
+where d≥3. Now we considerf of arity2d.
+Suppose #EOc(F)≤T #EO(F∪{̸=2,̸=1,−1
+2 }) does not holds. We prove the statement
+by introducing another induction onDist(α,β). We begin with the case thatα,β∈supp(f),
+α∼βand Dist(α,β) = 2. Without loss of generality, we can assume thatα= 001011γ,
+β= 010011γ, f(α) = a, f(β) = b, andα∼β. Also we can assume thatf(001101γ) = c,
+f(010101γ) =d, f(001110γ) =e, f(010110γ) =g. These values actually forms a submatrix
+of M(f)x1x2x3,x4x5x6...x2d, presented as follows.
+011γ 101γ 110γ
+001 a c e
+010 b d g
+Because a/b /∈R, we know thata, b form a basis of the complex plane, which is a vector
+space defined onR. As a result we can letc =p1a+p2b,d =q1a+q2b, wherep1,p 2,q 1,q 2∈R.
+By adding a self-loop betweenx2 and x3 respectively using̸=2 and̸=1,−1
+2 , according to the
+first induction hypothesis, we havea +b ≁c +d,a−b ≁c−d. Asa∼b, (a +b)(a−b)̸= 0,
+and consequentlyp1 +q1 =p2 +q2, p1−q1 =q2−p2. Sop1 =q2 andq1 =p2 by solving the
+equations. Then we can suppose thatc =ra +tb, d =ta +rb, wherer,t∈R. By adding a
+self-loop betweenx4 and x5 respectively using̸=2 and̸=1,−1
+2 , again with the first induction
+hypothesis we have that(r + 1)a +tb is collinear withta + (r + 1)b and (r−1)a +tb is
+collinear withta + (r−1)b. Therefore (r + 1)2 =t2 = (r−1)2, furthermorer = 0 andt =±1.
+So c =λb, d =λafor someλ=±1. Similarlye =ηband g =ηafor someη=±1. We add
+a self-loop using̸=1,λη
+2 betweenx5 and x6, then we have2a is collinear with2b, which is a
+contradiction.
+Now assume that if#EOc(F)≤T #EO(F∪{̸=2,̸=1,−1
+2 }) does not hold, then for arbitrary
+α,β∈supp(f) satisfying Dist(α,β) < 2t,t ≥2, we haveα≁ β. Now consider the case
+when α,β∈supp(f), α∼βand Dist(α,β) = 2t, while #EOc(F)≤T #EO(F∪{̸=2,̸=1,−1
+2 })
+does not hold. Without loss of generality, we can assume thatα= 01γ, β= 10δ, where
+γ̸= δ. Let α′= 10γ, β′= 01δ. If f(α′)̸= 0, then eitherf(α′)∼f(α) or f(α′)∼f(β)
+holds, a contradiction by the second induction hypothesis. The analysis forf(β′) is similar.
+24 The FP NP versus #P dichotomy for #EO
+Consequently, we may assumef(α′) =f(β′) = 0. By adding a self-loop onx1 and x2, we
+realize the signatureg of arity 2d−2. Then we havef(α) =g(γ) ,g(δ) =f(β) and γ∼δin
+g. Then by the first induction hypothesis it is a contradiction.
+Consequently, we have proved that for a signaturef∈Fsatisfying B(f)⊆{̸=2,̸=1,−1
+2 },
+either #EOc(F)≤T #EO(F∪{̸=2,̸=1,−1
+2 }), or for arbitraryα,β∈supp(f), α≁ β. If
+the latter statement holds, after normalization by a constant,f is a real signature. If
+B(f) ={̸=2,̸=1,−1
+2 }, f is DA-sym due to Lemma 44, thenf = i·g and g satisfies ARS. If
+B(f) ={̸=2},f is D-sym due to Lemma 43, thenf satisfies ARS. In summary, the lemma is
+proved. ◀
+▶ Lemma 48. Assume f ∈Fis an EO signature of arity 2d. If B(f) = {̸=2}, then f
+satisfies ARS ignoring a constant, or#EOc(F)≤T #EO(F).
+Proof. Let C(f) be the set of all non-trivial quaternary signatures, realized by addingd−2
+self-loops on arbitrary2d−4variables off by̸=2. By Lemma 45,C(f)⊆{(̸=2)⊗2, (̸=1,−1
+2 )⊗2},
+or #EOc(F)≤T #EO(F).
+Case 1: Suppose (̸=1,−1
+2 )⊗2∈C(f). By Lemma 38, we have#EO(F∪{̸=1,−1
+2 })≤T
+#EO(F). Then we are done by Lemma 47.
+Case 2: C(f) =∅. Iff≡0, it satisfies ARS. Otherwise by Lemma 39 we may realize a
+non-trivial quaternary signature by addingd−2 self-loops, a contradiction.
+Case 3: C(f) ={(̸=2)⊗2}. LetfRe and fIm be the signatures satisfying that, for eachα
+of length 2d, fRe(α) = Re(f(α)), fIm(α) = Im(f(α)). LetI be a specific instance formed by
+adding d self-loops onf, andg be a quaternary signature formed by addingd−2 self-loops
+on f. LetIRe be the instance obtained by substitutingf with fRe in I, IIm be the instance
+obtained by substitutingf with fIm in I. We definegRe,g Im similarly.
+It is noticeable that given a way of addingd self-loops, the value of this single-vertex
+tensor network is a linear combination of all possible values off, where the coefficients are
+in{0, 1}. Therefore Z(I) = Z(IRe) + iZ(IIm). Similarly we haveg =gRe + igIm.
+We now introduce the reorganizing method. First we can notice that, if we add two
+self-loops on the signature̸=⊗2
+2 , the value of this tensor network is either2 or 4. In other
+words, changing ways of adding self-loops onλ̸=⊗2
+2 ,λ∈C will cause the partition function
+to double, to be divided into half or to remain unchanged.
+Let λ= Z(I), and supposeλ= a +bi where a,b are real numbers. By cutting two
+connected edges inI, we obtain a gadget that realizeg =η̸=⊗2
+2 for someη=c +di∈C.
+By reorganizing the connection of the four dangling edges, the obtained instanceI′satisfies
+Z(I′) = 2tZ(I) for somet∈{0,±1}. The similar analysis also holds forI′
+Re and I′
+Im defined
+similarly, and in particular,Z(I′
+Re) = 2tZ(IRe),Z(I′
+Im) = 2tZ(IIm) holds for the samet as
+that inZ(I′) = 2tZ(I). This is becauseg =gRe + igIm and consequently adding two self-loops
+on g,g Re and gIm in the same way would introduce the same constant factor.
+If a̸= 0, by applying the reorganizing method above successively, we know that for all
+I′obtained by addingd self-loops onf, by substitutingf with fRe the obtained instance
+I′
+Re always satisfiesZ(I′) = λ
+aZ(I′
+Re). Noticing that given a way of addingd self-loops, when
+we write all values off as a column vectorf, the way of connecting edge is equivalent to a
+row vector v such that vf is the partition function. Therefore we have a system of linear
+equations, whose coefficient matrix is an arrangement of row vectors corresponding to all
+ways of addingd self-loops. Suppose the coefficient matrix isM, then we haveM f = λ
+aM fRe.
+Here we prove an interesting fact that given any D-symf of arity2d, ifM h = 0, then
+h = 0. Suppose h̸= 0, which meansf is non-trivial. By Lemma 39, by addingd−1
+self-loops properly we may realize a non-trivial binary signatureg. Sincef is D-sym,g is a
+B. Meng, J. Wang, M. Xia 25
+multiple of̸=2 and by adding one more self-loop ong the resulting partition function is not
+equal to 0. ConsequentlyM h = 0, and we are done.
+By the analysis above, we have thatf = λ
+a fRe and f = λ
+afRe. This means thatf is a
+multiple of a real signaturefRe. Ifb̸= 0, the analysis is similar and we havef is a multiple of
+a real signaturefIm. Asf is D-sym, bothfRe and fIm are D-sym as well, and consequently
+they satisfy ARS. Hencef also satisfies ARS ignoring a constant.
+The only case left is whena =b = 0, indicates thatλ= 0. By the reorganizing method
+we know that for allI′obtained by addingd self-loops onf, there existst′∈Z such that
+Z(I′) = 2t′
+λ= 0. This contradicts toC(f) ={(̸=2)⊗2}. ◀
+4.5 Put things together
+In this section, we prove Theorem 27.
+Proof of Theorem 27.If there existsf∈F, such that̸=1,x
+2 ∈B(f) where x is not a root,
+we are done by analysis in Section 4.2. Otherwise if there existsf∈F, such thatB(f) is
+infinite, we are done by the analysis in Section 4.3.
+Consequently we may assume for eachf∈F, there exists an integerk≥1 such that
+B(f) ={̸=1,ω
+2 |ωk = 1}. By Lemma 42, 47 and 48, eitherf satisfies ARS ignoring a constant
+or #EOc(F)≤T #EO(F). If #EOc(F)≤T #EO(F) we are done by the second statement.
+Otherwise all signatures inF satisfy ARS ignoring a constant and we are done by the first
+statement. ◀
+5 Dichotomy for #EOc
+In this section, we present theFPNP versus #P dichotomy for#EOc problem and prove
+Theorem 28. We begin with the analysis of the support of eachf∈F. By definition,F
+always falls into one of the following cases:
+1. There exists a∃3 ↛ signature f∈F;
+2. There exist a∃3↑signature f∈Fand a∃3↓signature g∈F;
+3. All signatures inF are∀3 signatures:
+a. For eachf∈F, f is a∀k↑signature;
+b. For eachf∈F, f∈EOA;
+c. For eachf∈F, f∈EOP;
+d. Otherwise;
+4. All signatures inF are∀3 signatures.
+We deal with these cases in the following sections. We omit the analysis of Case 4 as it is
+similar to that of Case 3. To summarize,#EOc(F) is #P-hard ifF falls into Case 1, 2, 3d,
+4d, while it has aFPNP algorithm ifF falls into Case 3b, 3c, 4b, 4c. IfF falls into Case
+3a or 4a,#EOc(F) is #P-hard unlessF⊆EOA orF⊆EOP, in which cases it is P-time
+computable. It is noteworthy that with the appearance of∆ , for eachEO signature f, now
+we are able to pin a variable off to 0 and another variable off to 1 by gadget construction.
+5.1 Case 1
+In this section, we prove the following lemma:
+▶ Lemma 49. If f is a∃3 ↛ signature, then #EOc(f) is #P-hard.
+26 The FP NP versus #P dichotomy for #EO
+The proof of Lemma 49 consists of 2 parts. The first part uses an inductive method to
+reduce the arity off. The second part proves the #P-hardness whenf is of small arity. We
+first presents an important method for reducing the arity in the following lemma.
+▶ Lemma 50. Suppose f is an EO signature of arity 2k and α= 10α′,β= 10β′,γ=
+01γ′∈supp(f), wherek≥3. Then there exists anEO signatureg of arity 2k−2 satisfying
+α′,β′,γ′∈supp(g), such that#EOc(g)≤T #EOc(f). Furthermore, ifδ′=α′⊕β′⊕γ′∈HW=
+and 10δ′, 01δ′/∈supp(f), thenδ′/∈supp(g).
+Proof. If 10γ′∈supp(f), by pinningx1 to 1 andx2 to 0, the obtained signatureg satisfies
+that α′,β′,γ′∈supp(g). Else if both01α′, 01β′∈supp(f), by pinningx1 to 0 andx2 to 1,
+the obtained signatureg satisfies thatα′,β′,γ′∈supp(g). In addition, if10γ′, 01α′, 01β′/∈
+supp(f), by adding a self-loop onx1 andx2, the obtained signatureg satisfies thatα′,β′,γ′∈
+supp(g). In the cases above, we have#EOc(g)≤T #EOc(f).
+Now we may assume01α′, 10γ′/∈supp(f), while01β′∈supp(f). Iff(10β′)+f(01β′)̸= 0,
+by adding a self-loop tox1 and x2, the obtained signatureg satisfies α′,β′,γ′∈supp(g).
+Otherwise, f(10β′) +f(01β′) = 0, and by pinningx3,...,x2k to β′we obtain the signature
+̸=1,−1
+2 . By adding a self-loop by̸=1,−1
+2 on x1 and x2, the obtained signatureg again satisfies
+that α′,β′,γ′∈supp(g). The case that01β′, 10γ′/∈supp(f) and 01α′∈supp(f) is similar.
+In each case, sinceg is obtained fromf by adding a self-loop onx1 and x2 by some
+generalized binary disequality,δ′/∈supp(g) if 10δ′, 01δ′∈HW=−supp(f). ◀
+We then summarize the second part as the following lemmas.
+▶ Lemma 51. Suppose f is an EO signature of arity 4. If α,β,γ∈supp(f) and δ=
+α⊕β⊕γ∈HW=−supp(f), then #EOc(f) is #P-hard.
+Proof. The proof follows from Theorem 17. ◀
+▶ Lemma 52. Suppose f is an EO signature of arity 6. Ifα= 101001,β= 100110,γ=
+011010∈supp(f) and δ= 010101 /∈supp(f), then #EOc(f) is #P-hard.
+Proof. Suppose otherwise. Ifϵ= 100101 /∈supp(f), by adding a self-loop onx1 and x2 by
+some generalized binary disequality as in Lemma 50, we can obtain a signatureg satisfying
+1001, 0110, 1010∈supp(g) while 0101 /∈supp(g). By Lemma 51,g is #P-hard, which is a
+contradiction. Thusϵ= 100101∈supp(f). Similarly, by adding a self-loop tox3 and x4,
+ζ= 011001∈supp(f). By pinningx5 to 0 andx6 to 1, we obtain a signatureh satisfying
+1010, 1001, 0110∈supp(h) and 0101 /∈supp(h). Again by Lemma 51,h is #P-hard, which is
+a contradiction. ◀
+Before the formal proof of Lemma 49, we introduce another lemma for preparation.
+▶ Lemma 53.Supposeα, β, γ, δare 01-strings with the same even length.α,β,γ,δ∈HW=
+and δ=α⊕β⊕γ. Fora,b,c ∈{0, 1}, letSabc ={i|αi =a,βi =b,γi =c}and sabc =|Sabc|.
+Then sabc =s1−a,1−b,1−c for arbitrarya,b,c ∈{0, 1}.
+Proof. There are 8 possible values of(a,b,c ), that is 000, 001, 010, 011, 100, 101, 110, 111.
+Since α,β,γ,δ∈HW=, we have:
+
+
+
+s000 +s001 +s010 +s011 =s100 +s101 +s110 +s111
+s000 +s001 +s100 +s101 =s010 +s011 +s110 +s111
+s000 +s010 +s100 +s110 =s001 +s011 +s101 +s111
+s000 +s011 +s101 +s110 =s001 +s010 +s100 +s111
+Solving this linear system, we havesabc =s1−a,1−b,1−c for arbitrarya,b,c ∈{0, 1}. ◀
+B. Meng, J. Wang, M. Xia 27
+Now we are ready to prove Lemma 49.
+Proof. By Lemma 51 we have that the conclusion is correct whenf is of arity 4. Now
+suppose f is of arity2k, wherek≥3,α,β,γ∈supp(f) andδ=α⊕β⊕γ∈HW=−supp(f).
+We first characterize the form of these strings.
+Fora,b,c ∈{0, 1}, letSabc ={i|αi = a,βi = b,γi = c}and sabc =|Sabc|. Using the
+condition thatα,β,γ,δ∈HW= and Lemma 53, we havesabc =s1−a,1−b,1−c for arbitrary
+a,b,c ∈{0, 1}.
+In the following analysis, we present operations that reduce the arity off by 2 and keep
+f as a∃3 ↛ signature. Ifs000≥1, thens111≥1. By renaming the variables properly, we
+can writeα= 01α′,β= 01β′,γ= 01γ′,δ= 01δ′. By pinningx1 to 0 andx2 to 1, we obtain
+a signatureg satisfying α′,β′,γ′∈supp(g) and δ′∈HW=−supp(g), which meansg is also
+a∃3 ↛ signature. We denote this operation as Operation 1.
+If s001 ≥2, then s110 ≥2. By renaming the variables properly, we can writeα=
+0101α′,β= 0101β′,γ= 1010γ′,δ= 1010δ′. Furthermore, letϵ= 0110δ′,ζ= 0110γ′.
+If ϵ /∈supp(f), by adding a self-loop onx1 and x2 by some generalized binary disequality
+as in Lemma 50, we can obtain a signatureg satisfying 01α′, 01β′, 10γ′∈supp(g) while
+10δ′/∈supp(g).
+If ϵ= 0110δ′∈supp(f) and ζ= 0110γ′/∈supp(f), by pinningx1 to 0 andx2 to 1, we
+obtain a signatureg satisfying 01α′, 01β′, 10δ′∈supp(g) and 10γ′/∈supp(g).
+If ϵ,ζ∈supp(f), by pinningx3 to 1 andx4 to 0, we obtain a signatureg satisfying
+10γ′, 01γ′, 01δ′∈supp(g) and 10δ′/∈supp(g).
+In each situation, we can always obtain a∃3 ↛ signature g. We denote this operation
+as Operation 2. Similarly, we define Operation 3 (or 4) in the situation thats010≥2 (or
+s100≥2).
+By applying Operation 1-4 successively, one can reduce the arity off untils000 =s111 = 0
+and s001 = s110≤1,s 010 = s101≤1,s 100 = s011≤1, maintainingf as a∃3 ↛ signature.
+As f is a∃3 ↛ signature, the arity off is not less than 4 and thuss001 +s010 +s100≥
+2. If s001 +s010 +s100 = 2, the #P-hardness of #EOc(f) is given by Lemma 51. If
+s001 +s010 +s100 = 3, the #P-hardness of#EOc(f) is given by Lemma 52. ◀
+5.2 Case 2
+In this section, we show that Lemma 49 also induces the #P-hardness of Case 2.
+▶ Lemma 54. If f is a∃3↑signature andg is a∃3↓signature, then #EOc({f,g}) is
+#P-hard.
+Proof. Supposeα,β,γ∈supp(f),δ=α⊕β⊕γ∈HW> andϵ,ζ,η∈supp(g),θ=ϵ⊕ζ⊕η∈
+HW<. Let a = # 1(δ)−#0(δ) and b = # 0(θ)−#1(θ). Now we consider the signature
+h = f⊗b⊗g⊗a. It can be verified by the definition of the tensor product operation that
+αbϵa,βbζa,γbηa∈supp(h), whileαbϵa⊕βbζa⊕γbηa =δbθa∈HW=−supp(h). By Lemma
+49, #EOc(h) is #P-hard, and consequently#EOc({f,g}) is #P-hard as well. ◀
+We remark that this lemma also works whenf =g.
+5.3 Case 3a
+By Theorem 22, and the fact that the definition of pure-up signatures is the same as that of
+∀k↑, its complexity is already classified.
+28 The FP NP versus #P dichotomy for #EO
+5.4 Case 3b and 3c
+In this section, we prove the following lemma.
+▶ Lemma 55. Suppose all signatures inF are∀3 (or∀3 ) signatures. IfF⊆EOA or
+F⊆EOP, then #EO(F) can be computed in polynomial time, given a specific NP oracle
+related toF.
+We focus on the case when all signatures inF are∀3 signatures. The analysis for the
+∀3 case is similar by exchanging the symbol of 0 and 1. We commence with the decision
+version of counting weighted Eulerian orientations problems, which is denoted as theEO
+problem.
+▶ Definition 56(EO problems). [8] A EO problem EO(F), parameterized by a setF of EO
+signatures, is defined as follows: Given anEO-signature grid Ω(G,π) overF, the output is
+whether there existsσ∈EO(G) such that
+∏
+v∈V
+fv(σ|E(v))̸= 0.
+By Definition 56, given a set of signaturesF, we can change all non-zero values of
+signatures inF to 1 without changing the output ofEO(F). We also denote such an
+assignmentσin Definition 56 as a solution.
+We then introduce the concept of the effective string inEO problems, and show that
+deciding which string is effective in the instance can be computed by an NP oracle. These
+would provide us a useful method toward our algorithm for the counting version.
+▶ Definition 57. SupposeI is an instance ofEO(F). For a vertexv in I assignedf∈F, we
+say a stringαf∈supp(f) is effective if there exists a solutionαto I satisfying α|E(v) =αf.
+The set of all effective strings is denoted as the effective support off.
+We remark that in Definition 57, the concept of effective strings and effective support is
+defined on the specificf that assigned tov, instead of the elementf∈F. For example, for
+a signaturef∈F, suppose it is assigned tou and v in an instanceI, which is then denoted
+byfu and fv respectively. Then the effective support offu and fv can be totally different
+and we always analyze them separately in the following proof. Besides, whether a string is
+effective in an instance define the following problem.
+▶ Definition 58(Support identification problem). A support identification problem is para-
+meterized by a setF of EO signatures.
+Input: An instanceI of EO(F), a vertex assignedf in I and a stringαf∈supp(f).
+Output: Whether αf is effective.
+The length of each stringα= αfα′is n, where n is the number of variables in the
+instance. Consequently, the support identification problem is in NP, which means that given
+F, there exists a consistent NP oracle solving it. We also remark that the computational
+complexity of the support identification problem is still open, even whenF falls into Case 3
+(or Case 4). That is, givenF, whether this problem can be computed in polynomial time or
+it is NP-complete remains unsettled. Dozens of attempts have been made, but the authors
+are still facing non-trivial difficulties.
+It is notable that the concept ofEO problem shares common symbols with#EO in our
+definition, which enables us to extend the concept of effective strings to the counting version
+#EO. For an instanceI in #EO, a vertex assignedf∈Fin I, we say a stringαf∈supp(f)
+B. Meng, J. Wang, M. Xia 29
+is effective if there exists aα=αfα′such that∏
+v∈V fv(α|E(v))̸= 0. We also callαas a
+solution in this setting. Besides, it is worth noticing that whether a string insupp(f) is
+effective is consistent in the setting ofEO and #EO.
+Using the concept of effective strings, we can modify signatures in a particular instance.
+The following lemma can be easily verified from Definition 57.
+▶ Lemma 59. SupposeI is an instance of#EO(F), v is a vertex inI assignedf∈Fand
+αf∈supp(f) is not effective. Letf′be the signature that only differs fromf at αf and
+f′(αf) = 0. LetI′be the instance obtained by replacingf by f′at v. Then Z(I′) = Z(I).
+Furthermore, by restrictingf to its effective supportS, we can modifyf to f|S while
+keeping the partition function unchanged.
+Now we focus on Case 3b and 3c. In the following, we analyze the effective supports in a
+given instanceI.
+▶ Lemma 60. Suppose an instanceI of #EO(F) is given, where all signatures inF are∀3 .
+For a vertex assignedf∈Fin I, ifαf,βf,γf∈supp(f) and δf =αf⊕βf⊕γf∈HW>,
+then at most two ofαf,βf,γf can be effective.
+Proof. Suppose otherwise. We regardI as an instance of the equivalent problemHolant(̸=2|
+F). As all ofαf,βf,γf are effective, there existsα= αfα′,β= βfβ′,γ= γfγ′such that
+each of them is a solution. Letδ=δfδ′, whereδ=α⊕β⊕γ.
+Each variable inI is incident to a signature inF on RHS and a̸=2 on LHS, thus both
+sides cover each variable exactly once. For RHS, all signatures inF are∀3 signatures, so
+δ′∈HW≥. Sinceδf∈HW>, we haveδ∈HW>. However, by the restriction from LHS, we
+haveδ∈HW= since̸=2 is anEOM signature, which is a contradiction. ◀
+▶ Lemma 61. Suppose an instanceI of #EO(F) is given, whereF contains only∀3
+signatures. For a signaturef ∈Fin I, if αf,βf,γf ∈supp(f) are effective, andδf =
+αf⊕βf⊕γf∈supp(f), thenδf is also effective.
+Proof. We regardI as an instance of the equivalent problemHolant(̸=2|F). SupposeI has
+n verticesv1,...,vn assigned f1,...,fn chosen fromF. Letf =f1, and we useαi to denote
+α|E(vi). As α1,β1,γ1∈supp(f1) are effective, there existα= α1...αn,β= β1...βn,γ=
+γ1...γn such that each of them is a solution.
+Let δ= α⊕β⊕γ. If δ∈HW>, there would exists a signaturefi in I, such that
+αi⊕βi⊕γi ∈HW>. Since αi,βi,γi are effective, by Lemma 60 this would cause a
+contradiction. Therefore,δ∈HW=, and as all signatures inF are∀3 signatures,δi∈HW=
+and δi∈supp(f) for eachi. This indicates thatδis also a solution, which impliesδ1 is
+effective as well. ◀
+We are now ready to present the algorithm for Lemma 55.
+Proof. The algorithm for Lemma 55 is as follows.
+1. For each stringαf∈supp(f) at some vertex assignedf in the instanceI: Decide whether
+αf is effective. If not, replacef withf′, wheref′only differs fromf atαf andf′(αf) = 0.
+2. Using the algorithm forA or that forP to compute the value of the modified instance
+I′. Output the value.
+By Lemma 59, the operation in Step (1) do not change the partition function. After all
+modifications in Step (1), for each signaturef′in I′, ifα,β,γ∈supp(f′), by Lemma 60 we
+haveδ=α⊕β⊕γ∈HW=. Furthermore, by Lemma 61,δ∈supp(f′), which indicates that
+supp(f′)⊆HW= is affine. By Lemma 15,
+30 The FP NP versus #P dichotomy for #EO
+supp(f′)⊆EOP for some pairingP. Consequently, all signatures inI′are in A (or all
+signatures inI′are in P) by Definition 20. Then the polynomial-time algorithm forA or
+that for P can be applied toI′.
+Now we analyze the time complexity of the algorithm. For Step (1), checking whether a
+string is effective need an NP oracle, which is determined givenF. There areO(n) strings
+need to be checked, wheren is the number of vertices inI. Step (2) can be computed in
+polynomial time. In summary, the algorithm is in FPNP. ◀
+The algorithm is similar for the∀3 cases. We remark that this algorithm also works for
+the 0-rebalancing cases by the following lema.
+▶ Lemma 62. If f is a 0-rebalancing signature, thenf is either∃3 ↛ or∀3 .
+Proof. We would prove the inverse negative proposition. Supposef is neither∃3 ↛ nor∀3 .
+Consequently, there existα,β,γ∈supp(f) and δ=α⊕β⊕γ∈HW<. Similar to Lemma
+53, we considerSabc and sabc, wherea,b,c ∈{0, 1}. Sinceα,β,γ∈HW= and δ∈HW<, we
+have 
+
+
+s000 +s001 +s010 +s011 =s100 +s101 +s110 +s111
+s000 +s001 +s100 +s101 =s010 +s011 +s110 +s111
+s000 +s010 +s100 +s110 =s001 +s011 +s101 +s111
+s000 +s011 +s101 +s110 >s 001 +s010 +s100 +s111
+.
+Solving this we haves111 <s 000. We fix all variables assigned000 to 0, then there would not
+be enough variables fixed to1 to appear. Therefore,f cannot be 0-rebalancing. ◀
+5.5 Case 3d
+In this section, we prove the following lemma.
+▶ Lemma 63. Suppose each signature inF is a∀3 signature. If there exists a signature
+f∈Fthat is not a∀k↑signature, and there exists a signatureg∈F−EOA and a signature
+h∈F−EOP, then #EOc(F) is #P-hard.
+We first show that, given the̸=4 signature, we can prove the #P-hardness.
+▶ Lemma 64. Suppose each signature inF is a∀3 signature. If there exist a signature
+g∈F−EOA and a signatureh∈F−EOP, then #EO(F∪{̸=4}) is #P-hard.
+Proof. For clarity, we letsupp(̸=4) ={0101, 1010}. Supposeg is of arity2k. Asg /∈EOA,
+by renaming the variables ofg, there exists a pairingP ={(x1,x 2),...,(x2k−1,x 2k)}such
+that g|EOP /∈A. We can construct a gadget forg|EOP by connecting the first and the second
+variables of a̸=4 signature to each pairx2i−1,x 2i, 1≤i≤k. Similarly we can construct
+h|EOP′satisfying h|EOP′/∈P. Therefore we have:
+#EO({g|EOP,h|EOP′})≤T #EO(F∪{̸=4}).
+Let g′∈τ(g|EOP ) be a signature of arityk, and we haveg′/∈A by Lemma 13. Similarly let
+h′∈τ(h|EOP′) be a signature of arityk and not inP.
+By Lemma 14,#CSP({g′,h′})≡T #EO({π(g′),π(h′)}), and since we can rename the
+variables in the#EO framework, we have:
+#CSP({g′,h′})≤T #EO({g|EOP,h|EOP′})≤T #EO(F∪{̸=4}).
+By Theorem 12 we have#EO(F∪{̸=4}) is #P-hard.
+◀
+B. Meng, J. Wang, M. Xia 31
+Now we prove that the̸=4 signature can be constructed in Lemma 63. We generalize this
+result as Lemma 65.
+▶ Lemma 65. Supposef∈Fis a∀3 signature, but not a∀k↑signature. Then
+#EO(F∪{̸=4})≤T #EOc(F).
+We introduce some more definitions before proving Lemma 65. For α,β∈HW= and
+Dist(α,β) = 2s, wheres∈N+, we sayγ∈HW= is betweenαandβif there exists a positive
+integert<s such thatDist(α,γ) = 2t and Dist(β,γ) = 2s−2t. In other words, by reordering
+some indices,α=στπ,β=στπand γ=στπ, where|π|= 2t,|τ|= 2s−2t.
+▶ Lemma 66. Suppose f ∈ Fis a∀3 signature, and #EO(F∪{̸=4})≤T #EOc(F)
+does not hold. Then for any α= στ,β= στ∈supp(f) (variables reordered), we have
+supp(fx1···xLen(σ)=σ) = EOP for someP, whereP is a pairing of variables offx1···x|σ|=σ.
+Proof. The lemma is trivial whenDist(α,β) = 2. We begin with proving several statements.
+Firstly, we prove that ifγ,δ,ϵ∈supp(f) are betweenαandβor equal to one of them, then
+µ=γ⊕δ⊕ϵ∈HW=. Letγ′=γ⊕α⊕β,δ′=δ⊕α⊕β,ϵ′=ϵ⊕α⊕βandµ′=γ′⊕δ′⊕ϵ′, then
+γ′,δ′,ϵ′∈HW=. Asf is a∀3 signature, we also haveγ′,δ′,ϵ′∈supp(f) and consequently
+both µ,µ′∈HW≥. If µ∈HW>, thenµ′∈HW<, which is a contradiction. Therefore,
+µ∈HW=.
+Secondly, if Dist(α,β)≥4, then there must exist aγ∈supp(f) between αand β.
+Otherwise, fσwould be equal to̸=a,b
+Dist(α,β),ab ̸= 0. Without loss of generality, we may
+assume supp(̸=a,b
+Dist(α,β)) ={01...01, 10...10}. By adding a self-loop onx2k+3,x 2k+4 for
+each 1≤k≤Dist(α,β)/2−2, we realize̸=a,b
+4 , by Lemma 9 we may further realize̸=4, which
+causes a contradiction.
+By Lemma 15, the first statement implies thatsupp(fx1···xLen(σ)=σ) is affine, thus it is a
+subset ofEOP for some pairingP of variables offx1···xLen(σ)=σ. We now use the induction
+to prove this lemma. WhenDist(α,β) = 2, it’s obvious thatsupp(fσ) = EOP. Assume that
+this lemma is correct whenDist(α,β) < 2k, wherek≥2. Now suppose Dist(α,β) = 2k.
+By repeatedly using the second statement, there would be aγ∈supp(fσ) betweenαand
+βsatisfying Dist(α,γ) = 2. Suppose Len(σ) = L. After reordering variables, we may let
+α= 01στ′,β= 10στ′and γ= 10στ′. By the induction hypothesis, there exists a pairingP′
+such thatsupp(fx1···xL+2=10σ) = EOP′
+. LetP =P′∪{(x1,x 2)}be a pairing offx3···xL+2=σ.
+For anyµ∈EOP′
+, δ= 10σµ∈supp(f), andϵ=δ⊕α⊕γ= 01σµ∈supp(f). This implies
+EOP ⊆supp(fx3···xL+2=σ). Since supp(fx3···xL+2=σ)⊆EOQ for some pairingQ, we have
+|supp(fx3···xL+2=σ)|=|EOQ|=|EOP|. Consequently, supp(fσ) = EOP. The induction is
+done. ◀
+Now we are ready to prove Lemma 65.
+Proof. Suppose otherwise. Asf is not a∀k↑signature, there exists a minimal odd integer
+k such that there existk strings α1,...,αk∈supp(f) satisfying δ= ⨁
+1≤i≤kαi∈HW<.
+Without loss of generality, letα1 =στ,α2 =στand assume that|σ|=s,|τ|=t. By Lemma
+66, there exists a pairingP such thatsupp(fx1···xs=σ) = EOP. Assume that(xs+1,xs+2)∈P
+and we letα1 =σ01τ′,α2 =σ10τ′. Then by Lemma 66 we haveβ=σ10τ′∈supp(f), and
+⊕β⊕α1 can be seen as an operation that flips the two bits atxs+1,xs+2. For any1≤l≤k,
+αl⊕β⊕α1∈HW≥, soxs+1xs+2 cannot be 11 at αl.
+32 The FP NP versus #P dichotomy for #EO
+Let γ=⨁
+3≤i≤kαi∈HW≥. Then we can writeδ= γ⊕α1⊕α2∈HW<. Noticing
+⊕α1⊕α2 can be seen as an operation that flips all the lastt bits, therefore there are more
+1′s in the lastt bits ofγ. By the pigeonhole principle, there exists a pair(xp,xq) in P such
+that γpγq is 11. This also implies that(δ)p = (δ)q = 0. Without loss of generality, we still
+assume this pair(xp,xq) to be (xs+1,xs+2).
+Now we apply the following operation onαi for each 1≤i≤k, and in the following
+we use(α)i to denote theith bit of a stringα: If (αi)s+1(αi)s+2 = 10, we replaceαi with
+α′
+i =αi⊕β⊕α1 (i.e. flip the two bits atxs+1,xs+2); otherwise we keepαi unchanged.
+We denote all these operations together as a 0-moving step. After this 0-moving step, all
+the obtained strings, which we denoted asα′
+1,...,α′
+k, still belong tosupp(f). Furthermore, let
+δ′=⨁
+1≤i≤kα′
+i, by definition we have(δ′)i = (δ)i for alli̸=s + 1,s + 2. Since (α′
+i)s+1 = 0
+holds for each 1≤i≤k and (δ)s+1(δ)s+2 = 00, (δ′)s+1(δ′)s+2 = 00 as well. This gives
+δ′=δ∈HW<, meaning that this property still holds after the 0-moving step.
+Now we repeatedly apply the 0-moving step onα1,...,αk. Suppose the arity off is n.
+For a variablexs, 1≤s≤n, we sayxs is all-0 if(αi)s = 0 for all 1≤i≤k. Notice that in
+each of such steps, the number of all-0 variables increases exactly by 1. This means at most
+n steps can be applied. However on the other hand, the 0-moving step can be applied as
+long as there are 2 different strings among thek strings we currently choose, implying that
+the step can be applied for unlimited times. This contradiction finishes our proof. ◀
+6 Extensions of the dichotomy
+Although this article focuses on #EO problems, the dichotomy can actually be extended to a
+wider range of signature sets whose complexity was previously unknown. In this section, we
+introduce two related dichotomies which can be implied from the dichotomy for #EO.
+6.1 Dichotomy for HW ≥/ HW≤ signatures
+In this section we deal with the dichotomy forHW≥/HW≤signatures. Suppose f is a
+signature of arity2k−1 or 2k (k∈N+). If supp(f)⊆HW≥, we sayf is anHW≥signature;
+if supp(f)⊆HW>, we sayf is aHW> signature. Similarly, ifsupp(f)⊆HW≤, we sayf is
+a HW≤signature; if supp(f)⊆HW<, we sayf is aHW< signature.
+For each signaturef∈Fof arityk and α∈{0, 1}k, let
+f|EO(α) =
+{
+f(α), α∈HW=;
+0, α /∈HW=.
+andF|EO ={f|EO|f∈F}. We remark that for a signaturef of odd arity,f|EO remains
+constant at 0 by this definition.
+Then we have the following corollary:
+▶ Corollary 67. SupposeF is a set of HW≥(or HW≤respectively) signatures. Then
+Holant(̸=2|F) is #P-hard, unless all signatures inF|EO are∀3 signatures or all signatures
+inF|EO are∀3 signatures, andF|EO⊆EOA orF|EO⊆EOP, in which cases it is inFPNP.
+The proof use a similar idea as Lemma 60.
+Proof. We assume thatF is a set ofHW≥signatures. The proof is similar whenF is a set
+of HW≤signatures.
+B. Meng, J. Wang, M. Xia 33
+Given any instanceI, we first show that any supportδf∈HW> of a signaturef∈F
+cannot be effective. Suppose otherwise andδ=δfδ′satisfies thatωI(δ)̸= 0. Each variable
+in I is incident to a signature inF on RHS and a̸=2 signature on LHS, thus both LHS and
+RHS cover each variable exactly once. For each signatureg∈Fon RHS,supp(g)⊆HW≥,
+thusδ′∈HW≥. Asδf∈HW>, we also haveδ∈HW>. However, by the restriction from
+LHS, we haveδ∈HW=, which is a contradiction.
+By the analysis above we haveHolant(̸=2|F)≡T Holant(̸=2|F|EO). SinceF|EO only
+consists ofEO signatures and signatures of odd arity remain constant at 0, by Theorem 2 we
+are done. ◀
+6.2 Dichotomy for single-weighted signatures
+In this section, we deal with single-weighted signatures. Supposef is a signature of arityk. If
+f(α) only takes nonzero values at Hamming weightd, 0≤d≤k, we sayf is asingle-weighted
+signature. By definition,f is anEO signature if 2d =k, a strictlyHW≥signature if 2d>k ,
+and a strictly HW≤signature if 2d<k .
+For each single-weighted signaturef∈Fof arityk which only takes nonzero values at
+Hamming weightd, 0≤d≤k, let
+f→EO =
+{
+f⊗∆ 2d−k
+0 2d≥k;
+f⊗∆ k−2d
+1 , 2d<k.
+LetF→EO ={f→EO|f∈F}. We remark that for anEO signature f, f→EO = f. We also
+remark that each signature inF→EO is anEO signature.
+Then we have the following corollary:
+▶ Corollary 68. SupposeF is a set of single-weighted signatures. ThenHolant(̸=2|F) is
+#P-hard, unless one of the following holds, in which cases it is in FPNP.
+1. All signatures inF areHW≥(or HW≤respectively) signatures. In addition, all signatures
+inF|EO are∀3 signatures or all signatures inF|EO are∀3 signatures, andF|EO⊆EOA
+orF|EO⊆EOP;
+2. There exist a signature that is notHW≥and a signature that is notHW≤belonging to
+F. In addition, All signatures inF→EO are∀3 signatures or all signatures inF→EO are
+∀3 signatures, andF→EO⊆EOA orF→EO⊆EOP.
+Proof. If all signatures inF are HW≥(or HW≤respectively) signatures, we are done by
+Corollary 67. Consequently, we may assume there exist anf∈Fwhich is not anHW≥
+signature and ag∈Fwhich is not aHW≤signature. The proof consists of two parts. The
+first part realize the pinning signatures on the left side, while the second part reduce the
+problem to a#EOc problem with the help of the pinning signatures.
+Obtaining ∆ 0, ∆ 1 signatures In this part, we first prove the statementHolant(̸=2|F)≡T
+Holant(̸=2|F∪{∆ 0}). Supposef is of arityk. Asf is single-weighted and notHW≥, f can
+only be aHW< signature and there exists anα∈supp(f)∩HW<. We prove this statement
+by induction on#1(α). If #1(α) = 0, f = ∆⊗k
+0 , and we are done by Lemma 38.
+Suppose the statement holds when#1(α) =d≥0, and we prove the statement for the
+case #1(α) = d + 1. As d≥0, #1(α)≥1 and #0(α)≥2. Without loss of generality, we
+may assumeα= 100δ. We also letβ= 010δ,γ= 001δ. If f(α) +f(β)̸= 0, by adding a
+self-loop by̸=2 to x1,x 2, we obtain the signaturef12 satisfying f12(0δ) =f(α) +f(β)̸= 0.
+Since #1(0δ) =d, we are done by induction. Similarly, iff(α) +f(γ)̸= 0 orf(β) +f(γ)̸= 0,
+34 The FP NP versus #P dichotomy for #EO
+by adding a self-loop by̸=2 to x1,x 3 or x2,x 3 we are done as well. Asf(α)̸= 0, at least
+one of{[f(α) +f(β)̸= 0], [f(α) +f(γ)̸= 0], [f(β) +f(γ)̸= 0]}holds, and consequently the
+statement is proved.
+Similarly, with the signatureg we can also obtain the∆ 1 signature. Consequently, we
+have
+Holant(̸=2|F)≡T Holant(̸=2|F∪{∆ 0, ∆ 1})
+Reducing from #EOc In this part, we prove that
+Holant(̸=2|F∪{∆ 0, ∆ 1})≡T Holant(̸=2|F→EO∪{∆})
+Each signature inF→EO∪{∆}can be constructed from signatures inF∪{∆ 0, ∆ 1}
+by tensor product, thusHolant(̸=2|F→EO∪{∆})≤T Holant(̸=2|F∪{∆ 0, ∆ 1}). On the
+other hand, for each instanceI of Holant(̸=2|F∪{∆ 0, ∆ 1}), if there exists aδsuch that
+ωI(δ)̸= 0, then #0(δ) = #1(δ) by the restriction from LHS. As each signature from RHS is
+a single-weighted signature, the values of#0(δ), #1(δ) are also decided by the restriction
+from RHS. If#0(δ)̸= #1(δ) by the restriction from RHS, it would be a contradiction and for
+each possibleδwe haveωI(δ) = 0 and consequently Z(I) = 0, making the reduction trivial.
+Otherwise, the tensor product of all signatures from RHS inI form anEO signature. We
+construct the instanceI′of Holant(̸=2|F→EO∪{∆}) in the following way. Here, by replacing
+a signaturef withf′, we mean that we increase the arity off by tensoring a certain number
+of ∆ 0 or ∆ 1, while keep the origin connections thatf involves unchanged.
+1. Replacing each∆ 0 in I with ∆ , and each∆ 1 with ∆ as well.
+2. If f is anHW≥signature and there exists anα∈supp(f) satisfying #1(α)−#0(α) =a,
+replace f with f⊗∆⊗a
+0 fromF→EO.
+3. If f is aHW≤signature and there exists aβ∈supp(f) satisfying #0(β)−#1(β) =b,
+replace f with f⊗∆⊗b
+1 fromF→EO.
+4. For each introduced∆ 0, connect it to an introduced∆ 1 via a̸=2 signature on LHS.
+Each signature inF→EO∪{∆}is anEO signature, and consequently the tensor product
+of all signatures from the left side inI′also forms an EO signature. This means that
+when constructing I′, the number of ∆ 0 introduced equals that of ∆ 1 introduced, and
+consequently the fourth step in the construction leaves no dangling signatures. Also notice
+that in the construction, we only introduce several connecting components formed by a∆ 0
+and a ∆ 1, and each of them has no effect to the partition function since the value of each
+equals 1. Consequently,Z(I) = Z(I′) and we haveHolant(̸=2|F∪{∆ 0, ∆ 1})≤T Holant(̸=2|
+F→EO∪{∆}).
+Combining the two parts, we prove thatHolant(̸=2|F)≡T Holant(̸=2|F∪{∆ 0, ∆ 1})≡T
+#EOc(F→EO), and by Theorem 28 we are done. ◀
+7 Conclusion and discussion
+In this article, we prove anFPNP vs. #P dichotomy for complex #EO over Boolean domain,
+and extend it to dichotomies for HW≥, HW≤and single-weighted signatures respectively.
+We remark that for most of the cases in this article, we have already achieved an FP
+vs. #P dichotomy. The only exception is that all signatures inF are∀3 signatures or
+all signatures inF are∀3 signatures, andF ⊆EOA orF ⊆EOP whileF is neither
+0-rebalancing nor 1-rebalancing. We remark that such case does exist. TheEO signature
+B. Meng, J. Wang, M. Xia 35
+f56, introduced in [18], is a∀3 EOP signature, and does not satisfy the 0-rebalancing or
+1-rebalancing property. In order to eliminate the discrepancy between theFPNP vs. #P
+dichotomy and an FP vs. #P dichotomy, it is necessary to establish a complexity classification
+for the support identification problem. A decision problem of this type is referred to as a
+Boolean constraint satisfaction problem. This specific area of study has been the subject of
+investigation by [13]. Nevertheless, a comprehensive complexity classification remains to be
+established, and the issue addressed in this article is not yet encompassed by extant research.
+Seeking a complete dichotomy forHolant is also a worthwhile pursuit. Despite the fact
+that this problem has been open for over fifteen years, we hope that the results presented in
+this paper will contribute to the advancement of the field.
+References
+1 Sanjeev Arora and Boaz Barak.Computational complexity: a modern approach. Cambridge
+University Press, 2009.
+2 Miriam Backens. A complete dichotomy for complex-valued Holantc. arXiv preprint
+arXiv:1704.05798, 2017.
+3 Alexei Borodin, Alexey Bufetov, and Michael Wheeler. Between the stochastic six vertex
+model and hall-littlewood processes.arXiv preprint arXiv:1611.09486, 2016.
+4 Alexei Borodin, Ivan Corwin, and Vadim Gorin. Stochastic six-vertex model. 2016.
+5 David M Bressoud.Proofs and confirmations: the story of the alternating-sign matrix conjecture.
+Cambridge University Press, 1999.
+6 Jin-Yi Cai and Xi Chen.Complexity dichotomies for counting problems: Volume 1, Boolean
+domain. Cambridge University Press, 2017.
+7 Jin-Yi Cai and Zhiguo Fu. Complexity classification of the eight-vertex model.Information
+and Computation, 293:105064, 2023.
+8 Jin-Yi Cai, Zhiguo Fu, and Shuai Shao. Beyond #CSP: A dichotomy for counting weighted
+Eulerian orientations with ARS.Information and Computation, 275:104589, 2020.
+9 Jin-Yi Cai, Zhiguo Fu, and Mingji Xia. Complexity classification of the six-vertex model.
+Information and Computation, 259:130–141, 2018.
+10 Jin-Yi Cai, Heng Guo, and Tyson Williams. A complete dichotomy rises from the capture of
+vanishing signatures. InProceedings of the forty-fifth annual ACM symposium on Theory of
+computing, pages 635–644, 2013.
+11 Jin-Yi Cai, Pinyan Lu, and Mingji Xia. Holant problems and counting CSP. InProceedings of
+the forty-first annual ACM symposium on Theory of computing, pages 715–724, 2009.
+12 Jin-Yi Cai, Pinyan Lu, and Mingji Xia. The complexity of complex weighted Boolean #CSP.
+Journal of Computer and System Sciences, 80(1):217–236, 2014.
+13 Tomás Feder and Daniel Ford. Classification of bipartite boolean constraint satisfaction
+through delta-matroid intersection.SIAM Journal on Discrete Mathematics, 20(2):372–394,
+2006.
+14 Vladimir E Korepin. Calculation of norms of bethe wave functions.Communications in
+Mathematical Physics, 86:391–418, 1982.
+15 Greg Kuperberg. Another proof of the alternative-sign matrix conjecture. International
+Mathematics Research Notices, 1996(3):139–150, 1996.
+16 Elliott H Lieb. Residual entropy of square ice.Physical Review, 162(1):162, 1967.
+17 Jiabao Lin and Hanpin Wang. The complexity of Boolean Holant problems with nonnegative
+weights. SIAM Journal on Computing, 47(3):798–828, 2018.
+18 Boning Meng, Juqiu Wang, and Mingji Xia. P-time algorithms for typical #EO problems.
+arXiv preprint arXiv:2410.11557, 2024.
+19 Milena Mihail and Peter Winkler. On the number of eulerian orientations of a graph.Al-
+gorithmica, 16:402–414, 1996.
+36 The FP NP versus #P dichotomy for #EO
+20 William H Mills, David P Robbins, and Howard Rumsey Jr. Alternating sign matrices and
+descending plane partitions.Journal of Combinatorial Theory, Series A, 34(3):340–359, 1983.
+21 Daniel Orr and Leonid Petrov. Stochastic higher spin six vertex model and q-taseps.Advances
+in Mathematics, 317:473–525, 2017.
+22 Linus Pauling. The structure and entropy of ice and of other crystals with some randomness
+of atomic arrangement.Journal of the American Chemical Society, 57(12):2680–2684, 1935.
+23 Franco P Preparata and Michael I Shamos.Computational geometry: an introduction. Springer
+Science & Business Media, 2012.
+24 Franz Rys. Über ein zweidimensionales klassisches konfigurationsmodell. InHelvetica Physica
+Acta, volume 36, page 537. Birkhauser Verlag AG VIADUKSTRASSE 40-44, PO BOX 133,
+CH-4010 BASEL, SWITZERLAND, 1963.
+25 Shuai Shao and Jin-Yi Cai. A dichotomy for real Boolean Holant problems. In2020 IEEE 61st
+Annual Symposium on Foundations of Computer Science (FOCS), pages 1091–1102. IEEE,
+2020.
+26 Shuai Shao and Zhuxiao Tang. Eulerian orientations and Hadamard codes: A novel connection
+via counting.arXiv preprint arXiv:2411.02612, 2024.
+27 John C Slater. Theory of the transition in kh2po4.The Journal of Chemical Physics, 9(1):16–33,
+1941.
+28 Doron Zeilberger. Proof of the alternating sign matrix conjecture.arXiv preprint math/9407211,
+1994.

@@ -1541,6 +1541,40 @@ calcul** du fil AS n'avaient pas atteint.
 >   unique » levée ; §1 bis du dossier ; prompt PR-001 révisé (19
 >   familles, §2 bis).]**
 >
+> - [x] **HOL-003 (fait, 2026-08-08)** — **le dernier trou booléen
+>   rendu EXACT** (27e audit : MWXZ CCC 2025 in extenso + #EO STOC
+>   2025 + FCST STOC 2026) : dichotomie arité-impaire close (condition
+>   (PC), FP^NP vs #P — l'oracle « support identification problem » ;
+>   GSS v1 de 9 JOURS prétend l'éliminer, consigné NON VÉRIFIÉ) ; trou
+>   = arités paires IRRÉDUCTIBLES (pas de pinning) ; coin minimal
+>   délimité (synthèse d'audit) : arité 4 irréductible non symétrique
+>   à support K-mixte ; critères décidables extraits = cahier des
+>   charges HOL-004. Audit : `bib/holant_arites_paires.md` ; fiche :
+>   `tasks/done/HOL-003.md` ; ligne 19 précisée (21 × 8 vérifié).
+> - [x] **HOL-004 (fait, 2026-08-08)** — **la grille seize-vertex :
+>   contrôles validés, une PRISE sur le Réfuteur corrigée et marquée
+>   (le premier scan cherchait le coin dans le RÉEL — fermé par
+>   Shao-Cai ; le coin exige le complexe), et 1 456 ÉPINGLES
+>   structurées reproductibles** (première : supp {0000, 0001, 1110},
+>   i sur 0000 — irréductible, non symétrique, K-mixte, hors A/P/M/L
+>   directes). Périmètre déclaré : transformées non testées →
+>   HOL-005 nommée (Gröbner sur la première épingle). Fiche :
+>   `tasks/done/HOL-004.md` ; mesures : `data/hol004_seize_vertex.md` ;
+>   script : `checks/hol004_seize_vertex.py`.
+> - [x] **HOL-005 (fait, 2026-08-09)** — **QUATRE CERTIFICATS : la
+>   première épingle (f(0000) = i, f(0001) = 1, f(1110) = 1) est
+>   PROMUE représentante concrète du coin toutes-arités-paires** : pas
+>   M-transformable (test EXACT, MGI arité 4, 1 ∈ idéal 4/4) ; pas
+>   A-transformable (0/1 228) ; pas P-transformable (P2 renforcé aux
+>   minors — leçon consignée : la relaxation zéros-seuls laissait 12
+>   branches, la factorisation manquait — 0/2 724) ; pas
+>   RÉEL-transformable sous O₂(ℂ) (réalifié — l'épingle reste dans la
+>   poche). Reste : L-transformable NON TESTÉ (HOL-006 candidate) ;
+>   aucune #P-dureté décidée (c'est le point). VER-HOL-1 à prévoir.
+>   Fiche : `tasks/done/HOL-005.md` ; mesures :
+>   `data/hol005_transformees.md` ; script :
+>   `checks/hol005_transformees.py`.
+>
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le
 > contredisent — « Inventaire des pièces » et « Les trois lectures » §3, dont
