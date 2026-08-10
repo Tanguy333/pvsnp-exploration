@@ -91,3 +91,37 @@ n = 8 : jauges-îles seules). Chaque somme re-vérifiée contre Z exact.
   [À SOURCER] (gauging de réseaux de tenseurs, troncatures de séries
   de boucles) — aucune revendication de nouveauté ; A-021 en cours
   pour le paysage.
+
+## 6. Addendum 2026-08-09 — la réserve « orbite continue » traitée (fil utilisateur EXPLO-JAUGE, répliqué)
+
+Le commit utilisateur 1122902 (8 scripts, 2 040 lignes) répond à la
+réserve du §5. RÉPLICATION SESSION des deux pièces pivots, conformes
+ligne à ligne :
+
+- `explo_refutation_A_dictionnaire.py` : bloc G (n = 6, m = 3, E = 9,
+  #SAT = 45) — jauges pures I/C/H/B : S = 45/8/8/2 ; exhaustif
+  {I,C,H,B}⁹ = 262 144 : **min par bloc = 2** (config BHBBHBBHB,
+  70 s) ; multiplicativité sur T₂ (12 vars) : #SAT = 45² = 2025,
+  S(C) = 8² = 64, S(B) = 2² = 4, meilleure-config-dupliquée = 2² —
+  ⟹ **S ≥ 2^r sur T_r pour TOUT choix du dictionnaire : NON-A
+  (dictionnaire) prouvée**. Réserve du script lui-même : « A reste
+  ouverte pour des familles de jauges non encore construites. »
+- `explo_test_theta.py` : θ (3 clauses partageant u, v ; Z = 25) —
+  lemme de rigidité VÉRIFIÉ ; S(identité/Möbius/Hadamard/BP/aligné) =
+  25/8/16/5/4 ; recuit complexe 40 redémarrages : minima {4 : 12,
+  5 : 8, 8 : 10, 512 : 10}, **jamais sous 4** (45 s) ; lecture du
+  script : recherche = borne SUP, l'exacte demanderait l'élimination
+  des quantificateurs sur GL₂(ℂ)⁹.
+
+Statut consolidé : NON-A PROUVÉE pour le dictionnaire constructible ;
+la voie absolue (bloc θ, chaîne min-S(θ) ≥ 2 ⟹ min-S(Θ_r) ≥ 2^r ⟹
+NON-A_exist) AVANCÉE NON CLOSE (368 survivants archivés
+`checks/theta_survivants_totale.txt`, balayage restant — leçon L20.5
+du fil : pas de clôture maquillée) ; RENVERSEMENT consigné : la jauge
+monodromie-compagnon (hors dictionnaire, poly-constructible) atteint
+S = 1 sur T_r en calculant tr(M) — « une bonne jauge EST un calcul
+déjà fait » ; portée honnête du fil, verbatim : borne de MODÈLE
+(Θ_r est facile : Z = 25^r — « le Tardos de jauge auto-réalisé »),
+indépendante de #P vs FP dans les deux sens, zéro barrière franchie ;
+parenté [à sourcer] : Verstraete-Cirac (formes canoniques des réseaux
+à boucles).

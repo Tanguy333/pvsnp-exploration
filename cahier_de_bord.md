@@ -1574,6 +1574,33 @@ calcul** du fil AS n'avaient pas atteint.
 >   Fiche : `tasks/done/HOL-005.md` ; mesures :
 >   `data/hol005_transformees.md` ; script :
 >   `checks/hol005_transformees.py`.
+> - [x] **Crosslink EXPLO-JAUGE (2026-08-09)** — **le fil utilisateur
+>   (commit 1122902, 8 scripts) traite la réserve « orbite continue »
+>   de HOL-002 ; deux pièces pivots RÉPLIQUÉES conformes** :
+>   NON-A prouvée pour le dictionnaire constructible (min bloc = 2,
+>   exhaustif 4⁹, multiplicativité 45²/2² ⟹ S ≥ 2^r sur T_r) ; voie
+>   absolue via le bloc θ AVANCÉE NON CLOSE (rigidité vérifiée,
+>   recuit 40 redémarrages jamais sous 4, 368 survivants archivés —
+>   leçon L20.5) ; renversement monodromie-compagnon (S = 1 hors
+>   dictionnaire). Portée honnête verbatim : borne de MODÈLE,
+>   indépendante de #P vs FP, zéro barrière. Consigné : fiche HOL-002
+>   (réserve barrée, ajout marqué), data §6, cellule ligne 19
+>   (21 × 8 vérifié).
+>
+> - [x] **PR-004 (fait, 2026-08-09)** — **troisième candidature (Qwen,
+>   prompt v3 : TFNP structurel — PPAD/PLS/CLS, direction P ≠ NP) :
+>   SURVIT SOUS CONDITIONS, la meilleure des trois.** Double
+>   calibration EXÉCUTÉE conforme (implémentation indépendante) :
+>   Sperner-1D = ⌈log₂ N⌉ exact (2, 3, 4 — instrument validé) ;
+>   Sperner-2D = 3, 4, 6 requêtes exactes, sur-logarithmique aux 3
+>   points, écart croissant ; ~14 000 colorations vérifié (13 824).
+>   Chaîne en 2 flèches (MP 1991 à verbatimer), force déclarée
+>   honnêtement ; relativisation = verrou n° 1 traité de front ;
+>   antériorité du sous-lemme déclarée d'avance ; aucun régime
+>   d'échec. PRISE : ligne 16 (Avoid/APEPP) absente du positionnement.
+>   Ligne 20 CONDITIONNÉE à l'audit fondateur A-022. Dossier :
+>   `tours/candidature_ligne20_tfnp.md` ; script :
+>   `checks/pr004_sperner_minimax.py` ; fiche : `tasks/done/PR-004.md`.
 >
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le
