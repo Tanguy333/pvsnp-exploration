@@ -1602,6 +1602,39 @@ calcul** du fil AS n'avaient pas atteint.
 >   `tours/candidature_ligne20_tfnp.md` ; script :
 >   `checks/pr004_sperner_minimax.py` ; fiche : `tasks/done/PR-004.md`.
 >
+> - [x] **Clôture des fils HOL et MC + front PR (décision utilisateur,
+>   2026-08-09)** — « les autres fronts ne dirigent plus vers
+>   P vs NP ; nous sommes maintenant sur le front PR ». Consigné au
+>   backlog (compteurs règle 9) : HOL clos après 6 tâches (acquis
+>   conservés, HOL-006 abandonnée en l'état — É1 = 5 plats survivants,
+>   É2 interrompue ; dettes notées : VER-HOL-1, certificat L) ; MC
+>   clos après 19 tâches (acquis dans la cellule §3 bis et la ligne
+>   18 ; l'analyse de session notant sa chaîne vers l'échappatoire RR
+>   est consignée sans re-plaidoirie ; MC-018 non ouverte) ; PR = le
+>   front actif (4 tâches, cible : les lignes nouvelles, chacune
+>   conditionnée à son audit fondateur). A-022 (audit fondateur
+>   TFNP/ligne 20) DÉCLARÉE et LANCÉE en agent.
+>
+> - [x] **A-022 (fait, 2026-08-10)** — **LA LIGNE 20 EST CRÉÉE (TFNP —
+>   la chaîne la plus courte de la matrice), l'audit fondateur en
+>   main** (28e audit : 14 textes in extenso + 6 abstracts officiels,
+>   révisions ×2). CORRECTION à la candidature : la flèche MP91 est
+>   une équivalence en texte courant p. 318 + dérivation standard,
+>   pas un théorème numéroté. Verrou « aucune technique
+>   inconditionnelle white-box » CONFIRMÉ et décomposé en 4 pièces
+>   (boîte-noire par théorème BCEIP Th. 1 ; les white-box
+>   inconditionnels sont des égalités — CLS = PPAD ∩ PLS ; crypto
+>   conditionnel avec hiérarchie d'hypothèses et limite RSS ; pas de
+>   TFNP-complet, NP-dureté ⟺ NP = coNP). Frontières tranchées :
+>   ligne 15 (recouvrement fort, strictement boîte-noire — déclaré
+>   par les textes) ; ligne 16 (niveaux distincts par théorème
+>   relativisé, ponts 2024-2026). Barrières : algébrisation tue
+>   (0/15 textes) ; relativisation = la méthode même du régime
+>   inconditionnel. Folklore-check Sperner corrigé (2D =
+>   Crescenzi-Silvestri + FISV, Θ(k)). Matrice 22 × 8 ; README 20
+>   familles ; 14 extractions bib/pdf/tfnp/. Audit :
+>   `bib/tfnp_paysage.md` ; fiche : `tasks/done/A-022.md`.
+>
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le
 > contredisent — « Inventaire des pièces » et « Les trois lectures » §3, dont
