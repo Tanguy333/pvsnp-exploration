@@ -1,0 +1,2628 @@
+Provably Total Functions in the Polynomial
+Hierarchy
+Noah Fleming #
+Memorial University of Newfoundland, St. John’s, Canada
+Deniz Imrek #
+University of Texas at Austin, TX, USA
+Christophe Marciot #
+Memorial University of Newfoundland, St. John’s, Canada
+Abstract
+TFNP studies the complexity of total, verifiable search problems, and represents the first layer of the
+total function polynomial hierarchy (TFPH). Recently, problems in higher levels of the TFPH have
+gained significant attention, partly due to their close connection to circuit lower bounds. However,
+very little is known about the relationships between problems in levels of the hierarchy beyond
+TFNP.
+Connections to proof complexity have had an outsized impact on our understanding of the relation-
+ships between subclasses of TFNP in the black-box model. Subclasses are characterized by provability
+in certain proof systems, which has allowed for tools from proof complexity to be applied in order
+to separate TFNP problems. In this work we begin a systematic study of the relationship between
+subclasses of total search problems in the polynomial hierarchy and proof systems. We show that,
+akin to TFNP, reductions to a problem in TFΣd are equivalent to proofs of the formulas expressing
+the totality of the problems in some Σd-proof system. Having established this general correspondence,
+we examine important subclasses of TFPH. We show that reductions to the StrongAvoid problem
+are equivalent to proofs in a Σ2-variant of the (unary) Sherali-Adams proof system. As well, we
+explore the TFPH classes which result from well-studied proof systems, introducing a number of
+new TFΣ2 classes which characterize variants of DNF resolution, as well as TFΣd classes capturing
+levels of Σd-bounded-depth Frege.
+2012 ACM Subject Classification Theory of computation →Proof complexity; Theory of computa-
+tion →Complexity classes
+Keywords and phrases TFNP, TFPH, Proof Complxity, Characterizations
+Digital Object Identifier 10.4230/LIPIcs.CCC.2025.28
+Funding Noah Fleming: Supported by NSERC.
+Acknowledgements The authors thank Robert Robere, Toniann Pitassi, and Oliver Korten for
+helpful discussions.
+1
+Introduction
+The class TFNP consists of the total search problems whose solutions are verifiable in
+polynomial time.
+It has received considerable attention since it captures fundamental
+problems in a broad range of areas whose lack of efficient algorithms is not readily explained
+by the theory of NP-completeness. Famous examples include Nash: output a Nash equilibria
+of a given bimatrix game; and Factoring: output a prime divisor of a given integer. TFNP
+itself is not believed to admit complete problems [21], and as a consequence much of the work
+on TFNP has focused on studying subclasses which do. However, we are limited to proving
+conditional or oracle separations, as a separation between any TFNP subclasses would imply
+P ̸= NP.
+© Noah Fleming, Deniz Imrek, and Christophe Marciot;
+licensed under Creative Commons License CC-BY 4.0
+40th Computational Complexity Conference (CCC 2025).
+Editor: Srikanth Srinivasan; Article No. 28; pp. 28:1–28:40
+Leibniz International Proceedings in Informatics
+Schloss Dagstuhl – Leibniz-Zentrum für Informatik, Dagstuhl Publishing, Germany
+
+28:2
+Provably Total Functions in the Polynomial Hierarchy
+A flurry of recent results have established a complete picture of the relationships between
+the major TFNP subclasses in the black-box setting, where the input is presented as a
+black-box oracle which can be queried [2,9,11–13]. These results exploited a deep connection
+between black-box TFNP – denoted TFNPdt – and proof complexity, an area which studies
+efficient provability in certain propositional logics, known as proof systems. The connection
+of proof complexity to TFNPdt can be summarized as follows: A reduction between two
+total search problems is a proof that the first is total, assuming the totality of the second.
+By employing this lens, it has been shown that many important TFNPdt subclasses are
+characterized by provability in certain well-studied proof systems in the sense that there is a
+simple proof of the totality of a search problem if and only if there is an efficient reduction
+of that search problem to the complete problem for that subclass [5, 8, 12, 13, 19]. This
+connection has been highly impactful for the study of TFNPdt, allowing for the rich set of
+tools in proof complexity to be leveraged in order to provide separations between the major
+TFNPdt subclasses.
+TFNP = TFΣ1 is the first level of the total function polynomial hierarchy TFPH =
+S
+i TFΣi [14]. Recently, problems in higher levels of the polynomial hierarchy have received
+considerable attention, in part due to their close connection to circuit lower bounds. Indeed,
+consider the task of finding (the truth table of) a function which does not have circuits
+of size s. Using a standard encoding, any circuit of size s can be represented uniquely by
+k = poly(s)-many bits. Consider the map T : {0, 1}k →{0, 1}n which maps circuits of size s
+to truth tables of the function that they compute. Finding a truth table of a function with
+high circuit complexity is equivalent to finding a string which is not in the range of T. This
+is an instance of the RangeAvoidance problem.
+▶Definition 1. RangeAvoidance (or simply Avoid) is the following search problem:
+Given a function f : {0, 1}n →{0, 1}n+1, find a y ∈{0, 1}n+1 such that for all x, f(x) ̸= y.
+Observe that any solution y to Avoid can be checked by a coNP verifier – check that for
+every x ∈{0, 1}n, f(x) ̸= y. This means that Avoid belongs to the class TFΣ2. If there is
+an algorithm for solving Avoid which belongs to a class C then this implies the existence of
+a function in C which does not have small circuits – a circuit lower bound against C! This
+approach led to the recent breakthrough circuit lower bounds against symmetric exponential
+time [7,17,20]. Hence, understanding the complexity of TFΣ2 is important for understanding
+circuit lower bounds. Indeed, the current best upper bound puts Avoid in the class of
+problems reducible to LOP – the TFΣ2 problem of finding a minimum element in a total
+order.
+TFΣ2 contains numerous important problems beyond those connected to circuit lower
+bounds. For example, Avoid is the complete problem for the class APEPP which also
+captures the complexity of finding pseudo-random number generators, randomness extractors,
+and rigid matrices [16]. We can restrict Avoid to only have one more element in its range
+than in its domain to obtain the problem StrongAvoid.
+▶Definition 2. strongRangeAvoidance (or simply StrongAvoid) is the following
+search problem: Given a function f : {0, 1}n \ {0} →{0, 1}n, find an empty hole y ∈{0, 1}n,
+i.e., such that for all x ∈{0, 1}n \ {0}, f(x) ̸= y.
+StrongAvoid is the complete problem for the class PEPP which captures the complexity of
+finding objects whose existence is guaranteed by the union bound, including all of APEPP [14].
+Important problems have also been identified in higher levels of the polynomial hierarchy,
+such as those related to finding sets of large VC dimension [14].
+
+N. Fleming, D. Imrek, and C. Marciot
+28:3
+Despite the importance of problems in levels of the polynomial hierarchy beyond TFNP,
+there has been little structural exploration into how they relate. Indeed, [17] provide the
+first black-box separation, showing that StrongAvoid is not reducible to any problem in
+TFΣ2 with a unique solution (in fact, they show that it cannot be solved with non-adaptive
+oracle calls to any language in ΣP
+2 ). Proof complexity has had an outsized impact on proving
+black-box separations for TFNP. To facilitate further structural exploration of TFPH, we
+would like to explore to what degree proof complexity tools can be used to provide separations
+between classes within higher levels of the black-box total function polynomial hierarchy
+(denoted TFPHdt).
+Our Results
+PEPP
+SOPL2
+TFΣ2
+SOD
+FNP
+uCircular-Res(polylog)
+PPADS2
+Res(polylog)
+PLS2
+APEPP
+LOP
+uSherali-Adams
+Reversible-Res(polylog)
+Figure 1 Relationships and characterizations of TFΣ2 classes studied.
+An arrow indicates
+containment.
+In this paper we begin a systematic study of the connections between the total function
+polynomial hierarchy in the black-box model and propositional proof complexity. First, we
+identify the form that proof systems which characterize TFΣdt
+d subclasses take. In order
+to characterize TFΣd subclasses, these proof systems must be able to prove the validity of
+depth-(d + 1) propositional formulas. However, they cannot be Cook-Reckhow proof systems
+(NP-verifiers) in general unless NP = coNP as there are syntactic subclasses of TFΣdt
+2 which
+contain all of TFNPdt; a characterization of which would imply a polynomialy-bounded proof
+system. Recall that a class is syntactic if it admits a complete problem. We show that in
+order to characterize TFΣdt
+d subclasses, it suffices to augment Cook-Reckhow proof systems
+P with a Σd-weakening rule which generalizes the resolution weakening rule to Σd formulas;
+we call the resulting proof system Σd-P (see Definition 14).
+To begin, we explore the limits of these characterizations, verifying that this is indeed
+the correct definition of a proof system for TFΣdt
+d . A syntactic class C ⊆TFΣdt
+d is uniform is
+there is a polynomial-time algorithm which given n outputs the nth instance of the complete
+problem for C.
+CCC 2025
+
+28:4
+Provably Total Functions in the Polynomial Hierarchy
+▶Theorem 3 (Informal). The following hold:
+1. For every uniform C ⊆TFΣdt
+d there is a Σd-proof system P such that R ∈C if and only
+if P efficiently proves that R is total.
+2. For every well-behaved Σd-proof system P there is a uniform TFΣdt
+d subclass C such that
+R ∈C if and only if P proves that R is total.
+Having established this scaffolding result, we begin to explore characterizations of specific
+TFΣdt
+d subclasses; our results for TFΣ2 can be seen in Figure 1. First, we show that PEPPdt
+is characterized by the Σ2-variant of the Sherali-Adams proof system.
+▶Theorem 4 (Informal). R ∈PEPPdt iff there is an efficient Σ2-Sherali-Adams proof that
+R is total.
+This allows one to use an extension to the pseudo-expectation technique in order to exclude
+total search problems from PEPP, and hence also APEPP. Currently, no such exclusions are
+known.
+We also consider several variants of the DNF-resolution proof system: DNF Resolution
+(Res(polylog)), Circular DNF resolution (uCircRes(polylog)), and Reversible DNF resolution
+(RevRes(polylog)). We introduce new TFΣdt
+2 classes which characterize them.
+▶Theorem 5 (Informal). Σ2-Res(polylog), Σ2-uCircRes(polylog), Σ2-RevRes(polylog) are
+characterized by the TFΣdt
+2 subclasses PLS2, SoL2, SoPL2, respectively.
+We explore how these new classes relate to natural TFΣ2 classes, which can be seen in
+Figure 1. In doing so, we introduce a natural TFΣ2 class SOD, of problems reducible to
+finding a source in a DAG given a sink, which we believe may be of independent interest.
+Finally, we show that our characterization of DNF resolution can be extended to charac-
+terize bounded-depth Frege in higher levels of TFPH. The depth-d Frege system allows one
+to cut on depth-d propositional formulas.
+▶Theorem 6 (informal). Σd-Depth d-Frege is characterized by the TFΣdt
+d class PLSdt
+d .
+This result is inspired by the work of Beckmann and Buss, who characterize PEd and
+GId in bounded arithmetic [23]. It is also the TFΣd analogue of Thapen’s recent TFNP
+characterization of bounded-depth Frege [25].
+Comparison with Bounded Arithmetic.
+Characterizations of TFPH classes have been
+studied in the uniform setting by theories of bounded arithmetic. Beckmann and Buss [3]
+showed that Σb
+d-definable functions of T d
+2 correspond to the class PLSΣp
+d−1, which is defined
+by replacing the polynomial-time predicates and functions of the complete problem for the
+TFNP subclass PLS with predicates and functions from PΣp
+d−1. This results in the generalized
+polynomial local search problem GPLSd of [23]. However, these correspondences do not stray
+outside of proof systems which correspond to bounded-depth Frege systems.
+Comparison with [25].
+Recently and independently, Thapen [25] considered reductions
+between black-box total search problems in the polynomial hierarchy under the notion of
+counter example reducibility, in order to define new TFNP subclasses. Taking the set of
+TFNP problems which are counter-example reducible to a TFΣ2 problem, characterizing a
+class C ⊆TFΣ2, essentially acts as a projection of C to TFNP. He uses these in order to
+obtain TFNPdt characterizations. In comparison, we are interested in reductions between and
+characterizations of TFΣdt
+d problems. As well, he shows that versions of the game induction
+problems GId [24] form TFNPdt subclasses which characterize bounded-depth Frege proofs of
+CNF formulas.
+
+N. Fleming, D. Imrek, and C. Marciot
+28:5
+Open Problems.
+In this paper we provide the framework for characterizations between
+total search problems in the polynomial hierarchy, leaving open many natural questions.
+1. We study decision-tree reductions, as these are the query analogue of polynomial-time
+reductions. However, it is natural also to consider more powerful reductions, such as
+PNP-reductions. What characterizations does one obtain under such reductions?
+2. There are several studied classes for which we do not yet have characterizations, such as
+APEPP and LOP. Due to the connection between StrongAvoid and Sherali-Adams,
+it would appear that PEPP should correspond to a variant of Sherali-Adams which
+produces a large negative value, rather than −1. However, we cannot maintain this under
+decision-tree reductions.
+3. TFΣ2 problems with unique solutions play a critical role in the recent circuit lower bounds
+[7,17,20]. What properties do proof systems which characterize such problems possess?
+2
+Preliminaries on the Total Function Polynomial Hierarchy
+Subclasses of TFPH are typically defined by a simple existence principle to which everything
+in the class reduces. For example, any total order must have a minimal element. These
+existence principles naturally give rise to total search problems. Continuing the example:
+▶Definition 7. The Linear Ordering Principle (LOP) asks, given ≺: {0, 1}n × {0, 1}n →
+{0, 1}, to find:
+A minimal element: x ∈{0, 1}n such that ∀y ̸= x, x ≺y.
+A violation of the total order: either (i) x ∈{0, 1}n such that x ≺x, (ii) x ̸= y such that
+x ̸≺y and y ̸≺x, or (iii) x ≺y and y ≺z and x ̸≺z.
+To make these problems non-trivial, the input is presented as a circuit C so that the
+search space is exponential in the number of input bits n. Formally, for any x, y ∈{0, 1}n,
+C(x, y) =≺(x, y).
+We call C a white-box encoding of the problem.
+Unfortunately, a
+separation between any pair of total search problems in the white-box model is hard to
+achieve, as it would imply P ̸= NP.
+Instead, we can gain intuition for the relationships between these classes by exploring
+their black-box variants. In this setting C is given as an oracle which can be queried, but we
+no longer have access to the description of C. A major benefit of considering the black-box
+model is that we can now prove unconditional separations between classes without having to
+resolve P versus NP. These separations imply oracle separation in the white-box setting.
+A query search problem is a sequence of relations Rn ⊆{0, 1}n × On, one for each n ∈N.
+It is total if for every x ∈{0, 1}n there is an o ∈On such that (x, o) ∈Rn. We think of
+x ∈{0, 1}n as a bit string which can be accessed by querying individual bits, and we will
+measure the complexity of solving Rn as the number of bits that must be queried. Hence, an
+efficient algorithm for Rn will be one which finds a suitable o while making at most polylog(n)-
+many queries to the input. We will not charge the algorithm for other computational steps,
+and therefore an efficient algorithm corresponds to a shallow decision tree. Total query search
+problems which can be computed by decision trees of depth polylog(n) belong to the class
+FPdt, where dt indicates that it is a black-box class. While search problems are formally
+defined as sequences R = (Rn), we will often want to speak about individual elements in the
+sequence. For readability, we will abuse notation and refer to elements Rn in the sequence as
+total search problems; furthermore, we will often drop the subscript n, and rely on context
+to differentiate.
+In this paper we will be considering total query search problems in the polynomial
+hierarchy TFPHdt.
+CCC 2025
+
+28:6
+Provably Total Functions in the Polynomial Hierarchy
+▶Definition 8. We say that a total search problem R = (Rn), where Rn ⊆{0, 1}n × On,
+belongs to the dth level of the query total function polynomial hierarchy TFΣdt
+d if for every
+o ∈On
+(x, o) ∈R ⇐⇒∀z1 ∈{0, 1}ℓ1 ∃z2 ∈{0, 1}ℓ2 . . . Qzd−1 ∈{0, 1}ℓd−1 Vo,(z1,...,zd−1)(x) = 1,
+where Q ∈{∃, ∀}, Vo,⃗z = Vo,(z1,...,zd−1) is a decision tree of polylog(n)-depth, and each
+ℓi ∈polylog(n).
+Note that FPdt = TFΣdt
+0 and TFNP = TFΣdt
+1 . At this point one may ask about TFΠdt
+d .
+Kleinberg et al. [14] showed that TFΠd is efficiently reducible to TFΣd−1, and vice versa.
+Hence, it does not offer a new perspective.
+We can compare the complexity of total search problems by taking reductions between
+them. The following defines decision tree reductions between total search problems, the
+query analogue of polynomial-time reductions.
+▶Definition 9. For total search problems R ⊆{0, 1}n × On, S ⊆{0, 1}m × O′
+m, there is an
+S-formulation of R if, for every i ∈[m] and o ∈O′m, there are functions fi : {0, 1}n →{0, 1}
+and go : {0, 1}n →On such that
+(f(x), o) ∈S =⇒(x, go(x)) ∈R,
+where f(x) = (f1(x) . . . fn(x)). The depth of the reduction is
+d := max
+ {depth(fi) : i ∈[m]} ∪{depth(go) : o ∈O′
+m}
+
+,
+where depth(f) denotes the minimum depth of any decision tree which computes f. The size
+of the reduction is m, the number of input bits to S. The complexity of the reduction is
+log m + d, and the complexity of reducing R to S is the minimum S-formulation of R.
+We extend this definition to sequences in the natural way. If S = (Sn) is a sequence and
+Rn is a single search problem, then the complexity of reducing Rn to S is the minimum over
+m of the complexity of reducing Rn to Sm. For two sequences of search problems S = (Sn)
+and R = (Rn), the complexity of reducing R to S is the complexity of reducing Rn to S for
+each n. A reduction from R to S is efficient if its complexity is polylog(n); we denote this by
+R ≤dt S.
+Syntactic and Uniform Classes.
+We say that a class of total search problems C ⊆TFΣdt
+d
+has R ∈C as its complete problem if for every S ∈C, S ≤dt R. We call subclasses with
+complete problems syntactic. Further, we say that a syntactic class is uniform if it has a
+complete problem R which is uniformly generated – - there is a polynomial-time Turing
+machine which on input n outputs the nth instance of a complete problem for that class.
+3
+Proof Systems for TFPH
+Search problems in the black-box model are intimately tied to the complexity of propositional
+theorem proving. A proof is a procedure for convincing a verifier that a statement is correct.
+In the propositional setting, a proof convinces the verifier that a propositional formula is
+unsatisfiable (equivalently, its negation is a tautology).
+
+N. Fleming, D. Imrek, and C. Marciot
+28:7
+3.1
+Recap: Proof Systems for TFNP
+We begin by recalling how characterizations of proof systems by TFNPdt subclasses occur.
+We will then generalize this to TFPH. Let UNSAT be the language of all unsatisfiable
+propositional formulas.
+▶Definition 10. A Cook-Reckhow proof system is a polynomial-time function P : {0, 1}∗→
+{0, 1} such that for every propositional formula F ∈{0, 1}∗,
+F ∈UNSAT ⇐⇒∃Π ∈{0, 1}∗, P(Π, F) = 1.
+The size of proving an unsatisfiable formula F in P is min{|Π| : P(Π, F) = 1}.
+For many proof systems there is an associated width/degree measure. For example, in
+resolution it is the maximum number of literals in any clause appearing in a proof, and in
+algebraic systems such as Sherali-Adams and Sum-of-Squares it is the maximum degree of
+the polynomials appearing in the proof. Characterizations of TFNPdt subclasses are in terms
+of a complexity parameter of the proof system, denoted
+P(F) := min
+
+width(Π) + log size(Π) : Π is a P-proof of F
+	
+,
+where width is some associated width measure particular to that system. For example, for
+example for resolution the width measure is the number of literals in a clause, while for
+algebraic proof systems the width measure is typically the proof degree. This complexity
+measure is studied in order to account for the fact that in the black-box setting our reductions
+are performed by decision trees and we would like the complexity of a proof to be closely
+related to the complexity of a formulation; width will correspond to the depth of the decision
+trees in the formulation.
+Typically one studies the complexity of proving the unsatisfiability of CNF formulas. As
+a CNF formula F = C1 ∧. . . ∧Cm is falsified only when one of its clauses is falsified, a proof
+convinces the verifier that for every assignment x ∈{0, 1}n there is some clause Ci of F such
+that Ci(x) = 0. Hence, the complexity of proving that F is unsatisfiable is intimately related
+to the complexity of exhibiting a falsified clause, given an assignment. This is known as the
+false clause search problem SearchF ⊆{0, 1}n × [m], defined as
+(x, i) ∈SearchF ⇐⇒Ci(x) = 0.
+As F is unsatisfiable, this search problem is total, and if each clause of F contains at most
+polylog(n)-many variables, it belongs to TFNPdt.
+The above intuition suggests that understanding TFNPdt (or at least the false clause search
+problem) is important for understanding proof complexity. Remarkably, proof complexity
+is also crucial for understanding TFNPdt. It turns out that TFNPdt is equivalent to a large
+sub-area of proof complexity! The intuition is the following: A reduction between two total
+search problems is a proof that the first is total, assuming the totality of the second. By
+employing this lens, works have shown that many common proof systems are characterized
+by certain well-studied tautologies in the sense that they can prove a tautology iff there is a
+short reduction of that tautology to the characterizing one.
+The heart of this connection is the following claim, which shows that TFNPdt is exactly
+the study of the false clause search problem. The proof proceeds by expressing the totality
+of any problem R in TFNPdt as a tautology and then taking its negation.
+▷Claim 11.
+If R ∈TFNPdt then there is an unsatisfiable polylog(n)-width CNF formula
+FR such that SearchFR ∈TFNPdt and R =dt SearchFR.
+CCC 2025
+
+28:8
+Provably Total Functions in the Polynomial Hierarchy
+From this, characterizations of TFNPdt subclasses by proof systems have been derived. We
+say that a syntactic subclass C ⊆TFNPdt is characterized by a proof system P if for every
+SearchF ∈TFNPdt, SearchF ∈C iff P(F) = polylog(n). Note that as a proof system is a
+polynomial-time Turing machine, any TFNPdt class must be which characterizes that proof
+system must be uniform.
+3.2
+Proof Systems and TFPH
+The aim of this paper is to explore characterizations of classes of problems belonging to
+higher levels of TFPHdt. These will correspond to the provability of quantified formulas.
+▶Definition 12. A Σd.5 formula F is the propositional translation of any quantified formula
+of the form
+∃z1 ∈{0, 1}ℓ1 ∀z2 ∈{0, 1}ℓ2 . . . Qzd ∈{0, 1}ℓd L(x, z1, . . . , zd),
+where ℓi ∈polylog(n), Q ∈{∃, ∀}, and L is a formula which depends on at most polylog(n)-
+many free variables (x). That is, a Σd.5 formula is of the form
+F(x) =
+_
+z1∈{0,1}ℓ1
+^
+z2∈{0,1}ℓ2
+. . .
+⃝
+zd∈{0,1}ℓd
+Lz1,...,zd(x),
+where ⃝∈{∧, ∨}, and Lz1,...,zd(x) := L(x, z1, . . . , zd). Similarly, Πd.5 formulas are negations
+of Σd.5 formulas.
+Note that because Lz depends on polylog(n)-many variables, we may assume without loss of
+generality (with a quasi-polynomial blow-up in size) that Lz is a CNF/DNF formula with
+clauses/terms of width polylog(n). Hence, a Σd.5-formula is a layered circuit of depth d where
+the gates at each layer are the same, and the gates at the first d layers are allowed 2polylog(n)
+fanin, while the final layer is restricted to have polylog(n) fanin. Observe that a Π1.5-formula
+is a low-width CNF formula.
+Our aim is to characterize subclasses of the higher levels of the total function polynomial
+hierarchy. Towards this, we generalize the false clause search problem to Σd.5 formulas.
+▶False Formula Search. For a formula F := V
+o∈[m] Ho where each Ho is a Σd.5-formula,
+the False Formula search problem FFF ⊆{0, 1}n × [m] is defined as
+(x, o) ∈FFF ⇐⇒Ho(x) = 0.
+Observe that if F is unsatisfiable then FFF is total and FFF ∈TFΣdt
+d+1. The following
+lemma generalizes Claim 11 to say that TFΣdt
+d is exactly the study of the false formula search
+problem.
+▶Lemma 13. For every d ≥1 and R ∈TFΣd there is an unsatisfiable Πd.5-formula FR
+such that (x, o) ∈R iff (x, o) ∈FFFR.
+Proof. Let R ⊆{0, 1}n × [m] ∈TFΣd. Then there are polylog(n)-depth decision trees
+Vo,(z1,...,zd−1) such that
+(x, o) ∈R ⇐⇒∀z1 ∈{0, 1}ℓ1 ∃z2 ∈{0, 1}ℓ2 . . . Qzd−1 ∈{0, 1}ℓd−1 Vo,(z1,...,zd−1)(x) = 1,
+where Q ∈{∃, ∀}, Vo,⃗z = Vo,(z1,...,zi−1) is a decision tree of polylog(n)-depth, and each
+ℓj ∈polylog(n). Slightly abusing notation, let Vo be a propositional translation of the verifier
+as a Π(d−1).5-formula:
+Vo(x) :=
+^
+z1∈{0,1}ℓ1
+_
+z2∈{0,1}ℓ2
+. . .
+⃝
+zd−1∈{0,1}ℓd−1
+Vo,⃗z(x),
+
+N. Fleming, D. Imrek, and C. Marciot
+28:9
+where ⃝∈{∧, ∨}, and Vo,⃗z(x) is computable by a polylog(n)-depth decision tree, and hence
+propositionalized as a polylog(n)-width CNF formula if ⃝= ∧or a polylog(n)-width DNF if
+⃝= ∨, collapsing the top gate into ⃝. This is done as follows: Say that a root-to-leaf path
+in Vo,⃗z is a b-path if it ends at a leaf labeled b ∈{0, 1}. Then, Vo,⃗z is propositionalized as
+If d −1 is even: W
+1-path p∈Vo,⃗z p,
+If d −1 is odd: V
+0-path p∈Vo,⃗z ¬p,
+where p is the conjunction of literals queried along p (if a variable x is queried and we take
+branch-0, then we consider this as literal ¬x and otherwise as x). Note that in this case
+the outer gate of Vo,⃗z matches ⃝, and the depth collapses by 1. Consider the following
+Πd.5-formula, which states that R is not total:
+F(x) :=
+^
+o∈O
+¬Vo(x).
+Observe that if (x, o) ∈R, then there is some z1, . . . , zd such that Vo,z(x) = 1, and hence
+(x, o) ∈FFF . Conversely, if (x, o) ∈FFF , then (x, o) ∈R.
+◀
+We will call the formula FR the propositionalization of R. This lemma allows us to relate
+the complexity of total search problems to the provability of propositional formulas. In the
+remainder we will develop what provability means in this context. In particular, what are
+the properties of a proof system which proves the formulas that result from TFPHdt search
+problems.
+A characterization of a TFPHdt class by a proof system proceeds by showing that the
+proof system can prove the correctness of reductions to the class. To discuss this, we will
+need to propositionalize reductions.
+▶Reduced Formula. Let R ⊆{0, 1}n × O be a problem in TFΣdt
+d and let V⃗z,o, o ∈O be its
+verifiers. Let (f, g) be an R-formulation where f : {0, 1}m →{0, 1}n, g : {0, 1}m →O, then
+the reduced formula FR(f, g) is the Πd.5-formula defined as
+FR(f, g) :=
+^
+o∈O
+^
+path p∈go
+¬Vo,p(f(x)),
+where Vo,p(f(x)) = V
+z1∈{0,1}ℓ1
+W
+z2∈{0,1}ℓ2 . . . ⃝zd−1∈{0,1}ℓd−1 (Vo,⃗z(f(x)) ∧p) and Vo,⃗z(f(x))
+can be represented as a polylog(n)-width CNF/DNF as in Lemma 13, using that both Vo,⃗z
+and f are computable by polylog(n)-depth decision trees.
+Reduced formulas capture formulations in the following sense. Let H := V
+o∈OH Ho and
+(f, g) be an FFF -formulation of FFH, where F = V
+o∈OF Fo. Then for any o ∈OF and any
+path p in go labelled with some o∗∈OH we have that
+¬Vo,p(f(x)) = 0 =⇒Ho∗(x) = 0.
+(1)
+That is, Ho∗=⇒¬Vo,p(f), and we say that ¬Vo,p(f) is a weakening of Ho∗.
+A proof system P is characterized by a TFPHdt class C with complete problem FFF
+if efficient provability of F in that proof system implies low-complexity reductions to the
+complete problem FFF for that class, and membership in the class C implies that P can
+prove the correctness of the reduction to P. The latter takes the following form: if (f, g) is a
+FFF -formulation of a FFH ∈C then
+i) From H, P can efficiently derive the reduced formula F(f, g).
+ii) P has an efficient proof of F(f, g).
+CCC 2025
+
+28:10
+Provably Total Functions in the Polynomial Hierarchy
+What properties must a proof system possess in order to perform (i) and (ii) for a subclass
+C ⊆TFPHdt? If TFNPdt ⊆C then a Cook-Reckhow proof system (an NP-verifier) does not
+suffice unless NP = coNP1. Interestingly, what fails is step (i) – Theorem 23 shows that
+step (ii) can always be carried out by a Cook-Reckhow system. We will need to augment
+Cook-Reckhow proof systems in order to perform step (i). The issue is that Cook-Reckhow
+systems cannot always perform the weakening from (1). That is, if F(f, g) = V
+o∈OF (f,g) Fo
+and H = V
+o′∈OH Ho′ then by correctness of the reduction, we know that for every o ∈OF (f,g),
+Fo is a weakening of some Ho′. However, Cook-Reckhow proof systems cannot necessarily
+derive Fo efficiently given H. For example, if Fo = ⊤, the trivial tautology, then this is
+tantamount to proving that Fo is a tautology, which is a coNP-complete task. It will suffice
+to augment our proof systems to be able to do so.
+▶Definition 14. Let P be a Cook-Reckhow proof system.
+A proof of a Πd+1 formula
+F = V
+i∈[m] Fi in the proof system Σd-P is a pair (H, Π) such that
+1. Π is a P-proof that the Πd+1-formula H = V
+j∈[k] Hj is unsatisfiable.
+2. Each Hj is a Σd-formula such that there is some i ∈[m] for which Fi =⇒Hj. That is,
+Hj is a Σd-weakening of Fi.
+The complexity of the proof (H, Π) is log |H| + log s + d, where log s + d is the complexity of
+the proof Π.
+Clearly such proofs are verifiable in Σd. As we will see, they suffice to characterize sub-
+classes of TFΣdt
+d . Note as well that the definition of a Σ1-proof system agrees with the
+standard definition of any proof system which corresponds to a TFNPdt subclass. Indeed,
+Σ1-weakening is simply weakening over clauses, which can be performed in tree resolution,
+which characterizes FPdt.
+Comparison with Proof Systems for QBF.
+A line of research has explored proof systems
+for proving the unsatisfiability of quantified boolean formulas (QBF) (see [4] for a survey).
+These QBF proof systems appear to be weaker than Σd-proof systems when restricted to
+Σd-formulas. Indeed, these proof systems are typically Cook-Reckhow systems augmented
+with a ∀Reduction rule, and hence lower bounds for CNF formulas from the propositional
+case readily apply to these proof systems. This is not the case for Σd-proof systems, and
+further Σd weakening is able to simulate ∀Reduction.
+4
+Sherali-Adams and Strong Range Avoidance
+We begin with an example of a characterization by showing that strongRangeAvoidance
+is characterized by Σ2-Sherali-Adams. A full treatment of the Sherali-Adams proof system is
+given in the monograph [10].
+For any boolean formula F, we will assume without loss of generality that all negations
+occur at the leaves and let Vars+(F) be the positive literals in F and Vars−(F) be the negative
+literals. For any conjunct t = V
+x∈Vars+(t) x ∧V
+x∈Vars−(t) ¬x, we associate the polynomial
+Q
+x∈Vars+(t) x Q
+x∈Vars−(t)(1 −x), and refer to them also as conjuncts. A conical junta is a
+sum of conjuncts J := P t.
+1 Indeed, for any unsatisfiable 3-CNF formula F, FFF ∈TFNPdt.
+
+N. Fleming, D. Imrek, and C. Marciot
+28:11
+Let D = W
+t t be any DNF. We can express D as a degree deg(D) := maxt∈D deg(t)
+polynomial
+X
+t∈D
+t −1.
+Observe that for any x ∈{0, 1}n, D(x) = 1 iff P
+t∈D t(x) −1 ≥0. Henceforth we will abuse
+notation and refer to D as both the DNF and the associated polynomial.
+Throughout this section we will work with multi-linear arithmetic, associating x2
+i = xi
+for every variable x. This has the effect of restricting the underlying linear program to
+{0, 1}-points.
+▶Definition 15. Let F = {Di}i∈[m] be an unsatisfiable collection of DNFs. A Σ2-Unary
+Sherali-Adams (which we denote by uSA) proof Π of F is a weakening F ′ = {D′
+i}i∈[m′] of F
+together with a list of conical juntas Ji, J , such that
+X
+i∈[m′]
+D′
+iJi + J = −1.
+The degree deg(Π) is the maximum degree among Di, D′
+iJi, and J , and the size size(Π)
+is the number of monomials (counted with multiplicity)2 in Di, D′
+iJi, J .
+The complex-
+ity of the proof is uSA(Π)
+:=
+deg(Π) + log size(Π), and the complexity of proving F is
+uSA(F) := minΠ uSA(Π), where the minimum is taken over all uSA proofs of F.
+Note also that weakening subsumes the need to explicitly allow the additional conical
+junta in a uSA proof; we could instead defined uSA as a Nullstellensatz proof P D′
+iJi = −1.
+This is because the additional junta J may be introduced using weakening: for each conjunct
+t of J , weaken some Di in F to true or t. For example, Di can be weakened to xi ∨¬xi ∨t,
+the polynomial encoding of which is xi + (1 −xi) + t −1 = t.
+▷Claim 16.
+uSA is sound and complete.
+Proof. Suppose that uSA is not sound; then there exists a uSA refutation of a satisfiable
+DNF F = {Di}i∈[m],
+X
+i∈[m′]
+D′
+iJi + J = −1.
+Let x ∈{0, 1}n be a satisfying assignment to F, meaning that for every i, D′
+i(x) = 1 for any
+weakening D′
+i of Di, and in particular the polynomial representation of D′
+i(x) ≥0. As juntas
+are non-negative over {0, 1}n, we have that
+X
+i∈[m′]
+D′
+i(x)Ji(x) + J (x) ≥0,
+which is a contradiction.
+For completeness, let F = {Di}i∈[m] be an unsatisfiable formula.
+Each assignment
+x ∈{0, 1}n must falsify some DNF of F, which we will denote by Dx. Let Ix be the
+indicator polynomial Ix := Q
+i:xi=1 xi
+Q
+i:xi=0(1 −xi) of the assignment x. We claim that
+the polynomial
+X
+x∈{0,1}n
+IxDx = −1,
+2 This is a unary proof system as the number of monomials are counted with multiplicity, akin to writing
+coefficients in unary, rather than allowing for monomials with coefficients written in binary
+CCC 2025
+
+28:12
+Provably Total Functions in the Polynomial Hierarchy
+and is therefore a uSA proof. To see this, since we are working over the ideal ⟨xi −x2
+i ⟩, it
+suffices to show that the polynomial evaluates to −1 on every x ∈{0, 1}n. Observe that if
+y ∈{0, 1}n falsifies Dx, then Dx(y) = −1; additionally, if x ̸= y, then Ix(y) = 0. Hence, for
+every y ∈{0, 1}n,
+X
+x∈{0,1}n
+Ix(y)Dx(y) = Iy(y)Dy(y) = Dy(y) = −1.
+◁
+In the rest of this section, we show that uSA is closely related to the search problem
+strongRangeAvoidance. We restate an equivalent definition next.
+▶Definition 17. An instance of strongRangeAvoidance (StrongAvoid) is given by a
+map f : [n] →[n + 1]. A solution is any h ∈[n + 1] such that for every p ∈[n], f(p) ̸= h.
+StrongAvoid can be encoded as a CNF formula by introducing, for every p ∈[n], log(n+1)-
+many binary variables p1, . . . , plog n+1 naming in binary the hole h ∈[n + 1] to which pigeon
+p flies. For exposition, it will be convenient to think of p as an (n + 1)-ary variable and we
+will denote by [[p = h]] the indicator conjunct that is satisfied iff p maps to h ∈[n + 1] under
+the given assignment
+[[p = h]] := ph1
+1 ∧. . . ∧p
+hlog(n+1)
+log(n+1),
+where phi
+i
+= pi if the ith bit of h is 1 and ¬pi otherwise. Note that P
+h∈[n+1][[p = h]] = 1 as
+polynomials.
+We can express StrongAvoid as the unsatisfiable family of DNFs,
+_
+p∈[n]
+[[p = h]]
+∀h ∈[n + 1].
+The main theorem of this section is the following.
+▶Theorem 18. For any FFF ∈TFΣdt
+2 there is a complexity-c StrongAvoid-formulation
+of FFF iff there is a Σ2-uSA proof of F of complexity Θ(c).
+We break the proof of this theorem into Lemma 19 and Lemma 22, which are proven
+over the following two subsections. This theorem gives necessary and sufficient conditions
+for separating other TFΣ2 classes C from StrongAvoid: Exhibit a pseudo-expectation
+(see e.g., [10]) against any polylog(n)-width Σ2-weakening of the propositionalization of
+StrongAvoid.
+4.1
+SA Proofs Imply sRA Reductions
+▶Lemma 19. If there is a size s and degree d Σ2-uSA proof of F, then there is a depth-d
+reduction from FFF to an instance of StrongAvoid of size O(s).
+To prove this lemma, it will be convenient to work with the following problem. We show
+that it is equivalent to StrongAvoid.
+▶Definition 20. The Unmetered Source of Dag (USoD) problem is defined as follows. The
+input is a “successor” function S : [n] →[n] which defines a graph in which each vertex has
+fan-out ≤1 but arbitrary fan-in. There is an edge from i to j if S(i) = j. To make the
+problem total, we enforce that the vertex 1 is a sink; it will have fan-out 0 but fan-in at
+least 1. The goal is to find a source; the solutions are:
+1 is a solution if either S(1) ̸= 1 or ∀v ̸= 1 ∈[n], S(v) ̸= 1
+(1 is not a sink).
+v ∈[n] is a solution if S(v) ̸= v but ∀u ∈[n], S(u) ̸= v
+(v is a source).
+
+N. Fleming, D. Imrek, and C. Marciot
+28:13
+▶Lemma 21. USoD =dt StrongAvoid. Furthermore, this reduction is by depth-1 decision
+trees.
+Proof. From an instance S : [n] →[n] of USoD, we construct an instance f : [n] →[n + 1]
+of StrongAvoid as follows. For v ̸= 1 ∈[n], let f(v) := S(v) and let f(1) := n + 1. We
+claim that any solution u to this StrongAvoid instance is a source in S. First observe that
+u ̸= n + 1 as f(1) = n + 1. Hence, by construction, we have that ∀v ∈[n], S(v) ̸= u, and in
+particular S(u) ̸= u, so u is a source.
+For the converse direction, from an instance f : [n] →[n + 1] of StrongAvoid we construct
+an instance S : [n + 1] →[n + 1] of USoD by defining S(v + 1) := f(v) for all v ∈[n] and
+letting S(1) = 1. Let v be a solution to this instance of USoD, if v = 1, then, since S(1) = 1,
+for all u ∈[n], f(u) ̸= 1. Otherwise, v ̸= S(u) for all u ∈[n + 1], and so v ̸= f(u) for all
+u ∈[n].
+◀
+Proof of Lemma 19. Let F = V
+o∈O Do, and let Π be a size s and degree d uSA proof of F
+over n variables, where
+Π :=
+X
+i∈[m]
+X
+j∈Ii
+D′
+iJj +
+X
+k∈K
+Jk + 1 = 0,
+for sets of indices Ii, K, each D′
+i is a weakening of some Do ∈F and each Jj, Jk is a conjunct.
+We construct an instance of USoD with one node per occurrence of a (signed) monomial in
+Π. Therefore, for simplicity, we will refer to monomials as nodes and vice versa. The constant
+1 will be our distinguished sink, and we will set S(1) = 1. We will define the remaining
+successor pointers as follows:
+Negative Monomials. Since Π = 0, there is a positive and negative copy of every monomial
+occurring in the proof; construct a pairing of the monomials in this way. Furthermore, under
+any assignment x ∈{0, 1}n, the number of monomials which evaluate to 1 and to −1 is equal.
+For each negative monomial −m in Π, the decision tree S(−m) queries the variables of m
+and outputs as follows:
+i) If m(x) = 0, then S(−m) = −m.
+ii) Otherwise, let m be the positive copy of −m that −m is paired with, and set S(−m) = m.
+This completes the description of the successor pointer for negative monomials.
+Positive Monomials.
+For any positive monomial m, the decision tree for S(m) first
+queries the (at most d-many) variables of m to determine the value of m(x). If m(x) = 0,
+then S(m) = m. Otherwise, we will define S as follows.
+We define the successor pointer for the positive monomials which belong to each D′
+iJj
+first, and handle the monomials from the conjuncts Jk later. Fix some D′
+iJj in Π, where
+D′
+i = P
+k∈[ℓ] tk −1, and consider the monomials within it. We would like to satisfy the
+following property: there is a source within the monomials D′
+iJj iff D′
+i(x) = −1 (i.e., the
+DNF D′
+i(x) = 0). To get some intuition, first suppose that Jj = 1 and that all monomials
+m in D′
+i are positive – that is, D′
+iJj = P
+k∈[ℓ] mk −1. Then, the current assignment to S
+affects D′
+iJj as follows:
+Each monomial mk such that mk(x) = 0 is an isolated vertex for which S(mk) = mk.
+Each monomial mk for which mk(x) ̸= 0 has a single incoming edge (from −mk).
+The monomial −1 has an outgoing edge.
+If at least one of the monomials mk is non-zero, we can send it to −1, and otherwise −1
+becomes a source (see Figure 2). Therefore, the only sources will come from the “−1 nodes”
+of falsified DNFs. To handle the general case, we use the fact that in every conjunct, under
+any assignment, there are at least as many non-zero positive monomials as non-zero negative
+monomials.
+CCC 2025
+
+28:14
+Provably Total Functions in the Polynomial Hierarchy
+mℓ
+m2
+m1
+−1
+m1(x) = 0
+m1(x) = 1
+...
+Figure 2 The “gadget” for a D′
+iJj where Jj = 1 and D′
+i contains only positive literals (each
+conjunct is a monomial).
+We now describe the construction in general. Consider a D′
+iJj in Π. For each positive
+monomial m in D′
+iJj = (P
+k∈[ℓ] tk −1)Jj, belonging to some conjunct tkJj, the pointer S(m)
+will query the (at most d-many) variables in tkJj. Let α ∈{0, 1}Vars(Jj) be the assignment
+to the variables of Jj that was discovered.
+If Jj ↾α = 0: Then D′
+iJj ↾α = 0. Hence, for every positive monomial m in D′
+iJj, either
+m ↾α = 0, in which case we have already set S(m) = m, or m must cancel with another
+monomial −m′ in D′
+iJj under α. That is, m↾α = −m′ ↾α, and so we define S(m) = −m′.
+Note that in this case there are no sources within D′
+iJj: every monomial m D′
+iJj either
+evaluates to 0 and nothing points to it, or has exactly one incoming and one outgoing edge.
+If Jj ↾α ̸= 0: We define the successor pointer for the monomials in D′
+iJj so that there
+is a source iff every for every term tk of D′
+i, tk(x) = 0. Let Mons(Jj)+, Mons(Jj)−be the
+(non-zero) positive and negative monomials in Jj respectively. Let
+δ := |Mons+(Jj ↾α)| −|Mons−(Jj ↾α)|
+be the difference between the number of positive and negative monomials, and note that
+δ > 0 as Jj is a conjunct and Jj ↾α ̸= 0. Recall that D′
+iJj = P
+k∈[ℓ] tkJj −Jj. For each
+term, we will define a matching so that −Jj has only δ-many negative monomials without
+incoming edges, and every negative monomial in tkJj has an incoming edge.
+For −Jj: Define an arbitrary pairing P := {(m, −m′)} ⊆Mons+(Jj ↾α) × Mons−(Jj ↾α)
+such that each positive monomial occurs in exactly one pair and each negative monomial
+occurs in at most one pair. Hence we have δ-many negative monomials that are not
+paired. For each pair (m, −m′) ∈P, define S(m) = −m′.
+Note that we have now defined the successor of every positive monomial in Jj.
+For each tkJj: Observe that as tk is a conjunct, under any assignment it contains at
+least as many positive monomials as negative monomials. Define an arbitrary pairing
+P := {(m, −m′)} ⊆Mons+(tkJj ↾α) × Mons−(tkJj ↾α) such that each negative monomial
+occurs in exactly one pair and each positive monomial occurs in at most one pair. For
+each pair (m, −m′) ∈P, define S(m) = −m′. Let β ∈{0, 1}Vars(tkJj) be the assignment
+to the variables of tkJj that was discovered by the trees made by the decision tree of any
+of the monomials m in tkJj. Let
+c := |Mons+(tk ↾β)| −|Mons−(tk ↾β)|
+be the difference between the number of non-zero positive and negative monomials in tk
+under β.
+
+N. Fleming, D. Imrek, and C. Marciot
+28:15
+If c = 0, then tkJj ↾β = 0, and so the number of non-zero positive and negative monomials
+is equal. In this case, each negative monomial has an incoming edge, which is provided
+by this pairing.
+Otherwise, if tkJj ↾β ̸= 0, then there are cδ-many non-zero positive monomials whose
+successor is still undefined, and partition them into c-many groups of C1, . . . Cδ of δ-
+many monomials each. Recall that −Jj has exactly δ-many negative monomials with no
+incoming edge, −m1, . . . , −mδ. For each m ∈Ci, define S(m) = −mi. In this case, each
+monomial in tkJj and −Jj has an incoming edge.
+Finally, we define the successor for each positive monomial in the conical junta P
+k∈K Jk
+in Π. We will do this individually for each Jk. To do so, we use the fact that Jk contains
+at least as many positive monomials as negative monomials in order to ensure that there
+is never any source among the monomials of Jk. The successor for each positive monomial
+m of Jk queries the (at most d-many) variables in Jk for an assignment α ∈{0, 1}Vars(Jk).
+Define an arbitrary pairing P := {(m, −m′)} ⊆Mons+(Jk ↾α) × Mons−(Jk ↾α) such that
+each negative monomial occurs in exactly one pair and each positive monomial occurs in at
+most one pair. For each pair (m, −m′) ∈P, define S(m) = −m′. For the remaining positive
+monomials m in Jk whose successor is not defined, set S(m) = 1 (this choice is somewhat
+arbitrary).
+This completes the description of the successor function S (the f-part of the formulation).
+It remains to define the output function g of the formulation. For each potential solution m,
+If m is a monomial from some D′
+iJj, then D′
+i is the weakening of some Do of F, and we
+output o.
+Otherwise, we output an arbitrary index o ∈[m].
+Finally, we prove that this formulation is correct. To do so, we show that the only
+monomials which do not have incoming edges belong to some D′
+iJj for which D′
+i(x) is falsified.
+This suffices, as if m belongs to D′
+iJj where D′
+i(x) = 0, then gm(x) = o for some Do of F of
+which D′
+i is a weakening of. Hence, Do(x) is falsified, and we have found a solution to FFF .
+By the negative monomial case in the formulation, every positive monomial has an incoming
+edge. By the pairings constructed in the formulation, every negative monomial in each Jk in
+the conical junta also has an incoming edge. As well, for each D′
+iJj = P
+k tkJj −Jj, each
+negative monomial in each tkJj has an incoming edge. Hence, the only potential sources
+belong to the −Jj terms of each D′
+iJj. As we argued before, if Jj(x) = 0, then there is no
+source in the monomials of D′
+iJj, so suppose that this is not the case. As we have paired
+off positive and negative monomials in −Jj, the only incoming edge to each of the δ-many
+remaining negative monomials of Jj must come from some tkJj. If there is a tk such that
+tk(x) ̸= 0 (and hence D′
+i(x) is satisfied), then tkJj has cδ-many monomials which map to to
+the δ-many remaining negative monomials of Jj, meaning that there is no source in D′
+iJj.
+Thus, D′
+iJj becomes a source only if Jj(x) ̸= 0 and D′
+i(x) is falsified.
+◀
+4.2
+sRA Reductions Imply SA Proofs
+We begin by observing that there is a trivial unary Sherali-Adams refutation of Range
+Avoidance:
+X
+h∈[n+1]
+ X
+p∈[n]
+[[p = h]] −1
+
+=
+X
+p∈[n]
+X
+h∈[n+1]
+[[p = h]] −(n + 1) = n −(n + 1) = −1,
+where the third equality follows as we P
+h∈[n+1][[p = h]] = 1.
+CCC 2025
+
+28:16
+Provably Total Functions in the Polynomial Hierarchy
+In the remainder of this section, we will show that unary Sherali-Adams can prove
+reductions to StrongAvoid.
+▶Lemma 22. If f, g is a StrongAvoid-formulation of FFF of depth d and size s, then
+there is a degree-O(d log n) and size poly(s · nd) Σ2-uSA proof of F.
+If (f, g) is a StrongAvoid-formulation of FFF for some formula F = V
+i∈[m] Di, let
+P(gh), P(fp) be the set of all root-to-leaf paths in the decision trees gh and fp, respectively.
+As well, for any hole h ∈[n + 1], let Ph(fp) be the set of paths in fp whose leaf is labeled by
+hole h.
+We can express the reduction from FFF to StrongAvoid as the unsatisfiable formula
+StrongAvoid(f, g) defined as
+∀h ∈[n + 1], ∀σ∗∈P(gh),
+_
+p∈[n]
+[[p = h]] ∨σ∗
+≡∀h ∈[n + 1], ∀σ∗∈P(gh),
+_
+p∈[n]
+[[p = h]] ∨
+_
+σ∗̸=σ∈P (gh)
+σ
+≡∀h ∈[n + 1], ∀σ∗∈P(gh),
+_
+p∈[n]
+_
+ρ∈Ph(fp)
+ρ ∨
+_
+σ∗̸=σ∈P (gh)
+σ
+Letting Dh,σ∗:= W
+p∈[n]
+W
+ρ∈Ph(fp) ρ ∨W
+σ∗̸=σ∈P (gh) σ, this becomes the unsatisfiable family
+of DNFs
+StrongAvoid(f, g) := {Dh,σ∗}h∈[n+1],σ∗∈P (gh).
+Each of the formulas Dh,σ∗is indeed a weakening of an axiom of F. For a given h ∈[n + 1]
+and σ∗∈P(gh), the DNF Dh,σ∗is falsified if and only if h is an output of the instance of
+StrongAvoid and σ∗is satisfied by the assignment. When σ∗is labeled with Fi, an axiom
+of F, the correctness of the reduction ensures that Fi is also falsified by the assignment.
+Hence Dh,σ∗is a semantic weakening of the axiom Fi. The following lemma shows that uSA
+can deduce StrongAvoid(f, g) from F.
+Proof of Lemma 22. We will abuse notation and let [[p = h]] := P
+ρ∈Ph(fp) ρ denote
+the decision-tree substitution of the indicator [[p = h]]. To begin, we will weaken F to
+StrongAvoid(f, g), the polynomials of which are
+Dh,σ∗−1 :=
+X
+p∈[n]
+[[p = h]] +
+X
+σ∗̸=σ∈P (gh)
+σ −1
+for h ∈[n + 1] and σ∗∈P(gh). As each [[p = h]] contains O(log n)-many Boolean variables,
+and we are replacing each one by a depth-d decision tree, the degree of StrongAvoid(f, g)
+is O(d log n). Similarly, the size blows up by a factor of nd.
+
+N. Fleming, D. Imrek, and C. Marciot
+28:17
+For any h ∈[n + 1],
+X
+h∈[n+1]
+X
+σ∗∈P (gh)
+σ∗ Dh,σ∗−1
+
+=
+X
+h∈[n+1]
+X
+σ∗∈P (gh)
+σ∗ X
+p∈[n]
+[[p = h]] +
+X
+σ∗̸=σ∈P (gh)
+σ −1
+
+=
+X
+h∈[n+1]
+X
+σ∗∈P (gh)
+σ∗ X
+p∈[n]
+[[p = h]] −1
+
+(Multiplying two distinct paths of gh)
+=
+X
+h∈[n+1]
+ X
+p∈[n]
+[[p = h]] −1
+
+(Summing all paths in the DT gh)
+=
+X
+p∈[n]
+X
+h∈[n+1]
+[[p = h]] −(n + 1)
+=
+X
+p∈[n]
+1 −(n + 1) = −1
+(Summing all paths in the DT fp)
+◀
+5
+A Generic Correspondence
+In this section we establish a general correspondence between uniform subclasses of total
+search problems in the polynomial hierarchy and proof systems. Our characterizations will
+rely on the following two properties of a Σd-proof system:
+Reduction-Closed. For unsatisfiable Πd.5 formulas F, H, if P has a complexity-s proof of
+F and there is a complexity-c FFF -formulation of FFH, then P(H) = poly(cs).
+Reflective. P has polylog(n)-complexity proofs of a reflection principle about itself – a
+formula encoding the soundness of this proof system; we expand on the meaning of this
+below.
+We show the following, generalizing [5].
+▶Theorem 23. The following hold:
+i) Every uniform subclass of TFΣd is characterized by a Σd-proof system.
+ii) Every Σd-proof system which is reduction-closed and reflective is characterized by a
+subclass of TFΣd.
+We prove (i) in Subsection 5.1 and (ii) in Subsection 5.2.
+5.1
+A Proof System for any TFΣd Problem
+In this section we show how to construct a proof system from any total search problem
+R ⊆{0, 1}n × O, which we think of as the complete problem for some uniform subclass.
+The key insight is that one can view a decision tree reduction from a total search problem
+Q ⊆{0, 1}m × OQ to R as a proof that Q is total, if we take the totality of R as an axiom.
+In what follows, we formalize this intuition. We define proofs in the canonical proof system
+for a TFΣdt
+d subclass as reductions to one of its complete problems.
+▶Definition 24. Let FFF ∈TFΣdt
+d where Fn = V
+o∈[m] Fo. The canonical proof system for
+FFF , denoted PF , is defined as follows: A proof Π in PF consists of a triple (n, f, g, Fn(f, g)),
+where
+(f, g) is a FFF -formulation (i.e., a set of decision trees) to an instance of FFF on n
+variables, and
+CCC 2025
+
+28:18
+Provably Total Functions in the Polynomial Hierarchy
+Fn(f, g) = V
+o∈[m∗] Lo is the reduced formula associated with this formulation.
+Π is a PF proof of an unsatisfiable formula H = V
+t∈[m′] Ht, where each Ht is a Σd-formula,
+if for every Lo in Fn(f, g) there exists some t ∈[m′] such that Lo is a Σd-weakening of Lo;
+that is,
+Ht =⇒Lo.
+The size of the proof Π is the number of bits needed to write down Π, and the width of Π
+is the maximum depth among the decision trees in the formulation,
+depth(Π) :=
+max
+i∈[n],o∈[m]
+
+depth(fi), depth(go)
+	
+.
+The complexity of proving H in PF is the minimum over all PF -proofs of H,
+PF (H) := min
+
+width(Π) + log size(Π) : Π is a PF -proof of H
+	
+.
+This proof system is sound, since any substitution of an unsatisfiable formula remains
+unsatisfiable. As well, it is complete for unsatisfiable Πd+1 formulas, as depth-n decision
+trees suffice to solve any total search problem. It is also verifiable by a polynomial-time ΠP
+d−1
+machine which generates Fn, checks that (f, g) is a valid FFF -formulation which agrees with
+the reduced formula Fn(f, g), and checks that Ht =⇒Lo Note that this proof system agrees
+with the definition of [5] when d = 1.
+We will show that PF characterizes the subclass with complete problem FFF , proving
+the first direction of Theorem 23.
+▶Lemma 25. If FFF , FFH ∈TFΣdt
+d , then there is a complexity-c FFF -formulation of FFH
+iff PF (H) ≤c · polylog(n).
+Proof. Let (f, g) be a complexity-c FFF -formulation of FFH. We claim that the tuple
+(n, f, g, FFF (f, g)) is a PF proof of H. As FFF ∈TFΣdt
+d , F is a Πd.5 formula, and so the
+reduced formula FFF (f, g) is a Πd+1-formula (Πd.5 if c = polylog(n)). As well, the size
+of FFF (f, g) is at most size(FFF ) · exp(O(c)), as each clause/term on the bottom layer of
+F has width at most polylog(n) and we replace it by the CNF/DNF representation of a
+depth-O(c) decision tree, which has width O(c) and size at most exp(O(c)). Finally, for
+F(f, g) := V
+o∈[m∗] Lo and H := V
+t∈[m] Ht, by the correctness of the formulation, we can
+conclude that for every o ∈[m∗] there exists some t ∈[m′] such that Ht =⇒Lo, and so Lo
+is a Σd-weakening of Ht.
+For the converse direction, suppose that (n, f, g, F(f, g)) is a PF proof of an unsatisfiable
+formula H := V
+i∈[m] Hi, where each Hi is a Σd-formula. By definition, (f, g) constitutes
+a complexity-c FFF -formulation of FFH. Indeed, each decision tree of (f, g) has depth at
+most c and there are at most 2c-many of them, and so this is a complexity-c formulation.
+◀
+5.2
+A TFΣd Problem for any Proof System which Reflects
+In this section we show that a Σd-proof system P corresponds to a TFΣd-problem if that
+proof system is reduction closed and reflective.
+A reflection principle states that P-proofs are sound; we will restrict ourselves to proofs
+of Σd.5 formulas. Typically, the provability of a proof system’s reflection principle is sufficient
+in order to simulate that system. In our setting, a reflection principle will falsely assert that
+there is a complexity-c P-proof Π of a Σd.5-formula H and that H is satisfied by a truth
+assignment α:
+RefP := Proof(H, Π) ∧Sat(H, α).
+
+N. Fleming, D. Imrek, and C. Marciot
+28:19
+This formula will be parameterized by nH, the number of variables of H, as well as c the
+complexity of the proof Π.
+SAT. The formula Sat(H, α) states that α ∈{0, 1}nH is a satisfying assignment to
+H, where α ∈{0, 1}n and H are given as input. A generic Πd.5-formula has the following
+structure:
+H =
+^
+o∈O
+_
+z1∈{0,1}ℓ1
+^
+z2∈{0,1}ℓ2
+. . .
+⃝
+zd−1∈{0,1}ℓd−1
+Ho,z1,...,zd−1
+where ⃝∈{∧, ∨} and Ho,z1,...,zd−1, is a width w ∈polylog(n) clause if ⃝= ∧or conjunct
+if ⃝= ∨.
+Each Ho,⃗z
+:=
+Ho,z1,...,zd−1 is specified by w-many (2n + 1)-ary variables
+vo,z,1, . . . , vo,z,w ∈[2(n + 1)], where vo,z,i = j denotes the variable
+xj if i ∈[n],
+¬xj−n if j ∈{n + 1, . . . , 2n},
+constant 1 if j = 2n + 1,
+constant 0 if j = 2n + 2.
+We could allow the formula RefP to be parameterized by |O|, ℓ1, . . . , ℓd−1. However, for
+simplicity, since we are considering complexity-c proofs, it suffices to simply set all of these
+parameters to 2c and w = c. In this case, the number of Ho,⃗z is 2cd, and hence the number of
+Boolean variables of H is c log(2nH + 2) · 2cd. Then the Πd.5 formula Sat can be written as
+Sat(H, α) :=
+^
+o∈O
+Ho(α) :=
+^
+o∈O
+_
+z1∈{0,1}ℓ1
+^
+z2∈{0,1}ℓ2
+. . .
+⃝
+zd−1∈{0,1}ℓd−1
+[[Ho,⃗z(α) = 1]],
+where [[Ho,⃗z(α) = 1]] is the width-O(w log nH) DNF (if ⃝= ∨) or CNF (if ⃝= ∧) defined
+by the following decision tree To,⃗z: First query the w log(2nH + 2)-many Boolean variables
+Ho,⃗z,1, . . . , Ho,⃗z,w to determine the literals ℓ1, . . . , ℓw of Ho,⃗z. Then, query the corresponding
+bits of α to determine if Ho,⃗z is satisfied. If it is, then To,⃗z outputs 1, and otherwise it
+outputs 0. This can be converted into a DNF or CNF in the usual way.
+Proof. The formula Proof(H, Π) states that Π is a P-proof of H. A complication is that
+there are many different ways by which one could encode a P-proof as a formula, some of
+which may change the difficulty of proving the reflection principle drastically. Following [5],
+we define one reflection principle for each encoding of a P-proof; we call such an encoding a
+verification procedure.
+◀
+▶Definition 26. A verification procedure V for a Σd-proof system P, parameterized by nH,
+c, is a Πd.5-formula which generically encodes a complexity-c P-proof Π of an nH-variate
+formula H. Specifically, the formula VnH,c(Π, H) has two sets of variables H, Π, where:
+An assignment to the variables H = {Ho,⃗z,i|i ∈[nH]} specifies a Πd.5 formula as before.
+An assignment to the variables Π specifies a purported P-proof of H of complexity c, such
+that any error in Π can be verified by an efficient Σd−1-algorithm (placing Ref ∈TFΣd).
+V has 2Θ(c)-many variables.
+As c bounds the logarithm of the size of the proof, and the number of variables is exponential
+in Θ(c), the second condition ensures that a violated sub-formula of V can be verified by a
+Σd−1-algorithm making polylog(c)-many queries.
+A reflection principle for a proof system P and verification procedure V is
+RefP,V
+:= ProofnH,c(H, Π) ∧SatnH,c(H, α),
+where ProofnH,c(H, Π) := VnH,c(H, Π). Often, we will suppress the subscripts P, V .
+We now prove point (ii) of Theorem 23.
+CCC 2025
+
+28:20
+Provably Total Functions in the Polynomial Hierarchy
+▶Lemma 27. Let P be a Σd-proof system that is reduction closed and reflective for some
+Ref := RefP,V . Then for any FFH ∈TFΣd,
+i) If there is a complexity-c FFRef-formulation of FFH, then P(H) = poly(c · P(Ref)).
+ii) There is a complexity O(P(H)) FFRef-formulation of FFH.
+Proof. To prove (i), suppose that there is a complexity-c FFRef-formulation of H. By the
+definition of being reduction closed, there is a P proof of H of complexity poly(c · P(Ref)).
+For (ii), let Π be a complexity-c proof of H in P. We construct a FFRef-formulation (f, g)
+of FFH as follows. f will hard-wire (Π, H) as the input to Ref, and map the input variables
+of FFH to the variables α1, . . . , αnH of Ref. Since Π is a valid proof of H, Proof(Π, H) is
+always satisfied, and we can set go arbitrarily for any solution o corresponding to a subformula
+of Proof(Π, H). As Proof(Π, H) is always satisfied under this reduction, the only solutions
+which may occur belong to Sat(H, α). In particular, as we have mapped the input variables
+of H to the bits α1, . . . , αnH, for any assignment x ∈{0, 1}n, Ho(x) = 0 ⇐⇒Ho(α) = 0.
+Hence, we define go = o.
+◀
+6
+Characterizations in TFΣ2
+In this section we uncover TFΣ2 characterizations of several well-studied proof systems –
+DNF Resolution, DNF Circular Resolution [1, 8], and DNF Reversible Resolution [8, 12].
+Along the way we introduce several new TFΣ2 classes, which are inspired by TFNP classes.
+These are analogs to the coloured TFNP classes introduced in [8,18]. In Subsection 6.3 we
+explore the relationships between these and prominent TFΣ2 subclasses.
+The DNF resolution proof systems are extensions of the resolution proof system (and
+restrictions of) to allow them to operate with DNF formulas, rather than only clauses.
+Davis and Robere [8] gave characterizations of these systems by coloured TFNP classes. We
+introduce several classes which characterize the Σ2-variants of these proof systems; we believe
+these TFΣ2 classes herbrandize to the coloured classes.
+▶Definition 28. A Res(polylog) refutation of a Π2-unsatisfiable formula F = Vm
+i=1 Ai is a
+sequence of polylog(n)-width DNF formulas Π = (D1, . . . , Ds = ⊥) where each Di is deduced
+from previous DNFs by one of the following rules:
+Axiom Introduction.
+Introduce Ai for some i ∈[m].
+Symmetric Cut.
+From D ∨t and D ∨t derive D, where t is any term.
+Reverse Cut.
+From D derive Di = D ∨t and Di+1 = D ∨t, for some term t.
+The size s of Π is the sum of the sizes of DNFs involved in Π, and the width w is the
+maximum width of any DNF in Π. The complexity of Π is log s + w.
+A RevRes(polylog) proof is a Res(polylog) proof in which every DNF in the sequence is
+used as the premise to a derivation rule at most once.
+A uCircRes(polylog) proof has access to the additional rule
+DNF Creation.
+Si = Si−1 ∪{D}, where D is any DNF formula.
+provided that each copy of D that is created in this way is derived at least as many times as
+it is used as the premise to a derivation rule.
+The following technical lemma will be key to our characterizations.
+▶Lemma 29 (Theorem 3.6 in [8]). Res(polylog), RevRes(polylog), and uCircRes(polylog) are
+reduction closed.
+Davis and Robere proved Lemma 29 for DNF resolution proofs of Π1.5-formulas (that is,
+when the axioms are clauses). It is straightforward to see that it holds by exactly the same
+argument (Claim 1) when the axioms are DNF formulas. In Section 7 we prove this theorem
+for depth-d.5 Frege, for every d, of which Res(k) is d = 1.
+
+N. Fleming, D. Imrek, and C. Marciot
+28:21
+In the following subsections we will prove Theorem 5, characterizing each of these proof
+systems by new TFΣdt
+2 subclasses. To define each of these classes, it will be convenient to
+use the following notion of a meta-pointer.
+▶Definition 30. Given a function S : [m] × [t] →[m], the meta-pointer ˜S : [m] →
+[m] ∪{undefined} is defined as
+˜S(u) =
+
+
+
+
+
+
+
+v
+if for every i ∈[t], S(u, i) = v,
+u
+if there is i ∈[t] such that S(u, i) = u
+undefined
+otherwise if there is i, j ∈[t] such that u ̸= S(u, i) ̸= S(u, j).
+Note that, if u ̸= v, ˜S(u) = v is Π1-verifiable: For all i ∈[t], we need to verify that S(u, i) = v,
+which takes log(m) queries. Moreover, ˜S(u) = u and ˜S(u) = undefined are Σ1 verifiable:
+We can non-deterministically guess i ∈[t] such that S(u, i) = u, or i ̸= j ∈[t] such that
+u ̸= S(u, i) ̸= S(u, j); in other words, they are efficiently computable if we are given i (and
+j) as witnesses. The inclusion in TFΣ2 of the problems presented in this chapter follows
+directly from this fact.
+6.1
+DNF Resolution
+polylog(n)-width resolution was characterized by the TFNPdt subclass PLS [6].
+In this
+section we introduce a TFΣ2-variant of the PLS-complete problem iteration and show that it
+characterizes Σ2-Res(polylog). The iteration problem encodes the principle that every DAG
+has a sink. The input is given by a pointer function S : [n] →[n] giving the successor of
+a node u ∈[n], thought of as the next node on a root-to-leaf walk in the DAG. A solution
+is (i) an invalid source S(1) = 1, (ii) a u which points backwards S(u) < u, (iii) a sink:
+u ∈[n] such that S(u) ̸= u but S(S(u)) = S(u), or (iv) a node u with an undefined pointer
+S(u) = undefined. Our TFΣ2 variant obfuscates the successor function. Similar ideas were
+used to define the rWPHP2 problem in [15].
+▶Definition 31. An instance of Iter2 is given by a function S : [m] × [t] →[m]. A solution
+is a witness of a solution to the iteration instance defined by the meta-pointer ˜S:
+(u, i, i′) such that S(u, i), S(u, i′) ̸= u and S(u, i) ̸= S(u, i′),
+( ˜S(u) is undefined.)
+(u, i) such that S(u, i) < u.
+(A pointer which points backwards)
+(1, i) if S(1, i) = 1.
+(1 is not a source)
+(u, v, i) such that ˜S(u) = v and S(v, i) = v.
+(v is a proper sink)
+The class PLSdt
+2 is the set of R ∈TFΣdt
+2 such that R ≤dt Iter2.
+▶Theorem 32. For any FFF ∈TFΣdt
+2 , there is a complexity-c Iter2-formulation of FFF
+iff there is a complexity O(c) Σ2-Res(polylog) proof of F.
+We prove this theorem in the following two lemmas, each giving one direction.
+▶Lemma 33. For FFF ∈TFΣ2, if Σ2-Res(polylog)(F) = c, then there is a complexity-O(c)
+Iter2-formulation of FFF .
+Proof. Let (Π, H) be a Σ2-Res(polylog)(F) proof of F = V
+i∈[ℓ] Fi, where H = V
+i∈[k] Ai and
+each Ai is a Σ2-weakening of a DNF of F. Up to padding, we may assume that each DNF in
+the proof has the same number of terms t. Consider the proof Π = D1, . . . , Dm in reverse
+order so that D1 = ⊥; this will be our designated source.
+Let tu,i be the ith term of Du. Given an assignment α ∈{0, 1}n to the variables of F, we
+construct a function Sα : [m] × [t] →[m] by setting Sα(u, i) to be:
+CCC 2025
+
+28:22
+Provably Total Functions in the Polynomial Hierarchy
+u if Du is an axiom, or if tu,i(α) = 1;
+v if tu,i(α) = 0 and Du was derived from Dv by the reverse cut rule or semantic weakening
+of an axiom;
+v if tu,i(α) = 0 and Du was derived from Dv = Du ∨t and Dw = Du ∨¯t via symmetric
+cut and t(α) = 0 and w if ¯t(α) = 0;
+Finally, for each solution o to the instance Sα, we define the output of the reduction
+go(α) to be arbitrary if o does not correspond to an axiom Ai of H, and otherwise this
+axiom Ai is a weakening of a DNF Fj of F, and we set go(α) = j. Note that in this case
+Ai(α) = 0 =⇒Fj(α) = 0. Observe that computing Sα(u, i) involves evaluating at most
+two terms, and hence the depth of the reduction is at most twice the width of the proof. It
+remains to argue that the reduction is correct.
+▷Claim 34.
+The function ˜Sα satisfies the following properties:
+i) ˜Sα is defined everywhere.
+ii) If Du is not an axiom of H, then Du(α) = 0 iff ˜Sα(u) ̸= u.
+iii) If ˜Sα(u) = v ̸= u, then Dv(α) = 0.
+Assuming the claim, we see that the only type of solution to this Iter2 instance Sα
+are proper sinks corresponding to falsified axioms of H, which are weakenings of (falsified)
+axioms of F. Hence, g returns a correct solution to FFF (α).
+Proof of Claim. We prove each item, beginning with (i). Clearly ˜Sα is well defined for any
+u that was not derived using the cut rule since Sα(u, i) only has one choice of value other
+than u. So now consider u such that Du was derived from Dv = Du ∨t and Dw = Du ∨¯t.
+For i ∈[t], we see that Sα(u, i) depends on two values: tu,i(α), and t(α) in the case where
+tu,i(α) = 0. Thus, t(α) being independent of i, Sα(u, i) is always identical when not equal to
+u.
+(ii) follows from the fact that Du(α) = 0 iff tu,i(α) = 0 for all i, and ˜Sα(u) = u iff
+tu,i(α) = 1 for at least one i. Finally, (iii) follows by definition.
+◁
+◀
+We will now prove the converse. First, we describe the encoding of Iter2 as an unsatisfiable
+formula. For each (u, i) ∈[m] × [t], the m-ary value of Su,i will be described by log m-many
+boolean variables Su,i,b, where the indicator function
+[[Su,i = v]] :=
+^
+b∈[log m]
+Svb
+u,i,b,
+where we think of v as being written in its binary encoding, vb is its bth bit, and S1
+u,i,b = Su,i,b
+and S0
+u,i,b = ¬Su,i,b. As well, [[Su,i ̸= v]] = ¬[[Su,i = v]], and
+[[ ˜Su ̸= v]] :=
+_
+i∈[t]
+[[Su,i ̸= v]].
+Then Iter2 is the conjunction of the following subformulas:
+[[S1,i ̸= 1]] for each i ∈[n].
+(1 is not a source)
+[[Su,i ̸= v]] ∨[[Su,i′ ̸= v′]] for all v ̸= v′ and i ̸= i′ such that u ̸= v, v′
+( ˜S is defined
+everywhere)
+[[Su,i ̸= v]] for all v < u and i ∈[n].
+(Nothing points backwards)
+[[ ˜Su ̸= v]] ∨[[Sv,j ̸= v]] for all u < v and j ∈[n].
+(v is not a proper sink)
+
+N. Fleming, D. Imrek, and C. Marciot
+28:23
+Note that the subformulas of the Iter2 formula are clauses making the formula a CNF.
+We may then question what makes Iter2 a TFΣdt
+2 problem and not a TFNPdt one. The
+key to understanding this resides in the size of said clauses. Indeed, for a false formula
+problem corresponding to a CNF to be in TFNPdt, we need to be able to verify if a given
+clause is falsified by an assignment by only querying a polylog(n) amount of bits. This in
+turn directly implies that we would need each clause to be of polylog(n)-width. This is not
+the case here because of the fourth type of axioms, which are of poly(n)-width. On the
+other hand, considering clauses as 1-width DNFs, we see that this false formula problem
+corresponding to this formula lands indeed in TFΣdt
+2 . We now state the converse.
+▶Lemma 35. For FFF ∈TFΣ2, if there is a complexity-c Iter2-formulation of FFF , then
+there is a complexity-O(c) Res(polylog) proof of F.
+Observe that the set of formulas {[[Su,i ̸= v]]}v∈[m] contains all clauses containing all of the
+variables Su,i,b. Hence they can be cut in O(m log m)-many steps to obtain ⊥. Throughout
+the proof we will write the
+Dv ∨[[Su,i ̸= v]], ∀v
+D
+as a shorthand for this derivation with D = W
+v∈[m] Dv.
+Proof of Lemma 35. By Lemma 29 it suffices to show that Res(polylog) can prove Iter2.
+By induction from u = m to u = 1, we will derive a set of formulas that state that does
+not point forward in ˜S. Combining this with the fact that the image of u by ˜S cannot be
+undefined and u may not point backwards, this is semantically equivalent to stating that
+u points to itself. We then reach a contradiction when reaching u = 1, since 1 must be a
+proper source of our graph. This will be achieved by deducing
+Lu :=
+
+[[ ˜Su ̸= v]] : u < v
+	
+,
+which can be combined with axioms stating that no node points backwards for the desired
+statement.
+The base case is trivial, as Lm = ∅. Consider some u ∈[m] and suppose that we have
+derived Lv for all v > u. We derive the formula [[ ˜Su ̸= v]] ∈Lu as follows: Consider some
+w > v > u and apply the reverse cut rule to [[ ˜Sv ̸= w]] in order to obtain [[ ˜Sv ̸= w]] ∨[[ ˜Su ̸= v]].
+Now consider the cuts from a = t to a = 2,
+[[ ˜Su ̸= w]] ∨W
+i<a+1[[Sv,i ̸= v]]
+[[ ˜Su ̸= v]] ∨[[Sv,a ̸= v]]
+[[Sv,1 ̸= w]] ∨[[Sv,a ̸= w′]], ∀w′ ̸= v, w
+[[ ˜Su ̸= v]] ∨W
+i<a[[Sv,i ̸= v]]
+to the set of formulas [[ ˜Su ̸= v]] ∨[[Sv,1 ̸= w]]. Finally, we do one last cut:
+[[ ˜Su ̸= v]] ∨[[Sv,1 ̸= w]], ∀w > v
+[[ ˜Su ̸= v]] ∨[[Sv,1 ̸= v]]
+[[Sv,1 ̸= w]], ∀w < v
+[[ ˜Su ̸= v]]
+,
+which derives the formula [[ ˜Su ̸= v]] ∈Lu.
+Finally, once we have derived L1, we can derive ⊥as follows. For a fixed v > 1, starting
+from a = t down to a = 2, we operate the cuts:
+W
+i<a+1[[S1,i ̸= v]]
+[[S1,a ̸= 1]]
+[[S1,1 ̸= v]] ∨[[S1,n ̸= v′]], ∀v′ ̸= v, 1
+W
+i<a[[S1,i ̸= v]]
+.
+Once we have derived [[S1,1 ̸= v]], we do one final cut:
+[[S1,1 ̸= v]], ∀v ̸= 1
+[[S1,1 ̸= 1]]
+⊥
+◀
+CCC 2025
+
+28:24
+Provably Total Functions in the Polynomial Hierarchy
+6.2
+Circular and Reversible DNF Resolution
+In this section we characterize the Σ2-uCircRes(polylog) proof system by a TFΣ2-variant of
+the Sink-of-Line problem. An instance of Sink-of-Line is given by functions S, P : [m] × [t] →
+[m] ∪{undefined} which define a graph G as follows: there is a directed edge (u, v) if
+˜S(u) = v and ˜P(v) = u. A solution to this instance is either i) 1 if 1 is not a source in G,
+ii) a sink u in G, iii) a vertex u for which ˜P(u) or ˜S(u) is undefined. We now describe the
+TFΣ2 variant.
+▶Definition 36. An instance of SoL2 is given by functions S, P : [m]×[t] →[m]. A solution
+is a witness to a solution to the SoL instance defined by the meta-pointers ( ˜S, ˜P):
+(u, i, i′) if S(u, i), S(u, i′) ̸= u and S(u, i) ̸= S(u, i′);
+or P(u, i), P(u, i′) ̸= u and P(u, i) ̸= P(u, i′).
+(Predecessor or Successor of u is
+undefined)
+(1, i) if S(1, i) = 1 or ˜S(1) = v ̸= 1 and P(v, i) ̸= 1.
+(1 is not a source)
+(u, i) if u ̸= 1 and S(u, i) = 1.
+(u has a pointer to 1)
+(u, v, i) for u ̸= v if ˜S(u) = v, ˜P(v) = u and S(v, i) = v;
+or ˜S(u) = v, ˜P(v) = u, ˜S(v) = w and P(w, i) ̸= v.
+(v is a proper sink)
+▶Theorem 37. For any FFF ∈TFΣ2, there is a complexity-c SoL2-formulation of FFF iff
+there is a complexity O(c) Σ2-uCircRes(polylog) proof of F.
+This theorem follows by combining Lemma 38 and Lemma 42.
+We begin with the
+backwards direction, showing that uCircRes(polylog) can prove SoL2 formulations. SoL2 is
+encoded as an unsatisfiable formula which is the conjunction of the following
+[[Su,i ̸= 1]] for u ∈[m], i ∈[t], and [[ ˜S1 ̸= v]] ∨[[Pu,i ̸= v]] for all u, v ̸= 1, i ∈[t].
+(1 is a
+source)
+[[Su,i ̸= v]] ∨[[Su,i′ ̸= v′]] for all i ̸= i′, v ̸= v′.
+( ˜S is not undefined)
+[[Pu,i ̸= v]] ∨[[Pu,i′ ̸= v′]] for all i ̸= i′, v ̸= v′.
+( ˜P is not undefined)
+[[Su,i ̸= 1]] for all i ∈[t] and u ̸= 1.
+(Nothing points to 1)
+Let ¯Eu,v := [[ ˜Su ̸= v]] ∨[[ ˜Pv ̸= u]], we include
+(No proper sinks)
+¯Eu,v ∨[[Sv,i ̸= v]] for each u ̸= v and i ∈[m], and
+¯Eu,v ∨[[ ˜Sv ̸= w]] ∨[[Pw,k ̸= w′]] for u ̸= v ̸= w ̸= w′ and k ∈[t].
+▶Lemma 38. For FFF ∈TFΣ2, if there is a SoL2-formulation of FFF of complexity c
+then there is a complexity O(c) Σ2-uCircRes(polylog)(F) proof of F.
+Proof. By Lemma 29, it suffices to show that uCircRes(polylog) can prove SoPL2. For each
+u ∈[m], we would like to derive the set of formulas
+Lu = { ¯Eu,v : v ̸= u, 1},
+stating that u has no outgoing edges. Our proof will proceed by the following three steps:
+1. Assume Lu for each u ̸= 1;
+2. From Lv for v ̸= u, deduce Lu. Since Lv is semantically equivalent to saying that node v
+points to itself, if u were to point to any other node, then said node would be a proper
+sink. Hence Lu follows.
+3. L1 is in direct contradiction with axioms stating that 1 is a source.
+For step 1, we use the DNF creation rule,
+¯Eu,v
+
+N. Fleming, D. Imrek, and C. Marciot
+28:25
+For step 2 and u ∈[m], we perform the following. For w ̸= v ̸= u with w, v ̸= 1, consider
+¯Ev,w ∈Lv and weaken it successively to get
+¯Eu,v ∨¯Ev,w
+,
+then we cut as follows: starting with c = n down to c = 1,
+¯Eu,v ∨[[ ˜Sv ̸= w]] ∨W
+k<c+1[[Pw,k ̸= v]]
+¯Eu,v ∨[[ ˜Sv ̸= w]] ∨[[Pw,c ̸= w′]], ∀w′ ̸= w
+¯Eu,v ∨[[ ˜Sv ̸= w]] ∨W
+k<c[[Pw,k ̸= v]]
+to get ¯Eu,v ∨[[ ˜Sv ̸= w]]. Next, starting from b = n down to b = 2,
+¯Eu,v ∨W
+j<b+1[[Sv,j ̸= w]]
+¯Eu,v ∨[[Sv,b ̸= v]]
+[[Sv,1 ̸= w]] ∨[[Sv,b ̸= w′]], ∀w′ ̸= v, w
+¯Eu,v ∨W
+j<b[[Sv,j ̸= w]]
+and end up with the formulas ¯Eu,v ∨[[Sv,1 ̸= w]]. Finally,
+¯Eu,v ∨[[Sv,1 ̸= w]], ∀w ̸= v, 1
+¯Eu,v ∨[[Sv,1 ̸= v]]
+[[Sv,1 ̸= 1]]
+¯Eu,v
+derives ˜Eu,v ∈Lu. Having derived L1 allows us to take ¯E1,v ∈L1 and, starting with b = n
+down to b = 1, we may cut:
+[[ ˜S1 ̸= v]] ∨W
+j<b+1[[Pv,j ̸= 1]]
+[[ ˜S1 ̸= v]] ∨[[Pv,b ̸= w]], ∀w ̸= 1
+[[ ˜S1 ̸= v]] ∨W
+j<b[[Pv,j ̸= 1]]
+to get [[ ˜S1 ̸= v]] for each v ̸= 1. Next, starting from a = n down to a = 2, we cut:
+W
+i<a+1[[S1,i ̸= v]]
+[[S1,a ̸= 1]]
+[[S1,1 ̸= v]] ∨[[S1,a ̸= v′]], ∀v′ ̸= v
+W
+i<a[[S1,a ̸= v]]
+to get [[S1,1 ̸= v]] for v ̸= 1. We may then cut one final time,
+[[S1,1 ̸= v]], ∀v ̸= 1
+[[S1,1 ̸= 1]]
+⊥
+.
+◀
+We delay the proof of the other direction until the end of this section and complete it
+together with the proof of the same direction RevRes(polylog) as they are similar.
+We characterize the RevRes(polylog) by a TFΣ2 variant of the Sink-of-Potential-Line
+(SoPL) problem.
+This is a metered variant of SoL, meaning that edges must always
+point towards larger numbers. An instance of SoPL is given by functions S, P : [m] →
+[m] ∪{undefined} that define a graph G with edges (u, v) iff S(u) = v and P(v) = u. A
+solution is either i) 1 if 1 is not a source in G, ii) a sink u in G, iii) a vertex which points
+backwards S(u) < u, or iv) a vertex u if S(u) or P(u) is undefined.
+▶Definition 39. An instance of SoPL2 is given by functions S, P : [m] × [t] →[m]. A
+solution is a witness to a solution to the SoPL instance defined by the meta-pointers ( ˜S, ˜P):
+(u, i, i′) if S(u, i), S(u, i′) ̸= u and S(u, i) ̸= S(u, i′);
+or P(u, i), P(u, i′) ̸= u and P(u, i) ̸= P(u, i′).
+(Predecessor or Successor of u is undefined)
+(1, i) if S(1, i) = 1 or ˜S(1) = v ̸= 1 and P(v, i) ̸= 1.
+(1 is not a source)
+(u, i) if S(u, i) < u.
+(u points backwards)
+(u, v, i) for u < v if ˜S(u) = v, ˜P(v) = u and S(v, i) = v; or ˜S(u) = v, ˜P(v) = u, ˜S(v) = w
+and P(w, i) ̸= v.
+(v is a proper sink)
+CCC 2025
+
+28:26
+Provably Total Functions in the Polynomial Hierarchy
+▶Theorem 40. For any FFF ∈TFΣ2, there is a complexity-c SoPL2-formulation of FFF
+iff there is a complexity O(c) Σ2-RevRes(polylog) proof of F.
+This theorem follows by combining Lemma 41 and Lemma 42.
+We begin with the
+backwards direction, showing that RevRes(polylog) can prove SoPL2 formulations. SoPL2
+is encoded as an unsatisfiable formula, which is the conjunction of the following:
+[[Su,i ̸= 1]] for u ∈[m], i ∈[t], and [[ ˜S1 ̸= v]] ∨[[Pu,i ̸= v]] for all u, v ̸= 1, i ∈[t].
+(1 is a
+source)
+[[Su,i ̸= v]] ∨[[Su,i′ ̸= v′]] for all i ̸= i′, v ̸= v′.
+( ˜S is not undefined)
+[[Pu,i ̸= v]] ∨[[Pu,i′ ̸= v′]] for all i ̸= i′, v ̸= v′.
+( ˜P is not undefined)
+[[Su,i ̸= v]] for all i ∈[t] and v < u.
+(No backwards edges)
+Let ¯Eu,v := [[ ˜Su ̸= v]] ∨[[ ˜Pv ̸= u]], we include
+(No proper sinks)
+i)
+¯Eu,v ∨[[Sv,i ̸= v]] for each u < v and j ∈[m], and
+ii)
+¯Eu,v ∨[[ ˜Sv ̸= w]] ∨[[Pw,k ̸= w′]] for u < v < w and w ̸= w′ and k ∈[t].
+▶Lemma 41. For FFF ∈TFΣ2, if there is a SoPL2-formulation of FFF of complexity c,
+then there is a complexity O(c) Σ2-RevRes(polylog)(F) proof of F.
+Proof. By Lemma 29, it suffices to show that RevRes(polylog) can prove SoPL2. We will
+prove by induction on u = m . . . 1 that u does not have any outgoing edges. That is, we will
+derive the set of formulas:
+Lu :=
+ ¯Eu,v : u > v
+	
+.
+First observe that the base case is given by the no backwards edges axioms. Assuming that
+we can derive L1, we show how to complete the proof. For v > 1, starting with b = n down
+to b = 1, we cut
+[[ ˜S1 ̸= v]] ∨W
+j<b+1[[Pv,j ̸= 1]]
+[[ ˜S1 ̸= v]] ∨[[Pv,b ̸= w]], ∀w ̸= 1
+[[ ˜S1 ̸= v]] ∨W
+j<b[[Pv,j ̸= 1]]
+.
+Next, starting from a = n down to a = 2, we successively cut
+W
+i<a+1[[S1,i ̸= v]]
+[[S1,a ̸= 1]]
+[[S1,1 ̸= v]] ∨[[S1,a ̸= w]], ∀w ̸= 1, v
+W
+i<a[[S1,i ̸= v]]
+.
+Once all those formulas are derived, we cut one final time to finish the proof
+[[S1,1 ̸= 1]]
+[[S1,1 ̸= v]], ∀v > 1
+⊥
+.
+We now describe how to derive Lu from all Lv with v > u. For a given v and ¯Ev,w ∈Lv,
+we start by weakening it to get [[ ˜Pv ̸= u]] ∨¯Ev,w and again to get ¯Eu,v ∨¯Ev,w. Once this is
+done, starting at c = n down to k = 1, we cut
+¯Eu,v ∨[[ ˜Sv ̸= w]] ∨W
+k<c+1[[Pw,k ̸= v]]
+¯Eu,v ∨[[ ˜Sv ̸= w]] ∨[[Pv,c ̸= w′]], ∀w′ ̸= w
+¯Eu,v ∨[[ ˜Sv ̸= w]] ∨W
+k<c[[Pw,k ̸= v]]
+to get ¯Eu,v ∨[[ ˜Sv ̸= w]]. Finally, from b = n down to b = 2, we cut
+¯Eu,v ∨W
+j<b+1[[Sv,j ̸= w]]
+¯Eu,v ∨[[Sv,b ̸= v]]
+[[Sv,1 ̸= w]] ∨[[Sv,c ̸= w]], ∀w′ ̸= v, w
+¯Eu,v ∨W
+j<b[[Sv,j ̸= w]]
+.
+
+N. Fleming, D. Imrek, and C. Marciot
+28:27
+Once we derived ¯Eu,v ∨[[Sv,1 ̸= w]] for each w > v, we have one final cut
+¯Eu,v ∨[[Sv,1 ̸= w]], ∀w > v
+¯Eu,v ∨[[Sv,1 ̸= v]]
+[[Sv,1 ̸= w]], ∀w < v
+¯Eu,v
+to get ¯Eu,v ∈Lu.
+◀
+Finally, we prove the other direction of Theorem 40 and Theorem 37.
+▶Lemma 42. Let FFF ∈TFΣ2. Suppose that F admits a complexity-c Σ2-uCircRes(polylog)
+(Σ2-RevRes(polylog)) proof. Then there is a complexity-O(c) SoL2-(SoPL2-)formulation of
+FFF .
+Proof. We first handle Circular DNF Resolution and discuss what needs to be changed
+in order to handle Reversible DNF Resolution at the end of the proof. The idea for the
+transformation of a uCircRes(polylog) proof into an SoL2 formulation is the same as the
+transformation of a Res(polylog) into an Iter2 formulation (Lemma 33) with the addition
+of defining a predecessor function. Let Π = (D1, . . . , Dm) be such a proof. By padding, we
+may assume that each DNF in the proof has the same number of terms. Let us consider the
+proof in reverse order such that D1 = W
+i∈[t] ⊥.
+Let tu,i be the ith term of Du. Given an assignment α ∈{0, 1}n to the variables of F, we
+construct a function Sα : [m] × [t] →[m] by setting Sα(u, i) to be:
+u if Du is an axiom, or if tu,i(α) = 1;
+v if tu,i(α) = 0 and Du was derived from Dv by the reverse cut rule or semantic weakening
+of an axiom;
+v if tu,i(α) = 0 and Du was derived from Dv = Du ∨t and Dw = Du ∨¯t via symmetric
+cut and t(α) = 0 and w if ¯t(α) = 0;
+As well, define the predecessor function Pα : [m] × [t] →[m], as Pα(u, i):
+u if either u = 1, or the formula Du was deduced but never used as the premise of a rule,
+or if tu,i(α) = 1;
+v if tu,i(α) = 0 and u is used as a premise to derive Dv via any of the rules but the
+reverse cut;
+v or w if tu,i(α) = 0 and Du was used as the premise of the reverse cut rule to derive
+Dv = Du ∨t and Dw = Du ∨¯t. If t(α) = 0, then Pα(u, i) = v and Pα(u, i) = w otherwise.
+Finally, for each solution o to the instance Sα, we define the output of the reduction
+go(α) to be arbitrary if o does not correspond to an axiom Ai of H, and otherwise this
+axiom Ai is a weakening of a DNF Fj of F, and we set go(α) = j. Note that in this case
+Ai(α) = 0 =⇒Fj(α) = 0. Observe that computing Sα(u, i) and Pα(u, i) involves evaluating
+at most two terms, and hence the reduction is efficient.
+It remains to argue that the reduction is correct.
+▷Claim 43.
+The following hold:
+i) ˜Pα and ˜Sα are defined everywhere;
+ii) If Du was used as the premise of a rule, Du(α) = 0 if and only if ˜Pα(u) ̸= u and
+˜Sα(u) ̸= u;
+iii) If ˜Pα(u) = v ̸= u, then Dv(α) = 0;
+iv) For a pair u ̸= v, ˜Sα(u) = v if and only if ˜Pα(v) = u.
+Assuming the claim, the only solutions are proper sinks corresponding to falsified axioms
+of H, which are weakenings of (falsified) axioms of F. Hence, g returns a correct solution to
+FFF (α).
+CCC 2025
+
+28:28
+Provably Total Functions in the Polynomial Hierarchy
+Proof of Claim. The proof of this claim is, at heart, the same as the proof of the claim in
+Lemma 33. The behavior of both functions implies that the only solutions one might get
+in the instance are proper sinks and that these proper sinks can only be falsified axioms.
+Finally, when Π is a RevRes(polylog) proof, Sα(u, i) ≥u and Pα(v, j) ≤v for any u and v
+since the graph representation of Π does not include cycles, and thus we would not have
+fake solutions corresponding to edges pointing backwards, making our formulation a valid
+SoPL2-formulation.
+◁
+◀
+6.3
+Relationships in TFΣ2
+In this subsection, we use the characterizations that we have constructed in order to prove all
+of the new inclusions in Figure 1. We begin by giving a uCircRes proof of the unmetered source-
+of-DAG problem, which is equivalent to StrongAvoid. USoD is encoded propositionally
+by the conjunction of the following formulas:
+[[S1 = 1]] and W
+t∈[n][[St = 1]].
+(1 is a sink);
+W
+t∈[n][[St = u]] for all u ̸= 1.
+(u is not a source).
+▶Proposition 44. USoD has a polylog(n)-complexity uCircRes(polylog(n))-proof and so
+StrongAvoid ∈SOL2.
+Proof. The strategy for the proof is:
+i) Assume that S(u) = u for any u ̸= 1;
+ii) From the fact that S(v) = v for all v ̸= u, deduce that S(u) = u. Indeed if all other
+nodes point to themselves, u can not point to anything but itself since otherwise it would
+qualify as a source. We also derive S(u) ̸= 1 during this process;
+iii) Once this is done, we will be left with the fact that S(u) ̸= 1 for each u ̸= 1 which is in
+direct contradiction with the second axiom.
+For step (i), we introduce [[Su = u]] for each u ̸= 1 via the DNF creation rule. Now, fixing
+some such u, for t ̸= u, we weaken [[St = t]] to [[St = t]] ∨[[Su ̸= w]] for each w ∈[n] and
+consider the case w = t. Since u ̸= t, the formula [[St ̸= t]] ∨[[Su ̸= t]] is a tautology, and
+therefore we can introduce it. For each t ̸= u we cut
+[[St = t]] ∨[[St ̸= u]]
+[[St ̸= t]] ∨[[St ̸= u]]
+[[St ̸= u]]
+.
+Then, cutting
+W
+t[[St = u]]
+[[St ̸= u]], ∀t ̸= u
+[[Su = u]]
+From [[Su = u]] we can deduce [[Su ̸= 1]], completing step (ii).
+Finally, we can perform step (iii) by cutting
+W
+u̸=1[[Su = 1]]
+[[Su ̸= 1]], ∀u ̸= 1
+⊥
+The size of the proof and the characterization theorem shows that USoD ∈SOL2. Also, the
+equivalence USoD =dt StrongAvoid gives us StrongAvoid ∈SOL2
+◀
+
+N. Fleming, D. Imrek, and C. Marciot
+28:29
+The sink-of-DAG problem is the canonical PLS-complete problem in which one is given a
+source of a DAG and one wants to find a sink. Our characterization of unary Sherali-Adams
+by StrongAvoid proceeded via the equivalent unmetered source-of-DAG problem. Hence,
+it is natural to also consider a metered version of these problem, where one is given a sink of
+a DAG and one wants to find a source.
+▶Definition 45. The Source of DAG (SoD) problem is defined as follows. The input is a
+“successor” function S : [n] →[n] which defines a graph in which each vertex has fan-out ≤1
+but arbitrary fan-in. There is an edge from i to j if S(i) = j. A solution to the instance S is:
+i) i if S(i) < i;
+(i has a backward edge)
+ii) n if for all i < n, S(i) ̸= n;
+(n is not a sink)
+iii) i if for all j ∈[n], S(j) ̸= i.
+(A source)
+We can encode SoD propositionally as the conjunction of the following formulas:
+i) W
+t̸=n[[St = n]];
+(n is a proper sink)
+ii) W
+t[[St = u]] for each u ̸= 1;
+(no sources)
+iii) [[Su ̸= v]] for any pair of nodes v < u.
+(no edges pointing backwards)
+▶Proposition 46. There is a polylog(n)-complexity RevRes(polylog(n)) proof of SOD, and
+hence SoD ∈SOPL2.
+Proof. The strategy of the proof is as follows:
+i) Given that S(t) = t for each t < u, deduce that S(u) = u. This must be true since
+otherwise u is a source.
+ii) Use the fact that the derived formulas directly contradicts the first axiom.
+For step (i), by induction assume that we have derived [[St = t]] for each t < u. Weaken
+these formulas to get [[St = t]] ∨[[St ̸= v]] and consider the case when v = u. Since t ̸= u, the
+formula [[St ̸= t]] ∨[[St ̸= u]] is a tautology that we introduce, and we cut
+[[St ̸= t]] ∨[[St ̸= u]]
+[[St = t]] ∨[[St ̸= u]]
+[[St ̸= u]]
+to obtain [[St ̸= u]. Next, we cut
+W
+t[[St = u]]
+[[St ̸= u]], ∀t < u
+[[St ̸= u]], ∀t > u
+[[Su = u]]
+to derive [[Su = u]]. Fianlly, cut
+W
+t̸=n[[St = n]]
+[[St ̸= n]], ∀t ̸= n
+⊥
+hence SoD ∈SOPL2.
+◀
+Observe that these proofs indicate that up to complexifying a function, it is possible to
+build an inverse that is also hard to compute with an efficient reduction. Also, since we
+know how to transform uCircRes(polylog) refutations (resp. RevRes(polylog) refutations) into
+SoL2-instances (resp. SoPL2-instances), following the instructions lets us concretely build
+those inverses.
+We end this section by proving several inclusions which do not rely on our characterizations.
+▶Proposition 47. LOP ≤dt Iter2.
+CCC 2025
+
+28:30
+Provably Total Functions in the Polynomial Hierarchy
+Proof. Let ≺be an LOP instance on [n]. By encoding it with
+ n
+2
+
+variables such that, for
+i < j ∈[n], xi,j = 1 means i ≺j, and xi,j = 0 means j ≺i, we can force the purported
+order to always be total. An output to the LOP instance would thus either be a ≺-minimal
+element or a proof that ≺is not an order, i.e., that the transitivity does not hold.
+Consider the Iter2 instance on
+ n
+2
+
++ n meta-nodes with a meta-node for each (i, j) ∈[n]2
+with i ≥j. Let (1, 1) be the source. It helps to think of the meta-nodes as arranged in n
+levels, with the first element in the label being the level a meta-node is at.
+The idea is that (i, j) is valid (i.e., has an outgoing edge) iff ≺is transitive and j is the
+≺-minimal value in [i]. If i < n, it will point to (i + 1, j′), where j′ = j if j is still ≺-minimal
+in [i + 1], and j′ = i + 1 otherwise. We now formally define the nodes with index (i, j). If
+i = n, then it contains a single node that points to itself. Otherwise, there are two kinds of
+nodes:
+Transitivity nodes.
+ n
+3
+
+-many nodes verifying the transitivity of ≺. Each of those nodes is
+associated with 3 distinct elements (a, b, c) ∈[n]3. We define S((i, j), (a, b, c)) as follows:
+Query a ≺b, b ≺c and a ≺c. If the answers show that ≺is not transitive on (a, b, c),
+point to (i, j).
+Query j ≺i + 1. If it holds, point to (i + 1, j). Otherwise, point to (i + 1, i + 1).
+Validity nodes. (i −1)-many nodes verifying the validity of (i, j). Each of those nodes is
+associated with a value k ∈[i] \ {j}. We define S((i, j), k) as follows:
+Query j ≺k. If it does not hold, point to (i, j).
+Query j ≺i + 1. If it holds, point to (i + 1, j); otherwise, point to (i + 1, i + 1).
+Since every node that points out of its index does the same query to decide where to
+point, the meta successor is well-defined. If ≺is not transitive, every meta-node will point to
+itself. The solution can thus only be of type ((1, 1), i), with this node being of the transitive
+type. This immediately gives us a triple in [n], proving ≺is not transitive. If ≺is indeed a
+total order, then it is clear that every level has a single active node; the only proper sink on
+level n indicates the ≺-minimal value in [n].
+◀
+▶Proposition 48. SoD ≤dt LOP.
+Proof. Let S be an SoD instance on n vertices. Consider an LOP instance ≺on 2n values
+split into two groups C = [n] and L = [n]. We denote elements of C by iC and elements of L
+by iL, for i ∈[n]. The group C’s goal is to “check for backward pointers”; if the ≺-minimal
+element is iC, then i points backwards. The group L checks for loops: if the ≺-minimal
+element is iL, then there are no backward edges. Moreover, if i = n, then n is not a proper
+sink. Otherwise, i is the first node (in regular order) to not point to itself in S, i.e., i is a
+source.
+Formally, for i, j ∈[n], we define ≺as follows:
+iC ≺jC iff i < j;
+iC ≺jL iff S(i) < i;
+iL ≺jL iff either one of the following holds:
+i)
+S(iL) = i, S(jL) = j and i > j;
+ii)
+S(iL) ̸= i and S(jL) = j;
+iii)
+S(iL) ̸= i, S(jL) ̸= j and i < j.
+Observe that ≺is total. If it is transitive, then the minimal element is either the first source
+in S, or n if it is not a proper sink. If it is not transitive, the minimal element allows us to
+find a backward pointer.
+◀
+
+N. Fleming, D. Imrek, and C. Marciot
+28:31
+Theorem 1 in [14] proves that FNP ⊆PEPP; we prove that actually FNP ⊆SOD. As it
+is straightforward that SourceofDag reduces to UnmeteredSourceofDag, which is
+equivalent to empty, this implies that every TFΣ2 class studied in this paper, apart from
+APEPP, contains FNP.
+▶Proposition 49. FNP ⊆SOD.
+Proof. Let x be an instance of Rn, an FNP problem, and let O be its set of solutions. By
+definition of FNP, this set is of size at most quasipolynomial in n. Consider the SoD instance
+with |O| + 1 nodes. Consider the extra node as n. To define S(o), run the verifier To(x). If
+it accepts, point to n; otherwise, point S(o) to itself.
+Any solution o for the input x will then point to n, making it a source. The case where n
+is not a proper sink may occur only if x does not admit an output.
+◀
+7
+Characterizing Bounded-Depth Frege
+In this section we prove Theorem 6, introducing a hierarchy of classes in the polynomial
+hierarchy which characterize bounded-depth Frege systems.
+Depth-d Frege generalizes
+resolution to allow one to cut (resolve) over depth d formulas of unbounded fanin. Recall
+that the depth of a formula is the length of the longest root-to-leaf path, and the size is the
+number of wires in the formula. The width of a Σd-formula is defined as the maximum fanin
+among the gates at depth d. From now on and for the remainder of this section, we assume
+d ≥3.
+▶Definition 50. A Frege proof of an unsatisfiable formula F = Vm
+i=1 Ai is a sequence
+Π = (π1, . . . , πℓ= ⊥) of formulas, where each πi is deduced from the previously derived
+formulas by one of the following rules:
+Axiom Introduction. Introduce πi = Ai for some i ∈[m].
+Cut. From C ∨D and D ∨H derive C ∨H for any formula D.
+Weakening. From C derive C ∨D for any formula D.
+The depth (resp. width) of a Frege proof is the maximum depth (resp width) among any of
+the formulas πi ∈Π. In particular, we say that Π is a depth-d Frege (which we denote Freged)
+proof if each πi is a Σd-formula. The size |Π| of the proof is Pℓ
+i=1 |π|. The complexity of a
+Freged proof Π is width(Π) + log |Π|, and the complexity of proving an unsatisfiable formula
+in Freged is the minimum complexity of any Freged proof of F.
+Our characterization will generalize our characterization of Σ2-Res(polylog) by Iter2
+(Theorem 5). The high-level idea is to obfuscate the successor function of the TFNP problem
+Iter so that it is efficiently computable with access to a Πd−1 oracle, but not obviously
+efficiently computable with any weaker oracle. For Iter2, this was accomplished by replacing
+each node v ∈[m] of Iter with a group of nodes v1, . . . , vt, each with their own successor
+function, pointing to a “meta-node” in [m]. We then treated v as pointing to a meta-node
+u ∈[m] iff all of v1, . . . , vt pointed to u. To generalize this to a problem in the dth layer of
+the polynomial hierarchy, which we call Iterd, we will take a slightly different approach. We
+will still replace the “meta-nodes” of Iter with groups of nodes – in fact, this is recursively
+repeated d −1 times in order to simulate d alternating quantifiers – however, we will no
+longer insist that they all point to the same node. Instead, the successor will be defined
+by alternatively taking the minimum (corresponding to universal quantifiers) or maximum
+(corresponding to existential quantifiers) of the pointed-to nodes. The intuition is that the
+evaluation of an existentially quantified relation ∃xF(x) is true if some value of x makes F
+true, hence we should take the maximum value of F over all x. Similarly, the evaluation
+CCC 2025
+
+28:32
+Provably Total Functions in the Polynomial Hierarchy
+of universally quantified relation ∀xF(x) should be false unless every assignment makes x
+output true, and so this corresponds to a minimum value of F over all x. This is inspired by
+the problems GPLSd and PEd from [23], which characterize the ∀Σb
+1 consequences of T d
+2 in
+bounded arithmetic.
+For an integer d ≥1, a product set r = [r1] × · · · × [rd], and a function S : [r1] × . . . × [rd]
+we will denote by
+MAX(S, r) := max
+i1∈[r1] min
+i2∈[r2] · · · max
+id∈[rd] S(i1, . . . , id),
+MIN(S, r) := min
+i1∈[r1] max
+i2∈[r2] · · · min
+id∈[rd] S(i1, . . . , id),
+if d is odd, and if d is even, we change the final min or max to its opposite. We now formalize
+the aforementioned intuition about the connection between ∃/∀quantifiers (that is, ∨/∧
+gates) and max / min which will allow us to connect our Frege proofs to
+▶Observation 51. Let F = W
+i1∈[r1]
+V
+i2∈[r2] · · · ⃝id∈[rd] Fi, where i = (i1, . . . , id) and
+each Fi is a formula. Then, for any assignment x ∈{0, 1}n, F(x) = MAX(Fx, r), where
+Fx(i) := Fi(x). Similarly, if instead F begins with ∧, then F(x) = MIN(Fx, r).
+W
+g = max{g1, g2}
+= max{min{x1, x2}, min{x3, x4}}
+V
+g1 = min{x1, x2}
+V
+g2 = min{x3, x4}
+x1
+x2
+x3
+x4
+Figure 3 An example of how a formula is converted into a sequence of minimums/maximums in
+Observation 51.
+Proof. The main idea is depicted Figure 3. The proof is by induction on the depth d, observing
+that a disjunction returns the maximum value of its subformulas, while a conjunction returns
+the minimum value.
+◀
+▶Definition 52. An instance of Iterd is given by a successor function S : [m] × [r1] × · · · ×
+[rd−1] →[m] that describes a directed graph on m vertices as follows. For u ∈[m], let Su
+denote the function S where the first input is fixed to u, let r = [r1] × . . . × [rd−1], and define
+the meta-pointer ˜S : [m] →[m] as
+˜S(u) := MIN(Su, r).
+There is an edge from u to v in this graph if ˜S(u) = v. A solution to Iterd is then a solution
+to the Iter instance defined by ˜S. In particular, a solution is a quadruple (u, i∗
+1, v, j∗
+1) such
+that ˜S(u) = v and either
+
+N. Fleming, D. Imrek, and C. Marciot
+28:33
+i) u = v = 1
+(1 is not a source);
+ii) v < u
+(u admits a backward pointer);
+iii) u < v and ˜S(u) = ˜S(v) = v
+(v is a proper sink);
+and i∗
+1 and j∗
+1 witness the outermost minimums for u and v: if d is even
+i∗
+1 = arg min
+i1∈[r1]
+n
+max
+i2∈[r2] · · ·
+min
+id−1∈[rd−1] S(u, i)
+o
+;
+j∗
+1 = arg min
+j1∈[r1]
+n
+max
+j2∈[r2] · · ·
+min
+jd−1∈[rd−1] S(v, j)
+o
+;
+and if d is odd the last min is replaced by a max.
+The class PLSd ⊆TFΣd is the class of problems that admit an efficient reduction to
+Iterd.
+One should think of the indices i∗
+1 and j∗
+1 in a solution to Iterd as the outer-most
+existential in Σd-certificates of the computation of the successor functions for u and v. One
+reason that this problem is hard is that for the solutions where u < v, the verifier must be
+able check that ˜S(u) = v and ˜S(v) = v or, in other words, it must be able to verify that the
+certificates i∗and j∗indeed witness a correct computation for their respective input nodes.
+▶Proposition 53. Iterd ∈TFΣd for all d ≥1.
+Proof. Let us assume d is even; the case when d is odd is identical up to changing the final
+min into a max. Let S be an instance of Iterd and o = (u, i∗
+1, v, j∗
+1) be a solution. Writing
+i = (i1, . . . , id−1), checking that ˜S(u) = v is equivalent to checking that
+˜S(u) ≥v ≡∀i1∃i2 · · · ∀id−1S(u, i) ≥v;
+˜S(u) ≤v ≡∃i1∀i2 · · · ∃id−1S(u, i) ≤v.
+Our polynomial-time verifier Vo, given witnesses i = (i2, . . . , id−1), j = (j2, . . . , jd−1), i′ =
+(i′
+1, . . . , i′
+d−1), j′ = (j′
+1, . . . , j′
+d−1), Vo, behaves as follows:
+i) It checks that S(u, i′) ≥v and S(u, i∗
+1i) ≤v; if not, it outputs 03;
+ii) It outputs 1 if u < v or u = v = 1;
+iii) Otherwise, it checks whether S(v, j′) ≥v and S(v, j∗
+1j) ≤v; if this is the case then it
+outputs 1, and otherwise it outputs 0.
+Observe that the expression
+∀(i′
+1, i2, j′
+1, j2)∃(i′
+2, i3, j′
+2, j3) · · · ∃(i′
+k−2, id−1, j′
+k−2, jd−1)∀(i′
+d−1, j′
+d−1) Vo(S, i, i′, j, j′) = 1
+is true iff o is a solution to S.
+◀
+7.1
+Proofs as Games
+To establish the correspondence between bounded-depth Frege and Iterd it will be useful
+to view proofs as games. The depth-d Prover-Delayer game (essentially also known as the
+Buss-Pudlák game [22]) for an unsatisfiable formula F consists of two players, Prover and
+Delayer. Intuitively, the Prover is attempting to convince itself that F is unsatisfiable, while
+the Delayer is trying to postpone this. The game proceeds in rounds, where in each round
+the Prover asks for the value of an arbitrary formula C and the delayer responds with an
+3 Here, i∗
+1i denotes the concatonation of i∗
+1 with i.
+CCC 2025
+
+28:34
+Provably Total Functions in the Polynomial Hierarchy
+answer – either C = 1 (in which case the Prover remembers C) or ¬C = 1 (and the Prover
+remembers ¬C). Finally, at the end of each round the Prover may forget any number of
+formulas from its memory. The game ends when the set of {0, 1}-assignments consistent
+with the Prover’s memory all falsify some axiom Ai. That is, when the conjunction of the
+formulas in the Prover’s memory logically imply Ai.
+▶Definition 54. Let F = Vm
+i=1 Ai be an unsatisfiable formula. A Prover strategy is a rooted
+fan-out ≤2 DAG G in which every node v is labeled with a set of boolean formulas Mv, which
+we call the memory at node v. Let False(Mn) := {x ∈{0, 1}n : C(x) = 0, ∀C ∈Mv} be the
+set of assignments which falsify all of the formulas. The labels Mv satisfy the following:
+root. If v is the root then Mv = ∅;
+single child. If v has one child c then Mc = Mv \ {C} for some formula C;
+two children. If v has two children c, c′, then Mc = Mv ∪{¬C} and Mc′ = Mv ∪{C} for
+some formula C;
+leaf. If v has no children, then there is some Ai for i ∈[m] such that Ai(x) = 0 for all
+x ∈False(Mv).
+The width of the strategy is given by maxv∈V maxC∈Mv{width(C)} and its depth is given by
+maxv∈V maxC∈Mv{depth(C)} + 1 – the off-by-one is to account for the fact that, as we will
+see, the conjunction of the formulas in memory will correspond to a line in Frege proof. The
+size of the strategy is P
+v∈V (G)
+P
+C∈Mv |C|.
+As for the original Prover-Delayer game for the resolution proof system and the Buss-
+Pudlák game for bounded-depth Frege proofs, finding a strategy for a formula closely relates
+to finding a refutation.
+▶Lemma 55. Let F = V
+i∈[m] Ai be an unsatisfiable Πd+1-formula. There exists a width-w
+and size-s Freged refutation of F iff there is a width-w, depth-d, and size-s Prover strategy
+for F.
+Proof. Let Π be a Freged proof of F. The graph of the Prover strategy will be the same as
+that of the proof. Beginning at the root r, where Mr = ∅, the Prover’s memory is constructed
+as follows: let v be a node with memory Mv; we have several cases based on the rule used to
+derive the corresponding line πv.
+If πv was obtained by weakening πu with a formula D, then Mu := Mv \ {¬D}. That is,
+the Prover forgets ¬D.
+If πv was obtained by cutting πu and πw on a formula D, then Mu := Mv ∪{D} and
+Mw := Mv ∪{¬D}. That is, the Prover queries the Delayer for the value of D.
+If πv was obtained by axiom introduction, then v is a leaf.
+By induction, observe that the conjunction of the formulas in Mv logically implies πv, and
+hence the leaf case is satisfied. The width and size of the strategy are the same as the proof.
+The fact that Π is a Freged refutation (meaning that D is always a Πd−1 ∪Σd−1-formula),
+gives us the depth of the strategy to be d.
+For the converse direction, a Prover strategy can be converted into a Frege proof by
+replacing each memory Mv = {C1, . . . , Ck} with the line ¬C1 ∨. . . ∨¬Ck. As each formula
+in memory is a Πd−1 or a Σd−1-formula, the lines of this proof are Σd-formulas and the proof
+is a Freged proof of with the same width and size as the strategy.
+◀
+As seen in Section 5, for a proof system to correspond to a TFPH class it must be reduction
+closed. We verify that Freged satisfies this property.
+
+N. Fleming, D. Imrek, and C. Marciot
+28:35
+▶Lemma 56. Let F = V
+i∈[m] Fi and G = V
+j∈ℓGj be unsatisfiable Πd+1-formulas on n
+variables, and suppose that there is a width-w and size-s Freged proof of F. If (f, g) is an
+FFF -formulation of FFG of depth polylog(n), then G has a Σd-Freged refutation of size
+s · 2polylog(n) and width w.
+Proof. Let Π be a size-s, Freged proof of F.
+First, we modify Π to be a proof of
+F(f) = V
+i∈[m] Fi(f), where Fi(f) is the Σd obtained by replacing each variable xj with
+the propositionalization of decision tree fj as defined in the reduced formula. To do so,
+we will view Π as a Prover strategy and replace each memory Mv = {C1, . . . , Ck} by
+{C1(f), . . . , Ck(f)}. That is, instead of querying C, the prover will now query the formula
+C(f).
+We now transform this into a Prover strategy, and hence proof, of F(f, g), which is a
+Σd-weakening of G. To do so, consider any leaf of the Prover strategy labeled by some Fi(f)
+(corresponding to the Prover learning that Fi(f) is falsified). At this leaf the Prover queries
+the decision tree gi, one variable at a time. Each leaf is labeled with Fi(f) ∨p for some path
+p ∈gi; an axiom of the formula of F(f, g).
+◀
+7.2
+Chracterizing PLSd
+Now we are ready to prove our characterization Theorem 6, which we state formally next.
+▶Theorem 57. For any FFF ∈TFΣd, there is a complexity-c Iterd-formulation of FFF
+iff there is a complexity-Θ(c) Σd-Freged refutation of F.
+We will break the theorem into two lemmas, Lemma 58 transforming Frege proofs into
+Iterd-formulations, and Lemma 60 together with Lemma 56 providing the converse.
+▶Lemma 58. Let F be an unsatisfiable Πd+1 formula on n variables. Suppose that there is
+a width-w and size-s Σd-Freged proof of F. Then FFF admits an Iterd-formulation of size
+s and depth w.
+Proof. Let Π′ = (π′
+1, . . . , π′
+m) be a Freged refutation of size s and width w, and suppose that
+it is ordered in reverse topological order so that π1 = ⊥. At a high level the meta-pointer
+˜S : [m] →[m] of the Iterd formula will trace a path from the root to a falsified axiom of the
+proof by always pointing a node u, for which π′
+u(x) is false under the given assignment x, to a
+falsified child which is guaranteed to exist by the soundness of the proof. If π′
+u(x) is false and
+was derived by cutting on π′
+v = A ∨C and π′
+w = B ∨¬C then ˜S should point u to the child v
+or w that is falsified. To determine which of π′
+v, π′
+w is falsified, we need to evaluate A, B, and
+C. Hence, we need to ensure that the size of the domain of the successor S is large enough.
+A simple way to do so is to pre-process our proof Π′ into a proof Π = (π1, . . . , pm) as follows:
+if π′
+u = A ∨B was derived by cutting A ∨¬C and B ∨C, then replace πu = A ∨B ∨C. Now,
+let ri be the maximum fanin at layer i of any line πi in the proof Π. By padding (with, for
+example, ⊤= x ∨¬x or ⊥= x ∧¬x) we may assume that every line πu in Π has the same
+fanin ri at each layer. That is,
+πu =
+_
+i1∈[r1]
+^
+i2∈[r2]
+· · ·
+⃝
+id−1∈[rd−1]
+Gu,i,
+where Gu,i is a fanin-w clause if ⃝= ∧and a fanin-w term if ⃝= ∨. Let r = [r1]×· · ·×[rd−1].
+For any assignment x ∈{0, 1}n the successor function Sx of our Iterd instance is
+defined as:
+Axiom Introduction. If πu is an axiom then Sx(u, i) = u;
+Weakening. If πu is a weakening of πv then Sx(u, i) = u if Gu,i(x) = 1 and v otherwise.
+CCC 2025
+
+28:36
+Provably Total Functions in the Polynomial Hierarchy
+Cut. If πu = A ∨B ∨C was derived by cutting πv = A ∨¬C and πw = B ∨C then
+i)
+If Gu,i is a subformula belonging to A or B then Sx(u, i) = u if Gu,i(x) = 1 and v
+otherwise.
+ii)
+Gu,i is a subformula belonging to C then Sx(u, i) = v if Gu,i(x) = 1 and w otherwise.
+Observe that Gu,i(x) have width w and so Sx(u, i) can be evaluated by a depth-w decision
+tree fu,i querying the variables x. Finally, for each solution o = (u, i∗
+1, v, j∗
+1), the output
+decision tree go is the constant function which returns v.
+The following claim asserts the correctness of the formula, completing the proof.
+▷Claim 59.
+The meta-pointer ˜Sx, defined from Sx, satisfies the following properties:
+i) ˜Sx(u) ≥u for any u ∈[m];
+ii) If u ∈[m] is such that πu is not an axiom, then ˜Sx(u) = u iff π′
+u(x) = 1 (recall that π′
+u
+belongs to the proof Π′ before pre-processing);
+iii) For any u ∈[m], if ˜Sx(u) = v ̸= u then πv(x) = 0.
+Proof of Claim. We will consider cases based on how πu was derived. If πu was deduced by
+axiom introduction then the claim holds by definition. If πu was derived by weakening πv,
+then re-parameterize the formula Gu,x(i) := Gu,i(x) and let Sx,u be Sx with the first input
+fixed to u. Then, noting that the definition of the successor in the case of weakening is
+equivalent to Sx,i(u) = Gu,i · u + (1 −Gu,i) · v, we have
+˜Sx(u) = MIN
+ Sx,u, r
+
+= MIN
+ Gu,x · u + (1 −Gu,x) · v, r
+
+= MAX(Gu,x, r)(u −v) + v
+= πu(x)(u −v) + v
+(Observation 51)
+= πu(x) · u + (1 −πu(x)) · v,
+where the MIN switched to a MAX because u −v < 0. The final equality is equivalent to
+˜Sx(u) =
+(
+u
+if πu(x) = 1;
+v
+if πu(x) = 0.
+Thus, the claim holds when πu was derived by weakening.
+◁
+Finally, consider the case when πu = A ∨B ∨C was derived by cutting πv = A ∨¬C and
+πw = B ∨C. Denote by rA∨B = [r1 −1]×[r2]×· · ·×[rd−1] and rC = {r1}×[r2]×· · ·×[rd−1].
+By partitioning the indices in this way, we will enforce that the subformulas with indices in
+rA∨B belong to C, and the remaining belong to A ∨B; that is, we take the convention that
+all subformulas of C have index r1. Then,
+˜Sx(u) = MIN
+ Sx,u, r
+
+= min
+n
+MIN
+
+Gu,x · u + (1 −Gu,x)v, rA∨B
+
+, MAX
+
+Gu,x · v + (1 −Gu,x)w, rC
+o
+= min
+n
+MAX
+ Gu,x,
+rA∨B
+
+(u −v) + v, MIN
+ Gu,x,
+rC
+
+(v −w)
+o
+= min
+n
+(A(x) ∨B(x))(u −v) + v,
+C(x)(v −w) + w
+o
+(Observation 51)
+=
+ A(x) ∨B(x)
+
+· u +
+ 1 −(A(x) ∨B(x)
+
+·
+ C(x) · v + (1 −C(x)) · w
+
+,
+where we have swapped MINs and MAXs using that u < v, w. That is,
+˜Sx(u) =
+
+
+
+
+
+
+
+u
+if (A ∨B)(x) = 1;
+v
+if (A ∨B)(x) = 0 and C(x) = 0;
+w
+if (A ∨B)(x) = 0 and C(x) = 1.
+It follows that the claim holds in the case of the cut rule.
+◀
+
+N. Fleming, D. Imrek, and C. Marciot
+28:37
+We now turn to establishing the forward direction of Theorem 57, converting Iterd-
+formulations into Σd-Freged proofs. As observed in Lemma 56, Σd-Freged is reduction closed.
+Hence, in order to establish the forward direction of Theorem 57, it suffices to show that
+Freged has efficient proofs of the propositional encoding of Iterd, which we describe next.
+The Iterd Formula.
+For simplicity (by padding) we may assume without loss of generality
+that in the definition of Iterd, m = r1 = . . . = rd−1. Our formula will be over m-ary variables
+Su,i ∈[m] for u ∈[m] and i ∈[m]d−1; this may be encoded by log n-many binary variables
+Su,i,k which spell out the binary encoding of the value of Su,i. In particular, if v ∈[m]
+has binary expansion v = P
+k∈[log m] bk2k−1, then the formula [[Su,i = v]] := V
+k∈[log m] Sbk
+u,i,k
+with the notation that x1 = x and x0 = ¬x for any variable x.
+Similarly, we write
+[[Su,i ̸= v]] = ¬[[Su,i = v]], where the negation is propagated to the literals. As well, for
+u, v, i∗∈[m] denote by [[bad(i∗) ∨˜S(u) ̸= v]] the formula
+[[bad(i∗
+1)∨˜S(u) ̸= v]] :=
+ _
+i1
+^
+i2
+· · ·
+^
+id−1
+^
+v≤v′
+[[Su,i ̸= v′]]
+
+∨
+ _
+i′
+2
+^
+i′
+3
+· · ·
+_
+i′
+d−1
+_
+v<v′
+[[Su,i∗
+1i′ = v′]]
+
+If d is odd, and
+[[bad(i∗
+1)∨˜S(u) ̸= v]] :=
+ _
+i1
+^
+i2
+· · ·
+_
+id−1
+_
+v′<v
+[[Su,i = v′]]
+
+∨
+ _
+i′
+2
+^
+i′
+3
+· · ·
+^
+i′
+d−1
+^
+v′≥v
+[[Su,i∗
+1i′ ̸= v′]]
+
+If d is even.
+It states that ˜S(u) ̸= v by asserting that either i∗
+1 is not a certificate of computation for
+u (left-hand side of the disjunction) or that the minimum is greater than v (right-hand side
+of the disjunction). These are Σ(d−1).5-formulas.
+The Iterd formula is the conjunction of the following:
+i) [[bad(i∗
+1) ∨˜S(1) ̸= 1]] for each i∗
+1,
+(1 is a source)
+ii) [[bad(i∗
+1) ∨˜S(u) ̸= v]] for each pair of nodes v < u and index i∗
+1, (No backwards pointer)
+iii) [[bad(i∗
+1) ∨˜S(u) ̸= v]] ∨[[bad(i∗
+1) ∨˜S(v) ̸= v]]. for each u, v, i∗
+1, j∗
+1 ∈[m] with u < v. (No
+proper sinks)
+▶Lemma 60. There is a size-O(n2) and width-O(log n) Freged proof of Iterd.
+For nodes u, v and an index i1, it will be convenient to denote by [[Si1(u) ≤v]] the formula
+[[Si1(u) ≤v]] :=
+^
+i2
+_
+i3
+· · ·
+^
+id−1
+^
+v<v′
+[[Su,i1i ̸= v′]]
+if d is odd,
+[[Si1(u) ≤v]] :=
+^
+i2
+_
+i3
+· · ·
+_
+id−1
+_
+v′≤v
+[[Su,i1i = v′]]
+if d is even,
+which encodes that maxi2 mini3 · · ·⃝id S(u, i1i) is less than or equal to v. These are Π(d−2).5-
+formulas that will be used as cuts in the proof (or queries in the Prover’s strategy).
+Proof. We give a Prover strategy for Iterd. The idea of the strategy is as follows: the
+Prover will begin at the root node 1 and will traverse the successor ˜S until they reach a
+solution (either 1 points to itself, u points to v with v < u, or u is a proper sink). To achieve
+this, at each node u, the Prover tries to determine the value of ˜S(u). They are unable to do
+so directly, as this would require the Prover to query a formula of depth d. Instead, they
+determine the value of ˜S(u) via an auction procedure, which we describe below. Once the
+Prover has determined v such that ˜S(u) = v, then either the Prover has found a solution, or
+CCC 2025
+
+28:38
+Provably Total Functions in the Polynomial Hierarchy
+otherwise the Prover forgets everything except the information necessary to infer ˜S(u) = v,
+and queries the Delayer via the auction procedure to learn the value of ˜S(v). At each step,
+the Prover has in memory the value of ˜S(w) for at most two nodes w ∈[m].
+The Auction Procedure. The procedure determines a value v ∈[m] so that ˜S(u) = v
+is the only value compatible with the answers given by the Delayer. The procedure is in
+rounds v = m −1, . . . , 1. At each round the Prover queries the formula [[Si1(u) ≤v]] for
+i1 = 1, . . . , m and reacts in the following way to the answers of the Delayer:
+Round v = m −1: As soon as the Delayer answers 1 for some i∗
+1 ∈[m], the Prover forgets
+all of the previously-learned formulas of the form ¬[[Sj(u) ≤m −1]] for j < i∗
+1, retains in
+memory the formula [[Si∗
+1(u) ≤m −1]], and moves to the round v = m −2. If the Delayer
+answers 0 to all i∗
+1 ∈[m], then the Prover knows that ˜S(u) = m.
+Round v < m −1: By induction the Prover’s memory consists only of [[Sj∗
+1 (u) ≤v + 1]] for
+some j∗
+1 ∈[m]. Hence, the Prover knows that ˜S(u) ≤v +1, and it would like to determine
+whether ˜S(u) = v + 1 or ˜S(u) ≤v. As soon as the Delayer answers 1 to the queries made
+during this round, for some i∗
+1 ∈[m], the Prover retains in memory only the formula
+[[Si∗
+1(u) ≤v]], forgetting the formulas ¬[[Sk(u) ≤v]] for all k < i∗
+1 and [[Sj∗
+1 (u) ≤v + 1]].
+They then move to round v −1 if v > 1 or halt if v = 1, as this implies that ˜S(u) = 1.
+If the Delayer answers 0 to all i∗
+1 ∈[m], then the Prover’s memory contains [[Sj∗
+1 (u) ≤v+1]]
+and ¬[[Sk(u) ≤v]] = 0 for all j ∈[m], which implies that ˜S(u) = v. The Prover then
+halts the auction procedure, keeping its memory as is.
+Observe that there are at most O(m4)-many possible states in any auction procedure. The
+memory of each state contains at most O(m)-many formulas, and each formula has size
+O(md) and width O(log m). Hence the size of each auction phase is at most O(md+5).
+With the auction procedure in place, we are ready to describe the Prover strategy in detail.
+Beginning with the node u = 1, the Prover determines a node v such that ˜S(u) = v via the
+auction procedure.
+If u = v = 1: the Prover halts;
+If v < u: the Prover forgets everything in memory except for the formulas determining
+that ˜S(u) = v and halts.
+If v = u ̸= 1, then prior to computing ˜S(u), the Prover’s memory already contains
+formulas which enforce that ˜S(w) = u for some u < w, hence they have found a solution
+and they halt.
+If u < v then the Prover had in its memory the formulas determining that ˜S(w) = u
+for some w < u. They forget these equalities which are not relevant to enforcing that
+˜S(u) = v, and the Prover moves to node v.
+This process terminates as the current node u increases by at least 1 at each step. We now
+calculate the number of possible states (and hence the number of lines in the corresponding
+Freged proof). As the auction procedure is performed once per round, and there are at most
+m2-many choices for the memory at each round (corresponding to the value of i∗
+1 and the
+node pointing to v), the total size of the strategy is at most O(md+8), which is O(n4) where
+n is the number of variables of the formula.
+It remains to argue that this is a valid strategy for the Prover; that is, when the Prover
+halts, at least one axiom of the formula is violated by all assignments which satisfy their
+memory. There are several cases based on the reason for halting:
+If u = v = 1: then the memory contains [[Si∗
+1(1) ≤1]] for some i∗
+1 ∈[m].
+This is
+incompatible with the axiom [[bad(i∗
+1) ∨˜S(1) ̸= 1]].
+If v < u: there are two possibilities based on the value of v. If v = 1, then the memory
+contains [[Si∗
+1(u) ≤1]] for some i∗
+1 ∈[m], contradicting the axiom [[bad(i∗
+1) ∨˜S(u) ̸= 1]].
+Otherwise, if v ̸= 1 then the memory contains ¬[[Si(u) ≤v −1]] for all i ∈[m] and
+[[Si∗
+1(u) ≤v]] for some i∗
+1, contradicting the axiom [[bad(i∗
+1) ∨˜S(u) ̸= v]].
+
+N. Fleming, D. Imrek, and C. Marciot
+28:39
+If ˜S(u) = ˜S(v) = v: then there are two cases based on whether v = m. If v ̸= m then
+the memory contains [[Si∗
+1(u) ≤v]] and [[Sj∗
+1 (v) ≤v]] for some i∗
+1, j∗
+1 ∈[m] along with the
+formulas ¬[[Si(u) ≤v −1]] and ¬[[Sj(v) ≤v −1]] for all i, j ∈[m]. This contradicts the
+axiom [[bad(i∗
+1) ∨˜S(u) ̸= v]] ∨[[bad(j∗
+1) ∨˜S(v) ̸= v]].
+Otherwise, the memory contains ¬[[Si(u) ≤m −1]] and ¬[[Si(v) ≤m −1]] for all i, j ∈[m]
+which contradicts the axiom [[bad(i∗
+1) ∨˜S(u) ̸= m]] ∨[[bad(j∗
+1) ∨˜S(m) ̸= m]] for all values
+of i∗
+1 and j∗
+1. Indeed, for any node u, if ˜S(u) = m then i∗
+1 will always be an argument of
+the minimum, regardless of its value.
+Hence, the Prover strategy is correct.
+◀
+References
+1
+Albert Atserias and Massimo Lauria. Circular (yet sound) proofs in propositional logic. ACM
+Trans. Comput. Log., 24(3):20:1–20:26, 2023. doi:10.1145/3579997.
+2
+Paul Beame, Stephen A. Cook, Jeff Edmonds, Russell Impagliazzo, and Toniann Pitassi.
+The relative complexity of NP search problems. J. Comput. Syst. Sci., 57(1):3–19, 1998.
+doi:10.1006/jcss.1998.1575.
+3
+Arnold Beckmann and Samuel R. Buss. Polynomial local search in the polynomial hierarchy and
+witnessing in fragments of bounded arithmetic. Journal of Mathematical Logic, 09(01):103–138,
+2009. doi:10.1142/S0219061309000847.
+4
+Olaf Beyersdorff. Proof complexity of quantified boolean logic–a survey. Mathematics for
+Computation (M4C), pages 353–391, 2022.
+5
+Sam Buss, Noah Fleming, and Russell Impagliazzo. TFNP characterizations of proof systems
+and monotone circuits. In Yael Tauman Kalai, editor, 14th Innovations in Theoretical Computer
+Science Conference, ITCS 2023, January 10-13, 2023, MIT, Cambridge, Massachusetts, USA,
+volume 251 of LIPIcs, pages 30:1–30:40. Schloss Dagstuhl – Leibniz-Zentrum für Informatik,
+2023. doi:10.4230/LIPICS.ITCS.2023.30.
+6
+Samuel R. Buss, Leszek Aleksander Kolodziejczyk, and Neil Thapen. Fragments of approximate
+counting. J. Symb. Log., 79(2):496–525, 2014. doi:10.1017/jsl.2013.37.
+7
+Lijie Chen, Shuichi Hirahara, and Hanlin Ren. Symmetric exponential time requires near-
+maximum circuit size. In Bojan Mohar, Igor Shinkar, and Ryan O’Donnell, editors, Proceedings
+of the 56th Annual ACM Symposium on Theory of Computing, STOC 2024, Vancouver, BC,
+Canada, June 24-28, 2024, pages 1990–1999. ACM, 2024. doi:10.1145/3618260.3649624.
+8
+Ben Davis and Robert Robere. Colourful TFNP and propositional proofs. In Amnon Ta-Shma,
+editor, 38th Computational Complexity Conference, CCC 2023, July 17-20, 2023, Warwick, UK,
+volume 264 of LIPIcs, pages 36:1–36:21. Schloss Dagstuhl – Leibniz-Zentrum für Informatik,
+2023. doi:10.4230/LIPICS.CCC.2023.36.
+9
+Noah Fleming, Stefan Grosser, Toniann Pitassi, and Robert Robere. Black-box PPP is not
+turing-closed. In Bojan Mohar, Igor Shinkar, and Ryan O’Donnell, editors, Proceedings of the
+56th Annual ACM Symposium on Theory of Computing, STOC 2024, Vancouver, BC, Canada,
+June 24-28, 2024, pages 1405–1414. ACM, 2024. doi:10.1145/3618260.3649769.
+10
+Noah Fleming, Pravesh Kothari, and Toniann Pitassi. Semialgebraic proofs and efficient
+algorithm design. Found. Trends Theor. Comput. Sci., 14(1-2):1–221, 2019. doi:10.1561/
+0400000086.
+11
+Mika Göös, Alexandros Hollender, Siddhartha Jain, Gilbert Maystre, William Pires, Robert
+Robere, and Ran Tao. Further collapses in TFNP. Electron. Colloquium Comput. Complex.,
+TR22-018, 2022. URL: https://eccc.weizmann.ac.il/report/2022/018.
+12
+Mika Göös, Alexandros Hollender, Siddhartha Jain, Gilbert Maystre, William Pires, Robert
+Robere, and Ran Tao. Separations in proof complexity and TFNP. CoRR, abs/2205.02168,
+2022. doi:10.48550/arXiv.2205.02168.
+CCC 2025
+
+28:40
+Provably Total Functions in the Polynomial Hierarchy
+13
+Mika Göös, Pritish Kamath, Robert Robere, and Dmitry Sokolov. Adventures in monotone
+complexity and TFNP. In Avrim Blum, editor, 10th Innovations in Theoretical Computer
+Science Conference, ITCS 2019, January 10-12, 2019, San Diego, California, USA, volume
+124 of LIPIcs, pages 38:1–38:19. Schloss Dagstuhl – Leibniz-Zentrum für Informatik, 2019.
+doi:10.4230/LIPIcs.ITCS.2019.38.
+14
+Robert Kleinberg, Oliver Korten, Daniel Mitropolsky, and Christos H. Papadimitriou. Total
+functions in the polynomial hierarchy. In James R. Lee, editor, 12th Innovations in Theoretical
+Computer Science Conference, ITCS 2021, January 6-8, 2021, Virtual Conference, volume
+185 of LIPIcs, pages 44:1–44:18. Schloss Dagstuhl – Leibniz-Zentrum für Informatik, 2021.
+doi:10.4230/LIPICS.ITCS.2021.44.
+15
+Leszek Aleksander Kolodziejczyk and Neil Thapen. Approximate counting and NP search
+problems, 2021.
+16
+Oliver Korten. The hardest explicit construction. In 62nd IEEE Annual Symposium on
+Foundations of Computer Science, FOCS 2021, Denver, CO, USA, February 7-10, 2022, pages
+433–444. IEEE, 2021. doi:10.1109/FOCS52979.2021.00051.
+17
+Oliver Korten and Toniann Pitassi. Strong vs. weak range avoidance and the linear ordering
+principle. In 65th IEEE Annual Symposium on Foundations of Computer Science, FOCS
+2024, Chicago, IL, USA, October 27-30, 2024, pages 1388–1407. IEEE, 2024. doi:10.1109/
+FOCS61266.2024.00089.
+18
+Jan Krajícek, Alan Skelley, and Neil Thapen. NP search problems in low fragments of bounded
+arithmetic. J. Symb. Log., 72(2):649–672, 2007. doi:10.2178/JSL/1185803628.
+19
+Yuhao Li, William Pires, and Robert Robere.
+Intersection classes in TFNP and proof
+complexity. In Venkatesan Guruswami, editor, 15th Innovations in Theoretical Computer
+Science Conference, ITCS 2024, January 30 to February 2, 2024, Berkeley, CA, USA, volume
+287 of LIPIcs, pages 74:1–74:22. Schloss Dagstuhl – Leibniz-Zentrum für Informatik, 2024.
+doi:10.4230/LIPICS.ITCS.2024.74.
+20
+Zeyong Li. Symmetric exponential time requires near-maximum circuit size: Simplified, truly
+uniform. In Bojan Mohar, Igor Shinkar, and Ryan O’Donnell, editors, Proceedings of the 56th
+Annual ACM Symposium on Theory of Computing, STOC 2024, Vancouver, BC, Canada,
+June 24-28, 2024, pages 2000–2007. ACM, 2024. doi:10.1145/3618260.3649615.
+21
+Pavel Pudlák. On the complexity of finding falsifying assignments for herbrand disjunctions.
+Arch. Math. Log., 54(7-8):769–783, 2015. doi:10.1007/S00153-015-0439-6.
+22
+Pavel Pudlák and Samuel R. Buss. How to lie without being (easily) convicted and the length
+of proofs in propositional calculus. In Leszek Pacholski and Jerzy Tiuryn, editors, Computer
+Science Logic, 8th International Workshop, CSL ’94, Kazimierz, Poland, September 25-30,
+1994, Selected Papers, volume 933 of Lecture Notes in Computer Science, pages 151–162.
+Springer, 1994. doi:10.1007/BFB0022253.
+23
+Pavel Pudlák and Neil Thapen. Alternating minima and maxima, nash equilibira and bounded
+arithmetic. Annals of Pure and Applied Logic, 72:604–614, 2012. doi:10.1016/J.APAL.2011.
+06.014.
+24
+Alan Skelley and Neil Thapen. The provably total search problems of bounded arithmetic.
+Proceedings of the London Mathematical Society, 103(1):106–138, 2011.
+25
+Neil Thapen. How to fit large complexity classes into TFNP. CoRR, 2024. doi:10.48550/
+arXiv.2412.09984.

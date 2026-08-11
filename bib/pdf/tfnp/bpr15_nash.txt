@@ -1,0 +1,1080 @@
+On the Cryptographic Hardness of Finding a Nash Equilibrium
+Nir Bitansky∗
+Omer Paneth†
+Alon Rosen‡
+January 1, 2015
+Abstract
+We prove that ﬁnding a Nash equilibrium of a game is hard, assuming the existence of indistinguisha-
+bility obfuscation and injective one-way functions with sub-exponential hardness. We do so by showing
+how these cryptographic primitives give rise to a hard computational problem that lies in the complexity
+class PPAD, for which ﬁnding Nash equilibrium is known to be complete.
+Previous proposals for basing PPAD-hardness on program obfuscation considered a strong “virtual
+black-box” notion that is subject to severe limitations and is unlikely to be realizable for the programs
+in question. In contrast, for indistinguishability obfuscation no such limitations are known, and recently,
+several candidate constructions of indistinguishability obfuscation were suggested based on different
+hardness assumptions on multilinear maps.
+Our result provides further evidence of the intractability of ﬁnding a Nash equilibrium, one that is
+extrinsic to the evidence presented so far.
+1
+Introduction
+The notion of Nash equilibrium is fundamental to game theory. While a mixed Nash equilibrium is guar-
+anteed to exist in any game [Nas51], there is no known polynomial-time algorithm for ﬁnding one. The
+tractability of the problem has received much attention in the past decade, in large part due to its theo-
+retical and philosophical signiﬁcance. Prominent evidence for the hardness of ﬁnding a Nash equilibrium
+emerges from a line of works, originating with Papadimitriou [Pap94] and ultimately showing that the prob-
+lem is complete for the complexity class PPAD [DGP09, CDT09]. The class PPAD contains several other
+search problems that are not known to be tractable, such as ﬁnding a ﬁxed point of the kind guaranteed by
+Brouwer’s Theorem. Akin to the phenomenon of NP-completeness, this could be interpreted as evidence to
+computational difﬁculty. However, unlike in the case of NP, currently known problems in PPAD appear to
+be of fairly restricted nature, and carry similar ﬂavor to one another.
+Seeking further evidence for the hardness of PPAD, we aim to to base its hardness on new types of
+problems. As observed in [MP91, Pap94] problems in PPAD cannot be NP-complete unless NP = coNP. A
+potential source for such problems (already suggested in [Pap94]) is cryptographic hardness.
+Towards identifying a suitable problem from the domain of cryptography, let us ﬁrst take a closer look
+into the deﬁnition of PPAD. The class PPAD consists of all total search problems reducible to the following
+∗MIT. Email: nirbitan@csail.mit.edu.
+†Boston University. Email: omer@bu.edu. Supported by the Simons award for graduate students in theoretical computer
+science and an NSF Algorithmic foundations grant 1218461.
+‡EﬁArazi School of Computer Science, IDC Herzliya, Israel. Email: alon.rosen@idc.ac.il. Supported by ISF grant
+no. 1255/12 and by the ERC under the EU’s Seventh Framework Programme (FP/2007-2013) ERC Grant Agreement n. 307952.
+1
+ 
+ISSN 1433-8092 
+Electronic Colloquium on Computational Complexity, Report No. 1 (2015)
+
+END-OF-THE-LINE problem. We are given a program succinctly representing an exponential size directed
+graph over the nodes {0, 1}n, together with a source node xs. The in-degree and out-degree of every node
+are at most one, and the in-degree of the source xs is zero. Our goal is to ﬁnd another node, other than xs,
+with in-degree or out-degree zero. Such a node must exist by a simple parity argument.
+Intuitively, solving the END-OF-THE-LINE problem may require some sort of ”reverse-engineering” of
+the program representing the graph. Indeed, under minimal cryptographic assumptions, solving the problem
+while only treating the program as a black-box is impossible. For instance, the program may internally
+invoke a pseudo-random permutation [LR88] to describe a “random looking” END-OF-THE-LINE graph that
+cannot be solved efﬁciently with only black-box access.1
+This suggests a natural approach for constructing PPAD-hard problems based on cryptographic obfus-
+cation, a compiler that transforms any program into an unintelligible one while preserving functionality.
+Ideally, an obfuscated program should be equivalent to a virtual black-box (VBB): it should reveal nothing
+more than what can be learned from its input-output behavior [BGI+01]. In particular, a (pseudo) ran-
+dom END-OF-THE-LINE graph described by an obfuscated program should be unsolvable by any efﬁcient
+algorithm even given this obfuscated program . Abbot, Kane and Valiant [AKV04] further show that PPAD-
+hardness can be based on VBB obfuscation of an even simpler program that essentially computes some
+natural pseudo random function.
+Neither of the above programs, however, is known to be VBB obfuscatable. Indeed, VBB obfuscation is
+currently known only for a few simple functions based on strong assumptions. Moreover, certain functions
+are impossible to VBB obfuscate [BGI+01], and VBB obfuscation of pseudo-random functions, including
+the one considered in [AKV04], is in particular subject to strong limitations [GK05, BCC+14].
+In light of the impossibilities for VBB obfuscation, Barak et al. [BGI+01] deﬁned indistinguishabil-
+ity obfuscation (iO), a relaxed notion requiring only that the obfuscations of any two equal-size circuits
+computing the same function are indistinguishable from one another. For iO, no impossibilities are known.
+Furthermore, starting with the work of Garg et al. several constructions of iO were recently suggested based
+on different assumptions related to cryptographic multilinear maps [GGH+13, BR14, BGK+14, PST14,
+GLSW14, Zim14]. A natural question is whether the comparatively weak security guarantees of iO sufﬁce
+for establishing hardness of PPAD.
+1.1
+This Work
+We show PPAD-hardness based on indistinguishability obfuscation and injective one-way functions with
+super-polynomial hardness.
+Theorem 1.1 (Informal). Suppose that there exist sub-exponentially-hard injective one-way functions and
+quasi-polynomially-hard indistinguishability obfuscation for P/poly. Then, the END-OF-THE-LINE problem
+is hard for polynomial-time algorithms.
+In fact, under the above assumptions, we show that PPAD is hard on average for quasi-polynomial
+algorithms. Speciﬁcally, there exists an efﬁciently samplable distribution on END-OF-THE-LINE instances
+that fails probabilistic quasi-polynomial algorithms (for some quasi-polynomial function that depends on the
+iO hardness). We can get sub-exponential PPAD-hardness at the cost of assuming sub-exponential iO. We
+can also trade-off the security of the iO and the resulting PPAD-hardness with the security of the one-way
+function. Speciﬁcally, we show that assuming only polynomially-hard iO, but exponentially-hard injective
+one-way functions, PPAD is hard in the worst-case (rather than on average) for polynomial-time algorithms.
+1If we do not require succinct representation of the graph, unconditional black-box hardness results are known [HPV89, Pap94].
+2
+
+One may also interpret our result in the converse: any algorithmic breakthrough resulting, say, in a sub-
+exponential algorithm for computing Nash equilibria will lead to a sub-exponential attack on the hardness
+of iO or injective one-way functions.
+1.2
+Main Ideas
+To demonstrate the hardness of PPAD, we construct a hard distribution over END-OF-THE-LINE instances.
+Recall that an END-OF-THE-LINE instance is deﬁned by a program representing an exponential size directed
+graph. Verifying that a given program indeed describes a valid END-OF-THE-LINE instance can be done
+efﬁciently (thus making the problem total [MP91, Pap94]).
+In more detail, an END-OF-THE-LINE graph is described by a pair of circuits S and P. Given an input
+node x ∈{0, 1}n, S(x) outputs a “candidate successor” and P(x) outputs a “candidate predecessor” of
+x. We say that there is an edge from x to x′ in the graph if S(x) = x′ and P(x′) = x (this guarantees
+that the in-degree and out-degree of every node are at most one). The instance also deﬁnes a source node
+xs ∈{0, 1}n and we require that P(xs) = xs ̸= S(xs) (this guarantees that the in-degree of the source node
+xs is zero). The solution is any node other than xs with in-degree or out-degree zero.
+A simpliﬁed construction. To convey the main ideas behind the hardness proof, we ﬁrst describe a simpli-
+ﬁed construction of END-OF-THE-LINE instances that will only satisfy a weak form of hardness, and then
+extend it to obtain the sought-after result. In the constructed (distribution over) instances, the circuits S
+and P contain the description a function PRF : [T] →{0, 1}m sampled from a family of pseudo-random
+functions, where T is of super-polynomial size.
+Nodes x in the graph are of the form (i, σ) ∈[T] × {0, 1}m. We say that a node (i, σ) is valid if σ =
+PRF(i). The graph deﬁned by S and P contains a single path passing though all valid nodes. Every invalid
+node will be connected to itself by a self-loop. The graph contains a single source node xs = (1, PRF(1))
+with in-degree zero and a single sink node (T, PRF(T)) with out-degree zero.
+Given a node (i, σ), the circuit S computes the candidate successor as follows:
+1. If the node is valid and i < T, S outputs the node (i + 1, PRF(i + 1)) as the candidate successor.
+2. If the node is invalid or if i = T, S outputs the node (i, σ) unchanged.
+The function P is deﬁned analogously in the reverse direction. The END-OF-THE-LINE instance is the triplet
+(˜S, ˜P, (1, PRF(1))), where ˜S and ˜P are indistinguishability obfuscations of the circuits S and P respectively
+and (1, PRF(1)) is the source node. Note that this instance has a unique solution (T, PRF(T)).
+Intuition. The path from the source (1, PRF(1)) to the sink (T, PRF(T)) should be thought of as an authen-
+ticated chain where a signature σ corresponding to some valid node (i, σ) cannot be obtained without ﬁrst
+obtaining all previous signatures. It is not difﬁcult to show that any efﬁcient algorithm that only invokes the
+circuits S and P (and thus also the pseudo-random function PRF) as a black box cannot ﬁnd the signature
+PRF(T), and thus cannot solve the instance. We would like to prove that the same hardness holds even given
+the obfuscated circuits ˜S and ˜P. However, we ﬁrst prove something weaker: ﬁnding the sink (T, PRF(T)) is
+hard given only the successor circuit ˜S. We then extend the proof to show that the sink is hard to ﬁnd given
+both ˜S and ˜P, which requires modifying the construction.
+To prove that ﬁnding the signature PRF(T) corresponding to the sink is hard, we show that the obfus-
+cated ˜S is computationally indistinguishable from a circuit that on input (T, PRF(T)) returns some ﬁxed
+value ⊥, rather than (T, PRF(T)) itself as ˜S would. This implies that an efﬁcient algorithm would not be
+able to obtain PRF(T) from either one of the circuits, or it could distinguish the two. We next go in more
+detail into how indistinguishability of these two circuits is shown.
+3
+
+For every j ≤k ≤T, we consider the circuit Sj,k that is identical to S, except that for every i ∈[j, k],
+Sj,k on the input (i, PRF(i)) outputs the ﬁxed value ⊥. The argument proceeds in two steps. First, we
+show that for a random u ∈[T], an obfuscation ˜Su,u of Su,u is computationally indistinguishable from ˜S.
+Intuitively this “splits” the authenticated chain into two parts. While given the source node it is possible
+to compute additional signatures in the ﬁrst part of the chain [1, u −1], we show that is it hard to ﬁnd a
+signature for any i in the second part of the chain [u, T]. More concretely, in the second step, we prove
+that the obfuscated circuits ˜Su,u and ˜Su,T are computationally indistinguishable by a sequence of hybrids.
+For every j ∈[u, T], we show that the obfuscations ˜Su,j and ˜Su,j+1 are computationally indistinguishable.
+In total, we have T hybrids; relying on injective one-way functions (which only come in during the proof)
+and iO with super-polynomial hardness (related to the size of T), we show that each two obfuscations are
+T −Θ(1)-indistinguishable. Overall we deduce that the obfuscations ˜S and ˜Su,T are also computationally
+indistinguishable as required. To summarize, the hardness proof follows two steps:
+1. Split the chain into two parts: For a random u ∈[T], prove that ˜S and ˜Su,T are indistinguishable.
+2. Erase second part: For every u ≤j < T, prove that ˜Su,j and ˜Su,j+1 are T −Θ(1)-indistinguishable.
+We next explain how two the steps described above are proven. For simplicity, we shall assume the existence
+of a length-doubling pseudo-random generator PRG : [T] →[T 2] that is injective; in the body, we relax this
+assumption and rely only on injective one-way functions. The two steps rely the ideas of hidden triggers
+and punctured programs introduced by Sahai and Waters [SW14].
+First step. To prove that ˜S is indistinguishable from ˜Su,u, we ﬁrst note that ˜S is indistinguishable from an
+obfuscation of a circuit Sv(i, σ) that has an extra “if statement”:
+1. if σ = PRF(i) and PRG(i) = v, return ⊥.
+2. Otherwise return (i + 1, PRF(i + 1)) (as S would);
+here v is chosen at random from the range [T 2] of PRG. Observe that, with overwhelming probability
+1 −1
+T , v is not in the image of PRG, the condition in (1) is never met, and the alternative behavior is
+never triggered. Thus, S and Sv compute the same function and their obfuscations are indistinguishable.
+Next, relying on the pseudo-randomness guarantee of PRG, we can indistinguishably replace the uniformly
+random v with a pseudo-random value PRG(u). It is left to note that, because PRG is injective, Sv, with
+v = PRG(u), computes the exact same function as Su,u. Indeed, both compute the same function as S
+except on (u, PRF(u)), where an alternative behavior is triggered and ⊥is returned.
+Second step. To prove that ˜Su,j and ˜Su,j+1 are indistinguishable, we require that PRF is puncturable. This
+means that for every input i ∈[T], we can sample a punctured PRF{i} that agrees with PRF on all inputs
+j ̸= i, but computationally hides any information on the value PRF(i); namely PRF(i) is pseudo-random,
+even given a program for evaluating the punctured PRF{i}. Such puncturable pseudo-random functions are
+known to exist based on any one-way function [BW13, KPTZ13, BGI14]. Now, we note that ˜Su,j and ˜Su,j+1
+differ only on input (j +1, PRF(j +1)): while the ﬁrst returns (j +2, PRF(j +2)), the second returns ⊥. In
+particular, the two circuits must hide PRF(j + 1) to guarantee indistinguishability. What enables hiding the
+value PRF(j + 1) is that both circuits never output PRF(j + 1), but rather, on input (j, PRF(j)) both return
+⊥. The value PRF(j + 1) is only used to test if an input (j + 1, σ) is valid by comparing σ to PRF(j + 1).
+Relying on puncturing, this comparison can be performed in “encrypted form” while hiding PRF(j + 1).
+Concretely, we ﬁrst move from ˜Su,j to ˜S(1)
+u,j that has a punctured PRF{j+1}. The circuit has σj+1 =
+PRF(j + 1) hardwired, and given (j + 1, σ) it directly compares σ to σj+1. The circuit computes the same
+4
+
+function, and indistinguishability holds by iO. Then, relying on pseudo-randomness at the punctured point
+j + 1, we move to ˜S(2)
+u,j where σj+1 is replaced with a truly random value in {0, 1}m. Next, we move to ˜S(3)
+u,j
+where the comparison of σj+1 and σ is not done in the clear, but rather under an injective (length-doubling)
+pseudo-random generator PRG : {0, 1}m →{0, 1}2m; in particular, σj+1 is not stored in the clear, but rather
+PRG(σj+1) is stored. This does not change functionality and thus indistinguishability is again preserved.
+Now, using pseudo-randomness of PRG, we move to yet another circuit ˜S(4)
+u,j, where PRG(σj+1) is replaced
+by a truly random string v ∈{0, 1}2m. Finally, note that as in the proof of the ﬁrst step, v is not in the
+image of PRG with overwhelming probability 1−2−m. Thus we can indistinguishably change the circuit to
+return ⊥when given the input (j + 1, σj+1). We can then reverse the above steps and go back to computing
+σj+1 = PRF(j + 1), using the non-punctured PRF.
+To guarantee the required indistinguishability gap between the different hybrids, we should take care
+in choosing the parameters T, the output length m of PRF, and the hardness of each of the cryptographic
+primitives. Choosing these parameters yields different hardness tradeoffs (further discussed in Section 5.5).
+The full construction. So far we only proved that that ﬁnding PRF(T) is hard given ˜S. Proving that the
+same hardness holds given also ˜P encounters a barrier. Indeed, to be able to gradually erase the output of ˜S
+on valid inputs (i, PRF(i)), we crucially relied on the fact that in the hybrid circuit ˜Su,j, the value PRF(j+1)
+is never returned and is only used in comparison, which could be done in encrypted form. However, in the
+presence of ˜P this is no longer the case since the signature PRF(j + 1) can also be reached “from the other
+direction”; namely, on input (j + 2, PRF(j + 2)), ˜P does return PRF(j + 1) in the clear.
+To overcome this barrier, we modify the construction. We transform the original END-OF-THE-LINE
+instance (˜S, ˜P, xs) into a new instance (S′, P′, x′
+s). Similarly to the original instance, the graph deﬁned by
+the new instance contains a single path (every node outside this path is a self-loop). Intuitively, a walk on
+the path in the new graph “emulates” a walk on the path in the original graph. In particular, the new source
+x′
+s can be computed from the original source xs, and the new sink contains the original sink (T, PRF(T)).
+The key property of the new construction is that both the new successor circuit S′ and predecessor circuit
+P′ can be efﬁciently constructed based only on the original successor circuit ˜S. Thus, the already proven
+hardness of obtaining PRF(T) from ˜S carries over when given both the circuits S′ and P′, and therefore the
+resulting instance distribution has the required hardness.
+Abbot, Kane and Valiant [AKV04] describe a construction of suitable circuits S′ and P′ given any circuit
+for ˜S satisfying a certain veriﬁability property: for every i < T, there should be an efﬁcient way to test if a
+given node is the i-th node on the path deﬁned by ˜S. In our construction of ˜S this can done by testing that
+the node is of the form (i, σ) and that S(i, σ) is of the form (i + 1, σ′). The idea behind the construction is
+to rely on reversible computation, which allows to simulate any computation in a reversible way [Ben89]. 2
+In the body, we formulate the SINK-OF-VERIFIABLE-LINE problem, which captures the required prop-
+erties for the Abbot et al. construction. For completeness, we also describe in detail the reduction to the
+END-OF-THE-LINE problem, based on reversible computation.
+1.3
+Related Work
+In addition to the already mentioned works on PPAD and the PPAD-completeness of ﬁnding Nash equilibria,
+various works show hardness results for different variants on the problem of ﬁnding Nash equilibria, and
+explore other notions of equilibria with related hardness. We refer the reader to [Gol11] and to the related
+work sections of [OPR14, Rub14] for further details.
+2Reversible computation was also used in [Pap94] to prove that a variant of PPAD contains PSPACE.
+5
+
+1.4
+Organization
+In Section 2, we deﬁne the complexity class PPAD (via the END-OF-THE-LINE PROBLEM), and the SINK-
+OF-VERIFIABLE-LINE problem.
+In Section 3, we describe the reduction between the problems based
+on reversible computation. In Section 5.1, we construct and analyze the hard distribution on SINK-OF-
+VERIFIABLE-LINE instances, based on iO and injective one-way functions.
+2
+PPAD and the Sink-of-Veriﬁable-Line Problem
+A search problem (I, R) is deﬁned by a set of instances I ⊆{0, 1}∗and by an NP relation R. A search
+problem is total if testing membership in I is efﬁcient and for every every z ∈I the set of witnesses R
+is non-empty. We say that a search problem (I, R) is reducible to a search problem (I′, R′) if there exists
+a pair of polynomial-time computable functions f, g such that for every z ∈I, f(z) ∈I′, and for every
+w ∈R′(f(z)), g(w) ∈R(z).
+2.1
+PPAD
+The class PPAD [Pap94] contains all total search problems that are reducible to the END-OF-THE-LINE
+problem (EOL).
+Deﬁnition 2.1 (END-OF-THE-LINE). An instance (xs, S, P) is deﬁned by a starting node xs ∈{0, 1}n and a
+pair of circuits S, P with inputs and outputs in {0, 1}n such that P(xs) = xs ̸= S(xs). A string w ∈{0, 1}n
+is a valid witness iff:
+P(S(w)) ̸= w
+∨
+S(P(w)) ̸= w ̸= xs .
+Intuitively, the circuits S, P deﬁne a directed graph over vertices {0, 1}n where the in-degree and out-
+degree of every node is at most one. For a pair of nodes x, y there is an edge from x to y iff S(x) = y and
+P(y) = x. The condition P(xs) = xs ̸= S(xs) grantees that the starting node xs has in-degree zero. A
+witness w is any other node with in-degree or out-degree zero. Such node must exists by a simple parity
+argument.
+2.2
+The Sink-of-Veriﬁable-Line Problem
+The SINK-OF-VERIFIABLE-LINE problem (SVL) is a search problem described in [AKV04] (there it is not
+given any speciﬁc name).
+Deﬁnition 2.2 (SINK-OF-VERIFIABLE-LINE). An instance (S, V, xs, T) consists of a source xs ∈{0, 1}n,
+a target index T ∈[2n], and a pair of circuits S : {0, 1}n →{0, 1}n, V : {0, 1}n × [T] →{0, 1}, with the
+guarantee that, for (x, i) ∈{0, 1}n × [T], it holds that V(x, i) = 1 iff x = xi := Si−1(xs), where x1 := xs.
+A string w ∈{0, 1}n is a valid witness iff V(w, T) = 1.
+Intuitively, S deﬁnes a path over a subset of vertices in {0, 1}n starting at xs, progressing according to
+xi = S(xi−1), and ending at the target xT = ST−1(xs). Unlike in the EOL problem, an SVL instance deﬁnes
+a single directed path, and there is no algorithm describing backward edges on this path. Furthermore, it
+is possible to test whether a given node x is the i-th node on the path. Note that while every valid SVL
+instance has a single witness, the problem may not be total, since we do not know how to efﬁciently test if
+an instance (S, V, xs, T) is valid. Speciﬁcally it is hard to verify that V(x, i) = 1 iff x = xi. (Note that for
+the very same reason, the decision problem corresponding to SVL may not be in NP).
+6
+
+3
+Reducing Sink-of-Veriﬁable-Line to End-of-the-Line
+In this section, we give a reduction from the SVL problem to the EOL problem. This reduction was sketched
+in [AKV04], for completeness we describe the reduction in full. The reduction is an efﬁcient mapping from
+any SVL instance to an EOL instance such that from any witness to the EOL problem, the witness to the
+SVL problem can be efﬁciently computed. Note that the SVL problem is not total and therefore (although
+reducible to EOL) it is not in PPAD. However, by our reduction, the existence of a hard distribution on SVL
+instances implies the existence of a hard distribution on EOL instances.
+As the main step of mapping an SVL instance to an EOL instance, the reduction has to come up with
+an efﬁcient implementation of the predecessor function. This relies on ideas from reversible computation
+[Ben89]. Following [Ben89, AKV04], we start by describing a simple pebble game capturing the main ideas
+used in the reduction.
+3.1
+The pebble game
+Consider the following pebble game, also known as the east model [JE91, CDG01]. We are given a set of t
+pebbles meant to be placed in a set of positions represented by positive integers. In a valid move, a pebble
+can either be placed or removed from position i provided that either i = 1 or position i −1 is occupied
+by a pebble. In particular, valid moves are reversible, and any sequence of valid moves can be reversed by
+another sequence of valid moves. The goal of the game is to place a pebble in position 2t −1.
+An efﬁcient strategy can be described recursively as follows. Assume there is a sequence of moves,
+using only the ﬁrst t −1 pebbles, and resulting in a pebble placed in position 2t−1 −1. Now, place the t-th
+pebble in position 2t−1. Next, free the ﬁrst t −1 pebbles by reversing the original sequence of moves. Once
+the ﬁrst t −1 pebbles are free, repeat the original sequence of moves shifting every position up by 2t−1
+resulting in a pebble placed in position 2t −1.
+The above strategy essentially allows to simulate any computation in a reversible way, while incurring
+only polynomial blowup in running time. The reduction from SVL to EOL relies on the above idea. We
+next describe it in detail.
+3.2
+The reduction
+Let (S, V, xs, T) be an SVL instance where xs ∈{0, 1}n and let t = log(T) (assume without loss of
+generality that t is an integer). We construct an instance (xs, S′, P′) for the EOL problem where xs ∈
+{0, 1}m and m = t · (n + t). We interpret every node in {0, 1}m as a sequence (u1, . . . , ut) of t states
+where, for every j ∈[t], the state uj is of the form (x, i) ∈{0, 1}n × [T]. We say that a state (x, i) is valid
+if V(x, i) = 1 and denote the i-th valid state (Si−1(xs), i) by v(i). Given u = (x, i), we abuse notation
+(overloading the function S) and denote S(u) := (S(x), i + 1). Given u = (x, i) and u′ = (x′, i′), we say
+that u < u′ if i < i′.
+Intuitively, the EOL instance will correspond to a graph with a single path. Every node (u1, . . . , ut) ∈
+{0, 1}m on this path describes a conﬁguration of the pebble game in the efﬁcient strategy above. To express
+that the j-th pebble is in position i we set uj = v(i + 1). If the j-th pebble is not used we set uj = v(1)
+and say that the sate uj is free. The starting node xs describes the starting conﬁguration of the pebbling
+game where all states are free. The last node on the path describes the ﬁnal conﬁguration and contains the
+state v(T). The circuits S′ and P′ traverse the path following moves of the winning strategy. To place a the
+j-th pebble in position i, given that the k-th pebble in position i −1 we set uj ←S(uk). The j-th pebble
+is removed to free the state uj by setting uj = v(1). Given any node that does not describe a conﬁguration
+7
+
+reached by the strategy, the circuits S′ and P′ output the node unchanged indicating that the node is a self-
+loop. The the only witness for the the instance (xs, S′, P′) is the ﬁnal node on the path, and it is possible
+to compute xT from this node. (We note that if we apply the reduction to a tuple (S, V, xs, T) that is not a
+valid SVL instance, we will still get an EOL instance with one or many solutions, but there is no guarantee
+on their relation to the tuple (S, V, xs, T) we started from.)
+We continue with a formal description of the reduction. For j ∈[t], we deﬁne the functions (Sj, Pj) that
+traverse some segment of the entire path. The nodes in this segment differ only on the ﬁrst j states, whereas
+the last t−j states of all nodes in the segment are the same. In the ﬁrst node of the segment, the ﬁrst j states
+are all free. In the last node of the segment the value of the ﬁrst j states will depend on the base state of the
+segment. The base state of the segment ub can be any one of the states {uj+1, . . . , ut} (that are ﬁxed along
+the segment) or the free state v(1). If ub = v(i) for some i ∈[T], then the last node in the segment is such
+that for every k ∈[j], uk = v(i + 2j −2k−1).
+The function Sj takes as input the base state ub and the current node N and outputs the next node in
+the segment. If N is not in the segment, or if it is the last node in the segment, the function Sj outputs N
+unchanged. The function Pj behaves analogously. The functions S′ and P′ that traverse the entire path are
+simply the functions St and Pt executed with the free base state v(1).
+Next, we describe the implementation of the function Sj in more detail, but still at high-level; the function
+Pj is analogous to Sj only in reverse. Pseudo-code for the functions Sj and Pj is given in Section A in the
+appendix.
+The function Sj: the function Sj takes as input a base state ub = v(i) and a node N = (u1, . . . , ut). We
+start by describing the behavior of Sj when N is indeed in the segment traversed by Sj. Later we explain
+how nodes that are not in the segment are recognized. The function Sj traverses the segment using the
+functions Sj−1 and Pj−1 following this strategy:
+1. In the ﬁrst node of the segment, the states u1, . . . , uj are all free.
+2. The ﬁrst part of the segment is traversed using the function Sj−1 with the base node ub. When the
+function Sj−1 reaches the end of its segment we have that for every k ∈[j −1]:
+uk = v(i + 2j−1 −2k−1) ;
+in particular, u1 = v(i + 2j−1 −1).
+3. The next node on the path is obtained by setting the free state uj (this state is not changed by Sj−1) to
+the state S(u1) = v(i + 2j−1).
+4. The second part of the segment is traversed using the function Pj−1 with the base node ub. This
+“reverses” the changes to the ﬁrst j −1 states made in the ﬁrst part of the segment. When the function
+Pj−1 reaches the end of its segment we have that u1, . . . , uj−1 are all free (while uj = v(i + 2j−1)
+was not changed).
+5. The third part of the segment is traversed using the function Sj−1 with the base node uj = v(i+2j−1).
+When the function Sj−1 reaches the end of its segment we have that for every k ∈[j −1]:
+uk = v(i + 2j−1 + 2j−1 −2k−1) = v(i + 2j −2k−1) ,
+as required.
+8
+
+Above we described the sequential execution of Sj on the nodes in each of the three parts of the segment.
+We now explain how Sj identiﬁes which segment is currently being traversed (we continue to assume that
+the input node is indeed in the segment). Given an input node N = (u1, . . . , ut):
+1. If the state uj is free the node belongs the the ﬁrst part of the segment.
+2. If the state uj is not free and for every k ∈[j −1], uk < uj then the node belongs the second part of
+the segment.
+3. If the state uj is not free and for every k ∈[j −1], uk > uj then the node belongs the third part of
+the segment.
+Finally, we explain how Sj recognizes that the input node N = (u1, . . . , ut) is not in the segment, in
+which case it will output the node unchanged. A node is not in the segment iff one of the following occurs:
+1. The node contains an invalid state ui = (x, i) such that V(x, i) ̸= 1.
+2. The state uj is not free and it is also not the state v(i + 2j−1) where ub = v(i) is the base state.
+3. There exist k, k′ ∈[j −1] such that uk ≤uj ≤uk′.
+4. The call to Sj−1 or to Pj−1 did not modify the node N even though the node is not the end point of
+the segment traversed by Sj−1 or by Pj−1.
+4
+Cryptographic Deﬁnitions
+We deﬁne the cryptographic primitives that are required for our result. The deﬁnitions follow the convention
+of modeling security against non-uniform adversaries. An efﬁcient adversary A is modeled as a sequence
+of circuits A = {Aλ}λ∈N, such that each circuit Aλ is of polynomial size λO(1) with λO(1) input and
+output bits; we shall also consider adversaries of some super polynomial size t(λ) = λω(1). We often omit
+the subscript λ when it is clear from the context. The resulting hardness will accordingly be against non-
+uniform algorithms. The result can be cast into the uniform setting, with some adjustments to the analysis.
+4.1
+Indistinguishability obfuscation
+We deﬁne indistinguishability obfuscation (iO) with respect to a give class of circuits. The deﬁnition is
+formulated as in [BGI+01].
+Deﬁnition 4.1 (Indistinguishability obfuscation [BGI+01]). A PPT algorithm iO is said to be an indistin-
+guishability obfuscator for a class of circuits C, if it satisﬁes:
+1. Functionality: for any C ∈C,
+Pr
+iO [∀x : iO(C)(x) = C(x)] = 1 .
+2. Indistinguishability: for any polysize distinguisher D there exists a negligible function µ(·), such
+that for any two circuits C0, C1 ∈C that compute the same function and are of the same size λ:
+|Pr[D(iO(C0)) = 1] −Pr[D(iO(C1)) = 1]| ≤µ(λ) ,
+where the probability is over the coins of D and iO.
+We further say that iO is (t, δ)-secure, for some function t(·) and concrete negligible function δ(·), if
+for all t(λ)O(1) distinguishers the above indistinguishability gap µ(λ) is smaller than δ(λ)Ω(1).
+9
+
+4.2
+Puncturable Pseudorandom Functions
+We consider a simple case of the puncturable pseudo-random functions (PRFs) where any PRF may be
+punctured at a single point. The deﬁnition is formulated as in [SW14], and is satisﬁed by the GGM [GGM86]
+PRF [BW13, KPTZ13, BGI14],
+Deﬁnition 4.2 (Puncturable PRFs). Let n, k be polynomially bounded length functions. An efﬁciently com-
+putable family of functions
+PRF =
+n
+PRFS : {0, 1}n(λ) →{0, 1}λ  S ∈{0, 1}k(λ), λ ∈N
+o
+,
+associated with an efﬁcient (probabilistic) key sampler KPRF, is a puncturable PRF if there exists a poly-
+time puncturing algorithm Punc that takes as input a key S, and a point x∗, and outputs a punctured key
+S{x∗}, so that the following conditions are satisﬁed:
+1. Functionality is preserved under puncturing: For every x∗∈{0, 1}n(λ),
+Pr
+S←KPRF(1λ)
+
+∀x ̸= x∗: PRFS(x) = PRFS{x∗}(x)
+ S{x∗} = Punc(S, x∗)
+
+= 1 .
+2. Indistinguishability at punctured points: for any polysize distinguisher D there exists a negligible
+function µ(·), such that for all λ ∈N, and any x∗∈{0, 1}n(λ),
+|Pr[D(x∗, S{x∗}, PRFS(x∗)) = 1] −Pr[D(x∗, S{x∗}, u) = 1]| ≤µ(λ) ,
+where S ←KPRF(1λ), S{x∗} = Punc(S, x∗), and u ←{0, 1}λ.
+We further say that PRF is (t, δ)-secure, for some function t(·) and concrete negligible function δ(·),
+if for all t(λ)O(1) distinguishers the above indistinguishability gap µ(λ) is smaller than δ(λ)Ω(1).
+4.3
+Injective One-Way Functions
+We shall also rely on (possibly keyed) injective one-way functions.
+Deﬁnition 4.3 (Injective OWF). Let ℓ, k be polynomially bounded length functions. An efﬁciently com-
+putable family of functions
+OWF =
+n
+OWFK : {0, 1}λ →{0, 1}ℓ(λ)  K ∈{0, 1}k(λ), λ ∈N
+o
+,
+associated with an efﬁcient (probabilistic) key sampler KOWF, is an injective OWF if every function in the
+family is injective and for any polysize inverter A there exists a negligible function µ(·), such that for all
+λ ∈N,
+Pr
+
+A(K, OWFK(x)) = x
+
+K ←KOWF(1λ)
+x ←{0, 1}λ
+
+≤µ(λ) .
+We further say that OWF is (t, δ)-secure, for some function t(·) and concrete negligible function δ(·), if for
+all t(λ)O(1) inverters the above inversion probability µ(λ) is smaller than δ(λ)Ω(1).
+10
+
+5
+Hardness of Sink-of-Veriﬁable-Line
+In this section, we show that the SVL problem is hard, assuming indistinguishability obfuscation (iO). As a
+corollary, we deduce that the EOL problem is hard.
+Our basic construction will show that SVL is not only hard in the worst-case, but also in the average case.
+Concretely, we construct a PPT sampler I(1λ) for SVL instances of λO(1) size such that no of λO(1)-size
+A can solve an instance sampled by I accept with some negligible probability λ−ω(1). We rely on super-
+polynomial hardness assumptions; for a convenient setting of parameters we describe the basic sampler
+assuming that all underlying cryptographic primitives are sub-exponentially hard. Accordingly we get sub-
+exponential hardness of SVL (albeit with some loss in parameters). In Section 5.5, we discuss relaxations
+to more mild (but still super-polynomial) hardness.
+5.1
+Ingredients
+Fix any constant ε < 1, and let T = T(λ) = 2λε/2. We require the following primitives:
+• iO is a (2λε, 2−λε)-secure indistinguishability obfuscator for P/poly.
+• PRF is a (2λε, 2−λε)-secure family of puncturable pseudo-random functions, which for λ ∈N maps
+[T] to {0, 1}λ.
+• OWF is a (2λε, 2−λε)-secure family of injective one-way functions, which for λ ∈N maps {0, 1}λ
+to {0, 1}ℓ(λ), for some λ ≤ℓ(λ) ≤λO(1).
+5.2
+Obfuscated verify-and-sign
+The core of the hard SVL distribution produced by I will be an obfuscated verify and sign circuit that
+given a valid signature on an index i produces a signature on the next index i + 1, where signatures will be
+implemented by the puncturable PRF. The circuit is formally described in Figure 1.
+VSS
+Hardwired: a PRF key S ←KPRF(1λ).
+Input: index i ∈[T], string σ ∈{0, 1}λ.
+1. If σ ̸= PRFS(T), return ⊥.
+2. If i = T, return SOLVED.
+3. Return i + 1, PRFS(i + 1).
+Padding: The circuit is padded so that its total size is s(λ), for a ﬁxed polynomial s(·) speciﬁed later.
+Formally ⊥and SOLVED are represented by some canonical strings in {0, 1}log T +λ.
+Figure 1: The circuit VSS.
+11
+
+5.3
+The hard SVL distribution
+A random instance Φf
+VS,σ1 ←I(1λ) is associated with a (random) obfuscation f
+VS of a verify-and-sign
+circuit (with respect to a random PRF seed) and a signature σ1 on 1 ∈[T]. This induces a SVL instance
+(S, V, xs, T) where the successor circuit S computes f
+VS, the veriﬁcation circuit V uses f
+VS to test inputs
+along the chain from the source input xs = (1, σ1) to the target input (T, σT ). The SVL distribution is
+formally described in Figure 2.
+Φf
+VS,σ1 ←I(1λ)
+Sampling: Given security parameter 1λ,
+1. Sample S ←KPRF(1λ).
+2. Compute an obfuscation f
+VS ←iO(VSS).
+3. Compute a signature σ1 = PRFS(1).
+The induced instance: for (f
+VS, σ1) sampled as above, let Φf
+VS,σ1 = (S, V, xs, T), where
+1. S : {0, 1}log T+λ →{0, 1}log T+λ,
+S(i, σ) = f
+VS(i, σ).
+2. V : {0, 1}log T+λ × [T] →{0, 1},
+V((i, σ), j) = 1 if and only if i = j and f
+VS(i, σ) ̸= ⊥.
+3. xs = (1, σ1).
+4. T = T(λ).
+Figure 2: Sampling the hard SVL distribution.
+I is an SVL sampler. To show that I indeed samples SVL instances (S, V, xs, T) according to Deﬁ-
+nition 2.2, we only need to check that, for i ∈[T] and x ∈{0, 1}log T+λ, V(x, i) = 1 if and only if
+x = Si−1(xs); the rest of the requirements are purely syntactic and are satisﬁed by the way we have deﬁned
+our sampler. To see that the veriﬁcation requirement is satisﬁed, note that by the deﬁnition of VSS, S, V,
+and xs it holds that Si−1(xs) = VSi−1
+S
+(1, σ1) = (i, PRFS(i)), and V((j, σ), i) = 1 if and only if j = i and
+VS(j, σ) ̸= ⊥, implying that (j, σ) = (i, PRFS(i)).
+5.4
+Hardness
+We now show that I samples hard SVL instances; namely instances (S, V, xs, T) for which circuits of some
+sub-exponential-size cannot ﬁnd the target xT = ST−1(xs). We prove the following proposition.
+Proposition 5.1. For any A of size 2O(λε2) and every λ ∈N,
+Pr
+
+PRFS(T) ←A(f
+VS, σ1)
+
+S ←KPRF(1λ)
+f
+VS ←iO(VSS)
+σ1 ←PRFS(1)
+
+≤2−Ω(λε2) .
+12
+
+Proof. Fix any such A. To prove the proposition we show that except with sub-exponentially-small prob-
+ability A(f
+VS, σ1) cannot output σ∗such that f
+VS(T, σ∗) ̸= ⊥, which is equivalent to showing that σ∗̸=
+PRFS(T). We prove this via a sequence of indistinguishable hybrid experiments where the obfuscated f
+VS
+is gradually augmented to return ⊥on an increasing interval, until it eventually returns ⊥on some interval
+[u, T] (for every possible signature), meaning in particular that A(f
+VS, σ1) cannot ﬁnd an accepting signature
+σ∗for T. The second input σ1 remains PRFS(1) throughout all hybrids.
+Hyb1: The original experiment, where f
+VS is an iO of VSS = VS(1)
+S .
+Hyb2: Here f
+VS is an iO of a circuit VS(2)
+v,S,K′. The circuit has a random one-way function image v =
+OWFK′(u), and on any input (i, σ), it returns ⊥if OWFK′(i) = v. The circuit is formally described in
+Figure 3.
+VS(2)
+v,S,K′
+Hardwired: a PRF key S ←KPRF(1λ), an injective OWF key K′ ←KOWF(1λ′) for λ′ = log T,
+an image v = OWFK′(u), for u ←[T].
+Input: index i ∈[T], string σ ∈{0, 1}λ.
+1. If OWFK′(i) = v, return ⊥.
+2. If σ ̸= PRFS(i), return ⊥.
+3. If i = T, return SOLVED.
+4. Return i + 1, PRFS(i + 1).
+Padding: The circuit is padded so that its total size is s(λ), for a ﬁxed polynomial s(·) speciﬁed later.
+Figure 3: The circuit VS(2)
+v,S,K′.
+Hyb3,j, j ∈[T + 1]: Here f
+VS is an iO of a circuit VS(3,j)
+u,S . The circuit has a random index u, and on any
+input (i, σ), it returns ⊥if i ∈[u, u + j]. The circuit is formally described in Figure 4.
+13
+
+VS(3,j)
+u,S
+Hardwired: a PRF key S ←KPRF(1λ), a random index u ←[T], and j = min {j, T −u}.a
+Input: index i ∈[T], string σ ∈{0, 1}λ.
+1. If i ∈[u, u + j −1], return ⊥.
+2. If σ ̸= PRFS(i), return ⊥.
+3. If i = T, return SOLVED.
+4. Return i + 1, PRFS(i + 1).
+Padding: The circuit is padded so that its total size is s(λ), for a ﬁxed polynomial s(·) speciﬁed later.
+aThis is a convenient abuse of notation, which should be interpreted as “if j > T −u, truncate it”.
+Figure 4: The circuit VS(3,j)
+u,S .
+Hyb4,j, j ∈[T]: Here f
+VS is an iO of a circuit VS(4,j)
+u,S{u+j},σu+j. The circuit is the same as VS(3,j)
+u,S , only that
+is has a punctured PRF key S{u + j}, and the value σu+j = PRFS(u + j) is hardwired. The circuit is
+formally described in Figure 5.
+VS(4,j)
+u,S{u+j},σu+j
+Hardwired: a random index u ←[T], j = min {j, T −u}, a punctured PRF key S{u + j} ←
+Punc(S, u + j), the PRF value σu+j = PRFS(u + j), where S ←KPRF(1λ).
+Input: index i ∈[T], string σ ∈{0, 1}λ.
+1. If i ∈[u, u + j −1], return ⊥.
+2. If i = u + j and σ ̸= σu+j, return ⊥.
+3. If σ ̸= PRFS(i), return ⊥.
+4. If i = T, return SOLVED.
+5. Return i + 1, PRFS(i + 1).
+Padding: The circuit is padded so that its total size is s(λ), for a ﬁxed polynomial s(·) speciﬁed later.
+Figure 5: The circuit VS(4,j)
+u,S{u+j},σu+j.
+Hyb5,j, j ∈[T]: Here f
+VS is an iO of a circuit VS(5,j)
+u,S{u+j},σu+j. The circuit is the same as VS(4,j)
+u,S{u+j},σu+j,
+only that the hardwired σu+j is not set to PRFS(u + j), but sampled uniformly at random from {0, 1}λ,
+Hyb6,j, j ∈[T]: Here f
+VS is an iO of a circuit VS(6,j)
+u,S,v,K. The circuit is the same as VS(5,j)
+u,S{u+j},σu+j, only
+14
+
+that instead of storing σu+j in the clear v = OWFK(σu+j) is stored, and comparison of σ and σu+j is done
+by comparing OWFK(σ) and OWFK(σu+j). Here K is a key for an injective OWF from the family OWF.
+In addition, the PRF seed S is no longer punctured. The circuit is formally described in Figure 6.
+VS(6,j)
+u,S,v,K
+Hardwired: a random index u ←[T], j = min {j, T −u}, a PRF key S ←KPRF(1λ), an image
+v = OWFK(σu+j), where K ←KOWF(1λ), σu+j ←{0, 1}λ.
+Input: index i ∈[T], string σ ∈{0, 1}λ.
+1. If i ∈[u, u + j −1], return ⊥.
+2. If i = u + j and OWFK(σ) ̸= v, return ⊥.
+3. If σ ̸= PRFS(i), return ⊥.
+4. If i = T, return SOLVED.
+5. Return i + 1, PRFS(i + 1).
+Padding: The circuit is padded so that its total size is s(λ), for a ﬁxed polynomial s(·) speciﬁed later.
+Figure 6: The circuit VS(6,j)
+u,S,v,K.
+The padding parameter s(λ). We choose s(λ) so that each of the circuits f
+VS
+···
+··· considered above can be
+implemented by a circuit of size at most s(λ)/3. (The extra 1/3 slack is taken to satisfy Lemma 5.1 in the
+analysis below.)
+We prove the following:
+Claim 5.1. For any 2O(λε2)-size distinguisher D, all λ ∈N, and all j ∈[T]:
+1. |Pr[D(Hyb1) = 1] −Pr[D(Hyb2) = 1]| ≤2−Ω(λε2),
+2.
+Pr[D(Hyb2) = 1] −Pr[D(Hyb3,1) = 1]
+ ≤2−Ω(λε),
+3.
+Pr[D(Hyb3,j) = 1] −Pr[D(Hyb4,j) = 1]
+ ≤2−Ω(λε),
+4.
+Pr[D(Hyb4,j) = 1] −Pr[D(Hyb5,j) = 1]
+ ≤2−Ω(λε),
+5.
+Pr[D(Hyb5,j) = 1] −Pr[D(Hyb6,j) = 1]
+ ≤2−Ω(λε),
+6.
+Pr[D(Hyb6,j) = 1] −Pr[D(Hyb3,j+1) = 1]
+ ≤2−Ω(λε),
+where the view of D in each hybrid consists of the corresponding obfuscated f
+VS and σ1 = PRFS(1).
+15
+
+Proving the above claim will conclude the proof of Proposition 5.1 since it implies that
+Pr
+"
+σ ←A(f
+VS, σ1)
+f
+VS(T, σ) ̸= ⊥
+
+f
+VS ←iO(VSS)
+#
+≤
+Pr
+"
+σ ←A(f
+VS, σ1)
+f
+VS(T, σ) ̸= ⊥
+
+f
+VS ←iO(VS(3,T+1)
+S,u
+)
+#
++ 2−Ω(λε2)
++T · 2−Ω(λε) =
+0 + 2−Ω(λε2)
++2λε/2 · 2−Ω(λε) = 2−Ω(λε2) ,
+where the ﬁrst to last equality follows from the fact that VS(3,T+1)
+S,u
+(T, σ) = ⊥for any σ.
+Proof of Claim 5.1. We now prove each of the items in the claim.
+Proof of 1 and 6. Recall that here we need to show that
+1. |Pr[D(Hyb1) = 1] −Pr[D(Hyb2) = 1]| ≤2−Ω(λε2),
+6.
+Pr[D(Hyb6,j) = 1] −Pr[D(Hyb3,j+1) = 1]
+ ≤2−Ω(λε).
+In both cases, one obfuscated program differs from the other on exactly a single point, which is the unique
+(random) preimage of the corresponding image v (in the ﬁrst case v = OWFK′(u), and in the second
+v = OWFK(σu+j)).
+To prove the claim, we rely on a lemma proven in [BCP14] that roughly shows that, for circuits that
+only differ on a single input, iO implies what is known as differing input obfuscation [BGI+01], where it is
+possible to efﬁciently extract from any iO distinguisher an input on which the underlying circuits differ.
+Lemma 5.1 (special case of [BCP14]). Let iO be a (t, δ)-secure indistinguishability obfuscator for P/poly.
+There exists a PPT oracle-aided extractor E, such that for any tO(1)-size distinguisher D, and two equal
+size circuits C0, C1 differing on exactly one input x∗, the following holds. Let C′
+0, C′
+1 be padded versions of
+C0, C1 of size s ≥3 · |C0|.
+If
+| Pr[D(iO(C′
+0) = 1] −Pr[D(iO(C′
+1) = 1]| = η ≥δ(s)o(1) ,
+then
+Pr
+h
+x∗←ED(·)(11/η, C0, C1)
+i
+≥1 −2−Ω(s) .
+Using the lemma, we show that if either item 1 or 6 do not hold, we can invoke the distinguisher D to
+invert the underlying one-way function. The argument is similar in both cases up to different parameters;
+for concreteness, we focus on the ﬁrst. Assume that for inﬁnitely many λ ∈N, D distinguishes Hyb1
+from Hyb2 with gap η(λ) = 2−o(λε2). Then, by averaging, with probability η(λ)/2 over the choice of
+u, K′, D distinguishes the two distributions conditioned on these choices with gap η(λ)/2. Thus, we can
+invoke the extractor E given by Lemma 5.1 to invert the one-way function family OWF with probability
+η(λ)
+2 ·(1−2−Ω(λ)) ≥2−o(λε2) in time tE(λ)·tD(λ) ≤η(λ)−O(1)·2O(ε2) = 2O(λε2). Note that, indeed, given
+the image and the one-way function key, the inverter can construct the corresponding circuits efﬁciently.
+Recall that OWF′
+K is deﬁned on inputs of size λ′ = log T = λε/2, and is (2−λ′ε, 2λ′ε)-secure. Thus we get
+a contradiction to its one-wayness.
+Proof of 2. Recall that here we need to show that
+2.
+Pr[D(Hyb2) = 1] −Pr[D(Hyb3,1) = 1]
+ ≤2−Ω(λε).
+16
+
+Here the two obfuscated programs compute the exact same function. Speciﬁcally, a comparison in the clear
+of two values i and u is replaced by comparison of their corresponding values under an injective one-way
+function. Thus, the required indistinguishability follows from the iO (2λε, 2−λε)-security.
+Proof of 3. Recall that here we need to show that
+3.
+Pr[D(Hyb3,j) = 1] −Pr[D(Hyb4,j) = 1]
+ ≤2−Ω(λε).
+Here also, the two obfuscated programs compute the exact same function. Speciﬁcally, rather than comput-
+ing σu+j = PRFS(u + j) using the PRF key S, the value σu+j is hardwired and directly compared to σ.
+For any other index, the punctured key S[u + j] is used. Thus, by the functionality guarantee of puncturing
+the two functions are the same, and indistinguishability follows from iO.
+Proof of 4. Recall that here we need to show that
+3.
+Pr[D(Hyb4,j) = 1] −Pr[D(Hyb5,j) = 1]
+ ≤2−Ω(λε).
+The only difference between the two obfuscated circuit distributions is that in the ﬁrst the hardwired value
+σu+j is PRFS(u + j), whereas in the second it is sampled independently uniformly at random. Indistin-
+guishability follows from the (2λε, 2−λε)-pseudo-randomness at the punctured point guarantee. Note that,
+indeed, given punctured key S[u + j] and σu+j, a distinguisher can construct the corresponding circuits
+efﬁciently.
+Proof of 5. Recall that here we need to show that
+5.
+Pr[D(Hyb5,j) = 1] −Pr[D(Hyb6,j) = 1]
+ ≤2−Ω(λε).
+Here also, the two obfuscated programs compute the exact same function. First, the comparison of σ and
+σu+j is replaced by comparison of their corresponding values under an injective one-way function. In addi-
+tion, the punctured key S[u + j] is replaced with a non-punctured key S. This does not affect functionality
+as the two keys compute the same function on all points except u + j, and the circuits in the two hybrids
+treat any input u + j, σ, independently of the PRF key. Thus, indistinguishability follows from iO.
+This concludes the proof of the Claim 5.1 and Proposition 5.1.
+5.5
+Hardness Tradeoffs
+In the hard SVL distribution constructed above, we assumed all cryptographic primitives are sub-exponentially
+hard. We now explain how this can be relaxed, and what are the tradeoffs between the hardness of the dif-
+ferent primitives (and the SVL hardness itself). Let f(·), g(·), h(·) be sub-linear functions and assume that
+OWF is (2f(λ), 2−f(λ))-secure, PRF is (2g(λ), 2−g(λ))-secure, and iO is (2−h(λ), 2−h(λ))-secure. We can
+restate Claim 5.1 as follows.
+Claim 5.2 (Claim 5.1 generalized). For any distinguisher D of size at most 2O(m(λ)) where m(λ) =
+min(f(λ), g(λ), h(λ)), all λ ∈N, and all j ∈[T]:
+1. |Pr[D(Hyb1) = 1] −Pr[D(Hyb2) = 1]| ≤2−Ω(f(log T)) + 2−Ω(h(λ)),
+2.
+Pr[D(Hyb2) = 1] −Pr[D(Hyb3,1) = 1]
+ ≤2−Ω(h(λ)),
+3.
+Pr[D(Hyb3,j) = 1] −Pr[D(Hyb4,j) = 1]
+ ≤2−Ω(h(λ)),
+17
+
+4.
+Pr[D(Hyb4,j) = 1] −Pr[D(Hyb5,j) = 1]
+ ≤2−Ω(g(λ)),
+5.
+Pr[D(Hyb5,j) = 1] −Pr[D(Hyb6,j) = 1]
+ ≤2−Ω(h(λ)),
+6.
+Pr[D(Hyb6,j) = 1] −Pr[D(Hyb3,j+1) = 1]
+ ≤2−Ω(f(λ)) + 2−Ω(h(λ)).
+The overall probability of solving the SVL can be then bounded by
+2−Ω(f(log T)) + T · (2−Ω(f(λ)) + 2−Ω(g(λ)) + 2−Ω(h(λ))) .
+In particular, for m(·) deﬁned as above, we can guarantee (2m(λ), 2−m(λ))-hardness of SVL as long as
+1. m(λ) = log(T) + ω(log m(λ)).
+2. f(log T) = ω(log m(λ)).
+For instance, for any constant ε < 1, we can set
+• T = 2(log λ)2/ε,
+• f(λ) = λε (OWF is still sub-exponential),
+• g(λ) = h(λ) = (log λ)2+2/ε (PRF and iO are qausipolynomial).
+Alternatively, we can set
+• T = 22(log λ)ε
+,
+• f(λ) = g(λ) = h(λ) = 2(log λ)
+1+ε
+2
+(all primitives are only 2λo(1)-secure).
+Can we rely only on polynomial hardness? We do not know how to show SVL hardness based only on
+polynomially secure primitives. In particular, with the approach described above OWF cannot be quasi-
+polynomially (let alone polynomially) secure, since f(f(λ)) = ω(log m(λ)) = ω(log f(λ)). In addition,
+T(λ) cannot be polynomial as long as we aim to deal with distinguishers of arbitrary polysize λO(1), which
+in turn implies that PRF and iO cannot be polynomially secure.
+We could, however, relax iO, PRF to be polynomially secure if we assume OWF is exponentially-
+secure; concretely, that OWF cannot be inverted with probability greater than 2−ελ in time less than 2ελ
+for some constant ε < 1. Moreover, doing so we need to settle for worst-case hardness of SVL, rather
+than average-case as above. Speciﬁcally, rather than considering SVL instances with respect to one ﬁxed
+function T(λ), we can consider SVL instances with respect to every T(λ) ∈
+
+λ, λ2, . . . , λlog λ	
+. In the
+resulting distribution, for any λc-size circuit family, there exists a sequence of instances (or distributions on
+instances) on which it fails; these are the instances with T ≫λc′·c/ε, where c′ is a constant that depends on
+polynomial overhead of the extractor given by Lemma 5.1.
+Acknowledgements
+We thank Andrej Bogdanov, Ran Canetti, Tal Moran, Moni Naor, Guy Rothblum and Paul Valiant for
+insightful conversations. We are especially grateful to Moni for discussing reversible computation and for
+pointing out the manuscript of Abbot, Kane and Valiant.
+18
+
+References
+[AKV04]
+Tim Abbot, Daniel Kane, and Paul Valiant. On algorithms for nash equilibria. Unpublished
+manuscript. http://web.mit.edu/tabbott/Public/final.pdf, 2004.
+[BCC+14] Nir Bitansky, Ran Canetti, Henry Cohn, ShaﬁGoldwasser, Yael Tauman Kalai, Omer Paneth,
+and Alon Rosen. The impossibility of obfuscation with auxiliary input or a universal simula-
+tor. In Advances in Cryptology - CRYPTO 2014 - 34th Annual Cryptology Conference, Santa
+Barbara, CA, USA, August 17-21, 2014, Proceedings, Part II, pages 71–89, 2014.
+[BCP14]
+Elette Boyle, Kai-Min Chung, and Rafael Pass. On extractability obfuscation. In TCC, pages
+52–73, 2014.
+[Ben89]
+Charles H. Bennett.
+Time/space trade-offs for reversible computation.
+SIAM J. Comput.,
+18(4):766–776, 1989.
+[BGI+01]
+Boaz Barak, Oded Goldreich, Russell Impagliazzo, Steven Rudich, Amit Sahai, Salil P. Vadhan,
+and Ke Yang. On the (im)possibility of obfuscating programs. In CRYPTO, pages 1–18, 2001.
+[BGI14]
+Elette Boyle, ShaﬁGoldwasser, and Ioana Ivan. Functional signatures and pseudorandom func-
+tions. In Public Key Cryptography, pages 501–519, 2014.
+[BGK+14] Boaz Barak, Sanjam Garg, Yael Tauman Kalai, Omer Paneth, and Amit Sahai.
+Protecting
+obfuscation against algebraic attacks. In Advances in Cryptology - EUROCRYPT 2014 - 33rd
+Annual International Conference on the Theory and Applications of Cryptographic Techniques,
+Copenhagen, Denmark, May 11-15, 2014. Proceedings, pages 221–238, 2014.
+[BR14]
+Zvika Brakerski and Guy N. Rothblum. Virtual black-box obfuscation for all circuits via generic
+graded encoding. In Theory of Cryptography - 11th Theory of Cryptography Conference, TCC
+2014, San Diego, CA, USA, February 24-26, 2014. Proceedings, pages 1–25, 2014.
+[BW13]
+Dan Boneh and Brent Waters. Constrained pseudorandom functions and their applications. In
+ASIACRYPT (2), pages 280–300, 2013.
+[CDG01]
+Fan Chung, Persi Diaconis, and Ronald Graham. Combinatorics for the east model. Adv. in
+Appl. Math, 27:200–1, 2001.
+[CDT09]
+Xi Chen, Xiaotie Deng, and Shang-Hua Teng. Settling the complexity of computing two-player
+nash equilibria. J. ACM, 56(3), 2009.
+[DGP09]
+Constantinos Daskalakis, Paul W. Goldberg, and Christos H. Papadimitriou. The complexity of
+computing a nash equilibrium. SIAM J. Comput., 39(1):195–259, 2009.
+[GGH+13] Sanjam Garg, Craig Gentry, Shai Halevi, Mariana Raykova, Amit Sahai, and Brent Waters.
+Candidate indistinguishability obfuscation and functional encryption for all circuits. In FOCS,
+2013.
+[GGM86]
+Oded Goldreich, ShaﬁGoldwasser, and Silvio Micali. How to construct random functions. J.
+ACM, 33(4):792–807, 1986.
+19
+
+[GK05]
+ShaﬁGoldwasser and Yael Tauman Kalai. On the impossibility of obfuscation with auxiliary
+input. In FOCS, pages 553–562, 2005.
+[GLSW14] Craig Gentry, Allison B. Lewko, Amit Sahai, and Brent Waters. Indistinguishability obfusca-
+tion from the multilinear subgroup elimination assumption. IACR Cryptology ePrint Archive,
+2014:309, 2014.
+[Gol11]
+Paul W. Goldberg.
+A survey of ppad-completeness for computing nash equilibria.
+CoRR,
+abs/1103.2709, 2011.
+[HPV89]
+Michael D. Hirsch, Christos H. Papadimitriou, and Stephen A. Vavasis. Exponential lower
+bounds for ﬁnding brouwer ﬁx points. J. Complexity, 5(4):379–416, 1989.
+[JE91]
+J. Jckle and S. Eisinger. A hierarchically constrained kinetic ising model. Zeitschrift fr Physik
+B Condensed Matter, 84(1):115–124, 1991.
+[KPTZ13]
+Aggelos Kiayias, Stavros Papadopoulos, Nikos Triandopoulos, and Thomas Zacharias. Dele-
+gatable pseudorandom functions and applications. In ACM Conference on Computer and Com-
+munications Security, pages 669–684, 2013.
+[LR88]
+Michael Luby and Charles Rackoff. How to construct pseudorandom permutations from pseu-
+dorandom functions. SIAM J. Comput., 17(2):373–386, 1988.
+[MP91]
+Nimrod Megiddo and Christos H. Papadimitriou. On total functions, existence theorems and
+computational complexity. Theor. Comput. Sci., 81(2):317–324, 1991.
+[Nas51]
+John Nash. Non-cooperative Games. The Annals of Mathematics, 54(2):286–295, 1951.
+[OPR14]
+Abraham Othman, Christos H. Papadimitriou, and Aviad Rubinstein. The complexity of fair-
+ness through equilibrium. In ACM Conference on Economics and Computation, EC ’14, Stan-
+ford , CA, USA, June 8-12, 2014, pages 209–226, 2014.
+[Pap94]
+Christos H. Papadimitriou.
+On the complexity of the parity argument and other inefﬁcient
+proofs of existence. J. Comput. Syst. Sci., 48(3):498–532, 1994.
+[PST14]
+Rafael Pass, Karn Seth, and Sidharth Telang.
+Indistinguishability obfuscation from
+semantically-secure multilinear encodings. In Advances in Cryptology - CRYPTO 2014 - 34th
+Annual Cryptology Conference, Santa Barbara, CA, USA, August 17-21, 2014, Proceedings,
+Part I, pages 500–517, 2014.
+[Rub14]
+Aviad Rubinstein. Inapproximability of nash equilibrium. CoRR, abs/1405.3322, 2014.
+[SW14]
+Amit Sahai and Brent Waters. How to use indistinguishability obfuscation: Deniable encryp-
+tion, and more. In STOC, 2014.
+[Zim14]
+Joe Zimmerman.
+How to obfuscate programs directly.
+IACR Cryptology ePrint Archive,
+2014:776, 2014.
+20
+
+A
+Pseudo-code Descriptions of Sj and Pj
+Algorithm A.1 The function S1:
+Input: Base state ub = (x, i) and the current node N = (u1, . . . , ut)
+1: if N contain an invalid state then
+2:
+return N unchanged {Not on path (Condition 1)}
+3: end if
+4: if uj is free then
+5:
+Set u1 ←S(ub)
+6:
+return (u1, . . . , ut)
+7: else
+8:
+return N unchanged {End of path or not on path (Condition 2)}
+9: end if
+Algorithm A.2 The function Sj for j > 1:
+Input: Base state ub = (x, i) and the current node N = (u1, . . . , ut)
+1: if N contain an invalid state then
+2:
+return N unchanged {Not on path (Condition 1)}
+3: end if
+4: if uj is free then
+5:
+N′ ←Sj−1(ub, N) {First part}
+6:
+if N′ ̸= N then
+7:
+return N′
+8:
+else if for all k ∈[j −1], uk = v(i + 2j−1 −2k−1) then
+9:
+Set uj ←S(u1) {First part ended, ﬁrst step of second part}
+10:
+return (u1, . . . , ut)
+11:
+end if
+12:
+return N unchanged {Not on path (Condition 4)}
+13: else if uj = v(i + 2j−1) then
+14:
+if for every k ∈[j −1], uk is either free or uk < uj then
+15:
+N′ ←Pj−1(ub, N) {Second part}
+16:
+if N′ ̸= N then
+17:
+return N′
+18:
+else if for all k ∈[j −1], uk is free then
+19:
+return Sj−1(uj, N) {Second part ended, ﬁrst step of third part}
+20:
+end if
+21:
+return N unchanged {Not on path (Condition 4)}
+22:
+else if for every k ∈[j −1], uk is either free or uk > uj then
+23:
+return Sj−1(uj, N) {Third part}
+24:
+end if
+25: end if
+26: return N unchanged {Not on path (Conditions 2 and 3)}
+21
+
+Algorithm A.3 The function P1:
+Input: Base state ub = (x, i) and the current node N = (u1, . . . , ut)
+1: if N contain an invalid state then
+2:
+return N unchanged {Not on path (Condition 1)}
+3: end if
+4: if uj = v(i + 1) then
+5:
+Set u1 ←v(1)
+6:
+return (u1, . . . , ut)
+7: else
+8:
+return N unchanged {End of path or not on path (Condition 2)}
+9: end if
+Algorithm A.4 The function Pj for j > 1:
+Input: Base state ub = (x, i) and the current node N = (u1, . . . , ut)
+1: if N contain an invalid state then
+2:
+return N unchanged {Not on path (Condition 1)}
+3: end if
+4: if uj is free then
+5:
+return Pj−1(ub, N) {Third part}
+6: else if uj = v(i + 2j−1) then
+7:
+if for every k ∈[j −1], uk is either free or uk < uj then
+8:
+N′ ←Sj−1(ub, N) {Second part}
+9:
+if N′ ̸= N then
+10:
+return N′
+11:
+else if for all k ∈[j −1], uk = v(i + 2j−1 −2k−1) then
+12:
+Set uj ←v(1) {Second part ended, ﬁrst step of third part}
+13:
+return (u1, . . . , ut)
+14:
+end if
+15:
+return N unchanged {Not on path (Condition 4)}
+16:
+else if for every k ∈[j −1], uk is either free or uk > uj then
+17:
+N′ ←Pj−1(uj, N) {First part}
+18:
+if N′ ̸= N then
+19:
+return N′
+20:
+else if for all k ∈[j −1], uk is free then
+21:
+return Sj−1(ub, N) {First part ended, ﬁrst step of third part}
+22:
+end if
+23:
+end if
+24: end if
+25: return N unchanged {Not on path (Conditions 2, 3, and 4)}
+22
+ 
+ECCC 
+    
+            ISSN 1433-8092 
+http://eccc.hpi-web.de 

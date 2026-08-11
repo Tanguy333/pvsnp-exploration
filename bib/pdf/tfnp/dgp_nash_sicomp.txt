@@ -1,0 +1,10063 @@
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+SIAM J. COMPUT.
+c
+⃝2009 Society for Industrial and Applied Mathematics
+Vol. 39, No. 1, pp. 195–259
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM∗
+CONSTANTINOS DASKALAKIS†, PAUL W. GOLDBERG‡, AND
+CHRISTOS H. PAPADIMITRIOU†
+Abstract.
+In 1951, John F. Nash proved that every game has a Nash equilibrium [Ann. of
+Math. (2), 54 (1951), pp. 286–295]. His proof is nonconstructive, relying on Brouwer’s ﬁxed point
+theorem, thus leaving open the questions, Is there a polynomial-time algorithm for computing Nash
+equilibria? And is this reliance on Brouwer inherent? Many algorithms have since been proposed
+for ﬁnding Nash equilibria, but none known to run in polynomial time. In 1991 the complexity class
+PPAD (polynomial parity arguments on directed graphs), for which Brouwer’s problem is complete,
+was introduced [C. Papadimitriou, J. Comput. System Sci., 48 (1994), pp. 489–532], motivated
+largely by the classiﬁcation problem for Nash equilibria; but whether the Nash problem is complete
+for this class remained open.
+In this paper we resolve these questions: We show that ﬁnding a
+Nash equilibrium in three-player games is indeed PPAD-complete; and we do so by a reduction from
+Brouwer’s problem, thus establishing that the two problems are computationally equivalent. Our
+reduction simulates a (stylized) Brouwer function by a graphical game [M. Kearns, M. Littman,
+and S. Singh, Graphical model for game theory, in 17th Conference in Uncertainty in Artiﬁcial
+Intelligence (UAI), 2001], relying on “gadgets,” graphical games performing various arithmetic and
+logical operations. We then show how to simulate this graphical game by a three-player game, where
+each of the three players is essentially a color class in a coloring of the underlying graph. Subsequent
+work [X. Chen and X. Deng, Setting the complexity of 2-player Nash-equilibrium, in 47th Annual
+IEEE Symposium on Foundations of Computer Science (FOCS), 2006] established, by improving our
+construction, that even two-player games are PPAD-complete; here we show that this result follows
+easily from our proof.
+Key words. complexity, Nash equilibrium, PPAD-completeness, game theory
+AMS subject classiﬁcations. 91A05, 91A06, 91A10, 91B50, 68Q17, 68W30
+DOI. 10.1137/070699652
+1. Introduction. Game theory is one of the most important and most vibrant
+mathematical ﬁelds established during the 20th century.
+In 1928, John von Neu-
+mann, extending work by Borel, showed that any two-person zero-sum game has an
+equilibrium—in fact, a min-max pair of randomized strategies [44]. Two decades later
+it was understood that this is tantamount to linear programming duality [14] and thus
+(as was established another three decades hence [34]) computationally tractable. How-
+ever, it became clear with the publication of the seminal book [45] by von Neumann
+and Morgenstern that this two-player, zero-sum case is too specialized; for the more
+general and important nonzero-sum and multiplayer games no existence theorem was
+known.
+In 1951, Nash showed that every game has an equilibrium in mixed strategies,
+hence called Nash equilibrium [43]. His argument for proving this powerful and mo-
+mentous result relies on another famous and consequential result of the early 20th
+∗Received by the editors December 13, 2006; accepted for publication (in revised form) June 4,
+2008; published electronically May 28, 2009.
+http://www.siam.org/journals/sicomp/39-1/69965.html
+†Computer Science Division, University of California at Berkeley, Berkeley, CA 94720 (costis@cs.
+berkeley.edu, christos@cs.berkeley.edu). The research of these authors was supported by NSF ITR
+grants CCR-0121555 and CCF-0515259 and a grant from Microsoft Research.
+‡Department of Computer Science, University of Liverpool, Liverpool L69 38X, United King-
+dom (P.W.Goldberg@liverpool.ac.uk). This author’s research was supported by the EPSRC grant
+GR/T07343/01 “Algorithmics of Network-Sharing Games.” This work was begun while the author
+was visiting UC Berkeley.
+195
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+196
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+century, Brouwer’s ﬁxed point theorem [35]. The original proof of that result is noto-
+riously nonconstructive (Brouwer’s preoccupation with constructive mathematics and
+intuitionism notwithstanding); its modern combinatorial proof (based on Sperner’s
+lemma; see, e.g., [48]) does suggest an algorithm for the problem of ﬁnding an ap-
+proximate Brouwer ﬁxed point (and therefore for ﬁnding a Nash equilibrium)—albeit
+one of exponential complexity. In fact, it can be shown that any “natural” algorithm
+for Brouwer’s problem (roughly, treating the Brouwer function as a black box, a prop-
+erty shared by all known algorithms for the problem) must be exponential [31]. Over
+the past half century there has been a great variety of other algorithmic approaches
+to the problem of ﬁnding a Nash equilibrium (see section 2.2); unfortunately, none of
+these algorithms is known to run in polynomial time. Whether a Nash equilibrium
+in a given game can be found in polynomial time had remained an important open
+question.
+Such an eﬃcient algorithm would have many practical applications; however, the
+true importance of this question is conceptual. The Nash equilibrium is a proposed
+model and a prediction of social behavior, and Nash’s theorem greatly enhances its
+plausibility. This credibility, however, is seriously undermined by the absence of an
+eﬃcient algorithm. It is doubtful that groups of rational players are more powerful
+than computers—and it would be remarkable, and potentially very useful, if they
+were. To put it bluntly, “if your laptop can’t ﬁnd it, then, probably, neither can the
+market.” Hence, whether an eﬃcient algorithm for ﬁnding Nash equilibria exists is
+an important question in game theory, the ﬁeld for which the Nash equilibrium is
+perhaps the most central concept.
+Besides game theory, the 20th century saw the development of another great
+mathematical ﬁeld, which also captured the century’s zeitgeist and has had tremen-
+dous growth and impact: computational complexity. However, the mainstream con-
+cepts and techniques developed by complexity theorists for classifying computational
+problems according to their diﬃculty—chief among them NP-completeness—are not
+directly applicable for fathoming the complexity of the problem of ﬁnding Nash equi-
+libria, exactly because of Nash’s theorem: Since a Nash equilibrium is always guar-
+anteed to exist, NP-completeness does not seem useful in exploring the complexity of
+ﬁnding one. NP-complete problems seem to draw much of their diﬃculty from the
+possibility that a solution may not exist. What would a reduction from satisfiabil-
+ity to Nash (the problem of ﬁnding a Nash equilibrium) look like? Any attempt to
+deﬁne such a reduction quickly leads to NP = coNP.
+Motivated mainly by this open question regarding Nash equilibria, Megiddo and
+Papadimitriou [42] deﬁned in the 1980s the complexity class TFNP (for “NP total
+functions”), consisting exactly of all search problems in NP for which every instance
+is guaranteed to have a solution. Nash of course belongs there, and so do many other
+important and natural problems, ﬁnitary versions of Brouwer’s problem are included.
+But here there is a diﬃculty of a diﬀerent sort: TFNP is a “semantic class” [47],
+meaning that there is no easy way of recognizing nondeterministic Turing machines
+which deﬁne problems in TFNP—in fact the problem is undecidable; such classes are
+known to be devoid of complete problems.
+To capture the complexity of Nash, and other important problems in TFNP,
+another step is needed: One has to group together into subclasses of TFNP total
+functions whose proofs of totality are similar. Most of these proofs work by essentially
+constructing an exponentially large graph on the solution space (with edges that are
+computed by some algorithm), and then applying a simple graph-theoretic lemma
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+197
+establishing the existence of a particular kind of node. The node whose existence is
+guaranteed by the lemma is the sought solution of the given instance. Interestingly,
+essentially all known problems in TFNP can be shown in total by one of the following
+arguments.
+• In any dag there must be a sink. The corresponding complexity class, PLS for
+“polynomial local search,” had already been deﬁned in [32] and contains many
+important complete problems, including certain game-theoretic problems [26].
+• In any directed graph with outdegree 1, and with one node with indegree 0,
+there must be a node with indegree at least 2. The corresponding class is PPP
+(for “polynomial pigeonhole principle”).
+• In any undirected graph with one odd-degree node, there must be another
+odd-degree node.
+This deﬁnes a class called PPA, for “polynomial parity
+argument” [48], containing many important combinatorial problems (unfor-
+tunately none of them are known to be complete).
+• In any directed graph with one unbalanced node (node with outdegree diﬀerent
+from its indegree), there must be another unbalanced node. The corresponding
+class is called PPAD for “polynomial parity argument for directed graphs,”
+and it contains Nash, Brouwer, and Borsuk–Ulam (ﬁnding approximate
+ﬁxed points of the kind guaranteed by Brouwer’s theorem and the Borsuk–
+Ulam theorem, respectively; see [48]). The latter two were among the prob-
+lems proven PPAD-complete in [48]. Unfortunately, Nash—the one problem
+which had motivated this line of research—was not shown PPAD-complete;
+it was conjectured that it is.
+In this paper we show that Nash is PPAD-complete, thus answering the open
+questions discussed above. We show that this holds even for games with three players.
+In another result (which is a crucial component of our proof) we show that the same is
+true for graphical games. Thus, a polynomial-time algorithm for these problems would
+imply a polynomial algorithm for, e.g., computing Brouwer ﬁxed points, despite the
+exponential lower bounds for large classes of algorithms [31], and the relativizations
+in [2]—oracles for which PPAD has no polynomial-time algorithm.
+Our proof gives an aﬃrmative answer to another important question arising
+from Nash’s theorem, namely, whether the reliance of its proof on Brouwer’s ﬁxed
+point theorem is inherent. Our proof is essentially a reduction in the opposite direc-
+tion to Nash’s: An appropriately discretized and stylized PPAD-complete version of
+Brouwer’s ﬁxed point problem in three dimensions is reduced to Nash.
+The structure of the reduction is the following: We represent a point in the three-
+dimensional unit cube by three players, each of which has two strategies. Thus, every
+combination of mixed strategies for these players corresponds naturally to a point in
+the cube. Now, suppose that we are given a function from the cube to itself represented
+as a circuit. We construct a graphical game in which the best responses of the three
+players representing a point in the cube implement the given function, so that the
+Nash equilibria of the game must correspond to Brouwer ﬁxed points. This is done
+by decoding the coordinates of the point in order to ﬁnd their binary representation
+(inputs to the circuit), and then simulating the circuit that represents the Brouwer
+function by a graphical game—an important alternative form of games deﬁned in
+[33]; see section 2.1. This part of the construction relies on certain “gadgets,” small
+graphical games acting as arithmetical gates and comparators. The graphical game
+thus “computes” (in the sense of a mixed strategy over two strategies representing a
+real number) the value of the circuit at the point represented by the mixed strategies
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+198
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+of the original three players, and then induces the three players to add appropriate
+increments to their mixed strategy.
+This establishes a one-to-one correspondence
+between Brouwer ﬁxed points of the given function and Nash equilibria of the graphical
+game and shows that Nash for graphical games is PPAD-complete.
+One diﬃculty in this part of the reduction is related to brittle comparators. Our
+comparator gadget sets its output to 0 if the input players play mixed strategies x, y
+that satisfy x < y, to 1 if x > y, and to anything if x = y; moreover, it is not hard to
+see that no “robust” comparator gadget is possible, one that outputs a speciﬁc ﬁxed
+value if the input is x = y. This in turn implies that no robust decoder from real
+to binary can be constructed; decoding will always be ﬂaky for a nonempty subset
+of the unit cube and, at that set, arbitrary values can be output by the decoder.
+On the other hand, real to binary decoding would be very handy since the circuit
+representing the given Brouwer function should be simulated in binary arithmetic.
+We take care of this diﬃculty by computing the Brouwer function on a “microlattice”
+around the point of interest and averaging the results, thus smoothing out any eﬀects
+from boundaries of measure zero.
+To continue to our main result for three-player normal form games, we establish
+certain reductions between equilibrium problems. In particular, we show by reductions
+that the following three problems are equivalent:
+• Nash for r-player (normal form) games, for any r > 3.
+• Nash for three-player games.
+• Nash for graphical games with two strategies per player and maximum degree
+3 (that is, of the exact type used in the simulation of Brouwer functions).
+Thus, all these problems and their generalizations are PPAD-complete (since the
+third one was already shown to be PPAD-complete).
+Our results leave open the question of Nash for two-player games. This case
+had been thought to be a little easier, since linear-programming-like techniques come
+into play and solutions consisting of rational numbers are guaranteed to exist [38]; on
+the contrary, as exhibited in Nash’s original paper, there are three-player games with
+only irrational equilibria. In the precursors of the current paper [30, 16, 19], it was
+conjectured that there is a polynomial algorithm for two-player Nash. Surprisingly,
+a few months after our proof was circulated, Chen and Deng [8] came up with a proof
+establishing that this problem is PPAD-complete as well. In the last section of the
+present paper we show how this result can be obtained by a simple modiﬁcation of
+our proof.
+The structure of the paper is as follows. In section 2, we provide some background
+on game theory and survey previous work regarding the computation of equilibria. In
+section 3, we review the complexity theory of total functions, we deﬁne the class PPAD
+which is central in our paper, and we describe a canonical version of the Brouwer ﬁxed
+point computation problem which is PPAD-complete and will be the starting point for
+our main result. In section 4, we present the game-gadget machinery needed for our
+proof of the main result and establish the computational equivalence of diﬀerent Nash
+equilibrium computation problems; in particular, we describe a polynomial reduction
+from the problem of computing a Nash equilibrium in a normal form game of any
+constant number of players or a graphical game of any constant degree to that of
+computing a Nash equilibrium of a three-player normal form game. Finally, in section
+5 we present our main result which states that computing a Nash equilibrium of a
+three-player normal form game is PPAD-hard. Section 6 contains some discussion of
+the result and future research directions.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+199
+2. Background.
+2.1. Basic deﬁnitions from game theory. A game in normal form has r ≥2
+players, 1, . . . , r, and for each player p ≤r a ﬁnite set Sp of pure strategies. The set
+S of pure strategy proﬁles is the Cartesian product of the Sp’s. We denote the set of
+pure strategy proﬁles of all players other than p by S−p. Also, for a subset T of the
+players we denote by ST the set of pure strategy proﬁles of the players in T . Finally,
+for each p and s ∈S we have a payoﬀor utility up
+s ≥0—also occasionally denoted up
+js
+for j ∈Sp and s ∈S−p. We refer to the set {up
+s}s∈S as the payoﬀtable of player p.
+Also, for notational convenience and unless otherwise speciﬁed, we will denote by [t]
+the set {1, . . ., t} for all t ∈N.
+A mixed strategy for player p is a distribution on Sp, that is, real numbers xp
+j ≥0
+for each strategy j ∈Sp such that 
+j∈Sp xp
+j = 1.
+A set of r mixed strategies
+{xp
+j}j∈Sp, p ∈[r], is called a (mixed) Nash equilibrium if, for each p, 
+s∈S up
+sxs is max-
+imized over all mixed strategies of p—where for a strategy proﬁle s = (s1, . . . , sr) ∈S,
+we denote by xs the product x1
+s1 · x2
+s2 · · · xr
+sr. That is, a Nash equilibrium is a set of
+mixed strategies from which no player has a unilateral incentive to deviate. It is well
+known (see, e.g., [46]) that the following is an equivalent condition for a set of mixed
+strategies to be a Nash equilibrium:
+∀p ∈[r], j, j′ ∈Sp :
+
+s∈S−p
+up
+jsxs >
+
+s∈S−p
+up
+j′sxs =⇒xp
+j′ = 0.
+(1)
+The summation 
+s∈S−p up
+jsxs in the above equation is the expected utility of player
+p if p plays pure strategy j ∈Sp and the other players use the mixed strategies
+{xq
+j}j∈Sq, q ̸= p. Nash’s theorem [43] asserts that every normal form game has a
+Nash equilibrium.
+We next turn to approximate notions of equilibrium. We say that a set of mixed
+strategies x is an ϵ-approximately well-supported Nash equilibrium, or ϵ-Nash equilib-
+rium for short, if the following holds:
+∀p ∈[r], j, j′ ∈Sp :
+
+s∈S−p
+up
+jsxs >
+
+s∈S−p
+up
+j′sxs + ϵ =⇒xp
+j′ = 0.
+(2)
+Condition (2) relaxes (1) in that it allows a strategy to have positive probability in
+the presence of another strategy whose expected payoﬀis better by at most ϵ.
+This is the notion of approximate Nash equilibrium that we use in this paper.
+There is an alternative, and arguably more natural, notion, called ϵ-approximate Nash
+equilibrium [40], in which the expected utility of each player is required to be within ϵ
+of the optimum response to the other players’ strategies. This notion is less restrictive
+than that of an approximately well-supported one. More precisely, for any ϵ, an ϵ-Nash
+equilibrium is also an ϵ-approximate Nash equilibrium, whereas the opposite need not
+be true. Nevertheless, the following lemma, proved in section 4.7, establishes that the
+two concepts are computationally related (a weaker version of this fact was pointed
+out in [9]).
+Lemma 2.1. Given an ϵ-approximate Nash equilibrium {xp
+j}j,p of a game G we
+can compute in polynomial time a √ϵ · (√ϵ + 1 + 4(r −1)umax)-approximately well-
+supported Nash equilibrium {ˆxp
+j}j,p, where r is the number of players and umax is the
+maximum entry in the payoﬀtables of G.
+In what follows we shall focus on the notion of approximately well-supported
+Nash equilibrium, but all our results will also hold for the notion of approximate
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+200
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+Nash equilibrium. Notice that Nash’s theorem ensures the existence of an ϵ-Nash
+equilibrium—and hence of an ϵ-approximate Nash equilibrium—for every ϵ ≥0; in
+particular, for every ϵ there exists an ϵ-Nash equilibrium whose probabilities are inte-
+ger multiples of ϵ/(2r × umaxsum), where umaxsum is the maximum, over all players p,
+of the sum of all entries in the payoﬀtable of p. This can be established by rounding a
+Nash equilibrium {xp
+j}j,p to a nearby (in total variation distance) set of mixed strate-
+gies {ˆxp
+j}j,p, all the entries of which are integer multiples of ϵ/(2r × umaxsum). Note,
+however, that an ϵ-Nash equilibrium may not be close to an exact Nash equilibrium;
+see [25] for much more on this important distinction.
+A game in normal form requires r|S| numbers for its description, an amount of
+information that is exponential in the number of players. A graphical game [33, 41] is
+deﬁned in terms of an undirected graph G = (V, E) together with a set of strategies
+Sv for each v ∈V . We denote by N(v) the set consisting of v and v’s neighbors
+in G, and by SN(v) the set of all |N(v)|-tuples of strategies, one from each vertex
+in N(v). In a graphical game, the utility of a vertex v ∈V depends only on the
+strategies of the vertices in N(v) so it can be represented by just |SN(v)| numbers.
+In other words, a graphical game is a succinct representation of a multiplayer game,
+advantageous when it so happens that the utility of each player depends only on a few
+other players. A generalization of graphical games are the directed graphical games,
+where G is directed and N(v) consists of v and the predecessors of v. The two notions
+are almost identical; of course, the directed graphical games are more general than
+the undirected ones, but any directed graphical game can be represented, albeit less
+concisely, as an undirected game whose graph is the same except with no direction on
+the edges. In the remainder of the paper, we will not be very careful in distinguishing
+the two notions; our results will apply to both. The following is a useful deﬁnition.
+Definition 2.2.
+Suppose that GG is a graphical game with underlying graph
+G = (V, E).
+The aﬀects graph G′ = (V, E′) of GG is a directed graph with edge
+(v1, v2) ∈E′ if the payoﬀto v2 depends on the action of v1, that is, the payoﬀto v2
+is a nonconstant function of the action of v1.
+In the above deﬁnition, an edge (v1, v2) in G′ represents the relationship “v1
+aﬀects v2.” Notice that if (v1, v2) ∈E′, then {v1, v2} ∈E, but the opposite need not
+be true—it could very well be that some vertex v2 is aﬀected by another vertex v1,
+but vertex v1 is not aﬀected by v2.
+Since graphical games are representations of multiplayer games, it follows by
+Nash’s theorem that every graphical game has a mixed Nash equilibrium. It can be
+checked that a set of mixed strategies {xv
+j }j∈Sv, v ∈V , is a mixed Nash equilibrium
+if and only if
+∀v ∈V, j, j′ ∈Sv :
+
+s∈SN (v)\{v}
+uv
+jsxs >
+
+s∈SN (v)\{v}
+uv
+j′sxs =⇒xv
+j′ = 0.
+Similarly the condition for an approximately well-supported Nash equilibrium can be
+derived.
+2.2. Related work on computing equilibria. Many papers in the economic,
+optimization, and computer science literature over the past 50 years studied the com-
+putation of Nash equilibria. A celebrated algorithm for computing equilibria in two-
+player games, which appears to be eﬃcient in practice, is the Lemke–Howson algo-
+rithm [38]. The algorithm can be generalized to multiplayer games, see, e.g., the work
+of Rosenm¨uller [51] and Wilson [57], albeit with some loss of eﬃciency. It was re-
+cently shown to be exponential in the worst case [53]. Other algorithms are based on
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+201
+computing approximate ﬁxed points, most notably algorithms that walk on simplicial
+subdivisions of the space where the equilibria lie [54, 27, 36, 37, 23]. None of these
+algorithms is known to be polynomial time.
+Lipton and Markakis [39] study the algebraic properties of Nash equilibria and
+point out that standard quantiﬁer elimination algorithms can be used to solve them,
+but these are not polynomial time in general. Papadimitriou and Roughgarden [50]
+show that, in the case of symmetric games, quantiﬁer elimination results in polynomial
+algorithms for a broad range of parameters. Lipton, Markakis, and Mehta [40] show
+that if we require only an ϵ-approximate Nash equilibrium, then a subexponential
+algorithm is possible. If the Nash equilibria sought are required to have any special
+properties, for example optimize total utility, the problem typically becomes NP-
+complete [29, 13]. In addition to our work, as communicated in [30, 16, 19], other
+researchers (see, e.g., [5, 1, 11, 55]) have explored reductions between alternative types
+of games.
+In particular, the reductions by Bubelis [5] in the 1970s comprise a remarkable
+early precursor of our work; it is astonishing that these important results had not been
+pursued for three decades. Bubelis established that the Nash equilibrium problem for
+three players captures the computational complexity of the same problem with any
+number of players. In section 4 we show the same result in an indirect way, via the
+Nash equilibrium problem for graphical games—a connection that is crucial for our
+PPAD-completeness reduction. Bubelis also demonstrated in [5] that any algebraic
+number can be the basis of a Nash equilibrium, something that follows easily from
+our results (Theorem 6.7).
+Etessami and Yannakakis studied in [25] the problem of computing a Nash equilib-
+rium exactly (a problem that is well motivated in the context of stochastic games) and
+came up with an interesting characterization of its complexity (considerably higher
+than PPAD), along with that of several other problems. In section 6.5, we mention
+certain interesting results at the interface of [25]’s approach with ours.
+3. The class PPAD.
+3.1. Total search problems. A search problem S is a set of inputs IS ⊆Σ∗
+on some alphabet Σ such that for each x ∈IS there is an associated set of solutions
+Sx ⊆Σ|x|k for some integer k, such that for each x ∈IS and y ∈Σ|x|k whether
+y ∈Sx is decidable in polynomial time. Notice that this is precisely NP with an
+added emphasis on ﬁnding a witness.
+For example, let us deﬁne r-Nash to be the search problem S in which each
+x ∈IS is an r-player game in normal form together with a binary integer A (the
+accuracy speciﬁcation), and Sx is the set of
+1
+A-Nash equilibria of the game (where
+the probabilities are rational numbers of bounded size as discussed). Similarly, d-
+graphical Nash is the search problem with inputs the set of all graphical games
+with degree at most d, plus an accuracy speciﬁcation A, and solutions the set of all
+1
+A-Nash equilibria. (For r > 2 it is important to specify the problem in terms of a
+search for approximate Nash equilibrium—exact solutions may need to be high-degree
+algebraic numbers, raising the question of how to represent them as bit strings.)
+A search problem is total if Sx ̸= ∅for all x ∈IS. For example, Nash’s 1951 the-
+orem [43] implies that r-Nash is total. Obviously, the same is true for d-graphical
+Nash.
+The set of all total search problems is denoted TFNP. A polynomial-time
+reduction from total search problem S to total search problem T is a pair f, g of
+polynomial-time computable functions such that, for every input x of S, f(x) is an
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+202
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+input of T , and furthermore for every y ∈Tf(x), g(y) ∈Sx.
+TFNP is what in complexity is sometimes called a “semantic” class [47]; i.e.,
+it has no generic complete problem. Therefore, the complexity of total functions is
+typically explored via “syntactic” subclasses of TFNP, such as PLS [32], PPP, PPA,
+and PPAD [48]. In this paper we focus on PPAD.
+PPAD can be deﬁned in many ways. As mentioned in the introduction, it is,
+informally, the set of all total functions whose totality is established by invoking
+the following simple lemma on a graph whose vertex set is the solution space of the
+instance:
+In any directed graph with one unbalanced node (node with outdegree
+diﬀerent from its indegree), there is another unbalanced node.
+This general principle can be specialized, without loss of generality or computa-
+tional power, to the case in which every node has both indegree and outdegree at
+most 1. In this case the lemma becomes the following:
+In any directed graph in which all vertices have indegree and outdegree
+at most 1, if there is a source (a node with indegree 0), then there
+must be a sink (a node with outdegree 0).
+Formally, we shall deﬁne PPAD as the class of all total search problems polynomial-
+time reducible to the following problem:
+end of the line: Given two circuits S and P, each with n input
+bits and n output bits, such that P(0n) = 0n ̸= S(0n), ﬁnd an input
+x ∈{0, 1}n such that P(S(x)) ̸= x or S(P(x)) ̸= x ̸= 0n.
+Intuitively, end of the line creates a directed graph GS,P with vertex set {0, 1}n
+and an edge from x to y whenever both y = S(x) and x = P(y); S and P stand for
+“successor candidate” and “predecessor candidate.” All vertices in GS,P have indegree
+and outdegree at most 1, and there is at least one source, namely 0n, so there must be
+a sink. We seek either a sink, or a source other than 0n. Notice that in this problem
+a sink or a source other than 0n is sought; if we insist on a sink, another complexity
+class called PPADS, apparently larger than PPAD, results.
+The other important classes PLS, PPP, and PPA, and others, are deﬁned in a
+similar fashion based on other elementary properties of ﬁnite graphs. These classes
+are of no relevance to our analysis so their deﬁnition will be skipped; the interested
+reader is referred to [48].
+A search problem S in PPAD is called PPAD-complete if all problems in PPAD
+reduce to it. Obviously, end of the line is PPAD-complete; furthermore, it was
+shown in [48] that several problems related to topological ﬁxed points and their combi-
+natorial underpinnings are PPAD-complete: Brouwer, Sperner, Borsuk–Ulam,
+Tucker. Our main result in this paper (Theorem 5.1) states that so are the problems
+3-Nash and 3-graphical Nash.
+3.2. Computing a Nash equilibrium is in PPAD. We establish that com-
+puting an approximate Nash equilibrium in an r-player game is in PPAD. The r = 2
+case was shown in [48].
+Theorem 3.1. r-Nash is in PPAD for r ≥2.
+Proof. We reduce r-Nash to end of the line. Note that Nash’s original proof
+[43] utilizes Brouwer’s ﬁxed point theorem—it is essentially a reduction from the
+problem of ﬁnding a Nash equilibrium to that of ﬁnding a Brouwer ﬁxed point of
+a continuous function; the latter problem can be reduced, under certain continuity
+conditions, to end of the line, and is therefore in PPAD. The (rather elaborate)
+proof below makes this simple intuition precise.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+203
+Let G be a normal form game with r players, 1, . . . , r, and strategy sets Sp = [n]
+for all p ∈[r], and let {up
+s : p ∈[r], s ∈S} be the utilities of the players. Also let
+ϵ < 1. In time polynomial in |G| + log(1/ϵ), we will specify two circuits S and P
+each with N = poly(|G|, log(1/ϵ)) input and output bits and P(0N) = 0N ̸= S(0N),
+so that, given any solution to end of the line on input S, P, one can construct
+in polynomial time an ϵ-approximate Nash equilibrium of G.
+This is enough for
+reducing r-Nash to end of the line by virtue of Lemma 2.1. Our construction
+of S, P builds heavily upon the simplicial approximation algorithm of van der Laan
+and Talman [37] for computing ﬁxed points of continuous functions from the product
+space of unit simplices to itself.
+Let Δn = {x ∈Rn
++| n
+k=1 xk = 1} be the (n −1)-dimensional unit simplex. Then
+the space of mixed strategy proﬁles of the game is Δr
+n := ×r
+p=1Δn. For notational
+convenience we embed Δr
+n in Rn·r and we represent elements of Δr
+n as vectors in
+Rn·r. That is, if (x1, x2, . . . , xr) ∈Δr
+n is a mixed strategy proﬁle of the game, we
+identify this strategy proﬁle with a vector x = (x1; x2; . . . ; xr) ∈Rn·r resulting from
+the concatenation of the mixed strategies. For p ∈[r] and j ∈[n] we denote by x(p, j)
+the ((p −1)n + j)th coordinate of x, that is, x(p, j) := x(p−1)n+j.
+We are about to describe our reduction from ﬁnding an ϵ-approximate Nash equi-
+librium to end of the line. The nodes of the end of the line graph will correspond
+to the simplices of a triangulation of Δr
+n which we describe next.
+Triangulation of the product space of unit simplices. For some d to be
+speciﬁed later, we describe the triangulation of Δr
+n induced by the regular grid of size
+d. For this purpose, let us denote by Δn(d) the set of points of Δn induced by the
+grid of size d, i.e.,
+Δn(d) =
+⎧
+⎨
+⎩x ∈Rn
++
+x =
+y1
+d , y2
+d , . . . , yn
+d
+
+, yj ∈N0 and
+
+j
+yj = d
+⎫
+⎬
+⎭,
+and similarly deﬁne Δr
+n(d) = ×r
+p=1Δn(d). Moreover, let us deﬁne the block-diagonal
+matrix Q by
+Q =
+⎛
+⎜
+⎜
+⎜
+⎜
+⎜
+⎜
+⎜
+⎝
+Q1
+0
+. . .
+0
+0
+0
+Q2
+0
+0
+0
+...
+...
+...
+Qr−1
+0
+0
+0
+. . .
+0
+Qr
+⎞
+⎟
+⎟
+⎟
+⎟
+⎟
+⎟
+⎟
+⎠
+,
+where, for all p ∈[r], Qp is the n × n matrix deﬁned by
+Qp =
+⎛
+⎜
+⎜
+⎜
+⎜
+⎜
+⎜
+⎜
+⎝
+−1
+0
+. . .
+0
+1
+1
+−1
+0
+0
+0
+1
+...
+...
+...
+−1
+0
+0
+0
+. . .
+1
+−1
+⎞
+⎟
+⎟
+⎟
+⎟
+⎟
+⎟
+⎟
+⎠
+.
+Let us denote by q(p, j) the ((p −1)n + j)th column of Q. It is clear that adding
+q(p, j)T/d to a mixed strategy proﬁle corresponds to shifting probability mass of 1/d
+from strategy j of player p to strategy (j mod n) + 1 of player p.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+204
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+For all p ∈[r] and k ∈[n], let us deﬁne a set of indices Ip,k as Ip,k := {(p, j)}j≤k.
+Also, let us deﬁne a collection T of sets of indices as follows:
+T :=
+⎧
+⎨
+⎩T ⊆
+
+p∈[r]
+Ip,n ∀p ∈[r], ∃k ∈[n −1] : T ∩Ip,n = Ip,k
+⎫
+⎬
+⎭.
+Suppose, now, that q0 is a mixed strategy proﬁle in which every player plays strategy
+1 with probability 1, that is, q0(p, 1) = 1, for all p ∈[r], and for T ∈T deﬁne the set
+A(T ) :=
+⎧
+⎨
+⎩x ∈Δr
+n x = q0 +
+
+(p,j)∈T
+a(p, j)q(p, j)
+T/d
+for nonnegative real numbers a(p, j) ≥0
+⎫
+⎬
+⎭.
+Deﬁning T ∗:= ∪p∈[r]Ip,n−1, it is not hard to verify that
+A (T ∗) = Δr
+n.
+Moreover, if, for T ∈T , we deﬁne B(T ) := A(T ) \ ∪T ′∈T ,T ′⊂T A(T ′), the collection
+{B(T )}T ∈T partitions the set Δr
+n.
+To deﬁne the triangulation of Δr
+n let us ﬁx some set T ∈T , some permutation
+π : [|T |] →T of the elements of T , and some x0 ∈A(T ) ∩Δr
+n(d). Let us then denote
+by σ(x0, π) the |T |-simplex which is the convex hull of the points x0, . . . , x|T | deﬁned
+as follows:
+xt = xt−1 + q(π(t))
+T/d
+∀t = 1, . . . , |T |.
+The following lemmas, whose proof can be found in [37], describe the triangulation
+of Δr
+n. We deﬁne A(T, d) := A(T )∩Δr
+n(d), we denote by PT the set of all permutations
+π : [|T |] →T , and we set
+ΣT := {σ(x0, π) x0 ∈A(T, d), π ∈PT , σ(x0, π) ⊆A(T )} .
+Lemma 3.2 (see [37]). For all T ∈T , the collection of |T |-simplices ΣT triangu-
+lates A(T ).
+Corollary 3.3 (see [37]). Δr
+n is triangulated by the collection of simplices ΣT ∗.
+The vertices of the END OF THE LINE graph. The vertices of the graph in
+our construction will correspond to the elements of the set
+Σ :=
+
+T ∈T
+ΣT .
+Let us encode the elements of Σ with strings {0, 1}N; choosing N polynomial in |G|,
+the description size of G, and log d is suﬃcient.
+We proceed to deﬁne the edges of the end of the line graph in terms of a
+labeling of the points of the set Δr
+n(d), which we describe next.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+205
+Labeling rule. Recall the function f : Δr
+n →Δr
+n deﬁned by Nash to establish
+the existence of an equilibrium [43]. To describe f, let U p
+j (x) := 
+s∈S−p up
+jsxs be the
+expected utility of player p if p plays pure strategy j ∈[n] and the other players use
+the mixed strategies {xq
+j}j∈[n], q ̸= p; also let U p(x) := 
+s∈S up
+sxs be the expected
+utility of player p if every player q ∈[r] uses mixed strategy {xq
+j}j∈[n]. Then, the
+function f is described as follows:
+f(x1, x2, . . . , xr) = (y1, y2, . . . , yr),
+where, for each p ∈[r], j ∈[n],
+yp
+j =
+xp
+j + max (0, U p
+j (x) −U p(x))
+1 + 
+k∈[n] max (0, U p
+k(x) −U p(x)).
+It is not hard to see that f is continuous and that f(x) can be computed in time
+polynomial in the binary encoding size of x and G. Moreover, it can be veriﬁed that
+any point x ∈Δr
+n such that f(x) = x is a Nash equilibrium [43].
+The following
+lemma establishes that f is λ-Lipschitz for λ := [1 + 2Umaxrn(n + 1)], where Umax is
+the maximum entry in the payoﬀtables of the game.
+Lemma 3.4. For all x, x′ ∈Δr
+n ⊆Rn·r such that ||x −x′||∞≤δ,
+||f(x) −f(x′)||∞≤[1 + 2Umaxrn(n + 1)]δ.
+Proof. We use the following bound shown in section 4.6, Lemma 4.26.
+Lemma 3.5. For any game G, for all p ≤r, j ∈Sp,
+
+
+s∈S−p
+up
+jsxs −
+
+s∈S−p
+up
+jsx′
+s
+
+≤max
+s∈S−p {up
+js}
+
+q̸=p
+
+i∈Sq
+|xq
+i −x′q
+i |.
+It follows that for all p ∈[r], j ∈[n],
+|U p
+j (x) −U p
+j (x′)| ≤Umaxrnδ,
+|U p(x) −U p(x′)| ≤Umaxrnδ.
+Denoting Bp
+j (x) := max (0, U p
+j (x) −U p(x)), for all p ∈[r], j ∈[n], the above bounds
+imply that
+|Bp
+j (x) −Bp
+j (x′)| ≤2Umaxrnδ,
+
+
+k∈[n]
+Bp
+k(x) −
+
+k∈[n]
+Bp
+k(x′)
+
+≤2Umaxrnδ · n.
+Combining the above bounds we get that, for all p ∈[r], j ∈[n],
+|yp
+j (x) −yp
+j (x′)| ≤|xp
+j −x′p
+j | + |Bp
+j (x) −Bp
+j (x′)| +
+
+
+k∈[n]
+Bp
+k(x) −
+
+k∈[n]
+Bp
+k(x′)
+
+≤δ + 2Umaxrnδ + 2Umaxrnδ · n
+≤[1 + 2Umaxrn(n + 1)]δ,
+where we made use of the following lemma.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+206
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+Lemma 3.6. For any x, x′, y, y′, z, z′ ≥0 such that x+y
+1+z ≤1,
+
+x + y
+1 + z −x′ + y′
+1 + z′
+ ≤|x −x′| + |y −y′| + |z −z′|.
+Proof.
+
+x + y
+1 + z −x′ + y′
+1 + z′
+ =
+
+(x + y)(1 + z′) −(x′ + y′)(1 + z)
+(1 + z)(1 + z′)
+
+=
+
+(x + y)(1 + z′) −(x + y)(1 + z) −((x′ −x) + (y′ −y))(1 + z)
+(1 + z)(1 + z′)
+
+≤
+
+(x + y)(1 + z′) −(x + y)(1 + z)
+(1 + z)(1 + z′)
+ +
+
+((x′ −x) + (y′ −y))(1 + z)
+(1 + z)(1 + z′)
+
+≤
+
+(x + y)(z′ −z)
+(1 + z)(1 + z′)
+ + |x′ −x| + |y′ −y|
+≤x + y
+1 + z |z′ −z| + |x′ −x| + |y′ −y|
+≤|z′ −z| + |x′ −x| + |y′ −y|.
+This completes the proof of Lemma 3.4.
+We describe a labeling of the points of the set Δr
+n(d) in terms of the function f.
+The labels that we are going to use are the elements of the set L := ∪p∈[r]Ip,n. In
+particular, we have the following:
+We assign to a point x ∈Δr
+n the label (p, j) if and only if (p, j) is
+the lexicographically least index such that xp
+j > 0 and f(x)p
+j −xp
+j ≤
+f(x)q
+k −xq
+k for all q ∈[r], k ∈[n].
+This labeling rule satisﬁes the following properties.
+• Completeness: Every point x is assigned a label; hence, we can deﬁne a
+labeling function ℓ: Δr
+n →L.
+• Properness: xp
+j = 0 implies ℓ(x) ̸= (p, j).
+• Eﬃciency: ℓ(x) is computable in time polynomial in the binary encoding size
+of x and G.
+A simplex σ ∈Σ is called completely labeled if all its vertices have diﬀerent labels;
+a simplex σ ∈Σ is called p-stopping if it is completely labeled and, moreover, for all
+j ∈[n], there exists a vertex of σ with label (p, j). Our labeling satisﬁes the following
+important property.
+Theorem 3.7 (see [37]). Suppose that a simplex σ ∈Σ is p-stopping for some
+p ∈[r]. Then all points x ∈σ ⊆Rn·r satisfy
+||f(x) −x||∞≤1
+d(λ + 1)n(n −1).
+Proof. It is not hard to verify that, for any simplex σ ∈Σ and for all pairs of
+points x, x′ ∈σ,
+||x −x′||∞≤1
+d.
+Suppose now that a simplex σ ∈Σ is p-stopping for some p ∈[r] and that, for all
+j ∈[n], z(j) is the vertex of σ with label (p, j). Since, for any x, 
+i∈[n] xp
+i = 1 =
+
+i∈[n] f(x)p
+i , it follows from the labeling rule that
+f(z(j))p
+j −z(j)p
+j ≤0
+∀j ∈[n].
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+207
+Hence, for all x ∈σ, j ∈[n],
+f(x)p
+j −xp
+j ≤f(z(j))p
+j −z(j)p
+j + (λ + 1)1
+d ≤(λ + 1)1
+d,
+where we used the fact that the diameter of σ is 1
+d (in the inﬁnity norm) and the
+function f is λ-Lipschitz. Hence, in the opposite direction, for all x ∈σ, j ∈[n], we
+have
+f(x)p
+j −xp
+j = −
+
+i∈[n]\{j}
+(f(x)p
+i −xp
+i ) ≥−(n −1)(λ + 1)1
+d.
+Now, by the deﬁnition of the labeling rule, we have, for all x ∈σ, q ∈[r], j ∈[n],
+f(x)q
+j −xq
+j ≥f(z(1))q
+j −z(1)q
+j −(λ + 1)1
+d
+≥f(z(1))p
+1 −z(1)p
+1 −(λ + 1)1
+d
+≥−(n −1)(λ + 1)1
+d −(λ + 1)1
+d = −n(λ + 1)1
+d,
+whereas
+f(x)q
+j −xq
+j = −
+
+i∈[n]\{j}
+(f(x)q
+i −xq
+i )
+≤(n −1)n(λ + 1)1
+d.
+Combining the above, it follows that, for all x ∈σ,
+||f(x) −x||∞≤1
+d(λ + 1)n(n −1).
+The approximation guarantee. By virtue of Theorem 3.7, if we choose
+d := 1
+ϵ′ [2 + 2Umaxrn(n + 1)]n(n −1),
+then a p-stopping simplex σ ∈Σ, for any p ∈[r], satisﬁes that, for all x ∈σ,
+||f(x) −x||∞≤ϵ′,
+which implies that x is an n
+
+ϵ′(1 + nUmax)
+
+1 +
+
+ϵ′(1 + nUmax)
+
+max{Umax, 1}-
+approximate Nash equilibrium (by Lemma 3.8). Choosing
+ϵ′ :=
+1
+1 + nUmax
+
+ϵ
+2n max{Umax, 1}
+2
+implies that x is an ϵ-approximate Nash equilibrium.
+Lemma 3.8. If a vector x = (x1; x2; . . . ; xr) ∈Rn·r satisﬁes
+||f(x) −x||∞≤ϵ′,
+then x is an n
+
+ϵ′(1 + nUmax)(1 +
+
+ϵ′(1 + nUmax)) max{Umax, 1}-approximate Nash
+equilibrium.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+208
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+Proof. Let us ﬁx some player p ∈[r], and assume, without loss of generality, that
+U p
+1 (x) ≥U p
+2 (x) ≥· · · ≥U p
+k(x) ≥U p(x) ≥U p
+k+1(x) ≥· · · ≥U p
+n(x).
+For all j ∈[n], observe that |f(x)p
+j −xp
+j| ≤ϵ′ implies
+xp
+j
+
+i∈[n]
+Bp
+i (x) ≤Bp
+j (x) + ϵ′
+⎛
+⎝1 +
+
+i∈[n]
+Bp
+i (x)
+⎞
+⎠.
+Setting ϵ′′ := ϵ′(1 + nUmax), the above inequality implies
+xp
+j
+
+i∈[n]
+Bp
+i (x) ≤Bp
+j (x) + ϵ′′.
+(3)
+Let us deﬁne t := xp
+k+1 + xp
+k+2 + · · · + xp
+n, and let us distinguish the following cases.
+• If t ≥
+√
+ϵ′′
+Umax , then summing (3) for j = k + 1, . . . , n implies
+t
+
+i∈[n]
+Bp
+i (x) ≤(n −k)ϵ′′,
+which gives
+Bp
+1 ≤
+
+i∈[n]
+Bp
+i (x) ≤n
+√
+ϵ′′Umax.
+(4)
+• If t ≤
+√
+ϵ′′
+Umax , then multiplying (3) by xp
+j and summing over j = 1, . . . , n gives
+
+j∈[n]
+(xp
+j)2 
+i∈[n]
+Bp
+i (x) ≤
+
+j∈[n]
+xp
+jBp
+j (x) + ϵ′′.
+(5)
+Now observe that for any setting of the probabilities xp
+j, j ∈[n], it holds that
+
+j∈[n]
+(xp
+j)2 ≥1
+n.
+(6)
+Moreover, observe that, since U p(x) = 
+j∈[n] xp
+jU p
+j (x), it follows that
+
+j∈[n]
+xp
+j(U p
+j (x) −U p(x)) = 0,
+which implies that
+
+j∈[n]
+xp
+jBp
+j (x) +
+
+j≥k+1
+xp
+j(U p
+j (x) −U p(x)) = 0.
+Plugging this into (5) implies
+
+j∈[n]
+(xp
+j)2 
+i∈[n]
+Bp
+i (x) ≤
+
+j≥k+1
+xp
+j(U p(x) −U p
+j (x)) + ϵ′′.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+209
+Further, using (6) gives
+1
+n
+
+i∈[n]
+Bp
+i (x) ≤
+
+j≥k+1
+xp
+j(U p(x) −U p
+j (x)) + ϵ′′,
+which implies
+
+i∈[n]
+Bp
+i (x) ≤n(tUmax + ϵ′′).
+The last inequality then implies
+Bp
+1(x) ≤n(
+√
+ϵ′′ + ϵ′′).
+(7)
+Combining (4) and (7), we have the following uniform bound:
+Bp
+1(x) ≤n(
+√
+ϵ′′ + ϵ′′) max{Umax, 1} =: ϵ′′′.
+(8)
+Since Bp
+1(x) = U p
+1 (x) −U(x), it follows that player p cannot improve her payoﬀby
+more than ϵ′′′ by changing her strategy. This is true for every player, hence x is an
+ϵ′′′-approximate Nash equilibrium.
+The edges of the END OF THE LINE graph. Van der Laan and Talman
+[37] described a pivoting algorithm which operates on the set Σ, by specifying the
+following:
+• a simplex σ0 ∈Σ, which is the starting simplex; σ0 contains the point q0 and
+is uniquely determined by the labeling rule;
+• a partial one-to-one function h : Σ →Σ, mapping a simplex to a neighboring
+simplex, which deﬁnes a pivoting rule; h has the following properties:1
+– σ0 has no preimage;
+– any simplex σ ∈Σ that has no image is a p-stopping simplex for some
+p; and, any simplex σ ∈Σ \ {σ0} that has no preimage is a p-stopping
+simplex for some p;
+– both h(σ) and h−1(σ) are computable in time polynomial in the binary
+encoding size of σ, that is N, and G—given that the labeling function ℓ
+is eﬃciently computable.
+The algorithm of van der Laan and Talman starts oﬀwith the simplex σ0 and employs
+the pivoting rule h until a simplex σ with no image is encountered. By the properties
+of h, σ must be p-stopping for some p ∈[r] and, by the discussion above, any point
+x ∈σ is an ϵ-approximate Nash equilibrium.
+In our construction, the edges of the end of the line graph are deﬁned in terms
+of the function h: If h(σ) = σ′, then there is a directed edge from σ to σ′. Moreover,
+the string 0N is identiﬁed with the simplex σ0. Any solution to the end of the
+line problem thus deﬁned corresponds, by the above discussion, to a simplex σ such
+that any point x ∈σ is an ϵ-approximate Nash equilibrium of G. This concludes the
+construction.
+1More precisely, the pivoting rule h of van der Laan and Talman is deﬁned on a subset Σ′ of
+Σ. For our purposes, let us extend their pivoting rule h to the set Σ by setting h(σ) = σ for all
+σ ∈Σ \ Σ′.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+210
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+3.3. The BROUWER problem. In the proof of our main result we use a prob-
+lem we call Brouwer, which is a discrete and simpliﬁed version of the search problem
+associated with Brouwer’s ﬁxed point theorem. We are given a continuous function
+φ from the three-dimensional unit cube to itself, deﬁned in terms of its values at the
+centers of 23n cubelets with side 2−n, for some n ≥0.2 At the center cijk of the
+cubelet Kijk deﬁned as
+Kijk = {(x, y, z) : i · 2−n ≤x ≤(i + 1) · 2−n,
+j · 2−n ≤y ≤(j + 1) · 2−n,
+k · 2−n ≤z ≤(k + 1) · 2−n},
+where i, j, k are integers in {0, 1, . . ., 2n −1}, the value of φ is φ(cijk) = cijk + δijk,
+where δijk is one of the following four vectors (also referred to as colors):
+• δ1 = (α, 0, 0),
+• δ2 = (0, α, 0),
+• δ3 = (0, 0, α),
+• δ0 = (−α, −α, −α).
+Here α > 0 is much smaller than the cubelet side, say 2−2n.
+Thus, to compute φ at the center of the cubelet Kijk we only need to know which
+of the four displacements to add. This is computed by a circuit C (which is the only
+input to the problem) with 3n input bits and 2 output bits; C(i, j, k) is the index r such
+that, if c is the center of cubelet Kijk, then φ(c) = c+δr. C is such that C(0, j, k) = 1,
+C(i, 0, k) = 2, C(i, j, 0) = 3, and C(2n −1, j, k) = C(i, 2n −1, k) = C(i, j, 2n −1) = 0
+(with conﬂicts resolved arbitrarily), so that the function φ maps the boundary to
+the interior of the cube. A vertex of a cubelet is called panchromatic if, among the
+cubelets adjacent to it, there are four that have all four displacements δ0, δ1, δ2, δ3.
+Sperner’s lemma guarantees that, for any circuit C satisfying the above properties, a
+panchromatic vertex exists; see, e.g., [48]. An alternative proof of this fact follows as
+a consequence of Theorem 3.9 below.
+Brouwer is thus the following total problem: Given a circuit C as described
+above, ﬁnd a panchromatic vertex. The relationship with Brouwer ﬁxed points is that
+ﬁxed points of φ only ever occur in the vicinity of a panchromatic vertex. We next
+show the following theorem.
+Theorem 3.9. Brouwer is PPAD-complete.
+Proof. That Brouwer is in PPAD follows from the main result of this paper
+(Theorem 5.1), which is a reduction from Brouwer to r-Nash, which has been shown
+to be in PPAD in Theorem 3.1.
+To show hardness, we shall reduce end of the line to Brouwer. Given circuits
+S and P with n inputs and outputs, as prescribed in that problem, we shall construct
+an “equivalent” instance of Brouwer, that is, another circuit C with 3m = 3(n + 4)
+inputs and two outputs that computes the color of each cubelet of side 2−m—that is
+to say, the index i such that δi is the correct displacement of the Brouwer function
+at the center of the cubelet encoded into the 3m bits of the input. We shall ﬁrst
+describe the Brouwer function φ explicitly and then argue that it can be computed
+by a circuit.
+Our description of φ proceeds as follows: We shall ﬁrst describe a one-dimensional
+subset L of the three-dimensional unit cube, intuitively an embedding of the path-
+2The value of the function near the boundaries of the cubelets could be determined by
+interpolation—there are many simple ways to do this, and the precise method is of no importance
+to our discussion.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+211
+u′
+2
+u1
+u3
+v′
+1
+y
+v1
+u′
+1
+u6
+u4
+u5
+u2
+z
+x
+Fig. 1. The orthonormal path connecting vertices (u,v); the arrows indicate the orientation of
+colors surrounding the path.
+like directed graph GS,P implicitly given by S and P. Then we shall describe the
+4-coloring of the 23m cubelets based on the description of L. Finally, we shall argue
+that colors are easy to compute locally and that panchromatic vertices correspond to
+endpoints other than the standard source 0n of GS,P .
+We assume that the graph GS,P is such that for each edge (u, v), one of the vertices
+is even (ends in 0) and the other is odd; this is easy to guarantee by duplicating the
+vertices of GS,P .
+L will be orthonormal, that is, each of its segments will be parallel to one of
+the axes; all coordinates of endpoints of segments are integer multiples of 2−m, a
+factor that we omit in the discussion below. Let u ∈{0, 1}n be a vertex of GS,P .
+By ⟨u⟩we denote the integer between 0 and 2n −1 whose binary representation is u.
+Associated with u there are two line segments of length 4 of L. The ﬁrst, called the
+principal segment of u, has endpoints u1 = (8⟨u⟩+ 2, 3, 3) and u′
+1 = (8⟨u⟩+ 6, 3, 3).
+The other auxiliary segment has endpoints u2 = (3, 8⟨u⟩+ 6, 2m −3) and u′
+2 =
+(3, 8⟨u⟩+10, 2m−3). Informally, these segments form two dashed lines (each segment
+being a dash) that run along two edges of the cube and slightly in its interior (see
+Figure 1).
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+212
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+Now, for every vertex u of GS,P , we connect u′
+1 to u2 by a line with three straight
+segments, with joints u3 = (8⟨u⟩+ 6, 8⟨u⟩+ 6, 3) and u4 = (8⟨u⟩+ 6, 8⟨u⟩+ 6, 2m−3).
+Finally, if there is an edge (u, v) in GS,P, we connect u′
+2 to v1 by a jointed line with
+breakpoints u5 = (8⟨v⟩+ 2, 8⟨u⟩+ 10, 2m −3) and u6 = (8⟨v⟩+ 2, 8⟨u⟩+ 10, 3).
+This completes the description of the line L if we do the following perturbation:
+Exceptionally, the principal segment of u = 0n has endpoints 01 = (2, 2, 2) and
+0′
+1 = (6, 2, 2) and the corresponding joint is 03 = (6, 6, 2).
+It is easy to see that L traverses the interior of the cube without ever “nearly
+crossing itself”; that is, two points p, p′ of L are closer than 3 · 2−m in Euclidean
+distance only if they are connected by a part of L that has length 8·2−m or less. (This
+is important in order for the coloring, described below, of the cubelets surrounding L
+to be well deﬁned.) To check this, just notice that segments of diﬀerent types (e.g.,
+[u3, u4] and [u′
+2, u5]) come closer than 3·2−m only if they share an endpoint; segments
+of the same type on the z = 3 or the z = 2m −3 plane are parallel and at least 4
+apart; and segments parallel to the z axis diﬀer by at least 4 in either their x or y
+coordinates.
+We now describe the coloring of the 23m cubelets by four colors corresponding
+to the four displacements. Consistent with the requirements for a Brouwer circuit,
+we color any cubelet Kijk where any one of i, j, k is 2m −1, with 0. Given that, any
+other cubelet with i = 0 gets color 1; with this ﬁxed, any other cubelet with j = 0
+gets color 2, while the remaining cubelets with k = 0 get color 3. Having colored the
+boundaries, we now have to color the interior cubelets. An interior cubelet is always
+colored 0 unless one of its vertices is a point of the interior of line L, in which case
+it is colored by one of the three other colors in a manner to be explained shortly.
+Intuitively, at each point of the line L, starting from (2, 2, 2) (the beginning of the
+principle segment of the string u = 0n), the line L is “protected” from color 0 from
+all four sides. As a result, the only place where the four colors can meet is vertex u′
+2
+or u1, u ̸= 0n, where u is an end of the line. . . .
+In particular, near the beginning of L at (2, 2, 2), the 27 cubelets Kijk with
+i, j, k ≤2 are colored as shown in Figure 2. From then on, for any length-1 segment
+of L of the form [(x, y, z), (x′, y′, z′)] consider the four cubelets containing this segment.
+Two of these cubelets are colored 3, and the other two are colored 1 and 2, in this
+order clockwise (from the point of view of an observer at (x, y, z)). The remaining
+cubelets touching L are the ones at the joints where L turns. Each of these cubelets,
+a total of two per turn, takes the color of the two other cubelets adjacent to L with
+which it shares a face.
+Now it remains only to describe, for each line segment [a, b] of L, the direction d
+in which the two cubelets that are colored 3 lie. The rules are as follows (in Figure 1
+the directions d are shown as arrows):
+• If [a, b] = [u1, u′
+1], then d = (0, 0, −1) if u is even and d = (0, 0, 1) if u is odd.
+• If [a, b] = [u′
+1, u3], then d = (0, 0, −1) if u is even and d = (0, 0, 1) if u is odd.
+• If [a, b] = [u3, u4], then d = (0, 1, 0) if u is even and d = (0, −1, 0) if u is odd.
+• If [a, b] = [u4, u2], then d = (0, 1, 0) if u is even and d = (0, −1, 0) if u is odd.
+• If [a, b] = [u2, u′
+2], then d = (1, 0, 0) if u is even and d = (−1, 0, 0) if u is odd.
+• If [a, b] = [u′
+2, u5], then d = (0, −1, 0) if u is even and d = (0, 1, 0) if u is odd.
+• If [a, b] = [u5, u6], then d = (0, −1, 0) if u is even and d = (0, 1, 0) if u is odd.
+• If [a, b] = [u6, v1], then d = (0, 0, 1) if u is even and d = (0, 0, −1) if u is odd.
+This completes the description of the construction. Notice that, for this to work,
+we need our assumption that edges in GS,P go between odd and even vertices. Regard-
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+213
+z y
+x
+Z=2
+Z=1
+Z=0
+1
+1
+1
+2
+2
+1
+2
+2
+1
+1
+1
+1
+2
+3
+3
+2
+3
+3
+1
+1
+1
+2
+3
+3
+2
+3
+3
+Beginning of L
+Fig. 2. The 27 cubelets around the beginning of line L.
+ing the alternating orientation of colored cubelets around L, note that we could not
+simply introduce “twists” to make them always point in (say) direction d = (0, 0, −1)
+for all [u1, u′
+1]. That would create a panchromatic vertex at the location of a twist.
+The result now follows from the following two claims:
+1. A point in the cube is panchromatic in the described coloring if and only if
+it is
+(a) an endpoint u′
+2 of a sink vertex u of GS,P , or
+(b) an endpoint u1 of a source vertex u ̸= 0n of GS,P .
+2. A circuit C can be constructed in time polynomial in |S| + |P|, which com-
+putes, for each triple of binary integers i, j, k < 2m, the color of cubelet Kijk.
+Regarding the ﬁrst claim, the endpoint u′
+2 of a sink vertex u, or the endpoint u1
+of a source vertex u other than 0n, will be a point where L meets color 0, hence a
+panchromatic vertex. There is no alternative way that L can meet color 0 and no
+other way a panchromatic vertex can occur.
+Regarding the second claim, circuit C is doing the following. C(0, j, k) = 1 for
+j, k < 2m −1, C(i, 0, k) = 2 for i > 0, i, k < 2m −1, C(i, j, 0) = 3 for i, j > 0,
+i, j < 2m −1. Then by default, C(i, j, k) = 0. However, the following tests yield
+alternative values for C(i, j, k), for cubelets adjacent to L. LSB(x) denotes the least
+signiﬁcant bit of x, equal to 1 if x is odd, 0 if x is even, and undeﬁned if x is not an
+integer. For example, a [u′
+1, u3], u ̸= 0n, segment is given by (letting x = ⟨u⟩):
+1. If k = 2 and i = 8x + 5 and LSB(x) = 1 and j ∈{3, . . ., 8x + 6}, then
+C(i, j, k) = 2.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+214
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+2. If k = 2 and i = 8x + 6 and LSB(x) = 1 and j ∈{2, . . ., 8x + 6}, then
+C(i, j, k) = 1.
+3. If k = 3 and (i = 8x+5 or i = 8x+6) and LSB(x) = 1 and j ∈{2, . . . , 8x+5},
+then C(i, j, k) = 3.
+4. If k = 2 and (i = 8x+5 or i = 8x+6) and LSB(x) = 0 and j ∈{2, . . . , 8x+6},
+then C(i, j, k) = 3.
+5. If k = 3 and i = 8x + 5 and LSB(x) = 0 and j ∈{3, . . ., 8x + 5}, then
+C(i, j, k) = 1.
+6. If k = 3 and i = 8x + 6 and LSB(x) = 0 and j ∈{2, . . ., 8x + 5}, then
+C(i, j, k) = 2.
+A [u′
+2, u5] segment uses the circuits P and S, and, in the case LSB(x) = 1, x = ⟨u⟩,
+is given by the following:
+1. If (k = 2m −3 or k = 2m −4) and j = 8x + 10 and S(x) = x′ and P(x′) = x
+and i ∈{2, . . ., 8x′ + 2}, then C(i, j, k) = 3.
+2. If k = 2m −3 and j = 8x + 9 and S(x) = x′ and P(x′) = x and i ∈
+{3, . . . , 8x′ + 2}, then C(i, j, k) = 1.
+3. If k = 2m −4 and j = 8x + 9 and S(x) = x′ and P(x′) = x and i ∈
+{3, . . . , 8x′ + 1}, then C(i, j, k) = 2.
+The other segments are done in a similar way, and so the second claim follows. This
+completes the proof of hardness.
+4. Reductions among equilibrium problems. In the next section we show
+that r-Nash is PPAD-hard by reducing Brouwer to it. Rather than r-Nash, it will
+be more convenient to ﬁrst reduce Brouwer to d-graphical Nash, the problem
+of computing a Nash equilibrium in graphical games of degree d. Therefore, we need
+to show that the latter reduces to r-Nash. This will be the purpose of the current
+section; in fact, we will establish something stronger, namely, the following theorem.
+Theorem 4.1. For every ﬁxed d, r ≥3,
+• Every r-player normal form game and every graphical game of degree d can
+be mapped in polynomial time to (a) a three-player normal form game and
+(b) a graphical game with degree 3 and two strategies per player, such that
+there is a polynomial-time computable surjective mapping from the set of Nash
+equilibria of the latter to the set of Nash equilibria of the former.
+• There are polynomial-time reductions from r-Nash and d-graphical Nash
+to both 3-Nash and 3-graphical Nash.
+Note that the ﬁrst part of the theorem establishes mappings of exact equilibrium
+points between diﬀerent games, whereas the second asserts that computing approxi-
+mate equilibrium points in all these games is polynomial-time equivalent. The proof,
+which is quite involved, is presented in the following subsections. In subsection 4.1,
+we present some useful ideas that enable the reductions described in Theorem 4.1
+as well as prepare the necessary machinery for the reduction from Brouwer to d-
+graphical Nash in section 5. Subsections 4.2 through 4.6 provide the proof of the
+theorem. In subsection 4.7, we establish a polynomial-time reduction from the prob-
+lem of computing an approximately well-supported Nash equilibrium to the problem
+of computing an approximate Nash equilibrium. A mapping from r-player games to
+three-player games was already known by Bubelis [5].
+4.1. Preliminaries: Game gadgets. We describe the building blocks of our
+constructions. As we have observed earlier, if a player v has two pure strategies, say
+0 and 1, then every mixed strategy of that player corresponds to a real number p[v] ∈
+[0, 1] which is precisely the probability that the player plays strategy 1. Identifying
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+215
+players with these numbers, we are interested in constructing games that perform
+simple arithmetical operations on mixed strategies; for example, we are interested
+in constructing a game with two “input” players v1 and v2 and another “output”
+player v3 so that in any Nash equilibrium the latter plays the sum of the former, i.e.,
+p[v3] = min{p[v1] + p[v2], 1}. Such constructions are considered below.
+Notation. We use x = y ± ϵ to denote y −ϵ ≤x ≤y + ϵ.
+Proposition 4.2. Let α be a nonnegative real number. Let v1, v2, w be players
+in a graphical game GG with two strategies per player, and suppose that the payoﬀs to
+v2 and w are as follows.
+Payoﬀs to v2:
+w plays 0
+w plays 1
+v2 plays 0
+0
+1
+v2 plays 1
+1
+0
+Payoﬀs to w:
+w plays 0
+v2 plays 0
+v2 plays 1
+v1 plays 0
+0
+0
+v1 plays 1
+α
+α
+w plays 1
+v2 plays 0
+v2 plays 1
+v1 plays 0
+0
+1
+v1 plays 1
+0
+1
+Then, for ϵ < 1, in every ϵ-Nash equilibrium of game GG, p[v2] = min(αp[v1], 1) ± ϵ.
+In particular, in every Nash equilibrium of game GG, p[v2] = min(αp[v1], 1).
+Proof. If w plays 1, then the expected payoﬀto w is p[v2], and if w plays 0,
+the expected payoﬀto w is αp[v1]. Therefore, in an ϵ-Nash equilibrium of GG, if
+p[v2] > αp[v1]+ϵ, then p[w] = 1. However, note also that if p[w] = 1, then p[v2] = 0.
+(Payoﬀs to v2 make it prefer to disagree with w.) Consequently, p[v2] cannot be larger
+than αp[v1] + ϵ, so it cannot be larger than min(αp[v1], 1) + ϵ. Similarly, if p[v2] <
+min(αp[v1], 1)−ϵ, then p[v2] < αp[v1]−ϵ, so p[w] = 0, which implies—again since v2
+has the biggest payoﬀby disagreeing with w—that p[v2] = 1 ≥1 −ϵ, a contradiction
+to p[v2] < min(αp[v1], 1)−ϵ. Hence p[v2] cannot be less than min(αp[v1], 1)−ϵ.
+We will denote by G×α the (directed) graphical game shown in Figure 3, where
+the payoﬀs to players v2 and w are speciﬁed as in Proposition 4.2 and the payoﬀof
+player v1 is completely unconstrained: v1 could have any dependence on other players
+of a larger graphical game GG that contains G×α or even depend on the strategies of
+v2 and w; as long as the payoﬀs of v2 and w are speciﬁed as above, the conclusion
+of the proposition will be true. Note in particular that using the above construction
+with α = 1, v2 becomes a “copy” of v1; we denote the corresponding graphical game
+by G=. These graphical games will be used as building blocks in our constructions;
+the way to incorporate them into some larger graphical game is to make player v1
+depend (incoming edges) on other players of the game and make v2 aﬀect (outgoing
+edges) other players of the game. For example, we can make a sequence of copies
+of any vertex, which form a path in the graph. The copies then will alternate with
+distinct w vertices.
+Proposition 4.3. Let α, β, γ be nonnegative real numbers. Let v1, v2, v3, w be
+players in a graphical game GG with two strategies per player, and suppose that the
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+216
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+          
+
+
+
+
+          
+
+
+
+
+          
+
+
+
+
+w
+v2
+v1
+Fig. 3. G×α, G=.
+          
+
+
+
+
+               
+
+
+
+
+w
+v1
+Fig. 4. Gα.
+               
+
+
+
+
+               
+
+
+
+
+               
+
+
+
+
+               
+
+
+
+
+v3
+w
+v2
+v1
+Fig. 5. G+,G∗,G−.
+payoﬀs to v3 and w are as follows.
+Payoﬀs to v3:
+w plays 0
+w plays 1
+v3 plays 0
+0
+1
+v3 plays 1
+1
+0
+Payoﬀs to w:
+w plays 0
+v2 plays 0
+v2 plays 1
+v1 plays 0
+0
+β
+v1 plays 1
+α
+α + β + γ
+w plays 1
+v3 plays 0
+0
+v3 plays 1
+1
+Then, for ϵ < 1, in any ϵ-Nash equilibrium of GG, p[v3] = min(αp[v1] + βp[v2] +
+γp[v1]p[v2], 1)±ϵ. In particular, in every Nash equilibrium of GG, p[v3] = min(αp[v1]+
+βp[v2] + γp[v1]p[v2], 1).
+Proof. If w plays 1, then the expected payoﬀto w is p[v3], and if w plays 0, then
+the expected payoﬀto w is αp[v1] + βp[v2] + γp[v1]p[v2]. Therefore, in an ϵ-Nash
+equilibrium of GG, if p[v3] > αp[v1]+βp[v2]+γp[v1]p[v2]+ϵ, then p[w] = 1. However,
+note from the payoﬀs to v3 that if p[w] = 1, then p[v3] = 0. Consequently, p[v3]
+cannot be strictly larger than αp[v1] + βp[v2] + γp[v1]p[v2] + ϵ. Similarly, if p[v3] <
+min(αp[v1]+βp[v2]+γp[v1]p[v2], 1)−ϵ, then p[v3] < αp[v1]+βp[v2]+γp[v1]p[v2]−ϵ
+and, due to the payoﬀs to w, p[w] = 0.
+This in turn implies—since v3 has the
+biggest payoﬀby disagreeing with w—that p[v3] = 1 ≥1 −ϵ, a contradiction to
+p[v3] < min(αp[v1] + βp[v2] + γp[v1]p[v2], 1) −ϵ. Hence p[v3] cannot be less than
+min(αp[v1] + βp[v2] + γp[v1]p[v2], 1) −ϵ.
+Remark 1.
+It is not hard to verify that, if v1, v2, v3, w are players of a
+graphical game GG and the payoﬀs to v3, w are speciﬁed as in Proposition 4.3
+with α = 1, β = −1, and γ = 0, then, in every ϵ-Nash equilibrium of the game
+GG, p[v3] = max(0, p[v1] −p[v2]) ± ϵ; in particular, in every Nash equilibrium,
+p[v3] = max(0, p[v1] −p[v2]).
+Let us denote by G+ and G∗the (directed) graphical game shown in Figure 5,
+where the payoﬀs to players v3 and w are speciﬁed as in Proposition 4.3 taking (α, β, γ)
+equal to (1, 1, 0) (addition) and (0, 0, 1) (multiplication), respectively. Also, let G−be
+the game when the payoﬀs of v3 and w are speciﬁed as in Remark 1.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+217
+               
+
+
+
+
+               
+
+
+
+
+          
+
+
+
+
+          
+
+
+
+
+               
+
+
+
+
+          
+
+
+
+
+               
+
+
+
+
+            
+
+
+
+            
+
+
+
+               
+
+
+
+
+v6
+v1
+v2
+w1
+v5
+w3
+w2
+v3
+v4
+w4
+Fig. 6. Gmax.
+Proposition 4.4. Let v1, v2, v3, v4, v5, v6, w1, w2, w3, w4 be vertices in a
+graphical game GG with two strategies per player, and suppose that the payoﬀs to ver-
+tices other than v1 and v2 are as follows.
+Payoﬀs to w1:
+w1 plays 0
+v2 plays 0
+v2 plays 1
+v1 plays 0
+0
+0
+v1 plays 1
+1
+1
+w1 plays 1
+v2 plays 0
+v2 plays 1
+v1 plays 0
+0
+1
+v1 plays 1
+0
+1
+Payoﬀs to v5:
+w1 plays 0
+w1 plays 1
+v5 plays 0
+1
+0
+v5 plays 1
+0
+1
+Payoﬀs to w2 and v3 are chosen using Proposition 4.3 to ensure p[v3] =
+p[v1](1 −p[v5]) ± ϵ, in every ϵ-Nash equilibrium of game GG.3
+Payoﬀs to w3 and v4 are chosen using Proposition 4.3 to ensure p[v4] =
+p[v2]p[v5] ± ϵ, in every ϵ-Nash equilibrium of game GG.
+Payoﬀs to w4 and v6 are chosen using Proposition 4.3 to ensure p[v6] =
+min(1, p[v3] + p[v4]) ± ϵ, in every ϵ-Nash equilibrium of game GG.
+Then, for ϵ < 1, in every ϵ-Nash equilibrium of game GG, p[v6] = max(p[v1], p[v2]) ±
+4ϵ. In particular, in every Nash equilibrium, p[v6] = max(p[v1], p[v2]).
+The graph of the game looks as in Figure 6. It is actually possible to “merge”
+w1 and v5, but we prefer to keep the game as is in order to maintain the bipartite
+structure of the graph in which one side of the partition contains all the vertices
+corresponding to arithmetic expressions (the vi vertices) and the other side contains
+all the intermediate wi vertices.
+Proof. If, in an ϵ-Nash equilibrium, we have p[v1] < p[v2] −ϵ, then it follows
+from w1’s payoﬀs that p[w1] = 1. It then follows that p[v5] = 1 since v5’s payoﬀs
+induce it to imitate w1. Hence, p[v3] = ±ϵ and p[v4] = p[v2] ± ϵ, and, consequently,
+3We can use Proposition 4.3 to multiply by (1−p[v5]) in a similar way to multiplication by p[v5];
+the payoﬀs to w2 have v5’s strategies reversed.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+218
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+p[v3] + p[v4] = p[v2] ± 2ϵ. This implies that p[v6] = p[v2] ± 3ϵ, as required. A similar
+argument shows that, if p[v1] > p[v2] + ϵ, then p[v6] = p[v1] ± 3ϵ.
+If |p[v1] −p[v2]| ≤ϵ, then p[w1] and, consequently, p[v5] may take any value.
+Assuming, without loss of generality, that p[v1] ≥p[v2], we have
+p[v3] = p[v1](1 −p[v5]) ± ϵ,
+p[v4] = p[v2]p[v5] ± ϵ = p[v1]p[v5] ± 2ϵ,
+which implies that
+p[v3] + p[v4] = p[v1] ± 3ϵ,
+and, therefore,
+p[v6] = p[v1] ± 4ϵ,
+as required.
+We conclude the section with the simple construction of a graphical game Gα,
+depicted in Figure 4, which performs the assignment of some ﬁxed value α ≥0 to a
+player. The proof is similar in spirit to our proof of Propositions 4.2 and 4.3 and will
+be skipped.
+Proposition 4.5. Let α be a nonnegative real number. Let w, v1 be players in
+a graphical game GG with two strategies per player and let the payoﬀs to w, v1 be
+speciﬁed as follows.
+Payoﬀs to v1:
+w plays 0
+w plays 1
+v1 plays 0
+0
+1
+v1 plays 1
+1
+0
+Payoﬀs to w:
+v1 plays 0
+v1 plays 1
+w plays 0
+α
+α
+w plays 1
+0
+1
+Then, for ϵ < 1, in every ϵ-Nash equilibrium of game GG, p[v1] = min(α, 1) ± ϵ. In
+particular, in every Nash equilibrium of GG, p[v1] = min(α, 1).
+Before concluding the section we give a useful deﬁnition.
+Definition 4.6.
+Let v1, v2, . . . , vk, v be players of a graphical game Gf such
+that, in every Nash equilibrium, it holds that p[v] = f(p[v1], . . . , p[vk]), where f is
+some function with k arguments and range [0, 1].
+We say that the game Gf has
+error ampliﬁcation at most c if, in every ϵ-Nash equilibrium, it holds that p[v] =
+f(p[v1], . . . , p[vk]) ± cϵ.
+In particular, the games G=, G+, G−, G∗, Gα described above have error ampliﬁ-
+cations at most 1, whereas the game Gmax has error ampliﬁcation at most 4.
+4.2. Reducing graphical games to normal form games. We establish a
+mapping from graphical games to normal form games as speciﬁed by the following
+theorem.
+Theorem 4.7. For every d > 1, a graphical game (directed or undirected) GG
+of maximum degree d can be mapped in polynomial time to a (d2 + 1)-player normal
+form game G so that there is a polynomial-time computable surjective mapping g from
+the Nash equilibria of the latter to the Nash equilibria of the former.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+219
+Input: Degree d graphical game GG: vertices V , |V | = n′, |Sv| = t for all v ∈V .
+Output: Normal form game G.
+1. If needed, rescale the entries in the payoﬀtables of GG so that they lie in
+the range [0, 1]. One way to do so is to divide all payoﬀentries by max{u},
+where max{u} is the largest entry in the payoﬀtables of GG.
+2. Let r = d2 or r = d2 + 1; r chosen to be even.
+3. Let c : V −→{1, . . . , r} be an r-coloring of GG such that no two adjacent
+vertices have the same color, and, furthermore, no two vertices having a
+common successor—in the aﬀects graph of the game—have the same color.
+Assume that each color is assigned to the same number of vertices, adding
+to V extra isolated vertices to make up any shortfall; extend mapping c to
+these vertices. Let {v(i)
+1 , . . . , v(i)
+n/r} denote {v : c(v) = i}, where n ≥n′.
+4. For each p ∈[r], game G will have a player, labeled p, with strategy set Sp;
+Sp will be the union (assumed disjoint) of all Sv with c(v) = p, i.e.,
+Sp = {(v, a) : c(v) = p, a ∈Sv}, |Sp| = t n
+r .
+5. Taking S to be the Cartesian product of the Sp’s, let s ∈S be a strategy
+proﬁle of game G. For p ∈[r], up
+s is deﬁned as follows:
+(a) Initially, all utilities are 0.
+(b) For v0 ∈V having predecessors v1, . . . , vd′ in the aﬀects graph of GG,
+if c(v0) = p (that is, v0 = v(p)
+j
+for some j) and, for i = 0, . . . , d′, s
+contains (vi, ai), then up
+s = uv0
+s′ for s′ a strategy proﬁle of GG in which
+vi plays ai for i = 0, . . . , d′.
+(c) Let M > 2 n
+r .
+(d) For odd number p < r, if player p plays (v(p)
+i
+, a) and p + 1 plays
+(v(p+1)
+i
+, a′), for any i, a, a′, then add M to up
+s and subtract M from
+up+1
+s
+.
+Fig. 7. Reduction from graphical game GG to normal form game G.
+Proof. Overview. Figure 7 shows the construction of G = f(GG). We will explain
+the construction in detail and show that it can be computed in polynomial time. We
+will also establish that there is a surjective mapping from the Nash equilibria of G to
+the Nash equilibria of GG. In the following discussion we will refer to the players of
+the graphical game as “vertices” to distinguish them from the players of the normal
+form game.
+We ﬁrst rescale all payoﬀs so that they are nonnegative and at most 1 (Step 1);
+it is easy to see that the set of Nash equilibria is preserved under this transformation.
+Also, without loss of generality, we assume that all vertices v ∈V have the same
+number of strategies, |Sv| = t. We color the vertices of G, where G = (V, E) is the
+aﬀects graph of GG, so that any two adjacent vertices have diﬀerent colors, but also
+any two vertices with a common successor have diﬀerent colors (Step 3). Since this
+type of coloring will be important for our discussion we will deﬁne it formally.
+Definition 4.8. Let GG be a graphical game with aﬀects graph G = (V, E). We
+say that GG can be legally colored with k colors if there exists a mapping c : V →
+{1, 2, . . ., k} such that, for all e = (v, u) ∈E, c(v) ̸= c(u) and, moreover, for all
+e1 = (v, w), e2 = (u, w) ∈E with v ̸= u, c(v) ̸= c(u). We call such coloring a legal
+k-coloring of GG.
+To get such coloring, it is suﬃcient to color the union of the underlying undirected
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+220
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+graph G′ with its square (with self-loops removed) so that no adjacent vertices have
+the same color; this can be done with at most d2 colors—see, e.g., [6]—since G′ has
+degree d by assumption; we are going to use r = d2 or r = d2 + 1 colors, whichever
+is even, for reasons to become clear shortly. We assume for simplicity that each color
+class has the same number of vertices, adding dummy vertices if needed to satisfy this
+property. Henceforth, we assume that n is an integer multiple of r so that every color
+class has n
+r vertices.
+We construct a normal form game G with r ≤d2 + 1 players. Each of them
+corresponds to a color and has t n
+r strategies, the t strategies of each of the n
+r vertices
+in its color class (Step 4). Since r is even, we can divide the r players into pairs and
+make each pair play a generalized matching pennies game (see Deﬁnition 4.9 below)
+at very high stakes, so as to ensure that all players will randomize uniformly over the
+vertices assigned to them.4 Within the set of strategies associated with each vertex,
+the matching pennies game expresses no preference, and payoﬀs are augmented to
+correspond to the payoﬀs that would arise in the original graphical game GG (see
+Step 5 for the exact speciﬁcation of the payoﬀs).
+Definition 4.9. The (two-player) game generalized matching pennies is deﬁned
+as follows. Call the two players the pursuer and the evader, and let [n] denote their
+strategies. If for any i ∈[n] both players play i, then the pursuer receives a positive
+payoﬀu > 0 and the evader receives a payoﬀof −u. Otherwise both players receive
+0. It is not hard to check that the game has a unique Nash equilibrium in which both
+players use the uniform distribution.
+Polynomial size of G = f(GG): The input size is |GG| = Θ(n′ · td+1 · q), where n′
+is the number of vertices in GG and q the size of the values in the payoﬀmatrices in
+the logarithmic cost model. The normal form game G has r ∈{d2, d2 + 1} players,
+each having tn/r strategies, where n ≤rn′ is the number of vertices in GG after the
+possible addition of dummy vertices to make sure that all color classes have the same
+number of vertices. Hence, there are r · (tn/r)r ≤((d2 + 1)(tn′)d2+1) payoﬀentries in
+G. This is polynomial in |GG| as long as d is constant. Moreover, each payoﬀentry
+will be of polynomial size since M is of polynomial size and each payoﬀentry of the
+game G is the sum of 0 or M and a payoﬀentry of GG.
+Construction of the mapping g: Given a Nash equilibrium NG = {xp
+(v,a)}p,v,a
+of G = f(GG), we claim that we can recover a Nash equilibrium {xv
+a}v,a of GG,
+NGG = g(NG), as follows:
+xv
+a := xc(v)
+(v,a)
+ 
+j∈Sv
+xc(v)
+(v,j)
+∀a ∈Sv, v ∈V.
+(9)
+Clearly g is computable in polynomial time.
+Proof that g maps Nash equilibria of G to Nash equilibria of GG: Call GG′ the
+graphical game resulting from GG by rescaling the utilities so that they lie in the
+range [0, 1]. It is easy to see that any Nash equilibrium of game GG is, also, a Nash
+equilibrium of game GG′ and vice versa. Therefore, it is enough to establish that the
+mapping g maps every Nash equilibrium of game G to a Nash equilibrium of game
+GG′.
+For v ∈V , c(v) = p, let “p plays v” denote the event that p plays (v, a) for some
+a ∈Sv. We show that in a Nash equilibrium NG of game G, for every player p and
+every v ∈V with c(v) = p, Pr(p plays v) ∈[λ −
+1
+M , λ + 1
+M ], where λ =
+ n
+r
+−1. Note
+that the “fair share” for v is λ.
+4A similar trick is used in Theorem 7.3 of [55], a hardness result for a class of circuit games.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+221
+Lemma 4.10. For all v ∈V , in a Nash equilibrium of G, Pr(c(v) plays v) ∈
+[λ −1
+M , λ + 1
+M ].
+Proof. Suppose, for contradiction, that in a Nash equilibrium of G, Pr(p plays v(p)
+i
+)
+< λ−1
+M for some i, p. Then there exists some j such that Pr(p plays v(p)
+j
+) > λ+ 1
+M λ.
+If p is odd (a pursuer), then p + 1 (the evader) will have utility of at least
+−λM + 1 for playing any strategy (v(p+1)
+i
+, a), a ∈Sv(p+1)
+i
+, whereas it will have util-
+ity of at most −λM −λ + 1 for playing any strategy (v(p+1)
+j
+, a), a ∈Sv(p+1)
+j
+. Since
+−λM + 1 > −λM −λ + 1, in a Nash equilibrium, Pr(p + 1 plays v(p+1)
+j
+) = 0. There-
+fore, there exists some k such that Pr(p + 1 plays v(p+1)
+k
+) > λ. Now the payoﬀof
+p for playing any strategy (v(p)
+j , a), a ∈Sv(p)
+j , is at most 1, whereas the payoﬀfor
+playing any strategy (v(p)
+k , a), a ∈Sv(p)
+k , is at least λM. Thus, in a Nash equilibrium,
+player p should not include any strategy (v(p)
+j
+, a), a ∈Sv(p)
+j , in her support; hence
+Pr(p plays v(p)
+j
+) = 0, a contradiction.
+If p is even, then p −1 will have utility of at most (λ −1
+M )M + 1 for playing
+any strategy (v(p−1)
+i
+, a), a ∈Sv(p−1)
+i
+, whereas it will have utility of at least (λ +
+1
+M λ)M for playing any strategy (v(p−1)
+j
+, a), a ∈Sv(p−1)
+j
+. Hence, in a Nash equilibrium
+Pr(p −1 plays v(p−1)
+i
+) = 0, which implies that there exists some k such that Pr(p −
+1 plays v(p−1)
+k
+) > λ.
+But, then, p will have utility of at least 0 for playing any
+strategy (v(p)
+i
+, a), a ∈Sv(p)
+i , whereas it will have utility of at most −λM + 1 for
+playing any strategy (v(p)
+k , a), a ∈Sv(p)
+k . Since 0 > −λM + 1, in a Nash equilibrium,
+Pr(p plays v(p)
+k ) = 0. Therefore, there exists some k′ such that Pr(p plays v(p)
+k′ ) > λ.
+Now the payoﬀof p −1 for playing any strategy (v(p−1)
+k
+, a), a ∈Sv(p−1)
+k
+, is at most 1,
+whereas the payoﬀfor playing any strategy (v(p−1)
+k′
+, a), a ∈Sv(p−1)
+k′
+, is at least λM.
+Thus, in a Nash equilibrium, player p −1 should not include any strategy (v(p−1)
+k
+, a),
+a ∈Sv(p−1)
+k
+, in her support; hence Pr(p −1 plays v(p−1)
+k
+) = 0, a contradiction.
+From the above discussion, it follows that every vertex is chosen with probability
+at least λ−1
+M by the player that represents its color class. A similar argument shows
+that no vertex is chosen with probability greater than λ +
+1
+M . Indeed, suppose, for
+contradiction, that in a Nash equilibrium of G, Pr(p plays v(p)
+j ) > λ + 1
+M for some j,
+p; then there exists some i such that Pr(p plays v(p)
+i
+) < λ −1
+M λ; now, distinguish two
+cases depending on whether p is even or odd and proceed in the same fashion as in
+the argument used above to show that no vertex is chosen with probability smaller
+than λ −1/M.
+To see that {xv
+a}v,a, deﬁned by (9), corresponds to a Nash equilibrium of GG′
+note that, for any player p and vertex v ∈V such that c(v) = p, the division of
+Pr(p plays v) into Pr(p plays (v, a)), for various values of a ∈Sv, is driven entirely
+by the same payoﬀs as in GG′; moreover, note that there is some positive probability
+p(v) ≥(λ −
+1
+M )d > 0 that the predecessors of v are chosen by the other players of
+G and the additional expected payoﬀto p resulting from choosing (v, a), for some
+a ∈Sv, is p(v) times the expected payoﬀof v in GG′ if v chooses action a and all
+other vertices play as speciﬁed by (9). More formally, suppose that p = c(v) for some
+vertex v of the graphical game GG′ and, without loss of generality, assume that p is
+odd (pursuer) and that v is the vertex v(p)
+i
+in the notation of Figure 7. Then, in a
+Nash equilibrium of the game G, we have, by the deﬁnition of a Nash equilibrium,
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+222
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+that for all strategies a, a′ ∈Sv of vertex v:
+E [payoﬀto p for playing (v, a)] > E [payoﬀto p for playing (v, a′)] ⇒xp
+(v,a′) = 0.
+(10)
+But
+E [payoﬀto p for playing (v, a)] = M · Pr
+
+p + 1 plays v(p+1)
+i
+
++
+
+s∈SN (v)\{v}
+uv
+as
+
+u∈N(v)\{v}
+xc(u)
+(u,su),
+and similarly for a′. Therefore, (10) implies
+
+s∈SN (v)\{v}
+uv
+as
+
+u∈N(v)\{v}
+xc(u)
+(u,su) >
+
+s∈SN (v)\{v}
+uv
+a′s
+
+u∈N(v)\{v}
+xc(u)
+(u,su) ⇒xp
+(v,a′) = 0.
+Dividing by 
+u∈N(v)\{v}
+
+j∈Su xc(u)
+(u,j) = 
+u∈N(v)\{v} Pr (c(u) plays u) = p(v) and
+invoking (9) gives
+
+s∈SN (v)\{v}
+uv
+as
+
+u∈N(v)\{v}
+xu
+su >
+
+s∈SN (v)\{v}
+uv
+a′s
+
+u∈N(v)\{v}
+xu
+su ⇒xv
+a′ = 0,
+where we used that p(v) ≥(λ −1
+M )d > 0, which follows by Lemma 4.10.
+Mapping g is surjective on the Nash equilibria of GG′ and, therefore, GG: We will
+show that, for every Nash equilibrium NGG′ = {xv
+a}v,a of GG′, there exists a Nash
+equilibrium NG = {xp
+(v,a)}p,v,a of G such that (9) holds. The existence can be easily
+established via the existence of a Nash equilibrium in a game G′ deﬁned as follows.
+Suppose that, in NGG′, every vertex v ∈V receives an expected payoﬀof uv from
+every strategy in the support of {xv
+a}a. Deﬁne the following game G′ whose structure
+results from G by merging the strategies {(v, a)}a of player p = c(v) into one strategy
+sp
+v, for every v such that c(v) = p.
+So the strategy set of player p in G′ will be
+{sp
+v | c(v) = p} also denoted as {s(p)
+1 , . . . , s(p)
+n/r} for ease of notation. Deﬁne now the
+payoﬀs to the players as follows. Initialize the payoﬀmatrices with all entries equal
+to 0. For every strategy proﬁle s,
+• for v0 ∈V having predecessors v1, . . . , vd′ in the aﬀects graph of GG′, if, for
+i = 0, . . . , d′, s contains sc(vi)
+vi
+, then add uv0 to uc(v0)
+s
+;
+• for odd number p < r if player p plays strategy s(p)
+i
+and player p + 1 plays
+strategy s(p+1)
+i
+, then add M to up
+s and subtract M from up+1
+s
+(generalized
+matching pennies).
+Note the similarity in the deﬁnitions of the payoﬀmatrices of G and G′. From Nash’s
+theorem, game G′ has a Nash equilibrium {yp
+sp
+v}p,v and it is not hard to verify that
+{xp
+(v,a)}p,v,a is a Nash equilibrium of game G, where xp
+(v,a) := yp
+sp
+v · xv
+a, for all p, v ∈V
+such that c(v) = p, and a ∈Sv.
+4.3. Reducing normal form games to graphical games. We establish the
+following mapping from normal form games to graphical games.
+Theorem 4.11. For every r > 1, a normal form game with r players can be
+mapped in polynomial time to an undirected graphical game of maximum degree 3
+and two strategies per player so that there is a polynomial-time computable surjective
+mapping g from the Nash equilibria of the latter to the Nash equilibria of the former.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+223
+Given a normal form game G having r players, 1, . . . , r, and n strategies per
+player, say Sp = [n] for all p ∈[r], we will construct a graphical game GG, with a
+bipartite graph of maximum degree 3 and two strategies per player, say {0, 1}, with
+description length polynomial in the description length of G, so that from every Nash
+equilibrium of GG we can recover a Nash equilibrium of G. In the following discussion
+we will refer to the players of the graphical game as “vertices” to distinguish them
+from the players of the normal form game. It will be easy to check that the graph of
+GG is bipartite and has degree 3; this graph will be denoted G = (V ∪W, E), where
+W and V are disjoint, and each edge in E goes between V and W. For every vertex
+v of the graphical game, we will denote by p[v] the probability that v plays pure
+strategy 1.
+Recall that G is speciﬁed by the quantities {up
+s : p ∈[r], s ∈S}. A mixed strategy
+proﬁle of G is given by probabilities {xp
+j : p ∈[r], j ∈Sp}. GG will contain a vertex
+v(xp
+j) ∈V for each player p and strategy j ∈Sp, and the construction of GG will
+ensure that in any Nash equilibrium of GG, the quantities {p[v(xp
+j)] : p ∈[r], j ∈Sp},
+if interpreted as values {xp
+j}p,j, will constitute a Nash equilibrium of G. Extending
+this notation, for various arithmetic expressions A involving any xp
+j and up
+s, vertex
+v(A) ∈V will be used and will be constructed such that in any Nash equilibrium
+of GG, p[v(A)] is equal to A evaluated at the given values of up
+s and with xp
+j equal
+to p[v(xp
+j)]. Elements of W are used to mediate between elements of V , so that the
+latter ones obey the intended arithmetic relationships.
+We use Propositions 4.2–4.5 as building blocks of GG, starting with r subgraphs
+that represent mixed strategies for the players of G. In the following, we construct
+a graphical game containing vertices {v(xp
+j)}j∈[n], whose probabilities sum to 1, and
+internal vertices vp
+j , which control the distribution of the one unit of probability mass
+among the vertices v(xp
+j). See Figure 8 for an illustration.
+Proposition 4.12. Consider a graphical game that contains
+• for j ∈[n] a vertex v(xp
+j ),
+• for j ∈[n −1] a vertex vp
+j ,
+• for j ∈[n] a vertex v(j
+i=1 xp
+i ),
+• for j ∈[n −1] a vertex wj(p) used to ensure
+p
+
+v
+ j
+
+i=1
+xp
+i
+
+= p
+
+v
+j+1
+
+i=1
+xp
+i
+
+(1 −p[vp
+j ]),
+• for j ∈[n−1] a vertex w′
+j(p) used to ensure p[v(xp
+j+1)] = p[v(j+1
+i=1 xp
+i )]p[vp
+j ],
+• a vertex w′
+0(p) used to ensure p[v(xp
+1)] = p[v(1
+i=1 xp
+i )].
+Also, let v(n
+i=1 xp
+i ) have payoﬀof 1 when it plays 1, and 0 otherwise. Then, in any
+Nash equilibrium of the graphical game, n
+i=1 p[v(xp
+i )] = 1 and moreover p[v(j
+i=1 xp
+i )]
+= j
+i=1 p[v(xp
+i )], and the graph is bipartite and of degree 3.
+Proof. It is not hard to verify that the graph has degree 3. Most of the degree-
+3 vertices are the w vertices used in Propositions 4.2 and 4.3 to connect the pairs
+or triples of graph players whose probabilities are supposed to obey an arithmetic
+relationship. In a Nash equilibrium, v(n
+i=1 xp
+i ) plays 1. The vertices vp
+j split the
+probability p[v(j+1
+i=1 xp
+i )] between p[v(j
+i=1 xp
+i )] and p[v(xp
+j+1)].
+Comment. The values p[vp
+j ] control the distribution of probability (summing to 1)
+among the n vertices v(xp
+j ). These vertices can set to zero any proper subset of the
+probabilities p[v(xp
+j)].
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+224
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+The vertices whose labels include U do not form part of Proposition 4.12; they
+have been included to show how the gadget ﬁts into the rest of the construction,
+as described in Figure 9. Unshaded vertices belong to V , shaded vertices belong to
+W (V and W being the two parts of the bipartite graph). A directed edge from u
+to v indicates that u’s choice can aﬀect v’s payoﬀ.
+v(n
+i=1 xp
+i )
+w′
+n−1(p)
+v(xp
+n)
+v(Up
+n)
+wn−1(p)
+vp
+n−1
+w(Up
+n−1)
+v(Up
+≤n−1)
+v(n−1
+i=1 xp
+i )
+v(3
+i=1 xp
+i )
+w′
+2(p)
+v(xp
+3)
+v(Up
+3 )
+w2(p)
+vp
+2
+w(Up
+2 )
+v(Up
+≤2)
+v(2
+i=1 xp
+i )
+w′
+1(p)
+v(xp
+2)
+v(Up
+2 )
+w1(p)
+vp
+1
+w(Up
+1 )
+v(Up
+≤1)
+v(1
+i=1 xp
+i )
+w′
+0(p)
+v(xp
+1)
+Fig. 8. Diagram of Proposition 4.12.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+225
+Notation. For s ∈S−p let xs = x1
+s1 · x2
+s2 · · · xp−1
+sp−1 · xp+1
+sp+1 · · · xr
+sr. Also, let U p
+j =
+
+s∈S−p up
+jsxs be the utility to p for playing j in the context of a given mixed proﬁle
+{xs}s∈S−p.
+Lemma 4.13. Suppose all utilities up
+s (of G) lie in the range [0, 1] for some p ∈[r].
+We can construct a degree-3 bipartite graph having a total of O(rnr) vertices, including
+vertices v(xp
+j ), v(U p
+j ), v(U p
+≤j), for all j ∈[n], such that in any Nash equilibrium,
+p[v(U p
+j )] =
+
+s∈S−p
+up
+js
+
+q̸=p
+p[v(xq
+sq)],
+(11)
+p[v(U p
+≤j)] = max
+i≤j
+
+s∈S−p
+up
+is
+
+q̸=p
+p[v(xq
+sq)].
+(12)
+The general idea is to note that the expressions for p[v(U p
+j )] and p[v(U p
+≤j)] are
+constructed from arithmetic subexpressions using the operations of addition, multi-
+plication, and maximization. If each subexpression A has a vertex v(A), then, using
+Propositions 4.2 through 4.5, we can assemble them into a graphical game such that in
+any Nash equilibrium, p[v(A)] is equal to the value of A with input p[v(xp
+j)], p ∈[r],
+j ∈[n]. We just need to limit our usage to O(rnr) subexpressions and ensure that
+their values all lie in [0, 1].
+Proof. Note that
+U p
+≤j = max{U p
+j , U p
+≤j−1},
+U p
+j =
+
+s∈S−p
+up
+jsxs =
+
+s∈S−p
+up
+jsx1
+s1 · · · xp−1
+sp−1xp+1
+sp+1 · · · xr
+sr.
+Let S−p = {S−p(1), . . . , S−p(nr−1)}, so that
+
+s∈S−p
+up
+jsxs =
+nr−1
+
+ℓ=1
+up
+jS−p(ℓ)xS−p(ℓ).
+Include vertex v(z
+ℓ=1 up
+jS−p(ℓ)xS−p(ℓ)) for each partial sum z
+ℓ=1 up
+jS−p(ℓ)xS−p(ℓ), 1 ≤
+z ≤nr−1. Similarly, for each partial product of the summands up
+js
+
+p̸=q≤z xq
+sq, 0 ≤
+z ≤r, include vertex v(up
+js
+
+p̸=q≤z xq
+sq).
+So, for each strategy j ∈Sp, there are
+nr−1 partial sums and r + 1 partial products for each summand. Then, there are n
+partial sequences over which we have to maximize. Note that, since all utilities are
+assumed to lie in the set [0, 1], all partial sums and products must also lie in [0, 1],
+so the truncation at 1 in the computations of Propositions 4.2–4.5 is not a problem.
+So using a vertex for each of the 2n + (r + 1)nr arithmetic subexpressions, a Nash
+equilibrium will compute the desired quantities.
+We repeat the construction speciﬁed by Lemma 4.13 for all p ∈[r]. Note that, to
+avoid large degrees in the resulting graphical game, each time we need to make use
+of a value xq
+sq we create a new copy of the vertex v(xq
+sq) using the gadget G= and,
+then, use the new copy for the computation of the desired partial product; an easy
+calculation shows that we have to make (r −1)nr−1 copies of v(xq
+sq) for all q ≤r,
+sq ∈Sq. To limit the degree of each vertex to 3 we create a binary tree of copies of
+v(xq
+sq) with (r −1)nr−1 leaves and use each leaf once.
+Proof of Theorem 4.11. Let G be an r-player of normal form game with n strategies
+per player and construct GG = f(G) as shown in Figure 9. The graph of GG has
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+226
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+Input: Normal form game G with r players, n strategies per player, utilities {up
+s :
+p ∈[r], s ∈S}.
+Output: Graphical game GG with bipartite graph (V ∪W, E).
+1. If needed, rescale the utilities up
+s so that they lie in the range [0, 1]. One
+way to do so is to divide all utilities by max{up
+s}.
+2. For each player/strategy pair (p, j) let v(xp
+j ) ∈V be a vertex in GG.
+3. For each p ∈[r] construct a subgraph as described in Proposition 4.12 so
+that in a Nash equilibrium of GG, we have 
+j p[v(xp
+j)] = 1.
+4. Use the construction of Proposition 4.2 with α = 1 to make (r −1)nr−1
+copies of the v(xp
+j ) vertices (which are added to V ). More precisely, create
+a binary tree with copies of v(xp
+j) which has (r −1)nr−1 leaves.
+5. Use the construction of Lemma 4.13 to introduce (add to V ) vertices v(U p
+j ),
+v(U p
+≤j), for all p ∈[r], j ∈[n]. Each v(U p
+j ) uses its own set of copies of the
+vertices v(xp
+j ). For p ∈[r], j ∈[n] introduce (add to W) w(U p
+j ) with the
+following:
+(a) If w(U p
+j ) plays 0, then w(U p
+j ) gets payoﬀ1 whenever v(U p
+≤j) plays 1,
+else 0.
+(b) If w(U p
+j ) plays 1, then w(U p
+j ) gets payoﬀ1 whenever v(U p
+j+1) plays 1,
+else 0.
+6. Give the following payoﬀs to the vertices vp
+j (the additional vertices used
+in Proposition 4.12 whose payoﬀs were not speciﬁed).
+(a) If vp
+j plays 0, then vp
+j has a payoﬀof 1 whenever w(U p
+j ) plays 0,
+otherwise 0.
+(b) If vp
+j plays 1, then vp
+j has a payoﬀof 1 whenever w(U p
+j ) plays 1,
+otherwise 0.
+7. Return the underlying undirected graphical game GG.
+Fig. 9. Reduction from normal form game G to graphical game GG.
+degree 3, by the graph structure of our gadgets from Propositions 4.2 through 4.5 and
+the fact that we use separate copies of the v(xp
+j) vertices to inﬂuence diﬀerent v(U p
+j )
+vertices (see Step 4 and the discussion after Lemma 4.13).
+Polynomial size of GG = f(G): The size of GG is polynomial in the description
+length r·nrq of G, where q is the size of the values in the payoﬀtables in the logarithmic
+cost model.
+Construction of g(NGG) (where NGG denotes a Nash equilibrium of GG): Given
+a Nash equilibrium g(NGG) of GG, we claim that we can recover a Nash equilibrium
+{xp
+j}p,j of G by taking xp
+j = p[v(xp
+j )]. This is clearly computable in polynomial time.
+Proof that the reduction preserves Nash equilibria: Call G′ the game resulting
+from G by rescaling the utilities so that they lie in the range [0, 1]. It is easy to see
+that any Nash equilibrium of game G is, also, a Nash equilibrium of game G′ and vice
+versa. Therefore, it is enough to establish that the mapping g(·) maps every Nash
+equilibrium of game GG to a Nash equilibrium of game G′. By Proposition 4.12, we
+have that 
+j xp
+j = 1 for all p ∈[r]. It remains to show that, for all p, j, j′,
+
+s∈S−p
+up
+jsxs >
+
+s∈S−p
+up
+j′sxs =⇒xp
+j′ = 0.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+227
+We distinguish the following cases:
+• If there exists some j′′ < j′ such that 
+s∈S−p up
+j′′sxs > 
+s∈S−p up
+j′sxs, then,
+by Lemma 4.13, p[v(U p
+≤j′−1)] > p[v(U p
+j′)]. Thus, p[vp
+j′−1] = 0 and, conse-
+quently, v(xp
+j′) plays 0 as required, since
+p[v(xp
+j′)] = p[vp
+j′−1]p
+⎡
+⎣v
+⎛
+⎝
+j′
+
+i=1
+xp
+i
+⎞
+⎠
+⎤
+⎦.
+• The case j < j′ reduces trivially to the previous case.
+• It remains to deal with the case j > j′, under the assumption that, for all
+j′′ < j′, 
+s∈S−p up
+j′′sxs ≤
+s∈S−p up
+j′sxs, or, equivalently,
+p[v(U p
+j′′)] ≤p[v(U p
+j′)],
+which in turn implies that
+p[v(U p
+≤j′)] ≤p[v(U p
+j′)].
+It follows that there exists some k, j′ + 1 ≤k ≤j, such that p[v(U p
+k )] >
+p[v(U p
+≤k−1)].
+Otherwise, p[v(U p
+≤j′)] ≥p[v(U p
+≤j′+1)] ≥· · · ≥p[v(U p
+≤j)] ≥
+p[v(U p
+j )] > p[v(U p
+j′)], which is a contradiction to p[v(U p
+≤j′)] ≤p[v(U p
+j′)].
+Since p[v(U p
+k )] > p[v(U p
+≤k−1)], it follows that p[w(U p
+k−1)] = 1 ⇒p[vp
+k−1] = 1
+and, therefore,
+p
+
+v
+k−1
+
+i=1
+xp
+i
+
+= p
+
+v
+ k
+
+i=1
+xp
+i
+
+(1 −p[vp
+k−1]) = 0
+⇒p
+⎡
+⎣v
+⎛
+⎝
+j′
+
+i=1
+xp
+i
+⎞
+⎠
+⎤
+⎦= 0 ⇒p
+$
+v(xp
+j′)
+%
+= 0.
+Mapping g is surjective on the Nash equilibria of G′ and, therefore, G: We will
+show that given a Nash equilibrium NG′ of G′, there is a Nash equilibrium NGG
+of GG such that g(NGG) = NG′.
+Let NG′ = {xp
+j : p ≤r, j ∈Sp}.
+In NGG, let
+p[v(xp
+j)] = xp
+j. Lemma 4.13 shows that the values p[v(U p
+j )] are the expected utilities
+to player p for playing strategy j, given that all other players use the mixed strategy
+{xp
+j : p ≤r, j ∈Sp}. We identify values for p[vp
+j ] that complete a Nash equilibrium
+for GG.
+Based on the payoﬀs to vp
+j described in Figure 9 we have the following:
+• If p[v(U p
+≤j)] > p[v(U p
+j+1)], then p[w(U p
+j )] = 0; p[vp
+j ] = 0.
+• If p[v(U p
+≤j)] < p[v(U p
+j+1)], then p[w(U p
+j )] = 1; p[vp
+j ] = 1.
+• If p[v(U p
+≤j)] = p[v(U p
+j+1)], then choose p[w(U p
+j )] = 1
+2; p[vp
+j ] is arbitrary (we
+may assign it any value).
+Given the above constraints on the values p[vp
+j ], we must check that we can choose
+them (and there is a unique choice) so as to make them consistent with the probabil-
+ities p[v(xp
+j )]. We use the fact that the values xp
+j form a Nash equilibrium of G. In
+particular, we know that p[v(xp
+j )] = 0 if there exists j′ with U p
+j′ > U p
+j . We claim that
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+228
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+for j satisfying p[v(U p
+≤j)] = p[v(U p
+j+1)], if we choose
+p[vp
+j ] = p[v(xp
+j+1)]/
+j+1
+
+i=1
+p[v(xp
+i )],
+then the values p[v(xp
+j )] are consistent.
+4.4. Combining the reductions. Suppose that we take either a graphical or
+a normal form game, and apply to it both of the reductions described in the previous
+sections. Then we obtain a game of the same type and a surjective mapping from the
+Nash equilibria of the latter to the Nash equilibria of the former.
+Corollary 4.14.
+For any ﬁxed d, a (directed or undirected) graphical game
+of maximum degree d can be mapped in polynomial time to an undirected graphical
+game of maximum degree 3 so that there is a polynomial-time computable surjective
+mapping g from the Nash equilibria of the latter to the Nash equilibria of the former.
+Corollary 4.15.
+For any ﬁxed r > 1, an r-player normal form game can
+be mapped in polynomial time to a 10-player normal form game so that there is a
+polynomial-time computable surjective mapping g from the Nash equilibria of the latter
+to the Nash equilibria of the former.
+Proof. Theorem 4.11 converts an r-player game G into a graphical game GG based
+on a graph of degree 3. Theorem 4.7 converts GG to a 10-player game G′, whose Nash
+equilibria encode the Nash equilibria of GG and hence of G. (Note that for d an odd
+number, the proof of Theorem 4.7 implies a reduction to a (d2 + 1)-player normal
+form game.)
+We next prove a stronger result, by exploiting in more detail the structure of the
+graphical games GG constructed in the proof of Theorem 4.11. The technique used
+here will be used in section 4.5 to strengthen the result even further.
+Theorem 4.16.
+For any ﬁxed r > 1, an r-player normal form game can be
+mapped in polynomial time to a four-player normal form game so that there is a
+polynomial-time computable surjective mapping g from the Nash equilibria of the latter
+to the Nash equilibria of the former.
+Proof. Construct G′ from G as shown in Figure 10.
+Polynomial size of G′ = f(G). By Theorem 4.11, GG (as constructed in Figure 10)
+is of polynomial size. The size of GG′ is at most three times the size of GG since we
+do not need to apply Step 3 to any edges that are themselves constructed by an
+earlier iteration of Step 3. Finally, the size of G′ is polynomial in the size of GG′ from
+Theorem 4.7.
+Construction of g(NG′) (for NG′ a Nash equilibrium of G′). Let g1 be a surjective
+mapping from the Nash equilibria of GG to the Nash equilibria of G, which is guaran-
+teed to exist by Theorem 4.11. It is trivial to construct a surjective mapping g2 from
+the Nash equilibria of GG′ to the Nash equilibria of GG. By Theorem 4.7, there exists
+a surjective mapping g3 from the Nash equilibria of G′ to the Nash equilibria of GG′.
+Therefore, g3 ◦g2 ◦g1 is a surjective mapping from the Nash equilibria of G′ to the
+Nash equilibria of G.
+4.5. Reducing to three players. We will strengthen Theorem 4.16 to reduce
+an r-player normal form game to a three-player normal form game. The following
+theorem together with Theorems 4.7 and 4.11 imply the ﬁrst part of Theorem 4.1.
+Theorem 4.17.
+For any ﬁxed r > 1, an r-player normal form game can be
+mapped in polynomial time to a three-player normal form game so that there is a
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+229
+Input: Normal form game G with r players, n strategies per player, utilities {up
+s :
+p ≤r, s ∈S}.
+Output: Four-player normal form game G′.
+1. Let GG be the graphical game constructed from G according to Figure 9.
+Recall that the aﬀects graph G = (V ∪W, E) of GG has the following
+properties:
+• Every edge e ∈E is from a vertex of set V to a vertex of set W or
+vice versa.
+• Every vertex of set W has indegree at most 3 and outdegree at most
+1 and every vertex of set V has indegree at most 1 and outdegree at
+most 2.
+2. Color the graph (V ∪W, E) of GG as follows: let c(w) = 1 for all W-vertices
+w and c(v) = 2 for all V -vertices v.
+3. Construct a new graphical game GG′ from GG as follows. While there exist
+v1, v2 ∈V , w ∈W, (v1, w), (v2, w) ∈E with c(v1) = c(v2):
+(a) Every W-vertex has at most 1 outgoing edge, so assume (w, v1) ̸∈E.
+(b) Add v(v1) to V , add w(v1) to W.
+(c) Replace
+(v1, w)
+with
+(v1, w(v1)),
+(w(v1), v(v1)),
+(v(v1), w(v1)),
+(v(v1), w). Let c(w(v1)) = 1, choose c(v(v1)) ∈{2, 3, 4} ̸= c(v′) for
+any v′ with (v′, w) ∈E. Payoﬀs for w(v1) and v(v1) are chosen us-
+ing Proposition 4.2 with α = 1 such that in any Nash equilibrium,
+p[v(v1)] = p[v1].
+4. The coloring c : V ∪W →{1, 2, 3, 4} has the property that, for every
+vertex v of GG′, its neighborhood N(v) in the aﬀects graph of the game—
+recall that it consists of v and all its predecessors—is colored with |N(v)|
+distinct colors. Rescale all utilities of GG′ to [0,1] and map game GG′ to a
+four-player normal form game G′ following Steps 3 through 5 of Figure 7.
+Fig. 10. Reduction from normal form game G to four-player game G′.
+polynomial-time computable surjective mapping g from the Nash equilibria of the latter
+to the Nash equilibria of the former.
+Proof. The bottleneck of the construction of Figure 10 in terms of the number
+k of players of the resulting normal form game G′ lies entirely on the ability or lack
+thereof to color the vertices of the aﬀects graphs of GG with k colors so that, for every
+vertex v, its neighborhood N(v) in the aﬀects graph is colored with |N(v)| distinct
+colors, i.e., on whether there exists a legal k-coloring. In Figure 10, we show how to
+design a graphical game GG′ which is equivalent to GG—in the sense that there exists
+a surjective mapping from the Nash equilibria of the former to the Nash equilibria
+of the latter—and can be legally colored using four colors. However, this cannot be
+improved to three colors since the addition game G+ and the multiplication game G∗,
+which are essential building blocks of GG, have vertices with indegree 3 (see Figure 5)
+and, therefore, need at least four colors to be legally colored. Therefore, to improve
+our result we need to redesign addition and multiplication games which can be legally
+colored using three colors.
+Notation. In the following,
+• x = y ± ϵ denotes y −ϵ ≤x ≤y + ϵ;
+• v : s denotes “player v plays strategy s.”
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+230
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+            
+
+
+
+            
+
+
+
+v′
+1
+w2
+v2
+v′
+2
+w3
+v3
+w
+u
+v1
+w1
+Fig. 11. The new addition/multiplication game and its legal 3-coloring.
+Proposition 4.18. Let α, β, γ be nonnegative integers such that α + β + γ ≤3.
+There is a graphical game G+,∗with two “input players” v1 and v2, one “output
+player” v3, and several intermediate players, with the following properties:
+• The graph of the game can be legally colored using three colors.
+• For any ϵ ∈[0, 0.01], at any ϵ-Nash equilibrium of game G+,∗it holds that
+p[v3] = min{1, αp[v1]+βp[v2]+γp[v1]p[v2]}±81ϵ; in particular at any Nash
+equilibrium p[v3] = min{1, αp[v1] + βp[v2] + γp[v1]p[v2]}.
+Proof. The graph of the game and the labeling of the vertices is shown in Figure
+11.
+All players of G+,∗have strategy set {0, 1} except for player v′
+2 who has three
+strategies {0, 1, ∗}. Below we give the payoﬀtables of all the players of the game. For
+ease of understanding we partition the game G+,∗into four subgames.
+1. Game played by players v1, w1, v′
+1:
+Payoﬀs to v′
+1:
+w1 : 0
+w1 : 1
+v1′ : 0
+0
+1
+v1′ : 1
+1
+0
+Payoﬀs to w1:
+w1 : 0 :
+v1′ : 0
+v1′ : 1
+v1 : 0
+0
+0
+v1 : 1
+1/8
+1/8
+w1 : 1 :
+v1′ : 0
+v1′ : 1
+v1 : 0
+0
+1
+v1 : 1
+0
+1
+2. Game played by players v2′, w3, v3:
+Payoﬀs to v3:
+w3 : 0
+w3 : 1
+v3 : 0
+0
+1
+v3 : 1
+1
+0
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+231
+Payoﬀs to w3:
+w3 : 0 :
+v3 : 0
+v3 : 1
+v′
+2 : 0
+0
+0
+v′
+2 : 1
+0
+0
+v′
+2 : ∗
+8
+8
+w3 : 1 :
+v3 : 0
+v3 : 1
+v′
+2 : 0
+0
+1
+v′
+2 : 1
+0
+1
+v′
+2 : ∗
+0
+1
+3. Game played by players v2, w2, v′
+2:
+Payoﬀs to w2:
+w2 : 0 :
+v2 : 0
+v2 : 1
+v′
+2 : 0
+0
+1/8
+v′
+2 : 1
+0
+1/8
+v′
+2 : ∗
+0
+1/8
+w2 : 1 :
+v2 : 0
+v2 : 1
+v′
+2 : 0
+0
+0
+v′
+2 : 1
+1
+1
+v′
+2 : ∗
+0
+0
+Payoﬀs to v′
+2:
+v′
+2 : 0 :
+w2 : 0
+w2 : 1
+u : 0
+0
+1
+u : 1
+0
+0
+v′
+2 : 1 :
+w2 : 0
+w2 : 1
+u : 0
+1
+0
+u : 1
+1
+0
+v′
+2 : ∗:
+w2 : 0
+w2 : 1
+u : 0
+0
+0
+u : 1
+0
+1
+4. Game played by players v′
+1, v′
+2, w, u:
+Payoﬀs to w:
+w : 0 :
+v′
+1 : 0
+v′
+1 : 1
+v′
+2 : 0
+0
+α
+v′
+2 : 1
+1 + β
+1 + α + β + 8γ
+v′
+2 : ∗
+0
+α
+w : 1 :
+v′
+1 : 0
+v′
+1 : 1
+v′
+2 : 0
+0
+0
+v′
+2 : 1
+1
+1
+v′
+2 : ∗
+1
+1
+Payoﬀs to u:
+w : 0
+w : 1
+u : 0
+0
+1
+u : 1
+1
+0
+Claim 1. At any ϵ-Nash equilibrium of G+,∗, p[v′
+1] = 1
+8p[v1] ± ϵ.
+Proof. If w1 plays 0, then the expected payoﬀto w1 is
+1
+8p[v1], whereas if w1
+plays 1, the expected payoﬀto w1 is p[v′
+1]. Therefore, in an ϵ-Nash equilibrium, if
+1
+8p[v1] > p[v′
+1] + ϵ, then p[w1] = 0.
+However, note also that if p[w1] = 0, then
+p[v′
+1] = 1, which is a contradiction to 1
+8p[v1] > p[v′
+1]+ϵ. Consequently, 1
+8p[v1] cannot
+be strictly larger than p[v′
+1] + ϵ.
+On the other hand, if p[v′
+1] >
+1
+8p[v1] + ϵ, then
+p[w1] = 1 and consequently p[v′
+1] = 0, a contradiction. The claim follows from the
+above observations.
+Claim 2. At any ϵ-Nash equilibrium of G+,∗, p[v′
+2 : 1] = 1
+8p[v2] ± ϵ.
+Proof. If w2 plays 0, then the expected payoﬀto w2 is 1
+8p[v2], whereas, if w2 plays
+1, the expected payoﬀto w2 is p[v′
+2 : 1].
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+232
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+If, in an ϵ-Nash equilibrium, 1
+8p[v2] > p[v′
+2 : 1]+ϵ, then p[w2] = 0. In this regime,
+the payoﬀto player v′
+2 is 0 if v′
+2 plays 0, 1 if v′
+2 plays 1, and 0 if v′
+2 plays ∗. Therefore,
+p[v′
+2 : 1] = 1 and this contradicts the hypothesis that 1
+8p[v2] > p[v′
+2 : 1] + ϵ.
+On the other hand, if, in an ϵ-Nash equilibrium, p[v′
+2 : 1] >
+1
+8p[v2] + ϵ, then
+p[w2] = 1. In this regime, the payoﬀto player v′
+2 is p[u : 0] if v′
+2 plays 0, 0 if v′
+2
+plays 1, and p[u : 1] if v′
+2 plays ∗. Since p[u : 0] + p[u : 1] = 1, it follows that
+p[v′
+2 : 1] = 0 because at least one of p[u : 0], p[u : 1] will be greater than ϵ. This
+contradicts the hypothesis that p[v′
+2 : 1] > 1
+8p[v2] + ϵ and the claim follows from the
+above observations.
+Claim 3.
+At any ϵ-Nash equilibrium of G+,∗, p[v′
+2 : ∗] =
+α
+8 p[v1] + β
+8 p[v2] +
+γ
+8p[v1]p[v2] ± 10ϵ.
+Proof. If w plays 0, then the expected payoﬀto w is αp[v′
+1] + (1 + β)p[v′
+2 : 1] +
+8γp[v′
+1]p[v′
+2 : 1], whereas, if w plays 1, the expected payoﬀto w is p[v′
+2 : 1] + p[v′
+2 : ∗].
+If, in an ϵ-Nash equilibrium,
+αp[v′
+1] + (1 + β)p[v′
+2 : 1] + 8γp[v′
+1]p[v′
+2 : 1] > p[v′
+2 : 1] + p[v′
+2 : ∗] + ϵ,
+then p[w] = 0 and, consequently, p[u] = 1.
+In this regime, the payoﬀto player
+v′
+2 is 0 if v′
+2 plays 0, p[w2 : 0] if v′
+2 plays 1, and p[w2 : 1] if v′
+2 plays ∗.
+Since
+p[w2 : 0] + p[w2 : 1] = 1, it follows that at least one of p[w2 : 0], p[w2 : 1] will be
+larger than ϵ so that p[v′
+2 : 0] = 0 or, equivalently, that p[v′
+2 : 1] + p[v′
+2 : ∗] = 1. So
+the hypothesis can be rewritten as αp[v′
+1] + (1 + β)p[v′
+2 : 1] + 8γp[v′
+1]p[v′
+2 : 1] > 1 + ϵ.
+Using Claims 1 and 2 and the fact that ϵ ≤0.01, this inequality implies that
+α
+8 p[v1] + 1 + β
+8
+p[v2] + γ
+8 p[v1]p[v2] + (α + 1 + β + 3γ)ϵ > 1 + ϵ
+and further that α+1+β+γ
+8
++ (α + 1 + β + 3γ)ϵ > 1 + ϵ. We supposed α + β + γ ≤3;
+therefore, the previous inequality implies that 1
+2 + 10ϵ > 1 + ϵ, a contradiction since
+we assumed ϵ ≤0.01.
+On the other hand, if, in an ϵ-Nash equilibrium, p[v′
+2 : 1] + p[v′
+2 : ∗] > αp[v′
+1] +
+(1 + β)p[v′
+2 : 1] + 8γp[v′
+1]p[v′
+2 : 1] + ϵ, then p[w] = 1 and consequently p[u] = 0. In
+this regime, the payoﬀto player v′
+2 is p[w2 : 1] if v′
+2 plays 0, p[w2 : 0] if v′
+2 plays 1,
+and 0 if v′
+2 plays ∗. Since p[w2 : 0]+p[w2 : 1] = 1, it follows that p[v′
+2 : ∗] = 0. So the
+hypothesis can be rewritten as 0 > αp[v′
+1] + βp[v′
+2 : 1] + 8γp[v′
+1]p[v′
+2 : 1] + ϵ, which is
+a contradiction.
+Therefore, in any ϵ-Nash equilibrium,
+p[v′
+2 : 1] + p[v′
+2 : ∗] = αp[v′
+1] + (1 + β)p[v′
+2 : 1] + 8γp[v′
+1]p[v′
+2 : 1] ± ϵ,
+or, equivalently,
+p[v′
+2 : ∗] = αp[v′
+1] + βp[v′
+2 : 1] + 8γp[v′
+1]p[v′
+2 : 1] ± ϵ.
+Using Claims 1 and 2, this can be restated as p[v′
+2 : ∗] = α
+8 p[v1]+ β
+8 p[v2]+ γ
+8 p[v1]p[v2]±
+10ϵ.
+Claim 4. At any ϵ-Nash equilibrium of G+,∗,
+p[v3] = min{1, αp[v1] + βp[v2] + γp[v1]p[v2]} ± 81ϵ.
+Proof.
+If w3 plays 0, the expected payoﬀto w3 is 8p[v′
+2 : ∗], whereas, if w3
+plays 1, the expected payoﬀto w3 is p[v3].
+Therefore, in an ϵ-Nash equilibrium,
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+233
+if p[v3] > 8p[v′
+2 : ∗] + ϵ, then p[w3] = 1 and, consequently, p[v3] = 0, which is a
+contradiction to p[v3] > 8p[v′
+2 : ∗] + ϵ.
+On the other hand, if 8p[v′
+2 : ∗] > p[v3] + ϵ, then p[w3] = 0 and consequently
+p[v3] = 1. Hence, p[v3] cannot be less than min{1, 8p[v′
+2 : ∗] −ϵ}.
+From the above observations it follows that p[v3] = min{1, 8p[v′
+2 : ∗]} ± ϵ and,
+using Claim 3, p[v3] = min{1, αp[v1] + βp[v2] + γp[v1]p[v2]} ± 81ϵ.
+It remains to show that the graph of the game can be legally colored using three
+colors. The coloring is shown in Figure 11.
+Now that we have our hands on the game G+,∗of Proposition 4.18, we can reduce
+r-player games to three-player games, for any ﬁxed r, using the algorithm of Figure 10
+with the following tweak: In the construction of game GG at Step 1 of the algorithm,
+instead of using the addition and multiplication gadgets G+, G∗of section 4.1, we use
+our more elaborate G+,∗gadget. Let us call the resulting game GG. We will show that
+we can construct a graphical game GG′ which is equivalent to GG in the sense that
+there is a surjective mapping from the Nash equilibria of GG′ to the Nash equilibria
+of GG and which, moreover, can be legally colored using three colors. Then we can
+proceed as in Step 4 of Figure 10 to get the desired three-player normal form game
+G′.
+The construction of GG′ and its coloring can be done as follows: Recall that all our
+gadgets have some distinguished vertices which are the inputs and one distinguished
+vertex which is the output. The gadgets are put together to construct GG by identifying
+the output vertices of some gadgets as the input vertices of other gadgets. It is easy to
+see that we get a graphical game with the same functionality if, instead of identifying
+the output vertex of some gadget with the input of another gadget, we interpose a
+sequence of two G= games between the two gadgets to be connected, as shown in
+Figure 12. If we “glue” our gadgets in this way, then the resulting graphical game
+GG′ can be legally colored using three colors:
+i. (Stage 1) Legally color the vertices inside the “initial gadgets” using three
+colors.
+ii. (Stage 2) Extend the coloring to the vertices that serve as “connections”
+between gadgets; any 3-coloring of the initial gadgets can be extended to a
+3-coloring of GG′ because, for any pair of gadgets G1, G2 which are connected
+(Figure 12) and for any colors assigned to the output vertex a of gadget G1
+and the input vertex e of gadget G2, the intermediate vertices b, c, and d can
+be also colored legally. For example, if vertex a gets color 1 and vertex e color
+2 at stage 1, then, at stage 2, b can be colored 2, c can be colored 3, and d
+can be colored 1.
+This completes the proof of the theorem.
+4.6. Preservation of approximate equilibria. Our reductions so far map
+exact equilibrium points. In this section we generalize to approximate equilibria and
+prove the second part of Theorem 4.1. We claim that the reductions of the previous
+sections translate the problem of ﬁnding an ϵ-Nash equilibrium of a game to the
+problem of ﬁnding an ϵ′-Nash equilibrium of its image, for ϵ′ polynomial in ϵ and
+inverse polynomial in the size of the game. As a consequence, we obtain polynomial-
+time equivalence results for the problems r-Nash and d-graphical Nash. To prove
+the second part of Theorem 4.1, we extend Theorems 4.7, 4.11, and 4.17 of the previous
+sections.
+Theorem 4.19. For every ﬁxed d > 1, there is a polynomial-time reduction from
+d-graphical Nash to (d2 + 1)-Nash.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+234
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+               
+
+
+
+
+               
+
+
+
+
+               
+
+
+
+
+Gadget
+Gadget
+               
+
+
+
+
+G1
+a
+b
+c
+d
+e
+G2
+Input node of
+Output node of
+gadget G2
+gadget G1
+G= game
+G= game
+Fig. 12. The interposition of two G= games between gadgets G1 and G2 does not change the game.
+Proof. Let &
+GG be a graphical game of maximum degree d and GG the resulting
+graphical game after rescaling all utilities by 1/ max{˜u}, where max {˜u} is the largest
+entry in the utility tables of game &
+GG, so that they lie in the set [0, 1], as in the
+ﬁrst step of Figure 7. Assume that ϵ < 1. In time polynomial in |GG| + log(1/ϵ),
+we will specify a normal form game G and an accuracy ϵ′ with the property that,
+given an ϵ′-Nash equilibrium of G, one can recover in polynomial time an ϵ-Nash
+equilibrium of GG. This will be enough, since an ϵ-Nash equilibrium of GG is trivially
+an ϵ · max {˜u}-Nash equilibrium of game &
+GG and, moreover, |GG| is polynomial in
+| &
+GG|.
+We construct G using the algorithm of Figure 7; recall that M ≥2 n
+r , where r is
+the number of color classes speciﬁed in Figure 7 and n is the number of vertices in GG
+after the possible addition of dummy vertices to make sure that all color classes have
+the same number of vertices (as in Step 3 of Figure 7). Let us choose ϵ′ ≤ϵ( r
+n −1
+M )d;
+we will argue that from any ϵ′-Nash equilibrium of game G one can construct in
+polynomial time an ϵ-Nash equilibrium of game GG.
+Suppose that p = c(v) for some vertex v of the graphical game GG. As in the
+proof of Theorem 4.7, Lemma 4.10, it can be shown that in any ϵ′-Nash equilibrium
+of the game G,
+Pr(p plays v) ∈
+' r
+n −1
+M , r
+n + 1
+M
+(
+.
+Now, without loss of generality, assume that p is odd (pursuer) and suppose that v is
+vertex v(p)
+i
+in the notation of Figure 7. Then, in an ϵ′-Nash equilibrium of the game
+G, we have, by the deﬁnition of a Nash equilibrium, that for all strategies a, a′ ∈Sv
+of vertex v,
+E [payoﬀto p for playing (v, a)] > E [payoﬀto p for playing (v, a′)] + ϵ′ ⇒xp
+(v,a′) = 0.
+But
+E [payoﬀto p for playing (v, a)] = M · Pr
+
+p + 1 plays v(p+1)
+i
+
++
+
+s∈SN (v)\{v}
+uv
+as
+
+u∈N(v)\{v}
+xc(u)
+(u,su),
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+235
+and similarly for a′. Therefore, the previous inequality implies
+
+s∈SN (v)\{v}
+uv
+as
+
+u∈N(v)\{v}
+xc(u)
+(u,su) >
+
+s∈SN (v)\{v}
+uv
+a′s
+
+u∈N(v)\{v}
+xc(u)
+(u,su) +ϵ′ ⇒xp
+(v,a′) = 0.
+So, letting
+xv
+a = xc(v)
+(v,a)
+ 
+j∈Sv
+xc(v)
+(v,j)
+∀v ∈V, a ∈Sv,
+as we did in the proof of Theorem 4.7, we get that, for all v ∈V , a, a′ ∈Sv,
+
+s∈SN (v)\{v}
+uv
+as
+
+u∈N(v)\{v}
+xu
+su >
+
+s∈SN (v)\{v}
+uv
+a′s
+
+u∈N(v)\{v}
+xu
+su + ϵ′/T ⇒xv
+a′ = 0,
+(13)
+where T = 
+u∈N(v)\{v}
+
+j∈Su xc(u)
+(u,j) = 
+u∈N(v)\{v} Pr[c(u) plays u] ≥( r
+n −
+1
+M )d.
+By the deﬁnition of ϵ′ it follows that ϵ′/T ≤ϵ.
+Hence, from (13) it follows that
+{xv
+a}v,a is an ϵ-Nash equilibrium of the game GG.
+We have the following extension of Theorem 4.11.
+Theorem 4.20. For every ﬁxed r > 1, there is a polynomial-time reduction from
+r-Nash to 3-graphical Nash with two strategies per vertex.
+Proof. Let ˜G be a normal form game with r players, 1, 2, . . . , r, and strategy sets
+Sp = [n] for all p ∈[r], and let {˜up
+s : p ∈[r], s ∈S} be the utilities of the players.
+Denote by G the game constructed at the ﬁrst step of Figure 9 which results from ˜G
+after rescaling all utilities by 1/ max{˜up
+s} so that they lie in [0, 1]; let {up
+s : p ∈[r], s ∈
+S} be the utilities of the players in game G. Also, let ϵ < 1. In time polynomial
+in |G| + log(1/ϵ), we will specify a graphical game GG and an accuracy ϵ′ with the
+property that, given an ϵ′-Nash equilibrium of GG, one can recover in polynomial time
+an ϵ-Nash equilibrium of G. This will be enough, since an ϵ-Nash equilibrium of G is
+trivially an ϵ · max {˜up
+s}-Nash equilibrium of game ˜G and, moreover, |G| is polynomial
+in | ˜G|. In our reduction, the graphical game GG will be the same as the one described
+in the proof of Theorem 4.11 (Figure 9), while the accuracy speciﬁcation will be of
+the form ϵ′ = ϵ/p(|G|), where p(·) is a polynomial that will be speciﬁed later. We
+will use the same labels for the vertices of the game GG that we used in the proof of
+Theorem 4.11.
+Suppose NGG is some ϵ′-Nash equilibrium of the game GG and let {p[v(xp
+j)]}j,p
+denote the probabilities with which the vertices v(xp
+j) of GG play strategy 1. In the
+proof of Theorem 4.11 we considered the following mapping from the Nash equilibria
+of game GG to the Nash equilibria of game G:
+xp
+j := p[v(xp
+j )]
+∀p and j.
+(14)
+Although (14) succeeds in mapping exact equilibrium points, it fails for approximate
+equilibria, as speciﬁed by the following remark—its justiﬁcation follows from the proof
+of Lemma 4.21.
+Remark 2. For any ϵ′ > 0, there exists an ϵ′-Nash equilibrium of game GG such
+that 
+j p[v(xp
+j)] ̸= 1, for some player p ≤r, and, moreover, p[v(U p
+j )] > p[v(U p
+j′)]+ϵ′,
+for some p ≤r, j and j′, and, yet, p[v(xp
+j′)] > 0.
+Recall from section 4.3, that, for all p, j, the probability p[v(U p
+j )] represents the
+utility of player p for playing pure strategy j, when the other players play according to
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+236
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+{xq
+j := p[v(xq
+j)]}j,q̸=p.5 Therefore, not only do the {xp
+j := p[v(xp
+j)]}j not necessarily
+constitute a distribution—this could be easily ﬁxed by rescaling—but also the deﬁning
+property of an approximate equilibrium (2) is in question.
+The following lemma
+bounds the deviation from the approximate equilibrium conditions.
+Lemma 4.21. In any ϵ′-Nash equilibrium of the game GG,
+(i) for all p ∈[r], | 
+j p[v(xp
+j)] −1| ≤2cnϵ′, and
+(ii) for all p ∈[r], j, j′ ∈[n], p[v(U p
+j )] > p[v(U p
+j′)] + 5cnϵ′ ⇒p[v(xp
+j′)] ∈[0, cnϵ′],
+where c ≥1 is the maximum error ampliﬁcation of the gadgets used in the construction
+of GG.
+Proof. Note that at an ϵ′-Nash equilibrium of game GG the following properties
+are satisﬁed for all p ∈[r] by the vertices of game GG, since the error ampliﬁcation of
+the gadgets is at most c:
+p
+
+v
+ n
+
+i=1
+xp
+i
+
+= 1,
+(15)
+p
+
+v
+ j
+
+i=1
+xp
+i
+
+= p
+
+v
+j+1
+
+i=1
+xp
+i
+
+· (1 −p[vp
+j ]) ± cϵ′
+∀j < n,
+(16)
+p
+)
+v(xp
+j+1)
+*
+= p
+
+v
+j+1
+
+i=1
+xp
+i
+
+· p[vp
+j ] ± cϵ′
+∀j < n,
+(17)
+p [v(xp
+1)] = p
+
+v
+ 1
+
+i=1
+xp
+i
+
+± cϵ′.
+(18)
+Proof of (i). By successive applications of (16) and (17), we deduce
+n
+
+j=1
+p[v(xp
+j)] =
+n
+
+j=2
++
+p
+
+v
+ j
+
+i=1
+xp
+i
+
+· p[vp
+j−1]
+,
++ p
+
+v
+ 1
+
+i=1
+xp
+i
+
+± cnϵ′
+=
+n
+
+j=2
++
+p
+
+v
+ j
+
+i=1
+xp
+i
+
+· p[vp
+j−1]
+,
++
+
+p
+
+v
+ 2
+
+i=1
+xp
+i
+
+· (1 −p[vp
+1]) ± cϵ′
+
+± cnϵ′
+=
+n
+
+j=3
++
+p
+
+v
+ j
+
+i=1
+xp
+i
+
+· p[vp
+j−1]
+,
++ p
+
+v
+ 2
+
+i=1
+xp
+i
+
+± c(n + 1)ϵ′
+= . . .
+= p
+
+v
+ n
+
+i=1
+xp
+i
+
+± c(2n −1)ϵ′
+= 1 ± c(2n −1)ϵ′.
+Proof of (ii). Let us ﬁrst observe the behavior of vertices w(U p
+j ) and vp
+j in an
+ϵ′-Nash equilibrium.
+5Note, however, that, since we are considering an ϵ′-Nash equilibrium of game GG, (11) of sec-
+tion 4.3 will be satisﬁed only approximately as speciﬁed by Lemma 4.23.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+237
+• Behavior of w(U p
+j ) vertices: The utility of vertex w(U p
+j ) for playing strategy
+0 is p[v(U p
+≤j)], whereas for playing 1 it is p[v(U p
+j+1)]. Therefore,
+p[v(U p
+≤j)] > p[v(U p
+j+1)] + ϵ′ ⇒p[w(U p
+j )] = 0,
+p[v(U p
+j+1)] > p[v(U p
+≤j)] + ϵ′ ⇒p[w(U p
+j )] = 1,
+|p[v(U p
+j+1)] −p[v(U p
+≤j)]| ≤ϵ′ ⇒p[w(U p
+j )] can be anything.
+• Behavior of vp
+j vertices: The utility of vertex vp
+j for playing strategy 0 is
+1 −p[w(U p
+j )], whereas for playing 1 it is p[w(U p
+j )]. Therefore,
+p[w(U p
+j )] < 1−ϵ′
+2
+⇒p[vp
+j ] = 0,
+p[w(U p
+j )] > 1+ϵ′
+2
+⇒p[vp
+j ] = 1,
+|p[w(U p
+j )] −1
+2| ≤ϵ′
+2 ⇒p[vp
+j ] can be anything.
+Note that, since the error ampliﬁcation of the gadget Gmax is at most c and computing
+p[v(U p
+≤j)] for all j requires j applications of Gmax,
+p[v(U p
+≤j)] = max
+i≤j p[v(U p
+i )] ± cϵ′j.
+(19)
+To establish the second part of the claim, we need to show that, for all p, j, j′,
+p[v(U p
+j )] > p[v(U p
+j′)] + 5cnϵ′ ⇒p[v(xp
+j′)] ∈[0, ncϵ′].
+1. Note that, if there exists some j′′ < j′ such that p[v(U p
+j′′)] > p[v(U p
+j′)]+cϵ′n,
+then
+p[v(U p
+≤j′−1)] = max
+i≤j′−1 p[v(U p
+i )] ± cϵ′(j′ −1)
+≥p[v(U p
+j′′)] −cϵ′(j′ −1)
+> p[v(U p
+j′)] + cnϵ′ −cϵ′(j′ −1) ≥p[v(U p
+j′)] + ϵ′.
+Then, because p[v(U p
+≤j′−1)] > p[v(U p
+j′)] + ϵ′, it follows that p[w(U p
+j′−1)] = 0
+and p[vp
+j′−1] = 0. Therefore,
+p[v(xp
+j′)] = p
+⎡
+⎣v
+⎛
+⎝
+j′
+
+i=1
+xp
+i
+⎞
+⎠
+⎤
+⎦· p[vp
+j′−1] ± cϵ′ = ±cϵ′.
+2. The case j < j′ reduces to the previous for j′′ = j.
+3. It remains to deal with the case j > j′, under the assumption that, for all
+j′′ < j′,
+p[v(U p
+j′′)] ≤p[v(U p
+j′)] + cϵ′n,
+which, in turn, implies
+p[v(U p
+≤j′)] < p[v(U p
+j′)] + 2cϵ′n
+(by (19)).
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+238
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+Let us further distinguish the following subcases.
+(a) If there exists some k, j′+1 ≤k ≤j, such that p[v(U p
+k )] > p[v(U p
+≤k−1)]+
+ϵ′, then
+p[w(U p
+k−1)] = 1
+⇒p[vp
+k−1] = 1
+⇒p
+
+v
+k−1
+
+i=1
+xp
+i
+
+= p
+
+v
+ k
+
+i=1
+xp
+i
+
+(1 −p[vp
+k−1]) ± cϵ′ = ±cϵ′
+⇒p
+⎡
+⎣v
+⎛
+⎝
+j′
+
+i=1
+xp
+i
+⎞
+⎠
+⎤
+⎦= ±(k −j′)cϵ′
+by successive applications
+of (16)
+
+⇒p
+$
+v(xp
+j′)
+%
+= ±ncϵ′
+(by (17), (18)).
+(b) If, for all k, j′ + 1 ≤k ≤j, it holds that p[v(U p
+k )] ≤p[v(U p
+≤k−1)] + ϵ′,
+we will show a contradiction; hence, only the previous case can hold.
+Towards a contradiction, we argue ﬁrst that
+p[v(U p
+≤j′+1)] ≥p[v(U p
+j )] −2cnϵ′.
+To show this, we distinguish the cases j = j′ + 1, j > j′ + 1.
+• In the case j = j′ + 1, we have
+p[v(U p
+≤j′+1)] ≥max {p[v(U p
+j′+1)], p[v(U p
+≤j′)]} −cϵ′ ≥p[v(U p
+j′+1)] −cϵ′
+= p[v(U p
+j )] −cϵ′.
+• In the case j > j′ + 1, we have, for all k, j′ + 2 ≤k ≤j,
+p[v(U p
+≤k−1)] ≥max {p[v(U p
+≤k−1)], p[v(U p
+k )]}−ϵ′ ≥p[v(U p
+≤k)]−cϵ′−ϵ′,
+where the last inequality holds since the game Gmax has error am-
+pliﬁcation at most c. Summing these inequalities for j′ + 2 ≤k ≤j,
+we deduce that
+p[v(U p
+≤j′+1)] ≥p[v(U p
+≤j)] −(cϵ′ + ϵ′)(n −2)
+≥max {p[v(U p
+j )], p[v(U p
+≤j−1)]} −cϵ′ −(cϵ′ + ϵ′)(n −2)
+≥p[v(U p
+j )] −2cϵ′n.
+It follows that
+p[v(U p
+≤j′+1)] > p[v(U p
+j′)] + 3cnϵ′.
+But
+p[v(U p
+≤j′+1)] ≤max {p[v(U p
+j′+1)], p[v(U p
+≤j′)]} + cϵ′,
+and recall that
+p[v(U p
+≤j′)] < p[v(U p
+j′)] + 2cϵ′n.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+239
+We can deduce that
+max {p[v(U p
+j′+1)], p[v(U p
+≤j′)]} = p[v(U p
+j′+1)],
+which, combined with the above, implies
+p[v(U p
+j′+1)] ≥p[v(U p
+j′)] + 3cnϵ′ −cϵ′ > p[v(U p
+≤j′)] + ϵ′.
+From Lemma 4.21, it follows that the extraction of an ϵ-Nash equilibrium of game
+G from an ϵ′-Nash equilibrium of game GG cannot be done by just interpreting the
+values {xp
+j := p[v(xp
+j )]}j as the mixed strategy of player p. What we show next is
+that, for the right choice of ϵ′, a trim and renormalize transformation succeeds in
+deriving an ϵ-Nash equilibrium of game G from an ϵ′-Nash equilibrium of game GG.
+Indeed, for all p ≤r, suppose that {ˆxp
+j}j are the values derived from {xp
+j}j by setting
+ˆxp
+j =
++
+0
+if xp
+j ≤cnϵ′,
+xp
+j
+otherwise
+and then renormalizing the resulting values {ˆxp
+j}j so that 
+j ˆxp
+j = 1.
+Lemma 4.22. There exists a polynomial p(·) such that, if {{xp
+j}j}p is an ϵ/p(|G|)-
+Nash equilibrium of game GG, then the trimmed and renormalized values {{ˆxp
+j}j}p
+constitute an ϵ-Nash equilibrium of game G.
+Proof. We ﬁrst establish the following useful lemma.
+Lemma 4.23. At an ϵ′-Nash equilibrium of game GG, for all p, j, it holds that
+p[v(U p
+j )] =
+
+s∈S−p
+up
+jsx1
+s1 · · · xp−1
+sp−1xp+1
+sp+1 · · · xr
+sr ± 2nr−1ζr,
+where c is the maximum error ampliﬁcation of the gadgets used in the construction of
+GG, ζr = cϵ′ + ((1 + ζ)r −1)(cϵ′ + 1), ζ = 2r log n cϵ′.
+Proof. Using the same notation as in section 4.3, let S−p = {S−p(1), . . . , S−p(nr−1)},
+so that
+
+s∈S−p
+up
+jsxs =
+nr−1
+
+ℓ=1
+up
+jS−p(ℓ)xS−p(ℓ).
+Recall that in GG, for each partial sum z
+ℓ=1 up
+jS−p(ℓ)xS−p(ℓ), 1 ≤z ≤nr−1, we have
+included vertex v(z
+ℓ=1 up
+jS−p(ℓ)xS−p(ℓ)). Similarly, for each partial product of the
+summands up
+js
+
+p̸=q≤z xq
+sq, 0 ≤z ≤r, we have included vertex v(up
+js
+
+p̸=q≤z xq
+sq).
+Note that, since we have rescaled the utilities to the set [0, 1], all partial sums and
+products must also lie in [0, 1]. Note, moreover, that to avoid large degrees in the
+resulting graphical game, each time we need to make use of a value xq
+sq we create a
+new copy of the vertex v(xq
+sq) using the gadget G= and, then, use the new copy for the
+computation of the desired partial product; an easy calculation shows that we have to
+make (r −1)nr−1 copies of v(xq
+sq), for all q ≤r, sq ∈Sq. To limit the degree of each
+vertex to 3, we create a binary tree of copies of v(xq
+sq) with (r −1)nr−1 leaves and use
+each leaf once. Then, because of the error ampliﬁcation of G=, this already induces
+an error of ±⌈log (r −1)nr−1⌉cϵ′ to each of the factors of the partial products. The
+following lemma characterizes the error that results from the error ampliﬁcation of
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+240
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+our gadgets in the computation of the partial products and can be proved easily by
+induction.
+Lemma 4.24. For all p ≤r, j ∈Sp, s ∈S−p, and z ≤r,
+p
+⎡
+⎣v
+⎛
+⎝up
+js
+
+p̸=ℓ≤z
+xℓ
+sℓ
+⎞
+⎠
+⎤
+⎦= up
+js
+
+p̸=ℓ≤z
+xℓ
+sℓ± ζz,
+(20)
+where ζz = cϵ′ + ((1 + ζ)z −1)(cϵ′ + 1), ζ = 2r log n cϵ′.
+The following lemma characterizes the error in the computation of the partial
+sums and can be proved by induction using the previous lemma for the base case.
+Lemma 4.25. For all p ≤r, j ∈Sp, and z ≤nr−1,
+p
+
+v
+ z
+
+ℓ=1
+up
+jS−p(ℓ)xS−p(ℓ)
+
+=
+z
+
+ℓ=1
+up
+jS−p(ℓ)xS−p(ℓ) ± (zζr + (z −1)cϵ′),
+(21)
+where ζr is deﬁned as in Lemma 4.24.
+From Lemma 4.25 we can deduce, in particular, that for all p ≤r, j ∈Sp,
+p[v(U p
+j )] =
+
+s∈S−p
+up
+jsxs ± 2nr−1ζr.
+Lemma 4.26. For all p ≤r, j ∈Sp,
+
+
+s∈S−p
+up
+jsxs −
+
+s∈S−p
+up
+jsys
+
+≤max
+s∈S−p {up
+js}
+
+q̸=p
+
+i∈Sq
+|xq
+i −yq
+i |.
+Proof. We have
+
+
+s∈S−p
+up
+jsxs −
+
+s∈S−p
+up
+jsys
+
+≤
+
+s∈S−p
+up
+js |xs −ys| ≤max
+s∈S−p {up
+js}
+
+s∈S−p
+|xs −ys| .
+(22)
+Let us denote by X q the random variable, ranging over the set Sq, which represents
+the mixed strategy {xq
+i }i∈Sq, q ≤r. Similarly, deﬁne the random variable Yq from the
+mixed strategy {yq
+i }i∈Sq, q ≤r. Note, then, that 1
+2
+
+s∈S−p |xs −ys| is precisely the
+total variation distance between the vector random variable (X q)q̸=p and the vector
+random variable (Yq)q̸=p. That is,
+1
+2
+
+s∈S−p
+|xs −ys| = ||(X q)q̸=p −(Yq)q̸=p||T V .
+(23)
+By the coupling lemma, we have that
+||(X q)q̸=p −(Yq)q̸=p||T V ≤Pr ((X q)q̸=p ̸= (Yq)q̸=p)
+for any coupling of (X q)q̸=p and (Yq)q̸=p. Applying a union bound to the right-hand
+side of the above implies
+||(X q)q̸=p −(Yq)q̸=p||T V ≤
+
+q̸=p
+Pr (X q ̸= Yq) .
+(24)
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+241
+Now let us ﬁx a coupling between (X q)q̸=p and (Yq)q̸=p so that, for all q ̸= p,
+Pr (X q ̸= Yq) = ||X q −Yq||T V .
+Such a coupling exists by the coupling lemma for each q ̸= p individually, and for the
+whole vectors (X q)q̸=p and (Yq)q̸=p it exists because also the X q’s are independent,
+and so are the Yq’s. Then (24) implies that
+||(X q)q̸=p −(Yq)q̸=p||T V ≤
+
+q̸=p
+||X q −Yq||T V ,
+so that from (22), (23) we get
+
+
+s∈S−p
+up
+jsxs −
+
+s∈S−p
+up
+jsys
+
+≤max
+s∈S−p {up
+js}2
+
+q̸=p
+||X q −Yq||T V .
+(25)
+Now, note that, for all q,
+||X q −Yq||T V = 1
+2
+
+i∈Sq
+|xq
+i −yq
+i |.
+Hence, (25) implies
+
+
+s∈S−p
+up
+jsxs −
+
+s∈S−p
+up
+jsys
+
+≤max
+s∈S−p {up
+js}
+
+q̸=p
+
+i∈Sq
+|xq
+i −yq
+i |.
+We can conclude the proof of Lemma 4.22 by invoking Lemmas 4.23 and 4.26.
+Indeed, by the deﬁnition of the {ˆxp
+j}, it follows that for all p, j ∈Sp,
+ˆxp
+j =
++ xp
+j
+Λp ,
+xp
+j > cnϵ′,
+0,
+xp
+j ≤cnϵ′,
+where
+1 ≥Λp =
+
+j∈Sp
+xp
+jX{xp
+j >cnϵ′} = 1 −
+
+j∈Sp
+xp
+jX{xp
+j ≤cnϵ′} ≥1 −n · cnϵ′,
+where X{·} is the indicator function. Therefore,
+|ˆxp
+j −xp
+j| =
++ xp
+j
+Λp −xp
+j,
+xp
+j > cnϵ′,
+xp
+j,
+xp
+j ≤cnϵ′,
+which implies
+|ˆxp
+j −xp
+j| ≤
++
+1
+Λp −1,
+xp
+j > cnϵ′,
+cnϵ′,
+xp
+j ≤cnϵ′.
+Thus,
+|ˆxp
+j −xp
+j| ≤max
+-
+cnϵ′,
+n2cϵ′
+1 −n2cϵ′
+.
+=: δ1,
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+242
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+which by Lemma 4.26 implies that
+
+
+s∈S−p
+up
+jsxs −
+
+s∈S−p
+up
+jsˆxs
+
+≤max
+s∈S−p {up
+js}(r −1)nδ1 ≤(r −1)nδ1 =: δ2,
+(26)
+where the second inequality follows from the fact that we have rescaled the utilities
+so that they lie in [0, 1].
+Choosing ϵ′ =
+ϵ
+40cr2nr+1 , we will argue that the conditions of an ϵ-Nash equilib-
+rium are satisﬁed by the mixed strategies {ˆxp
+j}p,j. First, note that
+(1 + 2r log n cϵ′)r −1 ≤
+
+1 +
+ϵ
+20rnr
+r
+−1 ≤exp
+/
+ϵ
+20nr
+0
+−1 ≤
+ϵ
+10nr ,
+which implies that
+2nr−1ζr ≤2nr−1 
+cϵ′ +
+ϵ
+10nr (cϵ′ + 1)
+
+≤2nr−1 1.5ϵ
+10nr = 3ϵ
+10n ≤0.3ϵ
+n .
+Also, note that
+δ1 = max
+-
+cnϵ′,
+n2cϵ′
+1 −n2cϵ′
+.
+≤2n2cϵ′,
+which gives
+δ2 = (r −1)nδ1 ≤rn2n2c
+ϵ
+40cr2nr+1 ≤
+ϵ
+20r.
+Thus, for all p ≤r, j, j′ ∈Sp, we have that
+
+s∈S−p
+up
+jsˆxs >
+
+s∈S−p
+up
+j′sˆxs + ϵ
+⇒
+
+s∈S−p
+up
+jsxs + δ2 >
+
+s∈S−p
+up
+j′sxs −δ2 + ϵ
+(using (26))
+⇒
+
+s∈S−p
+up
+jsxs >
+
+s∈S−p
+up
+j′sxs + ϵ −2δ2
+⇒p[v(U p
+j )] + 2nr−1ζr > p[v(U p
+j′)] −2nr−1ζr + ϵ −2δ2 (using Lemma 4.23)
+⇒p[v(U p
+j )] > p[v(U p
+j′)] −4nr−1ζr + ϵ −2δ2
+⇒p[v(U p
+j )] > p[v(U p
+j′)] + 5cnϵ′
+⇒xp
+j′ ≤cnϵ′ (using Lemma 4.21)
+⇒ˆxp
+j′ = 0.
+Therefore, {ˆxp
+j} is indeed an ϵ-Nash equilibrium of game G, which concludes the proof
+of Lemma 4.22.
+Thus, the proof of Theorem 4.20 is completed.
+We have the following extension of Theorem 4.17.
+Theorem 4.27. For every ﬁxed r > 1, there is a polynomial-time reduction from
+r-Nash to 3-Nash.
+Proof.
+The proof follows immediately from the proofs of Theorems 4.19 and
+4.20. Indeed, observe that the reduction of Theorem 4.20 still holds when we use
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+243
+the gadget G+,∗of section 4.5 for the construction of our graphical games, since the
+gadget G+,∗has constant error ampliﬁcation. Therefore, the problem of computing an
+ϵ-Nash equilibrium of an r-player normal form game G can be polynomially reduced
+to computing an ϵ′-Nash equilibrium of a graphical game GG′ which can be legally
+colored with three colors (after performing the “glueing” step described in the end of
+the proof of Theorem 4.17 and appropriately adjusting the ϵ′ speciﬁed in the proof
+of Theorem 4.20). Observe, further, that the reduction of Theorem 4.19 can be used
+to map the latter to computing an ϵ′′-Nash equilibrium of a three-player normal form
+game G′′, since the number of players that are required for G′′ is equal to the minimum
+number of colors needed for a legal coloring of GG′. The claim follows by combining
+the reductions.
+4.7. Reductions between diﬀerent notions of approximation. We estab-
+lish a polynomial-time reduction from the problem of computing an approximately
+well-supported Nash equilibrium to the problem of computing an approximate Nash
+equilibrium. As pointed out in section 2, the reduction in the opposite direction is triv-
+ial, since an ϵ-approximately well-supported Nash equilibrium is also an ϵ-approximate
+Nash equilibrium.
+Lemma 4.28. Given an ϵ-approximate Nash equilibrium {xp
+j}j,p of a game G,
+we can compute in polynomial time a √ϵ · (√ϵ + 1 + 4(r −1) max {u})-approximately
+well-supported Nash equilibrium {ˆxp
+j}j,p, where r is the number of players in G and
+max {u} is the maximum entry in the payoﬀtables of G.
+Proof. Since {xp
+j}j,p is an ϵ-approximate Nash equilibrium, it follows that for
+every player p ≤r and every mixed strategy {yp
+j }j for that player
+
+s∈S
+up
+s · xs−p · xp
+sp ≥
+
+s∈S
+up
+s · xs−p · yp
+sp −ϵ.
+Equivalently,
+(27)
+∀p ≤r,
+∀{yp
+j }j∈Sp :
+
+j∈Sp
+⎡
+⎣
+
+s−p∈S−p
+up
+js−p xs−p
+⎤
+⎦xp
+j ≥
+
+j∈Sp
+⎡
+⎣
+
+s−p∈S−p
+up
+js−p xs−p
+⎤
+⎦yp
+j −ϵ.
+For all p ≤r, denote Up
+j = 
+s−p∈S−p up
+js−p xs−p for all j ∈Sp, and Up
+max = maxj Up
+j .
+Then, if we choose {yp
+j }j to be some pure strategy from the set arg maxj Up
+j , (27)
+implies
+∀p ≤r :
+
+j∈Sp
+Up
+j xp
+j ≥Up
+max −ϵ.
+(28)
+Now, let us ﬁx some player p ≤r. We want to upper-bound the probability mass
+that the distribution {xp
+j}j assigns to pure strategies j ∈Sp which give expected
+utility Up
+j more than an additive ϵk smaller than Up
+max, for some k to be speciﬁed
+later. The following bound is easy to derive using (28).
+Claim 5. For all p, set
+zp =
+
+j∈Sp
+xp
+j · X{U p
+j <U p
+max−ϵk},
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+244
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+where XA is the characteristic function of the event A. Then
+zp ≤1
+k .
+Let us consider then the strategy proﬁle {ˆxp
+j}j,p deﬁned as follows:
+∀p, j ∈Sp :
+ˆxp
+j =
+⎧
+⎪
+⎨
+⎪
+⎩
+xp
+j
+1−zp ,
+Up
+j ≥Up
+max −ϵk,
+0 otherwise.
+We establish the following bound on the L1 distance between the strategy proﬁles
+{xp
+j}j and {ˆxp
+j}j.
+Claim 6. For all p, 
+j∈Sp |xp
+j −ˆxp
+j| ≤
+2
+k−1.
+Proof. Denote Sp,1 := {j | j ∈Sp, Up
+j ≥Up
+max −ϵk} and Sp,2 := Sp \ Sp,1. Then
+
+j∈Sp
+|xp
+j −ˆxp
+j| =
+
+j∈Sp,1
+|xp
+j −ˆxp
+j| +
+
+j∈Sp,2
+|xp
+j −ˆxp
+j|
+=
+
+j∈Sp,1
+xp
+j −
+xp
+j
+1 −zp
+ +
+
+j∈Sp,2
+|xp
+j|
+=
+
+j∈Sp,1
+xp
+j −
+xp
+j
+1 −zp
+ + zp
+≤
+zp
+1 −zp
+
+j∈Sp,1
+xp
+j + zp
+≤
+1
+k −1 + 1
+k ≤
+2
+k −1.
+Now, for all players p, let ˆUp
+j and ˆUp
+max be deﬁned similarly to Up
+j and Up
+max.
+Recall Lemma 4.26 from section 4.6.
+Lemma 4.29. For all p, j ∈Sp,
+|Up
+j −ˆUp
+j | ≤max
+s∈S−p {up
+js}
+
+p′̸=p
+
+j∈Sp′
+|xp′
+j −ˆxp′
+j |.
+Let us then take Δ2 = 2 r−1
+k−1 maxp,j∈Sp,s∈S−p {up
+js}. Claim 6 and Lemma 4.29
+imply that the strategy proﬁle {ˆxp
+j}j,p satisﬁes
+∀p, ∀j ∈Sp :
+|Up
+j −ˆUp
+j | ≤Δ2.
+We will establish that {ˆxp
+j}j,p is an (ϵk + 2Δ2)-Nash equilibrium. Equivalently, we
+shall establish that
+∀p, ∀i, j ∈Sp :
+ˆUp
+j < ˆUp
+i −(ϵk + 2Δ2) ⇒ˆxp
+j = 0.
+Indeed,
+ˆUp
+j < ˆUp
+i −(ϵk + 2Δ2) ⇒Up
+j −Δ2 < Up
+i + Δ2 −(ϵk + 2Δ2)
+⇒Up
+j < Up
+i −(ϵk + 2Δ2 −2Δ2)
+⇒Up
+j < Up
+max −ϵk
+⇒ˆxp
+j = 0.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+245
+Taking k = 1 +
+1
+√ϵ, it follows that {ˆxp
+j}j,p is a √ϵ · (√ϵ + 1 + 4(r −1) max{up
+js})-Nash
+equilibrium.
+5. The main reduction. We prove our main result, namely, the following the-
+orem.
+Theorem 5.1. Both 3-Nash and 3-graphical Nash are PPAD-complete.
+Proof. That 3-Nash is in PPAD follows from Theorem 3.1. That 3-graphical
+Nash is in PPAD follows by reducing it to 3-Nash, by Theorem 4.1, and then
+invoking Theorem 3.1. We hence focus on establishing the PPAD-hardness of the
+problems.
+The reduction is from the problem Brouwer deﬁned in section 3.3. Given an
+instance of Brouwer, that is, a circuit C with 3n input bits and 2 output bits
+describing a Brouwer function as speciﬁed in section 3.3, we construct a graphical game
+G, with maximum degree 3 that simulates the circuit C, and specify an accuracy ϵ, so
+that, given an ϵ-Nash equilibrium of G, one can ﬁnd in polynomial time a panchromatic
+vertex of the Brouwer instance. Then, since, by Theorem 4.1, 3-graphical Nash
+reduces to 3-Nash, this completes the proof.
+The graphical game G that we construct will be binary, in that each vertex v in
+it will have two strategies, and thus, at equilibrium, will represent a real number in
+[0, 1], denoted p[v]. (Letting 0 and 1 denote the strategies, p[v] is the probability
+that v plays 1.) There will be three distinguished vertices vx, vy, and vz which will
+represent the coordinates of a point in the three-dimensional cube and the construction
+will guarantee that in any Nash equilibrium of game G this point will be close to a
+panchromatic vertex of the given Brouwer instance.
+The building blocks of G will be the game gadgets Gα, G×α, G=, G+, G−, G∗that we
+constructed in section 4.1 plus a few new gadgets. Recall the following lemma from
+Propositions 4.2, 4.3, and 4.5 and Figures 4, 3, and 5.
+Lemma 5.2. There exist binary graphical games Gα, where α is any rational in
+[0, 1], G×α, where α is any nonnegative rational, G=, G+, G−, G∗, with at most four
+players a, b, c, d each, such that, in all games, the payoﬀs of a and b do not depend
+on the choices of the other vertices c, d, and, for ϵ < 1,
+1. in every ϵ-Nash equilibrium of game Gα, we have p[d] = α ± ϵ;
+2. in every ϵ-Nash equilibrium of game G×α, we have p[d] = min(1, αp[a]) ± ϵ;
+3. in every ϵ-Nash equilibrium of game G=, we have p[d] = p[a] ± ϵ;
+4. in every ϵ-Nash equilibrium of game G+, we have p[d] = min{1, p[a]+p[b]}±ϵ;
+5. in every ϵ-Nash equilibrium of game G−, we have p[d] = max{0, p[a]−p[b]}±ϵ;
+6. in every ϵ-Nash equilibrium of game G∗, we have p[d] = p[a] · p[b] ± ϵ;
+where by x = y ± ϵ we denote y −ϵ ≤x ≤y + ϵ.
+Let us further deﬁne a comparator game G<.
+Lemma 5.3. There exists a binary graphical game G< with three players a, b, and
+d such that the payoﬀs of a and b do not depend on the choices of d and, in every
+ϵ-Nash equilibrium of the game, with ϵ < 1, it holds that p[d] = 1 if p[a] < p[b] −ϵ,
+and p[d] = 0 if p[a] > p[b] + ϵ.
+Proof. Let us deﬁne the payoﬀtable of player d as follows: d receives a payoﬀof
+1 if d plays 0 and a plays 1; and d receives a payoﬀof 1 if d plays 1 and b plays 1;
+otherwise d receives a payoﬀof 0. Equivalently, d receives an expected payoﬀof p[a]
+if d plays 0, and an expected payoﬀof p[b] if d plays 1. It immediately follows that
+if in an ϵ-Nash equilibrium p[a] < p[b] −ϵ, then p[d] = 1, whereas, if p[a] > p[b] + ϵ,
+p[d] = 0.
+Notice that, in G<, p[d] is arbitrary if |p[a] −p[b]| ≤ϵ; hence we call it the brittle
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+246
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+b
+<
+d
+f
+a
+e
+=
+1
+Fig. 13. Brittleness of comparator games.
+comparator. As an aside, it is not hard to see that a robust comparator, one in which
+d is guaranteed, in an exact Nash equilibrium, to be, say, 0 if p[a] = p[b], cannot exist,
+since it could be used to produce a simple graphical game with no Nash equilibrium,
+contradicting Nash’s theorem. For completeness we present such a game in Figure 13,
+where vertices e and b constitute a G1 game so that, in any Nash equilibrium, p[b] = 1,
+vertices d, f, a constitute a G= game so that, in any Nash equilibrium, p[a] = p[d]
+and vertices a, b, d constitute a comparator game with the hypothetical behavior that
+p[d] = 1 if p[a] < p[b] and p[d] = 0 if p[a] ≥p[b]. Then it is not hard to argue that,
+contrary to Nash’s theorem, the game of Figure 13 does not have a Nash equilibrium:
+Indeed if, in a Nash equilibrium, p[a] = 1, then p[d] = 0, since p[a] = 1 = p[b], and so
+p[a] = p[d] = 0, by G=, a contradiction. On the other hand, if, in a Nash equilibrium,
+p[a] < 1, then p[d] = 1, since p[a] < 1 = p[b], and so p[a] = p[d] = 1, by G=, again a
+contradiction.
+To continue with our reduction from Brouwer to 3-graphical nash, we include
+the following vertices to the graphical game G:
+• the three coordinate vertices vx, vy, vz;
+• for i ∈{1, 2, . . ., n}, vertices vbi(x), vbi(y), and vbi(z), whose p values corre-
+spond to the ith most signiﬁcant bit of p[vx], p[vy], p[vz];
+• for i ∈{1, 2, . . ., n}, vertices vxi, vyi, and vzi, whose p values correspond to
+the fractional number resulting from subtracting from p[vx], p[vy], p[vz] the
+fractional numbers corresponding to the i −1 most signiﬁcant bits of p[vx],
+p[vy], p[vz], respectively.
+We can extract these values by computing the binary representation of ⌊p[vx]2n⌋
+and similarly for vy and vz, that is, the binary representations of the integers i, j, k
+such that (x, y, z) = (p[vx], p[vy], p[vz]) lies in the cubelet Kijk. This is done by a
+graphical game that simulates, using the arithmetical gadgets of Lemmas 5.2 and 5.3,
+the following algorithm (< (a, b) is 1 if a ≤b and 0 if a > b):
+x1 = x;
+for i = 1, . . . , n do:
+{bi(x) :=< (2−i, xi); xi+1 := xi −bi(x) · 2−i};
+similarly for y and z;
+This is accomplished in G by connecting these vertices as prescribed by Lemmas 5.2
+and 5.3, so that p[vxi], p[vbi(x)], etc., approximate the value of xi, bi(x), etc., as
+computed by the above algorithm. The following lemma (when applied with m = n)
+shows that this device properly decodes the ﬁrst n bits of the binary expansion of
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+247
+x = p[vx], as long as x is not too close to a multiple of 2−n (suppose ϵ ≪2−n to be
+ﬁxed later).
+Lemma 5.4. For m ≤n, if m
+i=1 bi2−i+3mϵ < p[vx] < m
+i=1 bi2−i+2−m−3mϵ
+for some b1, . . . , bm ∈{0, 1}, then, in every ϵ-Nash equilibrium of G, p[vbj(x)] = bj,
+and p[vxj+1] = p[vx] −j
+i=1 bi2−i ± 3jϵ, for all j ≤m.
+Proof. The proof is by induction on j. For j = 1, the hypothesis m
+i=1 bi2−i +
+3mϵ < p[vx] < m
+i=1 bi2−i + 2−m −3mϵ implies, in particular, that
+b1
+2 + 3ϵ ≤
+m
+
+i=1
+bi2−i + 3mϵ < p[vx] <
+m
+
+i=1
+bi2−i + 2−m −3mϵ ≤b1
+2 + 1
+2 −3ϵ,
+and since p[vx1] = p[vx] ± ϵ, it follows that
+b1
+2 + 2ϵ < p[vx1] < b1
+2 + 1
+2 −2ϵ.
+By Lemma 5.3, this implies that p[vb1(x)] = b1; note that the preparation of the
+constant 1
+2—against which a comparator game compares the value p[vx1]—is done
+via a G 1
+2 game which introduces an error of ±ϵ.
+For the computation of p[vx2],
+the multiplication of p[vb1(x)] by 1
+2 and the subtraction of the product from p[vx1]
+introduce an error of ±ϵ each and, therefore, p[vx2] = p[vx1] −b1 1
+2 ± 2ϵ. And, since
+p[vx1] = p[vx] ± ϵ, it follows that p[vx2] = p[vx] −b1 1
+2 ± 3ϵ, as required.
+Supposing that the claim holds up to j −1 ≤m−1, we will show that it holds for
+j. By the induction hypothesis, we have that p[vxj] = p[vx] −j−1
+i=1 bi2−i ± 3(j −1)ϵ.
+Combining this with m
+i=1 bi2−i + 3mϵ < p[vx] < m
+i=1 bi2−i + 2−m −3mϵ, it follows
+that
+m
+
+i=j
+bi2−i + 3(m −(j −1))ϵ < p[vxj] <
+m
+
+i=j
+bi2−i + 2−m −3(m −(j −1))ϵ,
+which implies
+bj
+2j + 2ϵ < p[vxj] < bj
+2j + 1
+2j −2ϵ.
+Continue as in the base case.
+Assuming that x = p[vx], y = p[vy], z = p[vz] are all at distance greater than
+3nϵ from any multiple of 2−n, the part of G that implements the above algorithm
+computes i, j, k such that the point (x, y, z) lies in the cubelet Kijk; that is, there
+are 3n vertices of the game G whose p values are equal to the n bits of the binary
+representation of i, j, k. Once we have the binary representations of i, j, k, we can
+feed them into another part of G that simulates the circuit C. We could simulate
+the circuit by having vertices that represent gates, using addition (with ceiling 1)
+to simulate or, multiplication for and, and 1 −x for negation.
+However, there is
+a simpler way, one that avoids the complications related to accuracy, to simulate
+Boolean functions under the assumption that the inputs are 0 or 1.
+Lemma 5.5. There are binary graphical games G∨, G∧, G¬ with two input players
+a, b (one input player a for G¬) and an output player c such that the payoﬀs of a and
+b do not depend on the choices of c, and, at any ϵ-Nash equilibrium with ϵ < 1/4 in
+which p[a], p[b] ∈{0, 1}, p[c] is also in {0, 1}, and is in fact the result of applying the
+corresponding Boolean function to the inputs.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+248
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+Proof. These games are in the same spirit as G<. In G∨, for example, the payoﬀ
+to c is 1/2 if it plays 0; if c plays 1 its payoﬀis 1 if at least one of a, b plays 1, and it
+is 0 if they both play 0. Similarly for G∧and G¬.
+It would seem that all we have to do now is to close the loop as follows: In addition
+to the part of G that computes the bits of i, j, k, we could have a part that simulates
+circuit C in the neighborhood of Kijk and decides whether, among the vertices of the
+cubelet Kijk, there is a panchromatic one; if not, the vertices vx, vy, and vz could be
+incentivized to change their p values, say in the direction δC(i,j,k), or otherwise stay
+put. To simulate a circuit evaluation in G we could have one vertex for each gate of
+the circuit so that, in any ϵ-Nash equilibrium in which all the p[vbi(x)]’s are 0 −1,
+the vertices corresponding to the outputs of the circuit also play pure strategies, and,
+furthermore, these strategies correspond correctly to the outputs of the circuit.
+But, as we mentioned above, there is a problem: Because of the brittle compara-
+tors, at the boundaries of the cubelets the vertices that should represent the values
+of the bits of i, j, k hold in fact arbitrary reals and, therefore, so do the vertices
+that represent the outputs of the circuit, and this noise in the calculation can create
+spurious Nash equilibria.
+Suppose for example that (x, y, z) lies on the boundary
+between two cubelets that have color 1, i.e., their centers are assigned vector δ1 by C,
+and none of these cubelets has a panchromatic vertex. Then there ought not to be a
+Nash equilibrium with p[vx] = x, p[vy] = y, p[vz] = z. We would want that, when
+p[vx] = x, p[vy] = y, p[vz] = z, the vertices vx, vy, vz have the incentive to shift their
+p values in direction δ1, so that vx prefers to increase p[vx]. However, on a boundary
+between two cubelets, some of the “bit values” that get loaded into the vertices vbi(x)
+could be other than 0 and 1, and then there is nothing we can say about the output
+of the circuit that processes these values.
+To overcome this diﬃculty, we resort to the following averaging maneuver: We
+repeat the above computation not just for the point (x, y, z) but also for all M =
+(2m + 1)3 points of the form (x + p · α, y + q · α, z + s · α) for −m ≤p, q, s ≤m,
+where m is a large enough constant to be ﬁxed later (we show below that m = 20
+is suﬃcient).
+The vertices vx, vy, vz are then incentivized to update their values
+according to the consensus of the results of these computations, most of which are
+reliable, as we shall show next.
+Let us ﬁrst describe this averaging in more detail. It will be convenient to assume
+that the output of C is a little more explicit than three bits: let us say that C computes
+six bits Δx+, Δx−, Δy+, Δy−, Δz+, Δz−, such that at most one of Δx+, Δx−is 1,
+at most one of Δy+, Δy−is 1, and similarly for z, and the increment of the Brouwer
+function at the center of Kijk is α · (Δx+ −Δx−, Δy+ −Δy−, Δz+ −Δz−), equal to
+one of the vectors δ0, δ1, δ2, δ3 speciﬁed in the deﬁnition of Brouwer, where recall
+α = 2−2n.
+The game G has the following structure: Starting from (x, y, z), some part of the
+game is devoted to calculating the points (x+p·α, y+q·α, z+s·α), −m ≤p, q, s ≤m.
+Then, another part evaluates the circuit C on the binary representation of each of
+these points yielding 6M output bits, Δx+
+1 , . . . , Δz−
+M.
+A ﬁnal part calculates the
+following averages:
+(δx+, δy+, δz+) = α
+M
+M
+
+t=1
+(Δx+
+t , Δy+
+t , Δz+
+t ),
+(29)
+(δx−, δy−, δz−) = α
+M
+M
+
+t=1
+(Δx−
+t , Δy−
+t , Δz−
+t ),
+(30)
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+249
+which correspond to the average positive, respectively negative, shift of all M points.
+We have already described above how to implement the bit extraction and the
+evaluation of a circuit using the gadgets of Lemmas 5.2, 5.3, and 5.5. The computation
+of points (x+p·α, y+q·α, z+s·α) for all −m ≤p, q, s ≤m, is also easy to implement by
+preparing the values α|p|, α|q|, α|s|, using gadgets Gα|p|, Gα|q|, Gα|s|, and then adding,
+or subtracting, the results to x, y, and z, respectively—depending on whether p is
+positive or not—and similarly for q and s. Of course, these computations are subject
+to truncations at 0 and 1 (see Lemma 5.2).
+To implement the averaging of (29) and (30) we must be careful on the order of
+operations. Speciﬁcally, we ﬁrst have to multiply the six outputs, Δx+
+t , Δx−
+t , Δy+
+t ,
+Δy−
+t , Δz+
+t , Δz−
+t , of each circuit evaluation by
+α
+M using the G× α
+M gadget and, having
+done so, we then implement the additions (29) and (30). Since α will be a very small
+constant, by doing so we avoid undesired truncations at 0 and 1.
+We can now close the loop by inserting equality, addition, and subtraction gadgets,
+G=, G+, G−, that force, at equilibrium, x to be equal to (x′ + δx+) −δx−, where x′ is
+a copy of x created using G=, and similarly for y and z. Note that in G we respect the
+order of operations when implementing (x′+δx+)−δx−to avoid undesired truncations
+at 0 or 1 as we shall see next. This concludes the reduction; it is clear that it can be
+carried out in polynomial time.
+Our proof is concluded by the following claim. For the following lemma we choose
+ϵ = α2. Recall from our deﬁnition of Brouwer that α = 2−2n.
+Lemma 5.6. In any ϵ-Nash equilibrium of the game G, one of the vertices of the
+cubelet(s) that contain (p[vx], p[vy], p[vz]) is panchromatic.
+Proof. We start by pointing out a simple property of the increments δ0, . . . , δ3.
+Lemma 5.7. Suppose that for nonnegative integers k0, . . . , k3 all three coordinates
+of 3
+i=0 kiδi are smaller in absolute value than αK
+5 , where K = 3
+i=0 ki. Then all
+four ki are positive.
+Proof. For the sake of contradiction, suppose that k1 = 0. It follows that k0 < K/5
+(otherwise the negative x coordinate of 3
+i=0 kiδi would be too large), and thus one
+of k2, k3 is larger than 2K/5, which makes the corresponding coordinate of 3
+i=0 kiδi
+too large, a contradiction. Similarly if k2 = 0 or k3 = 0. Finally, if k0 = 0, then one of
+k1, k2, k3 is at least K/3 and the associated coordinate of 3
+i=0 kiδi is at least αK/3,
+again a contradiction.
+Let us denote by vδx+, {vΔx+
+t }1≤t≤M the vertices of G that represent the values
+δx+, {Δx+
+t }1≤t≤M. To implement the averaging
+δx+ = α
+M
+M
+
+t=1
+Δx+
+t
+inside G, we ﬁrst multiply each p[vΔx+
+t ] by
+α
+M using a G α
+M gadget and we then sum
+the results by a sequence of addition gadgets. Since each of these operations induces
+an error of ±ϵ and there are 2M −1 operations, it follows that
+p[vδx+] = α
+M
+M
+
+t=1
+p[vΔx+
+t ] ± (2M −1)ϵ.
+(31)
+Similarly, denoting by vδx−, {vΔx−
+t }1≤t≤M the vertices of G that represent the values
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+250
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+δx−, {Δx−
+t }1≤t≤M, it follows that
+p[vδx−] = α
+M
+M
+
+t=1
+p[vΔx−
+t ] ± (2M −1)ϵ,
+(32)
+and similarly for directions y and z.
+We continue the proof by distinguishing two subcases for the location of (x, y, z) =
+(p[vx], p[vy], p[vz]):
+(a) the point (p[vx], p[vy], p[vz]) is further than (m + 1)α from every face of the
+cube [0, 1]3;
+(b) the point (p[vx], p[vy], p[vz]) is at distance at most (m + 1)α from some face
+of the cube [0, 1]3.
+Case (a). Denoting by vx+p·α the player of G that represents x + p · α, the small
+value of ϵ relative to α implies that at most one of the values p[vx+p·α], −m ≤p ≤m,
+can be 3nϵ-close to a multiple of 2−n, and similarly for the directions y and z. Indeed,
+recall that x + p · α is computed from x by ﬁrst preparing the value |p|α via a G|p|α
+gadget and then adding or subtracting the result to x—depending on whether p is
+positive or not—using G+ or G−. It follows that
+p[vx+p·α] = p[vx] + p · α ± 2ϵ,
+(33)
+since each gadget introduces an error of ±ϵ, where there are no truncations at 0 or 1,
+because, by assumption, (m + 1)α < p[vx] < 1 −(m + 1)α. Consequently, for p > p′,
+p[vx+p·α] −p[vx+p′·α] ≥(p −p′) · α −4ϵ > 6nϵ,
+and, moreover,
+p[vx+m·α] −p[vx−m·α] ≤2m · α + 4ϵ ≪2−n,
+(34)
+since m is a constant, α = 2−2n, ϵ = α2, and n is assumed to be large enough. Hence,
+from among the M = (2m + 1)3 circuit evaluations, all but at most 3(2m + 1)2, or at
+least K = (2m −2)(2m + 1)2, compute legitimate, i.e., binary, Δx+, etc. values.
+Let us denote by K ⊆{−m, . . . , m}3, |K| ≥K, the set of values (p, q, r) for which
+the bit extraction from (p[vx+p·α], p[vy+q·α], p[vz+r·α]) results in binary outputs and,
+consequently, so does the circuit evaluation. Let
+SK = α
+M
+
+t∈K
+(p[vΔx+
+t ] −p[vΔx−
+t ], p[vΔy+
+t ] −p[vΔy−
+t ], p[vΔz+
+t ] −p[vΔz−
+t ]),
+(35)
+SKc = α
+M
+
+t/∈K
+(p[vΔx+
+t ] −p[vΔx−
+t ], p[vΔy+
+t ] −p[vΔy−
+t ], p[vΔz+
+t ] −p[vΔz−
+t ]).
+(36)
+Recall that we have inserted gadgets G+, G−, and G= in G to enforce that in a Nash
+equilibrium x = x′ + δx+ −δx−, where x′ is a copy of x. Because of the defection of
+the gadgets this will not be exactly tight in an ϵ-Nash equilibrium. More precisely,
+denoting by vx′ the player of G corresponding to x′, the following are true in an ϵ-Nash
+equilibrium:
+p[vx′] = p[vx] ± ϵ,
+p[vx] = p[v′
+x] + p[vδx+] −p[vδx−] ± 2ϵ,
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+251
+where for the second observe that both p[vδx+] and p[vδx−] are bounded above by
+α + (2M −1)ϵ so there will be no truncations at 0 or 1 when adding p[vδx+] to p[v′
+x]
+and then subtracting p[vδx−]. By combining the above, we get
+p[vδx+] −p[vδx−] = ±3ϵ
+and, similarly, for y and z
+p[vδy+] −p[vδy−] = ±3ϵ,
+p[vδz+] −p[vδz−] = ±3ϵ.
+Now, if we use (31), (32), (35), (36), we derive
+SKℓ+ SKcℓ
+ ≤(4M + 1)ϵ for ℓ= x, y, z,
+where SKℓ, SKcℓis the ℓcoordinate of SK, SKc.
+Moreover, since |K| ≥K, the
+summation SKcℓhas at most M −K summands and because each of them is at most
+α
+M in absolute value, it follows that |SKcℓ| ≤α
+M (M −K) for all ℓ= x, y, z. Therefore,
+we have that
+SKℓ
+ ≤(4M + 1)ϵ + M −K
+M
+α for ℓ= x, y, z.
+Finally, note by the deﬁnition of the set K that, for all (p, q, r) ∈K, the bit extraction
+from (p[vx+p·α], p[vy+q·α], p[vz+r·α]) and the following circuit evaluation result in bi-
+nary outputs. Therefore, SK =
+1
+M
+3
+i=0 kiδi for some nonnegative integers k0, . . . , k3
+adding up to |K|. From the above we get that
+
+3
+
+i=0
+kiδi
+
+∞
+≤(4M + 1)Mϵ + (M −K)α ≤(4M + 1)Mϵ + 3(2m + 1)2α.
+By choosing m = 20, the bound becomes less than αK/5, and so Lemma 5.7 applies.
+It follows that, among the results of the |K| circuit computations, all four δ0, . . . , δ3
+appeared. And, since every point on which the circuit C is evaluated is within ℓ1
+distance at most 3mα + 6ϵ ≪2−n from the point (x, y, z), as (33) dictates, this
+implies that among the corners of the cubelet(s) containing (x, y, z) there must be
+one panchromatic corner, completing the proof of Lemma 5.6 for case (a).
+Case (b). We will show that there is no ϵ-Nash equilibrium in which (p[vx], p[vy],
+p[vz]) is within distance (m + 1)α from a face of [0, 1]3. We will argue so only for the
+case
+p[vx] ≤(m + 1)α,
+(m + 1)α < p[vy] < 1 −(m + 1)α,
+(m + 1)α < p[vz] < 1 −(m + 1)α;
+the other cases follow similarly.
+First, we show that, for all −m ≤p ≤m, the bit extraction from p[vx+p·α] results
+in binary outputs. From the proof of Lemma 5.4 it follows that, to show this, it is
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+252
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+enough to establish that p[vx+pα] < 2−n −3nϵ, for all p. Indeed, for p ≥0, (33)
+applies because there are no truncations at 1 at the addition gadget. So for p ≥0 we
+get
+p[vx+p·α] ≤p[vx] + p · α + 2ϵ ≤(m + 1)α + mα + 2ϵ ≪2−n −3nϵ.
+On the other hand, for p < 0, there might be a truncation at 0 when we subtract the
+value |p|α from p[vx]. Nevertheless, we have that
+p[vx+p·α] = max{ 0 , p[vx] −(|p|α ± ϵ) } ± ϵ
+≤p[vx] + 2ϵ ≤(m + 1)α + 2ϵ ≪2−n −3nϵ.
+Therefore, for all −m ≤p ≤m, the bit extraction from p[vx+p·α] is successful, i.e.,
+results in binary outputs.
+For the directions y and z the picture is exactly the same as in case (a) and,
+therefore, there exists at most one q, −m ≤q ≤m, and at most one r, −m ≤r ≤
+m, for which the bit extraction from p[vy+q·α] and p[vz+r·α] fails. Therefore, from
+among the M = (2m + 1)3 points of the form (p[vx+p·α], p[vy+q·α], p[vz+r·α]), the bit
+extraction succeeds in all but at most 2(2m + 1)2 of them.
+Therefore, at least K′ = (2m−1)(2m+1)2 circuit evaluations are successful, i.e.,
+in binary arithmetic, and, moreover, they correspond to points inside cubelets of the
+form Kijk with i = 0. In particular, from (34) and the analogous equations for the
+y and z coordinates, it follows that the successful circuit evaluations correspond to
+points inside at most four neighboring cubelets of the form K0jk. Since these cubelets
+are adjacent to the x = 0 face of the cube, from the properties of the circuit C in
+the deﬁnition of the problem Brouwer, it follows that, among the outputs of these
+evaluations, one of the vectors δ0, δ1, δ2, δ3 is missing. Without loss of generality, let
+us assume that δ0 is missing. Then, since there are K′ successful evaluations, one of
+δ1, δ2, δ3 appears at least K′/3 times.
+If this is vector δ1 (a similar argument applies for the cases δ2, δ3), then denoting
+by vx′+δx+ the player corresponding to x′ + δx+, the following should be true in an
+ϵ-Nash equilibrium:
+p[vx] + ϵ ≥p[vx′] ≥p[vx] −ϵ,
+α + (2M −1)ϵ ≥p[vδx+] ≥K′
+3M α −(2M −1)ϵ,
+p[vx′+δx+] ≥min(1, p[vx′] + p[vδx+]) −ϵ ≥p[vx′] + p[vδx+] −ϵ,
+M −K′
+M
+α + (2M −1)ϵ ≥p[vδx−],
+p[vx] ≥max(0, p[vx′+δx+] −p[vδx−]) −ϵ ≥p[vx′+δx+] −p[vδx−] −ϵ;
+in the second inequality of the third line above, we used that p[vx] ≤(m + 1)α.
+Combining the above we get
+p[vx] ≥p[vx′] + p[vδx+] −p[vδx−] −2ϵ
+≥p[vx] + p[vδx+] −p[vδx−] −3ϵ
+or equivalently that
+p[vδx−] ≥p[vδx+] −3ϵ,
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+253
+which implies
+M −K′
+M
+α + (4M + 1)ϵ ≥K′
+3M α,
+which is not satisﬁed by our selection of parameters.
+To conclude the proof of Theorem 5.1, if we ﬁnd any ϵ-Nash equilibrium of G,
+Lemma 5.6 has shown that by reading oﬀthe ﬁrst n binary digits of p[vx], p[vy], and
+p[vz], we obtain a solution to the corresponding instance of Brouwer.
+6. Further results and open problems.
+6.1. Two players. Soon after our proof became available, Chen and Deng [7]
+showed that our PPAD-completeness result can be extended to the important two-
+player case.
+Here we present a rather simple modiﬁcation of our proof from the
+previous section establishing this result.
+Theorem 6.1 (see [7]). 2-Nash is PPAD-complete.
+Proof. Let us deﬁne d-additive graphical Nash to be the problem d-graphical
+Nash restricted to bipartite graphical games with additive utility functions deﬁned
+next.
+Definition 6.2. Let GG be a graphical game with underlying graph G = (V, E).
+We call GG a bipartite graphical game with additive utility functions if G is a bipartite
+graph and, moreover, for each vertex v ∈V and for every pure strategy sv ∈Sv of that
+player, the expected payoﬀof v for playing the pure strategy sv is a linear function of
+the mixed strategies of the vertices in Nv \ {v} with rational coeﬃcients; that is, there
+exist rational numbers {αsv
+u,su}u∈Nv\{v},su∈Su, αsv
+u,su ∈[0, 1] for all u ∈N(v) \ {v},
+su ∈Su, such that the expected payoﬀto vertex v for playing pure strategy sv is
+
+u∈Nv\{v},su∈Su
+αsv
+u,sup[u : su],
+where p[u : su] denotes the probability that vertex u plays pure strategy su.
+The proof is based on the following lemmas.
+Lemma 6.3. Brouwer is poly-time reducible to 3-additive graphical Nash.
+Lemma 6.4. 3-additive graphical Nash is poly-time reducible to 2-Nash.
+Proof of Lemma 6.3. The reduction is almost identical to the one in the proof
+of Theorem 5.1. Recall that given an instance of Brouwer, a graphical game was
+constructed using the gadgets Gα, G×α, G=, G+, G−, G∗, G∨, G∧, G¬, and G>. In fact,
+gadget G∗is not required, since only multiplication by a constant is needed which
+can be accomplished via the use of gadget G×α. Moreover, it is not hard to see, by
+looking at the payoﬀtables of the gadgets deﬁned in section 4.1 and Lemma 5.3, that
+in gadgets Gα, G×α, G=, G+, G−, and G>, the noninput vertices have the additive utility
+functions property of Deﬁnition 6.2. Let us further modify the games G∨, G∧, G¬ so
+that their output vertices have the additive utility functions property.
+Lemma 6.5. There are binary graphical games G∨, G∧, G¬ with two input players
+a, b (one input player a for G¬) and an output player c such that the payoﬀs of a and
+b do not depend on the choices of c, c’s payoﬀsatisﬁes the additive utility functions
+property, and, in any ϵ-Nash equilibrium with ϵ < 1/4 in which p[a], p[b] ∈{0, 1},
+p[c] is also in {0, 1}, and is in fact the result of applying the corresponding Boolean
+function to the inputs.
+Proof. For G∨, the payoﬀof player c is 0.5p[a] + 0.5p[b] for playing 1 and 1
+4 for
+playing 0. For G∧, the payoﬀof player c is 0.5p[a] + 0.5p[b] for playing 1 and 3
+4 for
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+254
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+playing 0. For G¬, the payoﬀof player c is p[a] for playing 0 and p[a : 0] for playing
+1.
+If the modiﬁed gadgets G∨, G∧, G¬ speciﬁed by Lemma 6.5 are used in the construc-
+tion of Theorem 5.1, all vertices of the resulting graphical game satisfy the additive
+utility functions property of Deﬁnition 6.2. To make sure that the graphical game is
+also bipartite, we modify the gadgets G∨, G∧, G¬, and G> with the insertion of an extra
+output vertex. The modiﬁcation is the same for all four gadgets: Let c be the output
+vertex of any of these gadgets; we introduce a new output vertex e, whose payoﬀ
+depends only on the strategy of c, but c’s payoﬀdoes not depend on the strategy of
+e, and such that the payoﬀof e is p[c] for playing 1 and p[c : 0] for playing 0 (i.e.,
+e “copies” c, if c’s strategy is pure). It is not hard to see that, for every gadget, the
+new output vertex has the same behavior with regards to the strategies of the input
+vertices as the old output vertex, as speciﬁed by Lemmas 5.3 and 6.5. Moreover, it is
+not hard to verify that the graphical game resulting from the construction of Theorem
+5.1 with the use of the modiﬁed gadgets G∨, G∧, G¬, and G> is bipartite; indeed, it
+is suﬃcient to color blue the input and output vertices of all G×α, G=, G+, G−, G∨,
+G∧, G¬, and G> gadgets used in the construction, blue the output vertices of all Gα
+gadgets used, and red the remaining vertices.
+Proof of Lemma 6.4. Let &
+GG be a bipartite graphical game of maximum degree
+3 with additive utility functions and GG the graphical game resulting after rescaling
+all utilities to the set [0, 1], e.g., by dividing all utilities by max {˜u}, where max {˜u}
+is the largest entry in the payoﬀtables of game &
+GG. Also, let ϵ < 1. In time poly-
+nomial in |GG| + log(1/ϵ), we will specify a two-player normal form game G and an
+accuracy ϵ′ with the property that, given an ϵ′-Nash equilibrium of G, one can re-
+cover in polynomial time an ϵ-Nash equilibrium of GG. This will be enough, since an
+ϵ-Nash equilibrium of GG is trivially an ϵ·max {˜u}-Nash equilibrium of game &
+GG and,
+moreover, |GG| is polynomial in | &
+GG|.
+The construction of G from GG is almost identical to the one described in Figure 7.
+Let V = V1⊔V2 be the bipartition of the vertices of set V so that all edges are between
+a vertex in V1 and a vertex in V2. Let us deﬁne c : V →{1, 2} as c(v) = 1 if and only if
+v ∈V1 and let us assume, without loss of generality, that |v : c(v) = 1| = |v : c(v) = 2|;
+otherwise, we can add to GG isolated vertices to make up any shortfall. Suppose that
+n is the number of vertices in GG (after the possible addition of isolated vertices) and
+t the cardinality of the strategy sets of the vertices in V , and let ϵ′ = ϵ/n. Let us
+then employ Steps 4 and 5 of the algorithm in Figure 7 to construct the normal form
+game G from the graphical game GG; however, we choose M = 6tn
+ϵ
+and we modify
+Step 5(b) to read as follows:
+(b)′ for v ∈V and sv ∈Sv, if c(v) = p and s contains (v, sv) and (u, su) for some
+u ∈N(v) \ {v}, su ∈Su, then up
+s = αsv
+u,su,
+where we used the notation from Deﬁnition 6.2.
+We argue next that, given an ϵ′-Nash equilibrium {xp
+(v,a)}p,v,a of G, {xv
+a}v,a is an
+ϵ-Nash equilibrium of GG, where
+xv
+a = xc(v)
+(v,a)
+ 
+j∈Sv
+xc(v)
+(v,j)
+∀v ∈V, a ∈Sv.
+Suppose that p = c(v) for some vertex v of the graphical game GG. As in the proof
+of Theorem 4.7, Lemma 4.10, it can be shown that in any ϵ′-Nash equilibrium of the
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+255
+game G,
+Pr(p plays v) ∈
+' 2
+n −1
+M , 2
+n + 1
+M
+(
+.
+Now, without loss of generality, assume that p = 1 (the pursuer) and suppose v is
+vertex v(p)
+i
+, in the notation of Figure 7. Then, in an ϵ′-Nash equilibrium of the game
+G, we have, by the deﬁnition of a Nash equilibrium, that for all strategies sv, s′
+v ∈Sv
+of vertex v,
+(37)
+E [payoﬀto p for playing (v, sv)] > E [payoﬀto p for playing (v, s′
+v)] + ϵ′ ⇒xp
+(v,s′v) = 0.
+But
+E [payoﬀto p for playing (v, sv)] = M · Pr
+
+p + 1 plays v(p+1)
+i
+
++
+
+u∈Nv\{v},su∈Su
+αsv
+u,suxc(u)
+(u,su),
+and similarly for s′
+v. Therefore, (37) implies
+
+u∈Nv\{v},su∈Su
+αsv
+u,suxc(u)
+(u,su) >
+
+u∈Nv\{v},su∈Su
+αs′
+v
+u,suxc(u)
+(u,su) + ϵ′ ⇒xp
+(v,s′v) = 0.
+(38)
+Lemma 6.6. For all v, a ∈Sv,
+
+xv
+a −
+xc(v)
+(v,a)
+2/n
+
+≤
+n
+2M .
+Proof.
+
+xv
+a −
+xc(v)
+(v,a)
+2/n
+
+=
+
+xc(v)
+(v,a)
+Pr(c(v) plays v) −
+xc(v)
+(v,a)
+2/n
+
+=
+xc(v)
+(v,a)
+Pr(c(v) plays v)
+| Pr(c(v) plays v) −2/n|
+2/n
+≤
+n
+2M ,
+where we used that 
+j∈Sv xc(v)
+(v,j) = Pr(c(v) plays v) and | Pr(c(v) plays v) −2/n| ≤
+1
+M .
+By (38) and Lemma 6.6, we get that, for all v ∈V , sv, s′
+v ∈Sv,
+
+u∈Nv\{v},su∈Su
+αsv
+u,suxu
+su >
+
+u∈Nv\{v},su∈Su
+αs′
+v
+u,suxu
+su + n
+2 ϵ′ + |Nv \ {v}|t n
+M ⇒xv
+s′v = 0.
+Since n
+2 ϵ′ + |Nv \ {v}|t n
+M ≤ϵ, it follows that {xv
+a}v,a is an ϵ-Nash equilibrium of the
+game GG.
+Thus, the proof of Theorem 6.1 is completed.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+256
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+6.2. Approximate Nash equilibria. Our proof establishes that it is PPAD-
+hard to ﬁnd an approximate Nash equilibrium when the desired additive approxima-
+tion ϵ is an inverse exponential in the size of the instance. What happens for larger
+ϵ’s? Chen, Deng, and Teng [9] showed that, for any ϵ which is inverse polynomial in
+n, computing an ϵ-Nash equilibrium in two-player games with n strategies per player
+remains PPAD-complete; this is done by a modiﬁcation of our reduction in which the
+starting Brouwer problem is deﬁned not on the three-dimensional cube, but in the
+n-dimensional hypercube. Intuitively, the diﬀerence is this: In order to create the
+exponentially many cells needed to embed the “line,” our construction had to resort
+to exponentially small cell size; in contrast, the n-dimensional hypercube contains
+exponentially many cells, all of reasonably large size.
+The result of [9] implies that there is no fully polynomial-time approximation
+scheme (a family of approximation algorithms that are polynomial in both the input
+size and 1
+ϵ). But is there a polynomial-time approximation scheme (family of poly-
+nomial algorithms with
+1
+ϵ in the exponent)? This is a major question that is left
+open.
+And how about ﬁnitely large ϵ’s? Since the establishment of PPAD-completeness
+of Nash, we have seen a sequence of polynomial algorithms for ﬁnding ϵ-approximate
+Nash equilibria with ϵ = 0.5 [17], 0.39 [18], 0.37 [4]; the best known ϵ at the time of
+writing is 0.34 [56].
+6.3. Nash equilibria in graphical games. Besides normal form games, our
+work settles the complexity of computing a Nash equilibrium in graphical games of
+degree at most 3, again in the negative direction. Elkind, L. Goldberg, and P. Gold-
+berg [24] showed that a Nash equilibrium of graphical games with maximum degree
+2 and two strategies per player can be computed in polynomial time. Daskalakis and
+Papadimitriou [20] described a polynomial-time approximation scheme for graphical
+games with a constant number of strategies per player, bounded degree, and treewidth
+at most logarithmic in the number of players. Can approximate Nash equilibria in
+general graphical games be computed eﬃciently?
+6.4. Special cases. Are there important and broad classes of games for which
+the Nash equilibrium problem can be solved eﬃciently? It has been shown that ﬁnding
+Nash equilibria in normal form games with all utilities either 1 or −1 (the so-called
+win-lose games) remains PPAD-complete [1, 10].
+Rather surprisingly, it was also
+recently shown that, essentially, it is PPAD-complete to play even repeated games [3]
+(the so-called “Folk theorem for repeated games” [52] notwithstanding).
+On the positive side, Daskalakis and Papadimitriou [21, 22] developed a polynomial-
+time approximation scheme for anonymous games (games in which the utility of each
+player depends on her own strategy and the number of other players playing various
+strategies, but not the identities of these players), when the number of strategies per
+player is bounded. Although their algorithm is too ineﬃcient to have a direct eﬀect in
+practice, it does remove the intractability obstacle for a very large class of multiplayer
+games. Note that ﬁnding a Nash equilibrium in anonymous games is not known to
+be PPAD-complete.
+6.5. Further applications of our techniques. What is the complexity of the
+Nash equilibrium problem in other classes of succinctly representable games with
+many players (besides the graphical problems resolved in this paper)? For example,
+are these problems even in PPAD? (It is typically easy to see that they cannot be easier
+than the normal form problem.) Daskalakis, Fabrikant, and Papadimitriou [15] gave a
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+257
+general suﬃcient condition, satisﬁed by all known succinct representations of games,
+for membership of the Nash equilibrium problem in the class PPAD. The basic idea
+is using the “arithmetical” gadgets in our present proof to simulate the calculation of
+utilities in these succinct games. However, whether computing a sequential equilibrium
+[46] in an extensive form game is in PPAD is left open.
+Our technique can be used to treat two other open problems in complexity. One is
+that of the complexity of simple stochastic games deﬁned in [12], heretofore known to
+be in TFNP, but not in any of the more specialized classes like PPAD or PLS. Now,
+it is known that this problem is equivalent to evaluating combinational circuits with
+max, min, and average gates. Since all three kinds of gates can be implemented
+by the graphical games in our construction, it follows that solving simple stochastic
+games is in PPAD.6
+Similarly, by an explicit construction we can show the following.
+Theorem 6.7. Let p : [0, 1] →R be any polynomial function such that p(0) < 0
+and p(1) > 0.
+Then there exists a graphical game in which all vertices have two
+strategies, 0 and 1, and in which the mixed Nash equilibria correspond to a particular
+vertex v playing strategy 1 with probability equal to the roots of p(x) between 0 and 1.
+Sketch of the Proof. Let p be described by its coeﬃcients α0, α1, . . . , αn, so that
+p(x) := αnxn + αn−1xn−1 + · · · + α1x + α0.
+Taking A := (n
+i=0 |αi|)−1, it is easy to see that the range of the polynomial q(x) :=
+1
+2Ap(x) + 1
+2 is [0, 1], that q(0) < 1
+2, q(1) > 1/2, and that every point r ∈[0, 1] such
+that q(r) = 1
+2 is a root of p. We deﬁne next a graphical game GG in which all vertices
+have two strategies, 0 and 1, and a designated vertex v of GG satisﬁes the following:
+(i) In any mixed Nash equilibrium of GG the probability xv
+1 by which v plays
+strategy 1 satisﬁes q(xv
+1) = 1/2.
+(ii) For any root r of p in [0, 1], there exists a mixed Nash equilibrium of GG in
+which xv
+1 = r.
+The graphical game has the following structure:
+• There is a component graphical game GGq with an “input vertex” v and
+an “output vertex” u such that, in any Nash equilibrium of GG, the mixed
+strategies of u and v satisfy xu
+1 = q(xv
+1); a graphical game which progressively
+performs the computations required for the evaluation of q(·) on xv
+1 can be
+easily constructed using our game gadgets; note that the computations can
+be arranged in such an order that no truncations at 0 or 1 happen (recall the
+rescaling by 1
+2A and the shifting around 1/2 done above).
+• A comparator game G> (see Lemma 5.3) compares the mixed strategy of u
+with the value 1
+2, prepared by a G1/2 gadget (see section 4.1), so that the
+output vertex of the comparator game plays 0 if xu
+1 > 1
+2, 1 if xu
+1 < 1
+2, and
+anything if xu
+1 = 1
+2.
+• We identify the output player of G> with player v.
+It is not hard to see that GG satisﬁes properties (i) and (ii).
+As a corollary of Theorem 6.7, it follows that ﬁxed points of polynomials can be
+computed by computing (exact) Nash equilibria of graphical games. Computing ﬁxed
+points of polynomials via exact Nash equilibria in graphical games can be extended
+to the multivariate case again via the use of game gadgets to evaluate the polynomial
+and the use of a series of G= gadgets to set the output equal to the input.
+6One has to pay some attention to the approximation; see [25] for details.
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+258
+C. DASKALAKIS, P. GOLDBERG, AND C. PAPADIMITRIOU
+Both this result and the result about simple stochastic games noted above were
+shown independently by [25], while Theorem 6.7 was already shown by Bubelis [5].
+REFERENCES
+[1] T. G. Abbott, D. Kane, and P. Valiant, On the complexity of two-player win-lose games,
+in 46th Annual IEEE Symposium on Foundations of Computer Science (FOCS), 2005.
+[2] P. Beame, S. Cook, J. Edmonds, R. Impagliazzo, and T. Pitassi, The relative complexity
+of NP search problems, J. Comput. System Sci., 57 (1998), pp. 13–19.
+[3] C. Borgs, J. Chayes, N. Immorlica, A. T. Kalai, V. Mirrokni, and C. H. Papadimitriou,
+The myth of the folk theorem, in 40th ACM Symposium on Theory of Computing (STOC),
+2008.
+[4] H. Bosse, J. Byrka, and E. Markakis, New algorithms for approximate Nash equilibria
+in bimatrix games, in 3rd International Workshop on Internet and Network Economics
+(WINE), 2007.
+[5] V. Bubelis, On equilibria in ﬁnite games, Internat. J. Game Theory, 8 (1979), pp. 65–79.
+[6] G. J. Chang, W. Ke, D. Kuo, D. D. Liu, and R. K. Yeh, On L(d, 1)-labelings of graphs,
+Discrete Math., 220 (2000), pp. 57–66.
+[7] X. Chen and X. Deng, 3-NASH is PPAD-Complete, Technical report TR05-134, Electronic
+Colloquium on Computational Complexity, 2005.
+[8] X. Chen and X. Deng, Settling the complexity of 2-player Nash-equilibrium, in 47th Annual
+IEEE Symposium on Foundations of Computer Science (FOCS), 2006.
+[9] X. Chen, X. Deng, and S. Teng, Computing Nash equilibria: Approximation and smoothed
+complexity, in 47th Annual IEEE Symposium on Foundations of Computer Science (FOCS),
+2006.
+[10] X. Chen, S. Teng, and P. Valiant, The approximation complexity of win-lose games, in 18th
+Annual ACM-SIAM Symposium on Discrete Algorithms (SODA), 2007.
+[11] B. Codenotti, A. Saberi, K. Varadarajan, and Y. Ye, Leontief economies encode nonzero
+sum two-player games, in 17th Annual ACM-SIAM Symposium on Discrete Algorithms
+(SODA), 2006.
+[12] A. Condon, The complexity of stochastic games, Inform. and Comput., 96 (1992), pp. 203–224.
+[13] V. Conitzer and T. Sandholm, Complexity results about Nash equilibria, in 18th International
+Joint Conference on Artiﬁcial Intelligence (IJCAI), 2003.
+[14] G. B. Dantzig, Linear Programming and Extensions, Princeton University Press, Princeton,
+NJ, 1963.
+[15] C. Daskalakis, A. Fabrikant, and C. H. Papadimitriou, The game world is ﬂat:
+The
+complexity of Nash equilibria in succinct games, in 33rd International Colloquium on Au-
+tomata, Languages and Programming (ICALP), 2006.
+[16] C. Daskalakis, P. W. Goldberg, and C. H. Papadimitriou, The complexity of computing
+a Nash equilibrium, in 38th ACM Symposium on Theory of Computing (STOC), 2006.
+[17] C. Daskalakis, A. Mehta, and C. H. Papadimitriou, A note on approximate Nash equilibria,
+in 2nd International Workshop on Internet and Network Economics (WINE), 2006.
+[18] C. Daskalakis, A. Mehta, and C. H. Papadimitriou, Progress in approximate Nash equilib-
+ria, in 8th ACM Conference on Electronic Commerce (EC), 2007.
+[19] C. Daskalakis and C. H. Papadimitriou, Three-Player Games Are Hard, Technical report
+TR05-139, Electronic Colloquium on Computational Complexity, 2005.
+[20] C. Daskalakis and C. H. Papadimitriou, Computing pure Nash equilibria via Markov random
+ﬁelds, in 7th ACM Conference on Electronic Commerce (EC), 2006.
+[21] C. Daskalakis and C. H. Papadimitriou, Computing equilibria in anonymous games, in 48th
+Annual IEEE Symposium on Foundations of Computer Science (FOCS), 2007.
+[22] C. Daskalakis and C. H. Papadimitriou, Discretized multinomial distributions and Nash
+equilibria in anonymous games, in 49th Annual IEEE Symposium on Foundations of Com-
+puter Science (FOCS), 2008.
+[23] B. C. Eaves, Homotopies for computation of ﬁxed points, Math. Program., 3 (1972), pp. 1–22.
+[24] E. Elkind, L. A. Goldberg, and P. W. Goldberg, Nash equilibria in graphical games on
+trees revisited, in 7th ACM Conference on Electronic Commerce (EC), 2006.
+[25] K. Etessami and M. Yannakakis, On the complexity of Nash equilibria and other ﬁxed points,
+in 48th Annual IEEE Symposium on Foundations of Computer Science (FOCS), 2007.
+[26] A. Fabrikant, C. H. Papadimitriou, and K. Talwar, The complexity of pure Nash equilibria,
+in 36th ACM Symposium on Theory of Computing (STOC), 2004.
+[27] C. B. Garcia, C. E. Lemke, and H. J. Luthi, Simplicial approximation of an equilibrium
+
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Copyright © by SIAM. Unauthorized reproduction of this article is prohibited. 
+THE COMPLEXITY OF COMPUTING A NASH EQUILIBRIUM
+259
+point of noncooperative N-person games, Math. Program., 4 (1973), pp. 227–260.
+[28] J. Geanakoplos, Nash and Walras equilibrium via Brouwer, Econom. Theory, 21 (2003), pp.
+385–603.
+[29] I. Gilboa and E. Zemel, Nash and correlated equilibria: Some complexity considerations,
+Games Econom. Behav., 1 (1989), pp. 80–93.
+[30] P. W. Goldberg and C. H. Papadimitriou, Reducibility among equilibrium problems, in 38th
+ACM Symposium on Theory of Computing (STOC), 2006.
+[31] M. Hirsch, C. H. Papadimitriou, and S. Vavasis, Exponential lower bounds for ﬁnding
+Brouwer ﬁxed points, J. Complexity, 5 (1989), pp. 379–416.
+[32] D. S. Johnson, C. H. Papadimitriou, and M. Yannakakis, How easy is local search?, J.
+Comput. System Sci., 37 (1988), pp. 79–100.
+[33] M. Kearns, M. Littman, and S. Singh, Graphical models for game theory, in 17th Conference
+in Uncertainty in Artiﬁcial Intelligence (UAI), 2001.
+[34] L. G. Khachiyan, A polynomial algorithm in linear programming, Soviet Math. Dokl., 20
+(1979), pp. 191–194.
+[35] B. Knaster, C. Kuratowski, and S. Mazurkiewicz, Ein Beweis des Fixpunktsatzes f¨ur
+n-dimensionale Simplexe, Fund. Math., 14 (1929), pp. 132–137.
+[36] G. van der Laan and A. J. J. Talman, A restart algorithm for computing ﬁxed points without
+an extra dimension, Math. Program., 17 (1979), pp. 74–84.
+[37] G. van der Laan and A. J. J. Talman, On the computation of ﬁxed points in product space
+of unit simplices and an application to noncooperative N person games, Math. Oper. Res.,
+7 (1982), pp. 1–13.
+[38] C. E. Lemke and J. T. Howson, Jr., Equilibrium points of bimatrix games, SIAM J. Appl.
+Math., 12 (1964), pp. 413–423.
+[39] R. Lipton and E. Markakis, Nash equilibria via polynomial equations, in 6th Latin American
+Symposium (LATIN), 2004.
+[40] R. Lipton, E. Markakis, and A. Mehta, Playing large games using simple strategies, in 4th
+ACM Conference on Electronic Commerce (EC), 2003.
+[41] M. Littman, M. Kearns, and S. Singh, An eﬃcient, exact algorithm for single connected
+graphical games, in 15th Annual Conference on Neural Information Processing Systems
+(NIPS), 2001.
+[42] N. Megiddo and C. H. Papadimitriou, On total functions, existence theorems and computa-
+tional complexity, Theoret. Comput. Sci., 81 (1991), pp. 317–324.
+[43] J. Nash, Non-cooperative games, Ann. of Math. (2), 54 (1951), pp. 286–295.
+[44] J. von Neumann, Zur Theorie der Gesellshaftsspiele, Math. Ann., 100 (1928), pp. 295–320.
+[45] J. von Neumann and O. Morgenstern, Theory of Games and Economic Behavior, Princeton
+University Press, Princeton, NJ, 1944.
+[46] M. J. Osborne and A. Rubinstein, A Course in Game Theory, MIT Press, Cambridge, MA,
+1994.
+[47] C. H. Papadimitriou, Computational Complexity, Addison–Wesley, Reading, MA, 1994.
+[48] C. H. Papadimitriou, On the complexity of the parity argument and other ineﬃcient proofs
+of existence, J. Comput. System Sci., 48 (1994), pp. 498–532.
+[49] C. H. Papadimitriou, Computing correlated equilibria in multiplayer games, in 37th ACM
+Symposium on Theory of Computing (STOC), 2005.
+[50] C. H. Papadimitriou and T. Roughgarden, Computing equilibria in multi-player games, in
+16th Annual ACM-SIAM Symposium on Discrete Algorithms (SODA), 2005.
+[51] J. Rosenm¨uller, On a generalization of the Lemke–Howson algorithm to noncooperative N-
+person games, SIAM J. Appl. Math., 21 (1971), pp. 73–79.
+[52] A. Rubinstein, Equilibrium in supergames with the overtaking criterion, J. Econom. Theory,
+21 (1979), pp. 1–9.
+[53] R. Savani and B. von Stengel, Exponentially many steps for ﬁnding a Nash equilibrium in
+a bimatrix game, in 45th Annual IEEE Symposium on Foundations of Computer Science
+(FOCS), 2004.
+[54] H. Scarf, The approximation of ﬁxed points of a continuous mapping, SIAM J. Appl. Math.,
+15 (1967), pp. 1328–1343.
+[55] G. Schoenebeck and S. Vadhan, The computational complexity of Nash equilibria in concisely
+represented games, in 7th ACM Conference on Electronic Commerce (EC), 2006.
+[56] H. Tsaknakis and P. G. Spirakis, An optimization approach for approximate Nash equilibria,
+in 3rd International Workshop on Internet and Network Economics (WINE), 2007.
+[57] R. Wilson, Computing equilibria of N-person games, SIAM J. Appl. Math., 21 (1971), pp. 80–
+87.

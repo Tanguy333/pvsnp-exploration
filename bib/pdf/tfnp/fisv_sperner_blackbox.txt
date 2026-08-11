@@ -1,0 +1,970 @@
+arXiv:quant-ph/0505185v1  24 May 2005
+On the black-box complexity of Sperner’s Lemma
+Katalin Friedl∗
+G´abor Ivanyos†
+Miklos Santha ‡
+Yves F. Verhoeven §
+Abstract
+We present several results on the complexity of various forms of Sperner’s Lemma in the
+black-box model of computing. We give a deterministic algorithm for Sperner problems over
+pseudo-manifolds of arbitrary dimension. The query complexity of our algorithm is linear in
+the separation number of the skeleton graph of the manifold and the size of its boundary. As
+a corollary we get an O(√n) deterministic query algorithm for the black-box version of the
+problem 2D-SPERNER, a well studied member of Papadimitriou’s complexity class PPAD.
+This upper bound matches the Ω(√n) deterministic lower bound of Crescenzi and Silvestri. The
+tightness of this bound was not known before. In another result we prove for the same problem
+an Ω( 4√n) lower bound for its probabilistic, and an Ω( 8√n) lower bound for its quantum query
+complexity, showing that all these measures are polynomially related.
+Classiﬁcation:
+computational and structural complexity, quantum computation and informa-
+tion.
+1
+Introduction
+Papadimitriou deﬁned in [17, 18] the complexity classes PPA, PPAD, and PSK in order to classify
+total search problems which have always a solution.The class PSK was renamed PPADS in [5].
+These classes can be characterized by some underlying combinatorial principles. The class Polyno-
+mial Parity Argument (PPA) is the class of NP search problems, where the existence of the solution
+is guaranteed by the fact that in every ﬁnite graph the number of vertices with odd degree is even.
+The class PPAD is the directed version of PPA, and its basic search problem is the following: in
+a directed graph, where the in-degree and the out-degree of every vertex is at most one, given
+a source, ﬁnd another source or a sink. In the class PPADS the basic search problem is more
+restricted than in PPAD: given a source, ﬁnd a sink.
+∗Budapest University of Technology and Economics,
+H-1521 Budapest, P.O.Box 91.,
+Hungary.
+Email:
+friedl@cs.bme.hu.
+The research was supported by the EU 5th framework program RESQ IST-2001-37559 and
+Centre of Excellence ICAI-CT-2000-70025, and OTKA grants T42559 and T46234.
+†Computer and Automation Research Institute, Hungarian Academy of Sciences. H-1518 Budapest, P.O. Box 63.,
+Hungary. Email: Gabor.Ivanyos@sztaki.hu. The research was supported by the EU 5th framework program RESQ
+IST-2001-37559 and Centre of Excellence ICAI-CT-2000-70025, and OTKA grants T42706 and T42481.
+‡CNRS–LRI, UMR 8623, bˆatiment 490, Universit´e Paris XI, 91405 Orsay, France. Email: santha@lri.fr. The
+research was supported by the EU 5th framework program RESQ IST-2001-37559, and by the ACI CR 2002-40 and
+ACI SI 2003-24 grants of the French Research Ministry.
+§LRI, UMR 8623, bˆatiment 490, Univ. Paris XI, 91405 Orsay and ENST, 46 rue Barrault, 75013 Paris, France.
+Email: yves.verhoeven@normalesup.org. The research was supported by the EU 5th framework program RESQ
+IST-2001-37559, and by the ACI CR 2002-40 and ACI SI 2003-24 grants of the French Research Ministry.
+1
+
+These classes are in fact subfamilies of TFNP, the family of all total NP-search problems, intro-
+duced by Megiddo and Papadimitriou [16]. Other important subclasses of TFNP are Polynomial
+Pigeonhole Principle (PPP) and Polynomial Local Search (PLS). The elements of PPP are problems
+which by their combinatorial nature obey the pigeonhole principle and therefore have a solution.
+In a PLS problem, one is looking for a local optimum for a particular objective function, in some
+neighborhood structure. All these classes are interesting because they contain search problems not
+known to be solvable in polynomial time, but which are also somewhat easy in the sense that they
+can not be NP-hard unless NP = co-NP.
+Another point that makes the parity argument classes interesting is that there are several
+natural problems from diﬀerent branches of mathematics that belong to them. For example, in a
+graph with odd degrees, when a Hamiltonian path is given, a theorem of Smith [25] ensures that
+there is another Hamiltonian path. It turns out that ﬁnding this second path belongs to the class
+PPA [18]. A search problem coming from a modulo 2 version of Chevalley’s theorem [18] from
+number theory is also in PPA. Complete problems in PPAD are the search versions of Brouwer’s
+ﬁxed point theorem, Kakutani’s ﬁxed point theorem, Borsuk-Ulam theorem, and Nash equilibrium
+(see [18]).
+The classical Sperner’s Lemma [22] states that in a triangle with a regular triangulation whose
+vertices are labeled with three colors, there is always a trichromatic triangle. This lemma is of
+special interest since some customary proofs for the above topological ﬁxed point theorems rely on
+its combinatorial content. However, it is unknown whether the corresponding search problem, that
+Papadimitriou [18] calls 2D-SPERNER, is complete in PPAD. Variants of Sperner’s Lemma also
+give rise to other problems in the parity argument classes. Papadimitriou [18] has proven that a
+3-dimensional analogue of 2D-SPERNER is in fact complete in PPAD.
+The study of query complexities of the black-box versions of several problems in TFNP is an
+active ﬁeld of research. Several recent results point into the direction that quantum algorithms can
+give only a limited speedup over deterministic ones in this framework. The collision lower bound
+of Aaronson [1] and Shi [20] about PPP, and the recent result of Santha and Szegedy [19] on PLS
+imply that the respective deterministic and quantum complexities are polynomially related. As a
+consequence, if an eﬃcient quantum algorithm exists for a problem in these classes, it must exploit
+its speciﬁc structure. In a related issue, Buresh-Oppenheim and Morioka [8] have obtained relative
+separation results among PLS and the polynomial parity argument classes.
+2
+Results
+A black-box problem is a relation R ⊆S × T where T is a ﬁnite set and S ⊆Σn for some ﬁnite set
+Σ. The oracle input is a function x ∈S, hidden by a black-box, such that xi, for i ∈{1, . . . , n} can
+be accessed via a query parameterized by i. The output of the problem is some y ∈T such that
+(x, y) ∈R. A special case is the functional oracle problem when the relation is given by a function
+A : S →T, the (unique) output is then A(x). We say that A is total if S = Σn.
+In the query model of computation each query adds one to the complexity of the algorithm, but
+all other computations are free. The state of the computation is represented by three registers, the
+query register i ∈{1, . . . , n}, the answer register a ∈Σ, and the work register z. The computation
+takes place in the vector space spanned by all basis states |i⟩|a⟩|z⟩. In the quantum query model
+introduced by Beals, Buhrman, Cleve, Mosca and de Wolf [4] the state of the computation is a
+complex combination of all basis states which has unit length in the norm l2. In the randomized
+2
+
+model it is a non-negative real combination of unit length in the norm l1, and in the deterministic
+model it is always one of the basis states.
+The query operation Ox maps the basis state |i⟩|a⟩|z⟩into the state |i⟩|(a + xi) mod |Σ|⟩|z⟩
+(here we identify Σ with the residue classes mod|Σ|). Non-query operations are independent of x.
+A k-query algorithm is a sequence of (k + 1) operations (U0, U1, . . . , Uk) where Ui is unitary in the
+quantum and stochastic in the randomized model, and it is a permutation in the deterministic case.
+Initially the state of the computation is set to some ﬁxed value |0⟩|0⟩|0⟩, and then the sequence
+of operations U0, Ox, U1, Ox, . . . , Uk−1, Ox, Uk is applied.
+A quantum or randomized algorithm
+computes (with two-sided error) R if the observation of the appropriate last bits of the work
+register yield some y ∈T such that (x, y) ∈R with probability at least 2/3.
+Then QQC(R)
+(resp. RQC(R)) is the smallest k for which there exists a k-query quantum (resp. randomized)
+algorithm which computes R. In the case of deterministic algorithms of course exact computation
+is required, and the deterministic query complexity DQC(R) is deﬁned then analogously. We have
+DQC(R) ≥RQC(R) ≥QQC(R).
+Beals et al. [4] have shown that in the case of total functional oracle problems the deterministic
+and quantum complexities are polynomially related, and the gap is at most a degree 6 polynomial.
+For several partial functional problems exponential quantum speedups are known [10, 21].
+In this paper we will give several results about Sperner problems in the black-box framework.
+In Section 5, we will prove that the deterministic query complexity of REGULAR 2-SPM, the
+black-box version of 2D-SPERNER is O(√n).
+This matches the deterministic Ω(√n) lower
+bound of Crescenzi and Silvestri [9]. The tightness of this bound was not known before. In fact,
+this result is the corollary of a general algorithm that solves the Sperner problems over pseudo-
+manifolds of arbitrary dimension. The complexity analysis of the algorithm will be expressed in
+Theorem 4 in two combinatorial parameters of the pseudo-manifold: the size of its boundary and
+the separation number of its skeleton graph. In Section 6, we show that quantum, probabilistic,
+and deterministic query complexities of REGULAR 2-SPM are polynomially related.
+More
+precisely, in Theorem 8 we will prove that its randomized complexity is Ω( 4√n) and that its
+quantum complexity is Ω( 8√n). This result is analogous to the polynomial relations obtained for
+the respective query complexities of PPP and PLS.
+3
+Mathematical background on simplicial complexes
+For an undirected graph G = (V, E), and for a subset V ′ ⊆V of the vertices, we denote by G[V ′]
+the induced subgraph of G by V ′. A graph G′′ = (V ′′, E′′) is a subgraph of G, in notation G′′ ⊆G,
+if V ′′ ⊆V and E′′ ⊆E. The ring Z/(2) denotes the ring with 2 elements.
+Deﬁnition 1 (Simplicial complex). A simplicial complex K is a non-empty collection of subsets
+of a ﬁnite set U, such that whenever S ∈K then S′ ∈K for every S′ ⊆S. An element S of K
+of cardinality d + 1 is called a d-simplex. A d′-simplex S′ ⊆S is called a d′-face of S. We denote
+by Kd the set of d-simplices of K. An elementary d-complex is a simplicial complex that contains
+exactly one d-simplex and its subsets. The dimension of K, denoted by dim(K), is the largest d
+such that K contains a d-simplex.
+The elements of K0 are called the vertices of K, and the elements of K1 are called the edges of
+K. The skeleton graph GK = (VK, EK) is the graph whose vertices are the vertices of K, and the
+edges are the edges of K.
+3
+
+Without loss of generality, we suppose that U consists of integers, and we identify {u} with u,
+for u ∈U.
+Fact 1. Let d be a positive integer. If S is an elementary d-complex, then GS is the complete graph.
+Deﬁnition 2 (Oriented Simplex). For every positive integer n, we deﬁne an equivalence relation
+≡n over Zn, by a ≡n b if there exists an even permutation σ such that σ · a = b. For every a ∈Zn
+we denote by [a]≡n the equivalence class of a for ≡n. The two equivalence classes of the orderings
+of the 0-faces of a simplex are called its orientations. An oriented simplex is a pair formed of a
+simplex and one of its orientations.
+For an oriented d-simplex (S, [τ]≡d+1), where τ is an ordering of the 0-faces of S, and a permu-
+tation σ over {1, . . . , d + 1}, we denote by σ · (S, [τ]≡d+1) the oriented d-simplex (S, [σ · τ]≡d+1). For
+every integer d, and every simplicial complex K whose simplices have been oriented, we denote by
+Kd the set of oriented d-simplices of K. From now on, S may denote an oriented or a non-oriented
+simplex. When S is an oriented simplex, ¯S will denote the same simplex with the opposite orien-
+tation. We also deﬁne S(i) to be S if i is even, and to be ¯S if i is odd. We will often specify an
+oriented simplex by an ordering of its 0-faces.
+Deﬁnition 3. Let S = (v0, . . . , vd) be an oriented d-simplex.
+For every 0 ≤i ≤d, for every
+(d −1)-face {v0, . . . , vi−1, vi+1, . . . , vd} of S, the induced orientation is the oriented (d −1)-simplex
+(v0, . . . , vi−1, vi+1, . . . , vd)(i).
+Deﬁnition 4. Let K be a simplicial complex whose simplices have been oriented, and let R be a
+ring. We deﬁne Cd(K; R) as the submodule of the free R-module over the d-simplices of K with
+both possible orientations, whose elements are of the form P
+S∈Kd(cS · S + c ¯S · ¯S), with cS ∈R,
+satisfying the relation cS = −c ¯S. The elements of Cd(K; R) are called d-chains. For every oriented
+simplex S of K, we denote by ⟨S⟩the element S −¯S of Cd(K; R).
+Let S be an oriented d-simplex (v0, v1, . . . vd) of K. The algebraic boundary of ⟨S⟩, denoted by
+∂d ⟨S⟩, is the (d−1)-chain of Cd−1(K; R) deﬁned as ∂d ⟨S⟩= Pd
+i=0(−1)i⟨(v0, . . . , vi−1, vi+1, . . . , vd)⟩.
+Since ∂d ⟨S⟩= −∂d ⟨¯S⟩, the operator ∂d has been correctly deﬁned on a basis of Cd(K; R) and
+can therefore be uniquely extended into a homomorphism ∂d : Cd(K; R) →Cd−1(K; R). The proof
+of the next Lemma is straightforward.
+Lemma 1. Let S be an oriented d-simplex of a simplicial complex K. Denote by FS the set of
+(d −1)-faces of S, and for every S′ ∈FS by τ S
+S′ the induced orientation on S′. Then ∂d ⟨S⟩=
+P
+S′∈FS⟨(S′, τ S
+S′)⟩.
+Following an early version of a paper of Bloch [7], in the next deﬁnition we generalize the notion
+of pseudo-manifold, without the usual requirements of connectivity and pure dimensionality.
+Deﬁnition 5. A simplicial complex M is a pseudo d-manifold, for a positive integer d, if
+(i) M is a union of elementary d-complexes,
+(ii) every (d −1)-simplex in M is a (d −1)-face of at most two d-simplices of M.
+The boundary of M is the set of elementary (d −1)-complexes in M that belong exactly to one
+d-simplex of M. We denote it by ∂M. A pseudo d-manifold M is said to be orientable if it is
+possible to assign an orientation to each d-simplex of M, such that for all (d −1)-simplex of M
+that is not on its boundary the orientations induced by the two d-simplices to which it belongs are
+opposite. Such a choice of orientations for all the d-simplices of M makes M oriented.
+4
+
+If the d-simplices of M are oriented, then there is a natural orientation of the (d −1)-simplices
+of ∂M, where each (d −1)-simplex has the orientation induced by the oriented d-simplex of which
+it is a (d −1)-face.
+Notice that if M is a pseudo d-manifold, then ∂M need not be a pseudo
+(d −1)-manifold. From now, all the simplicial complexes will be pseudo-manifolds. Observe that if
+R = Z/(2), then for any oriented d-simplex S, we have ⟨S⟩= ⟨¯S⟩.
+Deﬁnition 6. Given a simplicial complex K of dimension d, the standard d-chain bK of K will be
+deﬁned depending on whether K is oriented as follows:
+• if K is non-oriented, then bK = P
+S∈Kd⟨(S, τS)⟩∈Cd(K, Z/(2)), for an arbitrary choice of
+orientations τS of the d-simplices S in K,
+• if K is oriented, then bK = P
+S∈Kd⟨(S, τS)⟩∈Cd(K, Z) where τS is the orientation of S in K.
+Fact 2. Let d be an integer, and let M be a pseudo d-manifold. Then,
+1. if M is not oriented the equality d
+∂M = ∂d c
+M holds in Cd−1(∂M, Z/(2)),
+2. and if M is oriented the equality d
+∂M = ∂d c
+M holds in Cd−1(∂M, Z).
+Proof. For every d-simplex S in M, denote by FS the set of (d−1)-faces of S, and for every S′ ∈FS
+denote by τ S
+S′ the induced orientation of S′ from S. From Lemma 1, we can write
+∂d c
+M =
+X
+S∈Md
+∂d ⟨(S, τS)⟩=
+X
+S∈Md
+X
+S′∈FS
+⟨(S′, τ S
+S′)⟩.
+From the deﬁnition of a pseudo d-manifold, we know that in the last sum each (d −1)-simplex that
+is not on the boundary of M appears exactly twice. If M is not oriented, then as the base ring is
+Z/(2), the only (d−1)-simplices that remain in the sum are those that are in ∂M. If M is oriented,
+then from the deﬁnition of the orientability, it follows that each (d−1)-simplex that appears in two
+d-simplices of M appears in the sum once with each orientation. As for any oriented simplex S the
+equality ⟨S⟩+ ⟨¯S⟩= 0 holds, the only terms that do not cancel are the oriented (d −1)-simplices
+of the boundary. These (d −1)-simplices appear with the correct orientation.
+4
+Sperner Problems
+Deﬁnition 7. Let K be a simplicial complex. A labeling of K is a mapping ℓof the vertices of K
+into the set {0, . . . , dim(K)}. If a simplex S of K is labeled with all possible labels, then we say
+that S is fully labeled.
+A labeling ℓnaturally maps every oriented d-simplex S = (v0, . . . , vd) to the equivalence class
+ℓ(S) = [(ℓ(v0), . . . , ℓ(vd))]≡d+1.
+Deﬁnition 8. Given a labeling ℓof a simplicial complex K, and an integer 0 ≤d ≤dim(K), we
+deﬁne the d-dimensional ﬂow Nd[⟨S⟩] by
+Nd[⟨S⟩] =
+
+
+
+
+
+1
+if ℓ(S) = [(0, 1, 2 . . . , d)]≡d+1,
+−1
+if ℓ(S) = [(1, 0, 2, . . . , d)]≡d+1,
+0
+otherwise,
+and then extend it by linearity into a homomorphism Nd : Cd(K; R) →R.
+5
+
+Sperner’s Lemma [22] has been generalized in several ways. The following statement from [24]
+is also a straightforward consequence of results of [11].
+Theorem 1 (Sperner’s Lemma [22, 11, 24]). Let K be a simplicial complex of dimension d,
+let ℓbe a labeling of K, and let R be a ring. For an element C of Cd(K; R), we have Nd[C] =
+(−1)dNd−1[∂d C].
+Using Fact 2, we translate Theorem 1 into terms of pseudo-manifolds.
+Theorem 2 (Sperner’s Lemma on pseudo-manifolds). Let d be an integer, let M be a pseudo
+d-manifold, and let ℓbe a labeling of M. Then Nd[ c
+M] = (−1)dNd−1[ d
+∂M] where
+( c
+M ∈Cd(M, Z/(2)), d
+∂M ∈Cd−1(∂M, Z/(2)),
+if M is not oriented,
+c
+M ∈Cd(M, Z), d
+∂M ∈Cd−1(∂M, Z),
+if M is oriented.
+This version of Sperner’s lemma can be viewed, from a physicist’s point of view, as a result
+equivalent to a global conservation law of a ﬂow. If there is a source for the ﬂow and the space is
+bounded then there must be a sink for that ﬂow. More concretely, the lines of ﬂow can be drawn
+over d-simplices, that goes from one d-simplex to another if they share a (d −1)-face that has all
+possible labels in {0, . . . , d −1}. The sources and sinks of the ﬂow are the fully labeled d-simplices.
+The lemma basically says that if the amount of ﬂow entering the manifold at the boundary is larger
+than the exiting ﬂow, then there must exist sinks inside. The local conservation is stated by the
+fact that if there is an ingoing edge, there will not be two outgoing edges, and conversely. Formally,
+we have the following.
+Fact 3. Let (S, τS) be an oriented d-simplex. Then at most two of its oriented (d −1)-faces have a
+non-zero image by Nd−1. Moreover, if there are exactly two (d−1)-faces (S′, τ S
+S′) and (S′′, τ S
+S′′) that
+have non-zero image by Nd−1, then Nd[⟨(S, τS)⟩] = 0 and Nd−1[⟨(S′, τ S
+S′)⟩] = −Nd−1[⟨(S′′, τ S
+S′′)⟩].
+This gives a relation between the problem of ﬁnding fully labeled d-simplices and the natural
+complete problems for the parity argument classes. We can consider an oriented d-simplex (S, τS)
+with Nd[⟨(S, τS)⟩] = 1 as a source for the ﬂow, and (S′, τS′) with Nd[⟨(S′, τS′)⟩] = −1 as a sink.
+We now state the black-box Sperner problems we will consider.
+Sperner on Pseudo d-Manifolds (d-SPM)
+Input:
+a pseudo d-manifold M, and S ∈Md.
+Oracle input:
+a labeling ℓ: M0 →{0, 1, . . . , d}.
+Promise:
+one of the two conditions holds:
+a) Nd−1[ d
+∂M] = 1 in Cd−1(∂M, Z/(2)),
+b) Nd−1[ d
+∂M] = 0 in Cd−1(∂M, Z/(2)) and Nd[⟨S⟩] = 1 in Cd(M, Z/(2)).
+Output:
+S′ ∈Md such that Nd[⟨S′⟩] = 1, with S ̸= S′ for case b.
+Oriented Sperner on Pseudo d-Manifolds (d-OSPM)
+Input:
+an oriented pseudo d-manifold M, and S ∈Md.
+Oracle input:
+a labeling ℓ: M0 →{0, 1, . . . , d}.
+Promise:
+one of the two conditions holds:
+a) (−1)dNd−1[ d
+∂M] < 0 in Cd−1(∂M, Z),
+b) (−1)dNd−1[ d
+∂M] = 0 in Cd−1(∂M, Z) and Nd[⟨S⟩] = 1 in Cd(M, Z).
+Output:
+S′ ∈Md such that Nd[⟨S′⟩] = −1.
+6
+
+We will deal in particular with the following important special case of 2-SPM. Let Vm = {(i, j) ∈
+N2 | 0 ≤i + j ≤m}. Observe that |Vm| =
+ m+2
+2
+
+.
+Regular Sperner (REGULAR 2-SPM)
+Input:
+n =
+ m+2
+2
+
+for some integer m.
+Oracle input:
+a labeling ℓ: Vm →{0, 1, 2}.
+Promise:
+for 0 ≤k ≤m, ℓ(0, k) ̸= 1, ℓ(k, 0) ̸= 0, and ℓ(k, m −k) ̸= 2.
+Output:
+p, p′ and p′′ ∈V , such that p′ = p + (ε, 0), p′′ = p + (0, ε) for some ε ∈{−1, 1},
+and {ℓ(p), ℓ(p′), ℓ(p′′)} = {0, 1, 2}.
+In fact, REGULAR 2-SPM on input n =
+ m+2
+2
+
+is the instance of d-SPM on the regular m-
+subdivision of an elementary 2-simplex. Theorem 2 states that both d-SPM and d-OSPM have
+always a solution. The solution is not necessarily unique as it can be easily checked on simple
+instances. Thus the problems are not functional oracle problems.
+5
+Black-box algorithms for pseudo d-manifolds
+The purpose of this section is to give a black-box algorithm for d-SPM and d-OSPM. To solve
+these problems, we adopt a divide and conquer approach. This kind of approach was successfully
+used in [15, 14] and [19], to study the query complexity of the oracle version of the Local Search
+problem. However, the success of the divide and conquer paradigm for Sperner problems relies
+heavily on the use of the very strong statement of Sperner’s Lemma that is given in Theorem 2.
+The usual, simpler version of Sperner’s Lemma, like the one given in [18] does not appear to be
+strong enough for this purpose. Observe that though the standard proof of Sperner’s Lemma is
+constructive, it yields only an algorithm of complexity O(n). In our algorithms the division of the
+pseudo d-manifold M will be done according to the combinatorial properties of its skeleton graph.
+The particular parameter we will need is its iterated separation number that we introduce now for
+general graphs.
+Deﬁnition 9. Let G = (V, E) be a graph. If A and C are subsets of V such that V = A ∪C, and
+that there is no edge between A \ C and C \ A, then (A, C) is said to be a separation of the graph
+G, in notation (A, C) ≺G. The set A ∩C is called a separator of the graph G.
+The iterated separation number is deﬁned by induction on the size of the graph G by s(G) =
+min(A,C)≺G {|A ∩C| + max(s(G[A \ C]), s(G[C \ A]))}. A pair (A, C) ≺G such that s(G) = |A ∩
+C| + max(s(G[A \ C]), s(G[C \ A])) is called a best separation of G.
+The iterated separation number of a graph is equal to the value of the separation game on the
+graph G, which was introduced in [15]. In that article, that value was deﬁned as the gain of a
+player in a certain game. Notice, also, that the iterated separation number is at most log |V | times
+the separation number as deﬁned in [19]. Before giving the algorithms, and their analyses, we still
+need a few observations.
+Lemma 2. Let A and B be two pseudo d-manifolds, such that A ∪B is also a pseudo d-manifold.
+Let ℓbe a labeling of A ∪B. If A and B have no d-simplex in their intersection, then Nd[\
+A ∪B] =
+Nd[ b
+A] + Nd[ bB].
+Lemma 3. Let M be a pseudo d-manifold, and M′ be a union of elementary d-complexes such
+that M′ ⊆M. Then M′ is a pseudo d-manifold.
+7
+
+Theorem 3. Let M be a pseudo d-manifold, H a subset of M0, and ℓbe a labeling of the vertices
+of M. Let (A, C) ≺GM[M0 \ H], B = H ∪(A ∩C), and M′ = A \ C and M′′ = C \ A. Denote
+by B the set of elementary d-complexes of M whose vertices are all in B, and by M′ (resp. M′′)
+the set of elementary d-complexes of which at least one of the vertices belongs to M′ (resp. M′′).
+Denote also by B′ the set of elementary (d −1)-complexes of M whose vertices are all in B. Then,
+(i) B, M′, M′′ and M′ ∪M′′ are pseudo d-manifolds,
+(ii) if H ̸= M0 then B, M′ and M′′ are proper subsets of M,
+(iii) Nd[ c
+M] = Nd[ bB] + Nd[d
+M′] + Nd[d
+M′′],
+(iv) the inclusions ∂M′ ⊆(∂M) ∪B′ and ∂M′′ ⊆(∂M) ∪B′ hold,
+Proof. Clearly, the complexes B, M′, M′′ and M′ ∪M′′ are pseudo d-manifolds, according to the
+previous lemma.
+For (ii), assume H ̸= M0. Let x be a vertex in A \ C and S be a d-simplex that contains it.
+By Fact 1, all the points of S are neighbors of x in the skeleton graph. The neighbors of x are all
+in A, since there is no edge between A \ C and C \ A. Therefore, S is in M′ but not in B ∪M′′.
+By symmetry of M′ and M′′, there is also a d-simplex which is not in M′.
+Let us now turn to prove (iii). Let S be an elementary d-complex in M.
+As B separates
+GM[M0 \ H] into the two components M′ and M′′, it is not possible that S contains elements
+from both M′ and from M′′, as from Fact 1 we know that GS is a complete graph. So, either all
+the vertices of S are in B, or in B ∪M′, or they are in B ∪M′′. This proves that S belongs to
+B ∪M′ ∪M′′. Therefore M ⊆B ∪M′ ∪M′′. The converse inclusion clearly holds, which implies
+that it is in fact an equality. Moreover, from their deﬁnitions, the simplicial complexes B, M′ and
+M′′ have no d-simplex in common. Then using the ﬁrst point, two applications of Lemma 2 allow
+us to deduce the announced equality in (iii).
+For (iv), let S be a (d −1)-simplex in ∂M′. It is not in ∂M if and only if it belongs to two
+d-simplices of M. We will prove that if S belongs to two d-simplices of M, then its 0-faces must
+all lie in B. Assume that S is a (d −1)-face common to two d-simplices T1 and T2. We can assume
+without loss of generality that T1 belongs to M′. But T2 can not be in M′ as S is in the boundary
+of M′. So, either T2 is in B, or it is in M′′. In the ﬁrst case, it immediately follows that S has all
+its 0-faces in B, as it is a face of a d-simplex whose 0-faces all lie in B. In the second case, again,
+the only possibility is that S has all its 0-faces in B, as else a vertex in M′ and a vertex in M′′
+would be neighbors. This proves the third point for ∂M′. The proof is the same for ∂M′′.
+We are now ready to state Algorithm 1 and Algorithm 2 which solve respectively d-SPM and
+d-OSPM when the labels of the 0-faces of ∂M are also known. We next give the result which
+states the correctness of our algorithms and speciﬁes their complexities.
+Lemma 4. If M and S satisfy the promises of the respective Sperner problems, then Algorithms 1
+and 2 return a solution and use at most s(GM[M0 \ H]) queries.
+8
+
+Algorithm 1 Main routine for solving d-SPM.
+Input: A pseudo d-manifold M, S ∈Md, a set H ⊇(∂M)0 together with the labels of its
+elements.
+Let (A, C) ≺GM[M0 \ H] be a best separation, and B = H ∪(A ∩C).
+Let the complexes B, M′ and M′′ be deﬁned as in Theorem 3.
+Query the labels of the vertices in A ∩C.
+if B contains a fully labeled elementary d-complex then
+Return the corresponding oriented d-simplex.
+end if
+Evaluate Nd−1[ c
+∂B], Nd−1[ [
+∂M′] and Nd−1[\
+∂M′′].
+if Nd−1[d
+∂K] = 1 for K ∈{B, M′, M′′} then
+Iterate on K, any d-simplex S ∈K, and B with the labels of its elements.
+else
+Iterate on K ∈{B, M′, M′′} containing S, S and B with the labels of its elements.
+end if
+Algorithm 2 Main routine for solving d-OSPM.
+Input: A pseudo d-manifold M, S ∈Md, a set H ⊇(∂M)0 together with the labels of its
+elements.
+Let (A, C) ≺GM[M0 \ H] be a best separation, and B = H ∪(A ∩C).
+Let the complexes B, M′ and M′′ be deﬁned as in Theorem 3.
+Query the labels of the vertices in A ∩C.
+if B contains a fully labeled elementary d-complex then
+Return the corresponding oriented d-simplex.
+end if
+Evaluate Nd−1[ c
+∂B], Nd−1[ [
+∂M′] and Nd−1[\
+∂M′′].
+if (−1)dNd−1[d
+∂K] < 0 on K ∈{B, M′, M′′} then
+Iterate the algorithm on K, any d-simplex S ∈K, and B with the labels of its elements.
+else
+Iterate the algorithm on K ∈{B, M′, M′′} containing S, S and B with the labels of its
+elements.
+end if
+Proof. We will prove the two claims for Algorithm 1 by induction, the proofs for Algorithm 2 are
+similar.
+We start by proving the correctness. First observe that there is always enough information for
+the evaluations of the ﬂows. Indeed by (iv) of Theorem 3, all the 0-faces of ∂B, ∂M′ and ∂M′′ are
+in ∂M ∪B. The labels of the 0-faces of M are given as an input, and the labels of B are queried
+right before the ﬂow evaluations.
+Let us now consider an input that satisﬁes the promise of d-SPM, and where the number of
+d-simplices in M is n. If n = 1, then M = B is an elementary d-complex, and by the promise, it
+is fully labeled. Therefore, the output of the algorithm is correct. When n > 1, we will prove that
+the recursive call will be made on an input which also satisﬁes the promise, and where the number
+of d-simplices in the pseudo d-manifold is less than n.
+9
+
+From Theorem 1 and (iii) of Theorem 3, we have Nd−1[ d
+∂M] = Nd−1[ c
+∂B] + Nd−1[ [
+∂M′] +
+Nd−1[\
+∂M′′]. In case a) of the promise, this sum is equal to 1, and therefore there exists a K ∈
+{B, M′, M′′} for which Nd−1[d
+∂K] = 1.
+In case b) of the promise, either there exists a K ∈
+{B, M′, M′′} for which Nd−1[d
+∂K] = 1, or there exists a K ∈{B, M′, M′′} for which Nd−1[d
+∂K] = 0
+and S ∈K. In both cases, the number of d-simplices in K is less than the number of d-simplices
+of M because of (ii) of Theorem 3.
+Let us now prove the bound on the complexity. For every pseudo d-manifold M, denote by
+T(M, H) the number of queries made by the algorithm on M with the set H of labels. Each
+recursive call ends in three possible ways:
+1) it stops after the ﬁrst test if M is a fully labeled elementary d-complex,
+2) it iterates on B,
+3) or it iterates on M′ or on M′′.
+In the ﬁrst case, no queries are made, as all vertices of M are on its boundary. In the second
+case, |A ∩C| queries are made, as in further iterations all labels will be known. In the third case,
+the number of queries is at most |A ∩C| + max(T(M′, B), T(M′′, B)). Thus, we get T(M, H) ≤
+|A ∩C| + max(T(M′, B), T(M′′, B)).
+We now prove that T(M, H) ≤s(GM[M0 \ H]) for every pseudo d-manifold M and set of
+vertices H ⊆M0. If M is an elementary d-complex, then the algorithm does not make any query,
+and therefore T(M, H) = 0, and the statement is trivial.
+Let now M be a pseudo d-manifold that is not an elementary d-complex. We have GM′[M′
+0 \
+B] ⊆GM[M′] = GM[A \ C] and GM′′[M′′
+0 \ B] ⊆GM[M′′] = GM[C \ A], for a best separation
+(A, C) ≺GM[M0 \ H]. Using the induction hypothesis, we get T(M′, B) ≤s(GM′[M′
+0 \ B]) and
+T(M′′, B) ≤s(GM′′[M′′
+0 \ B]). Since s(G′) ≤s(G) if G′ is a subgraph of G, we get T(M′, B) ≤
+s(GM[A \ C]) and T(M′′, B) ≤s(GM[C \ A]). As (A, C) is a best separation of GM[M0 \ H], this
+proves the inequality T(M, H) ≤s(GM[M0 \ H]).
+Theorem 4. DQC(d-SPM) = O(s(GM[M0 \ (∂M)0])) + |(∂M)0| and
+DQC(d-OSPM) = O(s(GM[M0 \ (∂M)0])) + |(∂M)0|.
+Proof. The algorithms consist in querying the labels of the vertices of ∂M and then running
+respectively Algorithm 1 or Algorithm 2 with the initial choice H = (∂M)0.
+To bound the complexity of our algorithms we need an upper-bound on the iterated separator
+number of the skeleton graph. The following theorem gives, for any graph, an upper bound on
+the size of a balancing separator, whose deletion leaves the graph with two roughly equal size
+components. The bound depends on the genus and the number of vertices of the graph.
+Theorem 5 (Gilbert, Hutchinson, Tarjan [12]). A graph of genus g with n vertices has a set
+of at most 6√g · n + 2
+√
+2n + 1 vertices whose removal leaves no component with more than 2n/3
+vertices.
+For our purposes we can immediately derive an upper bound on the iterated separation number.
+Corollary 1. For graphs G = (V, E) of size n and genus g we have s(G) ≤λ(6√g · n + 2
+√
+2n) +
+log3/2 n, where λ is solution of λ = 1 + λ
+p
+2/3.
+Proof. Let us prove this fact by induction over n. It obviously holds for n = 1. Assume now
+that n > 1. Theorem 5 shows that there exist three pairwise disjoint sets S1, S2 and S3 such that
+10
+
+V = S1 ∪S2 ∪S3, |S2| ≤6√g · n + 2
+√
+2n + 1 and |S1|, |S3| ≤2n/3. If we let A = S1 ∪S2 and
+C = S2∪S3, then (A, C) ≺G and A∩C = S2. The construction implies that |A\C|, |C\A| ≤2n/3.
+Using the induction hypothesis, we get
+s(G) ≤|A ∩C| + max(s(G[A \ C]), s(G[C \ A]))
+≤6√g · n + 2
+√
+2n + 1 + λ(6
+p
+g · 2n/3 + 2
+p
+2 · 2n/3) + log3/2(2n/3)
+≤λ(6√g · n + 2
+√
+2n) + log3/2 n.
+In general, there is no immediate relationship between the genus of a pseudo d-manifold and the
+genus of its skeleton graph. However, if the pseudo d-manifold M is a triangulated oriented surface,
+then the genus of the graph is equal to the genus of M. Used in conjunction with Corollary 1,
+Theorem 4 gives an eﬀective upper bound for pseudo d-manifolds.
+Corollary 2. Let M be a pseudo d-manifold such that GM is of size n and of genus g. Then,
+DQC(d-SPM) = O(√g) · √n + |(∂M)0| and DQC(d-OSPM) = O(√g) · √n + |(∂M)0|.
+Since the skeleton graph of the underlying pseudo 2-manifold of REGULAR 2-SPM is planar,
+it has genus 0. Thus we get:
+Theorem 6. DQC(REGULAR 2-SPM) = O(√n).
+In the next section, we show nontrivial lower bounds on the randomized and the quantum
+query complexity of the REGULAR 2-SPM problem. Observe that for some general instances
+of the 2-SPM over the same pseudo 2-manifold we can easily derive exact lower bounds from the
+known complexity of Grover’s search problem [6]. For example, if a labeling is 2 everywhere, except
+on two consecutive vertices on the boundary where it takes respectively the values 0 and 1, then
+ﬁnding a fully labeled 2-simplex is of the same complexity as ﬁnding a distinguished element on
+the boundary.
+6
+Lower bounds for REGULAR 2-SPM
+We denote by UNIQUE-SPERNER all those instances of REGULAR 2-SPM for which there
+exists a unique fully labeled triangle. There exist several equivalent adversary methods for proving
+quantum lower bounds in the query model [23]. Here, we will use the weighted adversary method [2,
+3, 13].
+Theorem 7. Let Σ be a ﬁnite set, let n ≥1 be an integer, and let S ⊆Σn and S′ be sets. Let
+f : S →S′. Let Γ be an arbitrary S × S nonnegative symmetric matrix that satisﬁes Γ[x, y] = 0
+whenever f(x) = f(y). For 1 ≤k ≤n, let Γk be the matrix such that Γk[x, y] = 0 if xk = yk, and
+Γk[x, y] = Γ[x, y] otherwise. For all S × S matrix M and x ∈S, let σ(M, x) = P
+y∈S M[x, y]. Then
+QQC(f) = Ω
+ 
+min
+Γ[x,y]̸=0,xk̸=yk
+s
+σ(Γ, x)σ(Γ, y)
+σ(Γk, x)σ(Γk, y)
+!
+,
+RQC(f) = Ω
+
+min
+Γ[x,y]̸=0,xk̸=yk
+max
+ σ(Γ, x)
+σ(Γk, x), σ(Γ, y)
+σ(Γk, y)
+
+.
+11
+
+For the lower bound we will consider speciﬁc instances of REGULAR 2-SPM. For that, we
+need a few deﬁnitions. For any binary sequence b, let |b| denote the length of the sequence b, and
+for i = 0, 1 let wi(b) be the number of bits i in b. For 0 ≤t ≤|b|, let bt = b1 . . . bt denote the preﬁx
+of length t of b.
+The instances of REGULAR 2-SPM we will consider are those whose oracle inputs Cb are
+induced by binary sequences b = b1 . . . bm−2 of length m −2 as follows:
+Cb(i, j) =
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1
+if j = 0 and i ̸= 0,
+2
+if i = 0 and j ̸= m,
+0
+if i + j = m and j ̸= 0,
+1
+if there exists 0 ≤t ≤m −2 with (i, j) = (w0(bt) + 1, w1(bt)),
+2
+if there exists 0 ≤t ≤m −2 with (i, j) = (w0(bt), w1(bt) + 1),
+0
+otherwise.
+Notice that the ﬁrst and fourth (resp.
+second and ﬁfth) conditions can be simultaneously
+satisﬁed, but the labeling deﬁnition is consistent. Also observe that, for any b, there is a unique fully
+labeled triangle, whose coordinates are {(w0(b)+1, w1(b)), (w0(b), w1(b)+1), (w0(b)+1, w1(b)+1)}.
+Therefore Cb is an instance of UNIQUE-SPERNER. We illustrate an instance of Cb in Figure 1.
+It turns out that technically it will be easier to prove the lower bound for a problem which is
+closely related to the above instances of REGULAR 2-SPM, that we call SNAKE. Recall that
+Vm = {(i, j) ∈N2 | 0 ≤i + j ≤m}. For every binary sequence b = b1 . . . bm−2, we denote by Ob the
+function Vm →{0, 1} deﬁned for p ∈Vm by
+Ob(p) =
+(
+1
+if there exists 0 ≤t ≤m −2 with (i, j) = (w0(bt) + 1, w1(bt)),
+0
+otherwise.
+See again Figure 1 for an example.
+SNAKE
+Input:
+n =
+ m
+2
+
+for some integer m.
+Oracle input:
+a function f : Vm →{0, 1}.
+Promise:
+there exists a binary sequence b = b1 . . . bm−2 such that f = Ob.
+Output:
+(w0(b), w1(b)).
+We recall here the deﬁnition of [19] of c-query reducibility between black-box problems, which
+we will use to prove our lower bound.
+Deﬁnition 10. For an integer c > 0, a functional oracle problem A : S1 →T1 with S1 ⊆Σn
+1 is
+c-query reducible to a functional oracle problem B : S2 →T2 with S2 ⊆Σn′
+2 if the following two
+conditions hold:
+(i) ∃α : S1 →S2,
+∃β : T2 →T1, such that ∀x ∈S1, A(x) = β(B(α(x))),
+(ii) ∃γ1, . . . , γc : {1, . . . , n′} →{1, . . . , n} and γ : {1, . . . , n′} × Σc
+1 →Σ2 such that ∀x ∈S1, k ∈
+{1, . . . , n′},
+α(x)(k) = γ(k, xγ1(k), . . . , xγc(k)).
+Lemma 5 ([19]). If A is c-query reducible to B then QQC(B) ≥QQC(A)/2c, and RQC(B) ≥
+RQC(A)/c.
+12
+
+2
+2
+2
+2
+1
+1
+1
+1
+1
+1
+2
+2
+2
+2
+2
+0
+0
+0
+0
+0
+0
+0
+0
+0
+1
+1
+1
+1
+1
+1
+1
+1
+1
+2
+2
+2
+2
+2
+2
+2
+1
+1
+1
+1
+1
+1
+1
+1
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+0
+(i)
+(ii)
+Figure 1: In the coordinates system of the Figure, the point (0, 0) is the highest corner of the
+triangles, the x coordinates increase by going down and left, and the y coordinates increase by going
+down and right. On sub-ﬁgure (i), the labeling Cb corresponds to the binary sequence b = 0100110.
+On sub-ﬁgure (ii), the labeling Ob corresponds to the same sequence b. The unmarked vertices are
+all labeled 0.
+Lemma 6. SNAKE is 3-query reducible to UNIQUE-SPERNER.
+Proof. We deﬁne the oracle transformations as α(Ob) = Cb, and
+β({(i1, j1), (i2, j2), (i3, j3)}) = (min{i1, i2, i3}, min{j1, j2, j3}).
+Obviously, α and β satisfy the ﬁrst condition of the deﬁnition.
+We now turn to the simulation of an oracle for UNIQUE-SPERNER by an oracle for
+SNAKE. If the query concerns a point (i, j) on the boundary, the answer is independent from
+the oracle, and is given according to the deﬁnition of Cb, for any b. Otherwise, the simulator will
+query the point and its left and right neighbors in the sense of the Figure 1, from which the value
+of Cb can be easily determined. Formally, for such a point (i, j), let the functions γ, γ1, γ2 and γ3
+be deﬁned as
+γ((i, j), a1, a2, a3) =
+
+
+
+
+
+1
+if (a1, a2, a3) = (0, 1, 0),
+2
+if (a1, a2, a3) = (1, 0, 0),
+0
+otherwise,
+and γ1(i, j) = (i + 1, j −1), γ2(i, j) = (i, j), γ3(i, j) = (i −1, j + 1).
+Lemma 7. The query complexity of SNAKE f satisﬁes
+RQC(SNAKE) = Ω( 4√n) and QQC(SNAKE) = Ω( 8√n).
+Proof. We give now the deﬁnition of the adversary matrix Γ which will be a 2m−2×2m−2 symmetric
+matrix, whose rows and columns will be indexed by the labelings Ob, when b ∈{0, 1}m−2. For the
+sake of simplicity, we will only use binary sequences to denote rows and columns, instead of the
+induced labelings. For two binary sequences b and b′, we denote by b ∧b′ their longest common
+13
+
+preﬁx. Then let
+Γ[b, b′] =
+(
+0
+if w0(b) = w0(b′),
+2|b∧b′|
+otherwise.
+For a given binary sequence b, there are 2m−2−(d+1) sequences that have longest common preﬁx of
+length d with b. Out of them,
+ m−3−d
+wbd+1(b)−wbd+1(bd)
+
+will give the same output as b. Therefore,
+σ(Γ, b) =
+m−4
+X
+d=0
+2d
+
+2m−3−d −
+
+m −3 −d
+wbd+1(b) −wbd+1(bd)
+
+≥(m −3)2m−3 −
+m−4
+X
+d=0
+2d
+
+m −3 −d
+⌊(m −3 −d)/2⌋
+
+≥(m −3)2m−3 −
+ m−4
+X
+d=0
+2m−3
+√
+m −3 −d
+!
+≥(m −3)2m−3 −O(√m2m) = Ω(m2m).
+We now turn to bound from above σ(Γp, b) and σ(Γp, b′) when Γ[b, b′] ̸= 0 and Ob(p) ̸= Ob′(p).
+Let us now ﬁx a point p = (i, j) with 1 ≤i + j ≤m −1, and two sequences b and b′, such that
+Ob(p) ̸= Ob′(p). We assume that Ob(p) = 0 and Ob′(p) = 1. We trivially upper bound σ(Γp, b′) by
+σ(Γ, b′) = O(m2m).
+We will now upper-bound σ(Γp, b). Set h = i + j. If a sequence b′′ is such that Ob′′(p) = 1,
+then the length of its longest common preﬁx with b is at most h −2. We regroup these sequences
+according to the value |b ∧b′′|. The number of sequences b′′ for which |b ∧b′′| = d and Ob′′(p) = 1
+is at most
+ h−1−(d+1)
+⌊h−1−(d+1))/2⌋
+
+2m−h−1. Therefore we can bound σ(Γp, b) as
+σ(Γp, b) ≤
+h−2
+X
+d=0
+2d ·
+
+h −d −2
+⌊(h −d −2)/2⌋
+
+2m−h−1
+≤
+h−2
+X
+d=0
+
+2−(h−d−2) ·
+
+h −d −2
+⌊(h −d −2)/2⌋
+
+2m−3 = O(√m2m).
+By Theorem 7 we conclude that
+RQC(SNAKE) = Ω
+
+max
+m2m
+m2m , m2m
+√m2m
+
+= Ω( 4√n),
+QQC(SNAKE) = Ω
+ 
+m2m
+p
+m2m · √m2m
+!
+= Ω( 8√n).
+Theorem 8. The query complexity of REGULAR 2-SPM satisﬁes
+RQC(REGULAR 2-SPM) = Ω( 4√n) and QQC(REGULAR 2-SPM) = Ω( 8√n).
+Proof. By Lemma 5 and 6, the lower bounds of Lemma 7 for SNAKE also apply to REGULAR
+2-SPM.
+14
+
+References
+[1] S. Aaronson. Quantum lower bound for the collision problem. In 34th STOC, pp. 635–642,
+2002.
+[2] S. Aaronson.
+Lower bounds for local search by quantum arguments.
+In 36th STOC, pp.
+465–474, 2004.
+[3] A. Ambainis. Polynomial degree vs. quantum query complexity. In 44th FOCS, pp. 230–239,
+2003.
+[4] R. Beals, H. Buhrman, R. Cleve, M. Mosca and R. de Wolf.
+Quantum lower bounds by
+polynomials, J. of the ACM (48):4, pp. 778–797, 2001.
+[5] P. Beame, S. Cook, J. Edmonds, R. Impagliazzo and T. Pitassi. The relative complexity of
+NP search problems. J. Comput. System Sci., 57(1):3–19, 1998.
+[6] C. Bennett, E. Bernstein, G. Brassard and U. Vazirani. Strength and weaknesses of quantum
+computing. SIAM J. on Computing, 26(5):1510–1523, 1997.
+[7] E. Bloch. Mod 2 degree and a generalized no retraction Theorem. To appear in Mathematische
+Nachrichten.
+[8] J. Buresh-Oppenheim and T. Morioka.
+Relativized NP search problems and propositional
+proof systems. In 19th Conference on Computational Complexity, pp. 54–67, 2004.
+[9] P. Crescenzi and R. Silvestri. Sperner’s lemma and robust machines. Comput. Complexity,
+7(2):163–173, 1998.
+[10] D. Deutsch and R. Jozsa. Rapid solution of problems by quantum computation. Proc. of the
+Royal Society A, volume 439,1985.
+[11] K. Fan. Simplicial maps from an orientable n-pseudomanifold into Sm with the octahedral
+triangulation. J. Combinatorial Theory, 2:588–602, 1967.
+[12] J. Gilbert, J. Hutchinson and R. Tarjan. A separator theorem for graphs of bounded genus.
+J. Algorithms, 5(3):391–407, 1984.
+[13] S. Laplante and F. Magniez. Lower bounds for randomized and quantum query complexity
+using kolmogorov arguments. In 19th Conference on Computational Complexity, pp. 294–304,
+2004.
+[14] D. Llewellyn and C. Tovey.
+Dividing and conquering the square.
+Discrete Appl. Math.,
+43(2):131–153, 1993.
+[15] D. Llewellyn, C. Tovey and M. Trick. Local optimization on graphs. Discrete Appl. Math.,
+23(2):157–178, 1989.
+[16] N. Megiddo and C. Papadimitriou. On total functions, existence theorems and computational
+complexity. Theoret. Comput. Sci., 81:317–324, 1991.
+[17] C. Papadimitriou. On graph-theoretic lemmata and complexity classes. In 31st FOCS, pp.
+794–801, 1990.
+[18] C. Papadimitriou. On the complexity of the parity argument and other ineﬃcient proofs of
+existence. J. Comput. System Sci., 48(3):498–532, 1994.
+[19] M. Santha and M. Szegedy.
+Quantum and classical query complexities of local search are
+polynomially related. In 36th STOC, pp. 494–501, 2004.
+[20] Y. Shi. Quantum lower bounds for the collision and the element distinctness problems. In
+43rd FOCS, pp. 513–519, 2002.
+15
+
+[21] D. Simon. On the power of quantum computation. SIAM J. on Computing (26):5, pp. 1474–
+1783, 1997.
+[22] E. Sperner. Neuer Beweis f¨ur die Invarianz der Dimensionzahl und des Gebietes. Abh. Math.
+Sem. Hamburg Univ. 6:265–272, 1928.
+[23] R.
+ˇSpalek
+and
+M.
+Szegedy.
+All
+quantum
+adversary
+methods
+are
+equivalent.
+http://xxx.lanl.gov/abs/quant-ph/0409116.
+[24] L. Taylor. Sperner’s Lemma, Brouwer’s Fixed Point Theorem, The Fundamental Theorem of
+Algebra. http://www.cs.csubak.edu/~larry/math/sperner.pdf.
+[25] A. Thomason. Hamilton cycles and uniquely edge colourable graphs. Ann. Discrete Math. 3:
+259–268, 1978.
+16

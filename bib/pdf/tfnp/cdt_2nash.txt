@@ -1,0 +1,3132 @@
+arXiv:0704.1678v1  [cs.GT]  12 Apr 2007
+Settling the Complexity of Computing Two-Player Nash Equilibria
+Xi Chen∗
+Xiaotie Deng†
+Shang-Hua Teng‡
+Abstract
+We settle a long-standing open question in algorithmic game theory. We prove that Bi-
+matrix, the problem of ﬁnding a Nash equilibrium in a two-player game, is complete for
+the complexity class PPAD (Polynomial Parity Argument, Directed version) introduced by
+Papadimitriou in 1991.
+This is the ﬁrst of a series of results concerning the complexity of Nash equilibria. In
+particular, we prove the following theorems:
+• Bimatrix does not have a fully polynomial-time approximation scheme unless every
+problem in PPAD is solvable in polynomial time.
+• The smoothed complexity of the classic Lemke-Howson algorithm and, in fact, of any
+algorithm for Bimatrix is not polynomial unless every problem in PPAD is solvable in
+randomized polynomial time.
+Our results demonstrate that, even in the simplest form of non-cooperative games, equilib-
+rium computation and approximation are polynomial-time equivalent to ﬁxed point compu-
+tation. Our results also have two broad complexity implications in mathematical economics
+and operations research:
+• Arrow-Debreu market equilibria are PPAD-hard to compute.
+• The P-Matrix Linear Complementary Problem is computationally harder than convex
+programming unless every problem in PPAD is solvable in polynomial time.
+∗Department of Computer Science, Tsinghua University, Beijing, P.R.China. email: csxichen@gmail.com
+†Department of Computer Science, City University of Hong Kong, Hong Kong SAR, P.R. China.
+email:
+deng@cs.cityu.edu.hk
+‡Department of Computer Science, Boston University, Boston and Akamai Technologies Inc., Cambridge, MA,
+USA. email: steng@cs.bu.edu
+1
+
+1
+Introduction
+In 1944, Morgenstern and von Neumann [43] initiated the study of game theory and its applica-
+tions to economic behavior. At the center of their study was von Neumann’s minimax equilibrium
+solution for two-player zero-sum games [56]. In a two-player zero-sum game, one player’s gain is
+equal to the loss of the other. They observed that any general n-player (non-zero-sum) game can
+be reduced to an (n + 1)-player zero-sum game. Their work went on to introduce the notion of
+cooperative games and the solution concept of stable sets.
+In 1950, following the original spirit of Morgenstern and von Neumann’s work on two-player
+zero-sum games, Nash [45, 44] formulated a solution concept for non-cooperative games among
+multiple players. In a non-cooperative game, the zero-sum condition is relaxed and no commu-
+nication and coalition among players are allowed. Building on the notion of mixed strategies
+of [56], the solution concept, now commonly referred to as the Nash equilibrium, captures the
+notion of the individual rationality of players at an equilibrium point. In a Nash equilibrium,
+each player’s strategy is a best response to other players’ strategies. Nash proved that every
+n-player, ﬁnite, non-cooperative game has an equilibrium point. His original proof [45, 39] was
+based on Brouwer’s Fixed Point Theorem [7]. David Gale suggested the use of Kakutani’s Fixed
+Point Theorem [30] to simplify the proof. Mathematically, von Neumann’s Minimax Theorem
+for two-player zero-sum games can be proved by linear programming duality. In contrast, the
+ﬁxed point approach to Nash’s Equilibrium Theorem seems to be necessary: even for two-player
+non-cooperative games, linear programming duality is no longer applicable.
+Nash’s equilibrium concept has had a tremendous inﬂuence on economics, as well as in other
+social and natural science disciplines [27]. Nash’s approach to non-cooperative games has played
+an essential role in shaping mathematical economics, which consider agents with competing indi-
+vidual interests. A few years after Nash’s work, Arrow and Debreu [3], also applying ﬁxed point
+theorems, proved a general existence theorem for market equilibria. Since then, various forms of
+equilibrium theorems have been established via ﬁxed point theorems.
+However, the existence proofs based on ﬁxed point theorems do not usually lead to eﬃcient
+algorithms for ﬁnding equilibria. In fact, in spite of many remarkable breakthroughs in algorithmic
+game theory and mathematical programming, answers to several fundamental questions about
+the computation of Nash and Arrow-Debreu equilibria remain elusive. The most notable open
+problem is that of deciding whether the problem of ﬁnding an equilibrium point in a two-player
+game is solvable in polynomial time.
+In this paper, we settle the complexity of computing a two-player Nash equilibrium and
+answer two central questions regarding the approximation and smoothed complexity of this game
+theoretic problem. In the next few subsections, we will review previous work on the computation
+of Nash equilibria, state our main results, and discuss their extensions to the computation of
+market equilibria.
+2
+
+1.1
+Finite-Step Equilibrium Algorithms
+Since Nash and Arrow-Debreu’s pioneering work, great progress has been made in the eﬀort to
+ﬁnd constructive and algorithmic proofs of equilibrium theorems. The advances for equilibrium
+computation can be chronologically classiﬁed according to the following two periods:
+• Finite-step period: In this period, the main objective was to design equilibrium algo-
+rithms that terminate in a ﬁnite number of steps and to understand for which equilibrium
+problems ﬁnite-step algorithms do not exist.
+• Polynomial-time period: In this period, the main objective has been to develop polynomial-
+time algorithms for computing equilibria and to characterize the complexity of equilibrium
+computation.
+The duality-based proof of the minimax theorem leads to a linear programming formulation
+of the problem of ﬁnding an equilibrium in a two-player zero-sum game.
+One can apply the
+simplex algorithm, in a ﬁnite number of steps in the Turing model1, to compute an equilibrium
+in a two-player zero-sum game with rational payoﬀs. A decade or so after Nash’s seminal work,
+Lemke and Howson [38] developed a path-following, simplex-like algorithm for ﬁnding a Nash
+equilibrium in a general two-player game. Like the simplex algorithm, their algorithm terminates
+in a ﬁnite number of steps for a two-player game with rational payoﬀs.
+The Lemke-Howson algorithm has been extended to non-cooperative games with more than
+two players [57]. However, due to Nash’s observation that there are rational three-player games
+all of whose equilibria are irrational, ﬁnite-step algorithms become harder to obtain for games
+with three or more players. For those multi-player games, no ﬁnite-step algorithm exists in the
+classical Turing model.
+Similarly, some exchange economies do not have any rational Arrow-Debreu equilibria. The
+absence of a rational equilibrium underscores the continuous nature of equilibrium computation.
+Brouwer’s Fixed Point Theorem — that any continuous map f from a convex compact body, such
+as a simplex or a hypercube, to itself has a ﬁxed point — is inherently continuous. Mathematically,
+the continuous nature does not hinder the deﬁnition of search problems for ﬁnding equilibria and
+ﬁxed points. But to measure the computational complexity of these continuous problems in the
+classical Turing model, some imprecision or inaccuracy must be introduced to ensure the existence
+of a solution with a ﬁnite description [51, 52, 46, 26, 21]. For example, one possible deﬁnition
+of an approximate ﬁxed point of a continuous map f is a point x in the convex body such that
+||f(x) −x|| ≤ǫ for a given ǫ > 0 [51].
+In 1928, Sperner [53] discovered a discrete ﬁxed point theorem that led to one of the most
+elegant proofs of the Brouwer’s Fixed Point Theorem. Suppose that Ωis a d-dimensional simplex
+with vertices v1, v2, ..., vd+1, and that S is a simplicial decomposition of Ω. Suppose Π assigns
+to each vertex of S a color from {1, 2, ..., d + 1} such that, for every vertex v of S, Π(v) ̸= i
+if the ith component of the barycentric coordinate of v, in terms of v1, v2, ..., vd+1, is 0. Then,
+1The simplex algorithm also terminates in a ﬁnite number of steps in various computational models involving
+real numbers, such as the Blum-Shub-Smale model [5].
+3
+
+Sperner’s Lemma asserts that there exists a simplex cell in S that contains all colors.
+This
+fully-colored simplex cell is often referred to as a panchromatric simplex or a Sperner simplex
+of (S, Π). Consider a Brouwer map f with Lipschitz constant L over the simplex Ω. Suppose
+further that the diameter of each simplex cell in S is at most ǫ/L. Then, one can deﬁne a color
+assignment Πf such that each panchromatric simplex in (S, Πf) must have a vertex v satisfying
+||f(v) −v|| ≤Θ(ǫ). Thus, a panchromatic simplex of (S, Πf) can be viewed as an approximate,
+discrete ﬁxed point of f.
+Inspired by the Lemke-Howson algorithm, Scarf developed a path-following algorithm, using
+simplicial subdivision, for computing approximate ﬁxed points [51] and competitive equilibrium
+prices [52].
+The path-following method has also had extensive applications to mathematical
+programming and has since grown into an algorithm-design paradigm in optimization and equi-
+librium analysis. One can take a similar approximation approach to study the complexity of Nash
+equilibria, especially for games involving three or more players.
+1.2
+Computational Complexity of Nash Equilibria
+Since 1960s, the theory of computation has shifted its focus from whether problems can be solved
+on a computer to how eﬃciently problems can be solved on a computer. The ﬁeld has gained
+maturity with rapid advances in algorithm design, algorithm analysis, and complexity theory.
+Problems are categorized into complexity classes, capturing the potential diﬃculty of decision,
+search, and optimization problems. The complexity classes P, RP, and BPP, and their search
+counterparts such as FP, have become the standard classes for characterizing computational
+problems that are tractable2.
+The desire to ﬁnd fast and polynomial-time algorithms for computing equilibria has been
+greatly enhanced with the rise of the Internet [48]. The rise has created a surge of human activi-
+ties that make computation, communication and optimization of participating agents accessible
+at microeconomic levels. Eﬃcient computation is instrumental to support the basic operations,
+such as pricing, in this large scale on-line market [49]. Many new game and economic problems
+have been introduced, and in the meantime, classical game and economic problems have be-
+come the subjects for active complexity studies [48]. Algorithmic game theory has grown into a
+highly interdisciplinary ﬁeld intersecting economics, mathematics, operations research, numerical
+analysis, and computer science.
+In 1979, Khachiyan made a ground-breaking discovery that the ellipsoid algorithm can solve
+a linear program in polynomial time [34]. Shortly after, Karmarkar improved the complexity
+for solving linear programming with his path-following, interior-point algorithm [32]. His work
+initiated the implementation of theoretically-sound linear programming algorithms. Motivated
+by a grand challenge in Theory of Computing [16], Spielman and Teng [54] introduced a new al-
+gorithm analysis framework, smoothed analysis, based on perturbation theory, to provide rigorous
+complexity-theoretic justiﬁcation for the good practical performance of the simplex algorithm.
+2FP stands for Function Polynomial-Time. In this paper, as we only consider search problems, without further
+notice, we will (ab)use P and RP to denote the classes of search problems that can be solved in polynomial time
+or in randomized polynomial-time, respectively. We believe doing so will help more general readers.
+4
+
+They proved that although almost all known simplex algorithms have exponential worst-case
+complexity [35], the smoothed complexity of the simplex algorithm with the shadow-vertex piv-
+oting rule is polynomial. As a result of these developments in linear programming, equilibrium
+solutions of two-player zero-sum games can be found in polynomial time using the ellipsoid or
+interior-point algorithms and in smoothed polynomial time using the simplex algorithm.
+However, no polynomial-time algorithm has been found for computing discrete ﬁxed points
+or approximate ﬁxed points, rendering the equilibrium proofs based on ﬁxed point theorems
+non-constructive in the view of polynomial-time computability.
+The diﬃculty of discrete ﬁxed point computation is partially justiﬁed in the query model. In
+1989, Hirsch, Papadimitriou, and Vavasis [26] proved an exponential lower bound on the number
+of function evaluations necessary to ﬁnd a discrete ﬁxed point, even in two dimensions, assuming
+algorithms only have a black-box access to the ﬁxed point function. Their bound has recently
+been improved [8] and extended to the randomized query model [13] and to the quantum query
+model [23, 13].
+Motivated by the pivoting structure used in the Lemke-Howson algorithm, Papadimitriou
+introduced the complexity class PPAD [46]. PPAD is an abbreviation for Polynomial Parity
+Argument in a Directed graph. He introduced several search problems concerning the computation
+of discrete ﬁxed points. For example, he deﬁned the problem Sperner to be the search problem
+of ﬁnding a Sperner simplex given a polynomial-sized circuit for assigning colors to a particular
+simplicial decomposition of a hypercube. Extending the model of [26], he also deﬁned a search
+problem for computing approximate Brouwer ﬁxed points. He proved that even in three dimen-
+sions, these ﬁxed point problems are complete for the PPAD class. Recently, Chen and Deng [9]
+proved that the problem of ﬁnding a discrete ﬁxed point in two dimensions is also complete for
+PPAD.
+In [46], Papadimitriou also proved that Bimatrix, the problem of ﬁnding a Nash equilibrium
+in a two-player game with rational payoﬀs is member of PPAD. His proof can be extended to
+show that ﬁnding a (properly deﬁned) approximate equilibrium in a non-cooperative game among
+three or more players is also in PPAD. Thus, if these problems are PPAD-complete, then the
+problem of ﬁnding an equilibrium is polynomial-time equivalent to the search problem for ﬁnding
+a discrete ﬁxed point.
+It is conceivable that Nash equilibria might be easier to compute than discrete ﬁxed points. In
+fact, by taking advantage of the special structure of Nash’s normal form games, Lipton, Markarkis,
+and Mehta [40] developed a sub-exponential time algorithm for ﬁnding an approximate Nash
+equilibrium. In their notion of an ǫ-approximate Nash equilibrium, for a positive parameter ǫ,
+each players’ strategy is at most an additive ǫ worse than the best response to other players’
+strategies. They proved that if all payoﬀs are in [0, 1], then an ǫ-approximate Nash equilibrium
+can be found in nO(log n/ǫ2) time.
+In a complexity-theoretic breakthrough, Daskalakis, Goldberg and Papadimitriou [18] proved
+that the problem of computing a Nash equilibrium in a game among four or more players is
+complete for PPAD. To cope with the fact that equilibria may not be rational, they considered an
+approximation version of equilibria by allowing exponentially small errors. The complexity result
+5
+
+was soon extended to the three-player game independently by Chen and Deng [10] and Daskalakis
+and Papadimitriou [20], with diﬀerent proofs.
+The reduction of [18] has two steps: First, it
+reduces a PPAD-complete discrete ﬁxed point problem, named 3-Dimensional Brouwer, to
+the problem of ﬁnding a Nash equilibrium in a degree-three graphical game [33]. Then, it reduces
+the graphical game to a four-player game, using a result of Goldberg and Papadimitriou [25].
+This reduction cleverly encodes ﬁxed points by Nash equilibria.
+The results of [18, 10, 20] characterize the complexity of computing k-player Nash equilibria for
+k ≥3. They also show that the ﬁxed point approach is necessary in proving Nash’s Equilibrium
+Theorem, at least for games among three or more players.
+However, these latest complexity
+advances on the three/four-player games have fallen short on the two-player game.
+1.3
+Computing Two-Player Nash Equilibria and Smoothed Complexity
+There have been amazing parallels between discoveries concerning the two-player zero-sum game
+and the general two-player game. First, von Neumann proved the existence of an equilibrium for
+the zero-sum game, then Nash did the same for the general game. Both classes of games have
+rational equilibria when payoﬀs are rational. Second, more than a decade after von Neumann’s
+Minimax Theorem, Dantzig developed the simplex algorithm, which can ﬁnd a solution of a two-
+player zero-sum game in a ﬁnite number of steps. A decade or so after Nash’s work, Lemke and
+Howson developed their ﬁnite-step algorithm for Bimatrix. Then, about a quarter century after
+their respective developments, both the simplex algorithm [35] and the Lemke-Howson algorithm
+[50] were shown to have exponential worst-case complexity.
+A half century after von Neumann’s Minimax Theorem, Khachiyan proved that the ellipsoid
+algorithm can solve a linear program and hence can ﬁnd a solution of a two-player zero-sum
+game with rational payoﬀs in polynomial time. Shortly after that, Borgwardt [6] showed that
+the simplex algorithm has polynomial average-case complexity. Then, Spielman and Teng [54]
+proved that the smoothed complexity of the simplex algorithm is polynomial. If history is of any
+guide, then a half century after Nash’s Equilibrium Theorem, one should be quite optimistic to
+prove the following two natural conjectures.
+• Polynomial 2-Nash Conjecture: There exists a (weakly) polynomial-time algorithm for
+Bimatrix.
+• Smoothed Lemke-Howson Conjecture: The smoothed complexity of the Lemke-Howson al-
+gorithm for Bimatrix is polynomial.
+An upbeat attitude toward the ﬁrst conjecture has been encouraged by the following two
+facts. First, unlike three-player games, every rational bimatrix game has a rational equilibrium.
+Second, a key technical step involving coloring the graphical games in the PPAD-hardness proofs
+for three/four-player games fails to extend to two-player games [18, 10, 20]. The Smoothed Lemke-
+Howson Conjecture was asked by a number of people [1]. Indeed, whether the smoothed analysis
+of the simplex algorithm can be extended to the Lemke-Howson algorithm [38] has been the
+question most frequently raised during talks on smoothed analysis. The conjecture is a special
+6
+
+case of the following conjecture posted by Spielman and Teng [55] in a survey of smoothed analysis
+of algorithms.
+• Smoothed 2-Nash Conjecture: The smoothed complexity of Bimatrix is polynomial.
+The Smoothed 2-Nash Conjecture was inspired by the result of B´ar´any, Vempala and Vetta
+[4] that an equilibrium of a random two-player game can be found in polynomial time.
+1.4
+Our Contributions
+Despite much eﬀort in the last half century, no signiﬁcant progress has been made in characterizing
+the algorithmic complexity of ﬁnding a Nash equilibrium in a two-player game. Thus, Bimatrix,
+the most studied computational problem about Nash equilibria, stood out as the last open problem
+in equilibrium computation for normal form games. Papadimitriou [48] named it, along with
+Factoring, as one of the two “most concrete open problems” at the boundary of P. In fact,
+ever since Khachiyan’s discovery [34], Bimatrix has been on the frontier of natural problems
+possibly solvable in polynomial time.
+Now, it is also on the frontier of the hard problems,
+assuming PPAD is not contained in P.
+In this paper, we settle the computational complexity of the two-player Nash equilibrium. We
+prove:
+Theorem 1.1. Bimatrix is PPAD-complete.
+Our result demonstrates that, even in this simplest form of non-cooperative games, equilibrium
+computation is polynomial-time equivalent to discrete ﬁxed point computation. In particular,
+we show that from each discrete Brouwer function f, we can build a two-player game G and
+a polynomial-time map Π from the Nash equilibria of G to the ﬁxed points of f. Our proof
+complements Nash’s proof that for each two-player game G, there is a Brouwer function f and a
+map Φ from the ﬁxed points of f to the equilibrium points of G.
+The success in proving the PPAD completeness of Bimatrix inspires us to attempt to dis-
+prove the Smoothed 2-Nash Conjecture. A connection between the smoothed complexity and
+approximation complexity of Nash equilibria ([55], Proposition 9.12) then leads us to prove the
+following result.
+Theorem 1.2. For any c > 0, the problem of computing an n−c-approximate Nash equilibrium
+of a two-player game is PPAD-complete.
+This result enables us to establish the following fundamental theorem about the approximation
+of Nash equilibria. It also enables us answer the question about the smoothed complexity of the
+Lemke-Howson algorithm and disprove the Smoothed 2-Nash Conjecture assuming PPAD is
+not contained in RP.
+Theorem 1.3. Bimatrix does not have a fully polynomial-time approximation scheme unless
+PPAD is contained in P.
+7
+
+Theorem 1.4. Bimatrix is not in smoothed polynomial time unless PPAD is contained in
+RP.
+Consequently, it is unlikely that the nO(log n/ǫ2)-time algorithm of Lipton, Markakis, and Mehta
+[40], the fastest algorithm known today for ﬁnding an ǫ-approximate Nash equilibrium, can be
+improved to poly(n, 1/ǫ). Also, it is unlikely that the average-case polynomial time result of [4]
+can be extended to the smoothed model.
+Our advances in the computation, approximation, and smoothed analysis of two-player Nash
+equilibria are built on several novel techniques that might be interesting on their own. We intro-
+duce a new method for encoding boolean and arithmetic variables using the probability vectors
+of the mixed strategies. We then develop a set of perturbation techniques to simulate the boolean
+and arithmetic operations needed for ﬁxed point computation using the equilibrium conditions of
+two-player games. These innovations enable us to bypass the graphical game model and derive
+a direct reduction from ﬁxed point computation to Bimatrix. To study the approximation and
+smoothed complexity of the equilibrium problem, we introduce a new discrete ﬁxed point problem
+on a high-dimensional grid graph with a constant side-length. We then show that it can host
+the embedding of the proof structure of any PPAD problem. This embedding result not only
+enriches the family of PPAD-complete discrete ﬁxed point problems, but also provides a much
+needed trade-oﬀbetween precision and dimension. We prove a key geometric lemma for ﬁnding a
+high-dimensional discrete ﬁxed point, a new concept deﬁned on a simplex inside a unit hypercube.
+This geometric lemma enables us to overcome the curse of dimensionality in reasoning about ﬁxed
+points in high dimensions.
+1.5
+Implications and Impact
+Because the two-player Nash equilibrium enjoys several structural properties that Nash equilibria
+with three or more players do not have, our result enables us to answer some other long-standing
+open questions in mathematical economics and operations research. In particular, we have derived
+the following two important corollaries.
+Corollary 1.5. Arrow-Debreu market equilibria are PPAD-hard to compute.
+Corollary 1.6. The P-matrix Linear Complementary Problem is computationally harder than
+convex programming, unless PPAD is contained in P, where a P-matrix is a square matrix with
+positive principle minors.
+To prove the ﬁrst corollary, we use a recent discovery of Ye [58] (see also [15]) on the connection
+between two-player Nash equilibria and Arrow-Debreu equilibria in two-group Leontief exchange
+economies. The second corollary concerns the linear complementary problem, in which we are
+given a rational n-by-n matrix M and a rational n-place vector q, and are asked to ﬁnd vectors
+x and y such that y = Mx + q, x, y ≥0, and xT y = 0. Our result complements Megiddo’s
+observation [41] that if it is NP-hard to solve the P-Matrix linear complementarity problem, then
+NP = coNP.
+8
+
+By applying a recent reduction of Abbott, Kane, and Valiant [2], our result also implies the
+following corollary.
+Corollary 1.7. Win-Lose Bimatrix is PPAD-complete, where, in a win-lose bimatrix game,
+each payoﬀentry is either 0 or 1.
+We further reﬁne our reduction to show that the Nash equilibria in sparse two-player games
+are hard to compute and hard to approximate in fully polynomial time.
+We have also discovered several new structural properties about Nash equilibria. In particular,
+we prove an equivalence result about various notions of approximate Nash equilibria. We exploit
+these equivalences in the study of the complexity of ﬁnding an approximate Nash equilibrium
+and in the smoothed analysis of Bimatrix. Using them, we can also extend our result about
+approximate Nash equilibria as follows.
+Theorem 1.8. For any c > 0, the problem of ﬁnding the ﬁrst (1 + c) log n bits of an exact Nash
+equilibrium in a two-player game, even when the payoﬀs are integers of polynomial magnitude, is
+polynomial-time equivalent to Bimatrix.
+Recently, Chen, Teng, and Valiant [14] extended our approximation complexity result to
+win-lose two-player games; Huang and Teng [28] extended both the smoothed complexity and
+the approximation results to the computation of Arrow-Debreu equilibria. Using the connection
+between Nash equilibria and Arrow-Debreu equilibria, our complexity result on sparse games can
+be extended to market equilibria in economies with sparse exchange structures [12].
+1.6
+Paper Organization
+In Section 2, we review concepts in equilibrium theory. We also prove an important equivalence
+between various notions of approximate Nash equilibria. In Section 3, we recall the complexity
+class PPAD, the smoothed analysis framework, and the concept of polynomial-time reduction
+among search problems.
+In Section 4, we introduce two concepts: high-dimensional discrete
+Brouwer ﬁxed points and generalized circuits, followed by the deﬁnitions of two search problems
+based on these concepts. In Section 5, we state our main results and also provide an outline
+of our proofs. In Section 6, we show that one can simulate generalized circuits with two-player
+Nash equilibria. In Section 7, we prove a PPAD-completeness result for a large family of high-
+dimensional ﬁxed point search problems. In Section 8, we complete our proof by showing that
+discrete ﬁxed points can be modeled by generalized circuits.
+In Section 9, we discuss some
+extensions of our work and present several open questions and conjectures motivated by this
+research. In particular, we will show that sparse Bimatrix does not have a fully polynomial-time
+approximation scheme unless PPAD is contained in P. Finally, in Section 10, we thank many
+wonderful people who helped us in this work.
+This paper combines the papers “Settling the Complexity of 2-Player Nash-Equilibrium”, by
+Xi Chen and Xiaotie Deng, and “Computing Nash Equilibria: Approximation and Smoothed
+Complexity”, by the three of us. The extended abstracts of both papers appeared in the Pro-
+ceedings of the 47th Annual Symposium on Foundations of Computer Science, IEEE. The result
+9
+
+that Bimatrix is PPAD-complete is from the ﬁrst paper. We also include the main result from
+the paper “Sparse Games are Hard”, by the three of us, presented at the the 2nd International
+Workshop on Internet and Network Economics.
+1.7
+Notation
+We will use bold lower-case Roman letters such as x, a, bj to denote vectors. Whenever a vector,
+say a ∈Rn is present, its components will be denoted by lower-case Roman letters with subscripts,
+such as a1, ..., an. Matrices are denoted by bold upper-case Roman letters such as A and scalars
+are usually denoted by lower-case roman letters, but sometimes by upper-case Roman letters such
+as M, N, and K. The (i, j)th entry of a matrix A is denoted by ai,j. Depending on the context,
+we may use ai to denote the ith row or the ith column of A.
+We now enumerate some other notations that are used in this paper.
+We will let Zd
++ to denote
+the set of d-dimensional vectors with positive integer entries; ⟨a|b⟩to denote the dot-product of
+two vectors in the same dimension; ei to denote the unit vector whose ith entry is equal to 1 and
+all other entries are 0. Finally, for a, b ∈R, by a = b ± ǫ, we mean b −ǫ ≤a ≤b + ǫ.
+2
+Two-Player Nash Equilibria
+A two-player game [45, 37, 38] is a non-cooperative game between two players. When the ﬁrst
+player has m choices of actions and the second player has n choices of actions, the game, in
+its normal form, can be speciﬁed by two m × n matrices A = (ai,j) and B = (bi,j).
+If the
+ﬁrst player chooses action i and the second player chooses action j, then their payoﬀs are ai,j
+and bi,j, respectively. Thus, a two-player game is also often referred to as a bimatrix game. A
+mixed strategy of a player is a probability distribution over its choices. The Nash’s Equilibrium
+Theorem [45, 44], when specialized to bimatrix games, asserts that every two-player game has
+an equilibrium point, i.e., a proﬁle of mixed strategies, such that neither player can gain by
+changing his or her strategy unilaterally. The zero-sum two-player game [43] is a special case of
+the bimatrix game that satisﬁes B = −A.
+Let Pn denote the set of all probability vectors in Rn, i.e., non-negative, n-place vectors whose
+entries sum to 1. Then, a proﬁle of mixed strategies can be expressed by two column vectors
+(x∗∈Pm, y∗∈Pn).
+Mathematically, a Nash equilibrium of a bimatrix game (A, B) is a pair (x∗∈Pm, y∗∈Pn)
+such that
+(x∗)T Ay∗≥xT Ay∗
+and
+(x∗)T By∗≥(x∗)T By,
+for all x ∈Pm and y ∈Pn.
+Computationally, one might settle with an approximate Nash equilibrium. There are several
+versions of approximate equilibrium points that have been deﬁned in the literature. The following
+are two most popular ones.
+For a positive parameter ǫ, an ǫ-approximate Nash equilibrium of a bimatrix game (A, B) is
+10
+
+a pair (x∗∈Pm, y∗∈Pn) such that
+(x∗)T Ay∗≥xT Ay∗−ǫ and (x∗)T By∗≥(x∗)T By −ǫ,
+for all x ∈Pm and y ∈Pn.
+An ǫ-relatively-approximate Nash equilibrium of (A, B) is a pair (x∗, y∗) such that
+(x∗)T Ay∗≥(1 −ǫ)xT Ay∗and (x∗)T By∗≥(1 −ǫ)(x∗)T By,
+for all x ∈Pm and y ∈Pn.
+Nash equilibria of a bimatrix game (A, B) are invariant under positive scalings, meaning, the
+bimatrix game (c1A, c2B) has the same set of Nash equilibria as (A, B), as long as c1, c2 > 0. They
+are also invariant under shifting: For any constants c1 and c2, the bimatrix game (c1 +A, c2 +B)
+has the same set of Nash equilibria as (A, B).
+It is easy to verify that ǫ-approximate Nash
+equilibria are also invariant under shifting. However, each ǫ-approximate Nash equilibrium (x, y)
+of (A, B) becomes a (c·ǫ)-approximate Nash equilibrium of the bimatrix game (cA, cB) for c > 0.
+Meanwhile, ǫ-relatively-approximate Nash equilibria are invariant under positive scaling, but may
+not be invariant under shifting.
+The notion of the ǫ-approximate Nash equilibrium is deﬁned in the additive fashion. To study
+its complexity, it is important to consider bimatrix games with normalized matrices in which
+the absolute value of each entry is bounded, for example, by 1. Earlier work on this subject
+by Lipton, Markakis, and Mehta [40] used a similar normalization. Let Rm×n
+[a:b] denote the set of
+m × n matrices with real entries between a and b. In this paper, we say a bimatrix game (A, B)
+is normalized if A, B ∈Rm×n
+[−1,1] and is positively normalized if A, B ∈Rm×n
+[0,1] .
+Proposition 2.1. In a normalized two-player game (A, B), every ǫ-relatively-approximate Nash
+equilibrium is also an ǫ-approximate Nash equilibrium.
+To deﬁne our main search problems of computing and approximating a two-player Nash
+equilibrium, we need to ﬁrst deﬁne the input models.
+The most general input model is the
+real model in which a bimatrix game is speciﬁed by two real matrices (A, B). In the rational
+model, each entry of the payoﬀmatrices is given by the ratio of two integers. The input size
+is then the total number of bits describing the payoﬀmatrices.
+Clearly, by multiplying the
+common denominators in a payoﬀmatrix and using the fact that two-player Nash equilibria
+are invariant under positive scaling, we can transform a rational bimatrix game into an integer
+bimatrix game. Moreover, the total number of bits in this game with integer payoﬀs is within
+a factor of poly(m, n) of the input size of its rational counterpart. In fact, Abbott, Kane, and
+Valiant [2] go one step further to show that from every bimatrix game with integer payoﬀs, one
+can construct a “homomorphic” bimatrix game with 0-1 payoﬀs who size is within a polynomial
+factor of the input size of the original game.
+It is well known that each rational bimatrix game has a rational Nash equilibrium. We may
+verify this fact as following. Suppose (A, B) is a rational two-player game and (u, v) is one of its
+Nash equilibria. Let row-support = {i | ui > 0} and column-support = {i | vi > 0}. Let ai and
+bj denote the ith row of A and the jth column of B, respectively. Then, by the condition of the
+11
+
+Nash equilibrium, (u, v) is a feasible solution to the following linear program:
+P
+i xi = 1 and P
+i yi = 1
+xi = 0,
+∀i ̸∈row-support
+yi = 0,
+∀i ̸∈column-support
+xi ≥0,
+∀i ∈row-support
+yi ≥0,
+∀i ∈column-support
+aiy = ajy,
+∀i, j ∈row-support
+xT bi = xT bj,
+∀i, j ∈column-support
+aiy ≤ajy,
+∀i ̸∈row-support, j ∈row-support
+xT bi ≤xT bj,
+∀i ̸∈column-support, j ∈column-support.
+In fact, any solution to this linear program is a Nash equilibrium of (A, B). Therefore, (A, B)
+has at least one rational equilibrium point such that the total number of bits describing this
+equilibrium is within a polynomial factor of the input size of (A, B). By enumerating all possible
+row supports and column supports and applying the linear program above, we can ﬁnd a Nash
+equilibrium in the bimatrix game (A, B). This exhaustive-search algorithms takes 2m+npoly(L)
+time where L is the input size of the game, and m and n are, respectively, the number of rows
+and the number of columns.
+In this paper, we use Bimatrix to denote the problem of ﬁnding a Nash equilibrium in a
+rational bimatrix game. Without loss of generality, we make two assumptions about our search
+problem: all input bimatrix games are positively normalized in which both players have the same
+number of choices of actions. Thus, two important parameters associated with each instance to
+Bimatrix are: n, the number of actions, and L, the total number of bits in the description of
+the game. Thus, Bimatrix is in P if there exists an algorithm for Bimatrix with running time
+poly(n, L). As a matter of fact, for the two-player games that we will design in our complexity
+studies, L is bounded by a polynomial in n.
+We also consider two families of approximation problems for two-player Nash equilibria. For
+a positive constant c,
+• let Expc-Bimatrix denote the following search problem: Given a rational and positively
+normalized bimatrix game (A, B), compute a 2−cn-approximate Nash equilibrium of (A, B),
+if A and B are n × n matrices;
+• let Polyc-Bimatrix denote the following search problem: Given a rational and positively
+normalized bimatrix game (A, B), compute an n−c-approximate Nash equilibrium of (A, B),
+if A and B are n × n matrices.
+In our analysis, we will use an alternative notion of approximate Nash equilibria as introduced
+in [18], originally called ǫ-Nash equilibria.
+In order to avoid confusion with more commonly
+used ǫ-approximate Nash equilibria, we will refer to this alternative approximation as the ǫ-well-
+supported Nash equilibrium. For a bimatrix game (A, B), let ai and bj denote the ith row of A
+12
+
+and the jth column of B, respectively. In a proﬁle of mixed strategies (x, y), the expected payoﬀ
+of the ﬁrst player when choosing the ith row is aiy, and the expected payoﬀof the second player
+when choosing the ith column is xT bi.
+For a positive parameter ǫ, a pair of strategies (x∗∈Pn, y∗∈Pn) is an ǫ-well-supported Nash
+equilibrium of (A, B) if for all j and k,
+(x∗)T bj > (x∗)T bk + ǫ ⇒y∗
+k = 0
+and
+ajy∗> aky∗+ ǫ ⇒x∗
+k = 0.
+A Nash equilibrium is a 0-well-supported Nash equilibrium as well as a 0-approximate Nash equi-
+librium. The following lemma, a key lemma in our complexity study of equilibrium approxima-
+tion, shows that approximate Nash equilibria and well-supported Nash equilibria are polynomially
+related. This polynomial relation allows us to focus our attention on pair-wise approximation
+conditions. Thus, we can locally argue certain properties of the bimatrix game in our analysis.
+Lemma 2.2 (Polynomial Equivalence). In a bimatrix game (A, B) with A, B ∈Rn×n
+[0:1] , for any
+0 ≤ǫ ≤1,
+1. each ǫ-well-supported Nash equilibrium is also an ǫ-approximate Nash equilibrium; and
+2. from any ǫ2/8-approximate Nash equilibrium (u, v), one can ﬁnd in polynomial time an
+ǫ-well-supported Nash equilibrium (x, y).
+Proof. The ﬁrst statement follows from the deﬁnitions. Because (u, v) is an ǫ2/8-approximate
+Nash equilibrium, we have
+∀u′ ∈Pn, (u′)T Av ≤uT Av + ǫ2/8,
+and ∀v′ ∈Pn, uT Bv′ ≤uT Bv + ǫ2/8.
+Recall that ai denotes the ith row of A and bi denotes the ith column of B. We use J1 to denote
+the set of indices j : 1 ≤j ≤n such that aiv ≥ajv + ǫ/2, for some i ∈[1 : n]. Let i∗be
+an index such that ai∗v = max1≤i≤n aiv. Now by changing uj, j ∈J1, to 0 and changing ui∗
+to ui∗+ P
+j∈J1 uj we can increase the ﬁrst-player’s proﬁt by at least (ǫ/2) P
+j∈J1 uj, implying
+P
+j∈J1 uj < ǫ/4. Similarly, we deﬁne J2 = {j : 1 ≤j ≤n : ∃i, uT bi ≥uT bj + ǫ/2}. Then we
+have P
+j∈J2 vj < ǫ/4.
+We now set all these {uj | j ∈J1} and {vj | j ∈J2} to zero, and uniformly increase the
+probabilities of other strategies to obtain a new pair of mixed strategies (x, y).
+Note for all i ∈[1 : n], | aiy −aiv| ≤ǫ/4, because we assume the value of each entry in ai
+is between 0 and 1. Therefore, for every pair i, j : 1 ≤i, j ≤n, the relative change between
+aiy −ajy and aiv −ajv is no more than ǫ/2. Thus, any j that is beaten by some i by a gap of
+ǫ is already set to zero in (x, y).
+We conclude this section by pointing out that there are other natural notions of approximation
+for equilibrium points. In addition to the rational representation of a rational equilibrium, one can
+use binary representations to deﬁne entries in an equilibrium. As each entry p in an equilibrium
+is a number between 0 and 1, we can specify it using its binary representation (0.c1 · · · cP · · · ),
+13
+
+where ci ∈{0, 1} and p = limi→∞
+P
+i=1 ci/2i. Some rational numbers may not have a ﬁnite binary
+representation. Usually, we round oﬀthe numbers to store their ﬁnite approximations. The ﬁrst
+P bits c1, ..., cP give us a P-bit approximation ˜c of c.
+For a positive integer P, we will use P-Bit-Bimatrix to denote the search problem of com-
+puting the ﬁrst P bits of the entries of a Nash equilibrium in a rational bimatrix game. The
+following proposition relates P-Bit-Bimatrix with Polyc-Bimatrix.
+Proposition 2.3. Suppose (x, y) is a Nash equilibrium of a positively normalized two-player game
+(A, B) with n rows and n columns. For a positive integer P, let (˜x, ˜y) be the P-bit approximation
+of (x, y).
+Let ¯x = ˜x/ ∥˜x∥1 and ¯y = ˜y/ ∥˜y∥1.
+Then, (¯x, ¯y) is a (3n2−P )-approximate Nash
+equilibrium of (A, B).
+Proof. A similar proposition is stated and proved in [14].
+Let a = 2−P . Suppose (¯x, ¯y) is not a (3na)-approximate Nash equilibrium. Without loss of
+generality, assume there exists x′ ∈Pn such that (x′)T A¯y > ¯xT A¯y + 3na. We have
+(x′)T A¯y
+≤
+(x′)T A˜y + na ≤(x′)T Ay + na ≤xT Ay + na
+≤
+˜xT Ay + 2na ≤˜xT A˜y + 3na ≤¯xT A˜y + 3na ≤¯xT A¯y + 3na,
+which contradicts our assumption. To see the ﬁrst inequality, note that since the game is positively
+normalized, every component in (x′)T A is between 0 and 1. The inequality follows from the fact
+that ¯yi ≥˜yi for all i ∈[1 : n], and ∥˜y∥1 ≥1 −na.
+The other inequalities can be proved
+similarly.
+3
+Complexity and Algorithm Analysis
+In this section, we review the complexity class PPAD and the concept of polynomial-time reduc-
+tion among search problems. We then deﬁne the perturbation models in the smoothed analysis
+of Bimatrix and show that if the smoothed complexity of Bimatrix is polynomial, then we can
+compute an ǫ-approximate Nash equilibrium of a bimatrix game in randomized poly(n, 1/ǫ) time.
+3.1
+PPAD and Polynomial-Time Reduction Among Search Problems
+A binary relation R ⊂{0, 1}∗× {0, 1}∗is polynomially balanced if there exist constants c and k
+such that for all pairs (x, y) ∈R, |y| ≤c |x|k, where |x| denotes the length of string x. It is
+polynomial-time computable if for each pair (x, y), one can decide whether or not (x, y) ∈R in
+time polynomial in |x| + |y|. One can deﬁne the NP search problem SearchR speciﬁed by R
+as: Given x ∈{0, 1}∗, return a y such satisfying (x, y) ∈R, if such y exists, otherwise, return a
+special string “no”.
+A relation R is total if for every string x ∈{0, 1}∗, there exists y such that (x, y) ∈R.
+Following Megiddo and Papadimitriou [42], let TFNP denote the class of all NP search problems
+speciﬁed by total relations. A search problem SearchR1 ∈TFNP is polynomial-time reducible
+to problem SearchR2 ∈TFNP if there exists a pair of polynomial-time computable functions
+14
+
+(f, g) such that for every x of R1, if y satisﬁes that (f(x), y) ∈R2, then (x, g(y)) ∈R1. Search
+problems SearchR1 and SearchR2 are polynomial-time equivalent if SearchR2 is also reducible
+to SearchR1.
+The complexity class PPAD [47] is a sub-class of TFNP, containing all search problems
+polynomial-time reducible to following problem called End-of-Line:
+Deﬁnition 3.1 (End-of-Line). The input instance of End-of-Line is a pair (M, 0n) where
+M is a circuit of size polynomial in n that deﬁnes a function M satisfying:
+• for every v ∈{0, 1}n, M(v) is an ordered pair (u1, u2) where u1, u2 ∈{0, 1}n ∪{“no”}.
+• M(0n) = (“no”, 1n) and the ﬁrst component of M(1n) is 0n.
+This instance deﬁnes a directed graph GM = (V, EM) with V = {0, 1}n and (u, v) ∈EM, if
+and only if v is the second component of M(u) and u is the ﬁrst component of M(v).
+The output of this problem is an end vertex GM other than 0n, where a vertex of V is an end
+vertex if the summation of its in-degree and out-degree is equal to one.
+Note that in graph GM, both the in-degree and the out-degree of each vertex are at most
+1. Thus, edges of GM form a collection of directed paths and directed cycles. Because 0n has
+in-degree 0 and out-degree 1, it is an end vertex in GM. GM must have at least one directed
+path. Hence, it has another end vertex and End-of-Line is a member of TFNP.
+In fact, GM has an odd number of end vertices other than 0n. By evaluating the polynomial-
+sized circuit M on an input v ∈V , we can access the predecessor and the successor of v.
+Many important problems, such as the search versions of Brouwer’s Fixed Point Theorem,
+Kakutani’s Fixed Point Theorem, Smith’s Theorem, and Borsuk-Ulam Theorem, have been shown
+to be in the class PPAD [46].
+Bimatrix is also in PPAD [46]. As a corollary, for all c > 0, Polyc-Bimatrix and Expc-
+Bimatrix are in PPAD. However, it is not clear whether P-Bit-Bimatrix, for a positive integer
+P, is in PPAD.
+3.2
+Smoothed Models of Bimatrix Games
+In the smoothed analysis of the bimatrix game, we consider perturbed games in which each entry
+of the payoﬀmatrices is subject to a small and independent random perturbation. For a pair of
+n × n normalized matrices A = (ai,j) and B = (bi,j), in the smoothed model, the input instance3
+is then deﬁned by (A, B) where ai,j and bi,j are, respectively, independent perturbations of ¯ai,j
+and ¯bi,j with magnitude σ.
+3 For the simplicity of presentation, in this subsection, we model the entries of payoﬀmatrices and perturbations
+by real numbers. Of course, to connect with the complexity result of the previous section, where entries of matrices
+are in ﬁnite representations, we are mindful that some readers may prefer that we state our result and write the
+proof more explicitly using the ﬁnite representations. Using Equations (16) and (17) in the proof of Lemma 3.2
+(see Appendix A), we can deﬁne a discrete version of the uniform and Gaussian perturbations and state and prove
+the same result.
+15
+
+There might be several models of perturbations for ai,j and bi,j with magnitude σ [55]. The
+two common perturbation models are the uniform perturbation and the Gaussian perturbation.
+In the uniform perturbation with magnitude σ, ai,j and bi,j are chosen uniformly from the
+intervals [¯ai,j −σ, ¯ai,j + σ] and [¯bi,j −σ,¯bi,j + σ], respectively. In the Gaussian perturbation with
+variance σ2, ai,j and bi,j are, respectively, chosen with density
+1
+√
+2πσ
+e−|ai,j−¯ai,j|2/2σ2
+and
+1
+√
+2πσ
+e−|bi,j−¯bi,j|2/2σ2.
+We refer to these perturbations as σ-uniform and σ-Gaussian perturbations, respectively.
+The smoothed complexity of an algorithm J for Bimatrix is deﬁned as following:
+Let
+TJ(A, B) be the complexity of J for ﬁnding a Nash equilibrium in a bimatrix game (A, B).
+Then, the smoothed complexity of J under perturbations Nσ() of magnitude σ is
+SmoothedJ [n, σ] =
+max
+¯A, ¯B∈Rn×n
+[−1,1]
+EA←Nσ( ¯A),B←Nσ( ¯B) [TJ(A, B)] ,
+where we use A ←Nσ( ¯A) to denote that A is a perturbation of ¯A according to Nσ( ¯A).
+An algorithm J has a polynomial smoothed time complexity [55] if for all 0 < σ < 1 and for
+all positive integer n, there exist positive constants c, k1 and k2 such that
+SmoothedJ [n, σ] ≤c · nk1σ−k2.
+Bimatrix is in smoothed polynomial time if there exists an algorithm J with polynomial smoothed
+time complexity for computing a two-player Nash equilibrium.
+The following lemma shows that if the smoothed complexity of Bimatrix is low, under
+uniform or Gaussian perturbations, then one can quickly ﬁnd an approximate Nash equilibrium.
+Lemma 3.2 (Smoothed Nash vs Approximate Nash). If Bimatrix is in smoothed polynomial
+time under uniform or Gaussian perturbations, then for all ǫ > 0, there exists a randomized
+algorithm to compute an ǫ-approximate Nash equilibrium in a two-player game with expected time
+O
+ poly(m, n, 1/ǫ)
+
+or O
+ poly(m, n,
+p
+log max(m, n)/ǫ)
+
+, respectively.
+Proof. Informally argued in [55]. See Appendix A for a proof.
+4
+Two Search Problems
+In this section, we consider two search problems that are essential to our main results. In the
+ﬁrst problem, the objective is to ﬁnd a high-dimensional discrete Brouwer ﬁxed point. To deﬁne
+the second problem, we introduce a concept of the generalized circuit.
+4.1
+Discrete Brouwer Fixed Points
+The following is an oblivious fact: Suppose we color the endpoints of an interval [0, n] by two
+distinct colors, say red and blue, insert n −1 points evenly into this interval to subdivide it into
+16
+
+n unit subintervals, and color these new points arbitrarily by one of the two colors. Then, there
+must be a bichromatic subinterval, i.e., an unit subinterval whose two endpoints have distinct
+colors.
+Our ﬁrst search problem is built on a high-dimensional extension of this fact.
+Instead of
+coloring points in a subdivision of an intervals, we color the vertices in a hypergrid.
+If the
+dimension is d, we will use d + 1 colors.
+For d ∈Z1
++ and r in Zd
++, let Ad
+r = {q ∈Zd  0 ≤qi ≤ri −1, ∀i ∈[1 : d]} denote the vertices
+of the hypergrid with side lengths speciﬁed by r. The boundary of Ad
+r, ∂(Ad
+r), is the set of points
+q ∈Ad
+r with qi ∈{0, ri −1} for some i. Let Size [r] = P
+1≤i≤d ⌈log(ri + 1) ⌉.
+In one dimension, the interval [0, n] is the union of n unit subintervals. A hypergrid can be
+viewed as the union of a collection of unit hypercubes. For a point p ∈Zd, let Kp = {q ∈
+Zd  qi ∈{pi, pi + 1} , ∀i ∈[1 : d]} be the vertices of the unit hypercube with p as its corner
+closest to the origin.
+We can color the vertices of a hypergrid with (d + 1) colors {1, 2, ..., d + 1}.
+Like in one
+dimension, the coloring of the boundary vertices needs to meet certain requirements in the context
+of the discrete Brouwer ﬁxed point problem. A color assignment φ of Ad
+r is valid if φ(p) satisﬁes
+the following condition: For p ∈∂(Ad
+r), if there exists an i ∈[1 : d] such that pi = 0 then
+φ(p) = max{i
+ pi = 0}; otherwise φ(p) = d + 1. In the later case, ∀i, pi ̸= 0 and ∃i, pi = ri −1.
+The following theorem is a high-dimensional extension of the one-dimensional fact mentioned
+above. It is also an extension of the two-dimensional Sperner’s Lemma.
+Theorem 4.1 (High-Dimensional Discrete Brouwer Fixed Points). For d ∈Z1
++ and r in Zd
++, for
+any valid coloring φ of Ad
+p, there is a unit hypercube in Ad
+p whose vertices have all d + 1 colors.
+In other words, Theorem 4.1 asserts that there exists a p ∈Ad
+r such that φ assigns all (d + 1)
+colors to Kp. We call Kp a panchromatic cube. However, in d-dimensions, a panchromatic cube
+contains 2d vertices. This exponential dependency in the dimension makes it ineﬃcient to check
+whether a hypercube is panchromatic. We introduce the following notion of discrete ﬁxed points.
+Deﬁnition 4.2 (Panchromatic Simplex). A subset P ⊂Ad
+r is accommodated if P ⊂Kp for some
+point p ∈Ad
+r. P ⊂Ad
+r is a panchromatic simplex of a color assignment φ if it is accommodated
+and contains exactly d + 1 points with d + 1 distinct colors.
+Corollary 4.3 (Existence of Panchromatic Simplex). For d ∈Z1
++ and r in Zd
++, for any valid
+coloring φ of Ad
+p, there exists a panchromatic simplex in Ad
+p.
+We can deﬁne a search problem based on Theorem 4.1, or precisely, based on Corollary 4.3.
+An input instance is a hypergrid together with a polynomial-sized circuit for coloring the vertices
+of the hypergrid.
+Deﬁnition 4.4 (Brouwer-Mapping Circuit and Color Assignment). For d ∈Z1
++ and r ∈Zd
++,
+a Boolean circuit C with Size [r] input bits and 2d output bits ∆+
+1 , ∆−
+1 , ..., ∆+
+d , ∆−
+d is a valid
+Brouwer-mapping circuit (with parameters d and r) if the following is true.
+17
+
+• For every p ∈Ad
+r, the 2d output bits of C evaluated at p satisfy one of the following (d + 1)
+cases:
+– Case i, 1 ≤i ≤d: ∆+
+i = 1 and all other 2d −1 bits are 0;
+– Case (d + 1): ∀i, ∆+
+i = 0 and ∆−
+i = 1.
+• For every p ∈∂(Ad
+r), if there exists an i ∈[1 : d] such that pi = 0, letting imax =
+max{i
+ pi = 0}, then the output bits satisfy Case imax, otherwise (∀i, pi ̸= 0 and ∃i,
+pi = ri −1), the output bits satisfy Case d + 1.
+The circuit C deﬁnes a valid color assignment ColorC : Ad
+r →{1, 2, ..., d + 1} by setting
+ColorC [p] = i, if the output bits of C evaluated at p satisfy Case i.
+To deﬁne our high-dimensional Brouwer’s ﬁxed point problems, we need a notion of well-
+behaved functions (please note that this is not the function for the ﬁxed point problem) to
+parameterize the shape of the search space. An integer function f(n) is called well-behaved if it
+is polynomial-time computable and there exists an integer constant n0 such that 3 ≤f(n) ≤n/2
+for all n ≥n0. For example, f1(n) = 3, f2(n) = ⌊n/2⌋, f3(n) = ⌊n/3⌋, and f4(n) = ⌊log n⌋are
+all well-behaved.
+Deﬁnition 4.5 (Brouwerf). For each well-deﬁned function f, the search problem Brouwerf
+is deﬁned as following: Given an input instance of Brouwerf, (C, 0n), where C is a valid
+Brouwer-mapping circuit with parameters d = ⌈n/f(n)⌉and r ∈Zd
++ where ∀i ∈[1 : d], ri = 2f(n),
+ﬁnd a panchromatic simplex of C.
+The input size of Brouwerf is the sum of n and the size of the circuit C. Brouwerf2 is a
+two-dimensional search problem over grid [0 : 2⌊n/2⌋−1]2 and Brouwerf3 is a three-dimensional
+search problem over grid [0 : 2⌊n/3⌋−1]3, while Brouwerf1 is a ⌈n/3⌉-dimensional search
+problem over grid [0 : 7]⌈n/3⌉. Each of these three grids contains about 2n hypercubes. Both
+Brouwerf2 [9] and Brouwerf3 [18] are known to be PPAD-complete. In section 7, we will
+prove the following theorem, which states that the complexity of ﬁnding a panchromatic simplex
+is essentially independent of the shape or dimension of the search space. In particular, it implies
+that Brouwerf1 is also PPAD-complete.
+Theorem 4.6 (High-Dimensional Discrete Fixed Points). For each well-behaved function f,
+Brouwerf is PPAD-complete.
+4.2
+Generalized Circuits and Their Assignment Problem
+To eﬀectively connect discrete Brouwer ﬁxed points with two-player Nash equilibria, we use an
+intermediate structure called the generalized circuit. This family of circuits, motivated by the
+reduction of [18, 10, 20], extends the standard classes of Boolean or Arithmetic circuits in several
+aspects.
+Syntactically, a generalized circuit S = (V, T ) is a pair, where V is a set of nodes and T is a
+collection of gates. Every gate T ∈T is a 5-tuple T = (G, v1, v2, v, α) in which
+18
+
+G
++
+
+G
+=
+
+G
+x
+0
+.
+5
+
+v
+1
+
+v
+2
+
+v
+3
+
+v
+4
+
+G
+=
+0
+.
+2
+
+Figure 1: An example of generalized circuits
+• G ∈{Gζ, G×ζ, G=, G+, G−, G<, G∧, G∨, G¬ } is the type of the gate;
+• v1, v2 ∈V ∪{nil} are the ﬁrst and second input nodes of the gate;
+• v ∈V is the output node, and α ∈R ∪{nil}.
+The collection T of gates must satisfy the following property: For every two gates T = (G, v1, v2, v, α)
+and T ′ = (G′, v′
+1, v′
+2, v′, α′) in T , v ̸= v′.
+Suppose T = (G, v1, v2, v, α) in T . If G = Gζ, then the gate has no input node and v1 =
+v2 = nil. If G ∈{G×ζ, G=, G¬ }, then v1 ∈V and v2 = nil. If G ∈{G+, G−, G<, G∧, G∨}, then
+v1, v2 ∈V and v1 ̸= v2. Parameter α is only used in Gζ and G×ζ gates. If G = Gζ, then α ∈R
+and 0 ≤α ≤1/|V |. If G = G×ζ, then 0 ≤α ≤1. For other types of gates, α = nil.
+The input size of a generalized circuit is the sum of |V | and the total number of bits needed
+to specify the α parameters in S = (V, T ). As an important point which will become clear later,
+we make the following remark: In all generalized circuits that we will construct, the number of
+bits of each α parameter is upper bounded by poly(|V |).
+In addition to its more expanded list of gate types, the generalized circuit diﬀers crucially
+from the standard circuit in that it does not require the circuit to be acyclic. In other words, in
+a generalized circuit, the directed graph deﬁned by connecting input nodes of all gates to their
+output counterparts may have cycles. We shall show later that the presence of cycles is necessary
+and suﬃcient to express ﬁxed point computations with generalized circuits.
+Semantically, we associate every node v ∈V with a real variable x[v].
+Each gate T ∈
+T requires that the variables of its input and output nodes satisfy certain constraints, either
+arithmetic or logical, depending on the type of the gate.
+By setting ǫ = 0, the constraints
+are deﬁned in Figure 2. The notation = ǫ
+B in Figure 2 will be deﬁned shortly. A generalized
+circuit deﬁnes a set of K = |V | constraints, or a mathematical program, over the set of variables
+{x[v] | v ∈V }.
+Suppose S = (V, T ) is a generalized circuit and K = |V |. For every ǫ ≥0, an ǫ-approximate
+solution to circuit S is an assignment to the variables {x[v] | v ∈V } such that
+• the values of x satisfy constraint P[ǫ] =
+
+0 ≤x[v] ≤1/K + ǫ, ∀v ∈V
+
+; and
+19
+
+G = Gζ :
+P[T, ǫ] =
+h
+x[v] = α ± ǫ
+i
+G = G×ζ :
+P[T, ǫ] =
+h
+x[v] = min
+ αx[v1], 1/K
+
+± ǫ
+i
+G = G= :
+P[T, ǫ] =
+h
+x[v] = min
+ x[v1], 1/K
+
+± ǫ
+i
+G = G+ :
+P[T, ǫ] =
+h
+x[v] = min
+ x[v1] + x[v2], 1/K
+
+± ǫ
+i
+G = G−:
+P[T, ǫ] =
+h
+min
+ x[v1] −x[v2], 1/K
+
+−ǫ ≤x[v] ≤max
+ x[v1] −x[v2], 0
+
++ ǫ
+i
+G = G< :
+P[T, ǫ] =
+h
+x[v] = ǫ
+B 1 if x[v1] < x[v2] −ǫ; x[v] = ǫ
+B 0 if x[v1] > x[v2] + ǫ
+i
+G = G∨:
+P[T, ǫ] =
+"
+x[v] = ǫ
+B 1 if x[v1] = ǫ
+B 1 or x[v2] = ǫ
+B 1
+x[v] = ǫ
+B 0 if x[v1] = ǫ
+B 0 and x[v2] = ǫ
+B 0
+#
+G = G∧:
+P[T, ǫ] =
+"
+x[v] = ǫ
+B 0 if x[v1] = ǫ
+B 0 or x[v2] = ǫ
+B 0
+x[v] = ǫ
+B 1 if x[v1] = ǫ
+B 1 and x[v2] = ǫ
+B 1
+#
+G = G¬ :
+P[T, ǫ] =
+h
+x[v] = ǫ
+B 0 if x[v1] = ǫ
+B 1; x[v] = ǫ
+B 1 if x[v1] = ǫ
+B 0
+i
+Figure 2: Constraints P[T, ǫ], where T = (G, v1, v2, v, α)
+• for each gate T = (G, v1, v2, v, α) ∈T , the values of x[v1], x[v2] and x[v] satisfy the con-
+straint P[T, ǫ], deﬁned in Figure 2.
+Among the nine types of gates, Gζ, G×ζ, G=, G+ and G−are arithmetic gates implementing
+arithmetic constraints like addition, subtraction and constant multiplication.
+G< is a brittle
+comparator; it only distinguishes values that are properly separated. Finally, G∧, G∨and G¬ are
+logic gates. For an assignment to variables {x[v] | v ∈V }, the value of x[v] represents boolean
+1 with precision ǫ, denoted by x[v] = ǫ
+B 1, if 1/K −ǫ ≤x[v] ≤1/K + ǫ; it represents boolean 0
+with precision ǫ, denoted by x[v] = ǫ
+B 0, if 0 ≤x[v] ≤ǫ. We will use x[v] = 1/K ± ǫ to denote the
+constraint that the value of x[v] lies in [1/K −ǫ, 1/K + ǫ]. The logic constraints implemented by
+the three logic gates are deﬁned similarly as the classical ones.
+From the reduction in Section 6, we can prove the following theorem. A proof can be found
+in Appendix B.
+Theorem 4.7. For any constant c > 0, every generalized circuit S = (V, T ) has a 1/|V |c-
+approximate solution.
+Let c be a positive constant. We use Polyc-Gcircuit, and Expc-Gcircuit to denote the
+problems of ﬁnding a K−c-approximate solution and a 2−cK-approximate solution, respectively,
+of a given generalized circuit with K nodes.
+20
+
+5
+Main Results and Proof Outline
+As the main technical result of our paper, we prove the following theorem.
+Theorem 5.1 (Main). For any constant c > 0, Polyc-Bimatrix is PPAD-complete.
+This theorem immediately implies the following statements about the complexity of computing
+and approximating two-player Nash equilibria.
+Theorem 5.2 (Complexities of Bimatrix). Bimatrix is PPAD-complete. Moreover, it does
+not have a fully-polynomial-time approximation scheme, unless PPAD is contained in P.
+By Proposition 2.1, Bimatrix does not have a fully polynomial-time approximation scheme
+in the relative approximation of Nash equilibria.
+Setting ǫ = 1/poly(n), by Theorem 5.1 and Lemma 3.2, we obtain following theorem on the
+smoothed complexity of two-player Nash equilibria:
+Theorem 5.3 (Smoothed Complexity of Bimatrix). Bimatrix is not in smoothed polynomial
+time, under uniform or Gaussian perturbations, unless PPAD is contained in RP.
+Corollary 5.4 (Smoothed Complexity of Lemke-Howson). If PPAD is not contained in RP,
+then the smoothed complexity of the Lemke-Howson algorithm is not polynomial.
+By Proposition 2.3, we obtain the following corollary from Theorem 5.1 about the complexity
+of Bit-Bimatrix.
+Corollary 5.5 (Bit-Bimatrix). For any constant c > 1, (c log n)-Bit-Bimatrix, the problem of
+ﬁnding the ﬁrst c log n bits of a Nash equilibrium in a bimatrix game is polynomial-time equivalent
+to Bimatrix.
+To prove Theorem 5.1, we will start with the discrete ﬁxed point problem Brouwerf1 (recall
+that f1(n) = 3 for all n). As f1 is a well-behaved function, Theorem 4.6 implies that Brouwerf1
+is a PPAD-complete problem. We then apply the following three lemmas to reduce Brouwerf1
+to Polyc-Bimatrix.
+Lemma 5.6 (FPC to Gcircuit). Brouwerf1 is polynomial-time reducible to Poly3-Gcircuit.
+Lemma 5.7 (Gcircuit to Bimatrix). Poly3-Gcircuit is polynomial-time reducible to Poly12-
+Bimatrix.
+Lemma 5.8 (Padding Bimatrix Games). If Polyc-Bimatrix is PPAD-complete for some con-
+stant c > 0, then Polyc′-Bimatrix is PPAD-complete for every constant c′ > 0.
+We will prove Lemma 5.6 and Lemma 5.7, respectively, in Section 8 and Section 6. A proof
+of Lemma 5.8 can be found in Appendix C.
+21
+
+6
+Simulating Generalized Circuits with Nash Equilibria
+In this section, we reduce Poly3-Gcircuit, the problem of computing a 1/K3-approximate
+solution of a generalized circuit of K nodes, to Poly12-Bimatrix. As every two-player game has
+a Nash equilibrium, this reduction also implies that every generalized circuit with K nodes has a
+1/K3-approximate solution.
+6.1
+Outline of the Reduction
+Suppose S = (V, T ) is a generalized circuit. Let K = |V | and N = 2K. Let C be a one-to-
+one map from V to {1, 3, ..., 2K −3, 2K −1}. From every vector x ∈RN, we deﬁne two maps
+x, xC : V →R: For every node v ∈V , supposing C(v) = 2k −1, we set x[v] = x2k−1 and
+xC[v] = x2k−1 + x2k.
+In our reduction, we will build an N × N bimatrix game GS = (AS, BS). Our construction
+will take polynomial time and ensure the following properties for ǫ = 1/K3.
+• Property A1: |aS
+i,j |, |bS
+i,j | ≤N 3, for all i, j : 1 ≤i, j ≤N and
+• Property A2: for every ǫ-well-supported Nash equilibrium (x, y) of game GS, x is an
+ǫ-approximate solution to S.
+Then, we normalize GS to obtain GS = (AS, BS) by setting
+aSi,j =
+aS
+i,j + N 3
+2N 3
+and
+bSi,j =
+bS
+i,j + N 3
+2N 3
+,
+for all i, j : 1 ≤i, j ≤N.
+Property A2 implies that for every ǫ/(2N 3)-well-supported equilibrium (x, y) of GS, x is an
+ǫ-approximate solution to S. By Lemma 2.2, from every 2/N 12-approximate Nash equilibrium of
+GS, we can compute an ǫ-approximate solution to S in polynomial time.
+In the remainder of this section, we assume ǫ = 1/K3.
+6.2
+Construction of Game GS
+To construct GS, we transform a prototype game G∗= (A∗, B∗), an N × N zero-sum game to be
+deﬁned in Section 6.3, by adding |T | carefully designed “gadget” games: For each gate T ∈T ,
+we deﬁne a pair of N × N matrices (L[T], R[T]), according to Figure 3. Then, we set
+GS = (AS, BS), where AS = A∗+
+X
+T∈T
+L[T] and BS = B∗+
+X
+T∈T
+R[T].
+For each gate T ∈T , L[T] and R[T] deﬁned in Figure 3 satisfy the following property.
+Property 1. Let T = (G, v1, v2, v, α), L[T] = (Li,j) and R[T] = (Ri,j). Suppose C(v) = 2k −1.
+22
+
+L[T] and R[T], where gate T = (G, v1, v2, v, α)
+Set L[T] = (Li,j) = R[T] = (Ri,j) = 0, k = C(v), k1 = C(v1) and k2 = C(v2)
+G+ : L2k−1,2k−1 = L2k,2k = R2k1−1,2k−1 = R2k2−1,2k−1 = R2k−1,2k = 1.
+Gζ :
+L2k−1,2k = L2k,2k−1 = R2k−1,2k−1 = 1, Ri,2k = α, ∀i : 1 ≤i ≤2K.
+G×ζ : L2k−1,2k−1 = L2k,2k = R2k−1,2k = 1, R2k1−1,2k−1 = α.
+G= : L2k−1,2k−1 = L2k,2k = R2k1−1,2k−1 = R2k−1,2k = 1.
+G−: L2k−1,2k−1 = L2k,2k = R2k1−1,2k−1 = R2k2−1,2k = R2k−1,2k = 1.
+G< : L2k−1,2k = L2k,2k−1 = R2k1−1,2k−1 = R2k2−1,2k = 1.
+G∨: L2k−1,2k−1 = L2k,2k = R2k1−1,2k−1 = R2k2−1,2k−1 = 1, Ri,2k = 1/(2K), ∀i : 1 ≤i ≤2K.
+G∧: L2k−1,2k−1 = L2k,2k = R2k1−1,2k−1 = R2k2−1,2k−1 = 1, Ri,2k = 3/(2K), ∀i : 1 ≤i ≤2K.
+G¬ : L2k−1,2k = L2k,2k−1 = R2k1−1,2k−1 = R2k1,2k = 1.
+Figure 3: Matrices L[T] and R[T]
+Then,
+i ̸∈{2k, 2k −1}
+⇒
+Li,j = 0,
+∀j ∈[1 : 2K];
+j ̸∈{2k, 2k −1}
+⇒
+Ri,j = 0,
+∀i ∈[1 : 2K];
+i ∈{2k, 2k −1}
+⇒
+0 ≤Li,j ≤1,
+∀j ∈[1 : 2K];
+j ∈{2k, 2k −1}
+⇒
+0 ≤Ri,j ≤1,
+∀i ∈[1 : 2K].
+6.3
+The Prototype Game and Its Properties
+The prototype G∗= (A∗, B∗) is the bimatrix game called Generalized Matching Pennies with
+parameter M = 2K3:
+A∗=
+
+
+
+
+
+
+
+
+
+
+
+
+
+M
+M
+0
+0
+· · ·
+0
+0
+M
+M
+0
+0
+· · ·
+0
+0
+0
+0
+M
+M
+· · ·
+0
+0
+0
+0
+M
+M
+· · ·
+0
+0
+...
+...
+...
+...
+...
+...
+...
+0
+0
+0
+0
+· · ·
+M
+M
+0
+0
+0
+0
+· · ·
+M
+M
+
+
+
+
+
+
+
+
+
+
+
+
+
+.
+A∗is a K × K block-diagonal matrix where each diagonal block is a 2 × 2 matrix of all M’s, and
+B∗= −A∗. All games we will consider below belong to the following class:
+Deﬁnition 6.1 (Class L). A bimatrix game (A, B) is a member of L if the entries in A −A∗
+and B −B∗are in [0 : 1].
+23
+
+Note that every Nash equilibrium (x, y) of G∗enjoys the following nice property: For all
+v ∈V , xC[v] = yC[v] = 1/K. We ﬁrst prove an extension of this property for bimatrix games in
+L. Recall ǫ = 1/K3.
+Lemma 6.2 (Nearly Uniform Capacities). For every bimatrix game (A, B) ∈L, if (x, y) is a
+1.0-well-supported Nash equilibrium of (A, B), then
+1/K −ǫ ≤xC[v], yC[v] ≤1/K + ǫ,
+for all v ∈V.
+Proof. Recall that ⟨a|b⟩denotes the inner product of two vectors a and b of the same length.
+By the deﬁnition of class L, for each k, the 2k −1st and 2kth entries of rows a2k−1 and a2k in A
+are in [M, M + 1] and all other entries in these two rows are in [0, 1]. Thus, for any probability
+vector y ∈Pn and for each node v ∈V , supposing C(v) = 2k −1, we have
+MyC[v] ≤⟨a2k−1|y⟩, ⟨a2k|y⟩≤MyC[v] + 1.
+(1)
+Similarly, the (2l −1)th and 2lth entries of columns b2l−1 and b2l in B are in [−M, −M + 1] and
+all other entries in these two columns are in [0, 1]. Thus, for any probability vector x ∈Pn and
+for each node v ∈V , supposing C(v) = 2l −1, we have
+−MxC[v] ≤⟨b2l−1|x⟩, ⟨b2l|x⟩≤−MxC[v] + 1.
+(2)
+Now, suppose (x, y) is a t-well-supported Nash equilibrium of (A, B) for t ≤1. To warm up,
+we ﬁrst prove that for each node v ∈V , if yC[v] = 0 then xC[v] = 0. Note that yC[v] = 0 implies
+there exists v′ ∈V with yC[v′] ≥1/K. Suppose C(v) = 2l −1 and C(v′) = 2k −1. By Inequality
+(1),
+⟨a2k|y⟩−max
+
+⟨a2l|y⟩, ⟨a2l−1|y⟩
+
+≥MyC[v′] −
+ MyC[v] + 1
+
+≥M/K −1 > 1
+In other words, the payoﬀof the ﬁrst player P1 when choosing the 2kth row is more than 1 plus
+the payoﬀof P1 when choosing the 2lth or the (2l −1)th row. Because (x, y) is a t-well-supported
+Nash equilibrium with t ≤1, we have xC[v] = 0.
+Next, we prove |xC[v] −1/K | < ǫ for all v ∈V . To derive a contradiction, we assume that
+this statement is not true. Then, there exist v, v′ ∈V such that xC[v] −xC[v′] > ǫ. Suppose
+C(v) = 2l −1 and C(v′) = 2k −1. By Inequality (2),
+⟨b2k|x⟩−max
+
+⟨b2l|x⟩, ⟨b2l−1|x⟩
+
+≥−MxC[v′] −
+ −MxC[v] + 1
+
+> 1,
+since M = 2K3 = 2/ǫ. This would imply yC[v] = 0, and in turn imply xC[v] = 0, contradicting
+our assumption that xC[v] > xC[v′] + ǫ > 0.
+We can similarly show |yC[v] −1/K | < ǫ for all v ∈V .
+24
+
+6.4
+Correctness of the Reduction
+We now prove that, for every ǫ-well-supported equilibrium (x, y) of GS, x is an ǫ-approximate
+solution to S = (V, T ). It suﬃces to show, to be accomplished by the next two lemmas, that x
+satisﬁes the following collection of 1 + |T | constraints.
+n
+P[ǫ], and P[T, ǫ], T ∈T
+o
+.
+Lemma 6.3 (Constraint P[ǫ]). Bimatrix game GS is in L. Thus, for every ǫ-well-supported Nash
+equilibrium (x, y) of GS, x satisﬁes constraint P[ǫ] = [ 0 ≤x[v] ≤1/K + ǫ, ∀v ∈V ].
+Proof. For each gate T ∈T , L[T] and R[T]) deﬁned in Figure 3 satisfy Property 1. By the
+deﬁnition the generalized circuit, gates in T have distinct output nodes, so GS ∈L. The second
+statement of the lemma then follows from Lemma 6.2.
+Lemma 6.4 (Constraints P[T, ǫ]). Let (x, y) be an ǫ-well-supported Nash equilibrium of GS.
+Then, for each gate T ∈T , x satisﬁes constraint P[T, ǫ].
+Proof. Recall P[T, ǫ] is a constraint deﬁned in Figure 2. By Lemma 6.3, x and y satisfy
+1/K −ǫ ≤xC[v], yC[v] ≤1/K + ǫ,
+for all v ∈V.
+Let T = (G, v1, v2, v, α) be a gate in T . Suppose C(v) = 2k −1. Let a∗
+i and li denote the ith
+row vectors of A∗and L[T], respectively; let b∗
+j and rj denote the jth column vectors of B∗and
+R[T], respectively.
+From Property 1, L[T] and R[T] are the only two gadget matrices that modify the entries in
+rows a∗
+2k−1, a∗
+2k and in columns b∗
+2k−1, b∗
+2k, in the transformation from the prototype G∗to GS.
+Thus, we have
+aS
+2k−1 = a∗
+2k−1 + l2k−1,
+aS
+2k = a∗
+2k + l2k;
+and
+(3)
+bS
+2k−1 = b∗
+2k−1 + r2k−1,
+bS
+2k = b∗
+2k + r2k.
+(4)
+Now, we prove x satisﬁes constraint P[T, ǫ]. Here we only consider the case when G = G+. In
+this case, we need to prove x[v] = min(x[v1] + x[v2], 1/K) ± ǫ. Proofs for other types of gates are
+similar and can be found in Appendix D.
+Since a∗
+2k−1 = a∗
+2k and b∗
+2k−1 = b∗
+2k, from (3), (4) and Figure 3, we have
+
+x|bS
+2k−1
+
+−
+
+x|bS
+2k
+
+= x[v1] + x[v2] −x[v],
+and
+(5)
+
+aS
+2k−1|y
+
+−
+
+aS
+2k|y
+
+= y[v] −
+ yC[v] −y[v]
+
+.
+(6)
+In a proof by contradiction, we consider two cases.
+First, we assume x[v] > min(x[v1] +
+x[v2], 1/K) + ǫ. Since x[v] ≤1/K + ǫ, the assumption would imply x[v] > x[v1] + x[v2] + ǫ.
+By Equation (5), we have y[v] = y2k−1 = 0, because (x, y) is an ǫ-well-supported Nash equilib-
+25
+
+rium. On the other hand, since yC[v] = 1/K ±ǫ ≫ǫ, by Equation (6), we have x[v] = x2k−1 = 0,
+contradicting our assumption that x[v] > x[v1] + x[v2] + ǫ > 0.
+Next, we assume x[v] < min(x[v1] + x[v2], 1/K) −ǫ ≤x[v1] + x[v2] −ǫ. Then, Equation (5)
+implies y[v] = yC[v]. By Equation (6), we have x[v] = xC[v] and thus, x[v] ≥1/K −ǫ, which
+contradicts our assumption that x[v] < min(x[v1] + x[v2], 1/K) −ǫ ≤1/K −ǫ.
+We have now completed the proof of Lemma 5.7. To prove our main technical Theorem 5.1,
+we only need to prove Theorem 4.6 and Lemma 5.6.
+7
+PPAD-Completeness of Brouwerf
+To prove Theorem 4.6, we reduce a two-dimensional instance of Brouwerf2, that is, a valid 3-
+coloring of a 2-dimensional grid, to Brouwerf, where recall l f2(n) = ⌊n/2⌋. The basic idea of the
+reduction is to iteratively embed an instance of Brouwer into a hypergrid one dimension higher
+to eventually “fold” or embed this two-dimensional input instance into the desired hypergrid.
+We use the following concept to describe our embedding processes. A triple T = (C, d, r) is a
+coloring triple if r ∈Zd with ri ≥7 for all 1 ≤i ≤d and C is a valid Brouwer-mapping circuit
+with parameters d and r. Let Size [C] denote the number of gates plus the number of input and
+output variables in a circuit C.
+Our embedding is carried out by a sequence of three polynomial-time transformations: L1(T, t, u),
+L2(T, u), and L3(T, t, a, b). They embed a coloring triple T into a larger T ′ (that is, the volume
+of the search space of T ′ is greater than the one of T ) such that from every panchromatic simplex
+of T ′, one can ﬁnd a panchromatic simplex of T eﬃciently.
+To simplify our proof, in the context of this section, we slightly modify the deﬁnition of
+Brouwerf: In the original deﬁnition, each valid Brouwer-mapping circuit C deﬁnes a color
+assignment from the search space to {1, 2, 3, ..., d, d + 1}. In this section, we replace the color
+d + 1 by a special color “red”. In other words, if the output bits of C evaluated at p satisfy
+Case i with 1 ≤i ≤d, then ColorC [p] = i; otherwise, the output bits satisfy Case d + 1, and
+ColorC [p] =“red”.
+We ﬁrst prove a useful property of valid Brouwer-mapping circuits.
+Property 2 (Boundary Continuity). Let C be a valid Brouwer-mapping circuit with parameters
+d and r. If points p, p′ ∈∂(Ad
+r) satisfy p′ = p + et for some 1 ≤t ≤d and 1 ≤pt ≤rt −2, then
+ColorC [p] = ColorC [p′].
+Proof. By the deﬁnition, if C is a valid Brouwer-mapping circuit C with parameters d and r,
+then for each p ∈∂
+ Ad
+r
+
+, ColorC [p] has the following property: If there exists an i ∈[1 : d] such
+that pi = 0, then ColorC [p] = max { i | pi = 0 }; otherwise, ∀i, pi ̸= 0 and ∃i, pi = ri −1, we have
+ColorC [p] = “red”. Thus, if 1 ≤pt ≤rt −2, then ColorC [p] = ColorC [p′].
+7.1
+Reductions Among Coloring Triples
+Both L1(T, t, u) and L2(T, u) are very simple operations:
+26
+
+ColorC′ [p] of a point p ∈Ad
+r′ assigned by (C′, d, r′) = L1(T, t, u)
+1: if p ∈∂
+ Ad
+r′
+
+then
+2:
+if there exists i such that pi = 0 then
+3:
+ColorC′ [p] = imax = max{i
+ pi = 0}
+4:
+else
+5:
+ColorC′ [p] = red
+6: else if pt ≤rt then
+7:
+ColorC′ [p] = ColorC [p]
+8: else
+9:
+ColorC′ [p] = red
+Figure 4: How L1(T, t, u) extends the coloring triple T = (C, d, r)
+• Given a coloring triple T = (C, d, r) and two integers 1 ≤t ≤d, u > rt, L1(T, t, u) pads
+dimension t to size u, i.e., it builds a new coloring triple T ′ = (C′, d, r′) with r′
+t = u and
+r′
+i = ri, for all i : 1 ≤i ̸= t ≤d.
+• For integer u ≥7, L2(T, u) adds a dimension to T by constructing T ′ = (C′, d + 1, r′) such
+that r′ ∈Zd+1, r′
+d+1 = u and r′
+i = ri, for all i ∈[1; d].
+These two transformations are described in Figure 4 and Figure 5, respectively. We prove their
+properties in the following two lemmas.
+Lemma 7.1 (L1(T, t, u): Padding a Dimension). Given a coloring triple T = (C, d, r) and two
+integers 1 ≤t ≤d and u > rt, we can construct a new coloring triple T ′ = (C′, d, r′) that satisﬁes
+the following two conditions:
+A. For all i : 1 ≤i ̸= t ≤d, r′
+i = ri, and r′
+t = u. In addition, there exists a polynomial g1(n)
+such that Size [C′] = Size [C] + O(g1(Size [r′])) and T ′ can be computed in time polynomial
+in Size [C′]. We write T ′ = L1(T, t, u);
+B. From each panchromatic simplex P ′ of coloring triple T ′, we can compute a panchromatic
+simplex P of T in polynomial time.
+Proof. We deﬁne circuit C′ by its color assignment in Figure 4. Property A is true according to
+this deﬁnition.
+To show Property B, let P ′ ⊂Kp be a panchromatic simplex of T ′.
+We ﬁrst note that
+pt < rt −1, because had pt ≥rt −1, Kp would not contain color t according to the color
+assignment. Thus, it follows from ColorC′ [q] = ColorC [q] for each q ∈Ad
+r that P ′ is also a
+panchromatic simplex of the coloring triple T.
+27
+
+ColorC′ [p] of a point p ∈Ad+1
+r′
+assigned by (C′, d + 1, r′) = L2(T, u)
+1: if p ∈∂
+ Ad
+r′
+
+then
+2:
+if there exists i such that pi = 0 then
+3:
+ColorC′ [p] = imax = max{i
+ pi = 0}
+4:
+else
+5:
+ColorC′ [p] = red
+6: else if pd+1 = 1 then
+7:
+ColorC′ [p] = ColorC [ˆp], where ˆp ∈Zd satisfying ˆpi = pi for all 1 ≤i ≤d
+8: else
+9:
+ColorC′ [p] = red
+Figure 5: How L2(T, u) extends the coloring triple T = (C, d, r)
+Lemma 7.2 (L2(T, u): Adding a Dimension). Given a coloring triple T = (C, d, r) and integer
+u ≥7, we can construct a new coloring triple T ′ = (C′, d + 1, r′) that satisﬁes the following
+conditions:
+A. For all i : 1 ≤i ≤d, r′
+i = ri, and r′
+d+1 = u. Moreover, there exists a polynomial g2(n)
+such that Size [C′] = Size [C] + O(g2(Size [r′])). T ′ can be computed in time polynomial in
+Size [C′]. We write T ′ = L2(T, u).
+B. From each panchromatic simplex P ′ of coloring triple T ′, we can compute a panchromatic
+simplex P of T in polynomial time.
+Proof. For each point p ∈Ad+1
+r′
+, we use ˆp to denote the point z ∈Ad
+r with zi = pi, ∀i ∈[1 : d].
+The color assignment of circuit C′ is given in Figure 5. Clearly, Property A is true.
+To prove Property B, we let P ′ ⊂Kp be a panchromatic simplex of T ′.
+We note that
+pd+1 = 0, for otherwise, Kp does not contain color d + 1. Note also that ColorC′ [q] = d + 1
+for every q ∈Ad+1
+r′
+with qd+1 = 0.
+Thus, for every point q ∈P ′ with ColorC′ [q] ̸= d + 1,
+we have qd+1 = 1.
+So, because ColorC′ [q] = ColorC [ˆq] for every q ∈Ad+1
+r′
+with qd+1 = 1,
+P = {ˆq
+ q ∈P ′ and ColorC′ [q] ̸= d + 1} is a panchromatic simplex of T.
+Transformation L3(T, t, a, b) is the one that does all the hard work.
+Lemma 7.3 (L3(T, t, a, b): Snake Embedding). Given a coloring triple T = (C, d, r) and integer
+1 ≤t ≤d, if rt = a(2b + 1) + 5 for two integers a, b ≥1, then we can construct a new triple
+T ′ = (C′, d + 1, r′) that satisﬁes the following conditions:
+A. For i : 1 ≤i ̸= t ≤d, r′
+i = ri and r′
+t = a + 5 and r′
+d+1 = 4b + 3. Moreover, there exists a
+polynomial g3(n) such that Size [C′] = Size [C] + O(g3(Size [r′])) and T ′ can be computed in
+time polynomial in Size [C′]. We write T ′ = L3(T, t, a, b).
+28
+
+4
+b
++
+2
+
+4
+b
++
+1
+
+4
+b
+
+0
+
+1
+
+2
+
+1
+
+0
+
+2
+
+a
++
+4
+
+a
++
+3
+
+a
++
+2
+
+e
+t
+
+e
+d
++
+1
+
+Figure 6: The two dimensional view of set W ⊂Ad+1
+r′
+B. From each panchromatic simplex P ′ of coloring triple T ′, we can compute a panchromatic
+simplex P of T in polynomial time.
+Proof. Consider the domains Ad
+r ⊂Zd and Ad+1
+r′
+⊂Zd+1 of our coloring triples. We form the
+reduction L3(T, t, a, b) in three steps. First, we deﬁne a d-dimensional set W ⊂Ad+1
+r′
+that is
+large enough to contain Ad
+r. Second, we deﬁne a map ψ from W to Ad
+r that (implicitly) speciﬁes
+an embedding of Ad
+r into W. Finally, we build a circuit C′ for Ad+1
+r′
+and show that from each
+panchromatic simplex of C′, we can, in polynomial time, compute a panchromatic simplex of C.
+A two dimensional view of W ⊂Ad+1
+r′
+is illustrated in Figure 6. We use a snake-pattern to
+realize the longer tth dimension of Ad
+r in the two-dimensional space deﬁned by the shorter tth and
+(d+1)th dimensions of Ad+1
+r′
+. Formally, W consists of points p ∈Ad+1
+r′
+satisfying 1 ≤pd+1 ≤4b+1
+and
+if pd+1 = 1, then 2 ≤pt ≤a + 4;
+if pd+1 = 4b + 1, then 0 ≤pt ≤a + 2;
+if pd+1 = 4(b −i) −1 where 0 ≤i ≤b −1, then 2 ≤pt ≤a + 2;
+if pd+1 = 4(b −i) −3 where 0 ≤i ≤b −2, then 2 ≤pt ≤a + 2;
+if pd+1 = 4(b −i) −2 where 0 ≤i ≤b −1, then pt = 2;
+if pd+1 = 4(b −i) where 0 ≤i ≤b −1, then pt = a + 2.
+To build T ′, we embed the coloring triple T into W. The embedding is implicitly given by a
+natural surjective map ψ from W to Ad
+r, a map that will play a vital role in our construction and
+analysis. For each p ∈W, we use p[m] to denote the point q in Zd such that qt = m and qi = pi,
+for all i : 1 ≤i ̸= t ≤d. We deﬁne ψ(p) according to the following cases:
+if pd+1 = 1, then ψ(p) = p[2ab + pt]
+29
+
+ColorC′ [p] of a point p ∈Ad+1
+r′
+assigned by (C′, d + 1, r′) = L3(T, t, a, b)
+1: if p ∈W then
+2:
+ColorC′ [p] = ColorC [ψ(p)]
+3: else if p ∈∂(Ad+1
+r′
+) then
+4:
+if there exists i such that pi = 0 then
+5:
+ColorC′ [p] = imax = max{i
+ pi = 0}
+6:
+else
+7:
+ColorC′ [p] = red
+8: else if pd+1 = 4i where 1 ≤i ≤b and 1 ≤pt ≤a + 1 then
+9:
+ColorC′ [p] = d + 1
+10: else if pd+1 = 4i + 1, 4i + 2 or 4i + 3 where 0 ≤i ≤b −1 and pt = 1 then
+11:
+ColorC′ [p] = d + 1
+12: else
+13:
+ColorC′ [p] = red
+Figure 7: How L3(T, t, a, b) extends the coloring triple T = (C, d, r)
+if pd+1 = 4b + 1, then ψ(p) = p[pt];
+if pd+1 = 4(b −i) −1 where 0 ≤i ≤b −1, then ψ(p) = p[(2i + 2)a + 4 −pt];
+if pd+1 = 4(b −i) −3 where 0 ≤i ≤b −2, then ψ(p) = p[(2i + 2)a + pt];
+if pd+1 = 4(b −i) −2 where 0 ≤i ≤b −1, then ψ(p) = p[(2i + 2)a + 2];
+if pd+1 = 4(b −i) where 0 ≤i ≤b −1, then ψ(p) = p[(2i + 1)a + 2].
+Essentially, we map W bijectively to Ad
+r along its tth dimension with exception that when
+the snake pattern of W is making a turn, we stop the advance in Ad
+r, and continue the advance
+after it completes the turn. Let ψi(p) denote the ith component of ψ(p). Our embedding scheme
+guarantees the following important property of ψ.
+Property 3 (Boundary Preserving). Let p be a point in W ∩∂(Ad+1
+r′
+). If there exists i such that
+pi = 0, then max{i | pi = 0} = max{i | ψi(p) = 0}. Otherwise, all entries of p are non-zero
+and there exists l such that pl = r′
+l −1, in which case, all entries of point ψ(p) are nonzero and
+ψl(p) = rl −1.
+The circuit C′ speciﬁes a color assignment of Ad+1
+r′
+according to Figure 7. C′ is derived from
+circuit C and map ψ. By Property 3, we can verify that C′ is a valid Brouwer-mapping circuit
+with parameters d + 1 and r′.
+Property A follows directly from our construction. In order to establish Property B of the
+lemma, we prove the following collection of statements to cover all possible cases of the given
+30
+
+panchromatic simplex P ′ of T ′. In the following statements, P ′ is a panchromatic simplex of T ′
+in Ad+1
+r′
+and let p∗∈Ad+1
+r′
+be the point such that P ′ ⊂Kp∗. We will also use the following
+notation: For each p ∈Ad+1
+r′
+, we will use p[m1, m2] to denote the point q ⊂Zd+1 such that
+qt = m1, qd+1 = m2 and qi = pi for all i : 1 ≤i ̸= t ≤d.
+Statement 1. If p∗
+t = 0, then p∗
+d+1 = 4b and furthermore, for every point p ∈P ′ such that
+ColorC′ [p] ̸= d + 1, ColorC [ψ(p[pt, 4b + 1])] = ColorC′ [p].
+Proof. First, note that p∗
+d+1 ̸= 4b + 1, for otherwise, Kp∗does not contain color d + 1. Second, if
+p∗
+d+1 < 4b, then each point q ∈Kp∗is colored according one of the conditions in line 3, 8 or 10
+of Figure 7. Let q∗∈Kp∗be the “red” point in P ′. Then, q∗must satisfy the condition in line
+6 and hence there exists l such that q∗
+l = r′
+l −1. By our assumption, p∗
+t = 0. Thus, if p∗
+d+1 < 4b,
+then l ̸∈{t, d + 1}, implying for each q ∈Kp∗, ql > 0 (as ql ≥q∗
+l −1 > 0) and ColorC′ [q] ̸= l.
+Then, Kp∗does not contain color l, contradicting the assumption of the statement. Putting these
+two cases together, we have p∗
+d+1 = 4b.
+We now prove the second part of the statement. If pd+1 = 4b + 1, then we are done, because
+ColorC [ψ(p)] = ColorC′ [p] according to line 1 of Figure 7. Let us assume pd+1 = 4b. Since
+the statement assumes ColorC′ [p] ̸= d + 1, p satisﬁes the condition in line 3 and hence p ∈
+∂(Ad+1
+r′
+). By Property 2, we have ColorC′ [p[pt, 4b + 1]] = ColorC′ [p], completing the proof of
+the statement.
+Statement 2. If p∗
+t = a + 2 or a + 3, then p∗
+d+1 = 0, and in addition, for each p ∈P ′ such that
+ColorC′ [p] ̸= d + 1, ColorC [ψ(p[pt, 1])] = ColorC′ [p].
+Proof. If p∗
+d+1 > 0, then Kp∗does not contain color d + 1. So p∗
+d+1 = 0. In this case, pd+1 must
+be 1, since ColorC′ [q] = d + 1 for any q ∈Ad+1
+r′
+with qd+1 = 0. Thus, ColorC [ψ(p[pt, 1])] =
+ColorC′ [p[pt, 1]] = ColorC′ [p].
+Statement 3. If p∗
+d+1 = 4b, then 0 ≤p∗
+t ≤a + 1.
+Moreover, for each p ∈P ′ such that
+ColorC′ [p] ̸= d + 1, ColorC [ψ(p[pt, 4b + 1])] = ColorC′ [p].
+Proof. The ﬁrst part of the statement is straightforward. Similar to the proof of Statement 1,
+we can prove the second part for the case when 0 ≤pt ≤a + 1. When pt = a + 2, we have
+ψ(p) = ψ(p[pt, 4b + 1]). Thus, ColorC [ψ(p[pt, 4b + 1])] = ColorC [ψ(p)] = ColorC′ [p].
+We can similarly prove the following statements.
+Statement 4. If p∗
+d+1 = 4i + 1 or 4i + 2 for some 0 ≤i ≤b −1, then p∗
+t = 1. Moreover, for each
+p ∈P ′ such that ColorC′ [p] ̸= d + 1, ColorC [ψ(p[2, pd+1])] = ColorC′ [p].
+Statement 5. If p∗
+d+1 = 4i for some 1 ≤i ≤b −1, then 1 ≤p∗
+t ≤a + 1. In addition, for each
+p ∈P ′ such that ColorC′ [p] ̸= d+1, if 2 ≤pt ≤a+1, then ColorC [ψ(p[pt, 4i + 1])] = ColorC′ [p];
+if pt = 1, then ColorC [ψ(p[2, 4i + 1])] = ColorC′ [p].
+31
+
+Statement 6. If p∗
+d+1 = 4i −1 for some 1 ≤i ≤b, then 1 ≤p∗
+t ≤a + 1. Moreover, for each
+p ∈P ′ such that ColorC′ [p] ̸= d+1, if 2 ≤pt ≤a+1, then ColorC [ψ(p[pt, 4i −1])] = ColorC′ [p];
+if pt = 1, then ColorC [ψ(p[2, 4i −1])] = ColorC′ [p].
+Statement 7. If p∗
+d+1 = 0, then 1 ≤p∗
+t ≤a + 3.
+In addition, for each p ∈P ′ such that
+ColorC′ [p] ̸= d + 1, if 2 ≤p∗
+t ≤a + 1, then ColorC [ψ(p[pt, 1])] = ColorC′ [p]; if p∗
+t = 1, then
+ColorC [ψ(p[2, 1])] = ColorC′ [p].
+In addition,
+Statement 8. p∗
+d+1 ̸= 4b + 1.
+Proof. If p∗
+d+1 = 4b + 1 then Kp∗does not contain color d + 1.
+Now suppose that P ′ is a panchromatic simplex of T ′. Let p∗∈Zd+1 be the point such that
+P ′ ⊂Kp∗. Then, P ′ and p∗must satisfy the conditions of one of the statements above. By that
+statement, we can transform every point p ∈P ′, (aside from the one that has color d + 1) back
+to a point q in Ad
+r to obtain a set P from P ′. Since P is accommodated, it is a panchromatic
+simplex of C. Thus, with all the statements above, we specify an eﬃcient algorithm to compute
+a panchromatic simplex P of T given a panchromatic simplex P ′ of T ′.
+7.2
+PPAD-Completeness of Problem Brouwerf
+We are now ready to prove the main result of this section.
+Proof of Theorem 4.6. We reduce Brouwerf2 to Brouwerf in order to prove that the latter is
+PPAD-complete. Recall, f2(n) = ⌊n/2⌋. Suppose (C, 02n) is an input instance of Brouwerf2.
+Let
+l = f(11n) ≥3,
+m′ =
+
+n
+l −2
+
+and
+m =
+11n
+l
+
+.
+We iteratively construct a sequence of coloring triples T = {T 0, T 1, ... T w−1, T w } for some
+w = O(m), starting with T 0 = (C, 2, (2n, 2n)) and ending with T w = (Cw, m, rw) where rw ∈Zm
+and rw
+i = 2l, for all i ∈[1 : m]. At the tth iteration, we apply either L1, L2 or L3 with properly
+chosen parameters to build T t+1 from T t.
+Below we give the details of our construction. In the ﬁrst step, we call L1(T 0, 1, 2m′(l−2)) to
+get T 1 = (C1, 2, (2m′(l−2), 2n)). This step is possible because m′(l −2) ≥n. We then invoke the
+procedure in Figure 8. In each for-loop, the ﬁrst component of r decreases by a factor of 2l−2,
+while the dimension of the space increases by 1. After running the for-loop (m′ −5) times, we
+obtain a coloring triple T 3m′−14 = (C3m′−14, d3m′−14, r3m′−14) that satisﬁes4
+d3m′−14 = m′ −3, r3m′−14
+1
+= 25(l−2) , r3m′−14
+2
+= 2n and r3m′−14
+i
+= 2l , ∀i ∈[3 : m′ −3].
+4 Remark: the superscript of C, d, ri, denotes the index of the iterative step. It is not an exponent!
+32
+
+The Construction of T 3m′−14 from T 1
+1: for any t from 0 to m′ −6 do
+2:
+It can be proved inductively that T 3t+1 = (C3t+1, d3t+1, r3t+1) satisﬁes
+d3t+1 = t + 2, r3t+1
+1
+= 2(m′−t)(l−2), r3t+1
+2
+= 2n and r3t+1
+i
+= 2l for all 3 ≤i ≤t + 2
+3:
+let u = (2(m′−t−1)(l−2) −5)(2l−1 −1) + 5
+4:
+[ u ≥r3t+1
+1
+= 2(m′−t)(l−2) under the assumption that t ≤m′ −6 and l ≥3 ]
+5:
+T 3t+2 = L1(T 3t+1, 1, u)
+6:
+T 3t+3 = L3(T 3t+2, 1, 2(m′−t−1)(l−2), 2l−2 −1)
+7:
+T 3t+4 = L1(T 3t+3, t + 3, 2l)
+Figure 8: The Construction of T 3m′−14 from T 1
+The Construction of T w′ from T 3m′−14
+1: let t = 0
+2: while T 3(m′+t)−14 = (C3(m′+t)−14, m′ + t −3, r3(m′+t)−14) satisﬁes r3(m′+t)−14
+1
+> 2l do
+3:
+let k = ⌈(r3(m′+t)−14
+1
+−5)/(2l−1 −1)⌉+ 5
+4:
+T 3(m′+t)−13 = L1(T 3(m′+t)−14, 1, (k −5)(2l−1 −1) + 5)
+5:
+T 3(m′+t)−12 = L3(T 3(m′+t)−13, 1, k, 2l−2 −1)
+6:
+T 3(m′+t)−11 = L1(T 3(m′+t)−12, m′ + t −2, 2l), set t = t + 1
+7: let w′ = 3(m′ + t) −13 and T w′ = L1(T 3(m′+t)−14, 1, 2l)
+Figure 9: The Construction of T w′ from T 3m′−14
+Next, we call the procedure given in Figure 9. Note that the while-loop must terminate in
+at most 8 iterations because we start with r3m′−14
+1
+= 25(l−2). The procedure returns a coloring
+triple T w′ = (Cw′, dw′, rw′) that satisﬁes
+w′ ≤3m′ + 11, dw′ ≤m′ + 5, rw′
+1 = 2l , rw′
+2 = 2n and rw′
+i
+= 2l , ∀i ∈[3 : dw′].
+We then repeat the whole process above on the second coordinate and obtain a coloring triple
+T w′′ = (Cw′′, dw′′, rw′′) that satisﬁes
+w′′ ≤6m′ + 21, dw′′ ≤2m′ + 8 and rw′′
+i
+= 2l , ∀i ∈[1 dw′′].
+The way in which we deﬁne m and m′ guarantees
+dw′′ ≤2m′ + 8 ≤2
+
+n
+l −2 + 1
+
++ 8 ≤2
+ n
+l/3
+
++ 10 = 6n
+l + 10 ≤11n
+l
+≤m.
+33
+
+Finally, by applying L2 on coloring triple T w′′ for m −dw′′ times with parameter u = 2l,
+we obtain T w = (Cw, m, rw) with rw ∈Zm and rw
+i
+= 2l, ∀i ∈[1 : m]. It follows from our
+construction that w = O(m).
+To see why the sequence T gives a reduction from Brouwerf2 to Brouwerf, let T i =
+(Ci, di, ri) (again the superscript of C, d, r, denotes the index of the iteration). As sequence
+{Size
+
+ri
+}0≤i≤w is nondecreasing and w = O(m) = O(n), by the Property A of Lemma 7.1, 7.2
+and 7.3, there exists a polynomial g(n) such that
+Size [Cw] = Size [C] + O
+ g (n)
+
+.
+By these Properties A again, we can construct the whole sequence T and in particular, triple
+T w = (Cw, m, rw), in time polynomial in Size [C].
+Pair (Cw, 011n) is an input instance of Brouwerf. Given any panchromatic simplex P of
+(Cw, 011n) and using the algorithms in Properties B of Lemma 7.1, 7.2 and 7.3, we can compute a
+sequence of panchromatic simplices P w = P, P w−1..., P 0 iteratively in polynomial time, where P t
+is a panchromatic simplex of T t and is computed from the panchromatic simplex P t+1 of T t+1.
+In the end, we obtain P 0, which is a panchromatic simplex of (C, 02n).
+8
+Computing Fixed Points with Generalized Circuits
+In this section, we show that ﬁxed points can be modeled by generalized circuits. In particular,
+we reduce the search of a panchromatic simplex in an instance of Brouwerf1 (which will be
+simply referred to as Brouwer in this section) to Poly3-Gcircuit, the computation of a 1/K3-
+approximate solution of a generalized circuit of K nodes. Recall f1(n) = 3. Our reduction will use
+ideas from [18]. However, we will need to develop several new techniques to meet the geometric
+and combinatorial challenges in the consideration of high-dimensional ﬁxed points.
+Suppose U = (C, 03n) is an input instance of Brouwer, which colors the hypergrid Bn = Zn
+[0,7]
+with colors from {1, ..., n, n + 1}. Let m be the smallest integer such that 2m ≥Size [C] > n and
+K = 26m, where Size [C] is the number of gates plus the number of input and output variables in
+a Boolean circuit C. Please note that m = O(log |C|) and hence 2Θ(m) is polynomial in the input
+size of U.
+We will construct a generalized circuit SU = (V, T U) with |V | = K in polynomial time. Our
+construction ensures that,
+• Property R: From every (1/K3)-approximate solution to SU, we can compute a panchro-
+matic simplex P of circuit C in polynomial time.
+In the rest of this section, we assume ǫ = 1/K3.
+8.1
+Overcome the Curse of Dimensionality
+We prove a key geometric lemma (Lemma 8.2 below) for ﬁnding a panchromatic simplex in order
+to overcome the curse of dimensionality. Our construction of SU will then build on this lemma.
+34
+
+For a ∈R+, let π(a) = max{i | 0 ≤i ≤7 and i < a } be the largest integer in [0 : 7] that is
+smaller than a. Let En = {z1, z2, ..., zn, zn+1 } where zi = ei/K2 and zn+1 = −P
+1≤i≤n ei/K2.
+For each i ∈[1 : n + 1], we encode the ith color in ColorC by vector zi.
+For any p ∈Rn
++, let q = π(p) be the integer point in Bn = Zn
+[0,7] with qi = π(pi). Let
+ξ(p) = zt, where t = ColorC [π(p)].
+Deﬁnition 8.1 (Well-Positioned Points). A real number a ∈R+ is poorly-positioned if there is
+an integer t ∈[0 : 7] such that |a −t| ≤80Kǫ = 80/K2. A point p ∈Rn
++ is well-positioned if
+none of its components is poorly-positioned, otherwise, it is poorly-positioned.
+Let S = {p1, p2, ..., ph } be a set of h points in Rn
+[0,8]. We deﬁne
+IB(S) =
+
+k
+ pk is poorly-positioned
+	
+and
+IG(S) =
+
+k
+ pk is well-positioned
+	
+.
+Lemma 8.2 (Key Geometry: Equiangle Averaging). Suppose U = (C, 03n) is an instance of
+Brouwer. Let S = {pi, 1 ≤i ≤n3} be n3 points in Rn
+[0,8] such that pi = pi−1 + Pn
+i=1 ei/K. If
+there is a vector rk ∈Rn
+[0,1/K2] for each k in IB(S), such that,
+
+
+
+
+P
+k∈IG(S) ξ(pk) + P
+k∈IB(S) rk 
+
+
+
+∞= O(ǫ),
+then Q = {π(pk), k ∈IG(S)} is a panchromatic simplex of C.
+Proof. We ﬁrst prove that Q′ = {qk = π(pk), 1 ≤k ≤n3 } is accommodated, and satisﬁes
+|Q′| ≤n + 1. Let qk = π(pk) for each k ∈[1 : n3]. As sequence {pk}1≤k≤n3 is strictly increasing,
+{qk}1≤k≤n3 is non-decreasing. Since n/K ≪1, there exists at most one ki for each i ∈[1 : n],
+such that qki
+i = qki−1
+i
++ 1, which implies that Q′ is accommodated. Since {qk} is non-decreasing,
+|Q′| ≤n + 1. Because Q ⊂Q′, Q is accommodated and |Q| ≤n + 1.
+Next, we give an upper bound for |IB(S)|. Because 1/K2 ≪1/K ≪1, there is at most one
+ki for each i, such that pki
+i
+is poorly-positioned. Since every poorly-positioned point has at least
+one poorly-positioned component, |IB(S)| ≤n and |IG(S)| ≥n3 −n.
+Let Wi denote the number of points in {qk : k ∈IG(S)} that are colored i by circuit C. To
+prove Q is a panchromatic simplex, it suﬃces to show that Wi > 0 for all i ∈[1 : n + 1].
+Let rG = P
+k∈IG(S) ξ(pk) and rB = P
+k∈IB(S) rk. Since |IB(S)| ≤n and ∥rk ∥∞≤1/K2,
+∥rB ∥∞≤n/K2,
+and
+∥rG ∥∞≤∥rB ∥∞+ O(ǫ) ≤n/K2 + O(ǫ).
+(7)
+Assume by way of contradiction that one of Wi is zero:
+• If Wn+1 = 0, supposing Wi∗= max1≤i≤n Wi, then Wi∗≥n2 −1, as |IG(S)| ≥n3 −n. But
+rG
+i∗≥(n2 −1)/K2 ≫n/K2 + O(ǫ), which contradicts (7) above, since ǫ = 1/K3.
+• If Wt = 0 for t ∈[1 : n], then we can assert Wn+1 ≤n2/2, for otherwise, |rG
+t | > n2/(2K2) ≫
+35
+
+ExtractBits(S, v, v1, v2, v3)
+1: pick unused nodes v1, v2, v3, v4 ∈V
+2: Insert(S, (G=, v, nil, v1, nil))
+3: for j from 1 to 3 do
+4:
+pick unused vj1, vj2 ∈V
+5:
+Insert(S, (Gζ, nil, nil, vj1, 2−(6m+j))), Insert(S, (G<, vj1, vj, vj, nil))
+6:
+Insert(S, (G×ζ, vj, nil, vj2, 2−j)), Insert(S, (G−, vj, vj2, vj+1, nil))
+Figure 10: Function ExtractBits
+n/K2 + O(ǫ), contradicting (7). Suppose Wi∗= max1≤i≤n+1 Wi. Then, Wi∗≥n2 −1 and
+i∗̸= n + 1. So rG
+i∗≥(n2 −1 −n/2)/K2 ≫n/K2 + O(ǫ), contradicting (7).
+As a result, Wi > 0 for all i ∈[1 : n + 1], and we have completed the proof of the lemma.
+8.2
+Construction of the Generalized Circuit SU
+We will show how to implement Lemma 8.2, using a generalized circuit. Given an input U =
+(C, 03n) of Brouwer, our objective is to design a generalized circuit SU = (V, T U) with |V | = K,
+such that, from any ǫ-approximate solution to SU, one can ﬁnd a panchromatic simplex of C in
+polynomial time. Recall that ǫ = 1/K3.
+More precisely, we will design the generalized circuit SU that encodes n3 points in Rn
+[0,8],
+simulates the π function, and simulates the boolean circuit C. Our SU has the property that in
+each of its ǫ-approximate solution, the sum of the n3 vectors as given in Lemma 8.2 is close to
+zero, i.e., O(ǫ). Then Q, as deﬁned in Lemma 8.2, is a panchromatic simplex of C, which can be
+computed from the approximate solution of SU in polynomial time.
+Let us deﬁne some notations that will be useful. Suppose S = (V, T ) is a generalized circuit
+with |V | = K. A node v ∈V is said to be unused in S if none of the gates T ∈T uses v as its
+output node. Now, suppose T ̸∈T is a gate such that the output node of T is unused in S. We
+will use Insert(S, T) to denote the insertion of T into S. After calling Insert(S, T), S becomes
+(V, T ∪{T}).
+To encode these n3 points, let {vk
+i }1≤k≤n3,1≤i≤n be n4 distinguished nodes in V . We start
+with SU = (V, ∅) and insert a number of gates into it so that, in every ǫ-approximate solution x,
+values of these nodes encode n3 points S = {pk : 1 ≤k ≤n3} in Rn
+[0,8] that approximately satisfy
+all the conditions of Lemma 8.2. In our encoding, we let pk
+i = 8Kx[vk
+i ].
+We deﬁne two functions ExtractBits and ColoringSimulation. They are the building
+blocks in our construction. ExtractBits implements the π function, and is given in Figure 10.
+Lemma 8.3 (Encoding Binary). Suppose S = (V, T ) is a generalized circuit with |V | = K. For
+each v ∈V and three unused nodes v1, v2, v3 ∈V , we let S′ be the generalized circuit obtained
+36
+
+after calling ExtractBits(S, v, v1, v2, v3). Then, in every ǫ-approximate solution x of S′, if
+a = 8Kx[v] is well-positioned, then x[vi] = ǫ
+B bi, where b1b2b3 is the binary representation of
+integer π(a) ∈[0 : 7].
+Proof. First we consider the case when π(a) = 7. As a ≥7 + 80Kǫ, we have x[v] ≥1/(2K) +
+1/(4K) + 1/(8K) + 10ǫ. By Figure 10, x[v1] ≥x[v] −2ǫ, x[v1] = ǫ
+B 1 in the ﬁrst loop and
+x[v2]
+≥
+x[v1] −x[v12] −ǫ ≥x[v] −2ǫ −(2−1x[v1] + ǫ) −ǫ
+≥
+x[v] −2−1(1/K + ǫ) −4ǫ ≥1/(4K) + 1/(8K) + 5ǫ.
+Since x[v21] ≤1/(4K) + ǫ and x[v2] −x[v21] > ǫ, we have x[v2] = ǫ
+B 1 and
+x[v3] ≥x[v2] −x[v22] −ǫ > 1/(8K) + 2ǫ.
+As a result, x[v3] −x[v31] > ǫ and x[v3] = ǫ
+B 1.
+Next, we consider the general case that t < π(a) < t + 1 for 0 ≤t ≤6. Let b1b2b3 be the
+binary representation of t. As a is well-positioned, we have
+b1/(2K) + b2/(4K) + b3/(8K) + 10ǫ ≤x[v] ≤b1/(2K) + b2/(4K) + (b3 + 1)/(8K) −10ǫ.
+With similar arguments, after the ﬁrst loop one can show that x[v1] = ǫ
+B b1 and
+b2/(4K) + b3/(8K) + 5ǫ ≤x[v2] ≤b2/(4K) + (b3 + 1)/(8K) −5ǫ.
+After the second loop, we have x[v2] = ǫ
+B b2 and
+b3/(8K) + 2ǫ ≤x[v3] ≤(b3 + 1)/(8K) −2ǫ.
+Thus, x[v3] = ǫ
+B b3.
+Next, we introduce ColoringSimulation. Suppose S = (V, T ) is a generalized circuit with
+|V | = K. Let {vi }i∈[1:n] be n nodes in V , and {v+
+i , v−
+i }i∈[1:n] ⊂V be 2n unused nodes. We use
+p ∈Rn
++ to denote the point encoded by nodes {vi}i∈[1:n], that is, pi = 8Kx[vi]. Imagine that
+p is a point in S = {pk : 1 ≤i ≤n3}. ColoringSimulation(S, {vi}i∈[1:n] , {v+
+i , v−
+i }i∈[1:n])
+simulates circuit C on input π(p), by inserting the following gates into S:
+1. Pick 3n unused nodes {vi,j }i∈[1:n],j∈[1:3] in V .
+Call ExtractBits(S, vt, vt,1, vt,2, vt,3), for each 1 ≤t ≤n;
+2. View the values of {vi,j} as 3n input bits of C.
+Insert the corresponding logic gates from {G∨, G∧, G¬} into S to simulate the evaluation
+of C, one for each gate in C, and place the 2n output bits in {v+
+i , v−
+i }.
+We obtain the following lemma for ColoringSimulation(S, {vi}i∈[1:n] , {v+
+i , v−
+i }i∈[1:n]) as a di-
+rect consequence of Lemma 8.3.
+37
+
+Lemma 8.4 (Point Coloring). Let S′ be the generalized circuit obtained after calling the above
+ColoringSimulation, and x be an ǫ-approximate solution to S′. We let p ∈Rn
++ denote the
+point with pi = 8Kx[vi] for all i ∈[1 : n], and q = π(p). We use {∆+
+i [q], ∆−
+i [q]}i∈[1:n] to denote
+the 2n output bits of C evaluated at q. If p is a well-positioned point, then x[v+
+i ] = ǫ
+B ∆+
+i [q] and
+x[v−
+i ] = ǫ
+B ∆−
+i [q] for all i ∈[1 : n].
+Note that if the point p in the lemma above is not well-positioned, then the values of {v+
+i , v−
+i }
+could be arbitrary. However, according to the deﬁnition of generalized circuits, x must satisfy
+0 ≤x[v+
+i ], x[v−
+i ] ≤1/K + ǫ,
+∀i ∈[1 : n].
+Finally, we build the promised generalized circuit SU with a four-step construction. At the
+beginning, SU = (V, ∅) and |V | = K.
+Part 1: [ Equiangle Sampling Segment ]
+Let {vk
+i }1≤k≤n3,1≤i≤n be n4 nodes in V . We insert Gζ gates, with properly chosen parameters,
+and G+ gates into SU to ensure that every ǫ-approximate solution x of SU satisﬁes
+x[vk
+i ] = min
+
+x[v1
+i ] + (k −1)/(8K2), 1/K
+
+± O(ǫ),
+(8)
+for all k ∈[1 : n3] and i ∈[1 : n].
+Part 2: [ Point Coloring ]
+Pick 2n4 unused nodes {vk+
+i
+, vk−
+i
+}i∈[1:n],k∈[1:n3] from V . For every k ∈[1 : n3], we call
+ColoringSimulation
+ SU, {vk
+i }, {vk+
+i
+, vk−
+i
+}i∈[1:n]
+
+.
+Part 3: [ Summing up the Coloring Vectors ]
+Pick 2n unused nodes {v+
+i , v−
+i }i∈[1:n] ⊂V . Insert properly-valued G×ζ gates and G+ gates to
+ensure in the resulting generalized circuit SU, each ǫ-approximate solution x satisﬁes
+x[v+
+i ] =
+X
+1≤k≤n3
+ 1
+K x[vk+
+i
+]
+
+± O(n3ǫ)
+and
+x[v−
+i ] =
+X
+1≤k≤n3
+ 1
+K x[vk−
+i
+]
+
+± O(n3ǫ).
+Part 4: [ Closing the Loop ]
+For each i ∈[1 : n], pick unused nodes v′
+i, v′′
+i ∈V and insert the following gates:
+Insert
+ SU, (G+, v1
+i , v+
+i , v′
+i, nil)
+
+, Insert
+ SU, (G−, v′
+i, v−
+i , v′′
+i , nil)
+
+,
+and Insert
+ SU, (G=, v′′
+i , nil, v1
+i , nil)
+
+.
+8.3
+Analysis of the Reduction
+We now prove the correctness of our construction.
+Let x be an ǫ-approximate solution to SU. Let S = {pk, with pk
+i = 8Kx[vk
+i ], 1 ≤k ≤n3}
+be the set of n3 points that we want to produce from x. Let IG = IG(S) and IB = IB(S). For
+38
+
+each t ∈IG, let ct ∈[1 : n + 1] be the color of point qt = π(pt) assigned by C, and for each
+i ∈[1 : n + 1], let Wi = |{t ∈IG | ct = i}|.
+It suﬃces to prove, as Q = {π(pk), k ∈IG } can be computed in polynomial time, that Q is a
+panchromatic simplex of C. The line of the proof is very similar to the one for Lemma 8.2. First,
+we use the constraints introduced by the gates in Part 1 to prove the following two lemmas:
+Lemma 8.5 (Not Too Many Poorly-Positioned Points). |IB | ≤n, and hence |IG | ≥n3 −n.
+Proof. For each t ∈IB, according to the deﬁnition of poorly-positioned points, there exists an
+integer 1 ≤l ≤n such that pt
+l is a poorly-positioned number. We will prove that, for every integer
+1 ≤l ≤n, there exists at most one t ∈[1 : n3] such that pt
+l = 8Kx[vt
+l] is poorly-positioned, which
+implies |IB | ≤n immediately.
+Assume pt
+l and pt′
+l are both poorly-positioned, for a pair of integers 1 ≤t < t′ ≤n3. Then,
+from the deﬁnition, there exists a pair of integers 0 ≤k, k′ ≤7,
+x[vt
+l] −k/(8K)
+ ≤10ǫ
+and
+x[vt′
+l ] −k′/(8K)
+ ≤10ǫ.
+(9)
+Because (9) implies that x[vt
+l] < 1/K −ǫ ≤xC[vt
+l] and x[vt′
+l ] < 1/K −ǫ ≤xC[vt′
+l ], by Equation
+(8) of Part 1, we have
+x[vt
+l] = x[v1
+l ] + (t −1)/(8K2) ± O(ǫ)
+and
+x[vt′
+l ] = x[v1
+l ] + (t′ −1)/(8K2) ± O(ǫ).
+(10)
+Hence, x[vt
+l] < x[vt′
+l ], k ≤k′ and
+x[vt′
+l ] −x[vt
+l] = (t′ −t)/(8K2) ± O(ǫ)
+(11)
+Note that when k = k′, Equation (9) implies that x[vt′
+l ] −x[vt
+l] ≤20ǫ, while when k < k′, it
+implies that x[vt′
+l ] −x[vt
+l] ≥(k′ −k)/(8K) −20ǫ ≥1/(8K) −20ǫ. In both cases, we derived an
+inequality that contradicts (11). Thus, only one of pt
+l or pt′
+l can be poorly-positioned.
+Lemma 8.6 (Accommodated). Q = {π(pk), k ∈IG} is accommodated and |Q| ≤n + 1.
+Proof. To show Q is accommodated, it is suﬃcient to prove
+qt
+l ≤qt′
+l ≤qt
+l + 1,
+for all l ∈[1 : n] and t, t′ ∈IG such that t < t′.
+(12)
+For the sake of contradiction, we assume that (12) is not true. We need to consider the following
+two cases.
+First, assume qt
+l > qt′
+l for some t, t′ ∈IG with t < t′. Since qt′
+l < qt
+l ≤7, we have pt′
+l < 7 and
+thus, x[vt′
+l ] < 7/(8K). As a result, the ﬁrst component of the min operator in (8) is the smallest
+for both t and t′, implying that x[vt
+l] < x[vt′
+l ] and pt
+l < pt′
+l . This contradicts the assumption that
+qt
+l > qt′
+l .
+Second, assume qt′
+l −qt
+l ≥2 for some t, t′ ∈IG with t < t′. From the deﬁnition of π, we have
+39
+
+pt′
+l −pt
+l > 1 and thus, x[vt′
+l ] −x[vt
+l] > 1/(8K). But from (8), we have
+x[vt′
+l ] −x[vt
+l] ≤(t′ −t)/(8K2) + O(ǫ) < n3/(8K2) + O(ǫ) ≪1/(8K).
+As a result, (12) is true.
+Next, we prove |Q| ≤n + 1. Note that the deﬁnition of Q together with (12) implies that
+there exist integers t1 < t2 < ... < t|Q| ∈IG such that qti is strictly dominated by qti+1, that is,
+qti ̸= qti+1 and qti
+j ≤qti+1
+j
+for all j ∈[1 : n].
+On the one hand, for every 1 ≤l ≤|Q| −1, there exists an integer 1 ≤kl ≤n such that
+qtl+1
+kl
+= qtl
+kl + 1. On the other hand, for every 1 ≤k ≤n, (12) implies that there is at most one
+1 ≤l ≤|Q| −1 such that qtl+1
+k
+= qtl
+k + 1. Therefore, |Q| ≤n + 1.
+The construction in Part 2 and Lemma 8.4 guarantees that:
+Lemma 8.7 (Correct Encoding of Colors). For each 1 ≤k ≤n3, let rk denote the vector that
+satisﬁes rk
+i = x[vk+
+i
+] −x[vk−
+i
+], ∀i ∈[1 : n]. For each t ∈IG, rt = Kzct ± 2ǫ; for each t ∈IB,
+∥rt∥∞≤1/K + 2ǫ.
+Recall that Part 3 sums up these n3 vectors
+
+rk	
+. Let r denote the vector that satisﬁes
+ri = x[v+
+i ] −x[v−
+i ], for all i ∈[1 : n]. Ideally, with (the constraints of) the gates inserted in Part
+4, we wish to establish ∥r∥∞= O(ǫ). However, whether or not this condition holds depends
+on the values of {v1
+i }1≤i≤n in x, as the gate (G−, a, b, c, nil) requires c = max(a −b, 0) within a
+diﬀerence of ǫ. For example, in the case when x[v1
+i ] = 0, the magnitude of x[v−
+i ] could be much
+larger than that of x[v+
+i ]. We are able to establish the following lemma which is suﬃcient to
+carry out the correctness proof of our reduction.
+Lemma 8.8 (Well-Conditioned Solution). For all i ∈[1 : n],
+1. if x[v1
+i ] > 4ǫ, then ri = x[v+
+i ] −x[v−
+i ] > −4ǫ; and
+2. if x[v1
+i ] < 1/K −2n3/K2, then ri = x[v+
+i ] −x[v−
+i ] < 4ǫ.
+Proof. In order to set up a proof-by-contradiction of the ﬁrst if-statement, we assume there exists
+some i such that x[v1
+i ] > 4ǫ and x[v+
+i ] −x[v−
+i ] ≤−4ǫ.
+By the ﬁrst gate (G+, v1
+i , v+
+i , v′
+i, nil) inserted in Part 4, we have
+x[v′
+i] = min(x[v1
+i ] + x[v+
+i ], 1/K) ± ǫ ≤x[v1
+i ] + x[v+
+i ] + ǫ ≤x[v1
+i ] + x[v−
+i ] −3ǫ.
+(13)
+By the second gate (G−, v′
+i, v−
+i , v′′
+i , nil), we have
+x[v′′
+i ] ≤max(x[v′
+i] −x[v−
+i ], 0) + ǫ ≤max(x[v1
+i ] −3ǫ, 0) + ǫ ≤x[v1
+i ] −2ǫ,
+(14)
+where the last inequality follows from the assumption that x[v1
+i ] > 4ǫ. Since x[v1
+i ] ≤1/K + ǫ,
+we have x[v′′
+i ] ≤x[v1
+i ] −2ǫ ≤1/K −ǫ < 1/K. So, by the last gate (G=, v′′
+i , nil, v1
+i , nil), we have
+x[v1
+i ] = min(x[v′′
+i ], 1/K) ± ǫ = x[v′′
+i ] ± ǫ, which contradicts (14).
+40
+
+Similarly, to prove the second if-statement, we assume there exists some 1 ≤i ≤n such that
+x[v1
+i ] < 1/K −2n3/K2 and x[v+
+i ] −x[v−
+i ] ≥4ǫ in order to derive a contradiction.
+By Part 3, x[v+
+i ] ≤n3/K2 + O(n3ǫ). Together with the assumption, we have x[v1
+i ] + x[v+
+i ]
+≤1/K −n3/K2 + O(n3ǫ) < 1/K. Thus, by the ﬁrst gate G+, we have
+x[v′
+i] = min(x[v1
+i ] + x[v+
+i ], 1/K) ± ǫ = x[v1
+i ] + x[v+
+i ] ± ǫ ≥x[v1
+i ] + x[v−
+i ] + 3ǫ
+and x[v′
+i] ≤x[v1
+i ] + x[v+
+i ] + ǫ ≤1/K −n3/K2 + O(n3ǫ). By the second gate G−,
+x[v′′
+i ] ≥min(x[v′
+i] −x[v−
+i ], 1/K) −ǫ = x[v′
+i] −x[v−
+i ] −ǫ ≥x[v1
+i ] + 2ǫ.
+(15)
+We also have x[v′′
+i ] ≤max(x[v′
+i] −x[v−
+i ], 0) + ǫ ≤x[v′
+i] + ǫ < 1/K. However, the last gate G=
+implies x[v1
+i ] = min(x[v′′
+i ], 1/K) ± ǫ = x[v′′
+i ] ± ǫ, which contradicts (15).
+Now, we show that Q is a panchromatic simplex of C. By Lemma 8.6, it suﬃces to prove
+that Wi > 0, for all i ∈[1 : n + 1].
+By Part 3 of the construction and Lemma 8.7,
+r
+=
+1
+K
+X
+1≤i≤n3
+ri ± O(n3ǫ)
+=
+1
+K
+X
+i∈IG
+ri + 1
+K
+X
+i∈IB
+ri ± O(n3ǫ)
+=
+X
+i∈IG
+zci + 1
+K
+X
+i∈IB
+ri ± O(n3ǫ)
+=
+X
+1≤i≤n+1
+Wi zi + 1
+K
+X
+i∈IB
+ri ± O(n3ǫ)
+=
+rG + rB ± O(n3ǫ).
+where rG = P
+1≤i≤n+1 Wizi and rB = P
+i∈IB ri/K. Since |IB | ≤n and ∥ri∥∞≤1/K + ǫ for
+each i ∈IB, we have ∥rB ∥∞= O(n/K2).
+As |IG| ≥n3 −n, we have P
+1≤i≤n+1 Wi ≥n3 −n. The next lemma shows that, if one of Wi
+is equal to zero, then ∥rG∥∞≫∥rB ∥∞.
+Lemma 8.9. If one of Wi is equal to zero, then ∥rG∥∞≥n2/(3K2), and thus ∥r∥∞≫4ǫ.
+Proof. We divide the proof into two cases. First, assume Wn+1 = 0. Let l ∈[1 : n] be the integer
+such that Wl = max1≤i≤n Wi, then we have Wl > n2 −1. Thus, r′
+l = Wl/K ≥(n2 −1)/K >
+n2/(3K2).
+Second, assume Wt = 0 for some 1 ≤t ≤n. We have the following two cases:
+• Wn+1 ≥n2/2: r′
+t = −Wn+1/K ≤−n2/(2K2) < −n2/(3K2).
+• Wn+1 < n2/2: Let l be the integer such that Wl = max1≤i≤n+1 Wi, then l ̸= t, n + 1 and
+Wl > n2 −1. Then, r′
+l = (Wl −Wn+1)/K > (n2/2 −1)/K2 > n2/(3K2).
+Therefore, if Q is not a panchromatic simplex, then one of the Wi’s is equal to zero, and
+hence ∥r∥∞≫4ǫ. Had Part 4 of our construction guaranteed that ∥r∥∞= O(ǫ), we would
+41
+
+have completed the proof. As it is not always the case, we prove the following lemma so that we
+can use Lemma 8.8 to complete the proof.
+Lemma 8.10 (Well-Conditioned). For all i ∈[1 : n], 4ǫ < x[v1
+i ] < 1/K −2n3/K2.
+Proof. In this proof, we will use the following boundary condition of circuit C: For each q ∈Bn
+and 1 ≤k ̸= l ≤n,
+B.1: if qk = 0, then ColorC [q] ̸= n + 1;
+B.2: if qk = 0 and ql > 0, then ColorC [q] ̸= l;
+B.3: if qk = 7, then ColorC [q] ̸= k; and
+B.4: if qk = 7 and ColorC [q] = l ̸= k, then ql = 0.
+These conditions follow directly from the deﬁnition of valid circuits. Recall 1/K = 2−6m, ǫ =
+2−18m = 1/K3 and 2m > n.
+First, if there exists an integer k ∈[1 : n] such that x[v1
+k] ≤4ǫ, then qt
+k = 0 for all t ∈IG. By
+B.1, Wn+1 = 0. Let l be the integer such that Wl = max1≤i≤n Wi. As Pn+1
+i=1 Wi = |IG | ≥n3 −n,
+we have Wl ≥n2 −1. So, rl ≥Wl/K2 −O(n/K2) −O(n3ǫ) ≫4ǫ. Now consider the following
+two cases:
+• If x[v1
+l ] < 1/K −2n3/K2, then we get a contradiction in Lemma 8.8.
+• If x[v1
+l ] ≥1/K −2n3/K2, then for all t ∈IG,
+pt
+l = 8K
+
+min
+ x[v1
+l ] + (t −1)/(8K2), 1/K
+
+± O(ǫ)
+
+> 1
+and hence qt
+l > 0. By B.2, we have Wl = 0, contradicting the assumption.
+Second, if there exists an integer k ∈[1 : n] such that x[v1
+k] ≥1/K −2n3/K2, then for all
+t ∈IG, we have qt
+k = 7. By B.3, Wk = 0. If Wn+1 ≥n2/2, then
+rk ≤−Wn+1/K2 + O(n/K2) + O(n3ǫ) ≪−4ǫ,
+which contradicts the assumption that x[v1
+k] ≥1/K −2n3/K2 > 4ǫ (see Lemma 8.8.1). Below,
+we assume Wn+1 < n2/2.
+Let l be the integer such that Wl = max1≤i≤n+1 Wi. Since Wk = 0, we have Wl ≥n2 −1 and
+l ̸= k. As Wn+1 < n2/2, Wl −Wn+1 > n2/2 −1 and thus,
+rl ≥(Wl −Wn+1)/K2 −O(n/K2) −O(n3ǫ) ≫4ǫ.
+We now consider the following two cases:
+• If x[v1
+l ] < 1/K −2n3/K2, then we get a contradiction in Lemma 8.8.2;
+• If x[v1
+l ] ≥1/K −2n3/K2, then pt
+l > 1 and thus qt
+l > 0 for all t ∈IG. By B.4, we have
+Wl = 0 which contradicts the assumption.
+42
+
+9
+Extensions and Open Problems
+9.1
+Sparse Games are Hard
+As ﬁxed points and Nash equilibria are fundamental to many other search and optimization
+problems, our results and techniques may have a broader scope of applications and implications.
+So far, our complexity results on the computation and approximation of Nash equilibria have
+been extended to Arrow-Debreu equilibria [28]. They can also be naturally extended to both
+r-player games [45] and r-graphical games [33], for every ﬁxed r ≥3. Since the announcement of
+our work, it has been shown that the Nash equilibrium is PPAD-hard to approximate in fully
+polynomial time even for bimatrix games with some special payoﬀstructures, such as bimatrix
+games in which all payoﬀentries are either 0 or 1 [14], or in which most of the payoﬀentries are
+0. In the latter case, we can strengthen our gadgets to prove the following theorem:
+Theorem 9.1 (Sparse Bimatrix). Nash equilibria remains PPAD-hard to approximate in
+fully polynomial time for sparse bimatrix games in which each row and column of the two payoﬀ
+matrices contains at most 10 nonzero entries.
+The reduction needed in proving this theorem is similar to the one used in proving Theorem
+5.1. The key diﬀerence is that we ﬁrst reduce Brouwerf1 to a sparse generalized circuit, where
+a generalized circuit is sparse if each node is used by at most two gates as their input nodes. We
+then reﬁne our gadget games for Gζ, G∧or G∨, to guarantee that the resulting bimatrix game is
+sparse. Details of the proof can be found in [11].
+9.2
+Open Questions and Conjectures
+There remains a complexity gap in the approximation of two-player Nash equilibria: Lipton,
+Markakis and Mehta [40] show that an ǫ-approximate Nash equilibrium can be computed in
+nO(log n/ǫ2)-time, while this paper shows that, for ǫ of order 1/poly(n), no algorithm can ﬁnd an
+ǫ-approximate Nash equilibrium in poly(n, 1/ǫ)-time, unless PPAD is contained in P. However,
+our hardness result does not cover the case when ǫ is a constant between 0 and 1, or of order
+1/polylog(n). Naturally, it is unlikely that ﬁnding an ǫ-approximate Nash equilibrium is PPAD-
+complete when ǫ is an absolute constant, for otherwise, all search problems in PPAD would be
+solvable in nO(log n)-time, due to the result of [40].
+Thinking optimistically, we would like to see the following conjectures turn out to be true.
+Conjecture 1 (PTAS for Bimatrix). There is an O(nk+ǫ−c)-time algorithm for ﬁnding an ǫ-
+approximate Nash equilibrium in a two-player game, for some constants c and k.
+Conjecture 2 (Smoothed Bimatrix). There is an algorithm for Bimatrix with smoothed com-
+plexity O(nk+σ−c) under perturbations with magnitude σ, for some constants c and k.
+For a suﬃciently large ǫ, such as ǫ ≥1/2, an ǫ-approximate Nash equilibrium can be found
+in polynomial time [19, 36], by examining small-support strategies. However, new techniques
+43
+
+are needed to prove Conjecture 1 [22]. Lemma 2.2 implies that Conjecture 1 is true for ǫ-well-
+supported Nash equilibrium if and only if it is true for ǫ-approximate Nash equilibrium. For each
+bimatrix game (A, B) such that rank(A + B) is a constant, Kannan and Theobald [31] found a
+fully-polynomial-time algorithm to approximate Nash equilibria.
+For Conjecture 2, one might be able to prove a weaker version of this conjecture by extending
+the analysis of [4] to show that there is an algorithm for Bimatrix with smoothed complexity
+nO(log n/σ2). We also conjecture that Corollary 5.4 remains true without any complexity assump-
+tion on PPAD. A positive answer would extend the result of Savani and von Stengel [50] to
+smoothed bimatrix games. Another interesting question is whether the average-case complexity
+of the Lemke-Howson algorithm is polynomial.
+Of course, the fact that two-player Nash equilibria and Arrow-Debreu equilibria are PPAD-
+hard to compute in the smoothed model does not necessarily imply that game and market prob-
+lems are hard to solve in practice. In addition to possible noise and imprecision in inputs, practical
+problems might have other special structure that makes equilibrium computation or approxima-
+tion more tractable. The game and market problems and their hardness results might provide an
+opportunity and a family of concrete problems for discovering new input models that can help us
+to rigorously evaluate the performance of practical equilibrium algorithms and heuristics.
+Theorem 5.2 implies that for any r > 2, the computation of an r-player Nash equilibrium can
+be reduced in polynomial time to the computation of a two-player Nash equilibrium. However,
+the implied reduction is not very natural: The r-player Nash equilibrium problem is ﬁrst reduced
+to End-of-Line, then to Brouwer, and then to Bimatrix. It remains an interesting question
+to ﬁnd a more direct reduction from r-player Nash equilibria to two-player Nash equilibria.
+The following complexity question about Nash equilibria is due to Vijay Vazirani: Are the
+counting versions of all PPAD complete-problems as hard as the counting version of Bimatrix?
+Gilboa and Zemel [24] showed that deciding whether a bimatrix game has a unique Nash equi-
+librium is NP-hard. Their technique was extended in [17] to prove that counting the number
+of Nash equilibria is #P-hard. Because the reduction between search problems only requires a
+many-to-one map between solutions, the number of solutions is not necessarily preserved. More
+restricted reductions are needed to solve Vazirani’s question.
+Finally, even though our results in this paper as well as the results of [18, 10, 20] provide
+strong evidence that equilibrium computation might be hard for P, the hardness of the PPAD
+complexity class itself is largely unknown [29]. On one hand, Megiddo [41] proved that if Bima-
+trix is NP-hard, then NP = coNP. On the other hand, there are oracles that separate PPAD
+from P, and various discrete ﬁxed point problems such as the computational version of Sperner’s
+Lemma, requires an exponential number of functional evaluations in the query model, determin-
+istic [26, 8] or randomized [13], and in the quantum query model [23, 13]. It is desirable to ﬁnd
+stronger evidences that PPAD is not contained in P. Does the existence of one-way functions
+imply that PPAD is not contained in P? Does “Factoring is not in P” imply that PPAD is
+not contained in P? Characterizing the hardness of the PPAD class is a great and a challenging
+problem.
+44
+
+10
+Acknowledgments
+We would like to thank Kyle Burke, Li-Sha Huang, Jon Kelner, Rajmohan Rajaraman, Dan
+Spielman, Ravi Sundaram, Paul Valiant, and Vijay Vazirani for helpful comments and suggestions.
+We would like to thank everyone who asked about the smoothed complexity of the Lemke-Howson
+algorithm, especially John Reif for being the ﬁrst player to ask us this question.
+Xi Chen’s work was supported by the Chinese National Key Foundation Plan (2003CB31-
+7807, 2004CB318108), the National Natural Science Foundation of China Grant 60553001 and
+the National Basic Research Program of China Grant (2007CB807900, 2007CB807901).
+Part
+of his work was done while visiting the City University of Hong Kong.
+Xiaotie Deng’s work
+was supported by City University of Hong Kong for his research. Shang-Hua Teng’s work was
+supported by the NSF grants CCR-0311430 and ITR CCR-0325630. Part of his work was done
+while visiting Tsinghua University and Microsoft Beijing Research Lab. Several critical ideas on
+the approximation and smoothed complexities of two-player Nash equilibrium were shaped when
+the authors were attending ISAAC2005 at Sanya, Hainan, China.
+References
+[1] John Reif, Nicole Immorlica, Steve Vavasis, Christos Papadimitriou, Mohammad Mahdian,
+Ding-Zhu Du, Santosh Vempala, Aram Harrow, Adam Kalai, Imre B´ar´any, Adrian Vetta,
+Jonathan Kelner and a number of other people asked whether the smoothed complexity of
+the Lemke-Howson algorithm or Nash Equilibria is polynomial, 2001–2005.
+[2] T. Abbott, D. Kane, and P. Valiant. On the complexity of two-player win-lose games. In
+FOCS ’05: Proceedings of the 46th Annual IEEE Symposium on Foundations of Computer
+Science, pages 113–122, 2005.
+[3] K.J. Arrow and G. Debreu. Existence of an equilibrium for a competitive economy. Econo-
+metrica, 22:265–290, 1954.
+[4] I. B´ar´any, S. Vempala, and A. Vetta.
+Nash equilibria in random games.
+In FOCS ’05:
+Proceedings of the 46th Annual IEEE Symposium on Foundations of Computer Science,
+pages 123–131, 2005.
+[5] L. Blum, M. Shub, and S. Smale. On a theory of computation over the real numbers; NP
+completeness, recursive functions and universal machines. Bulletin of the AMS, 21(1):1–46,
+July 1989.
+[6] K.-H. Borgwardt. The average number of steps required by the simplex method is polynomial.
+Zeitschrift f¨ur Operations Research, 26:157–177, 1982.
+[7] L.E.J. Brouwer. ¨Uber Abbildung von Mannigfaltigkeiten. Mathematische Annalen, 71:97–
+115, 1910.
+45
+
+[8] X. Chen and X. Deng. On algorithms for discrete and approximate Brouwer ﬁxed points. In
+STOC ’05: Proceedings of the 37th Annual ACM Symposium on Theory of computing, pages
+323–330, 2005.
+[9] X. Chen and X. Deng. On the complexity of 2D discrete ﬁxed point problem. In ICALP ’06:
+Proceedings of the 33rd International Colloquium on Automata, Languages and Programming,
+pages 489–500, 2006.
+[10] X. Chen and X. Deng. 3-Nash is PPAD-complete. In Electronic Colloquium in Computational
+Complexity, TR05-134, 2005.
+[11] X. Chen, X. Deng, and S.-H. Teng.
+Sparse games are hard.
+In Proceedings of the 2nd
+Workshop on Internet and Network Economics, pages 262–273, 2006.
+[12] X. Chen, L.-S. Huang, and S.-H. Teng. Market equilibria with hybrid linear-Leontief utilities.
+In Proceedings of the 2nd Workshop on Internet and Network Economics, pages 274–285,
+2006.
+[13] X. Chen and S.-H. Teng. Paths beyond local search: A nearly tight bound for randomized
+ﬁxed-point computation. arXiv, 2007. http://arxiv.org/abs/cs.GT/0702088.
+[14] X. Chen, S.-H. Teng, and P.A. Valiant. The approximation complexity of win-lose games. In
+SODA ’07: Proceedings of the 18th Annual ACM-SIAM Symposium on Discrete Algorithms,
+2007.
+[15] B. Codenotti, A. Saberi, K. Varadarajan, and Y. Ye. Leontief economies encode nonzero sum
+two-player games. In SODA ’06: Proceedings of the 17th Annual ACM-SIAM Symposium
+on Discrete Algorithms, pages 659–667, 2006.
+[16] A. Condon, H. Edelsbrunner, E. Emerson, L. Fortnow, S. Haber, R. Karp, D. Leivant,
+R. Lipton, N. Lynch, I. Parberry, C. Papadimitriou, M. Rabin, A. Rosenberg, J. Royer,
+J. Savage, A. Selman, C. Smith, E. Tardos, and J. Vitter. Challenges for theory of computing:
+Report of an NSF-sponsored workshop on research in theoretical computer science. SIGACT
+News, 30(2):62–76, 1999.
+[17] V. Conitzer and T. Sandholm. Complexity results about nash equilibria. In In Proceedings
+of the International Joint Conference on Artiﬁcial Intelligence (IJCAI), 2003.
+[18] C. Daskalakis, P.W. Goldberg, and C.H. Papadimitriou. The complexity of computing a Nash
+equilibrium. In STOC ’06: Proceedings of the 38th Annual ACM Symposium on Theory of
+Computing, pages 71–78, 2006.
+[19] C. Daskalakis, A. Mehta, and C.H. Papadimitriou. A note on approximate Nash equilibria.
+In Proceedings of the 2nd Workshop on Internet and Network Economics, pages 297–306,
+2006.
+46
+
+[20] C. Daskalakis and C.H. Papadimitriou. Three-player games are hard. In Electronic Collo-
+quium in Computational Complexity, TR05-139, 2005.
+[21] X. Deng, C. Papadimitriou, and S. Safra. On the complexity of price equilibria. Journal of
+Computer and System Sciences, 67(2):311–324, 2003.
+[22] T. Feder, H. Nazerzadeh, and A. Saberi. Approximating nash equilibria using small-support
+strategies. Stanford, 2006.
+[23] K. Friedl, G. Ivanyos, M. Santha, and F. Verhoeven. On the black-box complexity of Sperner’s
+lemma. In Proceedings of the 15th International Symposium on Fundamentals of Computa-
+tion Theory, pages 245–257, 2005.
+[24] I. Gilboa and E. Zemel. Nash and correlated equilibria: Some complexity considerations.
+Games and Economic Behavior, 1(1).
+[25] P.W. Goldberg and C.H. Papadimitriou. Reducibility among equilibrium problems. In STOC
+’06: Proceedings of the 38th Annual ACM Symposium on Theory of Computing, pages 61–70,
+2006.
+[26] M.D. Hirsch, C.H. Papadimitriou, and S. Vavasis.
+Exponential lower bounds for ﬁnding
+Brouwer ﬁxed points. Journal of Complexity, 5:379–416, 1989.
+[27] C. A. Holt and A. E. Roth. The Nash equilibrium: A perspective. PNAS, 101(12):3999–4002,
+March 2004.
+[28] L.-S. Huang and S.-H. Teng. On the approximation and smoothed complexity of Leontief
+market equilibria. In Electronic Colloquium in Computational Complexity, TR06-031, 2006.
+[29] D. Johnson. The NP-completeness column: Finding needles in haystacks. ACM Transactions
+on Algorithms, (to appear), April 2007.
+[30] S. Kakutani. A generalization of Brouwer’s ﬁxed point theorem. Duke Mathematical Journal,
+8:457–459, 1941.
+[31] R. Kannan and T. Theobald. Games of ﬁxed rank: A hierarchy of bimatrix games. In SODA
+’07: Proceedings of the 18th Annual ACM-SIAM Symposium on Discrete Algorithms, 2007.
+[32] N. Karmarkar. A new polynomial time algorithm for linear programming. Combinatorica,
+4:373–395, 1984.
+[33] M. Kearns, M. Littman, and S. Singh. Graphical models for game theory. In Proceedings of
+the Conference on Uncertainty in Artiﬁcial Intelligence, pages 253–260, 2001.
+[34] L.G. Khachian. A polynomial algorithm in linear programming. Doklady Akademia Nauk,
+SSSR 244:1093–1096, English translation in Soviet Math. Dokl. 20, 191–194, 1979.
+47
+
+[35] V. Klee and G.J. Minty. How good is the simplex algorithm? In O. Shisha, editor, Inequalities
+– III, pages 159–175. Academic Press, 1972.
+[36] S. Kontogiannis, P. Panagopoulou, and P. Spirakis. Polynomial algorithms for approximating
+Nash equilibria of bimatrix games. In Proceedings of the 2nd Workshop on Internet and
+Network Economics, pages 286–296, 2006.
+[37] C.E. Lemke. Bimatrix equilibrium points and mathematical programming. Management
+Science, 11:681–689, 1965.
+[38] C.E. Lemke and J.T. Howson, Jr. Equilibrium points of bimatrix games. Journal of the
+Society for Industrial and Applied Mathematics, 12:413–423, 1964.
+[39] R.J. Leonard. Reading Cournot, reading Nash: The creation and stabilisation of the Nash
+equilibrium. Economic Journal, 104(424):492–511, 1994.
+[40] R.J. Lipton, E. Markakis, and A. Mehta. Playing large games using simple strategies. In
+Proceedings of the 4th ACM conference on Electronic commerce, pages 36–41, 2004.
+[41] N. Megiddo. A note on the complexity of P-matrix LCP and computing an equilibrium.
+Research Report RJ6439, IBM Almaden Research Center, San Jose, 1988.
+[42] N. Megiddo and C.H. Papadimitriou. On total functions, existence theorems and computa-
+tional complexity. Theoretical Computer Science, 81:317–324, 1991.
+[43] O. Morgenstern and J. von Neumann. Theory of Games and Economic Behavior. Princeton
+University Press, 1947.
+[44] J. Nash. Equilibrium point in n-person games. Porceedings of the National Academy of the
+USA, 36(1):48–49, 1950.
+[45] J. Nash. Noncooperative games. Annals of Mathematics, 54:289–295, 1951.
+[46] C.H. Papadimitriou. On ineﬃcient proofs of existence and complexity classes. In Proceedings
+of the 4th Czechoslovakian Symposium on Combinatorics, 1991.
+[47] C.H. Papadimitriou. On the complexity of the parity argument and other ineﬃcient proofs
+of existence. Journal of Computer and System Sciences, pages 498–532, 1994.
+[48] C.H. Papadimitriou. Algorithms, games, and the internet. In STOC ’01: Proceedings of the
+33rd Annual ACM Symposium on Theory of Computing, pages 749–753, 2001.
+[49] T. Sandholm. Issues in computational vickrey auctions. International Journal of Electronic
+Commerce, 4(3):107 – 129, March 2000.
+[50] R. Savani and B. von Stengel. Exponentially many steps for ﬁnding a Nash equilibrium
+in a bimatrix game. In FOCS ’04: Proceedings of the 45th Annual IEEE Symposium on
+Foundations of Computer Science, pages 258–267, 2004.
+48
+
+[51] H. Scarf. The approximation of ﬁxed points of a continuous mapping. SIAM Journal on
+Applied Mathematics, 15:997–1007, 1967.
+[52] H. Scarf. On the computation of equilibrium prices. In W. Fellner, editor, Ten Economic
+Studies in the Tradition of Irving Fisher. New York: John Wiley & Sons, 1967.
+[53] E. Sperner. Neuer Beweis f¨ur die Invarianz der Dimensionszahl und des Gebietes. Abhand-
+lungen aus dem Mathematischen Seminar Universit¨at Hamburg, 6:265–272, 1928.
+[54] D.A. Spielman and S.-H. Teng. Smoothed analysis of algorithms: Why the simplex algorithm
+usually takes polynomial time. Journal of the ACM, 51(3):385–463, 2004, also in STOC ’01:
+Proceedings of the 33rd Annual ACM Symposium on the Theory of Computing.
+[55] D.A. Spielman and S.-H. Teng. Smoothed analysis of algorithms and heuristics: Progress
+and open questions. In L. Pardo, A. Pinkus, E. S¨uli and M.J. Todd, editor, Foundations of
+Computational Mathematics, pages 274–342. Cambridge University Press, 2006.
+[56] J. von Neumann. Zur theorie der gesellschaftsspiele. Mathematische Annalen, 100:295–320,
+1928.
+[57] R. Wilson. Computing equilibria of n-person games. SIAM Journal on Applied Mathematics,
+21:80–87, 1971.
+[58] Y. Ye.
+Exchange market equilibria with Leontief’s utility: Freedom of pricing leads to
+rationality. In Proceedings of the 1st Workshop on Internet and Network Economics, pages
+14–23, 2005.
+A
+Perturbation and Probabilistic Approximation
+In this section, we prove Lemma 3.2. To help explain the probabilistic reduction from the ap-
+proximation of bimatrix games to the solution of perturbed bimatrix games, we ﬁrst deﬁne the
+notion of many-way polynomial reductions among TFNP problems.
+Deﬁnition A.1 (Many-way Reduction). Let F be a set of polynomial-time computable functions
+and g be a polynomial-time computable function. A search problem SearchR1 ∈TFNP is (F, g)-
+reducible to SearchR2 ∈TFNP if, for all y ∈{0, 1}∗, (f(x), y) ∈R2 implies (x, g(y)) ∈R1 for
+every input x of R1 and for every function f ∈F.
+Proof. (of Lemma 3.2) We will only give a proof of the lemma under uniform perturbations.
+With a slightly more complex argument to handle the low probability case when the absolute value
+of the perturbation is too large, we can similarly prove the lemma under Gaussian perturbations.
+Suppose J is an algorithm with polynomial smoothed complexity for Bimatrix. Let TJ(A, B)
+be the complexity of J for solving the bimatrix game deﬁned by (A, B). Let Nσ() denotes the
+uniform perturbation with magnitude σ. Then there exists constants c, k1 and k2 such that for
+all 0 < σ < 1,
+49
+
+max
+¯A, ¯B∈Rn×n
+[−1,1],
+EA←Nσ( ¯A),B←Nσ( ¯B) [TJ(A, B)] ≤c · nk1σ−k2.
+For each pair of perturbation matrices S, T ∈Rn×n
+[−σ,σ], we can deﬁne a function f(S,T) :
+Rn×n × Rn×n →Rn×n × Rn×n as f(S,T)(( ¯A, ¯B)) = ( ¯A + S, ¯B + T). Let Fσ be the set of all such
+functions, i.e.,
+Fσ =
+n
+f(S,T)|S, T ∈Rn×n
+[−σ,σ]
+o
+.
+Let g be the identity function from Rn × Rn to Rn × Rn.
+We now show that the problem of computing an ǫ-approximate Nash equilibrium is (Fǫ/2, g)-
+reducible to the problem of ﬁnding a Nash equilibrium of perturbed instances. More speciﬁcally,
+we prove that for every bimatrix game ( ¯A, ¯B) and for every f(S,T) ∈Fǫ/2, an Nash equilibrium
+(x, y) of f(S,T)(( ¯A, ¯B)) is an ǫ-approximate Nash equilibrium of ( ¯A, ¯B).
+Let A = ¯A + S and B = ¯B + T. Then,
+|xT Ay −xT ¯Ay|
+= |xT Sy| ≤ǫ/2
+(16)
+|xT By −xT ¯By|
+= |xT Ty| ≤ǫ/2.
+(17)
+Thus, for each Nash equilibrium (x, y) of (A, B), for any (x′, y′),
+(x′)T ¯Ay −xT ¯Ay ≤
+ (x′)T Ay −xT Ay
+
++ ǫ ≤ǫ.
+Similarly, xT ¯By′ −xT ¯By ≤ǫ. Therefore, (x, y) is an ǫ-Nash equilibrium of game ( ¯A, ¯B).
+Now given the algorithm J with polynomial smoothed time-complexity for Bimatrix, we can
+apply the following randomized algorithm (with the help of a (Fǫ/2, g)-many-way reduction) to
+ﬁnd an ǫ-approximate Nash equilibrium of game ( ¯A, ¯B):
+Algorithm NashApproximationByPerturbations(¯A, ¯B)
+1. Randomly choose a pair of perturbation matrices S, T of magnitude σ and set
+A = ¯A + S and B = ¯B + T.
+2. Apply algorithm J to ﬁnd a Nash equilibrium (x, y) of (A, B).
+3. Return (x, y).
+The expected time complexity of NashApproximationByPerturbation is bounded from above
+by the smoothed complexity of J when the magnitude perturbations is ǫ/2 and hence is at most
+2k2c · nk1ǫ−k2.
+B
+Padding Generalized Circuits: Proof of Theorem 4.7
+Suppose S = (V, T ) is a generalized circuit. Let K = |V |.
+50
+
+First, S has a 1/K3-approximate solution because 1) Poly3-Gcircuit is reducible to Poly12-
+Bimatrix (Section 6); and 2) every two-player game has a Nash equilibrium. Thus, the theorem
+is true for c ≤3.
+To prove the theorem for the case when c > 3, we reduce Polyc-Gcircuit to Poly3-
+Gcircuit. Suppose c = 2b + 1, where b > 1. We construct a new circuit S′ = (V ′, T ′) by
+inserting some dummy nodes into S as following:
+• V ⊂V ′, |V | = Kb > K and |T ′| = |T |;
+• For each gate T = (G, v1, v2, v, α) ∈T , if G /∈{Gζ, G×ζ } (and thus, α = nil), then T ∈T ′;
+otherwise, gate (G, v1, v2, v, K1−bα) ∈T ′.
+Let x′ be a 1/|V ′|3-approximate solution of S′.
+Note that |V ′|3 = 1/K3b.
+We construct an
+assignment x : V →R by setting x[v] = Kb−1x′[v] for every v ∈V . One can easily check that x
+is a 1/K2b+1-approximate solution to the original circuit S. We then apply 1/K2b+1 = 1/Kc.
+C
+Padding Bimatrix Games: Proof of Lemma 5.8
+Let c be the constant such that Polyc-Bimatrix is known to be PPAD-complete. If c < 2, then
+ﬁnding an n−2-approximate Nash equilibrium is harder, and thus is also complete in PPAD.
+With this, without loss of generality, we assume that c ≥2. To prove the lemma, we only need
+to show that for every constant c′ such that 0 < c′ < c, Polyc-Bimatrix is polynomial-time
+reducible to Polyc′-Bimatrix.
+Suppose G = (A, B) is an n × n positively normalized two-player game. We transform it into
+a new n × n game G′ = (A′, B′) as follows:
+a′
+i,j = ai,j +
+
+1 −max
+1≤k≤n ak,j
+
+and
+b′
+i,j = bi,j +
+
+1 −max
+1≤k≤n ai,k
+
+,
+∀i, j : 1 ≤i, j ≤n.
+One can verify that any ǫ-approximate Nash equilibrium of G′ is also an ǫ-approximate Nash
+equilibrium of G. Besides, every column of A′ and every row of B′ has at least one entry with
+value 1.
+Next, we construct an n′′ × n′′ game G′′ = (A′′, B′′) where n′′ = n
+2c
+c′ > n as follows: A′′
+and B′′ are both 2 × 2 block matrices with A′′
+1,1 = A′, B′′
+1,1 = B′, A′′
+1,2 = B′′
+2,1 = 1 and
+A′′
+2,1 = A′′
+2,2 = B′′
+1,2 = B′′
+2,2 = 0. Now let (x′′, y′′) be any 1/n′′c′ = 1/n2c-approximate Nash
+equilibrium of game G′′ = (A′′, B′′). By the deﬁnition of ǫ-approximate Nash equilibria, one
+can show that 0 ≤P
+n<i≤n′′ x′′
+i , P
+n<i≤n′′ y′′
+i ≤n1−2c ≪1/2, since we assumed that c ≥2. Let
+a = P
+1≤i≤n x′′
+i and b = P
+1≤i≤n y′′
+i . We construct a proﬁle of mixed strategies (x′, y′) of G′ as
+follows: x′
+i = x′′
+i /a and y′
+i = y′′
+i /b for all i ∈[1 : n]. Since a, b > 1/2, one can show that (x′, y′) is
+a 2/n2c-approximate Nash equilibrium of G′, which is also a 1/nc-approximate Nash equilibrium
+of the original game G.
+51
+
+D
+Gadget Gates: Complete the Proof of Lemma 6.4
+Proof for Gζ Gates. From (1), (2) and Figure 3, we have
+
+x|bS
+2k−1
+
+−
+
+x|bS
+2k
+
+= x[v] −α,
+and
+
+aS
+2k−1|y
+
+−
+
+aS
+2k|y
+
+=
+ yC[v] −y[v]
+
+−y[v].
+If x[v] > α + ǫ, then from the ﬁrst equation, we have y[v] = yC[v]. But the second equation
+implies x[v] = 0, which contradicts our assumption that x[v] > 0.
+If x[v] < α −ǫ, then from the ﬁrst equation, we have y[v] = 0. But the second equation
+implies that x[v] = xC[v] ≥1/K −ǫ, which contradicts the assumption that x[v] < α −ǫ and
+α ≤1/K.
+Proof for G×ζ Gates. From (1), (2) and Figure 3, we have
+
+x|bS
+2k−1
+
+−
+
+x|bS
+2k
+
+= αx[v1] −x[v],
+and
+
+aS
+2k−1|y
+
+−
+
+aS
+2k|y
+
+= y[v] −
+ yC[v] −y[v]
+
+.
+If x[v] > min(αx[v1], 1/K ) + ǫ, then x[v] > αx[v1] + ǫ, since x[v] ≤xC[v] ≤1/K + ǫ. By the
+ﬁrst equation, we have y[v] = 0 and the second one implies that x[v] = 0, which contradicts the
+assumption that x[v] > min(αx[v1], 1/K ) + ǫ > 0.
+If x[v] < min(αx[v1], 1/K ) −ǫ ≤αx[v1] −ǫ, then the ﬁrst equation shows y[v] = yC[v] and
+thus by the second equation, we have x[v] = xC[v] ≥1/K −ǫ, which contradicts the assumption
+that x[v] < min(αx[v1], 1/K ) −ǫ ≤1/K −ǫ.
+Proof for G= Gates. G= is a special case of G×ζ, with parameter α = 1.
+Proof for G−Gates. From (1), (2) and Figure 3, we have
+
+x|bS
+2k−1
+
+−
+
+x|bS
+2k
+
+= x[v1] −x[v2] −x[v],
+and
+
+aS
+2k−1|y
+
+−
+
+aS
+2k|y
+
+= y[v] −
+ yC[v] −y[v]
+
+.
+If x[v] > max(x[v1] −x[v2], 0) + ǫ ≥x[v1] −x[v2] + ǫ, then the ﬁrst equation implies y[v] = 0. By
+the second equation, we have x[v] = 0 which contradicts the assumption that x[v] > max(x[v1]−
+x[v2], 0) + ǫ > 0.
+If x[v] < min(x[v1] −x[v2], 1/K) −ǫ ≤x[v1] −x[v2] −ǫ, then by the ﬁrst equation, we have
+y[v] = yC[v].
+By the second equation, we have x[v] = xC[v] ≥1/K −ǫ, contradicting the
+assumption that x[v] < min(x[v1] −x[v2], 1/K ) −ǫ ≤1/K −ǫ.
+Proof for G< Gates. From (1), (2) and Figure 3, we have
+
+x|bS
+2k−1
+
+−
+
+x|bS
+2k
+
+= x[v1] −x[v2],
+and
+
+aS
+2k−1|y
+
+−
+
+aS
+2k|y
+
+=
+ yC[v] −y[v]
+
+−y[v].
+52
+
+If x[v1] < x[v2] −ǫ, then y[v] = 0 according to the ﬁrst equation. By the second equation, we
+have x[v] = xC[v] = 1/K ± ǫ and thus, x[v] = ǫ
+B 1.
+If x[v1] > x[v2] + ǫ, then y[v] = yC[v] according to the ﬁrst equation. By the second one, we
+have x[v] = 0 and thus, x[v] = ǫ
+B 0.
+Proof for G∨Gates. From (1), (2) and Figure 3, we have
+
+x|bS
+2k−1
+
+−
+
+x|bS
+2k
+
+= x[v1] + x[v2] −1/(2K),
+and
+
+aS
+2k−1|y
+
+−
+
+aS
+2k|y
+
+= y[v] −
+ yC[v] −y[v]
+
+.
+If x[v1] = ǫ
+B 1 or x[v2] = ǫ
+B 1, then x[v1] + x[v2] ≥1/K −ǫ. By the ﬁrst equation y[v] = yC[v]. By
+the second equation, we have x[v] = xC[v] = 1/K ± ǫ and thus, x[v] = ǫ
+B 1.
+If x[v1] = ǫ
+B 0 and x[v2] = ǫ
+B 0, then x[v1]+x[v2] ≤2ǫ. From the ﬁrst equation, y[v] = 0. Then,
+the second equation implies x[v] = ǫ
+B 0.
+Proof for G∧Gates. From (1), (2) and Figure 3, we have
+
+x|bS
+2k−1
+
+−
+
+x|bS
+2k
+
+= x[v1] + x[v2] −3/(2K),
+and
+
+aS
+2k−1|y
+
+−
+
+aS
+2k|y
+
+= y[v] −
+ yC[v] −y[v]
+
+.
+If x[v1] = ǫ
+B 0 or x[v2] = ǫ
+B 0, then x[v1] + x[v2] ≤1/K + 2ǫ. From the ﬁrst equation, we have
+y[v] = 0. By the second equation, we have x[v] = 0 and thus, x[v] = ǫ
+B 0.
+If x[v1] = ǫ
+B 1 and x[v2] = ǫ
+B 1, then x[v1] + x[v2] ≥2/K −2ǫ.
+The ﬁrst equation shows
+y[v] = yC[v]. By the second equation, x[v] = xC[v] = 1/K ± ǫ and thus, x[v] = ǫ
+B 1.
+Proof for G¬ Gates. From (1), (2) and Figure 3, we have
+
+x|bS
+2k−1
+
+−
+
+x|bS
+2k
+
+= x[v1] −
+ xC[v1] −x[v1]
+
+,
+and
+
+aS
+2k−1|y
+
+−
+
+aS
+2k|y
+
+=
+ yC[v] −y[v]
+
+−y[v].
+If x[v1] = ǫ
+B 1, then by the ﬁrst equation, y[v] = yC[v]. Then, by the second equation, we have
+x[v] = 0.
+If x[v1] = ǫ
+B 0, then the ﬁrst equation shows that y[v] = 0. By the second equation, we have
+x[v] = xC[v] and thus, x[v] = ǫ
+B 1.
+53

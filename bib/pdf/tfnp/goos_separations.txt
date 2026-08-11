@@ -1,0 +1,2489 @@
+Separations in Proof Complexity and TFNP
+Mika G¨o¨os
+Alexandros Hollender
+Siddhartha Jain
+Gilbert Maystre
+EPFL
+University of Oxford
+UT Austin
+EPFL
+William Pires
+Robert Robere
+Ran Tao
+Columbia University
+McGill University
+Carnegie Mellon University
+Abstract. It is well-known that Resolution proofs can be efficiently simulated by Sherali–
+Adams (SA) proofs. We show, however, that any such simulation needs to exploit huge
+coefficients: Resolution cannot be efficiently simulated by SA when the coefficients are
+written in unary. We also show that Reversible Resolution (a variant of MaxSAT Resolution)
+cannot be efficiently simulated by Nullstellensatz (NS).
+These results have consequences for total NP search problems. First, we characterise
+the classes PPADS, PPAD, SOPL by unary-SA, unary-NS, and Reversible Resolution,
+respectively. Second, we show that, relative to an oracle, PLS ̸⊆PPP, SOPL ̸⊆PPA, and
+EOPL ̸⊆UEOPL. In particular, together with prior work, this gives a complete picture of
+the black-box relationships between all classical TFNP classes introduced in the 1990s.
+Contents
+1
+Separations in Proof Complexity . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1
+2
+Separations in TFNP . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+4
+3
+Definitions . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+9
+4
+Reversible Resolution vs. Nullstellensatz . . . . . . . . . . . . . . . . . . . . . . .
+12
+5
+Resolution vs. Sherali–Adams . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+17
+6
+Proofs of Characterisations
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+20
+7
+Intersection Theorems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+35
+8
+Two Further Separations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+36
+A Appendix: Coefficient Size in Algebraic Proofs
+. . . . . . . . . . . . . . . . . . .
+41
+References . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+44
+arXiv:2205.02168v3  [cs.CC]  22 Jul 2024
+
+1
+Separations in Proof Complexity
+The main results of this work are two separations between standard propositional proof systems, as
+summarised in Figure 1. Moreover, these results can be further interpreted as black-box separations
+in the theory of total NP search problems (TFNP), as we explain later in Section 2. This connection
+between TFNP and proof complexity, which has proved fruitful in past works and which we further
+explore here, also yields a new type of result in proof complexity, which we call intersection theorems;
+see Section 2.4.
+1.1
+Resolution vs. Sherali–Adams
+Our first separation is between the most basic and well-studied proof system Resolution (see
+the textbooks [Juk12, Kra19] for an introduction) and the semi-algebraic proof system Sherali–
+Adams [SA94, DM12] (see the monograph [FKP19] for an introduction). Let us briefly recall
+these systems. Each system aims to refute a given CNF contradiction (unsatisfiable CNF formula)
+F := C1 ∧. . . ∧Cm over the n boolean variables x = (x1, . . . , xn).
+Resolution (Res). A Resolution refutation of F starts with the set of clauses of F and repeatedly
+applies the resolution rule C ∨xi, D ∨¯xi ⊢C ∨D. That is, if we have already deduced premise
+clauses C ∨xi and D ∨¯xi for some i, then we can further deduce the clause C ∨D. Once this rule
+has been applied enough times to produce the empty clause ⊥, the refutation is complete. The
+size of the refutation is the number of deduction steps, and its width is the maximum width |C|
+(number of literals) of any clause C appearing in the refutation.
+Sherali–Adams (SA). Sherali–Adams refutes unsatisfiable sets of polynomial equations {ai(x) =
+0 : i ∈[m]} with real coefficients, ai ∈R[x]. A CNF contradiction F can be translated into this
+language by encoding each clause, say, C := (x1 ∨x2 ∨x3), as the equation (1−x1)x2(1−x3) = 0,
+and by enforcing each variable xi to take boolean values by the equation x2
+i −xi = 0. An SA
+refutation of {ai(x) = 0} is a polynomial identity of the form1
+X
+i∈[m]
+pi(x) · ai(x) = 1 + J(x),
+(1)
+where pi ∈R[x] are polynomials and J is a conical junta: a nonnegative linear combination of
+terms, that is, J(x) = P
+j αj · tj(x) where αj ∈R≥0 are nonnegative coefficients and each tj is a
+conjunction of literals; for example, tj(x) = x1x2x3 = x1(1 −x2)x3. The size of the refutation
+is the combined total number of monomials in pi, ai, and tj (viewed as a polynomial) and its
+degree is the maximum of deg(pi) + deg(ai) and of deg(tj) over all i, j.
+It is a basic fact that SA is strictly more powerful than Resolution. First, Resolution is p-simulated
+by SA, that is, with only polynomial overhead in proof width/degree and size. Indeed, if F can be
+refuted by width-w Resolution, then F can be refuted by SA in degree w + 1 [DMR09]. Moreover,
+if one allows twin variables in SA, the simulation can also be made efficient relative to size [ALN16].
+Second, SA is not p-simulated by Resolution: there are n-variate CNF contradictions F (e.g., graph
+pigeonhole principles) that can be refuted by SA in constant degree but such that any Resolution
+refutation of F requires width Ω(n) and size exp(Ω(n)) [AL19].
+Our first result highlights a previously overlooked inefficiency in the way that SA simulates
+Resolution. We show that any low-degree simulation needs to exploit huge coefficients.
+1This particular form is valid for refuting sets of polynomial equations, and can be easily obtained from more
+general forms used for refuting sets of polynomial inequalities.
+1
+
+TreeRes
+RevRes
+Res
+uNS
+uSA
+Z-NS
+F-NS
+SA
+Theorem 1
+Theorem 2
+Figure 1: Our new separations of proof systems. An arrow A →B means that A is p-simulated by B, that is,
+with polynomial overhead in width/degree and size (when allowing twin variables). A dashed arrow A 99K B
+means that A is not p-simulated by B.
+Theorem 1. There are n-variate CNF formulas F that can be refuted by constant-width Resolution,
+but such that any SA refutation of F in degree no(1) requires coefficients of magnitude exp(nΩ(1)).
+Theorem 1 is qualitatively tight in that the singly-exponential lower bound exp(nΩ(1)) cannot
+be improved much. Namely, if a CNF formula can be refuted by a degree-d SA proof, then there
+also exist a degree-d SA proof with integer coefficients of magnitude exp(nO(d)) (see Appendix A).
+To our knowledge, Theorem 1 is the first exponential coefficient lower bound for a constant-
+width CNF formula in any semi-algebraic proof system. (Examples of systems of polynomial
+equations—not coming from CNFs—requiring even doubly-exponential coefficients were known
+previously [O’D17, RW17, Hak21].)
+We also note that the conclusion of Theorem 1 can be slightly strenthened using standard
+lifting/xorification techniques [Ben09, §4] to show that any SA refutation of F must either use
+exponentially many monomials or exponentially large coefficients. This trade-off has consequences
+for the unary Sherali–Adams (uSA) system where we restrict the coefficients to be integers written
+in unary and where their magnitude counts towards proof size (more precisely, the size of a uSA
+proof is the sum of the magnitudes of all coefficients appearing in the proof). Thus we conclude that
+Resolution is not p-simulated by uSA. In particular, this answers a question raised in a concurrent
+work by Bonacina and Bonet [BB22]. For comparison, proving a similar lower bound for the Cutting
+Planes system (separating CP from unary-CP) is a long-standing open problem.
+1.2
+Reversible Resolution vs. Nullstellensatz
+Our second separation is between the standard algebraic proof system Nullstellensatz [BIK+94]
+and a subsystem of Resolution that we call Reversible Resolution. The latter is closely related to
+fragments of Resolution that have been introduced to model the reasoning used by MaxSAT solvers
+(which find an assignment that satisfies as many clauses as possible). Prior work has defined several
+distinct such MaxSAT Resolution systems [BLM07, LHdG08, FMSV23]. Our variant is yet slightly
+different (see Section 6.3 for a comparison to prior systems). Ultimately, our definition is motivated
+by results that will be discussed in Section 2: Reversible Resolution captures an important TFNP
+2
+
+class, and, moreover, it equals the “intersection” of Resolution and uSA.
+Reversible Resolution (RevRes). In this restricted fragment of Resolution we only allow the
+symmetric resolution rule C ∨xi, C ∨¯xi ⊢C and its inverse C ⊢C ∨xi, C ∨¯xi. Moreover, we
+stipulate that an application of either rule consumes its premises in the following sense. The
+refutation begins with a multiset of clauses of F—we may choose the multiplicity of each clause
+freely at start—and a single application of a deduction rule removes a single occurrence of each
+premise clause from the multiset and then adds the concluded clauses back to the multiset. Once
+we produce at least one empty clause, the refutation is complete. The size and width of the
+refutation are defined as before.
+Nullstellensatz (F-NS). Let F be a field. An F-Nullstellensatz refutation of a set of polynomial
+equations {ai(x) = 0 : i ∈[m]} over F is given by a set of polynomials {pi(x)} ⊆F[x] such that
+X
+i∈[m]
+pi(x) · ai(x) = 1.
+(2)
+The size of the refutation is the combined total number of monomials in pi and ai and its degree
+is the maximum of deg(pi) + deg(ai) over all i.
+Reversible Resolution is p-simulated by uSA. Indeed, the usual simulations of Resolution by
+SA [DMR09, ALN16] have the neat property that if they are applied to a RevRes proof instead,
+the resulting coefficients become bounded by the size of the RevRes proof (see also [FMSV23] for
+a simulation in a closely related MaxSAT system). This also means that RevRes is strictly less
+powerful than Resolution, as per our first separation result.
+It is a classic result that Resolution is not p-simulated by F-NS over any field F. This is
+witnessed by CNF formulas expressing the sink-of-dag (SoD) principle [CEI96, Bus98] or the
+pebbling principle [BCIP02, dRNMR19]. Our second result strengthens these classical separations
+showing that RevRes cannot be simulated by low-degree F-NS.
+Theorem 2. There are n-variate CNF formulas F that can be refuted by constant-width polynomial-
+size RevRes, but such that any F-NS refutation (over any F) of F requires degree nΩ(1).
+Again, we note that standard lifting techniques can be used to strengthen the degree lower bound
+in Theorem 2 to an exponential size lower bound. We conclude that RevRes is not p-simulated by
+F-NS. In particular, this strengthens a previous result by Filmus et. al. [FMSV23] who showed that
+RevRes (actually, their closely related MaxSAT system) is not p-simulated by tree-like Resolution.
+1.3
+Techniques
+Our separation between Resolution and uSA (Section 5) builds on the separation between RevRes
+and F-NS (Section 4). We prove the latter separation for F = R in a particularly robust form,
+namely we show that it holds even if we allow some small amount of “error” in the NS proof.
+We introduce what we call ϵ-approximate Nullstellensatz (ϵ-NS) refutations where we relax the
+polynomial identity (2) over F = R to hold only approximately:
+X
+i∈[m]
+pi(x) · ai(x) = 1 ± ϵ,
+∀x ∈{0, 1}n.
+(3)
+In the above expression and for the remainder of the article, “= 1 ± ϵ” stands for “∈[1 −ϵ, 1 + ϵ]”,
+meaning that the LHS is a polynomial that takes values in [1 −ϵ, 1 + ϵ] when evaluated on boolean
+3
+
+inputs. For example, an SA refutation where J(x) ≤ϵ for all boolean inputs x is also an ϵ-NS
+refutation (since J(x) ≥0 trivially holds).
+We show that there is no low-degree approximate NS proof for the formulas that encode the
+so called sink-of-potential-line (SoPL) principle. These formulas are easy for RevRes, and in fact,
+we later show they are complete for RevRes (see Theorem 3). Naturally, our lower-bound proof
+borrows techniques from polynomial approximation theory. We give a randomised decision-to-
+search reduction, showing how a low-degree ϵ-NS refutation of SoPL would imply a low-degree
+approximating polynomial for the Or function. It is well-known, however, that the n-bit Or requires
+large approximate polynomial degree, namely Ω(√n). This proof idea is inspired by previous
+works [RW92, HN12, GP18, IR21] that followed a similar strategy in the context of communication
+complexity: they studied randomised reductions from set-disjointness (communication analogue
+of Or) to various communication search problems. Finally, we also give a separate (non-robust)
+proof that SoPL is hard for F-NS over any field F using the intersection theorem (Theorem 6).
+Our lower bound for ϵ-NS, say with ϵ := 1/2, now helps us prove Theorem 1. We consider an SA
+refutation (1) of the SoD principle (which is a stronger principle than SoPL). The non-existence of
+a low-degree ϵ-NS refutation for SoPL immediately implies that in any SA refutation of SoD, the
+conical junta J has to assume a value at least ϵ on some input: the RHS equals 1+J(x) ≥1+ϵ = 1.5
+for some x. Our idea is to now iterate the ϵ-NS lower-bound argument by combining several SoPL
+instances inside SoD with the aim of finding large values on the RHS. After i iterations, we show
+the RHS equals 1 + J(xi) ≥1.5Ω(i) for some carefully constructed input xi that embeds i copies
+of SoPL. Setting i = poly(n) concludes the proof.
+2
+Separations in TFNP
+A major motivation for our proof complexity separations in Section 1 is that they have consequences
+in terms of black-box separations between subclasses of TFNP. Together with prior work, our new
+separations resolve all the black-box relationships between classes depicted in Figure 2. To explain
+this connection in detail, we start with a short introduction to TFNP.
+2.1
+Introduction to TFNP
+The class TFNP consists of all total NP search problems, that is, search problems where a solution
+is guaranteed to exist, and where it can be efficiently checked whether a given candidate solution is
+feasible. Some very important problems lie in TFNP, for example, Factoring (given a number,
+compute a prime factor) or Nash (given a bimatrix game, compute a Nash equilibrium).
+A crucial observation is that no TFNP problem can be NP-hard, unless NP = coNP [MP91].
+Furthermore, it is believed that TFNP is unlikely to have complete problems [Pud15]. As a result, in
+order to understand the complexity of important TFNP problems, researchers have defined syntactic
+subclasses of TFNP, such as PLS [JPY88], PPAD, PPADS, PPA, PPP [Pap94]. These subclasses are
+defined using canonical complete problems that correspond to very simple existence principles.
+PLS: Every directed acyclic graph has a sink.
+PPAD: Every directed graph with an unbalanced node (outdegree ̸= indegree) must have another
+unbalanced node.
+PPADS: Every directed graph with a positively unbalanced node (outdegree > indegree) must have
+a negatively unbalanced node (outdegree < indegree).
+PPA: Every undirected graph with an odd-degree node must have another odd-degree node.
+PPP: Every function mapping [n + 1] to [n] must have a collision. (Pigeonhole Principle)
+4
+
+FP
+UEOPL
+EOPL
+SOPL
+PPAD
+PPADS
+PLS
+PPP
+PPA
+TFNP
+Theorem 4
+Corollary 2
+Theorem 5
+TreeRes =
+Res =
+= F2-NS
+uSA =
+= uNS
+RevRes =
+RevResT =
+Figure 2: Class inclusion diagram for TFNP. An arrow A →B means A ⊆B relative to all oracles. A dashed
+arrow A 99K B means A ̸⊆B relative to some oracle. We have only drawn new separations proved in this paper.
+Together with prior oracle separations [BCE+98, Mor01, BM04], this resolves all black-box relationships
+between the classes featured in the diagram. In the black-box model, some classes can be captured using
+propositional proof systems, as indicated in blue.
+These existence principles naturally give rise to corresponding total search problems. For example,
+for PPAD that would be: given a directed graph and an unbalanced node in that graph, find another
+unbalanced node. These problems are defined so that the search space (the set of nodes) has size
+exponential in the size of the input. Otherwise, it would be trivial to find a solution in polynomial
+time. In more detail, this is achieved by having the input of the problem consist of a boolean circuit
+that can be used to compute the neighbours of any given node.
+The theory of TFNP classes has been successful in capturing the complexity of many important
+natural problems. Indeed, in a celebrated result [DGP09, CDT09], it was shown that Nash is
+complete for PPAD. Following this breakthrough, other problems from game theory [DQS12, CDO15,
+Meh18] and economics [CSVY08, CDDT09, CPY17] were also proved PPAD-complete. Similarly,
+PLS has been found to capture the complexity of various interesting problems, mainly ones where
+a local optimum of some sort is sought [Kre89, Kre90, Sch91, FPT04]. Finally, various problems
+in fair division are PPA-complete [FG22], while some problems related to cryptography have been
+shown PPP-complete [SZZ18].
+5
+
+New classes and collapses
+More recently, newer classes CLS [DP11], EOPL [FGMS20, HY20], SOPL [GKRS18] were defined,
+motivated chiefly by problems that were unlikely to be complete for any of the classical classes
+discussed above. Indeed, it was noted that many interesting problems lie in both PLS and PPAD, but
+are unlikely to be complete for PLS ∩PPAD, a seemingly completely artificial class. To remedy this
+situation, CLS, and later EOPL, were defined as more natural subclasses of PLS ∩PPAD. However,
+in a surprising turn of events, it was discovered that CLS = PLS ∩PPAD [FGHS21] and also that
+EOPL = PLS ∩PPAD and SOPL = PLS ∩PPADS [GHJ+22]. In other words, the new classes can be
+completely defined in terms of the classical ones.
+In order to rule out further surprising collapses in the future, it would thus makes sense, whenever
+one defines a new subclass, to also provide some kind of evidence that the new class is indeed
+new, and does not collapse to existing classes. Clearly, any unconditional separation is completely
+out of reach, since it would immediately imply that P ̸= NP. However, it turns out that one can
+indeed prove separations relative to oracles by proving unconditional separations between black-box
+versions of the classes.
+The black-box model
+Recall that TFNP subclasses are defined in terms of very simple existence principles that are turned
+into (white-box) total search problems by having the input be implicitly described by a boolean
+circuit. Another—sometimes more natural—choice is to have the input be described by a black box,
+instead of a white box. For example, in the case of PPAD, instead of being given the description of
+a circuit that can be used to compute neighbours, we can consider the model where we can query
+an oracle (black-box) to ask for the neighbours of a node.
+More formally, a total query search problem is a sequence of relations Rn ⊆{0, 1}n × On, one for
+each size n ∈N, such that for all inputs x ∈{0, 1}n there is an output o ∈On such that (x, o) ∈Rn.
+Here On is a finite set of outputs and we say that o is a solution to instance x, when (x, o) ∈Rn.
+We think of an instance x ∈{0, 1}n as a very long bitstring that can only be accessed through
+queries to individual bits. In this context, an efficient algorithm is a deterministic algorithm that,
+for any x ∈{0, 1}n, finds a solution o to x by performing a small number of queries to x, namely at
+most poly(log n) queries. Thus, efficient algorithms correspond to decision trees (with leaves labelled
+by elements of On) of depth at most poly(log n). Note that this model is non-uniform: the problem
+admits an efficient algorithm, if for each n ∈N, there exists a shallow decision tree solving Rn.
+The notion of total search problems as defined above does not quite correspond to TFNP yet,
+because it is missing the requirement for efficient verification of solutions. We enforce this in the
+following natural way. A total search problem R = (Rn)n is in TFNPdt, if for each o ∈On there
+is a decision tree To with depth poly(log n) such that for every x ∈{0, 1}n, To(x) = 1 if and only
+if (x, o) ∈Rn. We define the class PPADdt as the set of all TFNPdt problems that have an efficient
+decision-tree reduction to (the query version of) the canonical complete problem for PPAD. We
+denote by PPADdt(Rn) the decision tree complexity of a reduction from Rn to the canonical PPADdt-
+complete problem (see Section 3 for a precise definition). Thus, problem R = (Rn)n lies in PPADdt
+if and only if PPADdt(Rn) = poly(log n). The decision-tree analogues of the other classes are defined
+in the same way.
+Black-box separations
+In the black-box model, it is now possible to prove unconditional separations, e.g., that PPADdt ̸⊆
+PLSdt by showing that there is no shallow decision-tree reduction from some problem in PPADdt to
+6
+
+a complete problem for PLSdt. Importantly, a black-box separation also provides some evidence
+that the separation might hold in the white-box setting too, in the following sense: any black-box
+separation implies a corresponding separation in the white-box model relative to some oracle [BCE+98].
+Moreover, all existing containment results (including the recent collapses [FGHS21, GHJ+22]) also
+hold in the black-box setting. Thus, a black-box separation is quite significant, since it rules out
+any collapse using existing techniques.
+Previously, Beame et al. [BCE+98] proved all possible separations between the classes PPAdt,
+PPADdt, PPADSdt, PPPdt. Subsequently, Morioka [Mor01] extended these results by proving that
+PPADdt is not reducible to PLSdt. This implies that none of PPAdt, PPADdt, PPADSdt and PPPdt
+are contained in PLSdt. Buresh-Oppenheim and Morioka [BM04] further proved that PLSdt is not
+contained in PPAdt. It has so far remained open whether PLSdt ⊆PPADSdt or PLSdt ⊆PPPdt.
+Connection to proof complexity
+Propositional proof complexity is a major tool for proving black-box separations. There is a natural
+correspondence between total query search problems and CNF contradictions. In one direction, a
+CNF contradiction F := C1 ∧· · · ∧Cm over the variables x = (x1, . . . , xn) naturally gives rise to
+a corresponding total search problem S(F): given an assignment x ∈{0, 1}n, find an unsatisfied
+clause of F. Formally, we define S(F) ⊆{0, 1}n × [m] by (x, i) ∈S(F) if and only if Ci(x) = 0.
+Thus, a sequence of unsatisfiable CNF formulas F = (Fn), where Fn has n variables, defines the
+total search problem S(F) = (S(Fn)). Note that S(F) ∈TFNPdt if Fn has width poly(log n).
+In the other direction, a problem R = (Rn) in TFNPdt can be written equivalently as S(F) for
+some sequence of CNF contradictions F = (Fn). Specifically, for Rn ⊆{0, 1}n × On we define the
+formula Fn := V
+o∈On ¬To(x), where we note that To(x) can naturally be written as a DNF formula
+of width at most poly(log n) (with one term per accepting leaf of To), and thus ¬To(x) can be
+written as a CNF formula of the same width.
+2.2
+New characterisations
+The above connection to proof complexity opens up the possibility to characterise search problem
+classes by propositional proof systems, in the following sense: the problem (S(Fn))n lies in class X
+if and only if the CNF formulas (Fn)n have small refutations in proof system Y . To make this more
+precise, for any proof system P and a CNF formula F, we define
+P(F) :=
+min
+P-proof Π of F
+
+log size(Π) + deg(Π)
+
+.
+Here, deg(Π) should be understood as width when P is Resolution (or RevRes) and as depth when P
+is tree-like Resolution. Prior work has established the following characterisations.
+−FPdt(S(F)) = Θ(TreeRes(F)) [LNNW95].
+−PLSdt(S(F)) = Θ(Res(F)) [BKT14].
+−PPAdt(S(F)) = Θ(F2-NS(F)) [GKRS18].
+−PPAdt
+p (S(F)) = Θ(Fp-NS(F)) for every prime p [Kam20].
+We contribute the following new characterisations. For one of them, we need to introduce one
+more proof system, Reversible Resolution with Terminals (RevResT), defined in Section 6.3.
+Theorem 3. For any unsatisfiable CNF formula F, we have:
+−PPADdt(S(F)) = Θ(uNS(F)).
+7
+
+−PPADSdt(S(F)) = Θ(uSA(F)).
+−SOPLdt(S(F)) = Θ(RevRes(F)).
+−EOPLdt(S(F)) = Θ(RevResT(F)).
+Together with our proof complexity separations from Section 1, we immediately obtain the
+following black-box separations (which yield white-box oracle separations as discussed above).
+Corollary 1. PLSdt ̸⊆PPADSdt.
+Corollary 2. SOPLdt ̸⊆PPAdt.
+Additional characterizations, as well as separation results, were obtained in the subsequent
+works [HKT24, LPR24].
+2.3
+Two further separations
+We show two more black-box separations involving classes PPPdt and UEOPLdt, which currently
+lack elegant proof system characterisations. The first separation strengthens Corollary 1.
+Theorem 4. PLSdt ̸⊆PPPdt.
+Theorem 5. EOPLdt ̸⊆UEOPLdt.
+(An early preprint of this work did not include the above theorems. In an independent work,
+Bonacina and Thapen [BT22] also proved Theorem 4, deriving it from Corollary 1 using essentially
+the same proof as we do.)
+Theorem 4 settles the last open oracle separation question between the five original TFNP classes
+introduced in [JPY88, Pap94]. This question was re-asked recently by Daskalakis in his Nevanlinna
+Prize lecture [Das19, Open Question 6]. Previously, Buresh-Oppenheim and Morioka [BM04] showed
+a partial result in the direction of Theorem 4, namely, that there is no reduction from PLSdt to PPPdt
+that preserves the number of solutions in each instance. Finally, Theorem 5 answers a question
+of [FGMS20] who introduced the class UEOPL. They conjectured that EOPL ̸⊆UEOPL and asked
+whether this could be shown relative to an oracle.
+2.4
+Intersection theorems in proof complexity
+Our new characterisations can be combined with the collapses SOPL = PLS ∩PPADS and EOPL =
+PLS ∩PPAD [GHJ+22] (which hold in the black-box model) to produce completely new types of
+results in propositional proof complexity that we call intersection theorems.
+Stated plainly, the first of these results says that a CNF formula F admits an efficient (small
+degree and size) Reversible Resolution refutation if and only if if it admits an efficient Resolution
+refutation and an efficient unary Sherali–Adams refutation. In other words, Reversible Resolution is
+the “intersection” of Resolution and unary Sherali–Adams. We can similarly show that Reversible
+Resolution with Terminals is the “intersection” of Resolution and unary Nullstellensatz.
+Theorem 6. For any unsatisfiable CNF formula F, we have:
+−RevRes(F) = Θ(Res(F) + uSA(F)).
+−RevResT(F) = Θ(Res(F) + uNS(F)).
+8
+
+To our knowledge, these are the first theorems of their type, that is, showing that efficient
+proofs exist in one system P0 if and only if efficient proofs exist in two other systems P1 and P2.
+This is all the more striking given that all three of these proof systems are quite natural, being
+motivated from boolean logic and SAT-solving (Res), linear programming (uSA), and MaxSAT
+solving (RevRes). Moreover, the proof of this theorem (Section 7) crucially uses both perspectives
+of proof systems and total search problems. Starting with propositional proofs in Resolution and
+unary Sherali–Adams, we convert them to efficient formulations of S(F) in PLSdt and PPADSdt,
+respectively. We then apply the collapse theorem to argue there is an efficient formulation of S(F)
+in SOPLdt, which we can finally convert back to a RevRes proof. We see no apparent way to prove
+this theorem directly using classic proof complexity techniques.
+2.5
+Open problems
+In our opinion, exploring the interplay between TFNP and propositional proof complexity holds
+untapped potential. The results in this work arose from our core belief that a natural concept
+introduced in one theory should have a natural counterpart in another theory. This philosophy
+suggests many further directions for research and serves as a guiding principle for formulating new
+beautiful connections between the two theories. For example:
+(1) Can Theorem 1 be strengthened to show that the Sum-of-Squares system needs huge coefficients
+to simulate Resolution in low degree?
+(2) Can we characterise the class PPP by a proof system?
+(3) Does unary-NS p-simulate Z-NS for refuting CNF formulas?
+(4) Can we prove other intersection theorems in propositional proof complexity?
+(5) Do Sum-of-Squares and Polynomial Calculus characterise some TFNP classes?
+(6) Are there communication complexity analogues of our results? The recent column [dRGR22]
+surveys the connections between total search problems and characterisations of various circuit
+models in the language of communication complexity (via Karchmer–Wigderson games).
+We note here that Buss, Fleming and Impagliazzo [BFI22] have recently provided an answer to
+question (5) by giving a TFNP characterization of Polynomial Calculus. In fact, they show a
+more general connection: every well-behaved proof system which can prove its own soundness is
+characterized by a TFNP problem, and vice-versa. This also answers question (2), although ideally
+we would like to characterize PPP by a more natural proof system than the one obtained through
+this generic connection.
+3
+Definitions
+In this section we give formal definitions of the total search problems that we consider in this
+work. We emphasise that unlike the standard uniform setting of TFNP, we will be interested in
+non-uniform variants of TFNP classes defined by decision trees.
+3.1
+Decision tree TFNP
+Definition 1. A total (query) search problem is a sequence of relations R = {Rn ⊆{0, 1}n × On},
+where On are finite sets, such that for all x ∈{0, 1}n there is an o ∈On such that (x, o) ∈Rn.
+A total search problem R is in TFNPdt if for each o ∈On there is a decision tree To with depth
+poly(log n) such that for every x ∈{0, 1}n, To(x) = 1 iff (x, o) ∈R.
+9
+
+(a) Sink-of-Dag (SoD)
+(b) Sink-of-Line (SoL)
+(c) SoPL
+Figure 3: Examples of total search problems. The distinguished source node is drawn as a yellow square.
+Red nodes are associated with solutions. (For visual clarity, we highlight the actual sink nodes for SoD
+rather than their predecessors.) Nodes circled in green would be solutions for EoL and EoPL, respectively.
+While total search problems are formally defined as sequences R = (Rn), it will often make
+sense to speak of an individual search problem Rn in the sequence. We will therefore slightly abuse
+notation and also call Rn a total search problem. It will also be convenient to encode total search
+problems with inputs and outputs chosen from domains other than {0, 1}n. One common example
+will be total search problems where the inputs are chosen from [n]n. We can simulate this simply by
+encoding all elements of the non-boolean domain in binary in the usual way. In all examples in this
+paper, performing this encoding will change the complexities of the involved problems by no more
+than a O(log n) factor. We also allow the n-th problem Rn in a sequence to have poly(n) input bits
+(instead of n) for notational convenience.
+The canonical examples of total search problems in TFNPdt are the search problems associated
+with an unsatisfiable CNF formula F.
+Definition 2. For any unsatisfiable CNF formula F := C1 ∧· · · ∧Cm over n variables, define
+S(F) ⊆{0, 1}n × [m] by (x, i) ∈S(F) if and only if Ci(x) = 0.
+Therefore, given any sequence of unsatisfiable CNF formulas F = {F1, F2, . . .} we get a total
+search problem S(F) = {S(F1), S(F2), . . . } in the natural way. Observe that S(F) ∈TFNPdt if each
+unsatisfiable CNF formula has width poly(log n). Conversely, these examples are also complete, in
+the sense that any search problem in TFNPdt can be re-encoded as unsatisfiable CNF formulas.
+Definition 3. For any total search problem R ⊆{0, 1}n × O with solution verifiers To, o ∈O, its
+encoding as an unsatisfiable CNF formula is given by F := V
+o∈O ¬To(x) where we think of ¬To(x)
+written as a CNF formula (of width determined by the decision tree depth of To).
+3.2
+Search problem zoo
+We now define several search problems that will be of interest to us. See also Figure 3 for helpful
+illustrations of some of them. We start with the problems that are complete for the classical classes
+introduced in [JPY88, Pap94].
+PPP: Pigeon (Pigeonn). This problem features n pigeons, denoted by [n], and as input we are
+given, for each pigeon u ∈[n] a hole su ∈[n −1]. The goal is to output
+1. u, v ∈[n], if u ̸= v and su = sv.
+(pigeon collision)
+10
+
+PPADS: Sink-of-Line (SoLn). This problem is defined on a set of n nodes, denoted by [n], where
+the node 1 is “distinguished”. For input, we are given a successor su ∈[n] for each node u ∈[n]
+and a predecessor pu ∈[n] for each node u ̸= 1. Given this list of successor/predecessor pointers
+we create a directed graph G where we add an edge (u, v) if and only if su = v and pv = u. We
+say u is a proper sink if it has in-degree 1 and out-degree 0, and it is a proper source if it has
+in-degree 0 and out-degree 1. The goal of the search problem is to output any of the following
+1. 1, if 1 is not a proper source node in G, or
+(no distinguished source)
+2. i ̸= 1, if i is a proper sink node in G.
+(proper sink)
+PPAD: End-of-Line (EoLn). Same as SoL, except we add the following feasible solution.
+3. i ̸= 1, if i is a proper source node in G.
+(proper source)
+PLS: Sink-of-Dag (SoDn). This problem is defined on the [n] × [n] grid, where the node (1, 1)
+is “distinguished”. As input, for each grid node u = (i, j) ∈[n] × [n], we are given a successor
+su ∈[n] ∪{null}, interpreted as naming a node (i + 1, su) on the next row. We say a node u is
+active if su ̸= null, otherwise it is inactive. A node u is a proper sink if u is inactive but some
+active node has u as a successor. The goal of the search problem is to output any of the following
+1. (1, 1), if (1, 1) is inactive
+(inactive distinguished source)
+2. (n, j), if (n, j) is active,
+(active sink)
+3. (i, j) for i ≤n −1, if (i, j) is active and its successor is a proper sink.
+(proper sink)
+For SoD, it is helpful to think of the successors su as describing a fan-out 1 dag on an n × n grid of
+nodes such that all edges are between adjacent rows. Active nodes are those nodes which have some
+edge leaving them. Then, if we require that (1, 1) is active and all nodes on row n are inactive, the
+goal is to find a proper sink, that is, an active node with an inactive successor node.
+We next define complete problems for the more modern classes introduced in [HY20, FGMS20,
+GKRS18]. They are variations of the SoD problem where all nodes in the grid have predecessor
+pointers and we only add an edge if the successor and predecessor pointers agree. In particular, this
+implies that every node has fan-out and fan-in 1.
+SOPL: Sink-of-Potential-Line (SoPLn). As input we are given a successor su ∈[n] ∪{null}
+for each u ∈[n] × [n] and a predecessor pu ∈[n] ∪{null} for each u ∈{2, . . . , n} × [n]. A node
+(i, j) ∈[n −1] × [n] is active if s(i,j) = k ̸= null and p(i+1,k) = j, otherwise it is inactive; a node
+(i, j) ∈{n} × [n] is active if s(i,j) ̸= null and inactive otherwise. A node u is a proper sink if u is
+inactive but some active node has u as a successor. The goal is to output any of the following
+1. (1, 1), if (1, 1) is inactive,
+(inactive distinguished source)
+2. (n, j), if (n, j) is active,
+(active sink)
+3. (i, j), if (i, j) is a proper sink.
+(proper sink)
+EOPL: End-of-Potential-Line (EoPLn). Add the following feasible solutions to SoPL. A
+node (i, j) is a proper source if (i, j) is active and, either, i = 1 or 1 < i < n and there is no
+active node with (i, j) as a successor.
+4. (i, j), if (i, j) ̸= (1, 1) and (i, j) is a proper source.
+(proper source)
+UEOPL: Unique-EoPL (UEoPLn). Add the following feasible solution to EoPL.
+5. (i, j) and (i, j′), if j ̸= j′ and both nodes are active.
+(two parallel lines)
+11
+
+3.3
+Reductions and formulations
+Given any problem defined above we can consider complexity classes of total search problems
+obtained by taking reductions to these problems. In this work we are particularly interested in the
+case where the reduction is defined by a low-depth decision tree.
+Definition 4. Let R ⊆{0, 1}n×O and S ⊆{0, 1}m×O′ be total search problems. An S-formulation
+of R is a decision-tree reduction (fi, go)i∈[m],o∈O′ from R to S. Formally, for each i ∈[m] and o ∈O′
+there are functions fi : {0, 1}n →{0, 1} and go : {0, 1}n →O such that
+(x, go(x)) ∈R ⇐= (f(x), o) ∈S
+where f(x) ∈{0, 1}m is the string whose i-th bit is fi(x). The depth of the reduction is
+d := max
+ {D(fi) : i ∈[m]} ∪{D(go) : o ∈O′}
+
+,
+where D(h) denotes the decision-tree depth of h. The size of the reduction is m, the number of
+input bits to S. The complexity of the reduction is log m + d. We write Sdt(R) to denote the
+minimum complexity of an S-formulation of R.
+We extend these notations to sequences in the natural way. If R is a single search problem
+and S = (Sm) is a sequence of search problems, then we denote by Sdt(R) the minimum of Sdt
+m(R)
+over all m. If R = (Rn) is also a sequence, then we denote by Sdt(R) the function n 7→Sdt(Rn).
+Using the previous definition we can now define complexity classes of total search problems via
+reductions. For total search problems R = (Rn), S = (Sn), we write
+Sdt := {R : Sdt(R) = poly(log n)}.
+We can now define the decision-tree variants of the standard classes: PPPdt = Pigeondt, PPADSdt =
+SoLdt, and so on, according to the problems defined in Section 3.2.
+4
+Reversible Resolution vs. Nullstellensatz
+In this section we prove Theorem 2, restated below.
+Theorem 2. There are n-variate CNF formulas F that can be refuted by constant-width polynomial-
+size RevRes, but such that any F-NS refutation (over any F) of F requires degree nΩ(1).
+We prove Theorem 2 in two ways. First (Sections 4.1 to 4.3), we give a particularly robust proof
+in the special case F = R, which will be useful in Section 5 when we prove our other separation
+result. Second (Section 4.4), we give a (non-robust) proof for all F using the intersection theorem.
+In both proofs we consider the SoPL principle and show that it does not admit a low-degree NS
+proof, and that it can be refuted in low-width small-size RevRes.
+4.1
+Approximate Nullstellensatz
+We define a generalisation of R-NS that we call ϵ-approximate Nullstellensatz (ϵ-NS) where ϵ ∈(0, 1)
+is an error parameter. An ϵ-NS refutation of a set of real polynomial equations {ai(x) = 0 : i ∈[m]}
+is a set of polynomials {pi(x)} such that
+X
+i∈[m]
+pi(x) · ai(x) = 1 ± ϵ,
+∀x ∈{0, 1}n
+(4)
+12
+
+where we recall that “= 1 ± ϵ” stands for “∈[1 −ϵ, 1 + ϵ]”, meaning that the LHS is a polynomial
+that takes values in [1 −ϵ, 1 + ϵ] when evaluated on boolean inputs. The ϵ-NS system is not a
+standard proof system in the sense of Cook and Reckhow [CR79]. In particular, it is not hard to
+show (using the PCP theorem) that testing the condition in (4) is in fact coNP-complete. Another
+feature of the new system is that the error parameter can be efficiently reduced using standard
+error reduction techniques for polynomial approximation. For example, if we compose any ϵ-NS
+proof P
+i piai = 1 ± ϵ with the univariate polynomial q(z) := z(2 −z), we obtain an ϵ2-NS proof
+q(P
+i piai) = 1 ± ϵ2.
+4.2
+Lower bound for ϵ-NS
+Recall that the input to SoPLn consists of successor pointers su ∈[n] ∪{null} and predecessor
+pointers pu ∈[n] ∪{null} for each grid node u ∈[n] × [n]. For the purposes of NS, we encode this
+input in binary by a string y ∈{0, 1}n′ over n′ = O(n2 log n) variables. Moreover, we can think
+of SoPLn as an unsatisfiable set of polynomial equations {ai(y) = 0} each of degree O(log n). These
+equations can be obtained by taking the unsatisfiable CNF encoding of SoPLn (Definition 7) and
+encoding each clause as the corresponding polynomial equation in the usual way.
+Our goal is to prove the following lemma.
+Lemma 1. Every 1
+2-NS refutation of SoPLn requires degree nΩ(1).
+It suffices to prove the lemma for error ϵ := 0.01, because of efficient error reduction. Fix any ϵ-NS
+refutation P
+i pi(y)ai(y) = 1 ± ϵ of degree k for SoPLn. Our goal is to show a lower bound on k.
+We will give a randomised decision-to-search reduction, in the style of [RW92, HN12, GP18, IR21],
+showing that a low-degree ϵ-NS refutation would imply a low-degree approximating polynomial for
+the (n −1)-bit Or function. The following well-known fact then concludes the proof.
+Fact 1 ([NS94]). Suppose that p is an n-variate real polynomial such that p(x) = Orn(x) ± 1/3 for
+all x ∈{0, 1}n. Then deg(p) ≥Ω(√n).
+Definition of reduction.
+We define a depth-d deterministic reduction as a pair (f, u) such that
+(1) f : {0, 1}n−1 →{0, 1}n′ is a function that maps an input x of Orn−1 to an input y = f(x)
+of SoPLn. Moreover, each output bit fi(x) ∈{0, 1} is a depth-d decision tree function of x.
+(2) For any input x, the only solutions of y = f(x) are active sinks on the last row {n} × [n]. We
+write Sol(y) ⊆{n} × [n] for the set of solutions in y. Moreover, u ∈Sol(y) is a solution called
+the planted solution. (Note that u does not depend on x.)
+(3) If Or(x) = 0, then y = f(x) contains a unique solution, namely Sol(y) = {u}.
+(4) If Or(x) = 1, then y = f(x) contains at least two solutions, |Sol(y)| ≥2.
+We then define a depth-d randomised reduction R as a probability distribution over depth-d
+deterministic reductions (f, u) ∼R. For every x, we write Rx for the distribution of (f(x), u) =
+(y, u). We say that a pair (y, u) is ideal if it satisfies the following.
+Ideal (y, u):
+Let y be any outcome of y and consider u conditioned on y = y, namely,
+u′ := (u | y = y). Then u′ is uniformly distributed over Sol(y); in short, u′ ∼Sol(y).
+We say R is ideal if Rx is ideal for every x.
+13
+
+Ideal reduction ⇒Approximation to Or.
+Next, we show that if we had an ideal reduction,
+we could construct an approximating polynomial for Or. We write iu for the unique i such that the
+polynomial equation ai(y) = 0 encodes the SoPLn constraint that u is not an active sink. Namely,
+this corresponds to the equation su = 0, where the bit su ∈{0, 1} of the input y encodes whether or
+not u is active (see Definition 7). If we think of u ∈{n} × [n] as encoded by an O(log n)-bit string,
+we can define an [n′ + O(log n)]-variate polynomial
+q(y, u) := piu(y)aiu(y) = P
+i 1[i = iu]pi(y)ai(y).
+(5)
+Here, for every i, the indicator function 1[i = iu] ∈{0, 1} is computed by an O(log n)-degree
+polynomial. This means q has degree deg(q) ≤O(k log n). If (y, u) is ideal, then
+E[q(y, u)] = Ey∼y
+
+Eu′∼(u|y=y)[piu′(y)aiu′(y)]
+
+= Ey∼y
+
+Eu′∼Sol(y)[piu′(y)aiu′(y)]
+
+= Ey∼y
+
+|Sol(y)|−1 P
+u′∈Sol(y) piu′(y)aiu′(y)
+
+= Ey∼y
+
+|Sol(y)|−1 P
+i pi(y)ai(y)
+
+= Ey∼y
+
+|Sol(y)|−1] · (1 ± ϵ)
+= (1 ± ϵ) · E
+
+|Sol(y)|−1
+(6)
+where we used the fact that P
+u′∈Sol(y) piu′(y)aiu′(y) = P
+i pi(y)ai(y), because ai(y) = 0 for all
+i /∈{iu′ : u′ ∈Sol(y)}, given that y satisfies all the SoPLn constraints, except the equations
+requiring that u′ not be an active sink, for u′ ∈Sol(y).
+Suppose for a moment we had an ideal depth-d randomised reduction R. Then, we could
+construct the polynomial
+r(x) := ERx[q(y, u)] = P
+f,u PrR[(f, u) = (f, u)] · q(f(x), u).
+We have deg(r) ≤O(dk log n). Moreover, if Or(x) = 0 then r(x) = 1 ± ϵ; and if Or(x) = 1
+then r(x) ∈[0, (1 + ϵ)/2], since E
+
+|Sol(y)|−1
+∈[0, 1/2].
+Thus for ϵ = 0.01, if we consider
+t(x) := 1 −r2(x) we get that t approximates Or to within error 1/3. Using Fact 1, we deduce that
+k ≥Ω(√n/(d log n)).
+In summary, all that remains is to find an ideal reduction of shallow depth. Unfortunately, we
+do not know how to design an ideal reduction for SoPL. We instead give a reduction that is locally
+indistinguishable from an ideal one, which will suffice for us.
+A locally ideal reduction.
+Consider the following depth-1 randomised reduction R; see Figure 4.
+1. Let y = y(x) be the input to SoPLn that has a directed path running down the first column
+of nodes, starting at distinguished node (1, 1) and terminating at the active sink u := (n, 1)
+(say u is made active by being assigned 1 as successor). Moreover, we activate a path in y
+down column i ≥2 iff xi−1 = 1. Note that y is a depth-1 decision tree function of x, and u
+does not depend on x at all.
+2. Let y = y(x) be obtained from y so that, for each row except the first, i ∈[n] \ {1}, randomly
+permute the nodes {i} × [n] on that row (updating the successor/predecessor pointers). Let u
+be the sink node that u is mapped to.
+3. Output (f, u) where f(x) := y(x).
+14
+
+x1 =1
+x2 =0
+x3 =1
+u
+(a) Input y(x).
+x1 =1
+x2 =0
+x3 =1
+u
+(b) Input y(x).
+Figure 4: Randomised reduction R. First, we compute y(x) deterministically from x. This input always
+contains a path down the left-most column, which terminates at the active sink u (planted solution). Moreover,
+for every i with xi = 1 there is a path down the (i+1)-st column. The number of active sinks is |Sol(y)| = 1+|x|,
+where |x| denotes the Hamming weight. In the second step, we randomly permute every row of nodes, except
+the first one. This yields the random output (y, u) of the reduction.
+It is easy to check that R satisfies items (1)–(4) for every outcome of randomness. In particular,
+we have |Sol(y)| = 1 + |x|. Unfortunately, R is not ideal: u is always the active sink at the end
+of the path starting at the distinguished node. What we would really like instead is that Rx was
+distributed as the ideal pair (y, u) ∼Ix defined by the following procedure: Sample (y, u′) ∼Rx;
+define u such that for every outcome y, (u | y = y) ∼Sol(y); and output (y, u).
+Define two functions {0, 1}n−1 →R by
+r(x) := ERx[q(y, u)],
+(7)
+r′(x) := EIx[q(y, u)].
+(8)
+We know that r has low degree as a polynomial, deg(r) ≤O(k log n), and r′ has the ideal output
+behaviour, r′(x) = (1 ± ϵ) · E
+
+|Sol(f(x))|−1
+by (6). The following claim shows that, in fact, r = r′,
+and hence we can get the best of both worlds. By the discussion above, we are then able to construct
+an O(k log n)-degree approximating polynomial for Or, which concludes the proof of Lemma 1.
+Claim 1. We have r(x) = r′(x) for all x ∈{0, 1}n−1.
+Proof. By linearity of expectation, it suffices to show ERx[m(y, u)] = EIx[m(y, u)] for any mono-
+mial m of q and every x. Fix a monomial m. We claim that Rx and Ix have the same marginal
+distribution over the variables read by m, which would prove the claim. We may assume that
+deg(m) ≤O(k log n) ≤o(n) because otherwise Lemma 1 is proved. Hence there exist two consecutive
+rows i, i + 1 ∈[n/3, 2n/3] such that m does not read any variables associated with either row.
+Starting with a sample (y, u) ∼Rx we can generate a sample from Ix as follows: Consider active
+nodes A ⊆{i} × [n] and B ⊆{i + 1} × [n] on rows i and i + 1 in y and the |A| = |B| = 1 + |x| many
+directed edges joining them (defined by successor pointers for row i and predecessor pointers for
+row i + 1). Reroute these edges by choosing a random bijection A →B, and denote the resulting
+input by y′. Then (y′, u) ∼Ix. This proves our claim about the marginals, since our modification
+to the input y was done outside the variables read by m.
+15
+
+4.3
+Upper bound for RevRes
+Our characterisation of SOPLdt by RevRes in Section 6.3 involves proving that SoPLn (understood as
+an O(log n)-width CNF contradiction) admits an O(log n)-width polynomial-size RevRes refutation
+(Theorem 10). If we want to further optimise this down to a constant-width polynomial-size RevRes
+refutation, as claimed by Theorem 2, then we can consider instead a sparse constant-width variant
+of SoPLn. Indeed, the following sparsifying construction is standard and so we only sketch it.
+We start by defining a bounded-degree dag G that models the connectivity structure of the [n]×[n]
+grid with successor/predecessor pointers. The nodes of G include all the grid nodes [n]×[n]. Moreover,
+for each u ∈[n −1] × [n] we include in G a successor tree Su that is a full binary tree with n leaves,
+and has edges directed from the root towards the leaves. Similarly, for each u ∈([n] \ {1}) × [n]
+we include in G a predecessor tree Pu whose edges are directed from leaves towards the root. We
+identify the root nodes of Su and Pu with u. Moreover, for grid nodes (i, j) and (i + 1, k) appearing
+on consecutive rows, we identify the k-th leaf of S(i,j) and the j-th leaf of P(i+1,k). This completes
+the description of G. Note that the in/out-degree of every node is at most 2.
+We can now define a search problem SoPLG relative to G. As input, each node u in G gets
+a successor su and a predecessor pu picked from {0, 1} ∪{null}. For example, su = 0 (su = 1)
+means that u’s successor is the left (right) child of u in G. The constraints of SoPLG can now be
+written in constant width. The RevRes upper bound in Theorem 10 can be adapted to yield a
+constant-width polynomial-size refutation of SoPLG. Moreover, the original grid version SoPLn
+can be reduced to the graph version SoPLG using an O(log n)-depth decision tree reduction; see,
+for example, [FGGR22, §4.2] for details (but for SoD instead of SoPL). The existence of this
+reduction implies that SoPLG needs large ϵ-NS degree, because we showed that SoPLn does.
+This concludes the proof of Theorem 2 in case F = R.
+4.4
+Lower bound for F-NS
+We now prove the lower bound in Theorem 2 for any field F.
+Lemma 2. F-NS(SoPLn) ≥nΩ(1).
+Proof. Prior work has shown that SoDn (understood as an O(log n)-CNF) requires nΩ(1)-degree
+F-NS refutations [Bus98, BCIP02, dRNMR19], and similarly that SoLn (undestood as an O(log n)-
+CNF) requires nΩ(1)-degree F-NS refutations [BCE+98, BR98]. Define the CNF formula
+Fn := SoDn ∧SoLn
+where SoDn and SoLn are defined on disjoint sets of variables. The following claim (proved below)
+states that Fn requires nΩ(1)-degree F-NS refutations, or, in other words, F-NS(Fn) ≥nΩ(1).
+Claim 2. Let F and G be two CNF contradictions over disjoint sets of variables. If F and G
+require F-NS refutations of degree ≥d, then F ∧G requires F-NS refutations of degree ≥d.
+By the definition of Fn, we have
+Θ(Res(Fn)) = PLSdt(S(Fn)) = SoDdt(S(Fn)) ≤O(log n),
+Θ(uSA(Fn)) = PPADSdt(S(Fn)) = SoLdt(S(Fn)) ≤O(log n).
+By the intersection theorem (Theorem 6) corresponding to SOPL = PLS ∩PPADS we conclude that
+S(Fn) has an efficient SoPL-formulation:
+Θ(RevRes(Fn)) = SOPLdt(S(Fn)) = SoPLdt(S(Fn)) ≤O(log n).
+16
+
+If we had F-NS(SoPLn) ≤no(1), then because S(Fn) reduces to SoPLnO(1) via an O(log n)-depth
+decision tree reduction, we would have F-NS(Fn) ≤no(1), which is a contradiction.
+Proof of Claim 2. The least degree of an F-NS refutation of a set of polynomial equations F :=
+{ai(x) = 0} can be characterised by the maximum d such that F admits a d-design [Bus98, §2],
+that is, an F-linear map φ: F[x] →F satisfying (i) φ(1) = 1, and (ii) φ(q(x) · ai(x)) = 0 for all ai
+and q ∈F[x] such that deg(q) + deg(ai) < d. Let φ and φ′ be d-designs for F and G (encoded as
+sets of polynomial equations) over variables x and y, respectively. For each monomial m(x)m′(y)
+in variables x, y, we define Φ(m(x)m′(y)) := φ(m(x)) · φ(m′(y)). We can extend this definition
+linearly into a map Φ: F[x, y] →F. We claim that Φ is a d-design for F ∧G. Indeed, for (i)
+we have Φ(1) = φ(1)φ′(1) = 1. For (ii) it suffices to check the condition for each monomial
+q(x, y) = m(x)m′(y) and an axiom ai(x) of F (the case of G is analogous) with deg(q)+deg(ai) < d.
+We have Φ(m(x)m′(y) · ai(x)) = φ(m(x) · ai(x))φ′(m′(y)) = 0 · φ′(m′(y)) = 0.
+5
+Resolution vs. Sherali–Adams
+In this section we prove Theorem 1, restated below.
+Theorem 1. There are n-variate CNF formulas F that can be refuted by constant-width Resolution,
+but such that any SA refutation of F in degree no(1) requires coefficients of magnitude exp(nΩ(1)).
+We consider the SoD principle. We first show that it requires large coefficients to refute in
+low-degree SA, and then we recall why it has low-width Resolution refutations.
+5.1
+Lower bound for SA
+We consider the SoDn2 search problem on the grid [n2] × [n2]. We think of this large grid as being
+further subdivided into n2 many subgrids, each of size n × n. The (i, j)-subgrid consists of nodes
+((i −1)n, (j −1)n) + [n] × [n] :=
+
+((i −1)n + i′, (j −1)n + j′) : (i′, j′) ∈[n] × [n]
+	
+.
+Recall that the input to this search problem consists of a successor su ∈[n2] ∪{null} for each grid
+node u. For the purposes of SA, we encode this input by a string x ∈{0, 1}n′ over n′ = O(n4 log n)
+variables. Moreover, we can think of SoDn2 as a set of unsatisfiable polynomial equations {ai(x) = 0}
+each of degree O(log n). Our goal is to prove the following lemma.
+Lemma 3. Any degree-no(1) SA proof of SoDn2 requires coefficients of magnitude exp(Ω(n)).
+Suppose we are given a degree-no(1) SA refutation of SoDn2 over the reals,
+X
+i∈[m]
+pi(x)ai(x) = 1 + J(x).
+(9)
+Our idea is to apply Lemma 1 iteratively in stages to find a sequence of inputs x1, . . . , xn with
+a RHS value 1 + J(xi) ≥2Ω(i). Hence Lemma 3 follows at stage i = n, since there are at most
+exp(no(1)) many monomials, and so one of them must have a coefficient of exponential magnitude.
+We start by preprocessing the SA refutation (9) for technical convenience. We may assume wlog
+that each term t appearing in J = P
+t αtt satisfies the following.
+1. t is node-aligned: if t reads some variable associated with a node u, then it reads all the O(log n)
+variables associated with u. To ensure this, we may replace a term t with an equivalent sum
+of two terms, t = txi + t¯xi, which reads one more variable. Adding more literals to terms like
+this will only increase the degree of the proof by an O(log n) factor.
+17
+
+(a) Input x1.
+(b) Input xn.
+Figure 5: Illustration of the proof of Lemma 3. (a) In the first stage, we construct an input x1 to SoDn2
+that embeds an input y1 to SoPLn in the top-left (1, 1)-subgrid, and moreover, all the active sinks of y1 are
+assigned as successor the top-left corner of some (2, j)-subgrid. (b) The completed construction after n stages.
+2. t is curious: if t reads a node u that lies on the last row of a subgrid, that is, u ∈{in} × [n2]
+for some i ∈[n], then t also reads the successor su of u (if any) on the next row. Similarly as
+above, this can be ensured by at most doubling the degree of the proof.
+3. t is non-witnessing: it does not witness a solution to the search problem. Formally, t witnesses
+a violation ai ̸= 0 if for all x, t(x) = 1 ⇒ai(x) ̸= 0 (or contrapositively, ai(x) = 0 ⇒t(x) = 0).
+To ensure this, if t is witnessing, we can factor2 t = p′
+iai and move t to the LHS of the proof.
+First stage.
+Let y1 be an input to SoPLn defined on nodes [n] × [n]. We can embed y1 inside an
+input to SoDn2 as follows. We write (null∗  y1) for the input to SoDn2 where we start with an
+assignment of null to all nodes [n2]×[n2] (denoted null∗), and then overwrite the top-left (1, 1)-subgrid
+with the successor pointers in y1 (aligning the distinguished nodes of SoDn2 and SoPLn). In this
+reduction, we can forget the predecessor pointers, as they are not part of the input to SoD. Now
+every solution of (null∗  y1) for SoDn2 corresponds naturally to a solution of y1 for SoPLn. (A
+minor detail is that the active sinks in y1 correspond to proper sinks in (null∗  y1).) Using this
+reduction, we can view our SA refutation of SoDn2 also as a refutation of SoPLn.
+We claim that there is some input y1 to SoPLn such that for x′
+1 := (null∗  y1) we have a RHS
+value 1 + J(x′
+1) ≥1.5. Suppose not: then the RHS is always in [1, 1.5] for all y1, which means we
+have a low-degree 1
+2-NS proof of SoPLn. But this contradicts Lemma 1.
+We have now found an input x′
+1 = (null∗  y1) with RHS at least 1.5. Before we iterate this
+argument in the second stage, we have to clean up x′
+1 slightly.
+2The existence of such a factorization is easy to see here since both ai and t are conjunctions of literals. More
+generally, the existence of such a factorization is guaranteed for any multilinear polynomials ai and t satisfying
+ai(x) = 0 ⇒t(x) = 0 on the boolean hypercube, where we simplify expressions using the constraints x2
+i −xi = 0. One
+way to prove this is by using the fact that two multilinear polynomials are syntactically identical if and only if they
+agree on the boolean hypercube.
+18
+
+First stage: Clean-up.
+Recall that the instances considered in the proof of Lemma 1 consist
+of some number of directed paths that terminate at sinks Sol(y1) ⊆{n} × [n]. We will modify x′
+1
+by making the nodes Sol(y1) point to the same top-left corner of a (2, j)-subgrid for some j ∈[n].
+Indeed, let ρj : Sol(y1) →[n2] be the partial assignment that assigns (n, (j −1)n) + (1, 1) (top-left
+corner of the (2, j)-subgrid) as the successor of all nodes in Sol(y1). Let (x′
+1   ρj) be the input
+obtained from x′
+1 by applying ρj. (We actually have x′
+1 = x′
+1   ρ1, as this is how we decided to make
+every node in Sol(y1) an active sink in y1.) By defining x1 := (x′
+1   ρj) for a carefully chosen j ∈[n]
+(see Figure 5a), we establish the following properties for the start of the next stage.
+(1a) The only solutions in x1 are proper sinks pointing to the corner of the (2, j)-subgrid.
+(1b) We have 1 + J(x1   y2) ≥1.4 for any partial assignment y2 to nodes in the (2, j)-subgrid.
+Property (1a) is true by construction and we prove property (1b) below.
+Claim 3. There exists a j ∈[n] such that (1b) holds.
+Proof. Let us first prove that for every term t appearing in J = P
+t αtt, we have
+t(x′
+1) = t(x′
+1   ρj)
+∀j.
+(10)
+It suffices to show that any term t in J with t(x′
+1) = 1 (or t(x′
+1   ρj) = 1) does not read any nodes
+in Sol(y1). Assume for contradiction that such a t reads a node u ∈Sol(y1). Then, because t is
+curious, it also reads u’s successor node (note that su ̸= null in both x′
+1 and x′
+1   ρj) on the next row.
+This successor node is set to null in x′
+1 (and (x′
+1   ρj)) and hence t witnesses that u is a solution
+(proper sink). But this contradicts our assumption that t is non-witnessing. This proves (10).
+Define Jj := P
+t∈Tj αtt where Tj is the set of terms t in J that do not read any node from
+the (2, j)-subgrid. Note that each t can read from at most deg(t) ≤no(1) many different subgrids,
+and hence if we choose j ∼[n] at random, Pr[t ∈Tj] ≥99%. We now have
+E[1 + Jj(x′
+1)] = 1 + P
+t Pr[t ∈Tj]αtt(x′
+1) ≥99% · (1 + J(x′
+1)) ≥99% · 1.5 ≥1.4.
+By averaging, there is some fixed j ∈[n] such that 1 + Jj(x′
+1) ≥1.4. Defining x1 := (x′
+1   ρj) for
+this particular j, we have, for every assignment y2 to the (2, j)-subgrid,
+1 + J(x1   y2) ≥1 + Jj(x1   y2) = 1 + Jj(x1)
+(10)
+=
+1 + Jj(x′
+1) ≥1.4.
+Second stage.
+Here we start with the input x1 satisfying (1a)–(1b) for some j ∈[n]. Let y2 be any
+input to SoPLn. We think of y2 (ignoring predecessor pointers) as embedded in the (2, j)-subgrid.
+Consider the input (x1   y2) where the distinguished node of y2 is aligned with corner of the
+(2, j)-subgrid, which is the only sink in x1 by (1a). Then every solution of (x1   y2) for SoDn2
+corresponds to a solution of y2 for SoPLn. Hence we can view our SA refutation of SoDn2 as a
+refutation of SoPLn (this time in the (2, j)-subgrid). Moreover, we have from (1b) that the RHS
+of the proof evaluates to 1 + J(x1   y2) ≥1.4 for all y2. If we scale our original SA proof by a
+factor 1/1.4, we get another polynomial identity
+1
+1.4
+X
+i∈[m]
+pi(x)ai(x) =
+1
+1.4(1 + J(x)),
+(11)
+where the RHS evaluates to at least 1 on any input of the form x = (x1   y2). Using Lemma 1 we
+can now conclude that there must exist an input x′
+2 = (x1   y2) such that
+1
+1.4(1 + J(x′
+2)) ≥1.5, or
+equivalently, 1 + J(x′
+2) ≥1.5 · 1.4.
+19
+
+Second stage: Clean-up.
+Using exactly the same argument as in the first clean-up stage, we
+conclude that x′
+2 can be cleaned up into x2 such that for some j ∈[n] (different j than in first stage):
+(2a) The only solutions in x2 are proper sinks pointing to the corner of the (3, j)-subgrid.
+(2b) We have 1 + J(x2   y3) ≥1.42 for any partial assignment y3 to nodes in the (3, j)-subgrid.
+By continuing this argument in the same fashion, we can eventually, at stage n, find an input xn
+with 1 + J(xn) ≥1.4n (see Figure 5b). This concludes the proof of Lemma 3.
+5.2
+Upper bound for Resolution
+It is well-known that SoDn (understood as an O(log n)-width CNF contradiction) admits an O(log n)-
+width Resolution refutation (e.g., [Kam20, Theorem 8.18]). If we want to further optimise this down
+to a constant-width refutation, as claimed by Theorem 1, then we can consider a sparse variant
+of SoDn similarly as we did in Section 4.3. We omit the details.
+6
+Proofs of Characterisations
+In this section we prove Theorem 3, restated below.
+Theorem 3. For any unsatisfiable CNF formula F, we have:
+−PPADdt(S(F)) = Θ(uNS(F)).
+−PPADSdt(S(F)) = Θ(uSA(F)).
+−SOPLdt(S(F)) = Θ(RevRes(F)).
+−EOPLdt(S(F)) = Θ(RevResT(F)).
+Recall that the notation Adt(B) for total search problems A, B is the minimum complexity
+(namely, log size + depth) of an A-formulation of B. Similarly, for a proof system P and CNF
+formula F the notation P(F) is the minimum of log size(Π) + deg(Π) where Π is a P-proof of F.
+6.1
+Unary Nullstellensatz and PPAD
+We first argue that unary Nullstellensatz corresponds to the decision tree class PPADdt.
+Theorem 7. Let F be an unsatisfiable CNF formula. Then,
+−If F has a degree-d size-L uNS proof, then S(F) has a depth-O(d) EoLO(L)-formulation.
+−If S(F) has a depth-d EoLL-formulation, then F has a degree-O(d) size-L2O(d) uNS proof.
+In particular, PPADdt(S(F)) = Θ(uNS(F)).
+Corollary 3. For any sequence Fn of poly(log n)-width CNF formulas, Fn has a degree-poly(log n),
+size-npoly(log n) unary Nullstellensatz proof if and only if S(F) ∈PPADdt.
+We prove Theorem 7 in the next two lemmas. The proof of this theorem is itself modelled on a
+similar characterization of PPA-formulations by F2-Nullstellensatz, proved by [BCE+98, GKRS18].
+It turns out to be easier to show that EoL-formulations imply Nullstellensatz proofs, so we do that
+first. Furthermore, we will assume that all of our Nullstellensatz proofs are multilinearized: that is,
+we work modulo the x2
+i −xi = 0 equations, and so the individual degree of any variable in the proof
+is at most 1. It is well-known that making this assumption will not change the degree or size of the
+proof by more than a constant factor [Bus98].
+20
+
+Lemma 4. Let F be an unsatisfiable CNF formula. If there is a depth-d EoLL-formulation of S(F)
+then there is a unary Nullstellensatz refutation of F with degree O(d) and size L2O(d).
+Proof. Suppose F := C1 ∧· · · ∧Cm is on n variables x1, . . . , xn, and let Ci be the negation of
+Ci represented as a polynomial. Assume that there is a depth-d EoLL-formulation of S(F). Let
+V := [L] be the set of nodes in the EoL formulation and let v∗= 1 denote the distinguished source
+node. Each node v ∈V is equipped with successor and predecessor functions sv, pv : {0, 1}n →V ,
+respectively, each computed by decision trees of depth at most d, as well as a solution decision
+tree gv : {0, 1}n →[m] that outputs a corresponding solution of S(F). For any input assignment
+x ∈{0, 1}n let Gx denote the directed graph obtained by evaluating all the successor and predecessor
+decision trees on input x and adding an edge (u, v) iff su(x) = v and pv(x) = u.
+For each v ∈V define the function Sv : {0, 1}n →{−1, 0, 1} by
+Sv(x) :=
+
+
+
+
+
+−1
+if v ̸= v∗is a source in Gx
+1
+if v ̸= v∗is a proper sink in Gx or v = v∗and v∗is not a source
+0
+otherwise.
+We compute Sv for each node v by a depth at most 5d decision tree as follows. First, we compute
+sv(x) = u and pv(x) = w, and then compute pu(x) and sw(x). From this information we can
+determine the output value of Sv, and we have used at most 4d queries. If Sv = 0 then the leaf of
+the decision tree is labelled with 0. Otherwise, if Sv ̸= 0 then v is a solution to EoL, and so in this
+case we will also run the decision tree for gv and label each leaf with either 1 or −1 according to the
+output value of Sv. Overall this requires at most 5d queries.
+Now, for any leaf ℓin the decision tree for Sv let Dℓdenote the polynomial representation of the
+conjunction of literals on the path from the root of the tree to ℓ. Observe that we can represent
+Sv =
+X
+(−1)-leaf ℓ
+−Dℓ+
+X
+1-leaf ℓ
+Dℓ,
+where the first sum is over leaves of Sv labelled with −1 and the second is over leaves of Sv labelled
+with 1. If ℓis a non-zero leaf then v is a solution to the EoL instance, so let Cℓdenote the solution
+of S(F) output by the decision tree gv at this leaf. Observe that at every non-zero leaf ℓ, the clause
+Cℓmust be falsified by the assignment on the path to ℓ, since Cℓis a solution to S(F) by the
+correctness of the EoL formulation and by the fact that we ran the gv decision tree in Sv. This
+implies that for each non-zero leaf ℓof Sv we can write Dℓ= D′
+ℓCℓ, and thus
+Sv =
+X
+(−1)-leaf ℓ
+−Dℓ+
+X
+1-leaf ℓ
+Dℓ=
+X
+(−1)-leaf ℓ
+−D′
+ℓCℓ+
+X
+1-leaf ℓ
+D′
+ℓCℓ.
+If we sum up these polynomials for each v ∈V and gather terms then
+X
+v∈V
+Sv =
+m
+X
+i=1
+piCi
+for some polynomials pi. Note that each polynomial has degree at most 5d since they are obtained
+from the underlying Sv decision trees.
+To see that Pm
+i=1 piCi is a unary Nullstellensatz refutation of F, observe that since each Sv
+came from an EoL formulation we have
+m
+X
+i=1
+pi(x)Ci(x) =
+X
+v∈V
+Sv(x) = (# sinks in Gx) −(# non-distinguished sources in Gx) = 1
+21
+
+v∗
+V1
+V2
+V3
+Figure 6: High level illustration of the EoL instance constructed in the proof of Lemma 5. Edges of the
+outer matching are shown in black, while those from the inner matching are in blue. In this example, the
+clause corresponding to V3 is not satisfied by assignment x and as a result no internal edges are added in V3.
+Note that EoL solutions indeed only occur in V3.
+for any input x ∈{0, 1}n. Finally, we observe that all coefficients used in this proof are integers,
+and the number of distinct monomials produced is at most |V |2O(d) = L2O(d) from expanding the
+depth-d decision trees as polynomials.
+The more difficult direction is the converse, proved next.
+Lemma 5. Let F be an unsatisfiable CNF formula. If there is a unary Nullstellensatz refutation of
+F with degree d and size L then there is a depth-O(d) EoLO(L)-formulation of S(F).
+Proof. Let F = C1 ∧· · · ∧Cm and consider a degree-d, size-L unary Nullstellensatz refutation of F,
+which we write as
+m
+X
+i=1
+piCi = 1
+where each pi is a multilinear polynomial over x1, . . . , xn and all coefficients are integers.
+To build the EoL formulation, we expand the above proof out into its constituent monomials
+with multiplicity. That is, for each i ∈[m] write the polynomial
+piCi =
+X
+j
+ci,jqi,j
+where ci,j ∈Z and qi,j is a monomial obtained by expanding the polynomial directly and performing
+all necessary cancellations. Each node in our EoL formulation will represent one of the above
+monomials qi,j and is considered a “+” or a “−” node, depending on that monomial’s sign. In
+total, we create m + 1 sets of nodes V ∗, V1, . . . Vm, defined as follows. The set V ∗only contains the
+distinguished source node v∗, which we consider as a “−” node. For each i ∈[m] the set Vi contains
+a node for each monomial qi,j from the above expansion with multiplicity. So, in particular, we add
+|ci,j| copies of the monomial qi,j to Vi for each monomial qi,j in the above expansion. Let V denote
+the set of all nodes produced by this construction. For every node v ∈V , the decision tree for gv
+will query no variables and output Ci if v ∈Vi and an arbitrary clause if v = v∗; our construction
+will explicitly prevent the source node v∗from being a solution.
+Now, we must describe the successor and predecessor decision trees sv, pv at each node. It will
+be easier to describe the possible edges in Gx on an input x ∈{0, 1}n; all of the edges are organized
+into two different matchings as detailed next. See Figure 6 for a high-level illustration.
+22
+
+Outer Matching. In this matching we add edges between nodes in different node groups. All
+directed edges will be oriented from “−” nodes to “+” nodes. Since the polynomials form a
+Nullstellensatz refutation over Z, we know that each time the monomial q appears with a “+”
+sign, it must also appear with a “−” sign, except for the single 1 term. Thus by treating the
+distinguished source v∗as “−1”, we can create a perfect matching M on the nodes of V where
+all matched nodes are between a “+” and a “−” node standing for the same monomial. Since
+we have gathered terms within the expansions piCi, all occurrences of monomials q within a
+set Vi have the same sign, and thus all the edges in this matching will be between nodes in
+different sets. Formally, in the EoL formulation, for each edge e = (u, v) in M corresponding to
+a monomial q, we add a directed edge from the “−” to the “+” node if and only if q(x) = 1.
+This condition can be determined by su and pv by querying the variables occurring in q.
+Inner Matching. In this matching we add directed edges from “+” nodes to “−” nodes within
+the same node group. Consider any set Vi. Formally, at each node occurring in the group Vi, we
+query all variables of the corresponding clause Ci in both the successor and predecessor functions
+for that node. For any x ∈{0, 1}n, if Ci(x) = 1 then Ci = 0 and thus pi(x)Ci(x) = 0. This
+means that under the partial restriction ρ consistent with x at the variables of Ci, all monomials
+remaining in piCi ↾ρ must cancel. We can therefore fix a perfect matching between the negative
+and positive instances of monomials in Vi under ρ, representing the cancellation of monomials
+under ρ. Then, each edge of this matching is included in the graph if and only if the monomials
+corresponding to its endpoints evaluate to 1 at x (note that the two endpoints will both evaluate
+to the same value, since they are matched under ρ). On the other hand, if Ci(x) = 0 then we
+will simply not add any edges to the internal matching of Vi.
+Let x ∈{0, 1}n be any assignment to the variables of F. The edges of any node v ∈Vi associated
+with a monomial q are determined by querying the variables of Ci and q. This implies that the
+depth of each decision tree Tv is at most d, and the size is clearly O(L) since every monomial in the
+proof is represented as a node.
+We now verify correctness of the EoL formulation. Since it is well-defined, on every input x the
+graph Gx will have a solution. Let v be such a solution (either a sink or proper source node) in
+Gx. By construction, v ̸= v∗since the node v∗is always a source node. This implies that v ∈Vi for
+some i ∈[m], and so v must be associated with a monomial q. By the construction of the inner and
+outer matching, v can only be a source or sink node in Vi if the inner matching is empty. But this
+can only happen if Ci(x) = 0, and thus Ci is a valid solution to S(F).
+6.2
+Unary Sherali–Adams and PPADS
+We now show that low-degree unary Sherali–Adams proofs characterise PPADSdt. The proof of this
+fact follows the proof from the previous section quite closely, but requires some extra work to handle
+the extra conical junta terms.
+Theorem 8. Let F be an unsatisfiable CNF formula. Then,
+−If F has a degree-d, size-L unary Sherali–Adams proof, then S(F) has a depth-O(d) SoLO(L)-
+formulation.
+−If S(F) has a depth-d SoLL-formulation, then F has a degree-O(d), size-L2O(d) unary Sherali–
+Adams proof.
+In particular, PPADSdt(S(F)) = Θ(uSA(F)).
+23
+
+Corollary 4. For any sequence F of poly(log n)-width CNF formulas, F has a poly(log n)-degree,
+npoly(log n)-size unary Sherali–Adams proof if and only if S(F) ∈PPADSdt.
+Before we prove the theorem, it will be convenient to have the following simple normal form
+for Sherali–Adams proofs. Just like in the previous section we will assume that all Sherali–Adams
+proofs are multilinearized, and it is known that this assumption does not change the degree or size
+of the proof by more than a constant factor [FKP19].
+Lemma 6. Let F be an unsatisfiable CNF formula. If Pm
+i=1 piCi = 1 + J is a unary Sherali–Adams
+refutation of F with degree d and size L, then there is a degree-d, size-L unary Sherali–Adams
+refutation of F of the form Pm
+i=1 JiCi = 1 + J0 where Ji is a conical junta for each i = 0, 1, . . . , m.
+Proof. For each i ∈[m] we can expand pi = P
+j ci,jqi,j where ci,j are integers and qi,j are monomials.
+Each monomial qi,j is a conjunction, so the expressions
+J−
+i =
+X
+j:ci,j<0
+|ci,j|qi,j,
+J+
+i =
+X
+j:ci,j>0
+ci,jqi,j
+are conical juntas for each i ∈[m]. Writing pi = J+
+i −J−
+i , substituting into the Sherali–Adams
+refutation, and rearranging completes the proof.
+We now begin the proof of Theorem 8. As before we split the proof into two lemmas, one for
+each direction of the characterisation. The easier direction is again that an SoL-formulation implies
+a unary Sherali–Adams proof, and it almost exactly follows the proof of Lemma 4.
+Lemma 7. Let F be an unsatisfiable CNF formula. If there is a depth-d SoLL-formulation of S(F)
+then there is a unary Sherali–Adams refutation of F with degree O(d) and size L2O(d).
+Proof. The proof of this lemma is essentially the same as the proof of Lemma 4, so we will simply
+sketch it and note what needs to be modified. Suppose F := C1 ∧· · ·∧Cm and let Ci be the negation
+of Ci represented as a polynomial. We have an SoL-formulation for S(F), and so we have decision
+trees computing successors sv and predecessors pv for each of the nodes v ∈V . As in the proof of
+Lemma 4, for each v ∈V we define a depth at most 5d decision tree Sv, defined by
+Sv(x) =
+
+
+
+
+
+1
+if v ̸= v∗is a source in Gx
+−1
+if either v is a proper sink in Gx or if v = v∗and v∗is not a source
+0
+otherwise,
+where we note that we have switched the “−1” and the “+1” in the definition of Sv when compared
+to Lemma 4. As before, Sv(x) can be determined by first running the decision trees for sv(x) = u
+and pv(x) = w, then the decision trees for pu(x), sw(x), and finally the decision tree for gv(x) if the
+node v is a solution to SoL. From this, we can again represent
+Sv =
+X
+(−1)-leaf ℓ
+−Dℓ+
+X
+1-leaf ℓ
+Dℓ,
+where the first sum is over leaves of Sv labelled with −1 and the second is over leaves of Sv labelled
+with 1. However, now a node v is only a solution to SoL if Sv(x) = −1, and so for each (−1)-leaf ℓ
+of Sv we can write Dℓ= D′
+ℓ· Cℓwhere Cℓis the clause of F falsified at that leaf. This allows us to
+write
+Sv =
+X
+(−1)-leaf ℓ
+−Dℓ+
+X
+1-leaf ℓ
+Dℓ=
+X
+(−1)-leaf ℓ
+−D′
+ℓ· Cv +
+X
+1-leaf ℓ
+Dℓ.
+24
+
+If we sum up these polynomials for each v ∈V and gather terms we get
+X
+v∈V
+Sv =
+m
+X
+i=1
+−JiCi + J0
+for some degree-O(d) conical juntas J0, J1, . . . , Jm. As in the proof of Lemma 4 we have that
+P
+v Sv(x) = −1 and the size and degree calculations are identical.
+The proof of the converse direction is also similar to the proof of Lemma 5, but requires some
+more substantial modification when compared to the previous proof. The main issue is how to
+handle the extra conical junta terms J0 in the unary Sherali–Adams refutation. As in the proof of
+Lemma 5, we will create a graph representing all the monomials in the unary Sherali–Adams proof.
+However, we will do some extra work to ensure that the nodes corresponding to monomials from
+the conical junta term J0 will always be source nodes. This ensures that any solutions will occur at
+nodes corresponding to some falsified clause in the formula.
+Lemma 8. Let F be an unsatisfiable CNF formula. If there is a unary Sherali–Adams refutation of
+F with degree d and size L then there is a degree-O(d) SoLO(L)-formulation of S(F).
+Proof. Suppose F := C1 ∧· · · ∧Cm is on n variables and consider a unary Sherali–Adams refutation
+m
+X
+i=1
+−JiCi + J0 = −1
+of F where each Ji for i = 0, 1, . . . , m are integral conical juntas. For notational convenience, we
+will let C0 := −1 and we will expand each conical junta Ji as a non-negative sum of conjunctions.
+While this notation is somewhat unusual, it allows us to write the refutation in a uniform way as
+m
+X
+i=1
+−JiCi + J0 =
+m
+X
+i=0
+ti
+X
+j=1
+−λi,jDi,jCi = −1
+where ti is a non-negative integer, λi,j is a positive integer, and Di,j is a conjunction for every i, j.
+To build the SoL formulation, we expand the above proof out into its constituent monomials
+with multiplicity. As in the proof of Lemma 5, each node in our SoL formulation will represent a
+monomial in the proof and is either a “+” or a “−” node, depending on that monomial’s sign. This
+time, however, we create a group of nodes Vi,j for each i = 0, 1, . . . , m and each j ∈[ti], as well as a
+special group V ∗. The group V ∗only contains the distinguished node v∗, which we now consider
+as a “+” node. On the other hand, for each i, j, the group Vi,j will correspond to the polynomial
+−λi,jDi,jCi,j. We expand this polynomial into a sum of monomials −λi,jDi,jCi,j = P
+q cqq for some
+integers cq and monomials q, and for each monomial q in this expansion we create |cq| nodes in Vi,j,
+each of which are “+” nodes if cq > 0 and “−” nodes otherwise. Let V denote the set of all nodes
+produced by this construction. For any node v ∈V , if v ∈Vi,j for some i > 0 then the solution
+decision tree gv will query no variables and simply output Ci as the solution to S(F). Otherwise, gv
+will output an arbitrary solution, as in this case by construction of the formulation the node v will
+never be a solution to SoL.
+Now, we must describe the successor and predecessor decision trees at each node. As in the
+proof of Lemma 5, it will be easier to describe the possible edges in Gx as all of the edges are
+organized into two different matchings.
+25
+
+Outer Matching. The definition of the outer matching is the same as in Lemma 5. In this
+matching we add edges between nodes in different node groups. All directed edges will be
+oriented from “+” nodes to “−” nodes. Since the polynomials form an SA refutation over Z, we
+know that each time the monomial q appears with a “+” sign, it must also appear with a “−”
+sign, except for the single −1 term. Thus by considering v∗as “+1”, we can create a perfect
+matching M of the nodes of V where all edges are between a “+” and a “−” node standing
+for the same monomial. Since we have gathered terms within the expansions of −λi,jDi,jCi,
+all occurrences of monomials q within a single group Vi,j have the same sign and thus all the
+matchings are between nodes in different sets. For each edge e in M, we will add a directed edge
+between the “+” and the “−” node if and only if q(x) = 1; this can be determined by querying
+all variables in q.
+Inner Matching. The inner matching is constructed similarly as in the proof of Lemma 5, but
+requires some modification. As in that proof, in the inner matching we add directed edges from
+“−” nodes to “+” nodes within the same node group. However, we will now be careful to force
+any solution (i.e. a sink node) to occur at a “−” node in Gx. By our construction, the V ∗group
+has no “−” nodes, and all “−” nodes in the group V0,j for any j ∈[t0] will have successors, and
+thus any sink node must be associated with Vi,j for some i > 0.
+Consider any set of the form Vi,j, since V ∗has a single node corresponding to +1 and so no
+internal edges will be matched. Formally, at each node occurring in the group Vi,j, we query all
+variables of Ci and Di,j (note that when i = 0, C0 = 1 and so we only query Di,j variables).
+For any assignment x ∈{0, 1}n, if Ci(x) = 1 then Ci(x) = 0 and thus Di,j(x)Ci(x) = 0. This
+means that under the partial restriction ρ consistent with x at the variables of Ci, all monomials
+in Di,jCi ↾ρ must cancel to 0. We can therefore fix a directed perfect matching between the
+negative and positive copies of monomials in Vi,j, as in the proof of Lemma 5.
+On the other hand, if Ci(x) ̸= 0 then −λi,jDi,j(x)Ci(x) = c for some integer c. If i > 0
+then c ≤0, and so in this case, there will be |c| copies of “−” monomials in Vi that are not
+cancelled by + monomials internally. We can then fix a directed partial matching between
+monomials accordingly, but leaving the |c| “−” monomials without successors if required (these
+will become sink nodes). If i = 0 then c ≥0 since Ci = −1, and so in this case there may be
+more “+” monomials than “−” monomials evaluating to 1. We can therefore fix a directed
+partial matching between monomials, now leaving some “+” monomials without predecessors
+(these will become new source nodes), but all “−” monomials will have successors and so they
+will not become proper sink nodes.
+As we have described above, we will need at most d queries in any decision tree in the reduction, and
+also the number of nodes in the final SoL instance is no more than the size (number of monomials)
+of the underlying unary Sherali–Adams proof.
+We finally verify correctness of the SoL-formulation. This is a well-defined SoL formulation and
+thus on every input x ∈{0, 1}n the graph Gx will have a solution v ∈V . This must be a sink node
+by the definition of SoL and therefore, by construction, v must be a “−” node since “+” nodes
+always have successors by the construction of the outer matching. As we have described in the
+definition of the inner matching, any “−” node v ∈V0,j for any j will have a successor, and thus
+v ∈Vi,j for some i > 0. But then, by definition of the inner matching, if v is a sink node in Vi,j for
+i > 0 then Ci(x) = 0 and the label of v is Ci, thus the SoL formulation correctly outputs a solution
+to S(F).
+26
+
+6.3
+Reversible Resolution, SOPL, and EOPL
+In this section we define the Reversible Resolution systems (RevRes and RevResT), and prove our
+final characterisations capturing SOPLdt and EOPLdt.
+Theorem 9. Let F be an unsatisfiable CNF formula. Then,
+−If F has a width-d, size-L Reversible Resolution proof (with Terminals, resp.), then S(F) has
+a depth-O(d) SoPLO(L)-formulation (EoPL-formulation, resp.).
+−If S(F) has a depth-d SoPLL-formulation (EoPLL-formulation, resp.), then F has a width-
+O(d), size-LO(1)2O(d) Reversible Resolution proof (with Terminals, resp.).
+In particular, SOPLdt(S(F)) = Θ(RevRes(F)) and EOPLdt(S(F)) = Θ(RevResT(F)).
+Corollary 5. For any sequence F of poly(log n)-width CNF formulas, F has a poly(log n)-width,
+npoly(log n)-size Reversible Resolution proof (with Terminals, resp.) if and only if S(F) ∈SOPLdt
+(S(F) ∈EOPLdt, resp.).
+Reversible Resolution and MaxSAT
+We begin by formally defining Reversible Resolution refutations and comparing them to MaxSAT
+systems from the literature [BLM07, LHdG08, FMSV23].
+Definition 5. Let F be an unsatisfiable CNF formula.
+If C is a clause then the reversible
+weakening rule is the proof rule C ⊢C ∨x, C ∨x, and the reversible resolution rule is the proof
+rule C ∨x, C ∨x ⊢C. A reversible resolution refutation (RevRes) of F is a sequence of multisets of
+clauses C1, C2, . . . , Ct such that the following holds:
+1. Every clause in C1 occurs in F, possibly with multiplicity.
+2. The multiset Ct contains the empty clause ⊥.
+3. For each i = 1, 2, . . . , t −1, the multiset Ci+1 is obtained from Ci by selecting clauses in Ci and
+replacing them with the result of one of the two reversible rules applied to those clauses.
+The proof is a reversible resolution refutation with terminals (RevResT) if every clause in Ct other
+than ⊥is a weakening of a clause from F. The size of the proof is Pt
+i=1 |Ci| — the number of
+clauses in all configurations. The width of the proof is the maximum width of any clause occuring
+in any configuration.
+The key difference between the reversible resolution rule and the standard resolution rule is that
+the output of the reversible rule (as a CNF formula) is logically equivalent to the input of the rule.
+Despite this restriction, it is clear that we can use the reversible rule to simulate tree-like resolution.
+If we use clauses C ∨x and D ∨x to derive C ∨D, then we can derive this in RevRes as follows.
+First, for each literal in C ∨x, apply the reversible weakening rule repeatedly to derive C ∨D ∨x
+(along with some extra clauses which we can ignore). Similarly, derive D ∨C ∨x. Then apply the
+reversible resolution rule to these two clauses to derive C ∨D.
+However, Theorem 1 implies that RevRes cannot efficiently simulate Resolution. Intuitively, this
+is because of property (3) in the definition of a reversible refutation: we must replace the clauses
+used in the rule with new clauses. Therefore we cannot “duplicate” derived clauses for free, which
+is essential to obtain the full power of Resolution.
+Indeed, the RevRes proof system is a slight strengthening of the proof system MaxSAT Resolution
+with Weakening (also denoted MaxResW) studied in the literature on MaxSAT solvers [BLM07,
+27
+
+LHdG08, FMSV23]. The principal difference between MaxSAT Resolution and standard Resolution
+is that MaxSAT Resolution seeks to preserve the number of satisfied clauses under any assignment.
+For completeness, we define the MaxSAT Resolution proof system next.
+Definition 6. Let A = a1 ∨· · · ∨as and B = b1 ∨· · · ∨bt be clauses over boolean literals ai, bj. The
+MaxSAT resolution rule is the proof rule that, given x ∨A and x ∨B, deduces the following set of
+clauses:
+a1 ∨· · · ∨as ∨b1 ∨· · · ∨bt
+x ∨A ∨
+j_
+i=1
+bi ∨bj+1
+∀j = 0, 1, . . . , t
+x ∨B ∨
+j_
+i=1
+ai ∨aj+1
+∀j = 0, 1, . . . , s.
+A MaxRes refutation of an unsatisfiable CNF F is a sequence of multisets of clauses C1, . . . , Ct where
+C1 contains exactly the clauses in F, Ct contains a copy of the empty clause ⊥, and the configuration
+Ci for i > 1 is obtained from Ci−1 by applying the MaxSAT resolution rule to some clauses in
+Ci−1 and replacing those clauses with the output of the rule. A MaxResW refutation is a MaxRes
+refutation that is also allowed to use the weakening rule C ⊢C ∨x, C ∨x.
+RevRes can simulate MaxResW proofs without much difficulty. The weakening rule in MaxResW
+is the reversible weakening rule. To simulate the MaxSAT resolution rule, starting from x ∨A, x ∨B,
+apply the reversible weakening rule on x∨A to weaken it with the variable b1, obtaining x∨A∨b1, x∨
+A∨b1. Then, weaken x∨A∨b1 on the variable b2 to obtain the clauses x∨A∨b1 ∨b2, x∨A∨b1 ∨b2.
+Repeating in this fashion on all literals in B, and similarly weakening x ∨B, we obtain x ∨A ∨B,
+x ∨A ∨B, and all the extra clauses output by the MaxSAT rule. Finally applying the reversible
+resolution rule to x ∨A ∨B and x ∨A ∨B deduces A ∨B.
+The converse direction, however, is not clear and could very well be false. A significant difference
+between RevRes and MaxResW is the fact that MaxResW proofs must have the initial configuration
+exactly equal to F, while RevRes can start with any multiset of clauses from F. As discussed
+above, this is because the goal of MaxRes is to preserve the number of satisfied clauses under any
+assignment, while RevRes has no such requirements and simply seeks to prove unsatisfiability.
+We can formally interpret this as follows. Suppose we are given an unsatisfiable CNF formula
+F = C1 ∧· · · ∧Cm, where every clause Ci is equipped with a positive integer weight wi. Since F is
+unsatisfiable, the maximum possible weight of satisfied clauses in any assignment to the variables
+of F is at most Pm
+i=1 wi −1. Thus, if we could prove that this is true for some choice of weights
+wi > 0, then we have verified that the formula F is unsatisfiable.
+RevRes implements this idea. Given F, we start by choosing positive integer weights wi for each
+clause Ci, and make wi copies of Ci in the initial configuration C1. The two proof rules in RevRes
+preserve the number of satisfied clauses under any assignment, and so it follows that if C1, . . . , Ct
+is a RevRes refutation of F then, since Ct contains at least one instance of ⊥, it must be that the
+maximum weight of satisfied clauses under any assignment is at most Pm
+i=1 wi −1 since ⊥is always
+false. Hence the formula F must be unsatisfiable. Interpreted in this way, RevRes sits between
+MaxResW and the weighted MaxSAT resolution systems defined in [LHdG08].
+Characterisation theorems
+Unlike the characterisation theorems for unary Nullstellensatz and unary Sherali–Adams, the easier
+direction for this characterisation theorem is showing that RevRes proofs imply SoPL-formulations.
+28
+
+Lemma 9. Let F be an unsatisfiable CNF formula. If there is a RevRes refutation of F with width
+d and size L, then there is a depth-(d + 1) SoPLL-formulation of S(F). Furthermore, if there is a
+RevResT refutation, then there is a depth-(d + 1) EoPLL-formulation of S(F).
+Proof. We focus on the case of RevRes and then describe what needs to be modified in the case of
+RevResT. Let F = C1 ∧· · · ∧Cm be an unsatisfiable CNF formula. Let C1, C2, . . . , Cℓbe a RevRes
+refutation of F of the prescribed size and width and let t := maxi∈[ℓ] |Ci|. By the size bound we
+know that t, ℓ≤L.
+We create an SoPL-formulation of S(F) on a grid of size L × L, although we will only use the
+subgrid of size ℓ× t and hardwire all other nodes to be inactive. This can be done for each node
+(i, j) outside of the ℓ× t grid by setting the successor for (i, j) to be null and the predecessor to
+be arbitrary. The relationship between the grid of the SoPL-formulation and the RevRes proof
+is straightforward: the node (i, j) ∈[ℓ] × [t] corresponds to the j-th clause in the multiset Cℓ−i+1.
+Without loss of generality, we assume Cl is ordered so that the first clause is ⊥, and thus the
+distinguished node (1, 1) in the SoPL instance corresponds to ⊥.
+Let (i, j) ∈[ℓ] × [t] be any node in the grid and let Ci,j denote the corresponding clause in
+the proof. We define the successor function si,j : {0, 1}n →[t] ∪{null}, the predecessor function
+pi,j : {0, 1}n →[t], and the solution function gi,j : {0, 1}n →[m]. The solution function gi,j queries
+no variables and outputs Ci,j if Ci,j ∈F, and otherwise outputs an arbitrary solution (in the second
+case, by construction (i, j) will never be a solution to SoPL). To define si,j and pi,j we introduce
+some notation. If C ∈Ci and C′ ∈Ci+1 are clauses in adjacent configurations then C′ is derived
+from C, written C ⊢C′, if either C′ is the output of a reversible proof rule applied to C or if no
+proof rule was applied to C and C′ = C is just the same copy of C in the next configuration. For
+any x ∈{0, 1}n define
+si,j(x) :=
+
+
+
+
+
+null
+if Ci,j(x) = 1
+k
+if i < ℓ, Ci,j(x) = Ci+1,k(x) = 0, and Ci+1,k ⊢Ci,j
+1
+if i = ℓand Ci,j(x) = 0,
+and similarly, if i > 1, define
+pi,j(x) :=
+(
+1
+if Ci,j(x) = 1
+k
+if Ci,j(x) = Ci−1,k(x) = 0 and Ci,j ⊢Ci−1,k.
+Intuitively, if Ci,j(x) = 0 then we will make the successor and predecessors of Ci,j point to the
+unique clauses in the adjacent configurations that are guaranteed to be false. These functions are
+well-defined since the reversible rules are of the form C ∨xi, C ∨xi ⊢C and C ⊢C ∨xi, C ∨xi.
+In particular, under any assignment to the variables, the number of false clauses in the input and
+output of the rules are equal and at most 1, and thus if C is false then there are unique false clauses
+in the adjacent configurations that are derived from or used to derive C. Finally, we note that the
+successor and predecessor functions can each be computed by querying all the variables in Ci,j and
+possibly one more variable (the one that was resolved or weakened on), and thus the decision tree
+depth of both of these functions is at most d + 1.
+Now we argue that the SoPL formulation correctly solves S(F). By the definition of the
+successor and predecessor functions, if any node (i, j) on layer i < ℓis active, then that node has
+consistent pointers to successor nodes and predecessor nodes on the adjacent layers. This means
+that the node (i, j) is a solution only if it is an active node on layer i = ℓ, but such a node is active
+only if the corresponding clause Ci,j ∈C1 is false. But all such clauses occur in F, and in this case
+the solution function gi,j outputs Ci,j, which is a correct solution to S(F).
+29
+
+In case we started with a RevResT refutation, we observe that the same argument described
+above also works for EoPL with one extra observation: any clause in the final configuration Ct that
+is falsified under an input x is now a weakening of an input clause of F, and so this is a valid source
+node solution to the EoPL problem.
+It remains to prove the converse, which is harder. As a warmup, we begin by showing that the
+encoding of SoPL (EoPL) as an unsatisfiable CNF formula can be efficiently refuted in RevRes
+(RevResT resp.). The general case will follow the structure of this proof closely. For the warmup it
+will be helpful to explicitly write the CNF encoding of SoPL and EoPL (Section 3).
+Explicit Encodings for SoPL and EoPL.
+As we have discussed in Section 2, any total search
+problem Rn ⊆{0, 1}n ×On has a natural encoding as an unsatisfiable CNF formula by V
+o∈On ¬To(x)
+where To(x) is the decision tree that checks if (x, o) ∈Rn. Since To is a low-depth decision tree we
+can encode it as a low-width DNF formula, and thus the resulting CNF formula also has low width.
+In this section we describe the unsatisfiable CNF formulas corresponding to SoPLn and EoPLn
+explicitly.
+The successor and predecessor pointers in the SoPLn instance will be encoded in binary, so, for
+the sake of convenience assume n = 2λ −1 for some integer λ ≥1 and other cases can be handled
+similarly. For each node (i, j) the successor and predecessor pointers will be encoded by blocks
+of boolean variables si,j ∈{0, 1}λ, pi,j ∈{0, 1}λ encoding the value of the pointer in binary. The
+pointer null will always be encoded by the all-0 string. We will abuse notation and often consider
+si,j and pi,j as actual elements of [n] ∪{null}, rather than as short boolean strings. So, we may write
+things like si,j = k for k ∈[n] to mean that the bits of si,j are equal to the binary encoding of k.
+As everything is encoded in binary, it will be helpful to introduce the following notation. In
+general, for a predicate P : {0, 1}n →{0, 1} we let JPK represent the CNF encoding of P over the n
+underlying boolean variables. For example, Jsi,j = ℓK for ℓ∈[n] represents the CNF encoding of the
+predicate “si,j = ℓ” over the boolean variables underlying si,j. Explicitly, Jsi,j = nullK = Vλ
+t=1 si,j,t,
+and similarly Jsi,j ̸= nullK can be represented by the clause Wλ
+t=1 si,j,t. We can also form more
+complicated statements, writing e.g. Jsi,j = k ∧pi+1,k = jK to mean the CNF encoding of “the
+successor of (i, j) is (i + 1, k) and the predecessor of (i + 1, k) is (i, j)”.
+Definition 7. Let n be a positive integer, and for simplicity assume n = 2λ −1 for some integer
+λ ≥1. Consider the following unsatisfiable CNF formula SoPLn. For each (i, j) ∈{2, . . . , n−1}×[n]
+we have two blocks of λ variables si,j ∈{0, 1}λ, pi,j ∈{0, 1}λ encoding the successor and predecessor
+pointers of the node (i, j) in binary, where null is encoded by 0λ. For each j ∈[n], we additionally
+have a block of λ variables s1,j ∈{0, 1}λ encoding the successor of (1, j), a block of λ variables
+pn,j ∈{0, 1}λ encoding the predecessor of (n, j), and a single variable sn,j ∈{0, 1} encoding whether
+or not (n, j) is active.
+The clauses of SoPLn are the following:
+−For each j ∈[n], Js1,1 ̸= j ∨p2,j = 1K and Js1,1 ̸= 0K
+(active distinguished source)
+−For each j ∈[n], sn,j for each j ∈[n],
+(inactive sink)
+−For each (i, j) ∈{1, . . . , n −2} × [n] and each a, b ∈[n], c ∈[n] ∪{0}, a ̸= c, (no proper sinks)
+Jsi,j ̸= a ∨pi+1,a ̸= j ∨si+1,a ̸= b ∨pi+2,b ̸= cK
+as well as Jsi,j ̸= a ∨pi+1,a ̸= j ∨si+1,a ̸= 0K. Similarly, for each a, b ∈[n],
+Jsn−1,a ̸= b ∨pn,b ̸= a ∨sn,b = 1K
+30
+
+The EoPLn formula is obtained by adding the following extra clauses to SoPLn:
+−For each (i, j) ∈{2, . . . , n −1} × [n] and each a, b ∈[n], c ∈[n] ∪{0}, c ̸= j,
+(no proper
+sources)
+Jsi,j ̸= a ∨pi+1,a ̸= j ∨pi,j ̸= b ∨si−1,b ̸= cK
+as well as Jsi,j ̸= a ∨pi+1,a ̸= j ∨pi,j ̸= 0K. Similarly, for any a, b ∈[n] with a ̸= 1,
+Js1,a ̸= b ∨p2,b ̸= aK.
+From the above definition we can see that both SoPLn and EoPLn are polynomial-size, O(log n)-
+width CNF formulas, and they are unsatisfiable since the families of clauses simply encode the
+contradictory statements “the SoPL/EoPL problem has no solution”.
+Proofs of Characterisations.
+Now, before proving that we can refute SoPLn in RevRes, we
+first prove a technical lemma that allow us to manipulate binary encodings in RevRes.
+Lemma 10. Let λ > 0 be a positive integer, and let n = 2λ −1. Let C be a width-k clause that does
+not depend on a block of boolean variables z ∈{0, 1}λ. Using the reversible weakening rule we can
+prove, from C, the set of clauses {JC ∨z ̸= iK : i = 0, . . . , n} in width k + λ and size 2λ. Conversely,
+from the above set of clauses we can prove C using the reversible resolution rule in the same size
+and width.
+Proof. Starting from C, apply the reversible weakening rule on the first bit z1 to obtain C ∨z1 and
+C ∨z1. Weakening each of the results on z2, z3, . . . , zλ in turn yields exactly the CNF formula
+described in the lemma, and the second statement follows from the reversibility of RevRes.
+Theorem 10. For each positive integer n, there is a O(log n)-width, polynomial-size RevRes
+refutation (RevResT refutation, resp.) of SoPLn (EoPLn, resp.).
+Proof. We give the proof for SoPLn and then describe what needs to be modified for EoPLn. For
+each (i, j) ∈[n −1] × [n] and each k ∈[n] define the clause Ii,j,k := Jsi,j ̸= k ∨pi+1,k ̸= jK, and note
+that Ii,j,k has width 2 log n in the variables si,j and pi+1,k. With this notation, the set of clauses
+Ii,j := {Jsi,j ̸= k ∨pi+1,k ̸= jK | k ∈[n]}
+encodes the statement “the node (i, j) is inactive”. Similarly, for any j ∈[n] we define
+In,j := sn,j
+encoding that the node (n, j) is inactive, and note that In,j is a clause in SoPLn. Thus, for any
+i ∈[n], the collection of clauses Ii := Sn
+j=1 Ii,j encodes the statement “every node on layer i is
+inactive”. We now state the main claim of the proof.
+Claim 4. For any i ∈{2, . . . , n}, there is a polynomial-size, O(log n)-width RevRes proof of Ii−1
+from Ii and a polynomial-size collection of clauses from SoPLn.
+Let us first use the claim to finish the proof of the theorem. We start with the collection of
+clauses In = Sn
+j=1 In,j, each of which is a clause from SoPLn. Applying the claim yields the
+collection In−1 in polynomial-size and O(log n) width from In and a polynomial-size collection of
+clauses from SoPLn. Applying the claim n −2 more times then yields I1 in polynomial-size and
+O(log n) width. However, the clauses I1,1 ⊆I1 are exactly
+Js1,1 ̸= j ∨p2,j ̸= 1K
+31
+
+j
+k
+a
+b
+(a) A clause in Ji ⊆Ai.
+j
+k
+a
+b
+(b) A clause in Fi ⊆Bi.
+j
+k
+a
+b
+(c) A clause in Ti = Ai ∩Bi.
+Figure 7: Illustration of the objects in the proof of Claim 4. The blue edges are successor pointers and
+the red edges are predecessor pointers. Each clause says that at least one of the pointers in the above
+configuration must not be present.
+for each j ∈[n]. By resolving these clauses with the clauses in Js1,1 ̸= j ∨p2,j = 1K in SoPLn, we
+can deduce the family of clauses Js1,1 ̸= jK for all j ̸= 0, and the clause Js1,1 ̸= 0K is already in
+SoPLn. Applying Lemma 10 to the clauses {Js1,1 ̸= iK | i = 0, . . . , n} deduces the empty clause ⊥
+in O(log n) width and O(n) size. In sum, the entire proof will have polynomial size and O(log n)
+width.
+So, it suffices to prove the claim.
+Proof of Claim. We show how to prove the general case where i ≤n −1, and the case where i = n
+is handled by an essentially identical argument. Consider the family of clauses Ii = Sn
+j=1 Ii,j. For
+each clause Ii,j,k apply Lemma 10 to weaken as follows. Initially, we weaken over all values of the
+predecessor pointer pi,j, obtaining the family of clauses JIi,j,k ∨pi,j ̸= aK for each a ∈[n]. Then,
+from the clause in this family containing pi,j ̸= a, we weaken over all values of the successor pointer
+si−1,a, obtaining the family of clauses
+Ai = {JIi,j,k ∨pi,j ̸= a ∨si−1,a ̸= bK | j, k, a, b ∈[n]}
+= {Jsi,j ̸= k ∨pi+1,k ̸= j ∨pi,j ̸= a ∨si−1,a ̸= bK | j, k, a, b ∈[n]}.
+Partition this family of clauses into two sets as follows. Define
+Ti = {Jsi,j ̸= k ∨pi+1,k ̸= j ∨pi,j ̸= a ∨si−1,a ̸= jK | j, k, a ∈[n]},
+which is the subfamily of clauses in Ai that have b = j, and let Ji = Ai \ Ti denote the subfamily
+where b ̸= j. Next, we show how to use Ti, along with some clauses in SoPLn, to deduce Ii−1 in
+width O(log n) and polynomial size. The clauses Ji are “junk” clauses that are maintained for the
+rest of the proof and output along with the bottom clause ⊥in the final configuration.
+To do this, we exploit the reversibility of RevRes and show how to deduce from Ii−1 the collection
+Ti ∪Fi using the reversible weakening rule, where Fi is a polynomial-size set of clauses all from
+SoPLn. By running this proof in reverse and connecting it with the proof described above we prove
+Ii−1 from Ii, and we can add the clauses Fi to the initial configuration of the RevRes proof.
+This proof is very similar to the proof of Ai from Ii.
+Starting from an arbitrary clause
+Ii−1,a,j ∈Ii−1, we apply Lemma 10 to weaken the clause on all possible values of the successor
+pointer si,j, obtaining JIi−1,a,j ∨si,j ̸= kK for all k ∈[n]. Then, starting from the clause containing
+si,j ̸= k, we weaken on all values of pi+1,k, obtaining the family
+Bi = {JIi−1,a,j ∨si,j ̸= k ∨pi+1,k ̸= bK | j, k, a, b ∈[n]}
+32
+
+= {Jsi−1,a ̸= j ∨pi,j ̸= a ∨si,j ̸= k ∨pi+1,k ̸= bK | j, k, a, b ∈[n]}
+We again partition into two sets. The first is, of course, Ti, which is the case where j = b in Bi. The
+second set is Fi = Bi \ Ti, which is the case where j ̸= b, and observe that every clause in Fi is a no
+proper sink clause from SoPLn.
+We can now finish the proof of the claim. Starting from Ii ∪Fi, use the clauses in Ii to deduce
+the set of clauses Ti ∪Fi ∪Ji. Then, run the proof deducing Ti ∪Fi from Ii−1 in reverse to finally
+deduce Ii−1 ∪Ji. The total proof has polynomial size and O(log n)-width, and therefore the claim
+is proved.
+To modify the proof for EoPLn and RevResT, we make the following changes. First, we observe
+that all clauses in I1 that come from I1,a for a ̸= 1 are proper source clauses from EoPLn. All
+other clauses in the above proof that occur in the final line come from sets of the form Ji in the
+proof of the above claim. However, just like the clauses Fi are proper sink clauses from SoPLn, the
+clauses in Ji are exactly proper source clauses from the EoPLn. This completes the proof.
+It remains to modify the previous proof in order to accommodate decision-tree reductions to
+SoPL and EoPL. To do this we mimic the previous proof, but replace the construction of the sets
+of clauses in the proof with appropriate queries to the decision trees (which RevRes can simulate)
+in the reduction.
+Before we prove the theorem we introduce some helpful notation for manipulating decision trees.
+If T is a decision tree then P(T) is the set of root-to-leaf paths in T. If o is an output (i.e. leaf
+label) of T, then define Po(T) to be the set of root-to-leaf paths in T that output o. Given any
+path P ∈P(T), let CP := W
+ℓ∈P ¬ℓbe the negation of the literals along P; so, CP (x) = 1 iff P is
+not followed when T is evaluated on x. We also need an appropriate modification of Lemma 10 to
+arbitrary decision trees, which we prove next.
+Lemma 11. Let C be a width-k clause, and let T be a depth-d decision tree querying a set of
+variables disjoint from C. Using the reversible weakening rule we can prove, from C, the set of
+clauses {C ∨CP | P ∈P(T)} in width d + k and size at most 2d. Conversely, from the above set of
+clauses we can prove C using the reversible resolution rule in the same size and width.
+Proof. This proof is essentially the same as in Lemma 10.
+Now, starting from C, apply the
+reversible weakening rule on the first variable xi queried in the decision tree T to derive the clauses
+{C ∨xi, C ∨xi}. From there we can continue to apply the reversible weakening rule to simulate the
+queries of the decision tree. For instance, if after the decision tree learns xi = 0 it queries xj, we
+apply the reversible weakening rule to xi to obtain xi ∨xj, xi ∨xj. Continuing in this manner we
+can derive all clauses C ∨CP for P ∈P(T), and running the proof in reverse yields the lemma.
+Theorem 11. Let F be an unsatisfiable CNF formula. If there is a depth-d SoPLL-formulation
+(EoPLL-formulation, resp.) of S(F) then there is a RevRes refutation (with terminals, resp.) of F
+with width O(d) and size LO(1)2O(d).
+Proof. We follow the proof of Theorem 10 and focus on the case of SoPL. Assume F = C1∧· · ·∧Cm
+is defined on n variables x1, . . . , xn. In this proof we think of CNF formulas and sets of clauses
+interchangeably. In the SoPLL-formulation of S(F) we have functions
+si,j : {0, 1}n →[L] ∪{null}, pi,j : {0, 1}n →[L] ∪{null}, gi,j : {0, 1}n →[m]
+computing successors, predecessors, and solutions for each internal node, and we identify each
+function with the depth-d decision tree computing it.
+33
+
+For each (i, j) ∈[L −1] × [L] consider the CNF formula
+Ii,j,k(x) = Jsi,j(x) ̸= k ∨pi+1,k(x) ̸= jK.
+In other words, Ii,j,k is the analogue of the clause using the same notation from the proof of
+Theorem 10. We can use the decision trees for si,j and pi,j to encode Ii,j,k as a CNF formula
+explicitly. To do this, define the decision tree Ti,j as follows: take the decision tree si,j and at
+each leaf labelled k, simulate the decision tree pi+1,k (skipping queries to variables already made)
+to obtain an output a, and then output the pair (k, a). With this decision tree we can define
+Ii,j,k = {CP | P ∈P(k,j)(Ti,j)}. As in the proof of Theorem 10, define
+Ii,j :=
+n[
+k=1
+Ii,j,k,
+Ii :=
+n[
+j=1
+Ii,j,
+where we recall that we consider CNFs and sets of clauses interchangeably. When i = L, then
+for any j ∈[L] define the decision tree TL,j that simulates the decision tree sL,j and outputs 1
+if (L, j) is active and 0 otherwise. With this we define IL,j = {CP | P ∈P1(TL,j)}, and similarly
+define IL = SL
+j=1 IL,j. In this notation, the set of clauses Ii again encodes “every node on layer i is
+inactive”, where now the activity of a node is determined by the underlying decision trees in the
+formulation.
+The main step in this theorem is the following claim.
+Claim 5. For any i ∈{2, . . . , L}, there is a size LO(1)2O(d), O(d)-width RevRes proof of Ii−1 from
+Ii and a collection of weakenings of clauses from F.
+First we use the claim to finish the proof of the theorem. We begin by deriving from F the
+clauses IL (let us briefly postpone this argument), and then apply the claim L −1 times to derive
+I1. Let Q = S
+k̸=0 P(k,1)(T1,1) be the set of paths of T1,1 that end in a leaf labelled with (k, 1) for
+some k ̸= 0, and let R = P(T1,1) \ Q. Observe that I1,1 ⊆I1 is, by definition, the set of clauses
+{CP | P ∈Q}.
+Consider any path P ∈R, and note that P ends in a leaf labelled with (k, a) where either
+k = 0 or a ̸= 1. Each leaf witnesses that the distinguished node (1, 1) is inactive, and so we
+can then simulate the decision tree g1,1 and learn a solution of S(F). Therefore, for every path
+P ′ ∈P(g1,1) the clause CP ∨CP ′ is either a weakening of a clause in F, or, is trivially true if it
+contains both a literal and its negation. Therefore, by applying Lemma 11 we can deduce the clause
+CP from weakenings of clauses in F in size 2O(d) and width O(d). Applying this argument for
+every P ∈R allows us to deduce the clauses {CP | P ∈R}. We have now deduced all the clauses
+{CP | P ∈P(T1,1)}, and so applying Lemma 11 to all of these clauses allows us to deduce ⊥.
+Let us now describe how to derive from F the clauses
+IL = {J(L, j) is inactiveK | j ∈[L]} =
+n[
+j=1
+{CP | P ∈P1(TL,j)}.
+For any j ∈[L] consider the following decision tree T ′
+L,j: first run the decision tree TL,j that checks
+if (L, j) is active and then, if (L, j) is active, simulate the decision tree gL,j to find a solution to
+S(F). It follows that for any P ∈P1(TL,j) and any P ′ ∈P(gL,j) the clause CP ∨CP ′ is a weakening
+of a clause of F or is trivially true. We can therefore deduce CP from weakenings of clauses of F
+using Lemma 11, and repeating this argument for every j ∈[L] and every P ∈Pj we can derive
+every clause in IL. So, all that remains is to prove the claim.
+34
+
+Proof of Claim. The proof of this claim is modelled on the proof of the similar claim from the
+previous theorem. We again do the general case where i ≤L −1; the case where i = L proceeds
+similarly. Consider the set of clauses Ii and Ii−1. Our first goal is to derive the analogue of the set
+Ai in the proof of Claim 4.
+Let j ∈[L] be arbitrary and consider any clause C ∈Ii,j. By definition, there is a k ̸= 0 such
+that C = CP for some P ∈P(k,j)(Ti,j). Starting from C in the proof apply Lemma 11 to the decision
+tree pi,j to derive a set of clauses, each of the form C ∨CP , where P ∈P(pi,j). Then, for every
+a ∈[L] and any P ′ ∈Pa(pi,j), apply Lemma 11 again to C ∨CP and the decision tree si−1,a to
+obtain C ∨CP ∨CP ′ for every P ′ ∈P(si−1,a). Performing this procedure for all C ∈Ii yields
+Ai := {Jsi,j ̸= k ∨pi+1,k ̸= j ∨pi,j ̸= a ∨si−1,a ̸= bK | j, k, a, b ∈[n]}
+= {C ∨CP ∨CP ′ | a ∈[L], P ∈Pa(pi,j), P ′ ∈P(si−1,a)}.
+We partition Ai into two sets: the clauses in Ti where b = j, and the clauses in Ji = Ai \ Ti.
+Now, as in the proof of Claim 4, we use Ti along with some clauses in F to deduce Ii−1, and
+we again will exploit the reversibility of RevRes to do so. Namely, starting from Ii−1 we deduce
+Ti ∪Fi, where Fi is a collection of (weakenings of) clauses from F, and we can then just run the
+proof in reverse.
+Let D be any clause in Ii−1, and note that there is a j ∈[L] such that D = CP for some
+P ∈P(j,a)(Ti−1,a). Starting from D, apply Lemma 11 with the decision tree Ti,j to obtain a collection
+of clauses of the form D ∨CP ′ where P ′ ∈P(Ti,j). Let (k, b) be the output of the decision tree
+Ti,j on the path P ′. If b = j, then the clause D ∨CP ′ belongs to Ti. Moreover, if we repeat this
+argument for all D ∈Ii−1 then the collection of all such clauses obtained is exactly Ti. This is
+because from Ii, the collection of clauses Ti was obtained by starting from all clauses at leaves of
+Ti,j labelled with (k, j) and then querying pi,j and si−1,a; here, we have performed the exact same
+queries except we have reversed the order in which we simulated the decision trees pi,j and si−1,a.
+On the other hand, if b ̸= j, then the literals queried on the paths P ∈P(j,a)(Ti−1,a) and
+P ′ ∈P(k,b)(Ti,j) together witness that the node (i, j) is a proper sink node, and thus is a solution to
+the SoPL problem. Therefore, at the end of the path P ∪P ′ we can run the decision tree gi,j to
+determine a solution to S(F). This means that if P ′′ ∈P(gi,j) is any root-to-leaf path in gi,j, then
+the clause D ∨CP ′ ∨CP ′′ = CP ∨CP ′ ∨CP ′′ must be a weakening of a clause in F (or, again, is
+trivially true). Let Fi denote the set of all of these weakenings of clauses of F, obtained by running
+the above procedure for every clause D ∈Ii−1. We have therefore shown that from Ii−1 we can
+derive Ti ∪Fi.
+To finish the proof of the claim, we start with the clauses in Ii ∪Fi, deduce Ti ∪Ji from Ii to
+obtain the clauses Ti ∪Ji ∪Fi, and then deduce Ii−1 from Ti ∪Fi. This yields the clauses Ii−1 ∪Ji,
+and all of these steps required size LO(1)2O(d) and width at most O(d), completing the proof of the
+claim and the theorem.
+The above proof can be modified to capture EoPL in the same manner as the proof of Theorem 10.
+In particular, we can argue via the same techniques that the “junk” clauses in Ji and the clauses in
+I1 \ I1,1 each encode violations of the “no proper source” constraints of EoPL, and thus can be
+used to deduce weakenings of clauses in F by querying the appropriate solution decision trees gi,j.
+We omit the details.
+7
+Intersection Theorems
+We can now finally prove Theorem 6, our intersection theorem for Reversible Resolution. To prove
+the theorem we use the collapse theorems SOPL = PLS∩PPADS and EOPL = PLS∩PPAD [GHJ+22].
+35
+
+In particular, examining the proofs of the collapse theorems from [GHJ+22], we can extract the
+following black-box analogues.
+Theorem 12. Let R ⊆{0, 1}n × O be a total search problem, and suppose that there is a depth-d1,
+SoDs1-formulation of R and a depth-d2, SoLs2-formulation of R. Then there is a depth O(d)
+SoPLs3-formulation of R where d = max{d1, d2} and s = max{s1, s2}.
+Theorem 13. Let R ⊆{0, 1}n × O be a total search problem, and suppose that there is a depth-d1,
+SoDs1-formulation of R and a depth-d2, EoLs2-formulation of R. Then there is a depth O(d)
+EoPLs3-formulation of R where d = max{d1, d2} and s = max{s1, s2}.
+Theorem 6 is now an immediate corollary of the next theorem.
+Theorem 14. Let F be an unsatisfiable CNF formula. Let d1, d2, s1, s2 be positive integers and let
+d = max{d1, d2} and s = max{s1, s2}.
+−If there is a width-d1, size-s1 Resolution proof and a degree-d2, size-s2 unary Sherali–Adams
+proof of F then there is width O(d) and size sO(1)2O(d) RevRes proof of F.
+−If there is a width-d1, size-s1 Resolution proof and a degree-d2, size-s2 unary Nullstellensatz
+proof of F then there is width O(d) and size sO(1)2O(d) RevResT proof of F.
+In particular, RevRes(F) = Θ(Res(F) + uSA(F)) and RevResT(F) = Θ(Res(F) + uSA(F)).
+Proof. Since RevRes can be efficiently simulated by both Resolution and unary Sherali–Adams we
+have Res(F) = O(RevRes(F)) and uSA(F) = O(RevRes(F)). For the converse direction, suppose
+that we have a width-d1, size-s1 Resolution proof and a degree-d2, size-s2 unary Sherali–Adams
+proof. By [Kam20, Theorem 8.18] there is a depth-O(d1) SoDO(s1)-formulation of S(F) and by
+Theorem 8, there is a depth-O(d2) EoLO(s2)-formulation for S(F). Applying the above collapse
+theorem, this implies that there is a depth-O(d) SoPLs3-formulation of S(F), where d = max{d1, d2}
+and s = max{s1, s2}. Finally, applying Theorem 9, we obtain a RevRes proof of F with width O(d)
+and size sO(1)2O(d). We therefore have
+RevRes(F) = O(d + log s) = O(d1 + d2 + log s1 + log s2) = O(Res(F) + uSA(F)).
+A similar proof using Theorem 7 instead yields the characterisation of RevResT.
+8
+Two Further Separations
+In this section we prove Theorems 4 and 5, restated below.
+Theorem 4. PLSdt ̸⊆PPPdt.
+Theorem 5. EOPLdt ̸⊆UEOPLdt.
+The proofs of these theorems rely on a “glueing” technique that was implicitly used in [BCE+98]
+and which we make more explicit in this paper. We use the glueing technique as a tool to alleviate
+the lack of good proof systems characterizing PPP and UEOPL. In particular, The glueing technique
+reduces the separation in Theorem 4 to the easier separation PLSdt ̸⊆PPADSdt, which we already
+proved in Corollary 1 and Theorem 5 uses the glueing technique together with a query lower bound
+for EoPL from [HY20]. This glueing technique was also recently generalized by Jain, Li, Robere
+and Xun [JLRX24] to prove lower bounds for classes above PPP corresponding to the generalized
+pigeonhole principles.
+36
+
+8.1
+Glueability
+Let R = (Rn), Rn ⊆{0, 1}n × On, be a TFNPdt problem.
+We consider partial assignments
+x ∈{0, 1, ∗}n that define partial inputs to Rn. An index i with xi = ∗is interpreted as a boolean
+variable whose value is not yet assigned. The size of a partial assignment is its number of non-∗
+bits. We say that two partial assignments x, y ∈{0, 1, ∗}n are consistent if x and y agree on their
+non-∗bits. If x and y are consistent, we can form the partial assignment x ∪y that assigns values
+to all variables assigned values in x or y. We further say that x is witnessing if there exists some
+solution o ∈On such that for any y ∈{0, 1}n consistent with x we have o ∈Rn(y).
+Definition 8 (Glueable sets of assignments). A set of partial assignments P ⊆{0, 1, ∗}n is k-glueable
+if for each non-witnessing and consistent p, p′ ∈P, their union p∪p′ is non-witnessing, and moreover,
+if we restrict Rn by the assignment p ∪p′, the resulting search problem (Rn ↾p ∪p′) has decision
+tree complexity greater than k.
+This and following definitions are mostly motivated by their use in Lemma 12 and Lemma 14.
+For instance, in Lemma 12 we consider P to be the set of all partial assignments obtained by
+collecting leaves pointing to a particular hole in the PPPdt-reduction. The main idea is that the
+glueability property of P then allows to disambiguate between pigeons to find which (if any) is
+mapping to the particular hole.
+Definition 9 (Completions). Let x ∈{0, 1, ∗}n be a partial assignment and T a decision tree
+over {0, 1}n. The completion C(T, x) of x by T is the set obtained by collecting all the partial
+assignments corresponding to leaves of T that are consistent with x and taking their union with x.
+That is, C(T, x) := {x ∪p : p is a leaf of T consistent with x}.
+Definition 10 (Glueable problem). Let f : N →N be a function. We say R is f(k)-glueable if any
+set P ⊆{0, 1, ∗}n of partial assignments of size at most k, where k ≤poly(log n), can be completed
+by decision trees of depth at most f(k) such that the union of the completions is k-glueable. That
+is, if there exists for each x ∈P, some decision tree Tx such that ∪x∈P C(Tx, x) is k-glueable. We
+further say that R is glueable if it is poly(k)-glueable.
+For example, it is implicit in [BCE+98, §3.1] that the PPAdt-complete problem Lonely (given a
+matching of an odd number of nodes, find an isolated node) is O(k)-glueable. In the case of Lonely,
+if x ∈{0, 1, ∗}n asserts that node u points to node v, then Tx queries the pointing node for v so
+that a solution is immediately witnessed if u is isolated. We will shortly prove that SoD and EoPL
+are glueable, too. In what follows, we slightly depart from the above notation and also consider
+pointer-like partial assignments (as opposed to assignments over {0, 1, ∗} only). Those are treated
+naturally; for instance, we can assume that reductions are constrained to query either all or no bits
+corresponding to a pointer.
+8.2
+PLSdt ̸⊆PPPdt
+We introduce for convenience the Reversible-Pigeon problem, which is a variant of Pigeon
+where a reverse pointer is provided for each hole.
+Reversible-Pigeon (RPigeonn). This problem is the same as Pigeon except that we are also
+given reverse pointers pu ∈[n] ∪{null} for each hole u ∈[n −1]. The goal is to output any
+solution of Pigeon or
+2. u ∈[n] such that psu ̸= u.
+(successor/predecessor mismatch)
+37
+
+This problem is known to be PPADSdt-complete (see, e.g., [GHJ+22, Lemma 1]) so that RPigeondt =
+PPADSdt. The following key lemma is implicit in [BCE+98, §3.1].
+Lemma 12. If R ∈PPPdt and R is glueable, then R ∈PPADSdt.
+Proof. Fix a Pigeonm-formulation (fi, gi,i′)i,i′∈[m] of Rn that witnesses R ∈PPPdt and let (Ti, Si,i′)
+be decision trees of depth k = poly(log n) implementing this reduction. Since R is glueable, it
+is possible to complete the root-to-leaf paths of each Ti to get a reduction (T ′
+i, Si,i′) of depth
+d = poly(log n) for which the set P = ∪i∈[m]leaves(T ′
+i) is k-glueable. (Note that each Si,i′ remains
+unchanged and has depth at most k.) We show how to construct decision trees (Hj)j∈[m] of depth
+≤d2 that compute reverse pointers for each hole of the Pigeonm instance. We start with the
+following claim.
+Claim 6. Suppose p ∈leaves(T ′
+i) and p′ ∈leaves(T ′
+i′) are distinct leaves that are both non-witnessing
+and labelled with the same hole. Then p and p′ are inconsistent.
+Proof. If i = i′, then the claim is true since any two distinct leaves of the same tree are inconsistent.
+Suppose i ̸= i′ and suppose for contradiction that p and p′ are consistent. Then, (i, i′) is a valid
+solution to the Pigeonm instance (T ′
+1(z), T ′
+2(z), . . . , T ′
+m(z)) for any z ∈{0, 1}n extending p ∪p′. By
+correctness of the reduction, this further implies that Si,i′ can solve (Rn ↾p ∪p′) with at most k
+queries—but this contradicts the fact that P is k-glueable.
+Let us write Pj ⊆P for the set of all non-witnessing partial assignment corresponding to leaves
+labelled with hole j. The predecessor tree Hj computes as follows. Pick an arbitrary leaf p ∈Pj
+and query all the variables contained in p. At every leaf x ∈{0, 1, ∗}n of the current version of Hj,
+the next step depends on the set of x-consistent assignments P x
+j = {p ∈Pj : p consistent with x}.
+1. If |P x
+j | = 0, then output label null.
+2. If |P x
+j | = 1, then output the unique i ∈[m] (by Claim 6) such that P x
+j ∩leaves(T ′
+i) ̸= ∅.
+3. If |P x
+j | ≥2, pick an arbitrary p ∈P x
+j and recurse by querying its variables, etc.
+Note that each predecessor tree Hj has depth at most d2: by pairwise inconsistency of Pj, at most
+d paths are queried each of depth at most d. To complete the RPigeonm-formulation of Rn, it
+remains to specify decision trees (Si)i∈[m] that transform RPigeonm-solutions of type (2) into
+Rn-solutions. Indeed, suppose T ′
+i(z) = j but Hj(z) ̸= i for some input z to Rn. Then, since Hj
+decides unambiguously which non-witnessing assignment in Pj is consistent with z (if any), it must
+be the case that the leaf outputting T ′
+i(z) = j is not in Pj, which means that it is witnessing. Thus,
+Si(z) simply runs T ′
+i(z) and an Rn-solution must be witnessed during its execution.
+We note that the method used to disambiguate pigeons in Lemma 12 is common. For instance,
+it is key to prove the folklore certificate-to-query result D(f) ≤C1(f) · C0(f) for boolean functions f.
+To show Theorem 4, the last missing piece is to show that SoD is glueable. Indeed, if SoD ∈PPPdt,
+then Lemma 12 would imply that PLSdt ⊆PPADSdt, which contradicts Corollary 1. We show that
+SoD is glueable in Lemma 13 below.
+For technical convenience, we consider here a minor variation of how we encode the successor
+pointers in the input to SoD. We let the input consist of successor pointers su ∈[n] for each grid
+node u ∈[n]×[n] as well as an “active” bit au ∈{0, 1}, where au = 0 means that u has a null pointer.
+This is merely a different way to encode null successors, and indeed, there is a trivial reduction
+to and from the original SoD problem. The advantage of this new encoding is that it allows for
+querying the activity of a node without querying its successor. This simplifies the completion process
+in the proof below.
+38
+
+Lemma 13. SoD is glueable.
+Proof. We show that SoDn is O(k)-glueable. Fix some partial SoDn-assignment x = (s, a) of
+size k = poly(log n), that is, su ∈[n] ∪{∗} and au ∈{0, 1, ∗} for each grid node u ∈[n] × [n].
+The decision tree T completing x starts by checking whether x queries any active node below row
+n −k −1. If yes, T picks any one such active node and follows the successor path until a sink is
+found, making the completion witnessing. Note that this step incurs at most O(k) queries. Finally,
+T ensures that any successor query in x is followed by a query to the active bit of the successor.
+This costs at most O(k) further queries.
+Let P be an arbitrary set of partial assignments each of size at most k = poly(log n) and let P ′
+be its completion with respect to the procedure defined above. We first show that P ′ is k-gluable.
+Pick any two non-witnessing and consistent p, p′ ∈P ′ and suppose toward contradiction that their
+union p∪p′ is witnessing. If it reveals a SoD solution u of type (1) or (2), then it must be that one of
+p and p′ checks for the active bit of u: a contradiction with the fact that p and p′ are non-witnessing.
+On the other hand, if p ∪p′ reveals a solution u of type (3), then it must be that one of p and p′
+checks for the successor su of u, but the completion T forces this check to be followed by a query to
+the active bit of su, making one of the initial partial assignments witnessing as well. Hence p ∪p′ is
+non-witnessing.
+We finally argue that (Rn ↾p∪p′) has query complexity greater than k by describing an adversary
+that can fool any further k queries to p ∪p′ without witnessing a solution. Recall that p ∪p′ makes
+no queries to nodes below row n −k −1. The adversary answers queries as follows. If the successor
+pointer of an active node is queried, then we answer with a pointer to any unqueried node on the
+next row and make it active (there always exists one as k ≪n). If a node u is queried that is not
+the successor of any node, we make u inactive (au = 0 and su is arbitrary). This scheme ensures
+that a solution can only lie on the very last row n, which is not reachable in k queries starting from
+row n −k −1.
+8.3
+EOPLdt ̸⊆UEOPLdt
+We prove Theorem 5 using a similar plan as in Section 8.2 above. Namely, we first show (Lemma 14)
+that if we have a problem R ∈UEOPLdt that is glueable, then in fact R ∈FPdt, that is, Rn admits
+a shallow decision tree solving it. Second, we show (Lemma 15) that EoPLn is glueable. The
+combination of these two lemmas implies that if EOPLdt ⊆UEOPLdt, then EOPLdt = FPdt. But it
+is known from prior work [HY20] (building on [Ald83, Zha09]) that EOPLdt ̸= FPdt. This proves
+Theorem 5.
+It remains to prove Lemmas 14 and 15.
+Lemma 14. If R ∈UEOPLdt and R is glueable, then R ∈FPdt.
+Proof. Fix an UEoPLm-formulation (fu, gu,u′)u,u′∈[m]×[m] of Rn that witnesses R ∈UEOPLdt and
+let (Tu, Su,u′) be decision trees of depth k = poly(log n) implementing this reduction. Note that the
+leaves of each Tu are labelled by a successor and predecessor pointers in [m]. At the cost of doubling
+the depth of each Tu, we may assume that each leaf is additionally labelled with an “activity” bit,
+which can be computed by appending to each leaf labelled with successor v the decision tree Tv.
+Since R is glueable, it is possible to further complete the leaves of each Tu to get a reduction
+(T ′
+u, Su,u′) of depth d = poly(log n) for which the set of leaves P = ∪u∈[m]×[m]leaves(T ′
+u) is k-glueable
+and each leaf label carries the aforementioned activity bit. Let us say that a node u is good for
+input z if the leaf reached by T ′
+u(z) is non-witnessing and u is active.
+Claim 7. For every input z, there is at most one good node on each row.
+39
+
+⇝
+T
+k + 1
+k + 1
+⊥
+⊥
+⊥
+Completion by T
+⊥
+⊥
+⊥
+Partial assignment x
+Figure 8: Example of a non-witnessing completion. A node is blue if au = 1, orange if au = 0, and white
+if au = ∗is not queried. The symbol ⊥indicates a null pointer. The first and last k + 1 rows contain no
+active nodes, besides those lying on the path starting at the distinguished node (1, 1).
+Proof. Fix a row j ∈[m] and suppose for the sake of contradiction that the j-th row contains two
+good nodes u′ and u on some input z. Let p ∈leaves(T ′
+u) and p′ ∈leaves(T ′
+u′) be the leaves reached
+on input z. Then p and p′ are a pair of non-witnessing and consistent assignments. Thus, (u, u′)
+is a solution to UEoPLm on any input that extends p ∪p′. Hence the depth-k decision tree Su,u′
+solves the search problem (Rn ↾p ∪p′). But this contradicts the fact that P is k-glueable.
+Using this claim similarly as in the proof of Lemma 12, we can construct, for each row j ∈[m], a
+decision tree Aj of depth ≤d2 that computes the column-index of a good node on row j or outputs
+null if the row contains no good node. The main argument is again the disambiguation trick.
+We can now design an efficient decision tree for Rn: At the cost of running O(log m) = poly(log n)
+of the Aj trees, perform a binary search over the m rows to find a good node u on row j such that
+the next row j + 1 contains no good nodes. This means that either (i) the successor of u is inactive,
+in which case we have found a solution to UEoPLm and we can use the S-trees to find a solution
+to Rn, or (ii) the successor u′ of u is active and T ′
+u′(z) is witnessing, which solves Rn.
+We next show that an EOPLdt-complete problem is glueable. Instead of working with EoPLn,
+it is convenient again to vary the input encoding. We define EoPL∗as a version of EoPL where in
+addition to successor/predecessor pointers, we are also given an “activity” bit.
+End-of-Potential-Line∗(EoPL∗
+n). In addition to predecessor/successor pointers, each u ∈
+[n] × [n] has an activity indicator bit au ∈{0, 1}. We add the following solutions to EoPL:
+5. u, if u’s activity does not match au.
+(active bit mismatch)
+6. u, if av = 0 and (sv ̸= null or pv ̸= null).
+(inactive node with a pointer)
+7. u, if av = 1 and (sv = null or pv = null).
+(active node with a null-pointer)
+Note that EoPL∗is efficiently reducible to and from EoPL, so that EoPL∗is EOPLdt-complete.
+Lemma 15. EoPL∗is glueable.
+40
+
+Proof. We show that EoPL∗is O(k)-glueable. Fix some partial EoPL∗-assignment x = (p, s, a) of
+size k = poly(log n). The tree T that completes x proceeds as follows. We start by querying all
+variables assigned in x. Then we iterate each of the following steps until a solution is found or no
+further queries are made.
+1. Always query activity bits and reverse pointers. If we have queried a null-pointer sv = null or
+pv = null, then we also query the activity bit av. This activity bit is av = 0 unless we have
+found a solution of type (7).
+Moreover, if we have queried a non-null pointer su = v (resp. pu = v), then we also query
+the bits au, av and the pointer pv (resp. sv). Note that both activity bits must be 1 and the
+reverse pointer must point back, pv = u (resp. sv = u), as otherwise we can find a solution by
+making a couple more queries. Indeed, if au = 0, then there is a solution of type (6). If au = 1
+and av = 0, then we can find a solution by determining the activity of v: either v is active,
+which is a mismatch with av = 0 (type (5)), or v is inactive, which creates a sink. Finally,
+if au = 1 and pv ̸= u, then u is inactive, which is a mismatch with au = 1 (type (5)).
+2. Follow the distinguished path. Follow the successor path starting at the distinguished source
+node (1, 1) until some node on row k + 1 is reached or a sink is found.
+3. Follow early paths. If we have queried au = 1 for some node u in the first k + 1 rows that does
+not lie on the path discovered in Item 2, then we follow u’s predecessor path until a solution
+is found.
+4. Follow late paths. If we have queried au = 1 for some node u in the last k + 1 rows, then we
+follow u’s successor path until a solution is found.
+This completion adds at most O(k) queries to x. An example of a completion that is non-witnessing
+is given in Figure 8. It is straightforward to argue that the resulting set of completed assignments is
+k-glueable using an adversary strategy similar to the one described in the proof of Lemma 13.
+A
+Appendix: Coefficient Size in Algebraic Proofs
+In this appendix we show that if there are low-degree Nullstellensatz and Sherali–Adams refutations
+over Z, then the coefficients in the refutations will also be not too large in magnitude. In particular,
+if the degree of the proofs are d, the the magnitude of the coefficients can be assumed to be at
+most exp(nO(d)) without loss of generality. For Sherali–Adams this follows easily as any Sherali–
+Adams refutation over the reals can be converted into a Sherali–Adams refutation over Z without
+badly affecting the coefficient size.
+Theorem 15. Let F be an unsatisfiable CNF formula on n variables and m clauses. If there is a
+degree-d Sherali–Adams refutation of F then there is a degree-d Sherali–Adams refutation of F over
+Z where every coefficient is bounded in magnitude by exp(nO(d)).
+Proof. This is essentially the usual proof of completeness for Sherali–Adams (see e.g. [FKP19]).
+Consider a degree-d Sherali–Adams refutation of F which, by Lemma 6, we can write as
+m
+X
+i=1
+−JiCi + J = −1.
+We can express the existence of such a proof as a system of integer linear inequalities of the form
+Ax = b, x ≥0 over mnO(d) = nO(d) variables and over nO(d) constraints where all coefficients of the
+41
+
+matrix A and b are in {1, 0, −1}, and indeed b has a single non-zero entry with value −1 (see [FKP19,
+Chapter 2] for an explicit description of the system). By known results on linear programming this
+implies that the coefficients of the above Sherali–Adams refutation can be assumed to be rational
+with description length nO(d). Let L be the least common multiple of the denominators all rational
+numbers occurring in the refutation. By multiplying through by L we obtain the identity
+m
+X
+i=1
+−LJiCi + LJ = −L.
+We can then add the integer L −1 to both sides (noting that LJ + L −1 is a conical junta) to
+obtain an integer-coefficient Sherali–Adams refutation with the desired coefficient bound.
+For Nullstellensatz the proof is slightly different as we need to recruit known bounds for integer
+solutions to systems of linear equations.
+Theorem 16. Let F be an unsatisfiable CNF formula on n variables and m clauses. If there is a
+degree-d Nullstellensatz refutation of F over Z, then there is a degree-d Nullstellensatz refutation
+over Z where every coefficient has magnitude at most exp(nO(d)).
+Proof. This follows the standard proof of completeness for Nullstellensatz proofs (see e.g. [Pit96,
+Bus98]). Write F = C1 ∧· · · ∧Cm and suppose F has n variables. A degree-d Z-Nullstellensatz
+proof of F can be written as
+m
+X
+i=1
+qiCi = 1
+for some integer-coefficient multilinear polynomials qi. We can express the existence of such a proof
+as a system of Z-linear equations Ax = b over mnO(d) variables — roughly one variable for each
+monomial m of degree at most d — where each coefficient in A and b is small. The result then
+follows by the known strongly-polynomial time algorithms for finding integer solutions to systems of
+linear equations over Z (in particular, via the Hermite Normal Form [KB79]).
+The system of linear equations is defined as follows. For each i ∈[m] and S ⊆[n] with |S| ≤d
+we let ˆqi(S) ∈Z denote the coefficient of the monomial xS = Q
+i∈S xi in the polynomial qi. Letting
+Cn,d denote all subsets of [n] of size d, we can write the Nullstellensatz refutation as
+m
+X
+i=1
+X
+S∈Cn,d
+ˆqi(S)xSCi = 1.
+From this, we get a system of Z-linear equations over variables ˆqi(S) for each i ∈[m], S ∈Cn,d
+enforcing that all monomials in the proof of degree d > 1 must cancel out to 0, and the monomials
+of degree 0 must sum to 1. The system of equations has one constraint for each monomial xS with
+S ∈Cn,d and at most m|Cn,d| ≤mnO(d) variables; each coefficient in the system of linear equations
+is ±1 from the expansion of xSCi into a sum of monomials. By reducing to Hermite Normal Form
+we can find an integer solution to this system with coefficients of size at most exp(nO(d)).
+Finally, we can consider RevRes proofs. An obvious fact is that any Resolution proof with width
+w has nO(w) distinct clauses without loss of generality. However, this result fails for RevRes, since
+we can no longer reuse clauses an unlimited number of times. By combining the previous results
+with the intersection theorem (Theorem 14), one can also immediately deduce the following result
+that gives a weak bound on the size of RevRes and RevResT proofs with bounded width. We omit
+the proof.
+42
+
+Corollary 6. Let F be an unsatisfiable CNF formula on n variables. If there is a width-d RevRes
+refutation of F (RevResT resp.) then there is a width-O(d) and size exp(nO(d)) RevRes refutation
+of F (RevResT resp.).
+Acknowledgements
+We thank Albert Atserias, Ilario Bonacina, Pritish Kamath, and David Steurer for discussions,
+and the anonymous reviewers for their suggestions that helped us improve the presentation of the
+paper. M.G., A.H., S.J., and G.M. were supported by the Swiss State Secretariat for Education,
+Research and Innovation (SERI) under contract number MB22.00026. S.J. did part of the work
+while being supported by the Quantum Systems Accelerator through DOE. W.P., R.R., and R.T.
+were supported by NSERC.
+43
+
+References
+[AL19]
+Albert Atserias and Massimo Lauria. Circular (yet sound) proofs. In Proceedings of
+the 22nd Theory and Applications of Satisfiability Testing (SAT), pages 1–18. Springer,
+2019. doi:10.1007/978-3-030-24258-9 1.
+[Ald83]
+David Aldous. Minimization algorithms and random walk on the d-cube. The Annals
+of Probability, 11(2):403–413, 1983. URL: http://www.jstor.org/stable/2243696.
+[ALN16]
+Albert Atserias, Massimo Lauria, and Jakob Nordstr¨om.
+Narrow proofs may be
+maximally long. ACM Transactions on Computational Logic, 17(3):1–30, 2016. doi:
+10.1145/2898435.
+[BB22]
+Ilario Bonacina and Maria Luisa Bonet.
+On the strength of Sherali-Adams and
+Nullstellensatz as propositional proof systems. In Proceedings of the 37th Symposium
+on Logic in Computer Science (LICS). ACM, aug 2022. doi:10.1145/3531130.3533344.
+[BCE+98]
+Paul Beame, Stephen Cook, Jeff Edmonds, Russell Impagliazzo, and Toniann Pitassi.
+The relative complexity of NP search problems. Journal of Computer and System
+Sciences, 57(1):3–19, 1998. doi:10.1006/jcss.1998.1575.
+[BCIP02]
+Joshua Buresh-Oppenheim, Matthew Clegg, Russell Impagliazzo, and Toniann Pitassi.
+Homogenization and the polynomial calculus. Computational Complexity, 11(3-4):91–
+108, 2002. doi:10.1007/s00037-002-0171-6.
+[Ben09]
+Eli Ben-Sasson. Size-space tradeoffs for resolution. SIAM Journal on Computing,
+38(6):2511–2525, 2009. doi:10.1137/080723880.
+[BFI22]
+Sam Buss, Noah Fleming, and Russell Impagliazzo. TFNP characterizations of proof
+systems and monotone circuits, 2022. URL: https://eccc.weizmann.ac.il/report/2022/141/.
+[BIK+94]
+Paul Beame, Russell Impagliazzo, Jan Kraj´ıˇcek, Toniann Pitassi, and Pavel Pudl´ak.
+Lower bounds on Hilbert’s Nullstellensatz and propositional proofs. In Proceedings
+of the 35th Symposium on Foundations of Computer Science (FOCS), pages 794–806,
+1994. doi:10.1109/SFCS.1994.365714.
+[BKT14]
+Samuel Buss, Leszek Aleksander Ko lodziejczyk, and Neil Thapen.
+Fragments of
+approximate counting. The Journal of Symbolic Logic, 79(2):496–525, 2014. URL:
+http://www.jstor.org/stable/43303745.
+[BLM07]
+Mar´ıa Luisa Bonet, Jordi Levy, and Felip Many`a. Resolution for Max-SAT. Artificial
+Intelligence, 171(8-9):606–618, 2007. doi:10.1016/j.artint.2007.03.001.
+[BM04]
+Joshua Buresh-Oppenheim and Tsuyoshi Morioka. Relativized NP search problems
+and propositional proof systems. In Proceedings of the 19th IEEE Conference on
+Computational Complexity (CCC), pages 54–67, 2004. doi:10.1109/CCC.2004.1313795.
+[BR98]
+Paul Beame and Søren Riis. More on the relative strength of counting principles. In
+Proceedings of the DIMACS Workshop on Proof Complexity and Feasible Arithmetics,
+volume 39, pages 13–35, 1998.
+44
+
+[BT22]
+Ilario Bonacina and Neil Thapen. A separation of PLS from PPP. Technical report,
+Electronic Colloquium on Computational Complexity (ECCC), 2022. URL: https:
+//eccc.weizmann.ac.il/report/2022/089/.
+[Bus98]
+Samuel Buss. Lower bounds on Nullstellensatz proofs via designs. In Proof Complexity
+and Feasible Arithmetics, pages 59–71. AMS, 1998.
+[CDDT09]
+Xi Chen, Decheng Dai, Ye Du, and Shang-Hua Teng. Settling the complexity of
+Arrow-Debreu equilibria in markets with additively separable utilities. In Proceedings
+of the 50th Symposium on Foundations of Computer Science (FOCS), pages 273–282,
+2009. doi:10.1109/FOCS.2009.29.
+[CDO15]
+Xi Chen, David Durfee, and Anthi Orfanou. On the complexity of Nash equilibria in
+anonymous games. In Proceedings of the 47th Symposium on Theory of Computing
+(STOC), pages 381–390, 2015. doi:10.1145/2746539.2746571.
+[CDT09]
+Xi Chen, Xiaotie Deng, and Shang-Hua Teng. Settling the complexity of computing
+two-player Nash equilibria. Journal of the ACM, 56(3):14:1–14:57, 2009. doi:10.1145/
+1516512.1516516.
+[CEI96]
+Matthew Clegg, Jeff Edmonds, and Russell Impagliazzo. Using the Groebner basis
+algorithm to find proofs of unsatisfiability. In Proceedings of the 28th Symposium on
+Theory of Computing (STOC), pages 174–183, 1996. doi:10.1145/237814.237860.
+[CPY17]
+Xi Chen, Dimitris Paparas, and Mihalis Yannakakis. The complexity of non-monotone
+markets. Journal of the ACM, 64(3):20:1–20:56, 2017. doi:10.1145/3064810.
+[CR79]
+Stephen Cook and Robert Reckhow. The relative efficiency of propositional proof
+systems. Journal of Symbolic Logic, 44(1):36–50, 1979. doi:10.2307/2273702.
+[CSVY08]
+Bruno Codenotti, Amin Saberi, Kasturi Varadarajan, and Yinyu Ye. The complexity of
+equilibria: Hardness results for economies via a correspondence with games. Theoretical
+Computer Science, 408(2–3):188–198, 2008. doi:10.1016/j.tcs.2008.08.007.
+[Das19]
+Constantinos Daskalakis. Equilibria, fixed points, and computational complexity. In
+Proceedings of the International Congress of Mathematicians (ICM). World Scientific,
+2019. doi:10.1142/9789813272880 0009.
+[DGP09]
+Constantinos Daskalakis, Paul Goldberg, and Christos Papadimitriou. The complexity
+of computing a Nash equilibrium. SIAM Journal on Computing, 39(1):195–259, 2009.
+doi:10.1137/070699652.
+[DM12]
+Stefan Dantchev and Barnaby Martin. Rank complexity gap for Lov´asz-Schrijver
+and Sherali-Adams proof systems. computational complexity, 22(1):191–213, nov 2012.
+doi:10.1007/s00037-012-0049-1.
+[DMR09]
+Stefan Dantchev, Barnaby Martin, and Mark Rhodes. Tight rank lower bounds for the
+Sherali–Adams proof system. Theoretical Computer Science, 410(21-23):2054–2063,
+2009. doi:10.1016/j.tcs.2009.01.002.
+[DP11]
+Constantinos Daskalakis and Christos Papadimitriou. Continuous local search. In
+Proceedings of the 22nd Symposium on Discrete Algorithms (SODA), pages 790–804.
+SIAM, 2011. doi:10.1137/1.9781611973082.62.
+45
+
+[DQS12]
+Xiaotie Deng, Qi Qi, and Amin Saberi. Algorithmic solutions for envy-free cake cutting.
+Operations Research, 60(6):1461–1476, 2012. doi:10.1287/opre.1120.1116.
+[dRGR22]
+Susanna de Rezende, Mika G¨o¨os, and Robert Robere. Proofs, circuits, and communi-
+cation. SIGACT News, 53(1), 2022. doi:10.1145/3532737.3532745.
+[dRNMR19] Susanna de Rezende, Jakob Nordstr¨om, Or Meir, and Robert Robere. Nullstellensatz
+size-degree trade-offs from reversible pebbling. In Amir Shpilka, editor, Proceedings of
+the 34th Computational Complexity Conference (CCC), volume 137, pages 18:1–18:16.
+Schloss Dagstuhl, 2019. doi:10.4230/LIPIcs.CCC.2019.18.
+[FG22]
+Aris Filos-Ratsikas and Paul Goldberg. The complexity of necklace splitting, consensus-
+halving, and discrete ham sandwich. SIAM Journal on Computing, 2022. (to appear).
+doi:10.1137/20m1312678.
+[FGGR22]
+Noah Fleming, Mika G¨o¨os, Stefan Grosser, and Robert Robere. On semi-algebraic proofs
+and algorithms. In Proceedings of the 13th Innovations in Theoretical Computer Science
+Conference (ITCS), volume 215 of Leibniz International Proceedings in Informatics
+(LIPIcs), pages 69:1–69:25. Schloss Dagstuhl, 2022. doi:10.4230/LIPIcs.ITCS.2022.69.
+[FGHS21]
+John Fearnley, Paul W. Goldberg, Alexandros Hollender, and Rahul Savani. The
+complexity of gradient descent: CLS = PPAD ∩PLS. In Proceedings of the 53rd
+Symposium on Theory of Computing (STOC), pages 46–59, 2021. doi:10.1145/3406325.
+3451052.
+[FGMS20]
+John Fearnley, Spencer Gordon, Ruta Mehta, and Rahul Savani.
+Unique end of
+potential line. Journal of Computer and System Sciences, 114:1–35, 2020. doi:10.1016/j.
+jcss.2020.05.007.
+[FKP19]
+Noah Fleming, Pravesh Kothari, and Toniann Pitassi.
+Semialgebraic proofs and
+efficient algorithm design. Foundations and Trends in Theoretical Computer Science,
+14(1-2):1–221, 2019. doi:10.1561/0400000086.
+[FMSV23]
+Yuval Filmus, Meena Mahajan, Gaurav Sood, and Marc Vinyals. Maxsat resolution and
+subcube sums. ACM Trans. Comput. Log., 24(1):8:1–8:27, 2023. doi:10.1145/3565363.
+[FPT04]
+Alex Fabrikant, Christos Papadimitriou, and Kunal Talwar. The complexity of pure
+Nash equilibria. In Proceedings of the 36th ACM Symposium on Theory of Computing
+(STOC), pages 604–612, 2004. doi:10.1145/1007352.1007445.
+[GHJ+22]
+Mika G¨o¨os, Alexandros Hollender, Siddhartha Jain, Gilbert Maystre, William Pires,
+Robert Robere, and Ran Tao. Further collapses in TFNP. In Proceedings of the 37th
+Computational Complexity Conference (CCC), pages 33:1–33:15, 2022. doi:10.4230/
+LIPICS.CCC.2022.33.
+[GKRS18]
+Mika G¨o¨os, Pritish Kamath, Robert Robere, and Dmitry Sokolov. Adventures in
+monotone complexity and TFNP. In Proceedings of the 10th Innovations in Theoretical
+Computer Science Conference (ITCS), volume 124, pages 38:1–38:19, 2018. doi:10.4230/
+LIPIcs.ITCS.2019.38.
+[GP18]
+Mika G¨o¨os and Toniann Pitassi. Communication lower bounds via critical block sensi-
+tivity. SIAM Journal on Computing, 47(5):1778–1806, 2018. doi:10.1137/16M1082007.
+46
+
+[Hak21]
+Tuomas Hakoniemi. Monomial size vs. bit-complexity in sums-of-squares and polyno-
+mial calculus. In Proceedings of the 36th Symposium on Logic in Computer Science
+(LICS). IEEE, 2021. doi:10.1109/lics52264.2021.9470545.
+[HKT24]
+Pavel Hub´aˇcek, Erfan Khaniki, and Neil Thapen. TFNP Intersections Through the
+Lens of Feasible Disjunction. In Venkatesan Guruswami, editor, 15th Innovations in
+Theoretical Computer Science Conference (ITCS 2024), volume 287 of Leibniz Inter-
+national Proceedings in Informatics (LIPIcs), pages 63:1–63:24, Dagstuhl, Germany,
+2024. Schloss Dagstuhl – Leibniz-Zentrum f¨ur Informatik. URL: https://drops.dagstuhl.
+de/entities/document/10.4230/LIPIcs.ITCS.2024.63, doi:10.4230/LIPIcs.ITCS.2024.63.
+[HN12]
+Trinh Huynh and Jakob Nordstr¨om. On the virtue of succinct proofs: Amplifying
+communication complexity hardness to time–space trade-offs in proof complexity. In
+Proceedings of the 44th Symposium on Theory of Computing (STOC), pages 233–248.
+ACM, 2012. doi:10.1145/2213977.2214000.
+[HY20]
+Pavel Hub´aˇcek and Eylon Yogev. Hardness of continuous local search: Query complexity
+and cryptographic lower bounds. SIAM Journal on Computing, 49(6):1128–1172, 2020.
+doi:10.1137/17m1118014.
+[IR21]
+Dmitry Itsykson and Artur Riazanov.
+Proof complexity of natural formulas via
+communication arguments. In Proceedings of the 36th Computational Complexity
+Conference (CCC), volume 200, pages 3:1–3:34. Schloss Dagstuhl, 2021. doi:10.4230/
+LIPIcs.CCC.2021.3.
+[JLRX24]
+Siddhartha Jain, Jiawei Li, Robert Robere, and Zhiyang Xun. On Pigeonhole Principles
+and Ramsey in TFNP, 2024. arXiv:2401.12604.
+[JPY88]
+David Johnson, Christos Papadimitriou, and Mihalis Yannakakis. How easy is local
+search? Journal of Computer and System Sciences, 37(1):79–100, 1988. doi:10.1016/
+0022-0000(88)90046-3.
+[Juk12]
+Stasys Jukna. Boolean Function Complexity: Advances and Frontiers, volume 27 of
+Algorithms and Combinatorics. Springer, 2012.
+[Kam20]
+Pritish Kamath. Some hardness escalation results in computational complexity theory.
+PhD thesis, Massachusetts Institute of Technology, 2020. URL: https://dspace.mit.edu/
+handle/1721.1/128290.
+[KB79]
+Ravindran Kannan and Achim Bachem. Polynomial algorithms for computing the
+smith and hermite normal forms of an integer matrix. SIAM Journal on Computing,
+8(4):499–507, 1979. doi:10.1137/0208040.
+[Kra19]
+Jan Kraj´ıˇcek. Proof Complexity. Cambridge University Press, 2019.
+[Kre89]
+Mark Krentel. Structure in locally optimal solutions. In Proceedings of the 30th
+Symposium on Foundations of Computer Science (FOCS), pages 216–221, 1989. doi:
+10.1109/SFCS.1989.63481.
+[Kre90]
+Mark Krentel. On finding and verifying locally optimal solutions. SIAM Journal on
+Computing, 19(4):742–749, 1990. doi:10.1137/0219052.
+47
+
+[LHdG08]
+Javier Larrosa, Federico Heras, and Simon de Givry. A logical approach to efficient
+Max-SAT solving. Artificial Intelligence, 172(2-3):204–233, 2008. doi:10.1016/j.artint.
+2007.05.006.
+[LNNW95]
+L´aszl´o Lov´asz, Moni Naor, Ilan Newman, and Avi Wigderson. Search problems in
+the decision tree model. SIAM Journal on Discrete Mathematics, 8(1):119–132, 1995.
+doi:10.1137/S0895480192233867.
+[LPR24]
+Yuhao Li, William Pires, and Robert Robere. Intersection Classes in TFNP and
+Proof Complexity. In Venkatesan Guruswami, editor, 15th Innovations in Theoretical
+Computer Science Conference (ITCS 2024), volume 287 of Leibniz International
+Proceedings in Informatics (LIPIcs), pages 74:1–74:22, Dagstuhl, Germany, 2024.
+Schloss Dagstuhl – Leibniz-Zentrum f¨ur Informatik. URL: https://drops.dagstuhl.de/
+entities/document/10.4230/LIPIcs.ITCS.2024.74, doi:10.4230/LIPIcs.ITCS.2024.74.
+[Meh18]
+Ruta Mehta. Constant rank two-player games are PPAD-hard. SIAM Journal on
+Computing, 47(5):1858–1887, January 2018. doi:10.1137/15m1032338.
+[Mor01]
+Tsuyoshi Morioka.
+Classification of search problems and their definability in
+bounded arithmetic.
+Master’s thesis, University of Toronto, 2001.
+URL: https:
+//www.collectionscanada.ca/obj/s4/f2/dsk3/ftp04/MQ58775.pdf.
+[MP91]
+Nimrod Megiddo and Christos Papadimitriou. On total functions, existence theorems
+and computational complexity. Theoretical Computer Science, 81(2):317–324, 1991.
+doi:10.1016/0304-3975(91)90200-L.
+[NS94]
+Noam Nisan and Mario Szegedy. On the degree of boolean functions as real polynomials.
+Computational Complexity, 4(4):301–313, dec 1994. doi:10.1007/bf01263419.
+[O’D17]
+Ryan O’Donnell. SOS is not obviously automatizable, even approximately. In Pro-
+ceedings of the 8th Innovations in Theoretical Computer Science Conference (ITCS),
+volume 67, pages 59:1–59:10. Schloss Dagstuhl, 2017. doi:10.4230/LIPIcs.ITCS.2017.59.
+[Pap94]
+Christos Papadimitriou. On the complexity of the parity argument and other inefficient
+proofs of existence. Journal of Computer and System Sciences, 48(3):498–532, 1994.
+doi:10.1016/s0022-0000(05)80063-7.
+[Pit96]
+Toniann Pitassi. Algebraic propositional proof systems. In Descriptive Complexity
+and Finite Models, Proceedings of a DIMACS Workshop 1996, volume 31 of DIMACS
+Series in Discrete Mathematics and Theoretical Computer Science, pages 215–244.
+DIMACS/AMS, 1996. doi:10.1090/dimacs/031/07.
+[Pud15]
+Pavel Pudl´ak.
+On the complexity of finding falsifying assignments for Herbrand
+disjunctions. Archive for Mathematical Logic, 54(7-8):769–783, 2015.
+doi:10.1007/
+s00153-015-0439-6.
+[RW92]
+Ran Raz and Avi Wigderson. Monotone circuits for matching require linear depth.
+Journal of the ACM, 39(3):736–744, jul 1992. doi:10.1145/146637.146684.
+[RW17]
+Prasad Raghavendra and Benjamin Weitz. On the bit complexity of sum-of-squares
+proofs. In Proceedings of the 44th International Colloquium on Automata, Languages,
+and Programming (ICALP), pages 80:1–80:13, 2017. doi:10.4230/LIPIcs.ICALP.2017.80.
+48
+
+[SA94]
+Hanif Sherali and Warren Adams. A hierarchy of relaxations and convex hull char-
+acterizations for mixed-integer zero–one programming problems. Discrete Applied
+Mathematics, 52(1):83–106, jul 1994. doi:10.1016/0166-218x(92)00190-w.
+[Sch91]
+Alejandro Sch¨affer. Simple local search problems that are hard to solve. SIAM Journal
+on Computing, 20(1):56–87, 1991. doi:10.1137/0220004.
+[SZZ18]
+Katerina Sotiraki, Manolis Zampetakis, and Giorgos Zirdelis.
+PPP-completeness
+with connections to cryptography. In Proceedings of the 59th IEEE Symposium on
+Foundations of Computer Science (FOCS), pages 148–158, 2018. doi:10.1109/FOCS.2018.
+00023.
+[Zha09]
+Shengyu Zhang. Tight bounds for randomized and quantum local search. SIAM
+Journal on Computing, 39(3):948–977, 2009. doi:10.1137/06066775X.
+49

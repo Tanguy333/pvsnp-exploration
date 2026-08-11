@@ -1,0 +1,267 @@
+Note 
+On total functions, existence 
+theorems and computational 
+complexity 
+Nimrod Megiddo 
+IBM Almaden Research Center, 650 Harry Road, Sun Jose, C A  95120-6099, USA, and School o
+Mathematical Sciences, Tel Aviv University, Tel Aviv, Israel 
+Christos H. Papadimitriou* 
+Computer Technology Institute, Patras, Greece, and University of California at Sun Diego, CA, 
+USA 
+Communicated by M. Nivat 
+Received October 1989 
+Abstract 
+Megiddo, N. and C.H. Papadimitriou, On total functions, existence theorems and computation
+complexity (Note), Theoretical Computer Science 81 (1991) 317-324. 
+wondeterministic multivalued functions with values that are polynomially verifiable and guara
+teed to exist form an interesting complexity class between P and NP. We show that this clas
+which we call TFNP, contains a host of important problems, whose membership in P is current
+not known. These include, besides factoring, local optimization, Brouwer's fixed points, a comput
+tional version of Sperner's Lemma, bimatrix equilibria in games, and linear complementarity f
+P-matrices. 
+1. The class TFNP 
+Let 2 be an alphabet with two or more symbols, and suppose that R G E* x 2
+is a polynomial-time recognizable relation which is polynomially balanced, that i
+(x, y) E R implies that lyl s p ( l x ( )  for some polynomial p. 
+* Research supported by an ESPRIT Basic Research Project, a grant to the Universities of Patras an
+Bonn by the Volkswagen Foundation, and an NSF Grant. Research partially performed while the auth
+was visiting the IBM Almaden Research Center. 
+0304-3975/91/$03.50 @ 1991-Elsevier 
+Science Publishers B.V. 
+
+The class of all such problems is denoted FNP. The subset of FNP that ca
+solved in polynomial time is called FP. At present it is not known whether FP = F
+this question is equivalent to the P = NP question. 
+We call R total if, for every x E X*, there is always a y E X* such that (x, y )
+We let TFNP (for total functions from NP) be the class FNP restricted to 
+relations R. In this note we point out that TFNP contains unexpectedly many nat
+and diverse problems that are not known to be in FP. 
+The class TFNP is not unfamiliar. It could be called F(NP n coNP), as it incl
+factoring and similar problems that are functional variants of problems in N
+coNP. Consider two polynomially balanced relations R, and R2 in P such tha
+each x either there is a y with (x, ly) E R , ,  or there is a z with (x, 22) E R,. He
+and 2 are symbols used to differentiate between the "certificates" of the two ki
+A typical problem in F(NP n coNP) asks, given x, to find a y or a z, as appropr
+Notice that TFNP coincides with F(NP n coNP). One inclusion takes R = R, u
+and the other takes Rl = R and R2 = 0. Clearly, factoring is in TFNP, as each int
+possesses a unique decomposition into primes, each with a certificate A la Pratt 
+A related problem is that of the discrete logarithm modulo a (certified) prime 
+a (certified) primitive root x of p. Notice that both of these problems are in 
+both in the class TFNP and in the class FUP of unambiguous functions in NP
+(the subset of FNP that consists of all those "multivalued" functions that are kn
+to have either one solution or none). We should also mention that TFNP is somew
+related to the "one-way function" problem: The inverse of any one-way func
+is in TFNP i f  we restrict our inputs to the range of the one-way function. This l
+condition makes this problem into a sort of "promise problem" and thus rem
+it from our scope. 
+Besides these problems, familiar to the complexity community from cryptogra
+theory, TFNP contains many more problems, that do not belong in FUP, and
+not known to be in FP. Each member Il, of TFNP possesses a different kin
+guarantee for the totality of R. For some, as with the class PLS [6] recalled be
+the guarantee is very simple, based on the existence of local optima. For oth
+the guarantee is the consequence of some "polynomially nonconstructive" exist
+proof, such as Sperner's Lemma, Brouwer's Fixed Point Theorem [5,4], or
+convergence of Lemke's algorithm [lo, 21 in certain cases. We list some of t
+below. 
+1.2. The class PLS 
+Local optimality is a very rich source of problems in TFNP. The class PL
+polynomial local search problems was introduced in [6]. Any problem in this c
+
+set of data (e.g., for the traveling salesman problem (TSP), the distance matrix).
+Given such an input x, we can always produce in polynomial time a feasible solution
+(for the TSP, say, the identity permutation of the cities). Also, using the input x, 
+we can decide in polynomial time whether a string y E E* is feasible (in the TSP,
+a tour), and calculate its integer cost (in the TSP example, the total length of the 
+tour). Finally, we assume that we have defined a polynomial neighborhood structure, 
+that is, for some polynomial p, given a feasible solution y and an integer k ~ p ( l x l
+we can produce in polynomial time the k-th neighbor of y, a feasible solution z of 
+x. The problem in PLS is this: given an input x, find a feasible solution which has 
+cost no worse than any of its neighbors, that is, a local optimum. 
+It is immediate that all problems in PLS are in TFNP, as the existence of local
+optima is guaranteed by the finiteness of the solution space. In [6] several PLS 
+problems were shown to be PLS-complete. There are now new, and perhaps more 
+interesting, PLS-complete problems [9, 161, including finding a local optimum under 
+the Lin-Kernighan local search heuristic [14]. 
+As was pointed out in [6], there are problems in PLS that are not the result of 
+compromising for a local instead of a global optimum, but in which any local 
+optimum is the actual desired result. An example, due to Knuth, is the following:
+given an m x n matrix A, m < n, we are looking for an n x n submatrix B such that 
+B-'A contains elements with absolute values at most 1. This is tantamout to finding 
+a submatrix which is a local maximum, with cost the absolute value of the deter- 
+minant, if any two such submatrices are considered neighbors whenever they differ 
+by one column. 
+1.3. Brouwer's $xed points 
+Brouwer's Theorem states that if D is homeomorphic to a simplex and f :  D+ D
+is continuous, then f has a fixed point, i.e., there exists an x E D such that f(x) = x. 
+An interesting computational problem is as follows. Suppose f is continuous with 
+Lipschitz constant 1, i.e., (f (x) - f(y)l s lx - yl, and let E > 0 be given. Find an
+&-approximate jixed point, i.e., an x such that I f(x) - XI< E. It was shown in [4,5] 
+that any algorithm which uses f as an oracle takes S1(1/&) steps to calculate an
+&-approximate fixed point. 
+Needless to say, Brouwer's Theorem guarantees that the following problem is in 
+TFNP: given the description of a Turing machine which computes f and an E > 0,
+find an &-approximate fixed point. The results in [4,5] do not provide an exponential
+lower bound for this problem, as an algorithm may examine the structure of the 
+machine in generating a solution. 
+To guarantee that the Turing machine indeed computes a continuous function
+with Lipschitz constant 1, we can restrict our functions to such ones that interpolate
+between values computed at points whose coordinates are integer multiples of E, 
+and such that no two such values differ by more than E. The difficulty of the problem 
+is preserved (and the lower bounds of [4,5] still hold). 
+
+For simplicity we discuss here only the two-dimensional case. Consider a triangl
+with vertices labeled 1, 2, 3, and any triangulation of its area (say, the standar
+n x n triangulation depicted in Fig. 1). Suppose we label the nodes of the triangula
+tion by 1, 2 or 3, with the only restriction that 1 does not appear on any node o
+the edge (2,3) of the original triangle, 2 does not appear on (1,3), and 3 does no
+appear on (1,2). Sperner's Lemma states that there is always a triangle of th
+triangulation whose vertices are labeled 1, 2, 3. The proof of Sperner's Lemma i
+constructive, albeit by an algorithm that takes 0(n2) steps. Sperner's Lemma ca
+be used in turn to provide a constructive proof of Brouwer's Fixed Point Theorem
+(the original proof by Brouwer was nonconstructive in a way that he considere
+appalling). The associated computational problem, which we call TRICHROMATI
+TRIANGLE, is as follows. Given a number n, the nodes of the triangulation correspon
+to triples (i, j, k) (i, j, k Z 0, i + j +  k = n). Given the description of a polynomial-tim
+Turing machine that assigns to any point (i, j, k) in the triangulation a label respectin
+the restriction on the sides (i.e., a Sperner labeling), find a trichromatic triangl
+(that is, one with all three labels). The problem is obviously in TFNP. 
+Fig. 1. Sperner's Lemma. 
+1.5. Bimatrix equilibrium points 
+A two-person game is played by two players, A and B. Player A has m (pure
+strategies 1, . . . , m, and player B has n (pure) strategies 1, . . . , n. For each strateg
+i of player A and j of player B, we are given the payoffs Aij and Bij to A and B
+respectively. 
+A mixed (or randomized) strategy for player A is a vector x = (x,, . . . , x,)~(x 3 O
+C xi = 1) of probabilities assigned to the pure strategies of A. Similarly, a mixed
+strategy for B is a vector y = (y, , . . . , y,)T (y 3 0, C y, = 1). The expected payoffs t
+A and B, associated with a pair of mixed strategies (x, y), are x T ~ y  
+and X ~
+
+xTBy  for all other mixed strategies x and y . Brouwer s Fixed Point Theorem implies
+Nash's celebrated result that every game has a mixed strategy equilibrium. This
+equilibrium is in fact a "basic feasible solution", see [lo], and thus it has a rational
+number representation of acceptable length.' 
+In our opinion, an important open problem in complexity theory is whether there
+exists a polynomial-time algorithm for computing a mixed strategy equilibrium for
+a two-person game. The problem is obviously in TFNP. 
+1.6. Linear complementarity 
+Suppose that we are given an n x n integer matrix M and an integer n-vector q. 
+We are asking for vectors x and y such that 
+Notice that the latter condition requires that x and y be complementary, i.e., for
+every j, if x, # 0, then y, = 0. Hence, this problem is called the Linear Complementarity
+Problem (LCP). The LCP generalizes the convex quadratic programming problem
+(including the linear programming problem) and (0, 1)-programming. Thus, it is
+NP-complete in general [12]. However, it can be solved in polynomial time by the
+ellipsoid method if M is positive semidefinite [12]. 
+There is an important case of the LCP whose complexity is unknown: Suppose
+that M is a P-matrix, i.e., all of its principal minors2 are positive. In this case, the
+LCP is guaranteed to have a unique solution [15]. Moreover, this solution can be
+found in exponential time by Lemke's algorithm [lo] or simply by a complete
+enumeration of bases; it follows that it too has a reasonably long rational representa-
+tion. Other algorithms for this problem were recently developed in [7,8], with
+complexity bounds which depend on certain condition numbers of the matrix M. 
+It is not known at present how to solve the LCP with a P-matrix in polynomial
+time. Neither is it known how to tell in subexponential time whether a matrix is a
+P-matrix. 
+The following problem (see [Ill), which we call P-LCP, is in TFNP: given an
+instance M, q of the LCP, produce either a nonpositive principal minor of M or a
+solution of the LCP. It would be extremely interesting if the problem P-LCP were
+in FP. 
+This concludes our list of important and most intriguing problems that are in
+TFNP, and for which membership in FP would be very interesting, but is open.
+However, there are more examples one could list. An interesting graph-theoretic
+one was pointed out to us by S. Poljak. It is well-known (see [I]) that in any cubic
+graph, there is an even number of Hamiltonian circuits through each edge. The
+This result is true for any finite number of players. However, with more than two players we need
+a different model of computation to discuss the interesting computational question. 
+A principal minor of M is a determinant of a submatrix Mss of M obtained by deleting from M
+all the rows and columns with indices not in a certain subset S_c {I,. . . . , n). 
+
+this: given a cubic graph, an edge and a Hamiltonian circuit through the edge, find
+another Hamiltonian circuit through this edge. 
+We should point out here the difference between the problems we discuss in this
+note and some other problems where solutions are not only guaranteed to exist
+but are in abundance, placing those problems in random polynomial time (example
+concentrators with n nodes, n in unary). The existence of solutions in our problems
+above is not established by a probabilistic argument, and solutions are not, generally
+in abundance. 
+2. On completeness 
+It is worth examining whether there are notions of completeness that may shed
+light on the complexity of these problems. A reduction from problem 17, to problem
+l7, is a pair of polynomially computable functions f and g such that, for any x E I*
+(x, g ( ~ ) )  
+E R iff (f(x), y) E S. We call a problem complete for class FC if it is in
+FC, and all problems in FC reduce to it. As expected, we can preclude using the
+notion of NP-completeness for showing that such problems are intractable, a
+expressed in the following theorem. 
+Theorem 2.1. There is an FNP-complete problem in TFNP ifand only if NP = coNP
+Proof. The "if" part is trivial: if NP= coNP, then any FNP-complete problem i
+in TFNP (recall that TFNP= F(NPn coNP)). Suppose now that an FNP-complete
+problem IIR is in TFNP, and that the functional version of SATISFIABILITY, 
+denoted
+FSAT, reduces to IIR via f and g. Then any unsatisfiable Boolean formula B ha
+a certificate of unsatisfiability, namely, the string y (guaranteed to exist by the fac
+that l7, E TFNP) such that (f(B), y) E R and g ( y )  = "no". 
+Several specialized cases of this argument have been used elsewhere [6,11]. 
+It is quite interesting, in view of Theorem 2.1, that in some cases of problems in
+TFNP, if together with the input we are also given one of the solutions that are
+guaranteed to exist, then the problem indeed becomes NP-complete. Consider, fo
+example, the following variant of the computational problem associated with Sper
+ner's Lemma (see Subsection 1.4 above), which we call SECOND TRICHROMATIC
+TRIANGLE: 
+given an integer n, a polynomial-time Turing machine which computes
+a Sperner label for each vertex (i, j, k), and a trichromatic triangle, recognize whether
+there exists another trichromatic triangle. 
+Theorem 2.2. The problem SECOND TRICHROMATIC TRIANGLE is NP-complete. 
+Proof. We only sketch the proof here. Given a Boolean formula B with m variables
+we construct a Sperner labeling of the triangle, where n = 2m+4. It will be apparen
+
+Fig. 2. The construction for Theorem 2.2. 
+that a polynomial-time Turing machine that assigns the appropriate labels can 
+constructed. The labeling is shown schematically in Fig. 2, in terms of the areas 
+the triangle labeled 1, 2, and 3. All "narrow areas" have width two units. There
+an obvious point where the three colors meet, called x in the figure. All oth
+trichromatic points will be of the form (i, j, j )  (i.e., lying on the height of the triang
+from vertex I), such that the binary description of i l l 6  or ( i - 8 ) / 1 6  is a satisfyi
+truth assignment. 
+A similar result can be shown for the variant of the Brouwer fixed-point proble
+where we are asking for an approximate fixed point not in the neighborhood of t
+given one. 
+Related results with regard to the Nash-equilibrium problem can be found in [3
+Finally, can we hope to have TFNP-complete problems? As with other class
+(such as NPncoNP, R, BPP, etc.) whose machine-based definition is seman
+instead of syntactic (i.e., depends on a property that the machine exhibits wh
+computing on any input), we do not expect such problems to exist. 
+References 
+[I] C. Berge, Graphs and Hypergraphs (North-Holland, Amsterdam, 1973). 
+[2] R. W. Cottle and G.B. Dantzig, Complementary pivot theory of mathematical programming, Lin
+Alg. Appl. l(1968) 103-125. 
+[3] I. Gilboa and E. Zemel, Nash and correlated equilibria: Some complexity considerations, Gam
+and Economic Behavior 1 (1989) 80-93. 
+[4] M. Hirsch, C.H. Papadimitriou and S. Vavasis, Exponential lower bounds for finding Brouw
+fixed points," J. Complexity, to appear. 
+[5] M.D. Hirsch and S. Vavasis, Exponential lower bounds for finding Brouwer fixed points, in: Pr
+28th Ann. IEEE Symp. on Foundations of Computer Science (1987) (IEEE Computer Society Pre
+Los Angeles, 1987) 401-410. 
+[6] D.S. Johnson, C.H. Papadimitriou and M. Yannakakis, How easy is local search?," J. Comp
+System Sci. 37 (1988) 79-100. 
+
+[8] M. Kojima, N. Megiddo and T. Noma, Homotopy continuation methods for complementarity 
+problems, Mathematical Programming, to appear. 
+[9] M. Krentel, Structure in locally optimal solutions, in: Proc. FOCS 1989. 
+[lo] C.E. Lemke, Bimatrix equilibrium points and mathematical programming, Management Sci. 11
+(1965) 681-689. 
+[ I l l  N. Megiddo, A note on the complexity of P-matrix LCP and computing an equilibrium, Research
+Report RJ 6439, IBM Almaden Research Center, San Jose, CA 95120, 1988. 
+[12] K.G. Murty, Linear Complementarity, Linear and Nonlinear Programming (Heldermann Verlag,
+Berlin, 1988). 
+[13] V.R. Pratt, Every prime has a succinct certificate, SIAM J. Comput. A (1975) 214-220. 
+[14] C.H. Papadimitriou, The complexity of the Lin-Kernighan heuristic for the travelling salesman
+problem, submitted. 
+[I51 H. Samelson, R.M. Thrall and 0. Wesler, A partition theorem for Euclidean n-space, Proc. Amer.
+Math. Sac. 9 (1958) 805-807. 
+[I61 A.A. Schaffer and M. Yannakakis, Simple local search problems that are hard to solve, SIAM J.
+Comput., to appear. 
+[17] D. Solow, R. Stone and C.A. Tovey, Solving LCP on P-matrices is probably not NP-hard,
+Unpublished note, November 1987. 
+[18] L.G. Valiant, Relative complexity of checking and evaluating, Inform. Process. Lett. 5 (1976) 20-23. 
