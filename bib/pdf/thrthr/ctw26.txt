@@ -1,0 +1,2357 @@
+Super-quadratic Lower Bounds for Depth-2 Linear Threshold
+Circuits
+Lijie Chen ∗
+Avishay Tal †
+Yichuan Wang ‡
+2026-03-14
+Abstract
+Proving lower bounds against depth-2 linear threshold circuits (a.k.a. THR ◦THR) is one of
+the frontier questions in complexity theory. Despite tremendous effort, our best lower bounds
+for THR ◦THR only hold for sub-quadratic number of gates, which was proven a decade ago by
+Tamaki (ECCC TR16) and Alman, Chan, and Williams (FOCS 2016) for a hard function in
+ENP.
+In this work, we prove that there is a function f ∈ENP that requires n2.5−ε-size THR ◦THR
+circuits for any ε > 0. We obtain our new results by designing a new 2n−nΩ(ε)-time algorithm
+for estimating the acceptance probability of an XOR of two n2.5−ε-size THR ◦THR circuits, and
+apply Williams’ algorithmic method to obtain the desired lower bound.
+∗University of California at Berkeley. Email: lijiechen@berkeley.edu.
+†University of California at Berkeley. Email: atal@berkeley.edu. Supported by an NSF CAREER Award CCF-
+2145474.
+‡University of California at Berkeley. Email: yichuan-21@berkeley.edu. Supported by an NSF CAREER Award
+CCF-2145474.
+ 
+ISSN 1433-8092 
+Electronic Colloquium on Computational Complexity, Report No. 39 (2026)
+
+Contents
+1
+Introduction
+1
+1.1
+Our Results . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+2
+1.1.1
+New circuit lower bounds against THR ◦THR . . . . . . . . . . . . . . . . . .
+2
+1.1.2
+New circuit-analysis algorithms for THR ◦THR . . . . . . . . . . . . . . . . .
+2
+2
+Technical Overview
+2
+2.1
+Review of Prior Works and Potential Improvements
+. . . . . . . . . . . . . . . . . .
+3
+2.2
+Our New Algorithm for ⊕2 ◦SYM ◦THR Circuits . . . . . . . . . . . . . . . . . . . .
+4
+2.3
+List approximating F2-probabilistic polynomials for SYM gates . . . . . . . . . . . .
+5
+3
+Preliminaries
+7
+3.1
+Gates and Circuit Classes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+7
+3.2
+Structure Lemmata for Threshold Circuits . . . . . . . . . . . . . . . . . . . . . . . .
+8
+3.3
+Circuit Analysis Problems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+8
+3.3.1
+Known Circuit Analysis Algorithms
+. . . . . . . . . . . . . . . . . . . . . . .
+9
+3.4
+Chernoff Bound for k-wise Independent Variables . . . . . . . . . . . . . . . . . . . .
+9
+3.5
+Modulus Amplification Polynomials
+. . . . . . . . . . . . . . . . . . . . . . . . . . .
+9
+4
+Simplification of THR Gates Under Random Restrictions
+9
+5
+Approximating 1hotSUM Gates with Low-Degree Polynomials and Applications 12
+5.1
+Main Lemma . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+12
+5.2
+Approximating 1hotSUMn2.5−ε ◦THR by low-degree polynomials on almost all good
+columns . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+15
+5.3
+CAPP Algorithm for ⊕2 ◦SYMO(n2.5−ε) ◦THR . . . . . . . . . . . . . . . . . . . . . .
+16
+6
+CAPP Algorithm for ⊕2 ◦THRO(n2.5−2ε) ◦THR
+18
+A Appendix
+23
+A.1 Proof of Item 4 of Lemma 3.4 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+23
+A.2 Proof of Lemma 3.9
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+24
+A.3 Proof of Lemma 4.1
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+25
+A.4 Proof of Lemma 5.3
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+26
+
+1
+Introduction
+Proving unconditional circuit lower bounds for explicit functions (with the flagship problem
+of NP ̸⊆P/poly) is one of the central questions in theoretical computer science. Since the 1980s,
+considerable progress has been made in proving lower bounds against constant-depth circuit classes,
+such as exponential lower bounds for AC0 [Ajt83, FSS84, Yao85, Hås89] (constant-depth circuits of
+unbounded fan-in AND/OR gates) and for AC0[q] [Raz87, Smo87] (AC0 circuits with MODq gates)
+for prime q.
+More recently, progress has been made for AC0[m] circuits for composite m. Williams [Wil10,
+Wil11] proved that the class NEXP does not have polynomial-size AC0[m] circuits for any composite
+m. This was later improved by Murray and Williams [MW18] to NQP (non-deterministic quasi-
+polynomial time) not in AC0[m]. The natural next step [Aar16] following Williams’ approach is to
+show lower bounds against TC0, the class of constant-depth circuits of linear threshold gates.1
+Circuit Lower Bounds against TC0.
+Besides being the frontier class for proving circuit lower
+bounds, TC0 also captures the class of functions computable by constant-depth neural networks.
+Given the ubiquitous applications of neural networks, it is important to understand the power and
+limitations of TC0.
+Unfortunately, our understanding of TC0 is quite limited even for the simple depth-2 case: a
+decade ago, Kane and Williams [KW16] proved that there is a function in P that requires THR◦THR
+circuits with n1.5−ε size; this was later improved by [Tam16] and [ACW16] to lower bounds against
+THR ◦THR circuits with n2−ε size, at the cost of having the hard function in ENP instead of P. In
+particular, it remained an open question whether there exists f ∈ENP that cannot be computed
+by n2.001-size THR ◦THR circuits.
+Non-trivial circuit analysis of TC0.
+In his seminal work [Wil10, Wil11], Williams not only
+proved a super-polynomial lower bound against AC0[m], but also established a general method
+for proving circuit lower bounds, termed the algorithmic method: a non-trivial circuit-analysis
+algorithm for a circuit class C immediately implies a new circuit lower bound for C. Here, the
+circuit-analysis algorithm can be for either the satisfiability (SAT) problem or the Circuit Acceptance
+Probability Problem (CAPP);2 and by non-trivial we mean the running time should be at most
+2n/nω(1) (here n is the number of input bits to the circuit C), only slightly better than brute-force
+search. His lower bound then followed from his new SAT algorithm for AC0[m] circuits.
+Following Williams’ framework, many subsequent papers obtained non-trivial circuit-analysis
+algorithms for interesting subclasses of TC0 circuits [IPS13, Wil14, Tam16, ACW16, CSS16,
+SSTT15, SSTT16, Tel18, Wil18, CW19, CR20, CLW20, KL18, HHTT21, BKK+22].
+However,
+despite much effort in designing non-trivial algorithms for TC0 circuits, prior to this work, we still
+do not have any non-trivial circuit-analysis algorithms for super-quadratic-size THR ◦THR circuits
+(say, size n2.001) for either SAT or CAPP. In particular, the aforementioned lower bounds against
+n2−ε-size THR ◦THR [Tam16, ACW16] were proven by designing corresponding circuit-analysis
+algorithms for sub-quadratic-size THR ◦THR circuits.
+1A function f : {0, 1}n →{0, 1} is a linear threshold function (LTF) if there are weights w1, . . . , wn, t ∈R such
+that f(x) = 1 if and only if ∑n
+i=1 wi · xi ≥t.
+2Given an input circuit C : {0, 1}n: the SAT problem asks whether there is a satisfying input x ∈{0, 1}n that
+makes C(x) = 1; the CAPP problem asks to estimate Prx∼{0,1}n[C(x) = 1] within an additive error ε.
+1
+
+1.1
+Our Results
+In this work, we prove new THR ◦THR lower bounds after a nearly decade-long hiatus in
+progress, by designing new non-trivial circuit-analysis algorithms for THR ◦THR circuits.
+1.1.1
+New circuit lower bounds against THR ◦THR
+Our main result is the following:
+Theorem 1.1. For every constant ε ∈(0, 1), there is a function f ∈ENP that cannot be computed
+by n2.5−ε-size THR ◦THR circuits. The same holds for SYM ◦THR.
+Comparison with [Tam16] and [ACW16].
+Our new lower bound is a direct improvement
+over [Tam16]’s lower bound.3 Compared with the lower bound from [ACW16], we note that their
+lower bound also holds for AC0 ◦THR ◦THR with sub-exponential-size AC0 circuits at the top and
+n2−ε many THR circuits at the bottom layer, with no restriction on the number of THR gates in
+the second layer.
+1.1.2
+New circuit-analysis algorithms for THR ◦THR
+Following [Wil10, Wil11], Chen and Williams [CW19] and Bathie and Williams [BW24] showed
+that to prove lower bounds against nα-size THR ◦THR circuits, it suﬀices to give a non-trivial
+algorithm for estimating the acceptance probability of an XOR of two nα-size THR ◦THR circuits.
+Our main technical result is exactly that: a new CAPP algorithm for n2.5−ε-size THR ◦THR
+circuits that runs in non-trivial time.
+Theorem 1.2. For every constant ε ∈(0, 1), there is a deterministic algorithm for solving CAPP
+for ⊕2 ◦THRO(n2.5−ε) ◦THR with error o(1) that runs in O
+
+2n−nΩ(ε)
+time.
+We note that both [Tam16] and [ACW16], indeed obtained non-trivial #SAT algorithms for the
+corresponding circuit classes, for which one can exactly count the number of accepting inputs to
+a given circuit C. This is stronger than both CAPP and SAT. We only obtain the weaker CAPP
+algorithm, which is suﬀicient nonetheless for the algorithmic method.
+2
+Technical Overview
+Below we will give a high-level overview of the techniques used to prove the main result. First, we
+quickly review algorithms from prior work and explain why they cannot extend to super-quadratic-
+size SYM ◦THR circuits or THR ◦THR circuits.
+We will then explain our new algorithm for ⊕2 ◦SYM ◦THR circuits, which essentially covers
+most of the new ideas that are needed for our new THR ◦THR algorithms. Finally, we briefly
+explain how to generalize that further to THR ◦THR circuits.
+3We remark that [Tam16]’s lower bound also holds for n2−ε-size SYM ◦SYM circuits, while our lower bounds do
+not extend to such a circuit class.
+2
+
+2.1
+Review of Prior Works and Potential Improvements
+We will first focus on the case of SYM ◦THR circuits, since its proof is simpler. It would be
+instructive to first review the approach in [ACW16, Tam16] that gives non-trivial algorithms for
+sub-quadratic-size SYM◦THR circuits. Since we are only aiming for a CAPP algorithm, while prior
+work gave a #SAT algorithm, we provide a simplified sketch of their approach suﬀicient for CAPP.
+The algorithm from [ACW16, Tam16].
+Given an SYM◦THR circuit C of size m = n2−ε. Let
+the top SYM gate be S : {0, 1}m →{0, 1} and the list of bottom THR gates be T = {T1, . . . , Tm}.
+We also write T(x) = (T1(x), . . . , Tm(x)) for any x ∈{0, 1}n, so we have that C(x) = S(T(x)) for
+all x ∈{0, 1}n.
+The key technical ingredient in [ACW16, Tam16] is that an m-size SYM gate can be
+approximated by an eO(√m)-degree probabilistic polynomial {Pr}r∈{0,1}polylog(m) over F2. Here r
+denotes the randomness used to sample the F2-polynomial and one only needs polylog(m) many
+random bits for that.
+So we have that for any u ∈{0, 1}m,
+Pr
+r∼{0,1}polylog(m)[Pr(u) = S(u)] ≥1 −1/nω(1).
+This also implies that for any x ∈{0, 1}n,
+Pr
+r∼{0,1}polylog(m)[Pr(T(x)) = S(T(x))] ≥1 −1/nω(1).
+As deg(Pr) = eO(√m) ≤n1−ε/3 (for n large enough), to solve the CAPP problem for C, it
+suﬀices to solve the CAPP problem for 2polylog(m) many POLYF2[n1−ε/3] ◦THR circuits4 and take
+the average.
+Circuit-analysis algorithm for POLYF2[n1−ε/3]◦THR circuits.
+There is a standard algorithm
+for solving even the #SAT of POLYF2[n1−ε/3]◦THR circuits in non-trivial time, this idea dates back
+to [Wil11] and is also used in [ACW16].
+Take a POLYF2[n1−ε/3] ◦THR circuit C as input and set δ = ε/10. The idea is to partition the
+n-bit input x as (y, z), where |y| = nδ and |z| = n −nδ, and reduce the #SAT problem for C to the
+batch-evaluation problem for another POLYZ[n1−ε/6] ◦THR circuit D on the (n −nδ)-bit input z.5
+Let Amp2nδ(z) be the modulus amplification polynomial with O(2nδ) degree such that if z ≡0
+(mod 2), then Amp2nδ(z) ≡0 (mod 22nδ), and if z ≡1 (mod 2), then Amp2nδ(z) ≡1 (mod 22nδ).
+Let P : {0, 1}m →{0, 1} be the POLYF2[n1−ε/3] gate at the top of the circuit. We can also consider
+the corresponding Z-polynomial PZ over Z, such that PZ(u) = P(u) (mod 2) for u ∈{0, 1}m.
+Then we can construct the following circuit D: {0, 1}n−nδ →Z such that for any z ∈{0, 1}n−nδ,
+D(z) =
+X
+y∈{0,1}nδ
+Amp2nδ(PZ(T(y; z))).
+Note that D(z) mod 22nδ would give us the number of y ∈{0, 1}nδ such that C(y; z) = 1. This
+means that D is a POLYZ[n1−ε/6] ◦THR polynomial over n −nδ bits. An algorithm from Williams
+can be used to compute its truth-table in essentially 2n−nδ time, and this would be enough to solve
+the #SAT problem for C.
+4POLYF2[d] means polynomials over F2 of degree ≤d.
+5In the batch-evaluation problem, given an input circuit D with m-bit input, the goal is to evaluate D on all
+possible 2m many inputs.
+3
+
+Combining with random restriction?
+Reviewing the above, for each z ∈{0, 1}n−nδ, we
+solved the #SAT problem for the circuit C(·; z) on the nδ-bit input y. Using modulus amplifying
+polynomial, this can be converted to the batch-evaluation problem for the circuit D(z) above on
+n −nδ-bit inputs.
+This reminds us of a classical idea in complexity theory: random restrictions [Sub61].
+In
+particular, if we think about y as the “alive” variables, and the z as the variables to be fixed
+randomly during the restriction, then following [KW16], we can show that if we pick the positions
+of y randomly (i.e., we pick a random subset I ∈
+ [n]
+nδ
+
+and let y be the bits from I), then
+with probability 1 −n−ε/3 over the choice of z, there are only n2−ε/2 many non-constant gates
+in T1, . . . , Tm.
+That is, for most fixed z, we have that C(y; z), as a function in y ∈{0, 1}nδ, is indeed an
+SYM ◦THR circuit of only n2−ε/2 size. One may hope this observation can be combined with prior
+techniques to solve the CAPP problem for C.
+The obvious diﬀiculty.
+The obvious diﬀiculty is that for different z ∈{0, 1}n−nδ, the resulting
+SYM ◦THR circuit is different, and there could be 2n−nδ many such circuits; this is clearly too
+many to handle eﬀiciently in our algorithm.
+However, the key observation of our work is that although there are many possible sub-
+quadratic-size SYM◦THR circuits for different z, by opening up the construction in [ACW16, AW15],
+there are only quasi-polynomially distinct “types” of such circuits, and these can be used to design
+a non-trivial algorithm.
+2.2
+Our New Algorithm for ⊕2 ◦SYM ◦THR Circuits
+Let I ∈
+ [n]
+nδ
+
+be a subset such that for a 1 −n−ε/3 fraction of z ∈{0, 1}n−nδ, there are only
+n2−ε/2 many non-constant gates in T1(·; z), . . . , Tm(·; z). There is a simple deterministic algorithm
+that runs in 20.9n-time to find such an I. So in the following we will assume such an I is fixed.
+Moreover, we say a z ∈{0, 1}n−nδ is good if there are only n2−ε/2 many non-constant gates in
+T1(·; z), . . . , Tm(·; z). Note that given z, it is easy to check whether a THR gate Ti(·; z) is constant
+or not in polynomial time. So we can also check whether z is good or not in polynomial time.
+In the following, we will aim to solve the CAPP problem for the circuits C(·; z), but only for the
+good z’s. Our algorithm would just “give up” on the bad z’s. As a CAPP algorithm for the circuit
+C over {0, 1}n, this would incur an additive error of 1/nε/3, which is acceptable.
+For different good z ∈{0, 1}n−nδ, the resulting SYM ◦THR circuit C(·; z) is different, so it may
+seem that for each of them we will have to compute a different F2-probabilistic polynomial, ending
+up with 2n−nδ many different POLYF2[n1−Ω(ε)] ◦THR circuits to handle, which is clearly too much.
+Our crucial observation is that, by opening up the construction in [ACW16, AW15], there are
+only quasi-polynomially many F2-probabilistic polynomials that one has to consider, even if there
+are 2n−nδ many good z’s.
+Now, for each good z, note that the range of T(y; z) is contained in a subcube Xz of dimension
+at most n2−ε/2. This motivates us to approximate the symmetric gate S by a low-degree polynomial
+on the subcube Xz.
+More specifically, let X ⊆{0, 1}m be a subcube of dimension n2−ε/2. That is, n2−ε/2 many
+bits from x ∈X can be arbitrarily chosen from 0 or 1, and other bits are fixed. Let r be the
+random bit string in the construction.6 There are n10 log n many F2 polynomials {Pr,a}a∈[n10 log n] of
+6We choose nε/100 random bits instead of polylog(m) as we can afford it, but both choices would give the same
+end result.
+4
+
+degree n1−ε/6 and an “advice” function that takes as input the description of X and r and outputs
+a(X, r) ∈[n10 log n], such that for every X of dimension n2−ε/2 and every x ∈X, we have
+Pr
+r
+
+S(x) = Pr,a(X,r)(x))
+
+≥1 −1/nω(1).
+(1)
+Since there are very few possible r, we can simply enumerate all of them with a small overhead.
+Thus, in the following, we will just pretend that r is fixed and assume for simplicity of exposition
+that the error in Equation (1) is 0. Then, there is a list of polynomials {Pa}a∈[n10 log n] such that
+for every x ∈X, we have
+Pa(X)(x) = S(x).
+Since for each good z, the range of T(y; z) is contained in a subcube Xz of dimension n2−ε/2, we
+get that Pa(Xz) ◦T(·; z) will be the same as S ◦T(·; z).
+Using the same algorithm as in prior work, for every a ∈[n10 log n], we can solve the #SAT
+problem for the circuit Pa ◦T(·; z), for every z ∈{0, 1}n−nδ in essentially 2n−nδ time, and store it
+in a lookup table. Then, for each good z, it suﬀices to simply look at the result for Pa(Xz) ◦T(·; z)
+in the lookup table. This would be enough to solve the CAPP problem for SYM ◦THR.
+Note that above we assumed that the list of polynomials, as well as the advice function a(X, r),
+can be computed in 2n−nΩ(ε) time. We will discuss how to do that in detail later.
+Generalization to ⊕2 ◦SYM ◦THR circuits.
+To generalize to ⊕2 ◦SYM ◦THR circuits, we
+still use T1, . . . , Tm as the list of bottom THR gates, but now we have two top SYM gates
+S1, S2 : {0, 1}m →{0, 1}.
+We can get two lists of polynomials {Pa}a∈[n10 log n] and {Qb}b∈[n10 log n] such that for every x ∈X,
+we have Pa(X)(x) = S1(x) and Qb(X)(x) = S2(x), where X is a subcube of dimension n2−ε/2.
+Now, for each good z, we have that (Pa(Xz) ⊕Qb(Xz)) ◦T(·; z) is the same as (S1 ⊕S2) ◦T(·; z).
+To solve the CAPP problem for ⊕2 ◦SYM ◦THR circuits, for every a, b ∈[n10 log n], we can solve
+the #SAT problem for the circuit (Pa ⊕Qb) ◦T(·; z), for every z ∈{0, 1}n−nδ in essentially 2n−nδ
+time. This enumeration of (a, b) incurs only a minor overhead to the runtime. Then, for each good
+z, it suﬀices to simply look up the result for (Pa(Xz) ⊕Qb(Xz)) ◦T(·; z). This suﬀices to solve the
+CAPP problem for ⊕2 ◦SYM ◦THR circuits.
+Generalization to THR ◦THR circuits.
+To generalize to THR ◦THR circuits, the key idea is to
+notice that the top THR gate can be written as an approximate linear sum of POLYF2[O(1)] ◦SYM
+gates; we can essentially use the same algorithm above, but now with O(1) many SYM gates instead
+of two.
+2.3
+List approximating F2-probabilistic polynomials for SYM gates
+Finally, we explain how to construct the F2-probabilistic polynomials {Pr,a}r,a. We first review
+the construction of F2-probabilistic polynomials for SYM gates from [ACW16, AW15]. To construct
+an F2-probabilistic polynomial for a SYM gate, it suﬀices to construct an F2-probabilistic polynomial
+for the following function 1hotSUM: {0, 1}m →{0, 1}m+1. Here, 1hotSUM takes m input bits,
+computes their sum s, and outputs z0, z1, . . . , zm defined by zi = 1 if and only if i = s (that is, the
+output is the one-hot vector encoding of the sum s).
+Our goal is to construct a family of F2-polynomials {P (m)
+r
+: Fm
+2 →Fm+1
+2
+} such that for every x ∈
+{0, 1}m, with probability at least 1 −1/nω(1) over the choice of r, we have P (m)
+r
+(x) = 1hotSUM(x).
+For i ∈{0, . . . , m}, we use P (m)
+r
+[i] to denote the i-th coordinate of P (m)
+r
+(x).
+5
+
+The F2-probabilistic polynomial from [AW15].
+Alman and Williams [AW15] does so
+recursively. For simplicity assume that m is a power of 2. Suppose we already have the construction
+P (m/2) for 1hotSUM on m/2 bits. Then we can construct P (m) for 1hotSUM on m bits as follows:
+1. Let x ∈{0, 1}m be the input.
+2. Sample a random subset K ⊆[m] of size m/2 and apply P (m/2)(xK) to know how many 1’s
+are in xK. Since K is (pseudo-)randomly chosen, if there are t 1’s in xK, with probability
+1 −n−ω(1) the number of 1’s in x should belong to the range 2t ± √m log m.
+3. Now, note that for every t′ ∈{0, 1, . . . , m} and s ∈{0, 1, . . . , m}, we can interpolate an
+O(√m log m)-degree polynomial Es,t′, such that for every u ∈t′ ± √m log m, we have that
+Es,t′(u) = 1 if u = s and Es,t(u) = 0 otherwise. (Es,t′ is all zero if s /∈t′ ± √m log m.)
+We can then define
+P (m)[s](x) =
+m/2
+X
+t=0
+P (m/2)[t](xK) · Es,2t
+ m
+X
+i=1
+xi
+!
+.
+Note that the above works because with high probability over the randomness, P (m/2) computes
+1hotSUM on xK, and the number of 1’s in the whole input x falls in the interval 2t ± √m log m,
+where t is the exact number of 1’s in the input xK. The original construction from [AW15] picks
+the subset K uniformly at random, which was later derandomized by [ACW16] using O(log n)-wise
+independent distribution.
+Adapting the analysis to subcubes.
+Now, let X be an ℓ= n2−ε/2 dimensional subcube
+of {0, 1}m. We proceed as above to construct the probabilistic polynomial P (m) that computes
+1hotSUM for x ∈X. Let J ∈
+ [m]
+ℓ
+
+be the set of coordinates that is free in X.
+1. Let x ∈X be the input.
+2. Sample a random subset K ⊆[m] of size m/2 and apply P (m/2)(xK) to know how many 1’s
+are in xK. Suppose it is t. Note that x[m]\J is always constant (same for all x ∈X), so our
+goal is indeed to obtain an estimate of the number of 1’s in xJ; for which we can compute the
+number of 1’s in xK∩J, which is t −||xK\J||1, where note that xK\J is also always constant.
+Now the estimation error only comes from estimating ∥xJ∥1 using 2 ∥xK∩J∥1, where |J| = ℓ.
+So our new range is
+t′ ±
+√
+ℓlog n
+where t′ := 2(t −||xK\J||1) + ||x[m]\J||1
+Note that t′ depends on t and −2||xK\J||1 + ||x ¯J||1, where the latter is a number in [−m, m]
+that only depends on K (which is generated from the randomness r) and the subcube X.
+This number will be part of the advice.
+For any x ∈X, since K is (pseudo-)randomly chosen, if there are t 1’s in xK, then with
+probability 1 −n−ω(1) the number of 1’s in x should belong to t′ ±
+√
+ℓlog n.
+3. So, for every t′ ∈{0, 1, . . . , m}, given −2||xK\J||1 + ||x[m]\J||1 and s ∈{0, 1, . . . , m}, we
+can interpolate an O(
+√
+ℓlog n)-degree polynomial Es,t, such that for every u ∈t′ ±
+√
+ℓlog n,
+Es,t(u) = 1 if u = s and Es,t(u) = 0 otherwise. (Es,t is all zero if s /∈t′ ±
+√
+ℓlog n.)
+6
+
+We can then define
+P (m)[s](x) =
+m/2
+X
+t=0
+P (m/2)[t](xK) · Es,2t−2||xK\J||1+||x ¯
+J||1
+ m
+X
+i=1
+xi
+!
+.
+The argument would work similarly as before. The only difference is that now the range is shifted
+by a number −2||xK\J||1 + ||x ¯J||1 that depends on K and the subcube X. We would encode this
+number to be part of the advice a(X, r), where r denotes the randomness used to sample the
+different K’s. Note that the advice can be easily calculated from K and a concise description of
+X, specifying whether each coordinate is fixed to 0, 1, or is free. Since there are O(log n) layers
+of recursion, the list of shifts above for one particular subcube X has only (2m + 1)O(log n) options
+and can be encoded as an integer a(X, r) ∈[n10 log n].
+3
+Preliminaries
+We first define some standard notation. For any mathematical statement α, let I[α] be the
+indicator that α holds, i.e., it equals 1 if α holds and 0 otherwise. Define the L1-distance of two
+vectors (a1, · · · , ad) and (b1, · · · , bd) by Pd
+i=1 |ai −bi| .
+3.1
+Gates and Circuit Classes
+We first define the following gates we will use.
+Definition 3.1. (Gates) We define the following gates (on input (x1, x2, · · · , xm) ∈{0, 1}m):
+• 1hotSUM: This gate has m + 1 output wires, the i-th wire (i = 0, 1, · · · , m) outputs 1 iff there
+are exactly i 1-s in x1, · · · , xm.
+• THR: This gate has parameters w1, w2, · · · , wm, t ∈R, and outputs
+I[w1x1 + w2x2 + · · · + wmxm ≥t].
+(Replacing ≥by >, < or ≤gives the same definition.)
+• ETHR: This gate has parameters w1, w2, · · · , wm, t ∈R, and outputs
+I[w1x1 + w2x2 + · · · + wmxm = t].
+• SYM: This gate outputs a bit that only depends on x1 + · · · + xm.
+• POLYF2[d]: This gate evaluates some m-variable polynomial over F2 with degree at most d.
+• DOR: It is guaranteed that x1, · · · , xm is either all 0 or contains exactly one 1. This gate
+outputs 1 iff there is exactly one 1.
+• GapANDδ: 0 < δ < 1 is some parameter. It is guaranteed that x1, · · · , xm is either all 1 (in
+which case it outputs 1), or contains at most δ fraction of 1’s (in which case it outputs 0).
+• ∧, ∨, ⊕: Multi fan-in AND, OR, XOR gates
+• ∧k, ∨k, ⊕k: AND, OR, XOR gates with fan-in k.
+7
+
+• ]
+SUM: This gate has two disjoint intervals I0, I1 as parameters, and it is guaranteed that the
+number of 1-s in the input is in I0 ∪I1. ]
+SUM outputs 0 if the number of 1-s in the input is
+in I0, and 1 if in I1.
+Lemma 3.2 ([MTT61]). For any THR gate on m input bits, there is an equivalent THR gate where
+all parameters are integers in range ±mm.
+Definition 3.3. (Constant Depth Circuits) For any gate types or circuit classes G1, G2, · · · , Gd,
+denote G1 ◦G2 ◦· · · ◦Gd by circuits with G1, G2, · · · , Gd gates on the 1, 2, · · · , d-th layers, where layer
+1 is the layer closest to the output.
+3.2
+Structure Lemmata for Threshold Circuits
+Lemma 3.4. For circuit classes A , B.
+We denote A ⊆B by:
+there is a polynomial time
+deterministic algorithm that, given an A -circuit C1 with n input bits and poly(n) size, outputs an
+equivalent B-circuit C2. (Therefore, C2’s size is at most poly(n).) We have:
+1. ∧poly(n) ◦ETHR ⊆ETHR; [HP10]
+2. THR ⊆DOR ◦ETHR; [HP10, CW19]
+3. For any constant c > 0, ETHR ⊆GapAND1/nc ◦SYM; [CW19]
+4. For any ε > 0, SYM ⊆POLYF2[O(1)] ◦1hotSUM, where the SYM gate on the left hand side
+may have poly(n) many wires to each input gate, but on the right hand side, each 1hotSUM
+gate has at most nε wires to each input bit, and there are at most O(1) many 1hotSUM gates.
+(Here O(1) may depend on ε and the exponent of n in SYM’s size.) [ACW16]
+For Item 4, the construction in Theorem 7.1 of [ACW16] has those properties, although not
+explicitly stated. We give a proof in Appendix A.1 for completeness.
+3.3
+Circuit Analysis Problems
+Definition 3.5. (#SAT) For any circuit class A (with binary output), A -#SAT is the following
+problem: given an A -circuit C on n input bits, we need to output Prx∼{0,1}n[C(x) = 1].
+Definition 3.6. (CAPP) For any circuit class A
+(with binary output) and a real number
+0 < δ < 1, A -CAPPδ is the following problem: given an A -circuit C on n input bits, we need to
+estimate Prx∼{0,1}n[C(x) = 1] with additive error ≤δ.
+Definition 3.7. (L1-CAPP for circuits with top 1hotSUM gates) For any circuit class A with
+a 1hotSUM gate at the top and a real number 0 < δ < 1, A -L1-CAPPδ is the following problem:
+given an A -circuit C on n input bits, suppose C’s top 1hotSUM gate has m inputs and m + 1
+outputs, we need to estimate the vector
+
+Pr
+x∼{0,1}n[C(x) = e0],
+Pr
+x∼{0,1}n[C(x) = e1], · · · ,
+Pr
+x∼{0,1}n[C(x) = em]
+
+with additive error ≤δ in L1-distance. Here C(x) = ek means only the k-th output of C(x) is 1,
+i.e., the top 1hotSUM gate has k 1’s in its inputs.
+We also need the following connection between algorithms and circuit lower bounds [CW19, BW24].
+8
+
+Lemma 3.8 ([BW24, Theorem 3.7, Section 3.3]). Let α > 1. If the CAPP with error o(1) for
+O(nα)-size ⊕2 ◦THR ◦THR circuit can be solved in 2n/nω(1) time, then ENP does not have nα-size
+THR ◦THR circuits.
+The same also holds if we replace THR ◦THR by SYM ◦THR.
+Proof Sketch. Theorem 3.7 of [BW24] and its generalization in Section 3.3 require that (i) nα-size
+THR ◦THR can compute parity (which is true for α ≥1) and (ii) a CAPP algorithm for O(nα)-size
+OR3 ◦THR ◦THR. The second requirement can be relaxed to ⊕2 ◦THR ◦THR by using the 2-query
+PCPP specified in [CW19, Lemma 25] instead of the 3-query PCPP used in [BW24].
+The argument above also holds for SYM ◦THR.
+3.3.1
+Known Circuit Analysis Algorithms
+Lemma 3.9 (Folklore). There is a deterministic 2n/2 · poly(n)-time algorithm for THR-#SAT.
+We provide a proof of Lemma 3.9 in Appendix A.2 for completeness.
+Lemma 3.10 ([Wil14]). The truth table of an n-input 2n/100-size 1hotSUM ◦ETHR or 1hotSUM ◦
+THR circuit can be printed in deterministic 2n · poly(n) time.
+3.4
+Chernoff Bound for k-wise Independent Variables
+Lemma 3.11 ([SSS95]). For any n k-wise independent random variables X1, · · · , Xn ∈[0, 1],
+denote X := X1 + X2 + · · · + Xn and µ := E[X], then for any δ > 0, we have
+Pr [|X −µ| ≥δµ] ≤e−Ω(min{k,δµ,δ2µ}).
+3.5
+Modulus Amplification Polynomials
+Lemma 3.12 ([BT91]). For any positive integer k, there exists a degree 2k −1 polynomial
+Ampk(x) ∈Z[x] such that for any integer m > 1 and any integer x, if x ≡0 (mod m), then
+Ampk(x) ≡0 (mod mk); if x ≡1 (mod m), then Ampk(x) ≡1 (mod mk). Moreover, there is a
+deterministic poly(k)-time algorithm that, on input k, outputs Ampk.
+4
+Simplification of THR Gates Under Random Restrictions
+From now on, let ε ∈(0, 10−9) be a global constant.
+Lemma 4.1 ([KW16]). Let n > k be positive integers. Let f : {0, 1}n →{0, 1} be a linear threshold
+function. Then for a random restriction ρ ∈{0, 1, ∗}n, which has exactly k many ∗-s, with probability
+≥1 −O (k/√n), f|ρ is a constant function.
+We note that [KW16] proved a slightly different version of Lemma 4.1, where they handle any
+equi-partition of [n] into k subsets and pick one ∗from each subset uniformly at random. Their
+statement easily implies ours, as one can get the uniform distribution over sets of size k out n by
+first randomly taking an equi-partition of [n] to k non-empty parts and then picking one element
+in each part. We include an alternative proof of Lemma 4.1 in Appendix A.3 for completeness.
+Next, we split the circuit’s n input bits into two parts, I ⊂[n] of size k = nε/10 and [n] \ I of
+size n −k. Based on this partition, we can arrange the 2n possible input strings to the circuit in
+a 2k × 2n−k matrix, where the row and column determine the value for xI and x[n]\I respectively.
+We then use Lemma 4.1 to argue that for a typical choice of I, for most columns, many THR gates
+become constant on all inputs in this column.
+9
+
+Definition 4.2. For positive integers n ≥k, and a set I ∈
+ [n]
+k
+
+, (we call it a “partition”,) split
+any x ∈{0, 1}n into two parts: xI ∈{0, 1}I and x[n]\I ∈{0, 1}[n]\I, and we denote x by (xI, x[n]\I).
+We partition {0, 1}n to 2n−k columns:
+Column(I)
+z
+:=
+
+(y, z): y ∈{0, 1}I	
+,
+for z ∈{0, 1}[n]\I.
+Definition 4.3. Given a collection of m ≤O(n2.5−ε) linear threshold gates
+C =
+
+Ti : {0, 1}n →{0, 1}
+	
+i∈[m],
+and a partition I ∈
+  [n]
+nε/10
+
+. For any z ∈{0, 1}[n]\I, we say Column(I)
+z
+is C-good, if at most n2−ε/2
+gates in C are non-constant on Column(I)
+z .
+We show that it is easy to tell in each column, whether each THR gate is constant 0 or 1 or
+non-constant.
+Theorem 4.4. There is a deterministic O
+
+2n−nε/10 · poly(n)
+
+-time algorithm that, given a
+collection of m ≤O
+ n2.5−ε
+linear threshold gates
+C =
+
+Ti : {0, 1}n →{0, 1}
+	
+i∈[m]
+and a partition I ∈
+  [n]
+nε/10
+
+, outputs for each z ∈{0, 1}[n]\I and i ∈[m], whether Ti is always 0 or
+always 1 or non-constant on Column(I)
+z .
+Proof. For each z ∈{0, 1}[n]\I and i ∈[m], suppose Ti(x) = I
+hPn
+j=1 wi,jxj ≥tj
+i
+, then we can
+determine the maximum and minimum of Pn
+j=1 wi,jxj on Column(I)
+z
+by setting each xj (j ∈I) to
+be 0 or 1 based on the sign of wi,j. And thus figure out whether Ti is always 0 or always 1 or
+non-constant on Column(I)
+z . This can be computed in 2n−nε/10 · poly(n) time.
+Below we present a deterministic algorithm for finding a partition where most columns are good.
+Theorem 4.5. There is a deterministic 2n/2+o(n)-time algorithm that, given a collection of
+m ≤O(n2.5−ε) linear threshold gates
+C =
+
+Ti : {0, 1}n →{0, 1}
+	
+i∈[m],
+outputs a partition I0 ∈
+  [n]
+nε/10
+
+such that at least (1 −1/nε/3) fraction of the Column(I0)
+z
+-s
+(z ∈{0, 1}[n]\I0) are C-good.
+Proof. The existence of a good I0. By Lemma 4.1, for each i ∈[m], we have
+Pr
+I,z
+h
+Ti is non-constant on Column(I)
+z
+i
+≤1/n1/2−ε/8,
+where PrI,z samples a random I ∈
+  [n]
+nε/10
+
+and a random z ∼{0, 1}[n]\I. Thus,
+Pr
+i∼[m] Pr
+I,z
+h
+Ti is non-constant on Column(I)
+z
+i
+≤1/n1/2−ε/8.
+(2)
+10
+
+Define, for each I ∈
+  [n]
+nε/10
+
+and i ∈[m],
+aI,i := #
+n
+z ∈{0, 1}[n]\I : Ti is non-constant on Column(I)
+z
+o
+.
+(3)
+In this terminology, Equation (2) is equivalent to
+E
+i∼[m] E
+I [aI,i] ≤2n−nε/10/n1/2−ε/8.
+So there exists an I0 such that
+E
+i∼[m]
+[aI0,i] ≤2n−nε/10/n1/2−ε/8.
+Next, we show that such I0 satisfies the requirement. By the definition of aI0,i, we have
+Pr
+i∼[m]
+Pr
+z∼{0,1}[n]\I0
+h
+Ti is non-constant on Column(I0)
+z
+i
+≤1/n1/2−ε/8,
+and therefore,
+Pr
+z∼{0,1}[n]\I0
+h
+#
+n
+i ∈[m]: Ti is non-constant on Column(I0)
+z
+o
+> n2−ε/2i
+<
+
+m/n2−ε/2
+·
+
+1/n1/2−ε/8
+≤
+
+O
+ n2.5−ε
+/n2−ε/2
+·
+
+1/n1/2−ε/8
+< 1/nε/3.
+Finding a good I0.
+According to the proof above we only need to compute all aI,i-s for
+I ∈
+  [n]
+nε/10
+
+, i ∈[m].
+Then we can output an I0 such that Ei∼[m] [aI0,i] ≤2n−nε/10/n1/2−ε/8,
+which satisfies the requirement.
+For each i ∈[m], suppose
+Ti(x1, x2, · · · , xn) = I
+
+
+n
+X
+j=1
+wi,jxj ≥ti
+
+.
+Then for each I ∈
+  [n]
+nε/10
+
+and i ∈[m], we define two THR circuits, AI,i(z) and A′
+I,i(z), that capture
+whether Ti always outputs 0 or 1 on Column(I)
+z , respectively. Namely,
+AI,i(z) := I
+
+X
+j∈[n]\I
+wi,jzj < ti −
+X
+j∈I
+max{wi,j, 0}
+
+,
+A′
+I,i(z) := I
+
+X
+j∈[n]\I
+wi,jzj ≥ti −
+X
+j∈I
+min{wi,j, 0}
+
+.
+Thus
+1 −AI,i(z) −A′
+I,i(z) = I[Ti is non-constant on Column(I)
+z ].
+11
+
+Therefore, we can apply the THR-#SAT algorithm to AI,i, A′
+I,i and get
+aI,i =
+X
+z∈{0,1}[n]\I
+(1 −AI,i(z) −A′
+I,i(z)).
+By Lemma 3.9, the total time for computing all aI,i-s is O
+ n
+nε/10
+
+· m · 2(n−nε/10)/2 · poly(n)
+
+which
+is at most 2n/2+o(n).
+5
+Approximating 1hotSUM Gates with Low-Degree Polynomials
+and Applications
+5.1
+Main Lemma
+We follow the work of Alman and Williams [AW15], but adapt it to our setting, where
+m = O(n2.5−ε) (as opposed to subquadratic in n) and we list approximate a 1hotSUM gate on
+any subcube X ⊂{0, 1}m of dimension ≤n2−ε/2.
+Lemma 5.1 (List-Approximating SUM with Low-Degree Polynomials over All Subcubes of
+Dimension n2−ε/2). Let m = O(n2.5−ε) and n be suﬀiciently large. There exists a collection of
+multi-output polynomials
+
+Pr,a ∈(F2[x1, x2, · · · , xm])m+1	
+r∈
+[
+2nε/100]
+, a∈[n10 log n]
+which attempts to list approximate a 1hotSUM gate on m inputs under all subcubes of dimension
+≤n2−ε/2. (Note that each Pr,a outputs m + 1 bits, similar to 1hotSUM.) More precisely, we have
+the following guarantees:
+1. Low Degree Eﬀiciently Computable Polynomials.
+deg Pr,a ≤n1−ε/6 for any r, a and
+there exists an algorithm that given n, m, outputs {Pr,a} in deterministic time O
+
+2n1−ε/6
+.
+2. List Approximators over Large Subcubes. For any subcube X ⊂{0, 1}m of dimension
+≤n2−ε/2 and r ∈
+h
+2nε/100i
+there exists an a(X, r) ∈[n10 log n] such that: for each x ∈X,
+Pr
+r∼
+[
+2nε/100][1hotSUM(x) = Pr,a(X,r)(x)] ≥1 −1/2nε/500.
+Moreover, a(X, r) can be computed in deterministic polynomial time given X and r.
+Proof.
+Part 1. We first construct the collection of polynomials {Pr,a}.
+• We use r to sample a collection of 2 log n + 1 many layers Layer(0), Layer(1), · · · , Layer(2 log n),
+where [m] = Layer(0) ⊇Layer(1) ⊇· · · ⊇Layer(2 log n). The layers are sampled as follows:
+– The first layer is Layer(0) := [m];
+– For k ∈{0, 1, . . . , 2 log n−1}, Layer(k+1) is a pseudo-random subset of Layer(k) where each
+element is selected with probability 1/2 and the choices are nε/200-wise independent.
+• We use a to encode a sequence of integers (a0, a1, · · · , a2 log n−1), where for each i, |ai| ≤n2.5.
+12
+
+Next, we explain how to construct Pr,a for a fixed pair (r, a). We do it by getting low-degree
+approximating polynomials for 1hotSUM over all layers, starting from the last layer and going
+backwards.
+For the last layer, with very high probability, there are at most O(n1−ε) variables in it. (Actually,
+there are only m/n2 = O(n0.5−ε) many variables in expectation.) So there exists an exact degree
+O(n1−ε) polynomial that computes
+1hotSUM
+
+xi : i ∈Layer(2 log n)
+.
+Next we want to do the same for all layers. The idea is to iteratively go backwards from layer
+2 log n to layer 0 and compute a good approximation of 1hotSUM
+
+xi : i ∈Layer(k)
+given a good
+approximation of 1hotSUM
+
+xi : i ∈Layer(k+1)
+.
+Recall that each element in Layer(k+1) is a random subset of Layer(k), and each element in
+Layer(k) has probability 1/2 to be in Layer(k+1). Thus, we expect 2 P
+i∈Layer(k+1) xi to be similar to
+P
+i∈Layer(k) xi, with an additive error of roughly O
+rLayer(k)
+
+due to standard deviation. This
+error will typically be much larger than n for small k. We note though that on any large subcube
+X ⊂{0, 1}m of dimension ≤n2−ε/2 that have coordinates J ⊆[m] non-constant, and any x ∈X,
+the difference 2 P
+i∈Layer(k+1) xi −P
+i∈Layer(k) xi comes from two sources:
+• The difference among the fixed coordinates (i.e., those in [m] \ J) which only depends on X.
+This difference can be typically O
+rLayer(k)
+
+which is larger than n for small k,
+• The difference among the coordinates in J, which depends on the choice of x in X, but has
+mean 0 and much smaller standard deviation O
+rJ ∩Layer(k)
+
+≤O
+p
+|J|
+
+≤O(n1−ε/4).
+The idea is that for every subcube X there will be a sequence of advices a0, · · · , a2 log n−1 that
+will capture the differences of the first kind. Next, we explain how to construct an approximating
+polynomial Pr,a for 1hotSUM given the randomness r and the advice a = (a0, . . . , a2 log n−1).
+Defining Helper “Indicator in Interval” Low-Degree Polynomials Ek,t,s.
+For each k ∈
+{0, 1, · · · , 2 log n}, t ∈{0, 1, · · · , m}, and s ∈[t−n1−ε/5, t+n1−ε/5]∩[0, m], we define the polynomial
+Ek,t,s ∈F2[x1, · · · , xm] to be the interpolating polynomial that satisfies
+Ek,t,s(x1, · · · , xm) = 1
+if
+X
+i∈Layer(k)
+xi = s,
+Ek,t,s(x1, · · · , xm) = 0
+if
+X
+i∈Layer(k)
+xi ∈[t −n1−ε/5, t + n1−ε/5] \ {s}.
+i.e., when {xi}i∈Layer(k) contains t±n1−ε/5 many 1-s, Ek,t,s is an indicator whether there are exactly
+s many 1-s (the polynomial may be arbitrary for other x’s). Note that deg(Ek,t,s) ≤2n1−ε/5.
+Defining Polynomials Ak,s that Attempt to Compute 1hotSUM on Each Layer.
+For
+each k = 2 log n, · · · , 1, 0 (i.e., in backward order) and 0 ≤s ≤m, define the polynomial
+Ak,s ∈F2[x1, · · · , xm] as follows:
+13
+
+• For k = 2 log n, for each 0 ≤s ≤m, let Ak,s := Ek,0,s. (For s > n1−ε/5, set Ak,s := 0.)
+If {xi}i∈Layer(2 log n) contains ≤n1−ε/5 many 1-s, (which happens with very high probability,
+since even E
+hLayer(2 log n)
+i
+≤√n,) then Ak,s is an indicator whether there are exactly s 1-s
+in {xi}i∈Layer(2 log n);
+• For each k = 2 log n −1, · · · , 1, 0, for each 0 ≤s ≤m, let
+Ak,s :=
+X
+t
+Ek,2t+ak,sAk+1,t,
+where P
+t takes the sum over all t-s such that Ek,2t+ak,s and Ak+1,t are well-defined. Observe
+that when Ek,2t+ak,s is well-defined it equals 1 if and only if P
+i∈Layer(k) xi = s.
+The crucial observation is for each k, Ak,s(x) is an indicator whether there are exactly s 1-s
+in {xi}i∈Layer(k) (simultaneously for all s-s) as long as the following conditions hold for all
+k′ ∈{k, k + 1, · · · , 2 log n}:
+
+X
+i∈Layer(k′)
+xi −2
+X
+i∈Layer(k′+1)
+xi −ak′
+
+≤n1−ε/5.
+(4)
+(For k′ = 2 log n, view Layer(2 log n+1) := ∅and a2 log n := 0.)
+In particular, if this is the case when k = 0 then (A0,0(x), · · · , A0,m(x)) = 1hotSUM(x).
+Observe that for every k and s the degree of Ak,s is at most (2 log n −k + 1) · 2n1−ε/5.
+Finally, let
+Pr,a := (A0,0, A0,1, · · · , A0,m) .
+By the definition of Pr,a, we have deg Pr,a ≤2n1−ε/5 · (2 log n + 1) ≤n1−ε/6. Also note that the
+description of each Pr,a can be computed in O
+
+2n1−ε/5·polylog(n)
+time, and then by enumerating all
+(r, a)-s, we can compute {Pr,a} in O
+
+2n1−ε/6
+time.
+Part 2. For each subcube X ⊂{0, 1}m of dimension ≤n2−ε/2 and r ∈
+h
+2nε/100i
+, we show how
+to pick an a(X, r) such that: for each x ∈X Pr,a(X,r)(x) = 1hotSUM(x) with high probability over
+r. We also show that a(X, r) can be computed in deterministic polynomial time (given a concise
+description of X).
+Picking a(X, r)-s.
+Fix a subcube X ⊂{0, 1}m of dimension ≤n2−ε/2 and r ∈
+h
+2nε/100i
+.
+Consider by J ⊆[m] the set of indices such that the subcube X is non-constant on.
+Then,
+|J| = dim(X) ≤n2−ε/2.
+Let x = (x1, x2 · · · , xm) ∈X be any fixed point in X.
+For each
+0 ≤k ≤2 log n −1 let
+ak :=
+X
+i∈Layer(k) : i/∈J
+xi −2
+X
+i∈Layer(k+1) : i/∈J
+xi.
+Since for i /∈J, xi is fixed in X, we know a only depends on X, r, and is independent of x. Observe
+that ak(X, r) is computable in deterministic polynomial time, assuming that the subcube X is
+given in a concise description of its fixed coordinates and their values (e.g., X can be described as
+a string in ρ = {0, 1, ⋆}m where ρi ∈{0, 1} if all x ∈X satisfy xi = ρi and ρi = ⋆otherwise.)
+14
+
+Proof of Approximation.
+We prove that for any fixed x ∈X,
+Pr
+r∼
+[
+2nε/100]
+
+1hotSUM(x) = Pr,a(X,r)(x)
+
+≥1 −1/2nε/500.
+(5)
+Note that if
+
+X
+i∈Layer(k)
+xi −2
+X
+i∈Layer(k+1)
+xi −ak
+
+≤n1−ε/5
+for all 0 ≤k ≤2 log n, then 1hotSUM(x) = Pr,a(X,r)(x). Therefore, by the definition of ak-s, a
+suﬀicient condition for 1hotSUM(x) = Pr,a(X,r)(x) is:
+
+X
+i∈Layer(k) : i∈J
+xi −2
+X
+i∈Layer(k+1) : i∈J
+xi
+
+≤n1−ε/5,
+for all 0 ≤k ≤2 log n.
+Note that for each 1 ≤k ≤2 log n, the distribution of Layer(k) is equivalent to: for each element
+in i ∈[m], let Layer(k) contains i with probability 1/2k, and the decision for all i-s are nε/200-wise
+independent. So, by Lemma 3.11, for any fixed x ∈X and J of size at most n2−ε/2, we have
+Pr
+r∼
+[
+2nε/100]
+
+
+
+X
+i∈Layer(k) : i∈J
+xi −1
+2k
+X
+i∈J
+xi
+
+≤n1−ε/5/3
+
+
+=
+Pr
+r∼
+[
+2nε/100]
+"
+X
+i∈J
+xi · ·I[i ∈Layer(k)] −1
+2k
+X
+i∈J
+xi
+ ≤n1−ε/5/3
+#
+≥1 −exp
+ 
+−Ω
+ 
+min
+(
+nε/200, n1−ε/5/3, (n1−ε/5/3)2
+1
+2k
+P
+i∈J xi
+)!!
+(Lemma 3.11)
+≥1 −1/2nε/400.
+Therefore, with probability ≥1 −1/2nε/500 over r, for all 0 ≤k ≤2 log n, we have
+
+X
+i∈Layer(k) : i∈J
+xi −1
+2k
+X
+i∈J
+xi
+
+≤n1−ε/5/3,
+and thus for all 0 ≤k ≤2 log n −1,
+
+X
+i∈Layer(k) : i∈J
+xi −2 ·
+X
+i∈Layer(k+1) : i∈J
+xi
+
+≤n1−ε/5,
+and hence 1hotSUM(x) = Pr,a(X,r)(x). So Equation (5) holds.
+5.2
+Approximating 1hotSUMn2.5−ε ◦THR by low-degree polynomials on almost all
+good columns
+Theorem 5.2. There is a deterministic O
+
+2n−nε/30
+time algorithm that, given a collection of
+m = O
+ n2.5−ε
+linear threshold gates C =
+
+Ti : {0, 1}n →{0, 1}
+	
+i∈[m] and a partition I ∈
+  [n]
+nε/10
+
+,
+15
+
+outputs a collection of multi-output polynomials
+
+Pr,a ∈(F2[x1, x2, · · · , xm])m+1	
+r∈
+[
+2nε/100]
+,a∈[n10 log n]
+of degree n1−ε/6, and outputs for each pair (z, r) ∈{0, 1}[n]\I×
+h
+2nε/100i
+, a choice a(z, r) ∈
+
+n10 log n
+,
+such that: for any z ∈{0, 1}[n]\I such that Column(I)
+z
+is C-good,
+Pr
+r∼[2nε/100], x∼Column(I)
+z
+[1hotSUM(C(x)) = Pr,a(z,r)(C(x))] ≥1 −1/2nε/500.
+Proof. Using Lemma 5.1, we have a collection of polynomials
+
+Pr,a ∈(F2[x1, x2, · · · , xm])m+1	
+r∈
+[
+2nε/100]
+, a∈[n10 log n],
+that list approximate a 1hotSUM gate on any subcube X ⊂{0, 1}m of dimension ≤n2−ε/2.
+Denote by A ⊆{0, 1}[n]\I the set of all z ∈{0, 1}[n]\I such that Column(I)
+z
+is C-good.
+For
+any good z ∈A, let X = X(z) ⊂{0, 1}m be the minimal subcube that contains the support of
+C(Column(I)
+z ). Note that if z is good, then X(z) has dimension ≤n2−ε/2. Let
+a(z, r) := a(X(z), r).
+Taking expectation over x ∼Column(I)
+z
+and applying Lemma 5.1, we get
+Pr
+r∼[2nε/100], x∼Column(I)
+z
+[1hotSUM(C(x)) = Pr,a(z,r)(C(x))] ≥1 −1/2nε/500.
+(6)
+5.3
+CAPP Algorithm for ⊕2 ◦SYMO(n2.5−ε) ◦THR
+In this section, we apply Theorem 5.2 to obtain a CAPPo(1) algorithm for ⊕2◦SYMO(n2.5−ε)◦THR
+circuits. We need the following lemma:
+Lemma 5.3. There is a deterministic O
+
+2n−nε/50
+time algorithm that, given an n-input
+POLYF2[n1−ε/8] ◦THR circuit C with at most poly(n) different THR gates at the bottom, and
+a partition I ∈
+  [n]
+nε/10
+
+, outputs
+Pr
+x∈Column(I)
+z
+[C(x) = 1]
+for each z ∈{0, 1}[n]\I.
+Lemma 5.3 has been implicitly used in previous works [ACW16]. Nevertheless, here we give a
+proof for completeness in Appendix A.4.
+Theorem 5.4. There is a deterministic algorithm for ⊕2 ◦SYMO(n2.5−ε) ◦THR-CAPPo(1) that runs
+in O
+
+2n−nε/100
+time.
+Proof. Denote the ⊕2 ◦SYMO(n2.5−ε) ◦THR circuit by
+C = (f1 ◦C1) ⊕(f2 ◦C2),
+where
+16
+
+• f1 : {0, 1}m1 →{0, 1} and f2 : {0, 1}m2 →{0, 1} are the SYM gates on the first layer, where
+m1, m2 ≤O
+ n2.5−ε
+;
+• C1, C2 are the collection of THR gates under f1, f2, respectively. If a THR gate has multiple
+wires to fj, then it is counted multiple times in Cj.
+By Theorem 4.5, in deterministic 2n/2+o(n) time, we can find a partition I ∈
+  [n]
+nε/10
+
+such that
+at least (1 −1/nε/3) fraction of the Column(I)
+z -s (z ∈{0, 1}[n]\I) are (C1 + C2)-good, and hence they
+are both C1-good and C2-good. For j ∈{1, 2}, use Theorem 4.4 to compute
+Aj :=
+n
+z ∈{0, 1}[n]\I : Column(I)
+z
+is Cj-good
+o
+.
+Now we apply Theorem 5.2 to C1 and C2 respectively. In O
+
+2n−nε/30
+time, we can find two
+collections of polynomials
+n
+P (1)
+r,a
+o
+,
+n
+P (2)
+r,a
+o
+of degree n1−ε/6 and choices a(1)(z, r), a(2)(z, r)-s for
+C1, C2 respectively that satisfy: for each j ∈{1, 2} and z ∈Aj, we have
+Pr
+r∼
+[
+2nε/100]
+, x∼Column(I)
+z
+h
+1hotSUM ◦Cj(x) = P (j)
+r,a(z,r) ◦Cj(x)
+i
+≥1 −1/2nε/500.
+For each j ∈{1, 2} and r ∈
+h
+2nε/100i
+and a ∈
+
+n10 log n
+, we compute the polynomial
+Q(j)
+r,a :=
+X
+0≤s≤mj : fj outputs 1 on s 1-s
+
+P (j)
+r,a
+
+s .
+Then for any z ∈Aj, we have
+Pr
+r∼[2nε/100], x∼Column(I)
+z
+h
+fj ◦Cj(x) = Q(j)
+r,a(j)(z,r) ◦Cj(x)
+i
+≥1 −1/2nε/500
+(7)
+Then, for each tuple (r, a1, a2) ∈
+h
+2nε/100i
+×
+
+n10 log n2, consider the circuit
+eCr,a1,a2 :=
+
+Q(1)
+r,a1 ◦C1
+
+⊕
+
+Q(2)
+r,a2 ◦C2
+
+,
+i.e., replace the two SYM gates by Q(1)
+r,a1 and Q(2)
+r,a2. Note that eCr,a1,a2 is a POLYF2[n1−ε/6] ◦THR
+circuit, so by Lemma 5.3, in O
+
+2n−nε/50
+time, we can output
+Pr
+x∼Column(I)
+z
+h
+eCr,a1,a2(x) = 1
+i
+for all z ∈{0, 1}[n]\I. Then, by enumerating over all tuples (r, a1, a2), we can output
+Pr
+x∼Column(I)
+z
+h
+eCr,a1,a2(x) = 1
+i
+for all (r, a1, a2) ∈
+h
+2nε/100i
+×
+
+n10 log n2 and z ∈{0, 1}[n]\I in total time O
+
+2n−nε/60
+. Finally, we
+output
+ep :=
+1
+2n−|I|
+X
+z∈A1∩A2
+Pr
+x∼Column(I)
+z
+,
+r∼[2nε/100]
+h
+eCr,a(1)(z,r),a(2)(z,r)(x) = 1
+i
+.
+17
+
+We show that ep is close to C’s acceptance probability, which we denote by p.
+Applying the union bound on Equation (7), for any z ∈A1 ∩A2,
+Pr
+r∼[2nε/100], x∼Column(I)
+z
+h
+∀j ∈{1, 2} : Q(j)
+r,a(z,r) ◦Cj(x) = fj ◦Cj(x)
+i
+≥1 −2/2nε/500
+(8)
+and hence
+Pr
+r∼[2nε/100], x∼Column(I)
+z
+h
+eCr,a(1)(z,r),a(2)(z,r)(x) = C(x)
+i
+≥1 −2/2nε/500
+(9)
+So
+
+ep −
+1
+2n−|I|
+X
+z∈A1∩A2
+Pr
+x∼Column(I)
+z
+[C(x) = 1]
+
+≤2/2nε/500.
+(10)
+Also note that since |A1| ≥(1 −1/nε/3) · 2n−|I|, |A2| ≥(1 −1/nε/3) · 2n−|I|, we have
+|A1 ∩A2| ≥(1 −2/nε/3) · 2n−|I|, and thus
+
+p −
+1
+2n−|I|
+X
+z∈A1∩A2
+Pr
+x∼Column(I)
+z
+[C(x) = 1]
+
+=
+1
+2n−|I|
+X
+z∈{0,1}[n]\I\(A1∩A2)
+Pr
+x∼Column(I)
+z
+[C(x) = 1]
+≤2/nε/3.
+(11)
+Equations (10) and (11) give that |ep −p| ≤o(1), which satisfies the requirement.
+Combining Theorem 5.4 and Lemma 3.8 we get:
+Corollary 5.5. For any constant ε > 0, ENP does not have n2.5−ε-sized SYM ◦THR circuits.
+6
+CAPP Algorithm for ⊕2 ◦THRO(n2.5−2ε) ◦THR
+Theorem 6.1. There is a deterministic algorithm for ⊕2 ◦THRO(n2.5−2ε) ◦THR-CAPPo(1) that runs
+in O
+
+2n−nε/100
+time.
+(Remark: To prove Theorem 1.2 with parameter ε, it suﬀices to prove Theorem 6.1 with parameter
+ε/2; we use 2ε in Theorem 6.1 for better readability.)
+Proof. Let C be the ⊕2 ◦THRO(n2.5−2ε) ◦THR circuit.
+Our proof consists of three parts:
+1. We use several items from Lemma 3.4 to transform C into a
+]
+SUM ◦POLYF2[O(1)] ◦1hotSUM ◦THR
+circuit C∗, where crucially each POLYF2[O(1)] gate has only O(1) many different 1hotSUM
+gates feeding it.
+2. We reduce CAPPo(1) on C∗to (some variant of) CAPPo(1) on POLYF2[O(1)] ◦1hotSUM ◦THR
+circuits C∗
+1, . . . , C∗
+N.
+18
+
+3. Similarly to Theorem 5.4, we present a deterministic O(2n−nε/100)-time algorithm that
+outputs, for any k ∈[N] and each good column z, an estimate epk(z) ∈R that is 1/nω(1)
+close to Prx∼Column(I)
+z [C∗
+k(x) = 1]. Finally, taking the average over epk(z) for good columns z
+would give us the desired Prx∼{0,1}n[C∗
+k(x) = 1] up to additive error o(1).
+Part 1. We use Lemma 3.4 to transform C.
+Apply Item 2 of Lemma 3.4 to C’s middle layer, we transform C into an c
+⊕2 ◦DOR ◦ETHR ◦THR
+circuit C1, where there are at most O
+ n2.5−2ε
+many different THR gates in the bottom layer.
+Suppose each DOR gate in C1 has exactly nc gates. (We can append some constant-0 inputs to
+each DOR gate to ensure that.) Then apply Item 3 of Lemma 3.4 to C1’s ETHR layer, we transform
+C1 into an
+⊕2 ◦DOR ◦GapAND1/nc+2 ◦SYM ◦THR
+circuit C2, where there are at most O
+ n2.5−2ε
+many different THR gates in the bottom layer. Then
+apply Item 4 of Lemma 3.4 to C2’s SYM layer, we transform C2 into an
+⊕2 ◦DOR ◦GapAND1/nc+2 ◦POLYF2[O(1)] ◦1hotSUM ◦THR
+circuit C3, where:
+• There are at most O
+ n2.5−2ε
+many different THR gates in the bottom layer;
+• For each POLYF2[O(1)] circuit in the 4-th layer, the subcircuit under which has at most O(1)
+many different 1hotSUM gates (each with poly(n) output bits);
+• Each 1hotSUM gate in the 5-th layer has at most O
+ n2.5−ε
+input wires, and moreover, has
+at most O(nε) wires to each THR gate in the bottom layer.
+Now consider the DOR ◦GapAND1/nc+2 part in C3. Recall that each DOR gate has exactly
+nc inputs.
+Next, suppose all GapAND1/nc+2 gates have at most nd many incoming wires.
+We
+transform them so that each will have exactly nd wires by duplicating wires equitably. Indeed, if a
+GapAND1/nc+2 gate has s incoming wires, we can duplicate each wire either ⌈nd/s⌉or ⌊nd/s⌋times
+to get exactly nd many wires. Under this transformation, the new gate needs to distinguish inputs
+that are all 1s from those on which at most (s/nc+2) · ⌈nd/s⌉≤2nd/nc+2 ≤nd/nc+1 are 1s. This
+can be done by a GapAND1/nc+1 gate on exactly nd wires. Let C4 be the new
+⊕2 ◦DOR ◦GapAND1/nc+1 ◦POLYF2[O(1)] ◦1hotSUM ◦THR
+circuit, where each DOR has exactly nc input bits and each GapAND1/nc+1 gate has exactly nd
+input bits. We view each DOR ◦GapAND1/nc+1 gate as an nc+d-input circuit, then when it outputs
+1, the number of 1-s in its input bits is in the range [nd, nd + nd−1], (because the GapAND gate
+that outputs 1 has nd input 1-s, and each remaining GapAND gate has at most nd−c−1 input 1-s;)
+when it outputs 0, the number of 1-s in its input bits is in range [0, nd−1], (because each GapAND
+gate has at most nd−c−1 input 1-s.) Therefore, we can replace each DOR ◦GapAND1/nc+1 by an
+nc+d-input gate ]
+SUM gate, which outputs
+(
+0
+if #1-s in its input is ∈[0, nd−1]
+1
+if #1-s in its input is ∈[nd, nd + nd−1].
+19
+
+Let C5 be the resulting
+⊕2 ◦]
+SUM ◦POLYF2[O(1)] ◦1hotSUM ◦THR
+circuit.
+Below we transform ⊕2◦]
+SUM into ]
+SUM◦{∧2, ¬}. For the top ⊕2◦]
+SUM circuit on 2nc+d inputs,
+denote its inputs by x1, x2, · · · , xnc+d, x′
+1, x′
+2, · · · , x′
+nc+d, where xi-s are the inputs corresponding to
+one ]
+SUM and xi-s are corresponding to the other one. Let S := Pnc+d
+i=1 xi, S′ := Pnc+d
+i=1 x′
+i, and let
+f(S, S′) be ⊕2 ◦]
+SUM’s output, then
+f(S, S′) =
+
+
+
+
+
+
+
+
+
+
+
+0
+if S ∈[0, nd−1] and S′ ∈[0, nd−1]
+1
+if S ∈[0, nd−1] and S′ ∈[nd, nd + nd−1]
+1
+if S ∈[nd, nd + nd−1] and S′ ∈[0, nd−1]
+0
+if S ∈[nd, nd + nd−1] and S′ ∈[nd, nd + nd−1].
+Thus
+f(S, S′) =
+(
+0
+if (S −nd/2)(S′ −nd/2) ∈
+
+n2d/4 −2n2d−1, n2d/4 + 2n2d−1
+1
+if (S −nd/2)(S′ −nd/2) ∈
+
+−n2d/4 −2n2d−1, −n2d/4 + 2n2d−1
+.
+Consider the following multiset:
+M :=
+n
+xi ∧x′
+j : i ∈[nc+d], j ∈[nc+d]
+o
++ nd/2 ·
+n
+¬xi : i ∈[nc+d]
+o
++ nd/2 ·
+n
+¬x′
+i : i ∈[nc+d]
+o
+,
+then, if M contains nc+2d ± 2n2d−1 many 1-s, ⊕2 ◦]
+SUM outputs 0; if M contains nc+2d −n2d/2 ±
+2n2d−1 many 1-s, ⊕2 ◦]
+SUM outputs 1. Therefore, we transform ⊕2 ◦]
+SUM into ]
+SUM ◦{∧2, ¬},
+where M gives the bottom ∧2, ¬ gates, and the top ]
+SUM gate outputs
+(
+0
+if #1-s in its input is ∈[nc+2d −2n2d−1, nc+2d + 2n2d−1]
+1
+if #1-s in its input is ∈[nc+2d −n2d/2 −2n2d−1, nc+2d −n2d/2 + 2n2d−1].
+Finally, the ∧2, ¬ gates can be merged into the POLYF2[O(1)]-s in the next layer. The number of
+1hotSUM gates under each POLYF2[O(1)] is doubled.
+To summarize, we transform C into a
+]
+SUM ◦POLYF2[O(1)] ◦1hotSUM ◦THR
+circuit C∗, where
+• There are at most O
+ n2.5−2ε
+many different THR gates in the bottom layer;
+• The top ]
+SUM gate has n2c+2d + nc+2d input bits, and outputs
+(
+0
+if #1-s in its input is ∈nc+2d ± 2n2d−1
+1
+if #1-s in its input is ∈nc+2d −n2d/2 ± 2n2d−1.
+(It is guaranteed that #1-s in its input is always in either of these two intervals.)
+• For each POLYF2[O(1)] circuit in the second layer, the subcircuit under which has at most
+O(1) many different 1hotSUM gates;
+20
+
+• Each 1hotSUM gate in the third layer has at most O
+ n2.5−ε
+input wires, and moreover, has
+at most O(nε) wires to each THR gate in the bottom layer.
+Part 2. We reduce CAPPo(1) on C∗to (some variant of) CAPP on POLYF2[O(1)]◦1hotSUM◦THR
+circuits.
+Let C be the collection of nε copies of all THR gates at the bottom layer of C∗. |C| ≤O
+ n2.5−ε
+.
+Using Theorem 4.5, in 2n/2+o(n) time, we can find a partition I ∈
+  [n]
+nε/10
+
+such that at least
+(1 −1/nε/3) fraction of Column(I)
+z -s (z ∈{0, 1}[n]\I) are C-good. Denote
+A :=
+n
+z ∈{0, 1}[n]\I : Column(I)
+z
+is C-good
+o
+Let C∗
+1, · · · , C∗
+N (N = n2c+2d + nc+2d) be the POLYF2[O(1)] ◦1hotSUM ◦THR subcircuits of C∗.
+We prove the following claim, which reduces CAPPo(1) on C∗to some variant of CAPP on C∗
+k-s:
+Claim 6.1.1. Assume there is a deterministic O
+
+2n−nε/100
+-time algorithm that, for any k ∈[N],
+on input C∗
+k, for each z ∈A, outputs an estimate epk(z) ∈R such that
+epk(z) −
+Pr
+x∼Column(I)
+z
+[C∗
+k(x) = 1]
+ ≤1/nω(1).
+Then there is a deterministic O
+
+2n−nε/200
+-time algorithm that, on input C∗, solves CAPPo(1)
+on C∗.
+Proof of Claim 6.1.1.
+We show that the following simple algorithm works: on input C∗, outputs
+ep :=
+1
+2n−|I|
+X
+z∈A
+nc+2d −P
+k∈[N] epk(z)
+n2d/2
+.
+Note that by the definition of the intervals in the top ]
+SUM gate, for any x ∈{0, 1}n, we have
+
+nc+2d −P
+k∈[N] I[C∗
+k(x) = 1]
+n2d/2
+−I[C∗(x) = 1]
+ ≤4/n.
+For any z ∈A, take the expectation over x ∼Column(I)
+z , we have
+
+Pr
+x∼Column(I)
+z
+[C∗(x) = 1] −
+nc+2d −P
+k∈[N] Prx∼Column(I)
+z [C∗
+k(x) = 1]
+n2d/2
+ ≤4/n,
+take the sum over all z ∈A, we get
+
+1
+2n−|I|
+X
+z∈A
+Pr
+x∼Column(I)
+z
+[C∗(x) = 1] −
+1
+2n−|I|
+X
+z∈A
+nc+2d −P
+k∈[N] Prx∼Column(I)
+z [C∗
+k(x) = 1]
+n2d/2
+ ≤4/n.
+By the properties of epk(z)-s, we have
+
+1
+2n−|I|
+X
+z∈A
+Pr
+x∼Column(I)
+z
+[C∗(x) = 1] −
+1
+2n−|I|
+X
+z∈A
+nc+2d −P
+k∈[N] epk(z)
+n2d/2
+ ≤4/n + 1/nω(1),
+21
+
+i.e.,
+ep −
+1
+2n−|I|
+X
+z∈A
+Pr
+x∼Column(I)
+z
+[C∗(x) = 1]
+ ≤4/n + 1/nω(1)
+Also note that |A| ≥(1 −1/nε/3) · 2n−|I|, so
+ep −
+Pr
+x∼{0,1}n[C∗(x) = 1]
+ ≤4/n + 1/nω(1) + 1/nε/3 ≤o(1).
+So it only remains to show how to compute epk(z)-s for Claim 6.1.1.
+Part 3. We present a deterministic O
+
+2n−nε/100
+-time algorithm that, for any k ∈[N], on input
+C∗
+k, for each z ∈A, outputs an estimate epk(z) ∈R such that
+epk(z) −
+Pr
+x∼Column(I)
+z
+[C∗
+k(x) = 1]
+ ≤1/nω(1).
+This step is very similar to Theorem 5.4.
+Let g be C∗
+k’s top POLYF2[O(1)] circuit. Let f1, f2, · · · , ft (t ≤O(1)) be the 1hotSUM gates in
+C∗
+k’s middle layer. For each j ∈[t], let Cj be the collection of THR gates connected to fj. (If a gate
+has multiple wires to fj, it is counted multiple times in Cj.) Since fj has at most nε wires to each
+bottom THR gates, we have Cj ≤C. Let
+Aj :=
+n
+z ∈{0, 1}[n]\I : Column(I)
+z
+is Cj-good
+o
+.
+Then Aj ⊇A.
+Apply Theorem 5.2 to f1, · · · , ft respectively, we get for each j ∈[t], polynomials
+n
+P (j)
+r,a
+o
+r∈
+[
+2nε/100]
+,a∈[n10 log n]
+and choices a(j)(z, r) (z ∈Aj, r ∈
+h
+2nε/100i
+), such that for any z ∈Aj,
+Pr
+r∼
+[
+2nε/100]
+, x∼Column(I)
+z
+h
+fj ◦Cj(x) = P (j)
+r,a(j)(z,r) ◦Cj(x)
+i
+≥1 −1/2nε/500
+(12)
+Now for each tuple (r, a1, a2, · · · , at) ∈
+h
+2nε/100i
+×
+
+n10 log nt, consider the circuit
+Dr,a1,a2,··· ,at := g
+
+P (1)
+r,a1 ◦C1, P (2)
+r,a2 ◦C2, · · · , P (t)
+r,at ◦Ct
+
+.
+i.e., in C∗
+k, replace each fj by P (j)
+r,aj. Note that Dr,a1,a2,··· ,at is a POLYF2[O
+ n1−ε/6
+] ◦THR circuit,
+so by Lemma 5.3, in O
+
+2n−nε/50
+time, we can output
+Pr
+x∼Column(I)
+z
+[Dr,a1,a2,··· ,at(x) = 1]
+22
+
+for all z ∈{0, 1}[n]\I. Then enumerate over tuples (r, a1, a2, · · · , at), (there are 2nε/100 · n10t log n
+many tuples,) we can output
+Pr
+x∼Column(I)
+z
+[Dr,a1,a2,··· ,at(x) = 1]
+for all (r, a1, a2, · · · , at) ∈
+h
+2nε/100i
+×
+
+n10 log nt and z ∈{0, 1}[n]\I. This can be done in O
+
+2n−nε/60
+time in total.
+Finally, for each z ∈A, we output
+epk(z) :=
+Pr
+r∼
+[
+2nε/100]
+, x∼Column(I)
+z
+h
+Dr,a(1)(z,r),a(2)(z,r),··· ,a(t)(z,r)(x) = 1
+i
+We show that epk(z) satisfies the requirement. Consider a fixed z ∈{0, 1}[n]\I. Applying a union
+bound on all j ∈[t] to Equation (12) gives
+Pr
+r∼
+[
+2nε/100]
+, x∼Column(I)
+z
+h
+∀j ∈[t] : fj ◦Cj(x) = P (j)
+r,a(j)(z,r) ◦Cj(x)
+i
+≥1 −t/2nε/500
+(13)
+Note that for any r ∈
+h
+2nε/100i
+and x ∈Column(I)
+z , if fj ◦Cj(x) = P (j)
+r,a(j)(z,r) ◦Cj(x) holds for all
+j ∈[t], then C∗
+k(x) = Dr,a(1)(z,r),...,a(t)(z,r)(x). So for each z ∈A,
+Pr
+r∈
+[
+2nε/100]
+, x∼Column(I)
+z
+h
+C∗
+k(x) = Dr,a(1)(z,r),a(2)(z,r),··· ,a(t)(z,r)(x)
+i
+≥1 −t/2nε/500,
+so
+
+Pr
+x∼Column(I)
+z
+[C∗
+k(x) = 1] −epk(z)
+ ≤t/2nε/500 ≤1/nω(1).
+All the above can be done in O
+
+2n−nε/100
+time.
+Combining with Lemma 3.8, we get:
+Corollary 6.2. For any constant ε > 0, ENP does not have THR ◦THR circuits with ≤O
+ n2.5−ε
+gates.
+A
+Appendix
+A.1
+Proof of Item 4 of Lemma 3.4
+Lemma A.1. For any ε > 0, SYM ⊆POLYF2[O(1)]◦1hotSUM, where the SYM gate on the left hand
+side may have poly(n) many wires to each input gate, but on the right hand side, each 1hotSUM
+gate has at most nε wires to each input bit, and there are at most O(1) many 1hotSUM gates. (Here
+O(1) may depend on ε and the exponent of n in SYM’s size.)
+Proof. Denote the SYM circuit by:
+C(x) = f
+ n
+X
+i=1
+wixi
+!
+.
+23
+
+Here, each wi is a nonnegative integer not more than poly(n), which is the number of wires to the
+input bit xi. f is a function f : {0, 1, · · · , w1 + · · · + wn} →{0, 1}. We write each wi as an integer
+in base nε, with c + 1 = O(1) digits:
+wi =
+c
+X
+j=0
+vi,j · nεj.
+Here, c is a constant that depends on ε and the exponent of n in SYM’s size, and 0 ≤vi,j < nε.
+Then we have
+X
+i∈[n]
+wixi =
+c
+X
+j=0
+nεj ·
+
+X
+i∈[n]
+vi,jxi
+
+.
+For each 0 ≤j ≤c, let Gj be a 1hotSUM gate with vi,j (which is ≤nε) wires to xi for each i ∈[n].
+Recall that for any 0 ≤k ≤P
+i∈[n] vi,j, the k-th output bit of Gj(x) (denote it by (Gj(x))k) is 1 iff
+P
+i∈[n] vi,jxi = k. Note that we have
+C(x) = f
+
+
+c
+X
+j=0
+nεj ·
+
+X
+i∈[n]
+vi,jxi
+
+
+
+.
+Writing the right hand side as a lookup table on inputs P
+i∈[n] vi,jxi (0 ≤j ≤c), we get
+C(x) =
+X
+0≤k0≤∑
+i∈[n] vi,0
+0≤k1≤∑
+i∈[n] vi,1
+...
+0≤kc≤∑
+i∈[n] vi,c
+f
+
+
+c
+X
+j=0
+nεjkj
+
+· I
+
+kj =
+X
+i∈[n]
+vi,jxi (∀0 ≤j ≤c)
+
+
+=
+X
+0≤k0≤∑
+i∈[n] vi,0
+0≤k1≤∑
+i∈[n] vi,1
+...
+0≤kc≤∑
+i∈[n] vi,c
+f
+
+
+c
+X
+j=0
+nεjkj
+
+· (G0(x))k0(G1(x))k1 · · · (Gc(x))kc.
+So C can be expressed as a degree-(c+1) polynomial over F2 on the 1hotSUM gates G0, G1, · · · , Gc.
+Since c ≤O(1) and each P
+i∈[n] vi,j ≤poly(n), the polynomial contains ≤poly(n) many
+monomials.
+A.2
+Proof of Lemma 3.9
+Lemma A.2. There is a deterministic 2n/2 · poly(n)-time algorithm for THR-#SAT.
+Proof. We divide an input string x = (x1, · · · , xn) into two parts: y = (x1, x2, · · · , xn/2) and
+z = (xn/2+1, xn/2+2, · · · , xn). We can write the THR gate as
+I [A(y) + B(z) ≥C] ,
+where A, B are linear functions, and C is a constant.
+Our 2n/2 · poly(n)-time algorithm works as follows: we first compute the values of all A(y)-s
+(y ∈{0, 1}n/2) and B(z)-s (z ∈{0, 1}n/2). We sort all B(z)-s, and then for each y, use binary
+search to determine for how many z-s, we have A(y) + B(z) ≥C. Take the sum over all y-s we get
+the result for THR-#SAT. The algorithm runs in time 2n/2 · poly(n).
+24
+
+A.3
+Proof of Lemma 4.1
+Lemma A.3. Let n > k be positive integers.
+Let f : {0, 1}n →{0, 1} be a linear threshold
+function. Then for a random restriction ρ ∈{0, 1, ∗}n which has exactly k many ∗-s, with probability
+≥1 −O (k/√n), f|ρ is a constant function.
+In fact, Lemma A.3 can be generalized to unate functions:
+Lemma A.3.1. Let n > k be positive integers. Let f : {0, 1}n →{0, 1} be a unate function. Then
+for a random restriction ρ ∈{0, 1, ∗}n which has exactly k many ∗-s, the probability that f|ρ is a
+constant function is ≥1 −O (k/√n).
+Proof of Lemma A.3.1. We only need to consider the case where k ≤√n.
+We assumed that f is unate, but without loss of generality, we can assume f is monotone, since
+we can flip some input bits to make f monotone, not affecting the probability that f|ρ is a constant
+function. We define:
+• Let P be the set of all restriction ρ ∈{0, 1, ∗}n which has exactly k many ∗-s. |P| =
+ n
+k
+
+·2n−k.
+• Let Π be the set of all shortest paths from 0n to 1n in the n-dimensional hypercube. |Π| = n!.
+• Let
+E :=
+
+(ρ, π) ∈P × Π: f(ρ(0n)) = 0, f(ρ(1n)) = 1, and both ρ(0n), ρ(1n) are in π
+	
+.
+(We remark that ρ(0n), ρ(1n) are strings obtained by replacing all ∗-s in ρ by 0-s, 1-s.)
+We use two different ways to estimate |E|. On one hand, for each ρ ∈P, if f|ρ is a constant,
+then there does not exist π ∈Π such that (ρ, π) ∈E. If f|ρ is non-constant, suppose ρ has j 0-s and
+(n −k −j) 1-s, then the number of π-s such that (ρ, π) ∈E is k! · j! · (n −k −j)! = n!/(
+ n
+k
+
+·
+ n−k
+j
+
+),
+which is minimized at j = ⌊(n −k)/2⌋. Therefore,
+|E| ≥
+n!
+ n
+k
+
+·
+ n−k
+⌊(n−k)/2⌋
+ · #{ρ ∈P : f|ρ is non-constant}.
+(14)
+On the other hand, we prove that for each π ∈Π, there are at most k ρ-s such that (ρ, π) ∈E.
+Suppose all points on π are 0n = v0 →v1 →· · · →vn = 1n. Pick the q such that f(vq) = 0
+and f(vq+1) = 1. Then for any ρ such that (ρ, π) ∈E, ρ(0n) and ρ(1n) are two points on π with
+distance k, and they are on different sides of vq →vq+1. So, there are at most k such choices of
+(ρ(0n), ρ(1n)) in π. Also note that ρ is uniquely determined by (ρ(0n), ρ(1n)), so there are at most
+k choices for ρ such that (ρ, π) ∈E. Therefore,
+|E| ≤k · |Π| = k · n!.
+(15)
+Combining Equations (14) and (15), we have
+#{ρ ∈P : f|ρ is non-constant}
+|P|
+≤
+ n
+k
+
+·
+ n−k
+⌊(n−k)/2⌋
+
+n!
+· |E|
+|P|
+≤
+ n
+k
+
+·
+ n−k
+⌊(n−k)/2⌋
+
+n!
+·
+k · n!
+ n
+k
+
+· 2n−k
+25
+
+=
+k ·
+ n−k
+⌊(n−k)/2⌋
+
+2n−k
+≤O
+
+k/
+√
+n −k
+
+≤O
+ k/√n
+
+.
+The last step is because k ≤√n.
+So for a random restriction ρ ∈P, with probability
+≥1 −O (k/√n), f|ρ is a constant function.
+Proof of Lemma A.3. Note that linear threshold functions are unate, so this is just a subcase of
+Lemma A.3.1.
+A.4
+Proof of Lemma 5.3
+Lemma A.4. There is a deterministic O
+
+2n−nε/50
+time algorithm that, given an n-input
+POLYF2[n1−ε/8] ◦THR circuit C with at most poly(n) different THR gates at the bottom, and
+a partition I ∈
+  [n]
+nε/10
+
+, outputs
+Pr
+x∈Column(I)
+z
+[C(x) = 1]
+for each z ∈{0, 1}[n]\I.
+Proof.
+Suppose C’s bottom THR gates are T1, T2, · · · , Tm, and its top POLYF2[n1−ε/8] gate is P.
+By Item 2 of Lemma 3.4, we can transform each Ti into a disjoint or of ETHR gates:
+Ti = PMi
+j=1 Ti,j, where Mi ≤poly(n). Therefore, we can transform C into a POLYF2[n1−ε/8]◦ETHR
+circuit C1, whose bottom ETHR gates are Ti,j-s, and its top POLY gate is
+P1 ({Ti,j}) := P
+
+
+M1
+X
+j=1
+T1,j,
+M2
+X
+j=1
+T2,j, · · · ,
+Mm
+X
+j=1
+Tm,j
+
+.
+Note that C1’s top POLYF2[n1−ε/8] gate can be represented as ⊕◦∧, where the fan-in of the
+top ⊕gate is ≤
+ m
+n1−ε/8
+
+≤2n1−ε/8·O(log n), and by Item 1 of Lemma 3.4, the ∧gates and the
+bottom ETHR gates can be transformed into ETHR gates. Therefore, C1 can be transformed into
+a ⊕◦ETHR circuit C2, where the top ⊕gate has ≤2n1−ε/8·O(log n) fan-in.
+Suppose C2’s bottom ETHR gates are E1, E2, · · · , EN (N ≤2n1−ε/8·O(log n)).
+Consider the
+modulus amplification polynomial Ampnε/9 (Lemma 3.12). Consider
+C3(z) :=
+X
+y∈{0,1}I
+Ampnε/9 (E1(y; z) + E2(y; z) + · · · + EN(y; z)) (z ∈{0, 1}[n]\I).
+C3 is a degree-2nε/9 polynomial over Ei(y; ·)-s (i ∈[N], y ∈{0, 1}I). We replace the polynomial
+by 1hotSUM ◦∧, and transform the ∧and bottom ETHR-s into ETHR. Thus, C3 can be computed
+by a 1hotSUM ◦ETHR circuit, where the top 1hotSUM gate has fan-in
+≤
+N · 2|I|
+2nε/9
+
+≤2o(n).
+By Lemma 3.10, C3’s truth table can be computed in time O
+
+2n−nε/20
+.
+26
+
+Note that for each y ∈{0, 1}I and z ∈{0, 1}[n]\I, we have
+C(y; z) = (E1(y; z) + E2(y; z) + · · · + EN(y; z)) mod 2,
+so
+Ampnε/9 (E1(y; z) + E2(y; z) + · · · + EN(y; z)) ≡C(y; z)
+(mod 2nε/9),
+and thus
+C3(z) mod 2nε/9 =
+X
+y∈{0,1}|I|
+C(y; z).
+So we can compute
+Pr
+x∼Column(I)
+z
+[C(x) = 1] = C3(z) mod 2nε/9
+2nε/10
+.
+The algorithm runs in O
+
+2n−nε/50
+time.
+References
+[Aar16]
+Scott Aaronson. P =? NP. In John Forbes Nash Jr. and Michael Th. Rassias, editors,
+Open Problems in Mathematics, pages 1–122. Springer, 2016.
+[ACW16]
+Josh Alman, Timothy M. Chan, and R. Ryan Williams. Polynomial representations
+of threshold functions and algorithmic applications.
+In Irit Dinur, editor, IEEE
+57th Annual Symposium on Foundations of Computer Science, FOCS 2016, 9-11
+October 2016, Hyatt Regency, New Brunswick, New Jersey, USA, pages 467–476. IEEE
+Computer Society, 2016.
+[Ajt83]
+Miklós Ajtai. Σ1
+1-formulae on finite structures. Ann. Pure Appl. Log., 24(1):1–48, 1983.
+[AW15]
+Josh Alman and Ryan Williams.
+Probabilistic polynomials and hamming nearest
+neighbors. In FOCS, pages 136–150. IEEE Computer Society, 2015.
+[BKK+22] Swapnam Bajpai, Vaibhav Krishan, Deepanshu Kush, Nutan Limaye, and Srikanth
+Srinivasan.
+A #sat algorithm for small constant-depth circuits with PTF gates.
+Algorithmica, 84(4):1132–1162, 2022.
+[BT91]
+Richard Beigel and Jun Tarui. On ACC. In 32nd Annual Symposium on Foundations
+of Computer Science, San Juan, Puerto Rico, 1-4 October 1991, pages 783–792. IEEE
+Computer Society, 1991.
+[BW24]
+Gabriel Bathie and R. Ryan Williams.
+Towards stronger depth lower bounds.
+In
+Venkatesan Guruswami, editor, 15th Innovations in Theoretical Computer Science
+Conference, ITCS 2024, January 30 to February 2, 2024, Berkeley, CA, USA, volume
+287 of LIPIcs, pages 10:1–10:24. Schloss Dagstuhl - Leibniz-Zentrum für Informatik,
+2024.
+[CLW20]
+Lijie Chen, Xin Lyu, and R. Ryan Williams. Almost-everywhere circuit lower bounds
+from non-trivial derandomization. In Sandy Irani, editor, 61st IEEE Annual Symposium
+on Foundations of Computer Science, FOCS 2020, Durham, NC, USA, November 16-19,
+2020, pages 1–12. IEEE, 2020.
+27
+
+[CR20]
+Lijie Chen and Hanlin Ren.
+Strong average-case lower bounds from non-trivial
+derandomization.
+In Konstantin Makarychev, Yury Makarychev, Madhur Tulsiani,
+Gautam Kamath, and Julia Chuzhoy, editors, Proceedings of the 52nd Annual ACM
+SIGACT Symposium on Theory of Computing, STOC 2020, Chicago, IL, USA, June
+22-26, 2020, pages 1327–1334. ACM, 2020.
+[CSS16]
+Ruiwen Chen, Rahul Santhanam, and Srikanth Srinivasan. Average-Case Lower Bounds
+and Satisfiability Algorithms for Small Threshold Circuits.
+In 31st Conference on
+Computational Complexity (CCC 2016), pages 1:1–1:35, 2016.
+[CW19]
+Lijie Chen and R. Ryan Williams. Stronger connections between circuit analysis and
+circuit lower bounds, via pcps of proximity. In Amir Shpilka, editor, 34th Computational
+Complexity Conference, CCC 2019, July 18-20, 2019, New Brunswick, NJ, USA, volume
+137 of LIPIcs, pages 19:1–19:43. Schloss Dagstuhl - Leibniz-Zentrum für Informatik,
+2019.
+[FSS84]
+Merrick L. Furst, James B. Saxe, and Michael Sipser.
+Parity, circuits, and the
+polynomial-time hierarchy. Math. Syst. Theory, 17(1):13–27, 1984.
+[Hås89]
+Johan Håstad. Almost optimal lower bounds for small depth circuits. Adv. Comput.
+Res., 5:143–170, 1989. Randomness and Computation (S. Micali, ed.).
+[HHTT21] Pooya Hatami, William M. Hoza, Avishay Tal, and Roei Tell.
+Fooling constant-
+depth threshold circuits (extended abstract).
+In 62nd IEEE Annual Symposium on
+Foundations of Computer Science, FOCS 2021, Denver, CO, USA, February 7-10,
+2022, pages 104–115. IEEE, 2021.
+[HP10]
+Kristoffer Arnsfelt Hansen and Vladimir V. Podolskii.
+Exact threshold circuits.
+In
+Proceedings of the 25th Annual IEEE Conference on Computational Complexity,
+CCC 2010, Cambridge, Massachusetts, USA, June 9-12, 2010, pages 270–279. IEEE
+Computer Society, 2010.
+[IPS13]
+Russell Impagliazzo, Ramamohan Paturi, and Stefan Schneider.
+A Satisfiability
+Algorithm for Sparse Depth Two Threshold Circuits.
+In 54th IEEE Symposium on
+Foundations of Computer Science (FOCS 2013), pages 479–488, 2013.
+[KL18]
+Valentine Kabanets and Zhenjian Lu. Satisfiability and derandomization for small poly-
+nomial threshold circuits. In Eric Blais, Klaus Jansen, José D. P. Rolim, and David
+Steurer, editors, Approximation, Randomization, and Combinatorial Optimization. Al-
+gorithms and Techniques, APPROX/RANDOM 2018, August 20-22, 2018 - Princeton,
+NJ, USA, volume 116 of LIPIcs, pages 46:1–46:19. Schloss Dagstuhl - Leibniz-Zentrum
+für Informatik, 2018.
+[KW16]
+Daniel M. Kane and R. Ryan Williams. Super-linear Gate and Super-quadratic Wire
+Lower Bounds for Depth-Two and Depth-Three Threshold Circuits.
+In Proceedings
+of the 48th Annual ACM Symposium on Theory of Computing (STOC 2016), pages
+633–643, 2016.
+[MTT61]
+S. Muroga, I. Toda, and S. Takasu. Theory of majority decision elements. Journal of
+the Franklin Institute, 271:376–418, 1961.
+28
+
+[MW18]
+Cody Murray and R. Ryan Williams. Circuit lower bounds for nondeterministic quasi-
+polytime:
+an easy witness lemma for NP and NQP.
+In Ilias Diakonikolas, David
+Kempe, and Monika Henzinger, editors, Proceedings of the 50th Annual ACM SIGACT
+Symposium on Theory of Computing, STOC 2018, Los Angeles, CA, USA, June 25-29,
+2018, pages 890–901. ACM, 2018.
+[Raz87]
+Alexander A. Razborov. Lower bounds on the size of bounded depth circuits over a
+complete basis with logical addition. Mathematical Notes of the Academy of Sciences
+of the USSR, 41(4):333–338, 1987.
+[Smo87]
+Roman Smolensky. Algebraic methods in the theory of lower bounds for boolean circuit
+complexity. In Proceedings of the 19th Annual ACM Symposium on Theory of Computing
+(STOC 1987), pages 77–82. ACM, 1987.
+[SSS95]
+Jeanette P. Schmidt, Alan Siegel, and Aravind Srinivasan. Chernoff-hoeffding bounds
+for applications with limited independence. SIAM J. Discret. Math., 8(2):223–250, 1995.
+[SSTT15]
+Takayuki Sakai, Kazuhisa Seto, Suguru Tamaki, and Junichi Teruyama. A satisfiability
+algorithm for depth-2 circuits with a symmetric gate at the top and AND gates at the
+bottom. Electron. Colloquium Comput. Complex., TR15-136, 2015.
+[SSTT16]
+Takayuki Sakai, Kazuhisa Seto, Suguru Tamaki, and Junichi Teruyama. Bounded depth
+circuits with weighted symmetric gates: Satisfiability, lower bounds and compression.
+Electron. Colloquium Comput. Complex., TR16-099, 2016.
+[Sub61]
+Bella Abramovna Subbotovskaya. Realizations of linear functions by formulas using
++,.,-. Soviet Mathematics Doklady, 2:110–112, 1961.
+[Tam16]
+Suguru Tamaki. A Satisfiability Algorithm for Depth Two Circuits with a Sub-Quadratic
+Number of Symmetric and Threshold Gates. Electronic Colloquium on Computational
+Complexity (ECCC TR16-100), 2016.
+[Tel18]
+Roei Tell. Quantified Derandomization of Linear Threshold Circuits. In Proceedings
+of the 50th Annual ACM SIGACT Symposium on Theory of Computing (STOC 2018),
+pages 855–865, 2018.
+[Wil10]
+Ryan Williams. Improving exhaustive search implies superpolynomial lower bounds.
+In Leonard J. Schulman, editor, Proceedings of the 42nd ACM Symposium on Theory
+of Computing, STOC 2010, Cambridge, Massachusetts, USA, 5-8 June 2010, pages
+231–240. ACM, 2010.
+[Wil11]
+Ryan Williams.
+Non-uniform ACC circuit lower bounds.
+In Proceedings of the
+26th Annual IEEE Conference on Computational Complexity, CCC 2011, San Jose,
+California, USA, June 8-10, 2011, pages 115–125. IEEE Computer Society, 2011.
+[Wil14]
+Ryan Williams. New algorithms and lower bounds for circuits with linear threshold
+gates. In David B. Shmoys, editor, Symposium on Theory of Computing, STOC 2014,
+New York, NY, USA, May 31 - June 03, 2014, pages 194–202. ACM, 2014.
+[Wil18]
+R. Ryan Williams.
+New Algorithms and Lower Bounds for Circuits With Linear
+Threshold Gates. Theory of Computing, 14(1):1–25, 2018.
+29
+
+[Yao85]
+Andrew Chi-Chih Yao. Separating the polynomial-time hierarchy by oracles (prelimi-
+nary version). In 26th Annual IEEE Symposium on Foundations of Computer Science
+(FOCS 1985), pages 1–10. IEEE Computer Society, 1985.
+30
+ECCC 
+  ISSN 1433-8092 
+https://eccc.weizmann.ac.il

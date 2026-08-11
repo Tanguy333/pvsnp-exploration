@@ -1,0 +1,1056 @@
+Circuit Lower Bounds for Nondeterministic Quasi-Polytime:
+An Easy Witness Lemma for NP and NQP
+Cody D. Murray
+MIT
+R. Ryan Williams∗
+MIT
+Abstract
+We prove that if every problem in NP has nk-size circuits for a ﬁxed constant k, then for every NP-
+veriﬁer and every yes-instance x of length n for that veriﬁer, the veriﬁer’s search space has an nO(k3)-size
+witness circuit: a witness for x that can be encoded with a circuit of only nO(k3) size. An analogous
+statement is proved for nondeterministic quasi-polynomial time, i.e., NQP = NTIME[nlogO(1) n]. This
+signiﬁcantly extends the Easy Witness Lemma of Impagliazzo, Kabanets, and Wigderson [JCSS’02]
+which only held for larger nondeterministic classes such as NEXP.
+As a consequence, the connections between circuit-analysis algorithms and circuit lower bounds
+can be considerably sharpened: algorithms for approximately counting satisfying assignments to given
+circuits which improve over exhaustive search can imply circuit lower bounds for functions in NQP, or
+even NP. To illustrate, applying known algorithms for satisﬁability of ACC◦THR circuits [R. Williams,
+STOC 2014] we conclude that for every ﬁxed k, NQP does not have nlogk n-size ACC◦THR circuits.
+∗Supported by NSF CAREER award CCF-1552651.
+
+1
+Introduction
+Proving non-uniform circuit lower bounds for functions in nondeterministic complexity classes such as
+NP or NEXP = NTIME[2nO(1)] is a well-known grand challenge. A natural approach is to assume that a
+given complexity class has small circuits, and to derive unlikely consequences, eventually absurd enough to
+derive a contradiction with other results. Over the years, interesting consequences have been derived from
+assuming (for example) NP has O(n)-size circuits, or NEXP has polynomial-size circuits; for a sample,
+see [KL82, Kan82, Lip94, KW98, IKW02, FSW09, Din15, Wil16].
+One of the most striking results in this line of work is the Easy Witness Lemma of Impagliazzo, Kabanets,
+and Wigderson [IKW02]. Informally, they show that if NEXP has small circuits, then every yes-instance of
+every NEXP problem has a highly compressible “easy” witness:
+Lemma 1.1 (Easy Witness Lemma [IKW02] (Informal)) If NTIME[2n] has circuits of size s(n), then there
+is a k such that every yes-instance for every veriﬁer for every problem in NTIME[2n] has a witness string w
+(of O(2n) length) which can be encoded by a circuit of size at most s(s(nk)k)k. In particular, viewing w as
+the truth table of a function fw : {0,1}n+O(1) →{0,1}, this fw has s(s(nk)k)k-size circuits.
+For s(n) being polynomial or quasipolynomial (i.e., s(n) = 2logO(1) n), Lemma 1.1 says that small circuits
+for NEXP imply small circuits encoding solutions to NEXP problems. Informally, we say the consequence
+of Lemma 1.1 means NTIME[2n] has small witness circuits. Note an NEXP search problem has 22poly(n)
+possible solutions; having small witness circuits means that the existence of some witness in this huge
+space implies an “easy” witness with a short description, in a much smaller search space. Furthemore, if
+NTIME[2n] has poly-size witness circuits, then NEXP = EXP, by enumerating over all 2poly(n) small circuits
+and checking if any encode a witness for the given veriﬁer. Thus Lemma 1.1 shows NEXP ⊂P/poly
+implies NEXP = EXP. Impagliazzo, Kabanets, and Wigderson found many other applications, including a
+surprising equivalence between NEXP ̸⊂P/poly and non-trivial derandomizations.
+Application: NEXP Lower Bounds.
+The second author [Wil11, Wil14] used the Easy Witness Lemma
+(along with other ideas) to prove NEXP does not have nlogO(1) n-size ACC circuits (with the polylog factors
+tightened in [CP16]), and NEXP does not have nlogO(1) n-size ACC ◦THR circuits (ACC composed with
+a layer of linear threshold gates at the bottom). These results were proved by designing faster-than-2n
+algorithms for the SAT problem for ACC circuits, and using the algorithms in an involved argument with the
+Easy Witness Lemma which (eventually) applies the nondeterministic time hierarchy [Wil10]. In general,
+improving the time complexity of CIRCUIT SAT (or even estimating the fraction of satisfying assignments
+to within a small constant, which is widely believed to be in P) for a “typical” complexity class C (such as
+ACC, TC0, NC1, NC, P/poly) from 2n · sO(1) time to (for example) 2n · sO(1)/npoly(logn) time would imply
+NEXP does not have C -circuits of nlogn size [Wil10, SW13, BSV14]. This algorithmic approach to proving
+circuit lower bounds via weak circuit satisﬁability algorithms has led to some optimism that lower bounds
+like NEXP ̸⊂P/poly may be approachable, and provable.
+The Quest for Lower-Complexity Functions.
+While this program for proving lower bounds has seen
+some successes, a major deﬁciency is that it can only yield circuit lower bounds for functions in NTIME[2nε]
+and higher, for ε > 0. As NEXP is presumably an enormous class, results such as NEXP ̸⊂ACC are far less
+interesting than proving that a more explicit function, such as SAT, is not in ACC. A key bottleneck in the
+arguments is the Easy Witness Lemma: Lemma 1.1 is crucial in the connection between SAT algorithms
+1
+
+and lower bounds, but its proof only works for nondeterministic exponential-time classes.1 Given an Easy
+Witness Lemma for NP (i.e., if NP has nk-size circuits, then every yes-instance of every NP problem has
+nf(k)-size witness circuits), or for NQP = NTIME[nlogO(1) n], circuit lower bounds for these smaller classes
+could be obtained as well, provided that the necessary (weak) CIRCUIT SAT algorithms are fast enough.2
+Prior work tried to avoid this problem by working with the larger classes QPNP [Wil11] or PNP [FSW09],
+but these are less natural and less obviously weaker (it is open whether NEXP = PNP!).
+1.1
+Easy Witness Lemmas for NP and NQP and Applications.
+In this paper, we prove an easy witness lemma that works for both NP and NQP. These results readily imply
+(using the existing framework) stronger circuit lower bounds: for example, NQP does not have ACC◦THR
+circuits of nlogk n size, for all ﬁxed k.
+Lemma 1.2 (Easy Witnesses for NP) There is a c ≥1 such that for all k ≥1, if NP ⊂SIZE[nk] then every
+L ∈NP has witness circuits of size at most nck3.
+Lemma 1.3 (Easy Witnesses for NQP) There is a c ≥1 such that for all k ≥1, if NQP ⊂SIZE[2logk n] then
+every L ∈NQP has witness circuits of size 2clogk3 n.
+The full formal statement encapsulating both lemmas can be found in Lemma 4.1. Our primary motivation
+for proving these lemmas is to improve the known generic connections between circuit-SAT algorithms and
+circuit lower bounds. We only need the underlying class C of Boolean circuits to satisfy a few simple
+properties. Informally, a circuit class C is evaluatable if given a description of aC from C and an assignment
+x to some of the inputs, it is easy to evaluate C(x); C is closed under negation if it is easy to compute the
+negation of a given circuit from C ; C is closed under conjunctions if it is easy to take a collection of C -
+circuits, each with n inputs, and output one n-input C -circuit equivalent to the conjunction of the given
+circuits. Classes with all three properties are called typical. (Deﬁnitions are in the Preliminaries.)
+For any circuit class C , let C -SAT be the satisﬁability problem for circuits from C . We state our results
+in terms of a presumably much easier problem, the GAP C UNSAT problem, in which we are promised that
+the given C -circuit on n inputs is either unsatisﬁable, or has at least 2n/4 satisfying assignments. Unlike
+C -SAT, the GAP C UNSAT problem is trivially solvable with randomness. (In prior work [SW13] the
+problem is called DERANDOMIZE-C ; another version is called CAPP [IKW02].) We say a nondeterministic
+algorithm solves GAP C UNSAT if:
+• it outputs yes, no, or don’t know on every computation path,
+• if its input circuit has at least 2n/4 satisfying assignments, then it outputs no on some path,
+• if its input circuit is unsatisﬁable, then it outputs yes on some path, and
+• for every input circuit, it never outputs yes on some path and no on another path.
+It is widely believed that GAP C UNSAT is solvable in deterministic polynomial time; this would follow from
+the existence of pseudorandom generators sufﬁcient for P = BPP. With this notation, our new algorithms-
+to-lower bounds connections can be stated:
+1There are simple easy witness lemmas for deterministic classes such as P and EXP, as one can see from [Lip94, FSW09]. But
+it is not known how to extend the connection from SAT algorithms to circuit lower bounds to prove non-uniform lower bounds
+for functions in deterministic classes such as P and EXP; a crucial aspect of those arguments is that the non-uniform circuit is
+nondeterministically guessed in the eventual proof-by-contradiction.
+2It’s worth noting that proving NP doesn’t have circuits of size nk would have other major implications, such as NEXP ̸⊂P/poly
+and non-trivial derandomizations of MA [IKW02].
+2
+
+Theorem 1.1 (NP Lower Bounds from 2(1−ε)n-time Circuit-SAT) Let C be typical, and let ε ∈(0,1).
+Suppose GAP C UNSAT on n-input, 2εn-size circuits is solvable in nondeterministic O(2(1−ε)n) time. Then
+there is a c ≥1 such that for all k, NTIME[nck4/ε] does not have nk-size C -circuits.3
+Theorem 1.2 (NQP Lower Bounds from 2n−nε-time Circuit-SAT) Let C be typical, and let ε ∈(0,1).
+Suppose GAP C UNSAT on n-input, 2nε-size circuits is in nondeterministic O(2n−nε) time. Then for all k,
+there is a c ≥1 such that NTIME[2logck4/ε n] does not have 2logk n-size C -circuits.
+It is important to note that for 2εn size and n inputs, CIRCUIT SAT is solvable in polynomial time. Sim-
+ilarly, CIRCUIT SAT is in quasi-polynomial time for circuits of size 2nε. Thus Theorems 1.1 and 1.2 are
+concerned with improving the running time of problems in P and QP respectively, possibly using nondeter-
+ministic algorithms, and the problem GAP C SAT is believed to be in P even for poly(n) circuit sizes.
+These new generic algorithm-to-lower-bound connections immediately imply much tighter lower bounds
+for ACC and ACC◦THR circuits, namely the separation NQP ̸⊂ACC◦THR:
+Theorem 1.3 For every constant k, d, and m ≥2, there is an e ≥1 and a problem in NTIME[nloge n] which
+does not have depth-d nlogk n-size AC[m] circuits, even with nlogk n linear threshold gates at the bottom layer.
+1.2
+Intuition
+Our proof of the easy witness lemma for NP and NQP has some similarities to the original Impagliazzo-
+Kabanets-Wigderson argument [IKW02], but makes some important modiﬁcations. Let us review their
+proof. For simplicity, we restrict ourselves here to looking at poly-size circuits, but the full proof is much
+more general, allowing for quasi-polynomials and even third-exponentials.
+IKW’s Easy Witness Lemma.
+At a high level, the proof of Lemma 1.1 works as follows. Assume
+(A) NTIME[2n] has circuits of size nk, and
+(B) NTIME[2n] does not have witness circuits of size nO(k2).
+We wish to obtain a contradiction. We show that (A) and (B) contradict the theorem that there is a language
+Lhard ∈TIME[2nk+1] such that for all but ﬁnitely many n, Lhard does not have n-input circuits of size O(n)k
+(note this is provable by direct diagonalization; see Theorem 2.3 in the Preliminaries, which shows we can
+put Lhard in SPACE[nk+1]).
+Assumption (A) implies that Lhard ∈TIME[2nk+1] has nO(k2)-size circuits, by padding/translation. Build-
+ing on the proof that EXP ⊂P/poly implies EXP = MA ([BFNW93]), that in turn implies (as noted
+by [MNW99]) that Lhard has a Merlin-Arthur protocol P running in nO(k2) time.
+We can use (B) to “derandomize” the Arthur part of the Merlin-Arthur protocol P for Lhard, as follows.
+Assumption (B) implies that for all c ≥1, there is a “bad” O(2n)-time veriﬁer Vc that takes x of length n and
+y of length O(2n), such that for inﬁnitely many ni, there is a “bad” input xi of length ni such that Vc(xi,yi)
+accepts for some yi, but every yi accepted by Vc(xi,·) has circuit complexity at least nck2. Thus, if we give xi
+as n bits of advice, nondeterministically guess a string yi of length O(2n), and verify Vc(xi,yi) accepts, we
+are guaranteed yi encodes the truth table of a function with circuit complexity at least nck2.
+Applying standard hardness-to-randomness connections, the hard function yi can be used to power a
+pseudorandom generator G with O(k2clogn)-length seeds that runs in 2O(n) time and fools circuits of size
+nck2/g, for some universal g ≥1. For large enough c, we have a generator G that can “fool” the Arthur part of
+3In fact, the GAP C UNSAT algorithm could even use 2o(n) bits of advice; see Remark 1.
+3
+
+the protocol P for Lhard, given an input and Merlin’s message. So by guessing yi (of O(2n) length), guessing
+Merlin’s message, and running G on all seeds, the Merlin-Arthur protocol P can be faithfully simulated on
+inﬁnitely many input lengths ni by a nondeterministic algorithm N, running in 2O(n) time, with n bits of
+advice. Finally, applying (A) once more to N, we conclude that Lhard has circuits of size O(n)k on inﬁnitely
+many input lengths, contradicting the deﬁnition of Lhard.
+How to Improve IKW? A Minor Modiﬁcation.
+Suppose we replace NTIME[2n] with NP or NQP in
+assumptions (A) and (B) in the above. What goes wrong? For starters, we no longer have EXP = MA or
+PSPACE = MA as a consequence of our assumptions, so we can no longer easily infer from our assumptions
+that a hard language Lhard has efﬁcient Merlin-Arthur protocols! Thus it is not at all clear what lower bound
+we may hope to contradict. All is not lost though. Since [IKW02] appeared, other circuit lower bounds
+have been proved, such as the celebrated result of Santhanam [San07] that for all k, MA/1 ̸⊂SIZE[nk]. In
+particular, Santhanam ([San07], Theorem 4.3) gives an explicit language Lk computable by a Merlin-Arthur
+protocol Pk in nO(k2) time (with 1 bit of advice) which does not have nk-size circuits. Letting d ≫k2, and
+assuming NTIME[nd] does not have witness circuits of nO(k2) size, we can derandomize Pk just as in the
+IKW argument, by guessing-and-verifying a witness of length O(nd) with circuit complexity at least nΩ(k2).
+We conclude that Lk is solvable in nondeterministic nO(d) time, with n+1 bits of advice, for inﬁnitely many
+input lengths. If we further assume that NTIME[nO(d)] has nk-size circuits, we could then infer that Lk has
+O(n)k-size circuits for inﬁnitely many input lengths. Unfortunately, Santhanam’s MA/1 lower bound for Lk
+is not known to hold in the inﬁnitely-often setting; his proof only rules out a nk-size circuit family computing
+Lk on all but ﬁnitely many input lengths. However, this new argument does show that, if NP has nk-size
+circuits, then NP also has nO(k2)-size witness circuits for inﬁnitely many input lengths n (because if NP did
+not have such witness circuits almost everywhere, then we could simulate Pk nondeterministically almost
+everywhere with small advice, and get the desired contradiction). Call this the “inﬁnitely-often witness”
+argument.
+As far as we can tell, having witness circuits “inﬁnitely often” is not enough for the lower bound appli-
+cations. (For one, we would need an “almost-everywhere” nondeterministic time hierarchy theorem to get
+the ﬁnal contradiction, but it is open whether NEXP is contained in io-NP!) We need another approach to
+getting a contradiction; perhaps another type of circuit lower bound for MA would work?
+Our Approach: “Almost” an Almost-Everywhere Circuit Lower Bound for MA.
+Again, here we
+stick to polynomial-size circuits, to keep the exposition simple. By allowing a little more advice to a Merlin-
+Arthur protocol, we still do not get a lower bound for all but ﬁnitely many input lengths, but we can guarantee
+that MA/O(logn) has nk-size lower bounds on input lengths that are only polynomially far apart, for all but
+ﬁnitely many n. In particular, we prove:
+Theorem 1.4 (Informal) For all k, there is an explicit language L′
+k computable by a Merlin-Arthur protocol
+Pk in nO(k2) time (with O(logn) bits of advice) such that, for all but ﬁnitely many input lengths n, either
+• L′
+k does not have an nk-size circuit on inputs of length n, or
+• L′
+k does not have an nO(k2) size circuit on inputs of length nO(k).
+The full formal statement can be found in Theorem 3.1. Our L′
+k is related to Santhanam’s aforementioned
+MA/1 language, as they both attempt to compute a paddable, self-correctable, and downward self-reducible
+PSPACE-complete language LPSPACE on padded inputs (due to Trevisan and Vadhan [TV02], with modiﬁ-
+cations by Santhanam [San07]). Santhanam breaks his analysis into two cases, whether or not PSPACE has
+polynomial-size circuits, and shows his language does not have small circuits in either case.
+4
+
+Our advice and analysis are very different. At a high level, our Merlin-Arthur protocol Pk has two parts.
+Its advice on input length n encodes the largest ℓn such that LPSPACE has circuits of size nak2 on length-ℓn
+inputs for a sufﬁciently large a ≥1, which will indicate which part to run on an input y of length n:
+Part 1: If ℓn ≥nck, then Pk guesses-and-randomly-checks a circuit of nak2 size with nck inputs for LPSPACE
+(via Theorem 2.2), and uses this circuit to decide if y is in a language Ldiag ∈SPACE[nO(k)] (Theo-
+rem 2.3) which provably does not have nk-size circuits for any inﬁnite set of input lengths. (Here, we
+use the fact that LPSPACE is PSPACE-complete.)
+Part 2: If ℓn < nck, then Pk parses y as a padded string 1q0x. If |x| + 1 > ℓn then Pk rejects, else Pk tries to
+compute LPSPACE on 1ℓn−|x|−10x, by guessing-and-checking a circuit with ℓn inputs and nak2 size.
+(Here, c ≤a is a large enough constant.) Let L′
+k be the language accepted by Pk. By our choice of ℓn, P′
+k
+only guesses circuits for LPSPACE when valid ones exist, and it uses the circuit as an oracle in Santhanam’s
+checker for LPSPACE. Together, these ensure that P′
+k satisﬁes the MA promise condition on all inputs.
+To prove the lower bound for L′
+k, suppose there is an inﬁnite set S ⊆N such that for all n ∈S,
+(A) L′
+k has nk-size circuits for length-n inputs, and
+(B) L′
+k has nck2-size circuits for length-nck inputs.
+We wish to derive a contradiction. We consider two cases:
+Case 1. Suppose there is an inﬁnite subset S′ ⊆S such that for all n ∈S′, ℓnck ≥nc2k2. Then for all n ∈S′,
+Pk runs the ﬁrst part of its protocol on nck-length inputs. In particular, for all n ∈S′, Pk on y of length nck
+guesses a circuit of nO(k3) size with nO(k2) inputs for LPSPACE, veriﬁes the circuit using randomness, then
+uses the circuit to simulate Ldiag. By deﬁnition of Ldiag, for almost all n ∈S′, L′
+k does not have nck2-size
+circuits for nck-length inputs. However, note this is in direct contradiction with (B).
+Case 2. Suppose for all but ﬁnitely many n ∈S, ℓnck < nc2k2. Then for almost all n ∈S, the protocol
+Pk runs the second part of its protocol on nck-length inputs: Pk simulates LPSPACE on 1ℓn−|x|−10x, provided
+|x|+1 ≤ℓn. We show how the second part of Pk, together with assumptions (A) and (B), can be used to infer
+that LPSPACE itself has an nck2-size circuit on inputs of length nck, using a “bootstrapping” kind of argument.
+In more detail, assume for some m that L′
+k has an mk-size circuit on length-m input, and that ℓm < mck, so
+that the second part of Pk is run on length-m inputs. We start by observing ℓm ≥1: Pk can (unconditionally)
+guess-and-check O(1)-size circuits for LPSPACE on inputs of length 1. If Pk on m-bit inputs can be used to
+compute LPSPACE on ℓ-bit inputs (i.e., mck > ℓm ≥ℓ), then (using the assumed L′
+k circuit) there is an mk-size
+circuit for LPSPACE on ℓ-bit inputs. By the downward self-reducibility of LPSPACE, there is also an mdk-size
+circuit C computing LPSPACE on (ℓ+ 1)-bit inputs, for some (ﬁxed) d. For d ≤ak, this circuit C implies
+that ℓm ≥ℓ+1. Thus the protocol Pk has enough time to guess and verify this C, and the second part of Pk
+on m-bit inputs can also compute LPSPACE on (ℓ+1)-bit inputs. Since L′
+k has a mk-size circuit on length-m
+inputs, the mdk-size circuit for LPSPACE on (ℓ+ 1)-bit inputs can then be replaced by an mk-size circuit(!).
+We can repeat this argument for lengths ℓ= 1,...,m −1, implying that LPSPACE has mk-size circuits for
+input length m.
+Therefore, in Case 2, for almost all n ∈S, nck2-size circuits for L′
+k on length-nck inputs (assumption (B))
+implies that LPSPACE has an nck2-size circuit for length nck. Since c ≤a, by deﬁnition of ℓn it follows that for
+almost all n ∈S we have ℓn ≥nck. Thus the ﬁrst part of Pk is run on these n ∈S, so Pk is simulating Ldiag on
+almost all inputs of length n ∈S. By deﬁnition of Ldiag, for almost all n ∈S, L′
+k does not have nk-size circuits
+for length-n inputs. But this is a direct contradiction with (A). This completes the intuition for Theorem 1.4.
+From an MA Circuit Lower Bound to Easy Witnesses.
+Let us brieﬂy discuss how this Merlin-Arthur
+lower bound can be used for our new Easy Witness Lemma.
+We have to show the “almost” almost-
+everywhere lower bound is enough for obtaining a contradiction with the aforementioned “inﬁnitely-often
+5
+
+witness” argument. Assume NP has nk-size circuits, and assume there is an NP-veriﬁer V that does not
+have nck3-size witness circuits (rather than nk2, as in IKW) for large c. Then there are inﬁnitely many “bad”
+inputs xi such that Vc(xi,yi) accepts for some yi, but every yi accepted by Vc(xi,·) has circuit complexity
+at least nck3. Then, just as in the IKW argument and inﬁnitely-often witness argument, we can use yi in a
+pseudorandom generator that fools circuits of size nck3/g. Take the “hard” Merlin-Arthur protocol Pk. On
+inﬁnitely many pairs of input lengths (n,nΘ(k)) corresponding to the bad inputs xi, we want to derive an
+nk-size circuit for length-n inputs and an nΘ(k2)-size circuit on length-nΘ(k) inputs, to contradict the “almost”
+almost-everywhere lower bound. Because the circuit constructed from the Merlin-Arthur protocol has size
+nO(k3) even on inputs of length nΘ(k), this pseudorandom generator works not only for input length n but also
+for length nk. Thus, if witness circuits of size nck3 did not exist, we would be able to simulate Pk on inﬁnitely
+many pairs of input lengths (n,nΘ(k)) in NP, using n + O(logn) bits of advice. Assuming NP has nk-size
+circuits, this contradicts the earlier lower bound proved for Pk.
+Outline of the Rest.
+The rest of the paper is structured as follows. In Section 2 we give deﬁnitions and
+review related material from the literature. In Section 3 we prove the “almost” almost-everywhere lower
+bound for MA. In Section 4 we prove the new Easy Witness Lemma in its full form. In Section 5 we
+improve connections between circuit-analysis and circuit lower bounds using the Lemma. In Section 6 we
+conclude with some open questions.
+2
+Preliminaries
+Basics.
+All languages/functions are over {0,1}, and all logarithms are base-2 with ceilings as appropriate.
+We assume knowledge of basic complexity theory [AB09] such as circuit families computing a language,
+and complexity classes such as EXP, NEXP, ACC, etc. We use SIZE[s(n)] to denote the class of problems
+computed by a (non-uniform) s(n)-size circuit family. When we refer to a “typical” circuit class (AC0, ACC,
+TC0, NC1, NC, or P/poly), we assume the underlying circuit families are non-uniform and of polynomial-
+size, unless otherwise speciﬁed.
+We will often take as given that any O(t(n))-time algorithm can be converted (in O(t(n)2) time) into an
+equivalent circuit family of size at most t(n)2, for all but ﬁnitely many n. (Different circuit conversions
+would only affect the constant factors in our arguments.)
+We use advice classes: for a deterministic or nondeterministic class C and a function a(n), C /a(n) is the
+class of languages L such that there is an L′ ∈C and an arbitrary function f : N →{0,1}⋆with |f(n)| ≤a(n)
+for all x, such that L = {x | (x, f(|x|)) ∈L′}. That is, the arbitrary advice string f(n) can be used to solve all
+n-bit instances within class C .
+In our MA lower bound, we need to show that some protocol “satisﬁes the MA promise” on all inputs:
+Deﬁnition 2.1 We say that a Merlin-Arthur protocol P satisﬁes the MA promise on length ℓif for all x ∈
+{0,1}ℓ, either there is a Merlin message such that Arthur accepts x with probability at least 2/3, or for all
+Merlin messages, Arthur rejects x with probability at least 2/3. In other words, P satisﬁes the MA promise
+on length ℓif it obeys the usual semantics of an MA language on all inputs of that length.
+Typical Circuit Classes.
+In general, a Boolean circuit class C is a collection of descriptions of Boolean
+functions. C is evaluatable if given a description of a C from C and given an 0/1 assignment a to some
+(but not necessarily all) of the inputs, the sub-circuit C(a) can be determined in polynomial time. Say that a
+class of Boolean circuits C is closed under negation if there is a poly(n)-time algorithm A such that, given
+any n-bit description of a circuit C from C , A outputs a description of ¬C. C is closed under conjunctions
+6
+
+if there is a poly(n)-time algorithm A such that, given the descriptions of n circuits C1,C2,...,Cn, each on
+n inputs from C , algorithm A outputs a circuit C′(x1,...,xn) ≡C1(x1,...,xn) ∧··· ∧Cn(x1,...,xn). Any C
+satisfying all three properties is called typical.
+Circuit Complexity of Strings and Pseudorandom Generators.
+Let x1,...,x2ℓbe the ℓ-bit strings in
+lexicographical order. For a circuit C on ℓinputs, deﬁne tt(C) := C(x1)···C(x2ℓ), i.e., tt(C) ∈{0,1}2ℓis the
+truth table of C. For every string y, let 2ℓbe the smallest power of 2 such that 2ℓ≥|y| + 1. We deﬁne the
+circuit complexity of y, or CC(y), to be the circuit complexity of the ℓ-input function deﬁned by the truth
+table y102ℓ−|y|−1. We will use the following strong construction of pseudorandom generators from hard
+functions:
+Theorem 2.1 (Umans [Uma03]) There is a universal constant g and a function G : {0,1}⋆× {0,1}⋆→
+{0,1}⋆such that, for all s and Y satisfying CC(Y) ≥sg, and for all circuits C of size s,
+
+Pr
+x∈{0,1}glog|Y|[C(G(Y,x)) = 1]−
+Pr
+x∈{0,1}s[C(x) = 1]
+ < 1/s.
+Furthermore, G is computable in poly(|Y|) time.
+Witness Circuits.
+We formally deﬁne the terminology behind “witness circuits” (also found in [Wil10,
+Wil16, Wil11]).
+Deﬁnition 2.2 Let L ∈NTIME[t(n)] where t(n) ≥n is constructible. An algorithm V(x,y) is a veriﬁer for
+L if V runs in time O(|y|+t(|x|)) and for all strings x,
+x ∈L ⇐⇒there is a y of length O(t(n)) (a witness for x) such that V(x,y) accepts.
+We denote L(V) to be the NTIME[t(n)] language veriﬁed by V.
+We say V has witness circuits of size w(n) if for all strings x, if x ∈L(V) then there is a yx of length O(t(n))
+such that V(x,yx) accepts and yx has circuit complexity at most w(n).
+We say L has witness circuits of size w(n) if every veriﬁer for L has witnesses of size w(n).
+NTIME[t(n)] has witness circuits of size w(n) if every L ∈NTIME[t(n)] has witness circuits of size w(n).
+Thinking of w(n) ≪t(n), if a nondeterministic time-t(n) language L has size-w(n) witness circuits, then
+for every O(t(n))-time veriﬁer V for L, all x ∈L have a highly compressible witness yx with respect to V: yx
+is a string of length t(n), but as a truth table, it has a circuit of size at most w(n).
+A Structured PSPACE-Complete Problem.
+A fundamental result used often in the theory of pseudo-
+randomness (modifying a construction of Trevisan and Vadhan [TV02, San07]) is that there is a PSPACE-
+complete language with strong reducibility properties. First, we deﬁne the properties.
+Deﬁnition 2.3 A language L ⊆{0,1}⋆is downward self-reducible if there is a (deterministic) polynomial-
+time oracle algorithm A? such that for all n and all x ∈{0,1}n, ALn−1(x) = L(x).
+Theorem 2.2 ([San07]) There is a PSPACE-complete language LPSPACE which is paddable, downward
+self-reducible, and furthermore is “checkable” in that there is a probabilistic polynomial-time oracle Turing
+machine M so that, for any input x,
+• M asks its oracle queries only of length |x|.
+7
+
+• if M is given LPSPACE as oracle and x ∈L, then M accepts with probability 1.
+• if x ̸∈LPSPACE, then irrespective of the oracle given to M, M rejects with probability at least 2/3.
+Note that Santhanam proves the existence of the probabilistic polynomial-time “checker” M, and that
+LPSPACE is PSPACE-complete; we also note in the below proof that his language is paddable and downward
+self-reducible. All four of these properties of LPSPACE will be used in our argument.
+Proof.
+We simply verify that the language given by Santhanam [San07] has the additional desired prop-
+erties. Let LPSPACE = {1i | i ≥0} ∪{1i0x | x ∈S and i ≥0}, where S is the PSPACE-complete language
+of Trevisan and Vadhan [TV02] which is downward self-reducible and “self-correctable” (which we do not
+deﬁne here). By deﬁnition, it is clear that for any amount of padding m, 1mx ∈LPSPACE ⇐⇒x ∈LPSPACE.
+To construct a downward self-reduction A for LPSPACE, we can make use of the downward self-reduction A0
+for the language S:
+A: On input y, parse y = 1m0x. If m > 0, accept iff 1m−10x ∈LPSPACE.
+If m = 0, run the downward self-reduction A0 on x.
+For every query x′ for S made by A0, query 0x′ ∈LPSPACE instead.
+Accept if and only if A0 accepts on x.
+Observe A is a downward self-reduction for LPSPACE: Either y has some amount of 1-padding at the
+beginning, or it has no 1-padding. In the ﬁrst case, LPSPACE can be quickly solved with one oracle query
+(remove a 1). In the second case, the downward self-reduction for S can be used. Since x has length |y|−1,
+all of the queries x′ made by A0 are of length |y|−2, so 0x′ is a query to LPSPACE of length |y|−1.
+□
+We also need a standard almost-everywhere circuit lower bound, provable by direct diagonalization:
+Theorem 2.3 Let s(n) < 2n/(2n) be space-constructible. There is a language Ldiag ∈SPACE[s(n)2] that
+does not have s(n)-size circuits for all but ﬁnitely many input lengths n.
+Proof.
+Folklore. On an input of length n, using O(s(n)2) space one can exhaustively try all Boolean
+functions f : {0,1}2log(s(n)) →{0,1} and circuits of size s(n), until one ﬁnds the lexicographically ﬁrst
+function fn, represented as a bit string of length 22log(s(n)) ≤O(s(n)2), that is not computable by any circuit
+of size s(n). Then the padded language
+Ldiag =
+[
+n∈N
+{1n−1−2log(s(n))0x | |x| = 2log(s(n))∧fn(x) = 1}
+does not have s(n)-size circuits for all but ﬁnitely many n, but is computable in space O(s(n)2).
+□
+Signiﬁcant Separations.
+For the case of poly-size circuits, the circuit lower bound of Theorem 3.1 implies
+a “signiﬁcant separation”, as deﬁned by Fortnow and Santhanam [FS17]. They say a class C has a signiﬁcant
+separation from D, if there is an f ∈C such that for all g ∈D there is a k so that for every m, the function fn
+(restricted to n-bit inputs) differs from gn on some input length n in [m,mk]. The lower bound of Theorem 3.1
+implies a signiﬁcant separation of MA (with advice) from small circuits. However, our lower bound seems
+a bit stronger in that, rather than proving an lower bound for some input length in all polynomially-long
+intervals, we show an lower bound for every pair of input lengths which are polynomially far apart.
+8
+
+3
+“Almost” an Almost-Everywhere Circuit Lower Bound for MA
+In this section, we prove the main lower bound needed for our new Easy Witness Lemmas. For a language
+L ⊆{0,1}⋆and n ∈N, let Ln be the language L restricted to n-bit inputs. Say that s : N →N is a circuit-size
+function if it is increasing, time constructible, and s(n) < 2n/(2n) holds for all sufﬁciently large n.
+Theorem 3.1 (“Almost” A.E. Circuit Lower Bound for MA with Advice) There are d1,d2,d3 ≥1 such
+that for all circuit-size functions s and time-constructible s1,s2 : N →N satisfying
+(i) s2(n) ≥s(n)2d2,
+(ii) s1(n) ≥s(s2(n)), and
+(iii) s1(n) ≥s(n)2d1+1,
+there is a language L1 computable by a Merlin-Arthur protocol in O(s1(n)2 · s2(n)d3) time with 2logs2(n)
+advice, such that for all sufﬁciently large n ∈N, either
+• the circuit complexity of Ln
+1 is greater than s(n), or
+• the circuit complexity of Ls2(n)
+1
+is greater than s(s2(n)).
+That is, we “almost” prove an almost-everywhere size-s(n) circuit lower bound for MA with 2logs(n) ad-
+vice: for almost all n, the MA language L1 either has high complexity on length n, or it has high complexity
+on length s2(n). Later, we will use this “almost” almost-everywhere lower bound to obtain a stronger easy
+witness lemma.
+The rest of this section is devoted to proving Theorem 3.1. The language L1 is formed from two different
+Merlin-Arthur protocols:
+1. One protocol attempts to solve the problem Ldiag that does not have size-s(n) circuits almost every-
+where (from Theorem 2.3), by guessing and checking circuits for the complete language LPSPACE,
+and applying a reduction from Ldiag to LPSPACE.
+2. The other protocol solves LPSPACE (from Theorem 2.2) on inputs with sufﬁciently long padding.
+The 2logs2(n) bits of advice are used to determine which of these two languages can be successfully com-
+puted by our MA protocol, on a given input length.
+Set d1,d2,d3 ≥1 such that:
+• the downward self-reduction A for LPSPACE (as seen in Theorem 2.2) runs in time O(nd1),
+• every reduction from a language L ∈SPACE[s(n)] to LPSPACE runs in time at most O(s(n)d2) and
+produces an LPSPACE instance of length s(n)d2. To ensure this condition, set d2 such that the language
+L′ = {(M,x,1t) | M accepts x using space at most t} can be reduced to LPSPACE in O(nd2−1) time.
+Then, every SPACE[s(n)] language L has an O(s(n))-time reduction to L′, and therefore L has an
+O(s(n)d2)-time reduction to LPSPACE.
+• the probabilistic polytime oracle machine M for LPSPACE (as seen in Theorem 2.2) runs in time O(nd3).
+Since s(n) < 2n/(2n), there is a language Ldiag without s(n)-size circuits almost everywhere (Theo-
+rem 2.3). Using Ldiag ∈SPACE[s(n)2] and the reduction from Ldiag to LPSPACE, we have:
+Claim 1 There is an O(s(n)2d2)-time reduction R such that for all strings y, |R(y)| = s(|y|)2d2 and y ∈
+Ldiag ⇐⇒R(y) ∈LPSPACE.
+We are now in position to deﬁne a Merlin-Arthur protocol M1 recognizing a hard language L1. For input
+length n, deﬁne
+ℓ(n) := the largest integer ℓsuch that Lℓ
+PSPACE has a circuit of size at most s1(n).
+(1)
+9
+
+Note that a circuit always exists when s1(n) ≥2ℓ, so we have ℓ(n) ≥log(s1(n)). Also note that since LPSPACE
+is paddable, a circuit for Lm
+PSPACE can solve Lℓ
+PSPACE for any ℓ< m by setting the ﬁrst m−ℓbits to 1. Our
+advice αn for inputs of length n will be the integer
+αn := min{s2(n),ℓ(n)}.
+(2)
+Note that αn can be encoded in at most 2logs2(n) bits. (For example, the ﬁrst bit of the encoding could
+denote which of s2(n),ℓ(n) is the minimum; if it is s2(n), then no further information is required, as
+that can be computed by the machine. If the minimum is ℓ(n), then we can encode ℓ(n) as an integer in
+{0,1,...,s2(n)−1} using less than 2logs2(n) bits.)
+Let R be the reduction from Ldiag to LPSPACE of Claim 1, with running time O(s(n)2d2). The Merlin-Arthur
+protocol M1 deﬁning a language L1 is described in pseudocode as follows:
+Advice αn := min{s2(n), largest ℓ∈N s.t. Lℓ
+PSPACE has an s1(n)-size circuit}
+M1(y)/αn := Let n = |y|.
+If αn = s2(n):
+// simulate Ldiag on y
+Let z = R(y); note |z| ≤s2(n) (by constraint (i)).
+Guess an s2(n)-input circuit C of size s1(n).
+Output MC(1s2(n)−|z|z) (Theorem 2.2).
+Otherwise (αn < s2(n)):
+// simulate LPSPACE on a padded input
+Parse y = 1a0x for some a ≥0. If |x|+1 > αn then reject.
+Guess an αn-input circuit C of size s1(n).
+Output MC(1αn−|x|−10x) (Theorem 2.2).
+MA Promise and Running Time Analysis.
+First, we verify that the advice αn ensures that M1 satisﬁes
+the MA promise on all input lengths — in particular, αn ensures that the desired circuits C being guessed
+always exist in both branches of M1 — and that M1 runs in O(s1(n)2 · s2(n)d3) time. Intuitively, Merlin
+provides a circuit C and Arthur runs MC.
+• If αn = s2(n), then by deﬁnition (2) (and padding) Ls2(n)
+PSPACE has a s1(n)-size circuit.
+If y ∈Ldiag, then 1s2(n)−|z|z ∈LPSPACE, which means there is a (Merlin) circuit C of size s1(n) such that
+MC(z) (Arthur) accepts with probability 1 (following Theorem 2.2). In particular, the reduction from
+Ldiag to LPSPACE runs in time O(s(n)2d2) and produces an instance z of length s(n)2d2. By constraint
+(i) (s2(n) ≥s(n)2d2), we can pad z and MC will accept it with probability 1.
+If y ̸∈Ldiag, then for every possible (Merlin) circuit C, the probabilistic polynomial time MC (Arthur)
+will reject with probability at least 2/3 (again following Theorem 2.2). So M1 satisﬁes the MA
+promise in this case. Simulating MC can be done in time O(s1(n)2 · s2(n)d3), where the extra s1(n)2
+factor comes from evaluating the circuit C on each oracle query.
+10
+
+• If αn < s2(n), then M1 guesses a s1(n)-size circuit C for Lαn
+PSPACE, then runs MC(1αn−|x|−11x).
+Suppose y = 1a0x ∈LPSPACE. By the paddability of LPSPACE, it follows that 1αn−|x|−10x ∈LPSPACE
+as well. Moreover by deﬁnition (2), Lαn
+PSPACE has a circuit of size s1(n) when αn < s(n). Therefore
+there is a circuit C of size-s1(n) and αn inputs such that MC(1αn−|x|−10x) accepts with probability 1
+(following Theorem 2.2).
+On the other hand, if y = 1a0x ̸∈LPSPACE, then we also have 1αn−|x|−10x ̸∈LPSPACE. By the properties
+of M from Theorem 2.2, it follows that for every possible circuit C, MC(1αn−|x|−10x) rejects with
+probability at least 2/3, so M1 satisﬁes the MA promise in this case as well.
+Here, the running time of M1 is the time needed to run MC(1αn−|x|−10x) by directly simulating C,
+which is O(s1(n)2 ·αd3
+n ) ≤O(s1(n)2 ·s2(n)d3).
+Therefore M1 with advice {αn} satisﬁes the MA promise on all inputs and runs in O(s1(n)2 ·s2(n)d3) time.
+“Almost” Almost-Everywhere Hardness.
+Let L1 be the language recognized by M1. Next we show for
+all sufﬁciently large n ∈N, either the circuit complexity of Ln
+1 is greater than s(n), or the circuit complexity
+of Ls2(n)
+1
+is greater than s(s2(n)). We do this by showing that if the circuit complexity was low in both cases,
+even inﬁnitely often, then the language Ldiag would also have size-s(n) circuits inﬁnitely often, contradicting
+Theorem 2.3.
+For the sake of contradiction, assume there is an inﬁnite sequence {ni} such that
+(A) Lni
+1 has a circuit of size s(ni) and
+(B) Ls2(ni)
+1
+has a circuit of size s(s2(ni)).
+Let I = {ni | i ∈N} ∪{s2(ni) | i ∈N}. We begin by showing that for all but ﬁnitely many m ∈I, if L1 has
+s(m)-size circuits on length m inputs, then L1 cannot be simulating Ldiag on length m (therefore it must be
+simulating the padded version of LPSPACE, instead). We use the abbreviation “a.e.” to mean “almost every”,
+a.k.a. “all but ﬁnitely many” in the following.
+Proposition 1 For a.e. m ∈I, if Lm
+1 has a s(m)-size circuit, then ℓ(m) < s2(m).
+Proof. Suppose there were inﬁnitely many m ∈I such that Lm
+1 has a circuit of size s(m) and ℓ(m) ≥s2(m).
+Then αm = s2(n) for those m, and by the deﬁnition of L1, Lm
+1 = Lm
+diag for those m. Thus Ldiag would have
+circuits of size s(m) for inﬁnitely many m, which is a contradiction to Theorem 2.3.
+□
+Applying assumption (A) to Proposition 1, we ﬁnd that for all sufﬁciently large m ∈I,
+αm < s2(m).
+(3)
+Thus for all sufﬁciently large m ∈I, a circuit for Lm
+1 computes a padded version of LPSPACE, under our
+assumptions. Our next step is to show that sufﬁciently small circuits for L1 for a given input length m
+actually implies analogously small circuits for LPSPACE on input length m:
+Lemma 3.1 For a.e. m ∈I, if Lm
+1 has a size-s(m) circuit, then Lm
+PSPACE has a size-s(m) circuit.
+Assuming Lemma 3.1 holds, we can ﬁnish the proof of Theorem 3.1, and show the desired lower bound on
+L1. In particular, applying assumption (B) to Lemma 3.1 yields that Ls2(ni)
+PSPACE has a circuit of size s(s2(ni)),
+for all sufﬁciently large i. By constraint (ii) (s1(n) ≥s(s2(n))), Ls2(ni)
+PSPACE has a circuit of size at most s1(ni)
+for all sufﬁciently large i, so by deﬁnition of the ℓ-function, ℓ(ni) ≥s2(ni). But this implies αni = s2(ni) for
+all sufﬁciently large i, which contradicts (3).
+11
+
+We now turn to showing how to prove Lemma 3.1. Intuitively, our strategy is to use s(m)-size circuits
+for Lm
+1 to obtain s(m)-size circuits for LPSPACE on progressively larger and larger input lengths, using the
+downward self-reducibility of LPSPACE and the hypothesis that Lm
+1 has small circuits.
+Proof of Lemma 3.1.
+Let m ∈I be sufﬁciently large, and assume Lm
+1 has a circuit Cm of size s(m). We
+want to prove that Lm
+PSPACE has a circuit of size s(m). Since L1
+PSPACE has an O(1)-size size circuit (and s(m)
+is increasing), it’s clear that L1
+PSPACE has a circuit of size s(m) for all but ﬁnitely many input lengths m. We
+make the following inductive claim:
+Ampliﬁcation Claim: Under the hypothesis, if there is an ℓ< m such that Lℓ
+PSPACE has a size-s(m) circuit,
+then Lℓ+1
+PSPACE also has a size-s(m) circuit.
+Assuming the claim with ℓ:= 1, we conclude that Lℓ+1
+PSPACE = L2
+PSPACE also has a circuit of size s(m).
+Repeatedly applying the claim for ℓ= 1 up to ℓ= m −1, we conclude that Lm
+PSPACE has a circuit of size
+s(m). That would complete the proof of the lemma.
+To prove the Ampliﬁcation Claim, suppose there is an ℓ< m such that Lℓ
+PSPACE has a size s(m) circuit Dℓ.
+Using the downward self-reduction for LPSPACE, we can also obtain a circuit D′
+ℓ+1 for Lℓ+1
+PSPACE, of size at
+most O(s(m)2d1+1). In particular, we can construct an Lℓ
+PSPACE-oracle circuit for Lℓ+1
+PSPACE using the O(nd1)-
+time downward self-reduction. This oracle circuit has size at most (ℓ+ 1)2d1; if we replace each Lℓ
+PSPACE
+oracle query with the size-s(m) circuit Dℓ, this yields a circuit D′
+ℓ+1 of size at most (ℓ+ 1)2d1 · s(m) ≤
+s(m)2d1+1. By constraint (iii), we have that D′
+ℓ+1 has size at most s1(m).
+We want to use the assumed size-s(m) circuit Cm for Lm
+1 to reduce the circuit complexity of Lℓ+1
+PSPACE down
+to s(m). By (3), we have αm < s2(m) for sufﬁciently large m ∈I, so (by the properties of the protocol M1)
+the circuit Cm implements LPSPACE for inputs of up to length αm.
+We claim that by feeding the string 1m−ℓ−1 to the ﬁrst m−ℓ−1 inputs of Cm, the remaining subcircuit of
+size at most s(m) can compute Lℓ+1
+PSPACE on all x of length ℓ+1. (Note that since we assume ℓ≤m−1, the
+padding amount m−ℓ−1 ≥0.) Since the circuit D′
+ℓ+1 has size at most s1(m), Lℓ+1
+PSPACE has a circuit of size
+at most s1(m). Therefore by the deﬁnition of αn (2) and ℓ(n) (1), for our choice of m we have αm ≥ℓ+1.
+Since Cm implements LPSPACE for inputs of up to length αm, and αm ≥ℓ+1, the circuit
+C′
+ℓ+1(x) := Cm(1m−ℓ−1x)
+is of size s(m) and computes Lℓ+1
+PSPACE correctly (by the paddability of LPSPACE). This completes the proof
+of the Ampliﬁcation Claim, and also the proof of Lemma 3.1.
+□
+This completes the proof of Theorem 3.1.
+4
+Small Circuits Imply Small Witnesses
+In this section we prove our new Easy Witness Lemma, using the new Merlin-Arthur circuit lower bound
+(Theorem 3.1).
+Lemma 4.1 (Easy Witnesses for Low Nondeterministic Time) There are e,g ≥1 such that for every in-
+creasing time-constructible s(n), s2(n) := s(e · n)e, and t(n), if NTIME[O(t(n)e)] ⊂SIZE[s(n)] then every
+L ∈NTIME[t(n)] has witness circuits of size s2(s2(s2(n)))2g, provided that
+(a) s(n) < 2n/e/n and
+(b) t(n) ≥s2(s2(s2(n)))d for a sufﬁciently large constant d.
+12
+
+For s(n) = nk, if NP ⊂SIZE[nk], then NP has witness circuits of size nO(k3) (Theorem 1.2). For s(n) =
+2(logn))k, NQP ⊂SIZE[2(logn)k] implies that NQP has witness circuits of size 2O((logn)k3) (Theorem 1.3).
+Proof. Let w(n) := s2(s2(s2(n)))2g. Suppose
+NTIME[O(t(n)e)] ⊆SIZE[s(n)],
+(4)
+and assume NTIME[t(n)] does not have w(n)-size witness circuits, i.e.,
+there is some linear-time veriﬁer V such that there are inﬁnitely many “bad” inputs x,
+(5)
+where there is a yx of length t(|x|) such that V(x,yx) accepts,
+yet all such yx have circuit complexity at least w(|x|).
+We wish to establish a contradiction. Take e ≥1 to be a sufﬁciently large parameter (all our constraints on e
+will be constant lower bounds on it). Using our assumptions on s(n) and s2(n), we claim that the hard MA
+language L1 of Theorem 3.1 exists for
+s′(n) := s(e·n),s′
+2(n) := s′(n)d′, and s′
+1(n) := s′(s′
+2(n)),
+assuming d′ is chosen such that max(2d2,2d1 +1,d3 +2) ≤d′ ≤e.
+Let us check that these functions s′, s′
+1, and s′
+2 satisfy all the constraints of Theorem 3.1:
+• First, since s(n) < 2n/e/n (by constraint (a)), we know that s′(n) = s(e·n) < 2e·n/e/(e·n) < 2n/(2n),
+for all sufﬁciently large n and e ≥2. Thus s′ is a circuit-size function.
+• For constraint (i), d′ ≥2d2 implies s′
+2(n) = s′(n)d′ ≥s′(n)2d2.
+• For constraint (ii), d′ ≥2d1 +1 implies s′
+1(n) = s′(s′
+2(n)) ≥s′
+2(n) = s′(n)d′ ≥s′(n)2d1+1.
+• Constraint (iii) s′
+1(n) ≥s′(s′
+2(n)) is trivially satisﬁed.
+Thus by Theorem 3.1, L1 is computable by an MA protocol in O(s′
+1(n)2 · s′
+2(n)d3) time with advice of
+length
+2logs′
+2(n) = 2d′ logs′(n) < 2d′ ·log(2e·n/e) = 2d′ ·n.
+For d′ ≥d3 +2, we also have
+s′
+1(n)2 ·s′
+2(n)d3 = s′(s′
+2(n))2 ·s′
+2(n)d3 ≤s′(s′
+2(n))2+d3 ≤s′
+2(s′
+2(n)) ≤s2(s2(n))
+since s′
+2(n) = s(e·n)d′ ≤s(e·n)e = s2(n) for d′ ≤e. So L1 is computable by an MA protocol in O(s2(s2(n)))
+time with 2d′·n bits of advice, and has circuit lower bounds for size s′(n) = s(e·n). That is, for all sufﬁciently
+large n ∈N, either
+• the circuit complexity of Ln
+1 is greater than s(e·n), or
+• the circuit complexity of Ls′
+2(n)
+1
+is greater than s(e·s′
+2(n)).
+By (5), there are inﬁnitely many input lengths {ni} such that, by encoding a bad input xi of length ni as
+advice and guessing a valid yi such that V(xi,yi) accepts, we can nondeterministically guess and verify the
+truth table of a function yi with circuit complexity at least w(|xi|).
+Our next step is to use these bad xi’s to derandomize the MA protocol deﬁning L1: we give a nondeter-
+ministic algorithm N such that for all i and all inputs of length ni, N uses (2d′ +1)ni bits of advice, runs in
+O(t(ni)e) time, and correctly decides L1 on all ni-bit inputs. On inputs of length ni, the advice to N is:
+• a bad input xhard of length ni, and
+• the advice αni used by the Merlin-Arthur protocol M1 of Theorem 3.1, on inputs of length ni.
+13
+
+On inputs of length s′
+2(ni), the advice to N is xhard as well as the advice αs′
+2(ni) used by M1.
+On inputs x of length ni and inputs x of length s′
+2(ni), N ﬁrst guesses a string yhard of length O(t(ni))
+and runs V(xhard,yhard). If V rejects, then N rejects. Otherwise, N will use yhard as a hard function in the
+pseudorandom generator G(·,·) of Theorem 2.1, for fooling circuits of size w(n)1/g = s2(s2(s2(n)))2.
+Fix a constant a ≥1 such that G(yhard,·) runs in O(|yhard|a) time. Let ℓi ∈{ni,s′
+2(ni)}, depending on the
+current input length. Our N constructs a circuit Cx(·,·) simulating the deterministic O(s2(s2(ℓi)))-time part
+of M1(x). In particular, the circuit Cx takes a “nondeterministic” input z of length at most s2(s2(ℓi))2, as well
+as “randomness” input r of length at most s2(s2(ℓi))2, and C has size at most s2(s2(ℓi))2 ≤s2(s2(s2(ni)))2.
+Then N nondeterministically guesses an input z, and enumerates all s = |yhard|g seeds to the generator
+G(yhard,·), obtaining output strings r1,...,rs in O(|yhard|a+g) = O(t(ni)a+g) time. (We emphasize that this
+is done for both ℓi = ni and ℓi = s′
+2(ni).) Finally, N computes the probability that Cx(yhard,r j) accepts over
+all j = 1,...,s. If this probability is greater than 1/2, then N accepts else it rejects.
+In total, N takes time O(s2(s2(ni))2 +t(ni)a+g +t(ni)g ·s2(s2(ni))2) = O(t(ni)a+g) on inputs of length ni.
+Note the yhard for an input xhard of length ni has circuit complexity at least s2(s2(s2(ni)))2g. Since the circuit
+Cx(·,·) for inputs x of length ℓi = s′
+2(ni) has size s2(s2(s′
+2(ni)))2 ≤s2(s2(s2(ni)))2, the same advice xhard can
+also be used with the generator G(·,·) to derandomize M1 on inputs of length s′
+2(ni) as well. Thus on inputs
+of length s′
+2(ni), N takes ni +2d′ ·s′
+2(ni) advice and runs in time
+O(s2(s2(s2(ni)))2 +t(ni)a+g +t(ni)g ·s2(s2(s2(ni)))2) ≤O(t(ni)a+g) ≤O(t(s′
+2(ni))a+g),
+where in the next-to-last inequality, we have applied constraint (b).
+If we set e ≥a + g, then by (4), the nondeterministic O(t(n)e)-time algorithm N (using (2d′ + 1)n bits
+of advice) described in the previous paragraph has circuits of size s((2d′ + 2)n). In particular, for almost
+every input length in the set {ni}, the language L1 has circuits of size s((2d′ +2)ni) on ni-bit inputs, and has
+circuits of size s((2d′ +1)·s′
+2(ni)+ni) ≤s((2d′ +2)·s′
+2(ni)) on s′
+2(ni)-bit inputs.
+For e ≥2d′ +2, this contradicts the circuit lower bound of Theorem 3.1.
+□
+5
+Applications
+Now we turn to showing how the new Easy Witness Lemmas imply stronger algorithm-to-lower bound
+connections. Recall a nondeterministic algorithm for GAP C UNSAT outputs yes, no, or don’t know on
+every computation path, it outputs no on some computation path if its input circuit has at least 1/4 of its
+assignments satisfying, outputs yes on some path if its input circuit is unsatisﬁable, and for every input
+circuit, the algorithm never outputs yes on some path and no on another path.
+Reminder of Theorem 1.1 Let C be typical, and let ε ∈(0,1). Suppose GAP C UNSAT on n-input,
+2εn-size circuits is solvable in nondeterministic O(2(1−ε)n) time. Then there is a c ≥1 such that for all k,
+NTIME[nck4/ε] does not have nk-size C -circuits.
+Proof. The proof is similar to earlier arguments [Wil10, Wil11, SW13]. Let ε ∈(0,1) be given. Assume
+(A) for all c ≥1, there is a k ≥1 such that NTIME[nck4/ε] has nk-size C -circuits, and
+(B) GAP C UNSAT on n-input 2εn-size circuits is in O(2(1−ε)n) time.
+Let c be sufﬁciently large in the following, and let
+t(n) = nck4/ε
+14
+
+for notational convenience. Since C is evaluatable (given a circuit from the class, we can evaluate it on
+an input in polynomial time), from (A) it follows that NTIME[t(n)] has nO(k)-size unrestricted circuits
+(e.g., over the basis AND/OR/NOT of fan-in two). By the Easy Witness Lemma for NP (Lemma 1.2),
+NTIME[t(n)] has nO(k3)-size witness circuits for every NP veriﬁer. We choose the PCP veriﬁer of Ben-
+Sasson and Viola [BSV14], which yields proofs which are quasi-linear for any running time T(n). In
+particular, for every veriﬁer algorithm V(x,y) running in time T(n) ≥n, they give an algorithm A running in
+poly(n,logT(n)) time which, given x ∈{0,1}n, outputs an oracle circuit CO
+x with the following properties:4
+• CO
+x has ℓ= log2(T(n)) + O(loglogT(n)) inputs, poly(n,logT(n)) size, and each copy of the oracle
+gate O in CO
+x has ℓinputs as well.
+• If there is a y of length T(n) such that V(x,y) accepts, then there is an oracle O : {0,1}ℓ→{0,1} such
+that CO
+x is unsatisﬁable.
+• If V(x,y) rejects on all y of length T(n), then for every oracle O : {0,1}ℓ→{0,1}, CO
+x has at least
+2ℓ·(1−1/n) satisfying assignments.
+Note the oracle O acts as a witness for the PCP veriﬁer which runs the above transformation on x, and checks
+whether CO
+x is unsatisﬁable or not by guessing random inputs to CO
+x .
+Take a language L ∈NTIME[t(n)]−NTIME[t(n)1−ε/2] such that L ⊆{1n | n ≥0} [SFM78, ˇZ´ak83], and
+let V be a O(t(n))-time veriﬁer for L. On an input 1n, let N be a nondeterministic algorithm which:
+1. runs the algorithm A in poly(n,logt(n)) time to produce a circuit CO
+n ,
+2. guesses a witness circuit Wn of size nO(k3) encoding the oracle O for the PCP veriﬁer,
+3. plugs the circuit Wn in place of the oracle O in the circuit CO
+n , obtaining a circuit of size nO(k3) ·
+poly(n,logt(n)) ≤nO(k3),
+4. checks satisﬁability of CWn
+n
+by exhaustive search, in time 2ℓ· nO(k3) ≤t(n) · poly(logt(n)) · nO(k3) ≤
+nck4/ε+O(k3).
+We will show how to simulate N in nondeterministic time t(n)1−ε · poly(logt(n)), implying a contradic-
+tion. If we had an unrestricted CIRCUIT SAT algorithm or GAP CIRCUIT UNSAT algorithm running in
+O(2ℓ(1−ε)) ≤t(n)1−ε+o(1) time, this would be easy: we could just use the nondeterministic GAP CIRCUIT
+UNSAT algorithm to speed up item 4 in the description above. Because we only have a GAP C UNSAT
+algorithm, and C might be weaker than unrestricted circuits (as far as we know), the argument becomes
+more complicated.
+Consider the task:
+EVAL-GATE: Given a circuit CO of n size, a circuit of size at most n encoding an oracle O, an
+input x of length ℓ, and an integer i = 1,...,n, what is the output of the i-th gate of CO evaluated
+on x?
+Clearly EVAL-GATE is computable in polynomial time. By assumption (A), EVAL-GATE has C -circuits
+of size nO(k). In lieu of item 4 in the description of N, our new nondeterministic algorithm N′ guesses a
+C -circuit E computing EVAL-GATE which can take CO
+n and Wn as inputs; since both have size nO(k3), a
+C -circuit of nO(k4) sufﬁces. For every i = 1,...,s of CWn
+n
+(where s = nO(k3)), E(CO
+n ,Wn,x,i) outputs the value
+of the i-th gate of CWn
+n (x); by convention, we let the s-th gate be the output of the circuit. Assuming E is a
+circuit correctly computing EVAL-GATE on the appropriate input length, it is easy to see that
+E(CO
+n ,Wn,x,s) = 1 ⇐⇒CWn
+n (x) = 1.
+4This is not formally stated in their article, but it is immediate from their Theorem 1.1.
+15
+
+Without loss of generality, assume all gates of CWn
+n
+have a ﬁxed gate type (e.g., NAND). For each gate i
+of CWn
+n , let i1,i2 < i be the indices of the two gates of CWn
+n
+whose outputs are the two inputs to gate i. Let
+Fi(gi,gi1,gi2) be the canonical 3-CNF on three variables (where gj corresponds to the output of gate j) which
+is true if and only if the outputs of gates i1 and i2 are consistent with the output of gate i. Now consider the
+circuit
+D(x) := ¬
+ s^
+i=1
+Fi(E(CO
+n ,Wn,x,gi),E(CO
+n ,Wn,x,gi1),E(CO
+n ,Wn,x,gi2))
+!
+.
+It is easy to see that D(x) = 0 if and only if E is consistent for all gates of CWn
+n
+on the input x; that is, E
+claims correct outputs for every gate of the circuit CWn
+n
+on the input x. From this, we have the consistency
+condition:
+for all x, D(x) = 0 implies that E(CO
+n ,Wn,x,s) = CWn
+n (x).
+(6)
+Furthermore, since C is closed under conjunctions and projections, given E, CO
+n , and Wn, the circuit D can
+be computed in time nO(k4), where D is a circuit from C . By our choice of t(n) (with sufﬁciently large c),
+nO(k4) ≤2εℓ≤t(n)ε ·poly(logt(n)).
+So the circuit D has ℓinputs and size 2εℓ, so our nondeterministic algorithm N′ can run the nondeterministic
+GAP C UNSAT algorithm on D, assumed by (B). N′ rejects if the nondeterministic GAP-UNSAT algorithm
+outputs no or don’t know on D. Otherwise, N′ accepts if and only if the nondeterministic GAP-UNSAT
+algorithm outputs yes on E(CO
+n ,Wn,·,s) (with ℓfree inputs).
+The running time of N′ is
+nO(k4) +2(1−ε)ℓ≤t(n)1−ε ·poly(logt(n)).
+By the properties of the PCP veriﬁer and our GAP-UNSAT algorithm, we have:
+• If 1n ∈L, then there is a Wn and an E such that D is unsatisiﬁable. Then, N′ accepts 1n on the correct
+guesses of Wn and E. In particular, the GAP-UNSAT algorithm will report yes on D (since D is
+unsatisﬁable) on some path, and report yes on E(CO
+n ,Wn,·,s) on some path as well.
+• If 1n /∈L, for all choices of Wn, the circuit CWn
+n
+has at least 2ℓ·(1−1/n) satisfying assignments. The
+algorithm N′ guesses a circuit E for EVAL-GATE and constructs the circuit D. If our GAP-UNSAT
+algorithm returns no or don’t know on D, then N′ rejects by deﬁnition. If GAP-UNSAT returns yes
+on some path, then it must be that D has less than 2ℓ/4 satisfying assignments (if it had more, the
+GAP-UNSAT algorithm would return no on some path, and therefore never output yes on any path, by
+deﬁnition). So D(x) = 0 on at least 3/4 of the inputs x. By (6), E(CO
+n ,Wn,x,s) =CWn
+n (x) for at least 3/4
+of the inputs x. Since CWn
+n
+has at least 2ℓ·(1−1/n) satisfying assignments, it must be that the circuit
+E(CO
+n ,Wn,·,s) of ℓinputs has at least 2ℓ· (1 −1/n −1/4) ≥2ℓ/4 satisfying assignments. Therefore
+the GAP-UNSAT algorithm on the circuit E(CO
+n ,Wn,·,s) will not return yes on any computation path
+(because it must return no on some path, and it never outputs contradictory answers on the same
+circuit). Thus N′ rejects 1n on all computation paths.
+In summary, N′ correctly decides the language L. This is a contradiction, as N′ runs in t(n)1−ε ·poly(logt(n))
+time.
+□
+Remark 1 Fortnow and Santhanam [FS16] proved that for all polynomials t(n), there is an α > 0 and
+an L ∈NTIME[t(n)] that is not in NTIME[t(n)1−ε/2]/nα. If we use this L in the above proof, then the
+nondeterministic GAP C SAT algorithm could even use 2βn bits of advice on n-input circuits of size 2εn (for
+16
+
+small enough β > 0 depending on ε and k), and still yield the desired lower bound.
+Reminder of Theorem 1.2 Let C be typical, and let ε ∈(0,1). Suppose GAP C UNSAT on n-input, 2nε-size
+circuits is in nondeterministic O(2n−nε) time. Then for all k, there is a c ≥1 such that NTIME[2logck4/ε n]
+does not have 2logk n-size C -circuits.
+Proof. We use the exact same strategy as Theorem 1.1, with the following minor modiﬁcations. Assume
+(A) for all c, there is a k ≥1 such that NTIME[2logck4/ε n] has 2logk n-size C -circuits, and
+(B) GAP C UNSAT on n-input 2nε-size circuits is in O(2n−nε) time.
+Set t(n) = 2logck4/ε n. As argued in Theorem 1.1, by the Easy Witness Lemma for NQP (Lemma 1.2),
+NTIME[t(n)] has 2O(logk3 n)-size witness circuits for every NP veriﬁer. Use the PCP veriﬁer of Ben-Sasson
+and Viola [BSV14] as before which outputs a circuit CO
+n of poly(n) size with number of inputs
+ℓ= (log2 n)ck4/ε +O(loglogn).
+Take L ∈NTIME[t(n)]−NTIME[t(n)/2logε/2t(n)] such that L ⊆{1n | n ≥0} [SFM78, ˇZ´ak83], and let V be
+a O(t(n))-time veriﬁer for L. On an input 1n, let N be a nondeterministic algorithm which:
+1. runs in poly(n) time to produce a circuit CO
+n ,
+2. guesses a witness circuit Wn of size 2O(logk3 n) encoding the oracle O for the PCP veriﬁer,
+3. plugs the circuit Wn in place of the oracle O in the circuit CO
+n , obtaining a circuit of size 2O(logk3 n) ·
+poly(n) ≤2O(logk3 n),
+4. checks satisﬁability of CWn
+n
+by exhaustive search, in time 2ℓ·2O(logk3 n) ≤2logck4/ε n+O(logk3 n).
+As before, we show how to simulate N faster. We deﬁne the EVAL-GATE problem as before; by assumption
+(A), it has C -circuits of size 2logk n. Thus there is a circuit E of size 2O(logk4 n) which can take Wn and CO
+n as
+input and faithfully simulate EVAL-GATE. Also as before, we construct the circuit D of size 2O(logk4 n) and
+of ℓinputs. For sufﬁciently large c, the size of D is
+2O(logk4 n) ≤2logε t(n) ≤2((logck4 n)+O(loglogn))ε ≤2ℓε,
+so the assumed nondeterministic GAP C UNSAT algorithm can be run on D, and it can be run on the
+circuit E(CO
+n ,Wn,·,gi), obtaining yes/no answers in nondeterministic time
+O(2ℓ−ℓε) ≤t(n)/2logε t(n).
+Following the rest of the proof of Theorem 1.1, we can decide L in nondeterministic time t(n)/2logε t(n),
+which is a contradiction.
+□
+Finally, to conclude lower bounds such as NQP ̸⊂ACC◦THR (Theorem 1.3), we only have to appeal to
+the ACC◦THR-SAT algorithm:
+Theorem 5.1 ([Wil14]) For all integers d and m ≥2, there is an ε > 0 and an O(2n−nε)-time deterministic
+algorithm for the satisﬁability problem on depth-d size-2nε circuits over unbounded fan-in AND, OR, and
+MODm gates, with linear threshold gates at the bottom layer.
+17
+
+6
+Conclusion
+We have shown how slightly faster CIRCUIT SAT algorithms, even those distinguishing unsatisiﬁable circuits
+from circuits with many satisfying assigments, can also imply circuit lower bounds for the nondeterministic
+classes NP and NQP. This suggests that the age-old problem of proving that NP does not have linear-size
+circuits may well be in striking distance, or at least that we may ﬁnd non-linear lower bounds for weak
+circuit classes in the near future (however, note ENP ̸⊂SIZE[O(n)] is still open, and one has to prove this
+ﬁrst!). We would like to draw attention to a few related open problems:
+NP versus ACC? The main obstacle to proving NP ̸⊂ACC is the lack of a GAP ACC UNSAT algorithm
+which runs in 2(1−ε)n time on 2εn-size circuits, for some ε > 0. The ACC-SAT algorithm used in the NQP
+lower bound applies the well-known transformation of ACC to SYM ◦AND [Yao90, BT94], which blows
+up the circuit by a quasi-polynomial factor; because of this blow-up it does not seem possible to get a much
+faster GAP ACC UNSAT algorithm using this transformation. But perhaps a better SAT algorithm can be
+derived under the assumption NP ⊂ACC.
+EXP or BPEXP lower bounds? We now have interesting circuit lower bounds for Nondeterministic Quasi-
+Polynomial Time (NQP). We do not believe that NQP ⊆EXP, but it seems very unlikely that EXP-complete
+problems are solvable in NQP; EXP-complete problems ought to be just as hard. Can the framework be
+extended further to show that faster CIRCUIT SAT or GAP UNSAT algorithms imply EXP lower bounds?
+How about lower bounds for the randomized exponential time class, BPEXP? It is known that if we have
+non-trivial learning algorithms for circuit classes with appropriate parameters, then BPEXP lower bounds
+follow [FK09, OS17]. Perhaps SAT algorithms can help expedite learning?
+Reduce ENP? In several settings [Wil10, JMV15, CGI+16], it is known that faster SAT algorithms for
+weak classes of formulas would imply a circuit lower bound for the (huge) class ENP. For example, a
+1.9n-time nondeterministic CNF-UNSAT algorithm would imply ENP does not have linear-size “Valiant-
+series-parallel” circuits [JMV15, CGI+16]. When can the gigantic class ENP be reduced to a smaller class?
+Acknowledgements.
+We thank Marco Carmosino, Valentine Kabanets, and Igor Carboni Oliveira for
+helpful comments.
+References
+[AB09]
+Sanjeev Arora and Boaz Barak. Computational Complexity - A Modern Approach. Cambridge
+University Press, 2009.
+[BFNW93] L´aszl´o Babai, Lance Fortnow, Noam Nisan, and Avi Wigderson. BPP has subexponential time
+simulations unless EXPTIME has publishable proofs. Computational Complexity, 3(4):307–
+318, 1993.
+[BSV14]
+Eli Ben-Sasson and Emanuele Viola. Short PCPs with projection queries. In ICALP, pages
+163–173, 2014.
+[BT94]
+Richard Beigel and Jun Tarui. On ACC. Computational Complexity, pages 350–366, 1994.
+[CGI+16]
+Marco L. Carmosino, Jiawei Gao, Russell Impagliazzo, Ivan Mihajlin, Ramamohan Paturi, and
+Stefan Schneider. Nondeterministic extensions of the strong exponential time hypothesis and
+consequences for non-reducibility. In Proceedings of the ACM Conference on Innovations in
+Theoretical Computer Science (ITCS), pages 261–270, 2016.
+18
+
+[CP16]
+Shiteng Chen and Periklis A. Papakonstantinou. Depth-reduction for composites. In FOCS,
+pages 99–108, 2016.
+[Din15]
+Ning Ding. Some new consequences of the hypothesis that p has ﬁxed polynomial-size circuits.
+In International Conference on Theory and Applications of Models of Computation (TAMC),
+pages 75–86. Springer, 2015.
+[FK09]
+Lance Fortnow and Adam R. Klivans. Efﬁcient learning algorithms yield circuit lower bounds.
+Journal of Computer and System Sciences, 75(1), 2009.
+[FS16]
+Lance Fortnow and Rahul Santhanam. New non-uniform lower bounds for uniform classes. In
+CCC, pages 19:1–19:14, 2016.
+[FS17]
+Lance Fortnow and Rahul Santhanam. Robust simulations and signiﬁcant separations. Inf.
+Comput., 256:149–159, 2017.
+[FSW09]
+Lance Fortnow, Rahul Santhanam, and Ryan Williams. Fixed-polynomial size circuit bounds.
+In CCC, pages 19–26. IEEE, 2009.
+[IKW02]
+Russell Impagliazzo, Valentine Kabanets, and Avi Wigderson. In search of an easy witness:
+Exponential time vs. probabilistic polynomial time. Journal of Computer and System Sciences,
+65(4):672–694, 2002.
+[JMV15]
+Hamid Jahanjou, Eric Miles, and Emanuele Viola. Local reductions. In ICALP, pages 749–760.
+Springer, 2015.
+[Kan82]
+Ravi Kannan. Circuit-size lower bounds and non-reducibility to sparse sets. Information and
+Control, 55(1):40–56, 1982.
+[KL82]
+Richard Karp and Richard Lipton.
+Turing machines that take advice.
+L’Enseignement
+Math´ematique, 28(2):191–209, 1982.
+[KW98]
+Johannes Kobler and Osamu Watanabe. New collapse consequences of np having small circuits.
+SIAM Journal on Computing, 28(1):311–324, 1998.
+[Lip94]
+Richard Lipton. Some consequences of our failure to prove non-linear lower bounds on explicit
+functions. In Structure in Complexity Theory, pages 79–87, 1994.
+[MNW99]
+Peter Bro Miltersen, N. V. Vinodchandran, and Osamu Watanabe. Super-polynomial versus
+half-exponential circuit size in the exponential hierarchy. In COCOON, LNCS 1627, pages
+210–220. Springer, 1999.
+[OS17]
+Igor Carboni Oliveira and Rahul Santhanam. Conspiracies between learning algorithms, circuit
+lower bounds, and pseudorandomness. In CCC, pages 18:1–18:49, 2017.
+[San07]
+Rahul Santhanam. Circuit lower bounds for Merlin–Arthur classes. SIAM Journal on Comput-
+ing, 39(3):1038–1061, 2009. Preliminary version in STOC’07.
+[SFM78]
+Joel Seiferas, Michael Fischer, and Albert Meyer. Separating nondeterministic time complexity
+classes. JACM, 25(1):146–167, 1978.
+19
+
+[SW13]
+Rahul Santhanam and Ryan Williams. On uniformity and circuit lower bounds. Computational
+Complexity, 23(2):177–205, 2013. Preliminary version in CCC’13.
+[TV02]
+Luca Trevisan and Salil P. Vadhan. Pseudorandomness and average-case complexity via uni-
+form reductions.
+Computational Complexity, 16(4):331–364, 2007. Preliminary version in
+CCC’02.
+[Uma03]
+Christopher Umans. Pseudo-random generators for all hardnesses. Journal of Computer and
+System Sciences, 67(2):419–440, 2003.
+[Wil14]
+Ryan Williams. New algorithms and lower bounds for circuits with linear threshold gates. In
+STOC, pages 194–202, 2014.
+[Wil16]
+R. Ryan Williams.
+Natural proofs versus derandomization.
+SIAM Journal on Computing,
+45(2):497–529, 2016.
+[Wil11]
+Ryan Williams.
+Nonuniform ACC circuit lower bounds.
+JACM, 61(1):2, 2014. See also
+CCC’11.
+[Wil10]
+Ryan Williams. Improving exhaustive search implies superpolynomial lower bounds. SIAM
+Journal on Computing, 42(3):1218–1244, 2013. See also STOC’10.
+[Yao90]
+Andrew Chi-Chih Yao. On ACC and threshold circuits. In FOCS, pages 619–627, 1990.
+[ˇZ´ak83]
+Stanislav ˇZ´ak. A Turing machine time hierarchy. Theoretical Computer Science, 26(3):327–
+333, 1983.
+20

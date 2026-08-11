@@ -1,0 +1,968 @@
+Cryptographic Hardness for Learning Intersections
+of Halfspaces
+Adam R. Klivans ∗
+University of Texas at Austin, Department of Computer Sciences, Austin, TX 78712 USA
+Alexander A. Sherstov
+University of Texas at Austin, Department of Computer Sciences, Austin, TX 78712 USA
+Abstract
+We give the ﬁrst representation-independent hardness results for PAC learning intersections
+of halfspaces, a central concept class in computational learning theory. Our hardness results
+are derived from two public-key cryptosystems due to Regev, which are based on the worst-
+case hardness of well-studied lattice problems. Speciﬁcally, we prove that a polynomial-
+time algorithm for PAC learning intersections of nε halfspaces (for a constant ε > 0) in n
+dimensions would yield a polynomial-time solution to ˜O(n1.5)-uSVP (unique shortest vec-
+tor problem). We also prove that PAC learning intersections of nε low-weight halfspaces
+would yield a polynomial-time quantum solution to ˜O(n1.5)-SVP and ˜O(n1.5)-SIVP (short-
+est vector problem and shortest independent vector problem, respectively). Our approach
+also yields the ﬁrst representation-independent hardness results for learning polynomial-
+size depth-2 neural networks and polynomial-size depth-3 arithmetic circuits.
+Key words: Cryptographic hardness results, intersections of halfspaces, computational
+learning theory, lattice-based cryptography
+1
+Introduction
+A halfspace in n dimensions is a Boolean function of the form a1x1+···+anxn ⩾θ,
+where a1,...,an,θ are integers. Halfspace-based learning methods have important
+applications in almost every area of computer science, including data mining, arti-
+ﬁcial intelligence, and computer vision. A natural and important extension of the
+∗Supported by NSF CAREER Award CCF-0643829.
+Email addresses: klivans@cs.utexas.edu (Adam R. Klivans),
+sherstov@cs.utexas.edu (Alexander A. Sherstov).
+
+concept class of halfspaces is the concept class of intersections of halfspaces. While
+many efﬁcient algorithms exist for PAC learning a single halfspace, the problem
+of learning the intersection of even two halfspaces remains a central challenge in
+computational learning theory, and a variety of efﬁcient algorithms have been de-
+veloped for natural restrictions of the problem [17,18,21,31] (for a deﬁnition of the
+PAC model see Section 2). Attempts to prove that the problem is hard have been
+met with limited success: all known hardness results for the general problem of
+PAC learning intersections of halfspaces apply only to the case of proper learning,
+where the output hypothesis must be of the same form as the unknown concept.
+1.1
+Our Results
+We obtain the ﬁrst representation-independent hardness results for PAC learning in-
+tersections of halfspaces. By “representation-independent,” we mean that we place
+no restrictions on the learner’s output hypothesis other than polynomial-time com-
+putability. Assuming the intractability of the lattice problems uSVP (unique short-
+est vector problem), SVP (shortest vector problem), or SIVP (shortest independent
+vector problem), we prove that there is no polynomial-time PAC learning algorithm
+for intersections of nε halfspaces (for any ε > 0). The above lattice problems are
+widely believed to be hard [24].
+In this work, we will use cryptosystems based on the hardness of these lattice prob-
+lems as a black box in order to obtain our hardness-of-learning results. We will
+therefore not attempt to summarize the vast literature on the complexity of lat-
+tice problems and instead refer the reader to several works by Regev [26,27] and
+Aharonov and Regev [1]. We sketch the lattice problems brieﬂy in Section 2.
+Our hardness results apply even to intersections of light halfspaces, i.e., halfspaces
+whose weight |θ| + ∑n
+i=1 |ai| is bounded by a polynomial in n. We ﬁrst state our
+hardness results for intersections of arbitrary halfspaces. Throughout this paper,
+“PAC learnable” stands for “learnable in the PAC model in polynomial time.”
+Theorem 1.1 Assume that intersections of nε halfspaces in n dimensions are PAC-
+learnable for some constant ε > 0. Then there is a polynomial-time solution to
+˜O(n1.5)-uSVP.
+With a different (incomparable) hardness assumption, we obtain an intractability
+result for learning intersections of light halfspaces, a less powerful concept class:
+Theorem 1.2 Assume that intersections of nε light halfspaces in n dimensions are
+PAC-learnable for some constant ε > 0. Then there is a polynomial-time quantum
+solution to ˜O(n1.5)-SVP and ˜O(n1.5)-SIVP.
+Oded Regev has informed us that Theorem 1.1 also applies to light halfspaces; see
+2
+
+Remark 5.1 for details.
+We note here that we can prove something slightly stronger than what is stated in
+Theorem 1.2. That is, if intersections of nε light halfspaces in n dimensions are
+PAC-learnable, we obtain a polynomial-time solution to the LWE (“Learning With
+Errors”) problem, a version of the noisy parity learning problem over larger ﬁelds
+(see Regev [24] for details).
+These hardness results extend to polynomial-size depth-2 neural networks as fol-
+lows:
+Theorem 1.3 Assume that depth-2 polynomial-size circuits of majority gates are
+PAC learnable. Then there is a polynomial-time solution to ˜O(n1.5)-uSVP and
+polynomial-time quantum solutions to ˜O(n1.5)-SVP and ˜O(n1.5)-SIVP.
+Finally, we prove a hardness result for learning depth-3 arithmetic circuits:
+Theorem 1.4 Assume that depth-3 polynomial-size arithmetic circuits are PAC-
+learnable in polynomial time. Then there is a polynomial-time quantum solution to
+˜O(n1.5)-SVP and ˜O(n1.5)-SIVP.
+We are not aware of any previous representation-independent hardness results for
+learning small-depth arithmetic circuits.
+A natural question to ask is whether our approach can yield hardness results for
+other classes such as AC0 or, more ambitiously, polynomial-size DNF formulas.
+In Section 6 we show that the decryption functions of the cryptosystems we use
+contain PARITY as a subfunction, so we cannot directly apply this approach.
+Remark. In a recent work, Feldman et al. [7] have independently obtained a re-
+sult very similar to Theorem 1.3. They show that a polynomial-time algorithm for
+learning depth-2 polynomial-size majority circuits would break the Ajtai-Dwork
+cryptosystem. In contrast, our work makes use of more recent cryptosystems due
+to Regev (the security of Regev’s cryptosystems is based on weaker assumptions
+than the ones used by Ajtai and Dwork).
+1.2
+Previous Results
+In his fundamental paper on learning, Valiant [30] established a cryptographic
+hardness result for learning polynomial-size circuits. Kearns and Valiant [12]
+used number-theoretic problems (inverting the RSA function, deciding quadratic
+residuosity, and factoring Blum integers) to obtain hardness results for NC1 cir-
+3
+
+cuits, constant-depth threshold circuits TC0, and deterministic ﬁnite automata.
+Kharitonov [15] obtained hardness results for AC1 and NC1 circuits based on the
+conjectured hardness of the subset sum problem. Kharitonov [14] later used the
+Blum-Blum-Shub pseudorandom generator [6] to obtain a hardness result for learn-
+ing AC0 and TC0 that holds even under the uniform distribution and if membership
+queries are allowed.
+Hardness results of any kind for learning intersections of halfspaces, by contrast,
+have seen quite limited progress. Until recently, the problem was known to be hard
+only for proper learning: if the learner’s output hypothesis must be from a restricted
+class of functions (e.g., intersections of halfspaces), then the learning problem is
+NP-hard with respect to randomized reductions [5,3]. Klivans and Sherstov [19]
+have since obtained a 2Ω(√n) lower bound on the sample complexity of learning
+intersections of √n halfspaces in the statistical query (SQ) model, an important
+restriction of the PAC model. Since the SQ model is a restriction of PAC, the lower
+bounds in [19] do not imply hardness in the PAC model, the subject of this paper.
+We are not aware of any other results on the difﬁculty of learning intersections of
+halfspaces.
+We are also not aware of any representation-independent hardness results for PAC
+learning small-depth arithmetic circuits. There is a long line of research establish-
+ing lower bounds on the query complexity of polynomial interpolation algorithms
+over various ﬁelds, but these do not imply hardness results for the problem of PAC
+learning polynomials with small representations as arithmetic circuits (see Sec-
+tion 5.1 for more details).
+1.3
+Our Techniques
+Our results exploit recent cryptosystems due to Regev [23,24], which improve on
+the security of the Ajtai-Dwork cryptosystem [2]. These cryptosystems are based
+on the hardness of the well-studied lattice problems uSVP, SVP, and SIVP. As
+pointed out in [24], an advantage of these problems is the equivalence of their
+worst-case and average-case complexity. In other words, an efﬁcient algorithm
+for solving these problems on a nonnegligible (inverse-polynomial) fraction of in-
+stances yields an efﬁcient algorithm for solving every instance. This contrasts with
+common number-theoretic problems such as factoring or deciding quadratic resid-
+uosity. Furthermore, lattice-based cryptosystems feature decryption functions that
+are completely different from modular exponentiation d(Y) = Y D mod N, the de-
+cryption function that is at the heart of virtually every number-theoretic cryptosys-
+tem. As a result, lattice-based cryptosystems imply hardness results that number-
+theoretic cryptosystems have not yielded.
+An established method [12] for obtaining hardness results for a concept class C
+4
+
+is to demonstrate that C can compute the decryption function of a public-key
+cryptosystem. Intersections of a polynomial number of halfspaces, however, can-
+not compute the decryption functions of the cryptosystems that we use. In fact,
+the decryption functions in question contain PARITY as a subfunction (see Sec-
+tion 6), which cannot be computed by intersections of a polynomial number of any
+unate functions [19]. Furthermore, the decryption functions for Regev’s cryptosys-
+tems perform a division or an iterated addition, which require threshold circuits of
+depth 3 and 2, respectively [32,29]. Threshold circuits of depth 2 and higher are
+known to be more powerful than intersections of halfspaces.
+To overcome these difﬁculties, we use non-uniform distributions on {0,1}n to help
+us with the computation. This technique allows us to use intersections of degree-
+2 polynomial threshold functions to compute the decryption function while still
+obtaining a hardness result for intersections of halfspaces.
+The remainder of this article is organized as follows. Section 2 covers technical pre-
+liminaries and provides a detailed overview of the cryptosystems that we use. The
+crucial connection between learning and cryptography is the subject of Section 3.
+The main ingredient of our proof is presented in Section 4 and is concerned with the
+construction of efﬁcient circuits for the decryption functions of the cryptosystems.
+Section 5 establishes our main results, with further discussion in Section 6.
+2
+Preliminaries
+A halfspace in n dimensions is a Boolean function f : {0,1}n →{0,1} of the form
+f(x) =
+(
+1
+if a1x1 +a2x2 +···+anxn ⩾θ,
+0
+otherwise,
+where a1,...,an,θ are some ﬁxed integers. It is well known that the absolute val-
+ues of a1,...,an,θ can be assumed to be at most 2O(nlogn). The intersection of k
+halfspaces is a Boolean function g = Vk
+i=1 hi, where each hi is a halfspace. A poly-
+nomial threshold function (PTF) of degree d is a Boolean function of the form
+f(x) =
+(
+1
+if p(x) ⩾0,
+0
+otherwise,
+where p is a degree-d polynomial in x1,x2,...,xn with integer coefﬁcients. Note
+that a halfspace is a PTF of degree 1. The weight of a PTF f is the sum of the
+absolute values of the integer coefﬁcients of the associated polynomial p. A PTF
+is called light if its weight is bounded by a polynomial in n. (Strictly speaking, this
+deﬁnition concerns not a single PTF but rather an inﬁnite sequence f1, f2,..., fn,...
+of PTFs, one for each input length. For brevity, however, we will follow the general
+5
+
+convention of identifying a sequence of functions f1, f2,..., fn,... with its typical
+nth representative, fn).
+We adopt the probably approximately correct (PAC) model of learning, due to
+Valiant [30]. An overview of this model is as follows. A concept class C is any
+set of Boolean functions {0,1}n →{0,1}. In the PAC model, one ﬁxes an ar-
+bitrary target function f ∈C and a distribution µ on {0,1}n. The learner, who
+does not know f or µ, receives labeled examples (x1, f(x1)),(x2, f(x2)),..., where
+x1,x2,··· ∈{0,1}n are chosen independently at random according to µ. The learner
+is said to learn C if, given ε ∈(0,1) and poly(n, 1
+ε ) labeled examples, it outputs a
+hypothesis h that with high probability has Prx∼µ[f(x) ̸= h(x)] < ε. We will be
+using a looser requirement called weak learning, which relaxes the success cri-
+terion to Prx∼µ[f(x) ̸= h(x)] < 1
+2 −1
+nc for a constant c; for contrast, the original
+framework is known as strong learning. Throughout this paper, “PAC learning” is
+a shorthand for PAC learning in polynomial time and under arbitrary distributions
+µ. In this arbitrary-distribution setting, weak PAC learning is equivalent to strong
+PAC learning, and we will sometimes not draw the distinction between the two
+in the development to follow. For further background on computational learning
+theory, see [13].
+2.1
+Lattice-based Cryptography
+This subsection describes lattice-based cryptography and presents two relevant
+lattice-based cryptosystems due to Regev [23,24]. A lattice in n dimensions is the
+set {a1v1 +···+anvn : a1,...,an ∈Z} of all integral linear combinations of a given
+basis v1,...,vn ∈Rn. The primary problems on lattices are the unique shortest
+vector problem f(n)-uSVP, shortest vector problem f(n)-SVP, and shortest inde-
+pendent vector problem f(n)-SIVP. In f(n)-uSVP, the goal is to ﬁnd a shortest
+nonzero vector in the lattice, provided that it is shorter by a factor of at least f(n)
+than any other non-parallel vector. In f(n)-SVP, the goal is to approximate the
+length of a shortest nonzero vector within a factor of f(n). Thus, uSVP is a special
+case of SVP, distinguished by the “uniqueness” condition. Finally, in f(n)-SIVP,
+the goal is to output a set of n linearly independent lattice vectors of length at
+most f(n) · opt, where opt is the minimum length over all sets of n linearly in-
+dependent vectors from the lattice (the length of a set is the length of its longest
+vector). Note that all three problems become harder as the approximation factor
+1 ⩽f(n) ⩽poly(n) decreases. We will be working with f(n) = ˜O(n1.5), an approx-
+imation factor for which these three problems are believed to be hard (none of the
+above lattice problems are known to admit a subexponential time solution for any
+setting of f(n) we consider in this paper).
+We note here that there is a large body of work examining the hardness of these lat-
+tice problems depending on the choice of f(n). Roughly speaking, certain variants
+6
+
+of the shortest vector problem are known to be NP-hard if f(n) is chosen to be a
+small constant. On the other hand, it is known that for larger values of f(n), such as
+√n, some lattice problems are unlikely to be NP-hard (i.e., if they were NP-hard,
+the polynomial-time hierarchy would collapse). We refer the reader to the excellent
+survey by Regev [27] for a detailed description of the hardness of these problems.
+The cryptosystems below encrypt one-bit messages (0 and 1). Encryption is ran-
+domized; decryption is deterministic. Let eK,r : {0,1} →{0,1}poly(n) denote the
+encryption function corresponding to a choice of private and public keys K =
+(Kpriv,Kpub) and a random string r. In discussing security, we will need the fol-
+lowing notion.
+Deﬁnition 2.1 (Distinguisher) An algorithm A is said to distinguish between the
+encryptions of 0 and 1 if for some universal constant c,
+Pr
+K,r[A (Kpub,eK,r(1)) = 1]−Pr
+K,r[A (Kpub,eK,r(0)) = 1]
+ ⩾1
+nc.
+We focus on those aspects of the cryptosystems that are relevant to the hardness
+proofs in this paper. For example, we state the numeric ranges of public and private
+keys without describing the key generation procedure. We follow the established
+convention of denoting polynomially-bounded quantities (in n) by lowercase let-
+ters, and superpolynomial ones by capital letters.
+2.2
+The uSVP-based Cryptosystem
+We start with a cryptosystem, due to Regev [23], whose security is based on the
+worst-case hardness of uSVP. Let n be the security parameter. Denote N = 28n2
+and m = cn2, where c is a universal constant. Let γ(n) be any function with
+γ(n) = ω(n√logn), where faster-growing functions γ correspond to worse secu-
+rity guarantees but also a lower probability of decryption error.
+Private key: A real number H with
+√
+N ⩽H < 2
+√
+N.
+Public key: A vector (A1,...,Am,i0), where i0 ∈{1,...,m} and each Ai ∈
+{0,...,N −1}.
+Encryption: To encrypt 0, pick a random set S ⊆[m] and output ∑i∈S Ai mod N.
+To encrypt 1, pick a random set S ⊆[m] and output ⌊Ai0/2⌋+∑i∈S Ai mod N.
+Decryption: On receipt of W ∈{0,...,N −1}, decrypt 0 if frac(WH/N) < 1/4,
+and 1 otherwise. Here frac(a) ⇌min{⌈a⌉−a,a−⌊a⌋} denotes the distance from
+a ∈R to the closest integer. By a standard argument, the security and correct-
+ness of the cryptosystem are unaffected if we change the decryption function to
+frac(AW) < 1/4, where A is a representation of H/N to within poly(n) fractional
+bits.
+7
+
+Correctness: The probability of decryption error (over the choice of private and
+public keys and the randomness in the encryption) is 2−Ω(γ(n)2/m).
+Regev [23] showed that breaking the above cryptosystem would yield a
+polynomial-time algorithm for uSVP. A more detailed statement follows (see The-
+orem 4.5 and Lemma 5.4 of [23]):
+Theorem 2.2 (Regev [23]) Assume that there is a polynomial-time distinguisher
+between the encryptions of 0 and 1. Then there is a polynomial-time solution to
+every instance of (√n·γ(n))-uSVP.
+We will set γ(n) = nlogn to make the probability of decryption error negligi-
+ble (inverse-superpolynomial) while guaranteeing ˜O(n1.5)-uSVP security. Regev’s
+cryptosystem thus improves on the public-key cryptosystem of Ajtai and Dwork [2]
+whose security is based on the worst-case hardness of O(n8)-uSVP, an easier prob-
+lem than ˜O(n1.5)-uSVP.
+2.3
+SVP- and SIVP-based Cryptosystem
+The second cryptosystem [24] is based on the worst-case quantum hardness of SVP
+and SIVP. Let n be the security parameter. Denote by p a prime with n2 < p < 2n2,
+and let m = 5(n+1)(1+2logn). Let γ(n) be any function with γ(n) = ω(√nlogn),
+where faster-growing functions γ correspond to worse security guarantees but also
+a lower probability of decryption error.
+Private key: A vector s ∈Zn
+p.
+Public key: A sequence of pairs (a1,b1),...,(am,bm), where each ai ∈Zn
+p and
+bi ∈Zp.
+Encryption: To encrypt 0, pick S ⊆[m] randomly and output (∑i∈S ai,∑i∈S bi).
+To encrypt 1, pick S ⊆[m] randomly and output (∑i∈S ai,⌊p/2⌋+ ∑i∈S bi). (All
+arithmetic is modulo p.)
+Decryption: On receipt of (a,b) ∈Zn
+p × Zp, decrypt 0 if b −⟨a,s⟩is closer to 0
+than to ⌊p/2⌋modulo p. Decrypt 1 otherwise. (All arithmetic is modulo p.)
+Correctness: The probability of decryption error (over the choice of private and
+public keys and the randomness in the encryption) is 2−Ω(γ(n)2/m).
+Regev [24] showed that breaking the above cryptosystem would imply a
+polynomial-time quantum algorithm for solving SVP and SIVP. A more precise
+statement is as follows (see Theorem 3.1 and Lemmas 4.4, 5.4 of [24]):
+Theorem 2.3 (Regev [24]) Assume that there is a polynomial-time (possibly quan-
+tum) algorithm for distinguishing between the encryptions of 0 and 1. Then there is
+a polynomial-time quantum solution to ˜O(n·γ(n))-SVP and ˜O(n·γ(n))-SIVP.
+8
+
+We adopt the setting γ(n) = √nlog2 n to make the probability of decryption error
+negligible while guaranteeing ˜O(n1.5)-SVP and ˜O(n1.5)-SIVP security. Observe
+that this second cryptosystem is preferable to the ﬁrst in that it is based on the
+worst-case hardness of a more general lattice problem (SVP vs. uSVP). The dis-
+advantage of the second cryptosystem is that breaking it would only yield a quan-
+tum algorithm for SVP, as opposed to the ﬁrst cryptosystem which would yield a
+classical algorithm for uSVP.
+3
+Learning Decryption Functions vs. Breaking Cryptosystems
+In their seminal paper [12], Kearns and Valiant established a key relationship be-
+tween the security of a public-key cryptosystem and the hardness of learning an
+associated concept class. We re-derive it below for completeness and extend it to
+allow for errors in the decryption process. This link is a natural consequence of the
+ease of encrypting messages with the public key. A large pool of such encryptions
+can be viewed as a set of training examples for learning the decryption function. But
+learning the decryption function to a nonnegligible advantage would mean breaking
+the cryptosystem. Assuming that the cryptosystem is secure, we can thus conclude
+that it is not feasible to learn the decryption function. We formalize this observation
+in the following lemma:
+Lemma 3.1 (Cryptography and learning; cf. Kearns & Valiant [12]) Consider
+a public-key cryptosystem for encrypting individual bits by n-bit strings. Let C be
+a concept class that contains all the decryption functions dK : {0,1}n →{0,1}
+of the cryptosystem, one for each choice of key K = (Kpriv,Kpub). Let
+ε(n) = PrK,r[dK(eK,r(0)) ̸= 0 or dK(eK,r(1)) ̸= 1] be the probability of de-
+cryption error (over the choice of keys and randomization in the encryption). If
+C is weakly PAC-learnable in time t(n) with t(n)ε(n) = 1/nω(1), then there is a
+distinguisher between the encryptions of 0 and 1 that runs in time O(t(n)).
+Proof.
+For a pair of keys K = (Kpriv,Kpub), let eK,r : {0,1} →{0,1}n be the
+randomized encryption function (indexed by the choice of random string r). Let
+dK : {0,1}n →{0,1} denote the matching decryption function. We will use the as-
+sumed learnability of C to exhibit an algorithm A that runs in time O(t(n)) and
+has
+Pr
+K,r[A (Kpub,eK,r(1)) = 1]−Pr
+K,r[A (Kpub,eK,r(0)) = 1] ⩾1
+nc
+for some universal constant c, as long as t(n)ε(n) = 1/nω(1). The probability is
+taken over the choice of keys, randomness in the encryption, and any internal ran-
+domization in A . It follows that A is the desired distinguisher.
+Algorithm A takes as input a pair (Kpub,w), where w ∈{0,1}n is the encryption of
+an unknown bit. First, A draws t(n) independent training examples, choosing each
+9
+
+as follows:
+(1) Pick b = 0 or b = 1, with equal probability.
+(2) Pick r, an unbiased random string.
+(3) Create a training example ⟨eK,r(b),b⟩.
+Next, A passes the training examples to the assumed algorithm for learning C . As-
+sume no decryption error has occurred, i.e., the decryption function dK is consistent
+with all the generated examples. Then the learning algorithm outputs a hypothesis
+h that approximates dK with a nonnegligible advantage:
+Pr
+b,r[h(eK,r(b)) = dK(eK,r(b))] ⩾1
+2 + 1
+nc,
+(3.1)
+for some constant c. With this hypothesis in hand, algorithm A outputs h(w) and
+exits. 1
+It remains to show that A is indeed a distinguisher. We will ﬁrst handle the case in
+which no decryption error occurs; call this event E . Then:
+Pr
+K,r[A (Kpub,eK,r(1)) = 1 | E ]−Pr
+K,r[A (Kpub,eK,r(0)) = 1 | E ]
+= Pr
+K,r[h(eK,r(1)) = 1]−Pr
+K,r[h(eK,r(0)) = 1]
+= 2 Pr
+K,b,r[h(eK,r(b)) = b]−1
+⩾2
+
+Pr
+K,b,r[h(eK,r(b)) = dK(eK,r(b))]−Pr
+K,b,r[dK(eK,r(b)) ̸= b]
+
+−1
+⩾1+ 2
+nc −2ε(n)−1
+= 2
+nc −2ε(n).
+1 We have assumed that, given consistent training examples, the learner is guaranteed to
+succeed in ﬁnding a hypothesis h that satisﬁes (3.1). This makes for a shorter and simpler
+proof. In reality, we need only assume that the learner succeeds with probability 1/poly(n),
+and outputs “FAIL” otherwise. To accommodate this more general setting, it sufﬁces to
+have A output a random value (0 or 1) whenever the learner fails.
+10
+
+We now extend the analysis to account for possible decryption errors. Observe that
+the likelihood of a decryption error on a run of A is small:
+Pr[E ] = EK [Pr[E | K]]
+⩽EK
+
+t(n)·Pr
+b,r[dK(eK,r(b)) ̸= b | K]
+
+(by union bound)
+= t(n)· Pr
+K,b,r[dK(eK,r(b)) ̸= b]
+⩽t(n)ε(n).
+This upper bound on Pr[E ], along with the above analysis of the error-free case,
+allows us to complete the proof of the desired claim (for all n large enough):
+Pr
+K,r[A (Kpub,eK,r(1)) = 1]−Pr
+K,r[A (Kpub,eK,r(0)) = 1]
+⩾
+
+Pr
+K,r[A (Kpub,eK,r(1)) = 1 | E ]−Pr
+K,r[A (Kpub,eK,r(0)) = 1 | E ]
+
+−2Pr[E ]
+⩾2
+nc −2ε(n)−2t(n)ε(n)
+⩾1
+nc.
+2
+4
+Implementing the Decryption Functions
+Section 3 demonstrated that if a public-key cryptosystem is secure, then no con-
+cept class that can implement its decryption function is efﬁciently PAC-learnable.
+In what follows, we obtain implementations of the decryption functions from Sec-
+tion 2 by intersections of degree-2 PTFs. This will lead to a hardness result for
+learning intersections of degree-2 PTFs. We will obtain the main result of the pa-
+per by noting that intersections of degree-2 PTFs are no harder to learn than are
+intersections of halfspaces, a claim we formalize next.
+Lemma 4.1 Assume that intersections of nε arbitrary (respectively, light) half-
+spaces are weakly PAC-learnable. Then for any constant c > 0, intersections of
+nc arbitrary (respectively, light) degree-2 PTFs are weakly PAC-learnable.
+Proof. We will prove the “light” case only; the “arbitrary” case is analogous. Con-
+sider the following concept classes:
+11
+
+C :
+intersections of nε light halfspaces;
+C ′ :
+intersections of nε light degree-2 PTFs;
+C ′′ :
+intersections of nc light degree-2 PTFs.
+First observe that a polynomial-time PAC-learning algorithm for C implies one for
+C ′. This is because a degree-2 PTF in the n variables x1,...,xn is a halfspace in the
+n+
+ n
+2
+
+variables x1,...,xn, x1x2, x1x3, ..., xn−1xn, which yields a polynomial-time
+map from training/testing examples for a degree-2 PTF to those for a halfspace.
+This map is naturally viewed as a change of distribution: a given distribution of
+(x1,...,xn) will induce another, non-uniform distribution in the n +
+ n
+2
+
+new vari-
+ables.
+Finally, a polynomial-time learning algorithm for C ′ implies one for C ′′: by a stan-
+dard padding argument, the problem of PAC learning the intersection of nc half-
+spaces reduces to nε halfspaces for any constant c > 0.
+2
+4.1
+The uSVP-based Cryptosystem
+Recall that frac(a) ⇌min{⌈a⌉−a,a−⌊a⌋} denotes the distance from a ∈R to the
+closest integer. Throughout this section, {a} stands for the fractional part of a ∈R.
+Deﬁne the Boolean predicate
+NEAR-INT(a) = 1 ⇐⇒frac(a) < 1/4.
+This predicate ignores the integral part of a, meaning that NEAR-INT(a) =
+NEAR-INT({a}).
+The decryption function in the uSVP-based cryptosystem (Section 2) is dA(W) =
+NEAR-INT(AW), where A is a ﬁxed real number and W is an integer input,
+both with a polynomial number of bits. We will demonstrate how to implement
+NEAR-INT(AW) with intersections of degree-2 PTFs. A critical ingredient of our
+implementation is the “interval trick” of Siu and Roychowdhury [29], an insight-
+ful idea that was used in [29] to obtain a depth-2 light-weight threshold circuit for
+iterated addition.
+Lemma 4.2 (Implementing the uSVP-based decryption function) Let A > 0
+be
+a
+real
+number
+with
+k
+fractional
+bits.
+Then
+the
+function
+f(x) =
+NEAR-INT(A∑n−1
+j=0 xj2j) can be computed by the intersection of k PTFs with de-
+gree 2 and weight O(k44k).
+Proof. Let {A} = .b1b2 ...bk be the fractional part of A in binary, with bi ∈{0,1}
+12
+
+for all i. The integral part of A is irrelevant. Then
+(
+A
+n−1
+∑
+j=0
+xj2j
+)
+=
+(
+k
+∑
+i=1
+n−1
+∑
+j=0
+bixj2j−i
+)
+=
+(
+k
+∑
+i=1
+min{n−1,i−1}
+∑
+j=0
+bixj2j−i
+)
+,
+where the last equation follows by dropping those terms bixj2j−i that are whole
+numbers. Denote
+S(x) ⇌
+k
+∑
+i=1
+min{n−1,i−1}
+∑
+j=0
+bixj2j−i
+so that {A∑n−1
+j=0 xj2j} = {S(x)}. Observe that S(x) is a multiple of 1/2k and ranges
+between 0 and k. We will use degree-2 PTFs to identify intervals in [0,k] on which
+NEAR-INT(S(x)) = 1. A listing of the ﬁrst few such intervals is as follows:
+Value of S(x) in binary NEAR-INT(S(x))
+. 0 0 0 0 ... 0 0
+...
+. 0 0 1 1 ... 1 1
+1
+. 0 1 0 0 ... 0 0
+...
+. 1 1 0 0 ... 0 0
+0
+. 1 1 0 0 ... 0 1
+...
+1 . 0 0 1 1 ... 1 1
+1
+1 . 0 1 0 0 ... 0 0
+...
+1 . 1 1 0 0 ... 0 0
+0
+1 . 1 1 0 0 ... 0 1
+...
+1 0 . 0 0 1 1 ... 1 1
+1
+Each interval [a,b] can be recognized by the PTF
+
+S(x)−a+b
+2
+2
+⩽
+b−a
+2
+2
+,
+13
+
+whose integral representation has weight O(k44k). To compute the negation of an
+interval, we replace the inequality sign by “>”. Finally, there are at most 2k + 1
+intervals because every two consecutive intervals, starting at the second, cover a
+distance of 1 on the interval [0,k]. By AND’ing the negations of the k intervals
+on which NEAR-INT(S(x)) = 0, we obtain the desired f as an AND of k weight-
+O(k44k) degree-2 PTFs.
+2
+4.2
+SVP- and SIVP-based Cryptosystems
+For an integer a, deﬁne the Boolean predicate
+NEAR-MIDp(a) ⇐⇒|b−⌊p/2⌋| ⩽min{b, p−b},
+where b ∈{0,1,..., p −1} is the integer with a ≡b (mod p). Recall that the
+decryption function in the SVP- and SIVP-based cryptosystem (Section 2) is
+ds1,...,sn(b,a1,...,an) = NEAR-MIDp(b−∑aisi), where all si,ai, and b are integers
+in {0,..., p−1} = Zp. We will show how to compute ds1,...,sn with intersections of
+degree-2 PTFs.
+Lemma 4.3 (Implementing the SVP- and SIVP-based decryption function)
+Let ds1,...,sn :
+ {0,1}log pn+1 →{0,1} be the Boolean function deﬁned by
+ds1,...,sn(x) = NEAR-MIDp
+ log p−1
+∑
+i=0
+2ix0,i −
+n
+∑
+j=1
+sj
+log p−1
+∑
+i=0
+2ixj,i
+!
+,
+where all si are integers in {0,..., p −1}. Then ds1,...,sn can be computed by the
+intersection of nlog p PTFs with degree 2 and weight O((pnlog p)2).
+Proof. Denote
+S(x) ⇌
+log p−1
+∑
+i=0
+2ix0,i −
+n
+∑
+j=1
+log p−1
+∑
+i=0
+(2isj mod p)xj,i.
+Thus, S(x) is the original weighted sum
+
+∑log p−1
+i=0
+2ix0,i −∑n
+j=1 sj ∑log p−1
+i=0
+2ixj,i
+
+with the coefﬁcients reduced modulo p.
+Using the deﬁnition of NEAR-MIDp, we have ds1,...,sn(x) = NEAR-MIDp(S(x)).
+The integer S(x) ranges between −(p−1)nlog p and p−1, a total range of length
+< pnlog p. As in the proof of Lemma 4.2, this range can be divided into consecutive
+intervals on which ds1,...,sn(x) is constant (i.e., does not change value within an
+interval).
+14
+
+Every two consecutive intervals cover a length of p units. Thus, there are a total of
+⩽2(pnlog p)/p = 2nlog p consecutive intervals. By picking out the nlog p inter-
+vals on which ds1,...,sn(x) = 0 and AND’ing their negations, we can compute ds1,...,sn
+exactly. It remains to note that the negation of an interval [a,b] can be computed by
+a degree-2 weight-O((pnlog p)2) PTF of the form (S(x)−a+b
+2 )2 > (b−a
+2 )2.
+2
+We additionally observe that the decryption function in the SVP- and SIVP-based
+cryptosystem can be computed by a depth-3 arithmetic circuit.
+Lemma 4.4 (Extension to arithmetic circuits) Let ds1,...,sn :
+ {0,1}log pn+1 →
+{0,1} be the Boolean function deﬁned by
+ds1,...,sn(x) = NEAR-MIDp
+ log p−1
+∑
+i=0
+2ix0,i −
+n
+∑
+j=1
+sj
+log p−1
+∑
+i=0
+2ixj,i
+!
+,
+where all si are integers in {0,..., p−1}. Then ds1,...,sn can be computed by a depth-
+3 arithmetic circuit of size poly(p,n).
+Proof. Set S(x) as in the proof of Lemma 4.3. Then S(x) is an integer in the range
+R ⇌[−(p −1)nlog p, p −1] ∩Z and completely determines the target function:
+ds1,...,sn(x) = NEAR-MIDp(S(x)).
+Let g be a polynomial such that g(S(x)) = ds1,...,sn(x) for all Boolean inputs x. It
+can be constructed by interpolating ds1,...,sn on the range of S(x) via the Lagrange
+formula:
+g(y) = ∑
+r∈R
+NEAR-MIDp(r)· ∏
+r′∈R,r′̸=r
+y−r′
+r −r′ .
+Since the range R contains poly(p,n) integers, g(S(x)) can be computed by a depth-
+3 arithmetic circuit of size poly(p,n) with input S(x) and summation gates at the
+bottom. But S(x) is a sum of poly(p,n) terms, each a singleton variable xi or a
+constant. Thus, ds1,...,sn can be computed directly by a depth-3 arithmetic circuit of
+size poly(p,n) with inputs x.
+2
+5
+Main Results
+Based on the assumed hardness of the cryptosystems in Section 2 and the learning-
+to-cryptography reductions of Sections 3 and 4, we are in a position to prove the
+desired hardness results for learning intersections of halfspaces.
+Theorem 1.1. (Restated from page 2.) Assume that intersections of nε halfspaces
+in n dimensions are PAC-learnable for some constant ε > 0. Then there is a
+polynomial-time solution to ˜O(n1.5)-uSVP.
+15
+
+Proof. Let C denote the concept class of intersections of nε halfspaces, and let C ′
+denote the concept class of intersections of nc degree-2 PTFs (for a large enough
+constant c > 0). By Lemma 4.1, the assumed PAC-learnability of C implies the
+PAC-learnability of C ′. By Lemma 4.2, all the decryption functions in the uSVP-
+based cryptosystem are in C ′. A PAC-learning algorithm for C ′ would thus yield
+a distinguisher between the encryptions of 0 and 1 (by Lemma 3.1) and hence an
+efﬁcient solution to O(√n·γ(n))-uSVP for γ(n) = nlogn (by Theorem 2.2).
+2
+Remark 5.1 Oded Regev has informed us [25] that Theorem 1.1 is also valid
+for light halfspaces, rather than arbitrary ones as stated. To see this, note that in
+Regev’s ﬁrst cryptosystem (Lemma 5.2 of [23]), except with probability exponen-
+tially small in n, the quantity frac(AW) is bounded away from 1
+4 by a small con-
+stant. Therefore, with extremely high probability, we can ignore many of the least
+signiﬁcant bits of AW, as these bits can only change the value of AW by o(1). In
+Lemma 4.2, this allows one to restrict the sum S(x) to contain only terms bixj2j−i
+with j −i > −Clogn (for a sufﬁciently large constant C > 0), since the remain-
+ing terms contribute at most o(1). The integral representation of the resulting PTF
+would have polynomial weight, leading to hardness for intersections of light half-
+spaces.
+Theorem 1.2. (Restated from page 2.) Assume that intersections of nε light half-
+spaces in n dimensions are PAC-learnable for some constant ε > 0. Then there is a
+polynomial-time quantum solution to ˜O(n1.5)-SVP and ˜O(n1.5)-SIVP.
+Proof. Let C denote the concept class of intersections of nε light halfspaces, and
+let C ′ denote the concept class of intersections of nc light degree-2 PTFs (for a
+large enough constant c > 0). By Lemma 4.1, the assumed PAC-learnability of C
+implies the PAC-learnability of C ′. By Lemma 4.3, the decryption function in the
+uSVP-based cryptosystem is in C ′. A PAC-learning algorithm for C ′ would thus
+yield a distinguisher between the encryptions of 0 and 1 (by Lemma 3.1) and, as a
+result, an efﬁcient quantum solution to ˜O(n · γ(n))-SVP and ˜O(n · γ(n))-SIVP for
+γ(n) = √nlog2 n (by Theorem 2.3).
+2
+Theorems 1.1 and 1.2 both imply a hardness result for learning polynomial-size
+depth-2 circuits of majority gates, a concept class commonly denoted by c
+LT2. To
+prove this, we will need a result regarding light threshold circuits, due to Gold-
+mann, H˚astad, and Razborov [9] and Goldmann and Karpinski [10]. Let c
+LTd denote
+the class of depth-d polynomial-size circuits of threshold gates with polynomially-
+bounded weights. Let f
+LTd denote the class of depth-d polynomial-size threshold
+circuits in which only the output gate is required to have polynomially-bounded
+weights.
+Theorem 5.2 [9,10] For any ﬁxed integer d, c
+LTd = f
+LTd.
+16
+
+We are now in a position to prove the desired hardness result for depth-2 neural
+networks.
+Theorem 1.3. (Restated from page 3.) Assume that depth-2 polynomial-size cir-
+cuits of majority gates are PAC learnable. Then there is a polynomial-time solu-
+tion to ˜O(n1.5)-uSVP and polynomial-time quantum solutions to ˜O(n1.5)-SVP and
+˜O(n1.5)-SIVP.
+Proof. Let ∧c
+LT1 (respectively, ∧LT1) denote the concept classes of intersections
+of polynomially many light (respectively, arbitrary) halfspaces. By Theorems 1.1
+and 1.2, it sufﬁces to show that ∧c
+LT1 ⊆c
+LT2 and ∧LT1 ⊆c
+LT2. The ﬁrst state-
+ment is obvious: each halfspace is already a majority gate (with the inputs suit-
+ably negated/replicated), and the top gate AND(f1, f2,..., ft) can be replaced by
+a majority gate MAJ(−t, f1, f2,..., ft). To prove that ∧LT1 ⊆c
+LT2, observe that
+∧LT1 ⊆f
+LT2 (by an argument similar to the ﬁrst case) and f
+LT2 = c
+LT2 (by Theo-
+rem 5.2).
+2
+5.1
+Hardness for PAC Learning Arithmetic Circuits
+Here we give a hardness result for PAC learning depth-3 arithmetic circuits over
+the integers. Many researchers have constructed efﬁcient, sparse polynomial inter-
+polation algorithms where the learner has query access to the unknown polynomial
+[20,22,28]. If, in addition to membership queries, the learner can make equiva-
+lence queries, Klivans and Shpilka [16] have shown how to exactly learn restricted
+types of depth-3 arithmetic circuits via multiplicity automata techniques [4]. We
+show that if the learner receives random examples only, then learning depth-3
+polynomial-size arithmetic circuits is as hard as solving ˜O(n1.5)-SVP in quantum
+polynomial-time:
+Theorem 1.4. (Restated from page 3.) Assume that depth-3 polynomial-size arith-
+metic circuits are PAC-learnable in polynomial time. Then there is a polynomial-
+time quantum solution to ˜O(n1.5)-SVP and ˜O(n1.5)-SIVP.
+Proof.
+Invoke Lemma 4.4 and argue as before (see the proofs of Theorems 1.1
+and 1.2).
+2
+6
+Hardness for AC0?
+A natural question to ask is whether our approach could yield hardness results
+for other concept classes. Particularly interesting candidates are AC0 and, more
+17
+
+ambitiously, polynomial-size DNF formulas. Here we prove that the decryption
+functions of Regev’s cryptosystems contain PARITY as a subfunction and thus are
+not computable in AC0.
+We start with the easier proof. Recall that the decryption function of the SVP-
+and SIVP-based cryptosystem is fs1,...,sn(a1,...,an,b) = NEAR-MIDp(b−∑aisi),
+where all si,ai, and b are integers in {0,..., p−1} = Zp with n2 < p < 2n2.
+Proposition 6.1 (SVP-, SIVP-based cryptosystem and AC0) The
+decryption
+function of the SVP- and SIVP-based cryptosystem, fs1,...,sn(a1,...,an,b) =
+NEAR-MIDp(b−∑aisi), is not in AC0.
+Proof. Let x1,x2,...,xn ∈{0,1}n. Note that
+NEAR-MIDp( p−1
+2 ∑xi) = NEAR-MIDp( p
+2 ∑xi) = PARITY(x1,...,xn).
+The ﬁrst equality holds because 1
+2 ∑xi ⩽n
+2 ≪p. Thus, PARITY(x1,...,xn) is a sub-
+function of NEAR-MIDp(b −∑aisi). Since AC0 cannot compute PARITY [8,11],
+the claim follows.
+2
+Recall now that the decryption function in the uSVP-based cryptosystem is
+dA(X) = NEAR-INT(AX), where A is a ﬁxed real number and X is an integer input.
+For convenience, we assume that X has n+1 bits rather than n.
+Proposition 6.2 (uSVP-based cryptosystem and AC0) The decryption function
+of the uSVP-based cryptosystem, dA(X) = NEAR-INT(AX), is not in AC0.
+Proof. We will show that dA(X) computes PARITY on a subset of Θ(n/logn) bits
+from among x1,...,xn (when the other bits are set to 0). The claim will follow.
+Let ∆⇌3 + logn and A ⇌∑
+n/∆
+i=0 2−i∆−1. For convenience of notation, we assume
+that ∆| n. In what follows, we show that dA(X) =PARITY(x0,x∆,x2∆,...,xn) when
+xi = 0 for all i ̸∈{0,∆,2∆,...,n}. Namely,
+dA(X) = NEAR-INT(AX)
+= NEAR-INT
+  n/∆
+∑
+i=0
+1
+2i∆+1
+! n/∆
+∑
+j=0
+xj∆2 j∆
+!!
+= NEAR-INT
+ 
+∑
+i ∑
+j>i
+xj∆2 j∆
+2i∆+1 +∑
+i
+xi∆2i∆
+2i∆+1 +∑
+i ∑
+j<i
+xj∆2 j∆
+2i∆+1
+!
+.
+The ﬁrst summation features only whole numbers and can thus be dropped. The
+second summation is precisely 1
+2(x0 + x∆+ x2∆+ ··· + xn), a multiple of 1
+2. The
+18
+
+third summation does not exceed 1/8 (by the choice of ∆and the geometric series)
+and thus does not affect the result. We obtain:
+dA(X) = NEAR-INT
+x0 +x∆+x2∆+···+xn
+2
+
+.
+The latter expression is clearly PARITY(x0,x∆,x2∆,...,xn).
+2
+References
+[1] D. Aharonov, O. Regev, Lattice problems in NP∩coNP, J. ACM 52 (5) (2005) 749–
+765.
+[2] M. Ajtai, C. Dwork, A public-key cryptosystem with worst-case/average-case
+equivalence, in: Proceedings of the 29th Symposium on Theory of Computing
+(STOC), 1997.
+[3] M. Alekhnovich, M. Braverman, V. Feldman, A. Klivans, T. Pitassi, Learnability and
+automatizability, in: Proceedings of the 45th Annual Symposium on Foundations of
+Computer Science (FOCS), 2004.
+[4] A. Beimel, F. Bergadano, N. H. Bshouty, E. Kushilevitz, S. Varricchio, Learning
+functions represented as multiplicity automata, J. ACM 47 (3) (2000) 506–530.
+[5] A. L. Blum, R. L. Rivest, Training a 3-node neural network is NP-complete, Neural
+Networks 5 (1992) 117–127.
+[6] L. Blum, M. Blum, M. Shub, A simple unpredictable pseudo-random number
+generator, SIAM J. Comput. 15 (2) (1986) 364–383.
+[7] V. Feldman, P. Gopalan, S. Khot, A. K. Ponnuswami, New results for learning
+noisy parities and halfspaces, in: Proceedings of the 47th Annual Symposium on
+Foundations of Computer Science (FOCS), 2006.
+[8] M. L. Furst, J. B. Saxe, M. Sipser, Parity, circuits, and the polynomial-time hierarchy,
+Mathematical Systems Theory 17 (1) (1984) 13–27.
+[9] M. Goldmann, J. H˚astad, A. A. Razborov, Majority gates vs. general weighted
+threshold gates, Computational Complexity 2 (1992) 277–300.
+[10] M. Goldmann, M. Karpinski, Simulating threshold circuits by majority circuits, SIAM
+J. Comput. 27 (1) (1998) 230–246.
+[11] J. H˚astad, Computational limitations of small-depth circuits, MIT Press, Cambridge,
+MA, USA, 1987.
+[12] M. Kearns, L. Valiant, Cryptographic limitations on learning Boolean formulae and
+ﬁnite automata, J. ACM 41 (1) (1994) 67–95.
+19
+
+[13] M. J. Kearns, U. V. Vazirani, An Introduction to Computational Learning Theory, MIT
+Press, Cambridge, MA, USA, 1994.
+[14] M.
+Kharitonov,
+Cryptographic
+hardness
+of
+distribution-speciﬁc
+learning,
+in:
+Proceedings of the 25th Symposium on Theory of Computing (STOC), 1993.
+[15] M. Kharitonov, Cryptographic lower bounds for learnability of Boolean functions on
+the uniform distribution, J. Comput. Syst. Sci. 50 (3) (1995) 600–610.
+[16] A. Klivans, A. Shpilka, Learning arithmetic circuits via partial derivatives, in:
+Proceedings of the Workshop on Computational Learning Theory (COLT), 2003.
+[17] A. R. Klivans, R. O’Donnell, R. A. Servedio, Learning intersections and thresholds of
+halfspaces, J. Comput. Syst. Sci. 68 (4) (2004) 808–840.
+[18] A. R. Klivans, R. A. Servedio, Learning intersections of halfspaces with a margin, J.
+Comput. Syst. Sci. 74 (1) (2008) 35–48.
+[19] A. R. Klivans, A. A. Sherstov, Unconditional lower bounds for learning intersections
+of halfspaces, Machine Learning 69 (2–3) (2007) 97–114.
+[20] A. R. Klivans, D. A. Spielman, Randomness efﬁcient identity testing of multivariate
+polynomials, in: Proceedings of the 33rd Symposium on Theory of Computing
+(STOC), 2001.
+[21] S. Kwek, L. Pitt, PAC learning intersections of halfspaces with membership queries,
+Algorithmica 22 (1/2) (1998) 53–75.
+[22] Y. Mansour, Randomized interpolation and approximation of sparse polynomials,
+SIAM J. Comput. 24 (2) (1995) 357–368.
+[23] O. Regev, New lattice based cryptographic constructions, in: Proceedings of the
+35th Symposium on Theory of Computing (STOC), 2003, ﬁnal version in J. ACM
+51(6):899-942, 2004.
+[24] O. Regev, On lattices, learning with errors, random linear codes, and cryptography, in:
+Proceedings of the 37th Symposium on Theory of Computing (STOC), 2005.
+[25] O. Regev, Personal communication (2006).
+[26] O. Regev, Lattice-based cryptography, in: Proceedings of the 26th Annual
+International Cryptology Conference (CRYPTO), vol. 4117, 2006.
+[27] O. Regev, On the complexity of lattice problems with polynomial approximation
+factors, survey prepared for the LLL+25 conference. Available at http://www.
+cs.tau.ac.il/∼odedr (June 2007).
+[28] R. E. Schapire, L. Sellie, Learning sparse multivariate polynomials over a ﬁeld with
+queries and counterexamples, J. Comput. Syst. Sci. 52 (2) (1996) 201–213.
+[29] K.-Y. Siu, V. P. Roychowdhury, On optimal depth threshold circuits for multiplication
+and related problems, SIAM J. Discrete Math. 7 (2) (1994) 284–292.
+[30] L. G. Valiant, A theory of the learnable, Commun. ACM 27 (11) (1984) 1134–1142.
+20
+
+[31] S. Vempala, A random sampling based algorithm for learning the intersection of
+halfspaces, in: Proceedings of the 38th Annual Symposium on Foundations of
+Computer Science, 1997.
+[32] I. Wegener, Optimal lower bounds on the depth of polynomial-size threshold circuits
+for some arithmetic functions, Inf. Process. Lett. 46 (2) (1993) 85–87.
+21

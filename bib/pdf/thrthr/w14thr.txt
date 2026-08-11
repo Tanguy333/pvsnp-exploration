@@ -1,0 +1,1284 @@
+arXiv:1401.2444v1  [cs.CC]  10 Jan 2014
+New algorithms and lower bounds for circuits
+with linear threshold gates
+Ryan Williams∗
+Stanford University
+January 13, 2014
+Abstract
+Let ACC◦THR be the class of constant-depth circuits comprised of AND, OR, and MODm gates (for
+some constant m > 1), with a bottom layer of gates computing arbitrary linear threshold functions. This
+class of circuits can be seen as a “midpoint” between ACC (where we know nontrivial lower bounds)
+and depth-two linear threshold circuits (where nontrivial lower bounds remain open).
+We give an algorithm for evaluating an arbitrary symmetric function of 2no(1) ACC◦THR circuits of
+size 2no(1), on all possible inputs, in 2n ·poly(n) time. Several consequences are derived:
+• The number of satisfying assignments to an ACC ◦THR circuit of subexponential size can be
+computed in 2n−nε time (where ε > 0 depends on the depth and modulus of the circuit).
+• NEXP does not have quasi-polynomial size ACC◦THR circuits, and NEXP does not have quasi-
+polynomial size ACC◦SYM circuits. Nontrivial size lower bounds were not known even for AND◦
+OR◦THR circuits.
+• Every 0-1 integer linear program with n Boolean variables and s linear constraints is solvable in
+2n−Ω(n/((logM)(logs)5)) ·poly(s,n,M) time with high probability, where M upper bounds the bit com-
+plexity of the coefﬁcients. (For example, 0-1 integer programs with weights in [−2poly(n),2poly(n)]
+and poly(n) constraints can be solved in 2n−Ω(n/log6 n) time.) Impagliazzo, Paturi, and Schnei-
+der [IPS13] recently gave an algorithm for ˜O(n) constraints; ours is the ﬁrst asymptotic improve-
+ment over exhaustive search for for up to subexponentially many constraints.
+We also present an algorithm for evaluating depth-two linear threshold circuits (a.k.a., THR◦THR)
+with exponential weights and 2n/24 size on all 2n input assignments, running in 2n ·poly(n) time. This is
+evidence that non-uniform lower bounds for THR◦THR are within reach.
+∗Supported by an Alfred P. Sloan Fellowship, a Microsoft Research Faculty Fellowship, a David Morgenthaler II Faculty
+Fellowship, and NSF CCF-1212372. Any opinions, ﬁndings, and conclusions or recommendations expressed in this material are
+those of the author(s) and do not necessarily reﬂect the views of the National Science Foundation.
+
+1
+Introduction
+Recall that in the non-uniform Boolean circuit model, one designs an inﬁnite family of logical circuits
+{Cn}, one for each input length n, in order to recognize a given binary language L ⊆{0,1}⋆. This model is
+notoriously powerful, even when the size of Cn is bounded from above by a ﬁxed polynomial in n, deﬁning
+the complexity class P/poly. With polynomial size circuits, one can already “compute” some undecidable
+languages, such as L′ = {1n | the nth Turing machine halts on blank tape}. Nevertheless, it is strongly be-
+lieved that NP ̸⊂P/poly, meaning that for even modestly-sized instances of NP-complete problems, the
+sizes of computations on such instances must be inevitably gigantic. However, knowledge of P/poly is
+rather poor, due to the “inﬁnite” nature of the model: it is open if the huge complexity class nondeterminis-
+tic exponential time (NEXP) is contained in P/poly. This containment would imply that problems veriﬁable
+with exponentially-long witnesses could be efﬁciently “solved” with small circuits. It looks obviously ab-
+surd; how can we rule it out?
+In recent years, it has been demonstrated that the existence of nontrivial circuit-analysis algorithms is
+closely linked to the NEXP versus P/poly problem. For instance, Impagliazzo, Kabanets, and Wigder-
+son [IKW02] showed that NEXP ̸⊂P/poly follows, if there is a 2no(1) time algorithm that can approx-
+imate a given circuit’s acceptance probability to within 1/10.
+They also proved a partial converse, in
+that NEXP ̸⊂P/poly implies a certain kind of derandomization. Subsequent work [Wil10] strengthened
+the algorithms-to-lower bounds implication, proving that a similar algorithm which (for every k) runs in
+2n−ω(logn) time on all n-input nk-size circuits still implies NEXP ̸⊂P/poly. A variant of this implication
+(for circuit satisﬁability algorithms) was combined with an satisﬁability algorithm for a restricted circuit
+class called ACC, implying that NEXP does not have polynomial-size ACC circuits [Wil11b]. Recently, it
+was shown that NEXP ̸⊂P/poly is equivalent to establishing a “weak” form of natural proofs [Wil13b],
+building on Impagliazzo et al.1
+To continue progress on circuit lower bounds for NEXP, it is imperative to understand algorithms for
+analyzing circuits, such as algorithms for circuit satisﬁability, evaluating a circuit on all 2n inputs, and
+approximating the acceptance probability of a circuit.2 In this paper, we make this sort of algorithmic
+progress for circuits with arbitrary linear threshold gates: such a gate outputs 1 if and only if a cer-
+tain linear inequality ∑iwixi ≥t is true, where wi,t ∈Z are weights and xi ∈{0,1} are inputs to the
+gate. Linear threshold functions have been studied for decades, coinciding with research on neural net-
+works [MP69, Mur71]. Low-depth linear threshold circuits are powerful: many basic functions in arith-
+metic, algebra, and cryptography are known to be implementable with only constant-depth linear threshold
+circuits [RT92, SBKH93, SP94, MT99, NR04]. In terms of lower bounds for such circuits, very weak ques-
+tions remain major open problems: for example, is all of NEXP solvable with polynomial-size depth-two
+linear threshold circuits with exponential-size weights?3 Depth-two circuits correspond to multilayer per-
+ceptrons with only one hidden layer. Despite considerable study in neural networks and deep learning, we
+still lack understanding of the power of depth-two.
+In this paper, we report some new progress on understanding the power of linear threshold gates.
+1In particular, NEXP ̸⊂P/poly if and only if there is a “constructive” property of Boolean functions that is “useful” against
+P/poly. The natural proofs barrier [RR97] states that if such a property is also “large” (true of a large fraction of functions) then
+strong cryptographic pseudorandom generators do not exist. Hence, assuming strong crypto, NEXP lower bounds must somehow
+confront the framework of natural proofs but sidestep the “large” condition.
+2Recent surveys on these issues include [Wil11a, San12, Coh13, Oli13].
+3Note that for thresholds with polynomially-bounded weights, depth-two lower bounds are known; however depth-three lower
+bounds are still open. The survey of Razborov [Raz92] is still relatively current on these points.
+1
+
+Algorithms and lower bounds for ACC with threshold gates
+Let ACC◦THR denote the class of circuits
+consisting of AND, OR, MODm gates for some constant m,4 and linear threshold gates, with unbounded
+fan-in and constant depth, such that the inputs of all linear threshold gates connect directly to the circuit’s
+input variables. Let SYM◦ACC ◦THR be the class of circuits where the output gate computes an arbitrary
+symmetric function, and its inputs connect to the outputs of ACC◦THR circuits. We show that such circuits
+can very efﬁciently evaluated on all 2n inputs, even if they are of 2no(1) size.
+Theorem 1.1 Given a SYM◦ACC◦THR circuit with n inputs and 2no(1) size, we can produce its outputs on
+all 2n inputs in 2n ·poly(n) time.
+More generally, such a circuit of size s can be evaluated on all inputs in 2n ·poly(logs,n)+2O(logs)c time,
+for some c ≥1 depending on the depth of the circuit and the modulus m of its MODm gates.
+The proof of Theorem 1.1 also carries through for SYM ◦ACC ◦SYM, where the bottom layer gates
+compute arbitrary symmetric functions (i.e., functions which only depend on the number of true inputs)
+of 2no(1) wires. This algorithm can be used to count the number of satisfying assignments to ACC ◦THR
+circuits.
+Theorem 1.2 For every integer m > 1 and d > 0, there is an ε > 0 such that counting satisfying assignments
+to ACC◦THR circuits of size 2nε, depth d, and MODm gates can be done in 2n−nε time.
+By modifying prior arguments [Wil11b], we can conclude lower bounds for such circuits. The new
+argument shows that the ability to count SAT assignments entails non-uniform lower bounds for circuit
+classes with very weak closure properties.
+Theorem 1.3 NEXP does not have non-uniform ACC◦THR circuits of quasi-polynomial size.
+As Theorem 1.1 also holds for SYM◦ACC◦SYM, it follows that NEXP doesn’t have ACC◦SYM circuits
+of quasi-polynomial size. as well
+Twenty years ago, Maciel and Therien [MT93] considered lower bounds for AC0 ◦MAJ circuits (which
+ACC◦THR subsumes), but nontrivial lower bounds have not been reported. Regan [Reg97] studied MOD2 ◦
+AND ◦THR circuits and also noted the absence of lower bounds. Lower bounds have been open even for
+the much weaker class AND◦OR◦MAJ [HP13].
+Theorem 1.3 moves a little closer to an “unconditional break” of the natural proofs barrier [RR97]. That
+is, it seems plausible that pseudorandom functions can be implemented with ACC◦THR circuits, in which
+case any lower bounds proved against such circuits must be non-naturalizing.5 Plaku [Pla02] observed that
+the Naor-Reingold family of pseudorandom functions [NR04] can be implemented with quasi-polynomial
+size OR◦THR◦AND circuits; it follows that the natural proofs barrier already applies to this circuit class.
+It is an interesting open problem if ACC◦THR can efﬁciently simulate such depth-three circuits.
+Building on Theorem 1.1, we also give a new method for solving 0-1 integer linear programs.
+In
+FOCS’13, Impagliazzo, Paturi, and Schneider [IPS13] showed that for each c > 1, there is a δ < 1 such
+that 0-1 integer LPs with cn constraints can be solved in 2δn time. We provide an improvement over exhaus-
+tive search for up to subexponentially many constraints:
+Theorem 1.4 Every 0-1 integer linear program with n variables and s constraints can be solved in time
+2n−Ω(n/((logM)(logs)5)) ·poly(s,n,M) with high probability, where M ≤2o(n) upper bounds the bit complexity
+of the coefﬁcients in the program.
+4A MODm gate outputs 1 if and only if the sum of its input bits is divisible by m.
+5It is not completely settled whether the proof that NEXP ̸⊂ACC is “truly” non-naturalizing; it could be that the natural proofs
+barrier is irrelevant to the problem. (If pseudorandom functions cannot be implemented in ACC, then natural proofs considerations
+don’t apply to ACC anyway; if such functions can be implemented in ACC, then the NEXP lower bound is indeed non-naturalizing.)
+2
+
+Notice that the theorem allows for enormous coefﬁcients, of size up to 22o(n). The time bound compares
+favorably with the AC0 circuit satisﬁability bounds of Impagliazzo, Matthews, and Paturi [IMP12]: there,
+the authors use random restriction methods to solve satisﬁability of AC0 circuits with depth d and size s in
+2n−n/(logs)O(d) randomized time with zero error. Our algorithm shows that, using probabilistic polynomials
+and fast rectangular matrix multiplication, one can obtain similar running times for SAT of AC0[2] circuits
+with a layer of symmetric gates at the bottom.
+Depth-two linear threshold circuit evaluation.
+We take an important step towards depth-two linear
+threshold circuit (a.k.a. THR ◦THR) lower bounds for the case of exponential weights, by giving an ef-
+ﬁcient algorithm for evaluating such circuits on all possible assignments.
+Theorem 1.5 Let k > 1. Given a depth-two 2n/24-size linear threshold circuit C with integer weights in
+[−2nk,−2nk], we can evaluate C on all 2n input assignments in 2n ·poly(nk) time.
+Theorem 1.5 follows from a more general result showing that any sufﬁciently large “combinatorial rect-
+angle” of inputs can be evaluated in poly(n) amortized time per input. Noting that a similar statement for
+evaluating ACC circuits forms the heart of the proof of NEXP ̸⊂ACC [Wil11b], Theorem 1.5 suggests that
+large complexity classes (such as NEXP) cannot have small depth-two linear threshold circuits. However,
+we do not yet know how to turn Theorem 1.5 into depth-two linear threshold lower bounds.6
+1.1
+Prior work
+Considerable effort has been expended in proving lower bounds against circuits with linear threshold
+gates. Here we will provide some major highlights, in addition to the work already mentioned.
+It will help to introduce a little (standard) notation. Deﬁne MAJ, AND, OR, THR, and SYM to be
+the class of one-gate circuits corresponding to MAJORITY, AND, OR, linear threshold, and symmetric
+functions, respectively, with “free” NOT gates that can appear after the output or on the input wires to the
+gate. (Recall that a symmetric Boolean function’s output only depends on the number of true inputs.) For
+classes of circuits C and D, deﬁne C ◦D to be the class of circuits formed by taking a circuit C ∈C , and
+feeding the outputs of circuits from D as inputs to C. That is, C ◦D is simply the composition of circuits
+from C and D, with the circuits from D receiving the input and the circuit from C giving the output. We
+will equivocate the size of a circuit with the number of wires, i.e., the number of directed arcs in the DAG
+deﬁning the circuit. This is an important measure for circuits with symmetric gates, as the number of wires
+governs the size of the symmetric function representation.
+Much work on depth-two threshold lower bounds has concentrated on lower bounds for inner product
+modulo 2, i.e., IP2(x1,...,xn,y1,...,yn) = ∑ixi · yi mod 2. Note that IP2 is easy for ACC (being a MOD2
+of AND gates). In groundbreaking work, Hajnal et al. [HMP+93] proved that every MAJ ◦MAJ circuit
+requires 2Ω(n) gates to compute IP2. They also showed MAJ◦SYM circuits can be efﬁciently simulated by
+MAJ ◦MAJ circuits, so small MAJ ◦SYM circuits also cannot compute IP2. Nisan [Nis94] extended the
+lower bound to MAJ◦THR circuits, and Forster et al. [FKL+01] extended the lower bound to THR◦MAJ
+circuits. More recently, Sherstov [She09] showed that AC0 requires exponential-size MAJ ◦MAJ circuits,
+Razborov and Sherstov [RS10] proved that depth-three AC0 requires exponential-size MAJ◦THR circuits,
+and Beame and Huynh [BH12] showed that AC0 requires nΩ(logn)-size MAJ◦SYM◦AND circuits.
+Although superpolynomial-size lower bounds against MAJ ◦AC0, THR ◦AC0, MAJ ◦MAJ ◦AND and
+even MAJ◦MAJ ◦AC0 circuits are known [ABFR94, Gol97, RW93, HM04], and many lower bounds are
+6The current theorems connecting circuit evaluation algorithms to circuit lower bounds require that, from the OR of a collection
+of circuits, we can generate an equivalent circuit in the same class. We do not know how to convert a large OR of THR ◦THR
+circuits into an equivalent THR ◦THR circuit, even assuming NEXP has small THR ◦THR circuits. (In the case of ACC, this is
+trivial, because an OR of ACC circuits is still an ACC circuit.)
+3
+
+known for AC0 circuits augmented with a small number of threshold gates [Bei94, BS94, CH05, Vio06,
+Han07, GS10, LS11, Pod12], lower bounds for AC0 ◦MAJ circuits have remained open. Maciel and The-
+rien [MT93] conjectured that the majority-of-majority function is not in AC0 ◦MAJ.
+Recently, Hansen and Podolskii [HP13] have shown an intriguing reduction: superpolynomial-size THR◦
+THR lower bounds for a function f would follow from superlogarithmic lower bounds on the 3-party NOF
+unbounded-error communication complexity of f.
+1.2
+Comparison and Intuition
+It is instructive to discuss how this paper’s approach relates to prior work on depth-two threshold lower
+bounds. A certain popular approach [FKL+01, Lok08, She09, RS10] applies ingredients from Fourier anal-
+ysis of Boolean functions, linear algebra, communication complexity, discrepancy theory, etc. In particular,
+these works follow the general scheme:
+1. Deﬁne some notion of “relaxed rank” of a 2n/2 ×2n/2 Boolean matrix C. Intuitively, if C has “relaxed
+rank” r, then there are 2n/2 ×r and r ×2n/2 matrices A and B such that the entries of A·B correspond
+to the entries of C in a direct way.
+2. Show that every function f : ({0,1}n/2 ×{0,1}n/2) →{0,1} computable with a “small” C circuit has
+“small relaxed rank” when construed as an 2n/2 ×2n/2 Boolean matrix.
+3. Show that some explicit family of functions gn : ({0,1}n/2 ×{0,1}n/2) →{0,1}, construed as 2n/2 ×
+2n/2 Boolean matrices, requires “high relaxed rank” asymptotically.
+Together, these steps prove that the family g := {gn} cannot have “small” C circuits.
+To prove ACC ◦THR circuit lower bounds, we deﬁne a generalized rank notion we call the symmetric
+rank, informally measuring how efﬁciently a 0-1 matrix M can be decomposed into a sum of rank-one
+matrices such that, after applying a ﬁxed symmetric function to each entry of the sum, we obtain the matrix
+M. Combining several elements from previous work, we show that for a Boolean matrix representing the
+truth table of a SYM◦ACC ◦THR circuit of size s, its symmetric rank is O(2logc s) for some constant c ≥1,
+depending on the depth d and modulus m of the MODm gates in the circuit. Moreover, given such a circuit
+we can efﬁciently compute a low-rank decomposition.
+However, we do not know how to use existing methods to prove that an explicit function g has high
+symmetric rank. Instead, we take a more computational approach that still exploits the low symmetric rank
+property. The idea is that, if we can efﬁciently compute a low-rank decomposition from a given circuit, then
+the circuit’s truth table can be obtained faster than evaluating the circuit on all its inputs one-by-one. This
+in turn suggests that these circuits possess considerable structure that make them unsuitable for simulating
+very complex functions, such as those in NEXP.
+Suppose we are given an SYM◦ACC◦THR circuit C of size s with n inputs. Let M be a 2n/2 ×2n/2 matrix
+deﬁning the function computed by C. First we show how given any such C we can compute 2n/2 ×2logc s and
+2logc s ×2n/2 matrices A and B (and a symmetric function f) giving a symmetric rank decomposition of M, in
+2n/2 ·2O(logc s) time. By multiplying A and B and applying f to each entry of the output matrix, we can obtain
+M. When s is sufﬁciently small, a rectangular matrix multiplication of Coppersmith [Cop82] can be applied
+to compute the product of A and B, and the ﬁnal matrix M is obtained in poly(n) time per entry. Hence,
+given an SYM◦ACC◦THR circuit C of size 2no(1), we can evaluate C on all its 2n inputs in only 2n ·poly(n)
+time. This fast evaluation algorithm is combined with prior work [Wil10, Wil11b] along with some new
+tricks to exhibit a g := {gn} ∈NEXP which does not have quasipolynomial-size ACC◦THR circuits.
+Our evaluation algorithm for depth-two threshold circuits (Theorem 1.5) also uses Coppersmith’s rectan-
+gular matrix multiplication as a subroutine, but the rest of the algorithm is rather different from the evaluation
+algorithm for SYM◦ACC◦THR. We reduce the problem of efﬁciently evaluating a depth-two threshold cir-
+4
+
+cuit on many inputs to a special type of matrix multiplication. Namely, for two matrices A and B over the
+integers, we compute a “weighted” matrix product
+C[i, j] = ∑
+k
+wk ·LEQ(A[i,k],B[k, j]),
+where LEQ(x,y) is a Boolean-valued function equal to 1 if and only if x ≤y, and the wk’s are arbitrary integer
+weights given as parameters to the problem. We show how Coppersmith’s algorithm can be combined with
+a mild brute force search to efﬁciently compute a rectangular matrix product of the above form.
+2
+Algorithms and lower bounds for ACC with a layer of threshold gates
+The main theorem of this section is:
+Reminder of Theorem 1.1 Given a SYM◦ACC◦THR circuit with n inputs and 2no(1) size, we can produce
+its outputs on all 2n inputs in 2n ·poly(n) time.
+More generally, such a circuit of size s can be evaluated on all inputs in 2n ·poly(logs,n)+2O(logs)c time,
+for some c ≥1 depending on the depth of the circuit and the modulus m of its MODm gates.
+Depth reduction.
+The ﬁrst stage of the proof is to convert an arbitrary SYM◦ACC◦THR circuit C of size
+s into a depth-two circuit C′′ of symmetric gates, i.e., a SYM◦SYM circuit. The size of the depth-two circuit
+will be O(2logc s) for a constant c ≥1, depending on the (constant) depth and (constant) modulus of circuit
+C. This stage requires several different pieces from prior work.
+Lemma 2.1 There is an algorithm which given an SYM◦ACC ◦THR circuit C of size s ≥n, depth d, and
+MODm gates, outputs an equivalent SYM ◦SYM circuit C′′ with at most 2(logs)c wires, and runs in time
+O(2(logs)c), for c ≥1 depending only on d and m.
+The following paragraphs give the proof of Lemma 2.1. Let C be a SYM◦ACC◦THR circuit with inputs
+x1,...,xn, size s, depth d, and MODm gates, for constants d > 2 and m > 1. In the proof, several constants
+arise; we will denote all of them by the same constant b which is assumed to be the maximum of these
+quantities.
+The ﬁrst step in Lemma 2.1 is to translate the THR layer of C into a SYM layer, by absorbing some of its
+complexity into the ACC part. Without loss of generality, we can assume that the weights of all threshold
+gates in C have absolute value at most 2bnlog2 n [MTT61, Mur71]. (Every THR function is equivalent to one
+with weights of bit-complexity at most bnlog2 n.)7
+Maciel and Therien [MT98] provided several fairly tight low-deph circuits for various tasks. We need:
+Theorem 2.1 ([MT98], Theorem 3.3) Addition of n distinct n-bit numbers can be performed with polynomial-
+size AND◦OR◦SYM circuits. Furthermore, the circuits can be constructed in polynomial time.
+We can therefore replace every THR gate of C with an AC0 ◦MAJ circuit, as follows. Fix a threshold
+gate of C, with weights wi1,...,wit for t ≤n, computing ∑t−1
+j=1 wijxij ≥wit for some ij ∈{1,...,n}. Note
+|wij| ≤2bnlog2 n for j = 1,...,t. Set W = bnlog2 n.
+Let D be a circuit for the addition of t −1 W-bit numbers, provided by Theorem 2.1. For j = 1,...,t −1,
+we connect to the jth W-bit input of D a circuit which, given xij, feeds wij to D if the input bit xij = 1, and
+the all-zero W-bit string if xij = 0. Note this extra circuit actually contains no gates: it simply has a wire
+from xij to all bits of the jth W-bit input where the corresponding bit of wij equals 1. Letting this new circuit
+7In fact, this “small-weight” representation can be efﬁciently obtained, by evaluating the large-weight representation at only
+n+1 points, then solving a linear system in n+1 variables to determine the weights. See [MTT61], Theorem 16.
+5
+
+be D′, we have D′(x1,...,xn) = ∑t−1
+j=1 wijxij. This can be compared to the value wit with an AC0 circuit, using
+the fact that the “less-than-or-equal-to” comparison of two integers can be performed in AC0 [CSV84]. We
+now have an AC0 ◦SYM circuit D′′ of size poly(W,t) ≤nb computing the given threshold gate. Applying
+this construction to each threshold gate in the THR layer of C, we obtain an SYM◦ACC◦SYM circuit C′ of
+size at most s·nb.
+The next step of Lemma 2.1 is to convert the SYM◦ACC part into a SYM◦AND circuit, using a reduction
+of Beigel-Tarui [BT94] (with important details on constructibility ﬁlled in by Allender-Gore [AG91]).
+Theorem 2.2 ([BT94, AG91]) Every SYM◦ACC circuit of size s can be simulated by a SYM◦AND circuit
+of 2(logs)c′
+size for some constant c′ depending only on the depth d and MODm gates of the ACC part.
+Moreover, the AND gates of the ﬁnal circuit have only (logs)c′ fan-in, the ﬁnal circuit can be constructed
+from the original in 2O((logs)c′) time, and the ﬁnal symmetric function at the output can be computed in
+2O((logs)c′) time.
+Applying this reduction to the top SYM ◦ACC part of the circuit C′ results in an equivalent SYM ◦
+AND(log(s·nb))c′ ◦SYM circuit C′′ of size s′ = 2O((log(s·nb))c′) (where the subscript on the AND denotes the
+fan-in of each AND gate). For simplicity of notation, let t = (log(s·nb))c′ in the following.
+Extending a trick of Beigel [Bei94] to symmetric gates, we can convert every ANDt ◦SYM subcircuit of
+C′′ with nb wires into a single SYM gate with O(nb·t) wires. Let S1(x1,...,xn) ∧··· ∧St(x1,...,xn) be one
+such subcircuit, where Si denotes the ith symmetric gate. In particular, for i = 1,...,t, let fi : Z →{0,1} be
+such that fi(∑n
+j=1 ci,jxj) = Si(x1,...,xn), where ci,j denotes the number of copies of xj that feed into Si.
+Let B = 1+maxi(∑n
+j=1 ci,j); note that B ≤nb. Consider the linear form
+L(x1,...,xn) =
+t
+∑
+i=1
+Bi−1 ·
+ 
+n
+∑
+j=1
+ci,jxj
+!
+.
+For any Boolean assignment to the xj’s, the number encoded by the linear form L(x1,...,xn) is an integer
+encoded in O(t · blogn) bits. By construction, the bit representation of this integer contains, for every
+i = 1,...,t, the number of wires input to Si which are set true, as a string of (blogn) bits. Therefore, from
+the linear form L(x1,...,xn) we can easily infer whether all Si(x1,...,xn) output 1 or not, and hence output
+the value of S1 ∧···∧St.
+To implement this linear form with a single SYM gate, for all j = 1,...,n we put ∑t
+i=1 Bi−1ci,j wires from
+the input variable xj into the new SYM gate. Hence there are O(nb·t) wires from the inputs into this new
+SYM gate. By choosing the appropriate symmetric function (which outputs 1 if and only if L(x1,...,xn)
+encodes a number such that S1 ∧···∧St is true) we can simulate any ANDt ◦SYM circuit of nb wires with a
+single SYM gate of O(nb·t) wires.
+Replacing each AND◦SYM subcircuit in this manner results in a SYM◦SYM circuit of size O(s′ ·nb·t) ≤
+2O(logs)c for some constant c ≥1. This concludes the proof of Lemma 2.1.
+Symmetric rank.
+Next, we prove that the truth table of any SYM ◦SYM circuit C′′ of t wires and n
+inputs represents a 2n/2 × 2n/2 matrix of symmetric rank at most poly(t), and this rank decomposition can
+be efﬁciently computed. For given matrices A and B over the integers, let A·B denote their matrix product
+over the integers. Let M ∈{0,1}m×n. We deﬁne the symmetric rank of M to be the minimum r ∈N such
+that there are matrices A ∈{0,1}m×r, B ∈{0,1}r×n and a function f : {0,1,...,r} →{0,1} satisfying
+M[i, j] = f((A · B)[i, j]) for all i, j. We call the triple (A,B, f) a symmetric rank decomposition of M. The
+symmetric rank is similar to the typical notion of rank, except for the additional function f providing a
+“ﬁlter” from arbitrary integers back to {0,1}. This ﬁlter function could potentially lead to smaller rank
+6
+
+decompositions than the typical notion. However, note the symmetric rank of M is not necessarily at most
+(for instance) the rank of M over R, because A and B are required to have Boolean entries.
+For simplicity let n be even, and let z1,...,z2n/2 be the list of all 2n/2 n/2-bit strings in lexicographical
+order. For a circuit C with n inputs, deﬁne the truth table matrix MC to be the 2n/2 ×2n/2 matrix with MC[i, j]
+equal to the output of C(zi,zj).
+Lemma 2.2 Given a SYM◦SYM circuit C with t wires and n inputs, its truth table matrix MC has symmetric
+rank O(t3), and a symmetric rank decomposition of MC can be computed from C in 2n/2 ·poly(t) time.
+Proof. For simplicity we assume n is even; the case of odd n will be apparent. Index the input variables of
+C by x1,...,xn. Let g1,...,gs be an indexing of the gates of C on the bottom layer (closest to the inputs) and
+let g′ denote the output gate of C. (Note that s ≤t.) Let f : {0,1,...,s} →{0,1} be the symmetric function
+of gate g′: for all a ∈{0,1,...,s}, f(a) = b if and only if a true inputs make g′ output b.
+We shall show how to efﬁciently construct matrices A and B with the appropriate properties. Let z1,...,z2n/2
+be the list of all n/2-bit strings in lexicographical order, in the following. For every pair (a,b) ∈{0,1,...,t}2
+such that a + b ≤t, let Sa,b ⊆{g1,...,gs} denote the subset of gates gj such that a + b true inputs makes
+gate gj output 1.
+The matrices A and B to be constructed show that the symmetric rank of MC is at most
+r =
+∑
+a,b∈{0,1,...,t}:a+b≤t
+|Sa,b| ≤O(t3).
+In other words, each pair (a,b) will add |Sa,b| additional components to the rows of A and the columns of B.
+For i = 1,...,2n/2, the ith row of A and ith column of B are deﬁned as follows. For every pair (a,b),
+allocate |Sa,b| additional components for the rows of A and columns of B.
+For j = 1,...,|Sa,b|, put a 1 in the jth additional component of the ith row of A if and only if there are a
+true wires going into the jth gate of Sa,b when the input variables x1,...,xn/2 are given assignment zi. That
+is, the jth component is 1 if and only if the contribution (from the ﬁrst half of variables) to the overall sum
+for the jth gate is a.
+Similarly, for j = 1,...,|Sa,b|, put a 1 in the jth additional component of the ith column of B if and only
+if there are b true wires going into the jth gate of Sa,b when the input variables xn/2+1,...,xn are given
+assignment zi.
+Note that each entry of A and B can be determined in poly(t) time.
+For every ﬁxed (a,b), the product of two jth components for the ith row of A and the kth column of B is
+either 0 or 1, and the product is 1 if and only if:
+• the sum of true inputs into the jth gate of Sa,b from the inputs (x1,...,xn/2) equals a when the inputs
+(x1,...,xn/2) are assigned zi,
+• the sum of true inputs into the same gate from (xn/2+1,...,xn) equals b when the inputs (xn/2+1,...,xn)
+are assigned zk, and
+• the jth gate outputs 1 when its sum of true inputs equals a+b.
+It follows that the inner product of the ith row of A and the kth column of B equals the total number Ni,k of
+true wires going into the output gate of C on the variable assignment (x1,...,xn) 7→(zi,zk). By deﬁnition,
+f(Ni,k) equals the output of C on that variable assignment.
+□
+We need one more lemma to complete the proof of Theorem 1.1:
+Lemma 2.3 For all sufﬁciently large N, and α ≤.172, multiplication of an N ×Nα matrix with an Nα ×N
+matrix can be done in N2 ·poly(logN) arithmetic operations, over any ﬁeld with O(2poly(logN)) elements.8
+8See Appendix A for an exposition of this result.
+7
+
+Proof of Theorem 1.1. Given a SYM◦ACC◦THR circuit C and size s, convert C into a SYM◦SYM circuit
+C′′ of 2(logs)c size using Lemma 2.1. Compute a symmetric rank decomposition of C into 2n/2 ×23(logs)c and
+23(logs)c ×2n/2 0-1 matrices A and B respectively, along with a function f : [23(logs)c] →{0,1}. Compute the
+product of A and B in 2n ·poly(logs,n) time, using Lemma 2.3. Finally, evaluate function f on all entries of
+the matrix product. This can be done by numerically sorting the entries, replacing each entry v by f(v), then
+inverting the sorted order, in time 2n ·poly(logs,n)+2O(logs)c. For s ≤2no(1), the runtime is 2n ·poly(n).
+□
+2.1
+Counting satisfying assignments to ACC of linear thresholds
+The evaluation algorithm of Theorem 1.1 is quite powerful, substantially extending the class of circuits
+for which we can perform non-trivial circuit analysis.
+Reminder of Theorem 1.2 For every m > 1 and d > 0, there is an ε > 0 such that counting satisfying
+assignments to ACC◦THR circuits of size 2nε, depth d, and MODm gates can be done in 2n−nε time.
+Proof.
+For all k ∈N and for i = 1,...,2k, deﬁne a Bitk
+i function with 22k inputs as follows: for all
+i = 1,...,2k, Bitk
+i outputs the ith bit of the sum of its input bits. Clearly, a Bitk
+i function is symmetric.
+Suppose we are given an ACC◦THR circuit C of size s and n inputs, and we wish to count its satisfying
+assignments. Let ℓ< n/2 be a parameter to set later. For every assignment A j ∈{0,1}2ℓto the last 2ℓinputs
+of C, make a copy of C with the assignment A j plugged into those 2ℓinputs, calling this copy CAj. Note that
+each CAj has (the same) n−2ℓinputs x1,...,xn−2ℓ.
+For every i = 1,...,2ℓ, deﬁne Bi(x1,...,xn−2ℓ) := Bitℓ
+i(CA1(x1,...,xn−2ℓ),...,CA22ℓ(x1,...,xn−2ℓ)). Each
+function Bi can be implemented in s′ = 22ℓ·s size, as a SYM◦ACC ◦THR circuit. Applying Theorem 1.1,
+Bi can be evaluated on all of its 2n−2ℓpossible assignments in time
+2n−2ℓ·poly(n)+2poly(logs′) ≤2n−2ℓ·poly(n)+2poly(ℓ+logs).
+The above for-loop over all i produces 2ℓ·2n−2ℓbits: for each of the 2n−2ℓpartial assignments to n−2ℓ
+variables, we learn the number (in 2ℓbits) of partial assignments on the other 2ℓvariables which result in
+satisfaction. The number of all satisfying assignments is obtained by simply summing all 2ℓ-bit numbers
+obtained from the 2n−2ℓassignments, in 2n−2ℓ·poly(ℓ) time.
+Letting ℓ= nε/2 for sufﬁciently small ε > 0, we have a 2n−nε time algorithm.
+□
+2.2
+Faster 0-1 linear programming
+ACC◦THR circuits are deﬁnitely powerful enough to simulate 0-1 integer linear programming; a straight-
+forward application of Theorem 1.2 would yield a faster algorithm for the problem. However, the improve-
+ment over exhaustive search would be rather minor, and tedious to calculate. By modifying the proof of
+Theorem 1.1 in appropriate places, we can derive a better algorithm in this case:
+Reminder of Theorem 1.4 Every 0-1 integer linear program with n variables and s constraints can be
+solved in time 2n−Ω(n/((logM)(logs)5)) ·poly(s,n,M) with high probability, where M ≤2o(n) upper bounds the
+bit complexity of the coefﬁcients in the program.
+Proof.
+Consider a 0-1 linear program of the form Ax ≤b, along with a cost function ⟨c,x⟩we wish
+to maximize, where A ∈Zs×n, b ∈Zs, and c ∈([−2M,2M] ∩Z)n by assumption on M. First, reduce the
+optimization problem to one of feasibility, in a standard way: include ⟨c,x⟩≥v as an additional constraint
+for various v ∈Z, and by binary searching on v, we maximize the value of v such that the s + 1 constraint
+system remains feasible. Since the xi are Boolean valued, the binary search uses at most O(M +logn) calls
+to feasibility questions.
+8
+
+Next, observe the feasibility questions can be viewed as a satisﬁability question for a depth-two circuit
+D with an AND at the top gate, and linear threshold gates on the bottom layer, by directly translating each
+constraint in the program into a linear threshold gate. By Theorem 2.1 and the argument in Lemma 2.1,
+each threshold gate in the circuit D can be replaced with a polynomial-sized LEQ◦AND◦OR◦SYM circuit,
+where LEQ computes on n-bit integers a and b whether a ≤b. As LEQ has an OR◦AND ◦XOR circuit of
+O(n2) size for n-bit inputs (see [CSV84] for a reference), the satisﬁability question for the circuit D reduces
+to the SAT question for an AC0[2]◦SYM circuit C where the AC0[2] part has depth 5. Following the strategy
+of Theorem 1.2 (and the author’s ACC SAT algorithm [Wil11b]), the satisﬁability question for C with n
+inputs and size poly(s) can be efﬁciently converted into the problem of evaluating a larger AC0[2] ◦SYM
+circuit C′, where C′ has n′ = n−k inputs, 2k ·poly(s,M) size, k < n/2 is a parameter, and the AC0[2] part has
+depth 6. More precisely, C′ is an OR of 2k copies of the depth-5 circuit C, and each copy has its ﬁrst k inputs
+assigned to a distinct string from {0,1}k. Clearly, this circuit C′ is satisﬁable if and only if C is satisﬁable.
+Now we wish to evaluate C′ on all 2n−k inputs, efﬁciently. Rather than applying Beigel-Tarui at this point,
+as in Lemma 2.1, we instead apply the probabilistic polynomials of Smolensky [Smo87] to convert C′ into a
+SYM◦SYM circuit C′′. In particular, we use a slight modiﬁcation of Smolensky’s construction, as described
+by Kopparty and Srinivasan [KS12].
+Theorem 2.3 ([Smo87, KS12]) For every AC0 circuit C of depth d, size s, and n inputs, and ε > 0, there is a
+distribution of n-variate polynomials DC over F2 with the following properties. Each p with nonzero support
+in DC has degree at most (4logs)d−1 ·(log1/ε), a polynomial p can be sampled from DC in nO(logs)d−1(log1/ε)
+time, and for every x ∈{0,1}n, Prp∼DC[p(x) = C(x)] ≥1−ε.
+We apply Theorem 2.3 as follows. Recall that C′ is an OR of some AC0[2] ◦SYM circuits C1,...,C2k,
+each with (the same) n−k inputs. Moreover, the top AC0[2] part of each Ci has depth 5, and each Ci takes
+poly(s,M) inputs (coming from the outputs of SYM gates). For every i, we take the top AC0 part of Ci,
+and invoke Theorem 2.3 with ε = 1/(10·2k) to sample pi ∼DCi of degree at most O(k(logs)4) and at most
+poly(s,M)O(k·(logs)4) monomials. We replace the AC0 part of Ci with the XOR of ANDs circuit pi. Now the
+circuit C′ is an OR of 2k XOR of AND of SYM circuits; call them C′′
+1,...,C′′
+2k. For every input x ∈{0,1}n−k,
+the SYM gates of C′ produce a single poly(s,M)-bit length input y. Taking the union bound over all 2k
+subcircuits, every C′′
+1,...,C′′
+2k outputs the same values as C1,...,C2k on x, with probability at least 1−1/10.
+Now we randomly convert the topmost OR in C′ to an XOR, with the usual Razborov-Smolensky subsum
+trick: we pick r1,1,r2,1,r1,2,r2,2,...,r1,2k,r2,2k ∈{0,1} uniformly at random, and replaceC = OR(C′′
+1,...,C′′
+2k)
+with
+C′′(x1,...,xn−k)
+:=
+ 
+2k
+∑
+i=1
+r1,i ·C′′
+i (x1,...,xn−k) mod 2
+!
+∨
+ 
+2k
+∑
+i=1
+r2,i ·C′′
+i (x1,...,xn−k) mod 2
+!
+=
+2k
+∑
+i=1
+r1,i ·C′′
+i (x1,...,xn−k)+
+2k
+∑
+i=1
+r2,i ·C′′
+i (x1,...,xn−k)
++
+ 
+2k
+∑
+i=1
+r1,i ·C′′
+i (x1,...,xn−k)
+!
+·
+ 
+2k
+∑
+i=1
+r2,i ·C′′
+i (x1,...,xn−k)
+!
+mod 2,
+which means that C′′ equals
+2k
+∑
+i=1
+r1,i ·C′′
+i (x1,...,xn−k)+
+2k
+∑
+i=1
+r2,i ·C′′
+i (x1,...,xn−k)+
+2k
+∑
+i,j=1
+r1,i ·r2,j ·C′′
+i (x1,...,xn−k)·C′′
+i (x1,...,xn−k) mod 2.
+9
+
+Now for every x ∈{0,1}n−k,
+Pr
+pi∼D,ri,j∈{0,1}[C′′(x) ̸= C′(x)]
+≤
+Pr
+p1,...,p2k∼DCi
+[∃i,C′′
+i (x) ̸= Ci(x)]+
+Pr
+ri,j∈{0,1}[OR(C′′
+1(x),...,C′′
+2k(x)) = C′(x) | ∀i,C′′
+i (x) = Ci(x)]
+≤
+1/10+1/4 ≤1/3.
+That is, for every input x ∈{0,1}n−k, the probability that C′(x) = C′′(x) will be greater than 2/3.
+Since each polynomial pi has degree at most O(k · (logs)4), the AND gates representing the monomials
+of pi have t ≤O(k · (logs)4) fan-in. Applying another part of Lemma 2.1, the ANDt ◦SYM subcircuits of
+C′′ with poly(s,M) wires can be replaced by a single SYM gate with poly(s,M)O(t) input wires. This results
+in an XOR◦SYM circuit C′′ of poly(s,M)O(k·(logs)4) total wires; this is also a SYM◦SYM circuit.
+Let ε > 0 be a parameter, and set k := max{1,
+εn
+(logM)(logs)5 }. (Note that if k = 1, the statement of The-
+orem 1.4 is trivially true.) Following the proof of Theorem 1.1, we can apply fast rectangular matrix mul-
+tiplication to evaluate C′′ on all 2n−k inputs. For sufﬁciently small ε > 0, the matrix multiplication runs in
+time
+2n−k ·poly(O(k ·(logs)4),logM,n−k)+poly(s,M)O(k·(logs)4) ≤2
+n−Ω
+
+n
+(logM)(logs)5
+
+·poly(s,M,n).
+The output of this procedure is a 2n−k-bit string which, for every x ∈{0,1}n−k, contains the correct output
+C′(x) with probability at least 2/3.
+Suppose we repeat the above randomized procedure for n2 times: that is, for n2 times, we independently
+sample 2k polynomials pi for each Ci and sample ri,j ∈{0,1}, constructing n2 different circuits C′′
+1,...,C′′
+n2
+from C′. Then, standard tail bound arguments show that the majority value output by C′′
+1(x),...,C′′
+n2(x)
+equals C′(x) for every x ∈{0,1}n−k, with high probability. If some assignment x⋆has majority value 1, we
+conclude that the integer program is feasible; otherwise, we output infeasible.
+□
+2.3
+Non-uniform ACC◦THR lower bounds
+We now turn to the main application of the evaluation algorithm:
+Reminder of Thm 1.3 NEXP does not have non-uniform ACC◦THR circuits of quasi-polynomial size.
+To set the context, let us discuss the prior connection between known circuit satisﬁability algorithms and
+circuit lower bounds.
+Deﬁnition 2.1 Let C be a circuit class. C is said to be typical if, given any circuit D from one of the classes
+C ◦C , AND◦C , OR◦C , NOT◦C , an equivalent D′ ∈C can be produced in poly(size(D)) time.
+That is, C is typical if it is efﬁciently closed under composition, unbounded fan-in AND, OR, and nega-
+tions. Most well-studied circuit classes have this property.
+From prior work, we know there are connections between the existence of good SAT algorithms for
+typical circuit classes, and lower bounds against those classes:
+Theorem 2.4 ([Wil11b]) Let C be typical. Suppose for every c ≥1, there is an ε > 0 and an an algorithm
+for satisﬁability of C circuits running in time O(2n−nε) on circuits with n inputs and nlogc n size. Then NEXP
+does not have quasi-polynomial size C circuits.
+For example, the proof that NEXP ̸⊂ACC follows from giving a faster-than-exhaustive-search ACC
+satisﬁability algorithm, noting that ACC is typical, and applying Theorem 2.4.
+10
+
+This theorem cannot be directly applied to a class such as ACC ◦THR, because it is not known whether
+ACC ◦THR ◦ACC ◦THR can be efﬁciently simulated with ACC ◦THR. However, by modifying the argu-
+ment of Theorem 2.4 and using an algorithm for counting SAT assignments, we can extend the theorem to
+circuits with a very weak closure property.9
+Deﬁnition 2.2 Let C be a circuit class. We say C is weakly closed under AND if, given the AND of two
+circuits of C , an equivalent circuit in C can be produced in polynomial time.
+Weak closure under AND is satisﬁed by strictly more circuit classes than the property of being typical.
+To give an example, any class of the form SYM ◦··· is weakly closed under AND, because an AND of t
+SYM gates with s wires can be collapsed into a single symmetric gate with O(st) wires (as seen in the proof
+of Lemma 2.1). However, classes like SYM◦SYM are not known to be efﬁciently closed under composition
+or unbounded-fan in AND/OR, hence Theorem 2.4 does not apply to such classes. We prove:
+Theorem 2.5 Let C be weakly closed under AND. Suppose for every c ≥1, there is an ε > 0 and an
+algorithm for counting the satisfying assignments of C circuits in time O(2n−nε) on circuits with n inputs
+and nlogc n size. Then NEXP does not have quasi-polynomial size C circuits.
+Note that Theorem 1.3 (the ACC ◦THR lower bound) follows immediately from Theorem 2.5 and the
+counting algorithm of Theorem 1.2. It is our hope that Theorem 2.5 may be applicable in the future to depth-
+two classes, such as SYM◦SYM and depth-two exact threshold circuits [HP10]: an nontrivial counting SAT
+algorithm for one of these classes would entail new lower bounds.
+Proof of Theorem 2.5.
+(Sketch) Let us start with C as typical. We survey what is needed to conclude C
+lower bounds in the proof of Theorem 2.4, and show that the new hypothesis supplies these needs.
+The idea is to show that NEXP ⊂C and the hypothesis implies every L ∈NTIME[2n] can be simulated
+in nondeterministic 2n/n time, contradicting the nondeterminstic time hierarchy [ˇZ´83]. In particular, the
+assumptions imply that the NEXP-complete problem SUCCINCT 3SAT on circuits of AND/OR/NOT with
+fan-in two, n inputs, and poly(n) size can be nondeterministically solved in O(2n−nε) time, which is also
+provably false [Wil11a]. Recall that SUCCINCT 3SAT is the problem: given an AND/OR/NOT circuit C of
+fan-in two, does the truth table of C encode a satisﬁable 3-CNF formula? That is, SUCCINCT 3SAT is a
+“compressed” version of the 3SAT problem.
+Suppose we are given an (arbitrary) circuit C of size s and wish to determine if it is a yes-instance of
+SUCCINCT 3SAT. Assuming NEXP has quasipolynomial-size circuits, it is proved that for every C encod-
+ing a satisﬁable 3-CNF F, there is a quasipolynomial-size circuit D which succinctly encodes a satisfying
+assignment for F: for all i, D(i) outputs the value of variable xi in the satisfying assignment. Our “fast” non-
+deterministic algorithm for SUCCINCT 3SAT guesses this circuit D, and uses it to construct a circuit E with
+n inputs and nlogc n size for some c, which is unsatisﬁable if and only if D encodes a satisfying assignment
+to the formula F encoded by C.
+Assuming NEXP has quasipolynomial-size C circuits and that there is an O(2n−nε) time algorithm for
+C satisﬁability, it is proved that there is a nondeterministic algorithm A running in 2n−Ω(nε) time which,
+given an AND/OR/NOT of fan-in two circuit E of size s and n inputs, outputs an equivalent E′ of slogc s
+size from the class C on at least one nondeterministic branch (and prints no on other branches). Running
+this algorithm A, obtaining E′, then running the C satisﬁability algorithm on E′, we nondeterministically
+determine that C is a yes-instance of SUCCINCT-3SAT in 2n−Ω(nε) time.
+Now assume C is weakly closed under AND. The point where closure properties are relevant is precisely
+in the argument that the nondeterministic algorithm A exists. In fact, if our hypothesis and the assumption
+9See also [JMV13, Oli13] which consider other (stronger) closure properties.
+11
+
+that NEXP has quasipolynomial-size C circuits implies such an algorithm, it can be observed that the rest
+of the proof carries over without modiﬁcation. We now construct such an algorithm A.
+The algorithm A starts by guessing a C circuit E′′ of nlogc n size which takes as input a pair (x,g) ∈
+{0,1}n ×{0,1}log(size(E)), and outputs 1 if and only if the gate g in E outputs 1 when E is given the input x.
+(Such an E′′ exists, assuming P has quasi-polynomial size C circuits.)
+Now we need to verify that for every gate g indexed by 1,2,...,size(E), E′′(x,g) outputs what gate g of
+E(x) outputs, on all x. Each gate g is either an input, an AND of two previous gates g1 and g2, an OR of two
+previous gates g1 and g2, or a NOT of a previous gate g1.
+To aid this veriﬁcation, we show how to efﬁciently check for arbitrary C circuits G and H whether
+G(x) = H(x) for all inputs x, using an algorithm for counting SAT assignments. Let #SAT(C) be the number
+of satisfying assignments to a circuit C. Observe that G(x) = H(x) for all x if and only if #SAT(G) =
+#SAT(H) = #SAT(G ∧H). (Note the third quantity can be efﬁciently computed, assuming C is weakly
+closed under AND.) Moreover, G(x) ̸= H(x) for all x if and only if #SAT(G)+#SAT(H) = 2n and #SAT(G∧
+H) = 0. Therefore, by counting SAT assignments, we have algorithms checking whether G is equivalent to
+H, and whether G is equivalent to the negation of H, both running in time O(2n−nε).
+We claim that the veriﬁcation problem for E′′ can be reduced to a number of calls to the above kinds of
+checks. First, nondeterministically guess a circuit E′′
+not, intended to satisfy E′′
+not(x,g) = ¬E′′(x,g) for all x
+and g. Verifying this condition can be done by counting SAT assignments, as described above.
+Checking E′′ is correct on the input gates of E means that for all i = 1,...,n, E′′(x1,...,xn,i) = xi.
+Both E′′(x1,...,xn,i) and I(x1,...,xn) = xi are C circuits, hence their equivalence can be veriﬁed by #SAT
+calls. Checking a NOT gate g of E with input gate g1 is equivalent to checking that E′′
+not(x,g1) = E′′(x,g)
+on all x. Checking an AND gate g of two previous gates g1 and g2 amounts to checking that E′′(x,g) =
+E′′(x,g1)∧E′′(x,g2) on all x. To do this, compute Gand(x) := E′′(x,g1)∧E′′(x,g2) (assuming C is weakly
+closed under AND), then check Gand(x) = E′′(x,g) for all x. Finally, for an OR gate g with inputs g1
+and g2, we want to check that E′′(x,g) = E′′(x,g1) ∨E′′(x,g2) on all x. This is equivalent to ¬E′′(x,g) =
+((¬E′′(x,g1))∧(¬E′′(x,g2))) for all x. This can be checked by forming Gor(x) := E′′
+not(x,g1)∧E′′
+not(x,g2),
+then checking that Gor(x) = E′′
+not(x,g) for all x.
+On a circuit E with s ≤nlogc n gates, the above procedure runs in O(2n−nε · s) ≤2n−Ω(nε) time. When it
+concludes, we know that for all gates g and all x that E′′(x,g) outputs the correct value. The circuit E′(x)
+output by A simply evaluates E′′(x,g⋆), where g⋆is the output gate of E.
+□
+3
+Fast evaluation of depth-two threshold circuits
+Finally, we show a strong sense in which depth-two threshold circuits are weak, by giving a fast algorithm
+for evaluating such circuit on many assignments in batch. The general theorem is:
+Theorem 3.1 Given a depth-two linear threshold circuit C with 2k inputs and at most n1/12 gates with
+weights on the bottom layer of absolute value at most Wb, weights on the output gate of absolute value at
+most Wo, and given two sets A,B ⊆{0,1}k where |A| = |B| = n, we can evaluate C on all n2 points in A×B
+using n2 ·poly(logWo,logn)+n1+1/12 ·poly(logn,logWb) time.
+The following is immediate from Theorem 3.1:
+Reminder of Theorem 1.5 Let k > 1. Given a depth-two 2n/24-size linear threshold circuit C with integer
+weights in [−2nk,−2nk], we can evaluate C on all 2n input assignments in 2n ·poly(nk) time.
+While the proof of Theorem 3.1 also ultimately depends on Coppersmith’s rectangular matrix multiplica-
+tion, the rest of the algorithm is rather different from the evaluation algorithm of Theorem 1.1.
+12
+
+Proof of Theorem 3.1.
+We reduce the evaluation task to a special kind of matrix multiplication, then
+combine Coppersmith’s matrix multiplication with a mild brute force to expedite the matrix multiply.
+Deﬁne LEQ : Z×Z →{0,1} to output 1 on (a,b) if and only if a ≤b. Given a vector w = (w1,...,wd) ∈
+Zd, and given two matrices M and N which are n×d and d ×n, deﬁne their w-weighted threshold product
+to be (M ⊛w N)[i, j] := ∑d
+k=1 wk ·LEQ(M[i,k],N[k, j]).
+We shall show that the w-weighted threshold product of an n× n1/12 matrix and an n1/12 × n matrix can
+be computed in essentially n2 · poly(logn) time (with some additional but negligible overhead in terms of
+the weights). Let us postpone this algorithm for the moment, and ﬁrst show how to embed the evaluation
+problem into the weighted threshold product.
+Let C be a depth-two circuit of size s, with the 2k input variables x1,...,xk,y1,...,yk. Let w1,...,ws
+be the weights of the top threshold gate of C, and let ℓ1,t1,...,ℓs,ts be the corresponding linear forms and
+threshold values from the bottom layer of threshold gates: that is, the output of LEQ(ti,ℓi) is multipled by
+wi in the output gate. Without loss of generality, we may assume that all weights wi are multiplied by the
+output of some threshold gate at the bottom layer (there are at most n wires from the input directly to the
+output gate, and they can be replaced by O(n) dummy gates at the bottom layer with wires to the output
+gate). Let A = {A1,...,An} ⊆{0,1}k and B = {B1,...,Bn} ⊆{0,1}k.
+We partition each linear form ℓj on the bottom layer into two sums ℓ(x)
+j
+and ℓ(y)
+j , such that ℓ(x)
+j
+involves
+only input variables x1,...,xk, ℓ(y)
+j
+involves only y1,...,yk, and ℓ(x)
+j + ℓ(y)
+j
+= ℓj. Let Ai(ℓ(x)
+j ) and B j(ℓ(y)
+j )
+denote the value of the linear form ℓ(x)
+j
+(respectively, ℓ(y)
+j ) evaluated on assignment Ai (respectively, B j).
+Deﬁne the matrix M with rows indexed by elements of A, and columns indexed by the bottom layer gates
+1,...,s. Set M[i,k] to the value tk −Ai(ℓ(x)
+k ). The matrix N has rows indexed by the bottom layer gates
+1,...,s, and columns indexed by elements of B. Set N[k, j] to the value B j(ℓ(y)
+k ).
+Now consider the w-weighted threshold product M ⊛w N, where w is the same as above. The i, j entry of
+this product equals
+s
+∑
+k=1
+wk ·LEQ
+
+tk −A(ℓ(x)
+k ),B j(ℓ(y)
+k )
+
+=
+s
+∑
+k=1
+wk ·LEQ
+
+tk,Ai(ℓ(x)
+k )+B j(ℓ(y)
+k )
+
+.
+This is precisely the value of the linear form in the output gate of C, when x1,...,xk are given the assignment
+Ai and y1,...,yk are assigned B j. The truth table of C on A×B can be recovered by simply checking which
+entries in (M ⊛w N) exceed the output gate’s threshold.
+Next, we shall show how to compute a weighted threshold matrix product efﬁciently. Let δ be a param-
+eter, and let M and N be n × nδ and nδ × n matrices, respectively. The ﬁrst step is to reduce the weights
+signiﬁcantly. For all k = 1,...,nδ, let Sk be a list of all entries in the kth column of M, plus the kth row of
+N. Sort Sk, obtaining a ranking of 2n items, and replace each entry in the kth column of M and the kth row
+of N by their rank in the sorted list Sk. This step reduces the domains of M and N to {1,...,2n}, and the
+w-weighted threshold matrix product remains the same: all inequalities M[i,k] ≤N[k, j] are preserved. Note
+this step takes n1+δ ·poly(logn,logWb) time.
+In order to reduce to matrix multiplication, we perform two strategies with different advantages. (The
+reduction is inspired by work of Matousek [Mat91] on computing dominances in high dimensions.) Let
+s ∈{1,...,n} be a parameter. Partition each sorted list Sk into t = ⌈n/s⌉contiguous buckets T1,...,Tt,
+where each bucket Ti contains at most s entries. (For all i < j, the largest entry in Ti is at most the smallest
+entry in Tj.)
+Start with an n × n output matrix P that is all zeroes. For every (i,k) ∈[n] × [nδ], look up the bucket
+Tℓcontaining M[i,k] in the sorted list Sk. For all N[k, j] contained in Tℓsuch that M[i,k] ≤N[k, j], add the
+13
+
+weight wk to the entry P[i, j]. This loop adds to P all terms wk · LEQ(M[i,k],N[k, j]) such that M[i,k] and
+N[k, j] appear in the same bucket of Sk. Observe that this step takes ˜O(n·nδ ·s) time.
+To handle the (M[i,k],N[k, j]) pairs that do not appear in the same bucket, we use matrix multiplication.
+For each (i,k) ∈[n]×[nδ], replace the entry M[i,k] with a row vector vi,k ∈{0,wk}t, such that vi,k[ℓ] := wk if
+and only if M[i,k] is in bucket Tℓof Sk. That is, vi,k has wk in exactly one entry, and zeroes elsewhere. This
+forms a matrix M′ of dimensions n×(nδ ·t). For (k, j) ∈[nδ]×[n], replace each entry N[k, j] with a column
+vector uk,j ∈{0,1}t, such that vi,k[ℓ′] := 1 if and only if N[k, j] is in bucket Tℓof Sk and ℓ> ℓ′. This forms
+a matrix N′ of dimensions (nδ ·t)×n. The matrix product M′ ·N′ over the integers computes a sum of inner
+products
+(M′ ·N′)[i, j] = ∑
+nδ
+⟨vi,k,uk,j⟩.
+If M[i,k] > N[k, j], or M[i,k] and N[k, j] are in the same bucket of Sk, then ⟨vi,k,uk,j⟩= 0. If M[i,k] ≤N[k, j]
+but N[k, j] and M[i,k] are in different buckets of Sk then ⟨vi,k,uk,j⟩= wk.
+Letting P := P + (M′ · N′), this procedure adds to P all terms wk · LEQ(M[i,k],N[k, j]) such that M[i,k]
+and N[k, j] appear in different buckets of Sk. Therefore P[i, j] contains the value of the linear form for the
+output gate of C, under variable assignment (Ai,B j), for all i, j.
+The above algorithm runs in time O(n·nδ ·slogWo +MM(n,n1+δ/s,n)·poly(logWo)), where MM(a,b,c)
+is the running time for multiplying a×b and b×c matrices. If we set n1+δ/s = n0.172, then Coppersmith’s
+algorithm (Lemma 2.3) can be applied to the second term of the running time, implementing it in n2 ·
+poly(logn) time. Under this setting, s = nδ · n0.828 and the ﬁrst term of the running time is n1+2δ+0.828.
+Setting δ = 0.086 > 1/12, the ﬁrst term becomes n2 (note that s = n.914).
+□
+It is easy to see that, since the above algorithm actually evalutes the linear form at the output gate of a
+depth-two threshold circuit, we can also efﬁciently evaluate large SYM◦THR circuits as well.
+Acknowledgements.
+I thank Igor Carboni Olivera for sending a preliminary version of his survey, which
+helped the ideas in the proof of Theorem 2.5 to congeal. I also thank Rahul Santhanam for helpful comments
+on an earlier draft.
+References
+[ABFR94] James Aspnes, Richard Beigel, Merrick Furst, and Steven Rudich. The expressive power of
+voting polynomials. Combinatorica, 14(2):135–148, 1994.
+[ACPS09]
+Benny Applebaum, David Cash, Chris Peikert, and Amit Sahai. Fast cryptographic primitives
+and circular-secure encryption based on hard learning problems. In CRYPTO, pages 595–618,
+2009.
+[AG91]
+Eric Allender and Vivek Gore. On strong separations from AC0. Fundamentals of Computation
+Theory, 8, 1991.
+[Bei94]
+Richard Beigel. When do extra majority gates help? polylog(n) majority gates are equivalent to
+one. Computational Complexity, 4:314–324, 1994.
+[BH12]
+Paul Beame and Trinh Huynh. Multiparty communication complexity and threshold circuit size
+of AC0. 41(3):484–518, 2012.
+[BP94]
+Dario Bini and Victor Pan. Polynomial and matrix computations. Birkhauser, 1994.
+14
+
+[BS94]
+David A. Mix Barrington and Howard Straubing.
+Complex polynomials and circuit lower
+bounds for modular counting. Computational Complexity, 4(4):325–338, 1994.
+[BT94]
+Richard Beigel and Jun Tarui. On ACC. Computational Complexity, pages 350–366, 1994.
+[CH05]
+Arkadev Chattopadhyay and Kristoffer Arnsfelt Hansen. Lower bounds for circuits with few
+modular and symmetric gates. In ICALP, pages 994–1005, 2005.
+[CKY89]
+John F. Canny, Erich Kaltofen, and Lakshman Yagati. Solving systems of non-linear equations
+faster. In Proc. ACM-SIGSAM International Symposium on Symbolic and Algebraic Computa-
+tion, pages 121–128, 1989.
+[Coh13]
+Gil Cohen.
+A taste of circuit complexity pivoted at NEXP ̸⊂ACC (and more).
+Lecture
+Notes,
+Electronic
+Colloquium
+on
+Computational
+Complexity
+(ECCC),
+http://eccc.hpi-web.de/resources/pdf/cohen.pdf, 2013.
+[Cop82]
+Don Coppersmith. Rapid multiplication of rectangular matrices. SIAM J. Comput., 11(3):467–
+471, 1982.
+[Cop97]
+D. Coppersmith. Rectangular matrix multiplication revisited. Journal of Complexity, 13:42–49,
+1997.
+[CSV84]
+Ashok K. Chandra, Larry Stockmeyer, and Uzi Vishkin. Constant depth reducibility. SIAM
+Journal on Computing, 13(2):423–439, 1984.
+[FKL+01] J¨urgen Forster, Matthias Krause, Satyanarayana V. Lokam, Rustam Mubarakzjanov, Niels
+Schmitt, and Hans Ulrich Simon. Relations between communication complexity, linear arrange-
+ments, and computational complexity. In FSTTCS 2001: Foundations of Software Technology
+and Theoretical Computer Science, pages 171–182. Springer, 2001.
+[Gal12]
+Franc¸ois Le Gall. Faster algorithms for rectangular matrix multiplication. In FOCS, pages
+514–523, 2012.
+[Gol97]
+Mikael Goldmann. On the power of a threshold gate at the top. Information Processing Letters,
+63(6):287–293, 1997.
+[GS10]
+Parikshit Gopalan and Rocco A. Servedio. Learning and lower bounds for AC0 with threshold
+gates. In APPROX/RANDOM, pages 588–601. Springer, 2010.
+[Han07]
+Kristoffer Arnsfelt Hansen. Computing symmetric boolean functions by circuits with few exact
+threshold gates. In COCOON, pages 448–458, 2007.
+[HM04]
+Kristoffer Arnsfelt Hansen and Peter Bro Miltersen. Some meet-in-the-middle circuit lower
+bounds. In MFCS, pages 334–345, 2004.
+[HMP+93] Andr´as Hajnal, Wolfgang Maass, Pavel Pudl´ak, Mario Szegedy, and Gy¨orgy Tur´an. Threshold
+circuits of bounded depth. J. Comput. Syst. Sci., 46(2):129–154, 1993.
+[HP98]
+X. Huang and V. Y. Pan. Fast rectangular matrix multiplication and applications. J. of Com-
+plexity, 14(2):257–299, 1998.
+[HP10]
+Kristoffer Arnsfelt Hansen and Vladimir V Podolskii. Exact threshold circuits. In IEEE Conf.
+Computational Complexity, pages 270–279, 2010.
+15
+
+[HP13]
+Kristoffer Arnsfelt Hansen and Vladimir V. Podolskii.
+Polynomial threshold functions and
+boolean threshold circuits. In MFCS, pages 516–527, 2013.
+[IKW02]
+Russell Impagliazzo, Valentine Kabanets, and Avi Wigderson. In search of an easy witness:
+Exponential time vs. probabilistic polynomial time. JCSS, 65(4):672–694, 2002.
+[IMP12]
+Russell Impagliazzo, William Matthews, and Ramamohan Paturi. A satisﬁability algorithm for
+AC0. In SODA, pages 961–972, 2012.
+[IPS13]
+Russell Impagliazzo, Ramamohan Paturi, and Stefan Schneider. A satisﬁability algorithm for
+sparse depth two threshold circuits. In FOCS, pages 479–488, 2013.
+[JMV13]
+Local reductions. Technical Report TR13-099, Electronic Colloquium on Computational Com-
+plexity, July 2013.
+[KS12]
+Swastik Kopparty and Srikanth Srinivasan. Certifying polynomials for AC0(parity) circuits,
+with applications. In FSTTCS, pages 36–47, 2012.
+[KZHP08] ShanXue Ke, BenSheng Zeng, WenBao Han, and Victor Y. Pan. Fast rectangular matrix mul-
+tiplication and some applications. Science in China Series A: Mathematics, 51(3):389–406,
+2008.
+[Lok08]
+Satyanarayana V. Lokam. Complexity lower bounds using linear algebra. Foundations and
+Trends in Theoretical Computer Science, 4(1-2):1–155, 2008.
+[LS11]
+Shachar Lovett and Srikanth Srinivasan. Correlation bounds for poly-size AC0 circuits with
+n1−o(1) symmetric gates. In APPROX/RANDOM, pages 640–651. Springer, 2011.
+[Mat91]
+Jiri Matousek. Computing dominances in En. Inf. Process. Lett., 38(5):277–278, 1991.
+[MP69]
+Marvin Minsky and Seymour Papert. Perceptrons: An Introduction to Computational Geometry.
+The MIT Press, 1969.
+[MT93]
+Alexis Maciel and Denis Th´erien. Threshold circuits for iterated multiplication: Using ac0 for
+free. In STACS, pages 545–565, 1993.
+[MT98]
+Alexis Maciel and Denis Thrien. Threshold circuits of small majority-depth. Information and
+Computation, 146(1):55–83, 1998.
+[MT99]
+Alexis Maciel and Denis Th´erien. Efﬁcient threshold circuits for power series. Inf. Comput.,
+152(1):62–73, 1999.
+[MTT61]
+S. Muroga, I. Toda, and S. Takasu.
+Theory of majority decision elements.
+Journal of the
+Franklin Institute, 271:376–418, 1961.
+[Mur71]
+S. Muroga. Threshold Logic and its Applications. John Wiley & Sons, Inc., 1971.
+[Nis94]
+Noam Nisan. The communication complexity of threshold gates. In Proceedings of “Combi-
+natorics, Paul Erdos is Eighty”, pages 301–315, 1994.
+[NR04]
+Moni Naor and Omer Reingold. Number-theoretic constructions of efﬁcient pseudo-random
+functions. JACM, 51(2):231–262, 2004.
+16
+
+[Oli13]
+Igor Oliveira. Algorithms versus circuit lower bounds. Technical Report TR13-117, Electronic
+Colloquium on Computational Complexity (ECCC), September 2013.
+[Pan84]
+Victor Y. Pan. How to multiply matrices faster. Springer-Verlag Lecture Notes in Computer
+Science 179, 1984.
+[Pla02]
+Erion Plaku. Multiplicity automata, polynomials and the complexity of small-depth boolean
+circuits. Master’s thesis, Clarkson University, Potsdam, NY, 2002.
+[Pod12]
+Vladimir V. Podolskii. Exponential lower bound for bounded depth circuits with few threshold
+gates. Information Processing Letters, 112:267–271, 2012.
+[Raz92]
+Alexander A. Razborov. On small depth threshold circuits. In SWAT, pages 42–52, 1992.
+[Reg97]
+Kenneth W. Regan. Polynomials and combinatorial deﬁnitions of languages. pages 261–293.
+Springer LNCS, 1997.
+[RR97]
+Alexander Razborov and Steven Rudich. Natural proofs. JCSS, 55(1):24–35, 1997.
+[RS10]
+Alexander A. Razborov and Alexander A. Sherstov. The sign-rank of AC0. SIAM Journal on
+Computing, 39(5):1833–1855, 2010.
+[RT92]
+John H. Reif and Stephen R. Tate. On threshold circuits and polynomial computation. SIAM J.
+Comput., 21:118–123, 1992.
+[RW93]
+Alexander Razborov and Avi Wigderson. nΩ(logn) lower bounds on the size of depth-3 threshold
+circuits with AND gates at the bottom. Information Processing Letters, 45(6):303–307, 1993.
+[San12]
+Rahul Santhanam. Ironic complicity: Satisﬁability algorithms and circuit lower bounds. Bul-
+letin of the EATCS, 106:31–52, 2012.
+[SBKH93] K-Y Siu, Jehoshua Bruck, Thomas Kailath, and Thomas Hofmeister.
+Depth efﬁcient neu-
+ral networks for division and related problems. Information Theory, IEEE Transactions on,
+39(3):946–956, 1993.
+[Sch81]
+Arnold Sch¨onhage. Partial and total matrix multiplication. SIAM J. Comput., 10(3):434–455,
+1981.
+[She09]
+Alexander A. Sherstov. Separating AC0 from depth-2 majority circuits. SIAM Journal on Com-
+puting, 38(6):2113–2129, 2009.
+[SM83]
+Gadiel Seroussi and Fai Ma. On the arithmetic complexity of matrix kronecker powers. Infor-
+mation Processing Letters, 17(3):145–148, 1983.
+[Smo87]
+Roman Smolensky. Algebraic methods in the theory of lower bounds for Boolean circuit com-
+plexity. In STOC, pages 77–82, 1987.
+[SP94]
+Kai-Yeung Siu and Vwani P.Roychowdhury. On optimal depth threshold circuits for multipli-
+cation and related problems. SIAM Journal on Discrete Mathematics, 7(2):284–292, 1994.
+[Vio06]
+Emmanuele Viola. Pseudorandom bits for constant-depth circuits with few arbitrary symmetric
+gates. SIAM J. Comput., 36:1387–1403, 2006.
+[Wil11a]
+Ryan Williams. Guest column: a casual tour around a circuit complexity bound. ACM SIGACT
+News, 42(3):54–76, 2011.
+17
+
+[Wil11b]
+Ryan Williams. Non-uniform ACC circuit lower bounds. In IEEE Conf. Computational Com-
+plexity, pages 115–125, 2011.
+[Wil13a]
+Ryan Williams. Faster all-pairs shortest paths via circuit complexity. Submitted, 2013.
+[Wil13b]
+Ryan Williams. Natural proofs versus derandomization. In STOC, pages 21–30, 2013.
+[Wil10]
+Ryan Williams. Improving exhaustive search implies superpolynomial lower bounds. SIAM
+Journal on Computing, 42(3):1218–1244, 2013. See also STOC’10.
+[ˇZ´83]
+Stanislav ˇZ´ak. A Turing machine time hierarchy. Theoretical Computer Science, 26(3):327–
+333, October 1983.
+A
+Appendix: An exposition of Coppersmith’s algorithm
+In 1982, Don Coppersmith proved that the rank (that is, the number of essential multiplications) of
+N × N0.172 and N0.172 × N matrix multiplication is at most O(N log2 N). Prior work has observed that
+his algorithm can also be used to show that the total number of arithmetic operations for the same ma-
+trix multiply is N · poly(logN). However, the implication is not immediate, and uses speciﬁc properties of
+Coppersmith’s algorithm. Because this result is so essential to this work and a recent algorithm for all-pairs
+shortest paths [Wil13a], we give here a self-contained exposition.
+Theorem A.1 (Coppersmith [Cop82]) For all sufﬁciently large N, the rank of N ×N.172 ××N matrix mul-
+tiplication is at most O(N2log2 N).
+We wish to derive the following consequence of Coppersmith’s construction, which has been mentioned
+in the literature before [SM83, ACPS09, Wil11b]:
+Reminder of Lemma 2.3 For all sufﬁciently large N, and α ≤.172, multiplication of an N×Nα matrix with
+an Nα × N matrix can be done in N2 · poly(logN) arithmetic operations, over any ﬁeld with O(2poly(logN))
+elements.
+For brevity, we will use the notation “ℓ× m × n matrix multiply” to refer to the multiplication of ℓ× m
+and m×n matrices (hence the above gives an algorithm for N ×Nα ×N matrix multiply).
+Note Lemma 2.3 has been “improved” in the sense that the upper bound on α has been increased mildly
+over the years [Cop97, HP98, KZHP08, Gal12]. However, these later developments only run in N2+o(1)
+time, not N2 ·poly(logN) time (which we require). Our exposition will expand on the informal description
+given in recent work [Wil11b].
+First, observe that the implication from Theorem A.1 to Lemma 2.3 is not immediate. For example, it
+could be that Coppersmith’s algorithm is non-uniform, making it difﬁcult to apply. As far as we know,
+one cannot simply take “constant size” arithmetic circuits implementing the algorithm of Theorem A.1
+and recursively apply them. In that case, the poly(logN) factor in the running time would then become
+Nε for some constant ε > 0 (depending on the size of the constant-size circuit). To keep the overhead
+polylogarithmic, we have to unpack the algorithm and analyze it directly.
+A.1
+A short preliminary
+Coppersmith’s algorithm builds on many other tools from prior matrix multiplication algorithms, many
+of which can be found in the highly readable book of Pan [Pan84]. Here we will give a very brief tutorial of
+some of the aspects.
+18
+
+Bilinear algorithms and trilinear forms.
+Essentially all methods for matrix multiplication are bilinear
+(and if not, they can be converted into such algorithms), meaning that they can be expressed in the so-called
+trilinear form
+∑
+ijk
+AikBk jCji + p(x) =
+5
+∑
+ℓ=1
+(∑
+ij
+αijAij)·(∑
+ij
+βijBij)·(∑
+ij
+γijCij)
+(1)
+where αij, βij, and γij are constant-degree polynomials in x over the ﬁeld, and p(x) is a polynomial with
+constant coefﬁcient 0. Such an algorithm can be converted into one with no polynomials and minimal extra
+overhead (as described in Coppersmith’s paper). Typically one thinks of Aik and Bk j as entries in the input
+matrices, and Cji as indeterminates, so the LHS of (1) corresponds to a polynomial whose Cji coefﬁcient is
+the i j entry of the matrix product. Note the transpose of the third matrix C corresponds to the ﬁnal matrix
+product.
+To give an explicit example, we assume the reader is familiar with Strassen’s famous method for 2×2×2
+matrix multiply. Strassen’s algorithm can be expressed in the form of (1) as follows:
+∑
+i,j,k=0,1
+AikBk jCji
+=
+(A00 +A11)(B00 +B11)(C00 +C11)
+(2)
++(A10 +A11)B00(C01 −C11)+A00(B01 −B11)(C10 +C11)
++(A10 −A00)(B00 +B01)C11 +(A00 +A01)B11(C10 −C00)
++A11(B10 −B00)(C00 +C01)+(A01 −A11)(B10 +B11)C00.
+The LHS of (1) and (2) represents the trace of the product of three matrices A, B, and C (where the i j entry
+of matrix X is Xij). It is well known that every bilinear algorithm naturally expresses multiple algorithms
+through this trace representation. Since
+tr(ABC) = tr(BCA) = tr(CAB) = tr((ABC)T) = tr((BCA)T) = tr((CAB)T),
+if we think of A as a symbolic matrix and consider (1), we obtain a new algorithm for computing a matrix A
+when given B and C. Similarly, we get an algorithm for computing a B when given A and C, and analogous
+statements hold for computing AT, BT, and CT. So the aforementioned algorithm for multiplying a sparse
+2×3 and sparse 3×2 yields several other algorithms.
+Sch¨onhage’s decomposition paradigm.
+Coppersmith’s algorithm follows a speciﬁc paradigm introduced
+by Sch¨onhage [Sch81] which reduces arbitrary matrix products to slightly larger matrix products with “struc-
+tured nonzeroes.” The general paradigm has the following form. Suppose we wish to multiply two matrices
+A′′ and B′′.
+1. First we preprocess A′′ and B′′ in some efﬁcient way, decomposing A′′ and B′′ into structured matrices
+A,A′,B,B′ so that A′′ · B′′ = A′ · A · B · B′. (Note, the dimensions of A′ · A may differ from A′′, and
+similarly for B′ · B and B′′.) The matrices A and B are sparse “partial” matrices directly based on A′′
+and B′′, but they have larger dimensions, and only contain nonzeroes in certain structured parts. The
+matrices A′ and B′ are very simple and explicit matrices of scalar constants, chosen independently of
+A′′ and B′′. (In particular, A′ and B′ are Vandermonde-style matrices.)
+2. Next, we apply a specialized constant-sized matrix multiplication algorithm in a recursive manner, to
+multiply the structured A and B essentially optimally. Recall that Strassen’s famous matrix multipli-
+cation algorithm has an analogous form: it starts with a seven-multiplication product for 2 × 2 × 2
+matrix multiplication, and recursively applies this to obtain a general algorithm for 2M × 2M × 2M
+matrix multiplication. Here, we will use an optimal algorithm for multiplying constant-sized matrices
+with zeroes in some of the entries; when this algorithm is recursively applied, it can multiply sparse
+A and B with nonzeroes in certain structured locations.
+19
+
+3. Finally, we postprocess the resulting product C to obtain our desired product A′′ · B′′, by computing
+A′ ·C · B′. Using the simple structure of A′ and B′, the matrix products D := A′ ·C and D · B′ can
+be performed very efﬁciently. Our aim is to verify that each step of this process can be efﬁciently
+computed, for Coppersmith’s full matrix multiplication algorithm.
+A.2
+The algorithm
+The construction of Coppersmith begins by taking input matrices A′′ of dimensions 24M/5 ×
+  M
+4M/5
+
+24M/5
+and B′′ of dimensions
+  M
+4M/5
+
+24M/5 × 2M/5 where M ≈logN, and obtains an O(5Mpoly(M)) algorithm for
+their multiplication. Later, he symmetrizes the construction to get an N × N × Nα matrix multiply. We
+will give this starting construction and show how standard techniques can be used to obtain an N ×Nα ×N
+matrix multiply from his basic construction.
+The multiplication of A′′ and B′′ will be derived from an algorithm which computes the product of 2×3
+and 3×2 matrices with zeroes in some entries. In particular the matrices have the form:
+ a11
+a12
+a13
+0
+a22
+a23
+
+,
+
+
+b11
+b12
+b21
+0
+b31
+0
+
+,
+and the algorithm is given by the trilinear form
+(a11 +x2a12)(b21 +x2b11)(c11)+(a11 +x2a13(b31)(c11 −xc21)+(a11 +x2a22)(b21 −xb21)(c22)
+(3)
++(a11 +x2a23)(b31 +xb12)(c12 +xc21)−(a11)(b21 +b31)(c11 +c12)
+= x2(a11b11c11 +a11b12c21 +a12b21c11 +a13b31c11 +a22b21c12 +a23b31c12)+x3 ·P(a,b,c,x).
+That is, by performing the ﬁve products of the linear forms of aij and bkℓon the LHS, and using the cij to
+determine how to add and subtract these products to obtain the output 2×2 matrix, we obtain a polynomial
+in each matrix entry whose x2 coefﬁcients yield the ﬁnal matrix product cij.
+When the algorithm given by (3) is applied recursively to 2M × 3M and 3M × 2M matrices (analogously
+to how Strassen’s algorithm is applied to do 2M × 2M × 2M matrix multiply), we obtain an algorithm that
+can multiply matrices A and B with dimensions 2M × 3M and 3M × 2M, respectively, where A has O(5M)
+nonzeroes, B has O(4M) nonzeroes, and these nonzeroes appear in a highly regular pattern (which can be
+easily deduced). This recursive application of (3) will result in polynomials in x of degree O(M), and
+additions and multiplications on such polynomials increase the overall time by an M · poly(logM) factor.
+Therefore we can multiply these A and B with structured nonzeroes in O(5M ·poly(M)) ﬁeld operations.
+The decomposition of A′′ and B′′ is performed as follows. We choose A′ and B′ to have dimensions
+24M/5 ×2M and 2M ×2M/5, respectively, and such that all 24M/5 ×24M/5 submatrices of A′ and 2M/5 ×2M/5
+submatrices of B′ are non-singular. Following Sch¨onhage, we pick A′ and B′ to be rectangular Vandermonde
+matrices: the i, j entry of A′ is (αj)i−1, where α1,α2,... are distinct elements of the ﬁeld; B′ is deﬁned
+analogously. Such matrices have three major advantages: (1) they can be succinctly described (with O(2M)
+ﬁeld elements), (2) multiplying these matrices with arbitrary vectors can be done extremely efﬁciently, and
+(3) inverting an arbitrary square submatrix can be done extremely efﬁciently. More precisely, n×n Vander-
+monde matrices can be multiplied with arbitrary n-vectors in O(n· poly(logn)) operations, and computing
+the inverse of an n × n Vandermonde matrix can be done in O(n · poly(logn)) operations (for references,
+see [CKY89, BP94]). In general, operations on Vandermonde matrices, their transposes, their inverses, and
+the transposes of inverses can be reduced to fast multipoint computations on univariate polynomials. For
+example, multiplying an n× n Vandermonde matrix with a vector is equivalent to evaluating a polynomial
+(with coefﬁcients given by the vector) on the n elements that comprise the Vandermonde matrix, which takes
+O(nlogn) operations. This translates to O(n·poly(logn)) arithmetic operations.
+20
+
+The matrices A and B have dimensions 2M × 3M and 3M × 2M, respectively, where A has only O(5M)
+nonzeroes, B has only O(4M) nonzeroes, and there is an optimal algorithm for multiplying 2 × 3 (with
+5 nonzeroes) and 3 × 2 matrices (with 4 nonzeroes) that can be recursively applied to multiply A and B
+optimally, in O(5M ·poly(M)) operations. Matrices A and B are constructed as follows: take any one-to-one
+mapping between the
+  M
+4M/5
+
+2M/5 columns of the input A′′ and columns of the sparse A with exactly 24M/5
+nonzeroes. For these columns q of A with 24M/5 nonzeroes, we compute the inverse A−1
+q
+of the 24M/5 ×24M/5
+minor Aq of A′ with rows corresponding to the nonzeroes in the column, and multiply A−1
+q
+with column q
+(in 24M/5 · poly(M) time). After these columns are processed, the rest of A is zeroed out. Then, there is a
+one-to-one correspondence between columns of A′′ and nonzero columns of A′ ·A. Performing a symmetric
+procedure for B′′ (with the same mapping on rows instead of columns), we can decompose it into B and B′
+such that there is a one-to-one correspondence between rows of B′′ and nonzero rows of B · B′. It follows
+that this decomposition takes only O(
+  M
+4M/5
+
+24M/5 ·24M/5 ·poly(M)) time. Since 5M ≈
+  M
+4M/5
+
+44M/5 (within
+poly(M) factors), this quantity is upper bounded by 5M ·poly(M).
+After A and B are constructed, the constant-sized algorithm for 2× 3 and 3× 2 mentioned above can be
+applied in the usual recursive way to multiply the sparse A and B in O(5M · poly(M)) operations; call this
+matrix Z. Because A′ and B′ are Vandermonde, the product A′ · Z · B′ can be computed in O(5M · poly(M))
+operations. Hence we have an algorithm for multiplying matrices of dimensions 24M/5 ×
+  M
+4M/5
+
+24M/5 and
+  M
+4M/5
+
+24M/5 ×2M/5 that is explicit and takes 5M ·poly(M) operations.
+Call the above algorithm ALGORITHM 1. Observe ALGORITHM 1 also works when the entries of A′′ and
+B′′ are themselves matrices over the ﬁeld. (The running time will surely increase in proportion to the sizes
+of the underlying matrices, but the bound on the number of operations on the entries remains the same.)
+Up to this point, we have simulated Coppersmith’s construction completely, and have simply highlighted
+its efﬁciency. By exploiting the symmetries of matrix multiplication algorithms in a standard way, we can
+extract more algorithms from the construction. The trace identity tells us that
+tr(ABC) = tr(BCA),
+implying that the expression (3) can also be used to partially multiply a 3M ×2M matrix B with at most 4M
+structured nonzeroes and “full” 2M × 2M matrix C in 5M · poly(M) operations, obtaining a 3M × 2M matrix
+AT with at most 5M nonzeroes. In our ALGORITHM 1, we have a decomposition of A and B; in terms of the
+trace, we can derive:
+tr(A′′B′′ ·C′′) = tr(A′A·BB′ ·C′′) = tr(B·B′C′′A′ ·A).
+This can be applied to obtain an algorithm for
+  M
+4M/5
+
+24M/5 × 2M/5 × 24M/5 matrix multiplication, as
+follows. Given input matrices B′′ and C′′ of the respective dimensions, decompose B′′ into a 3M × 2M B
+with O(4M) nonzeroes and 2M × 2M/5 Vandermonde B′, as described above. Letting A′ be a Vandermonde
+24M/5 × 2M matrix, compute the matrix C := B′ ·C′′ · A′ in at most 4M · poly(M) operations. Noting that C
+is 2M ×2M, we can then multiply B and C in 5M ·poly(M) operations. This results in a 3M ×2M matrix AT
+with at most 5M nonzeroes. The ﬁnal output A′′ is obtained by using the one-to-one mapping to extract the
+appropriate
+  M
+4M/5
+
+24M/5 rows from AT, and multiplying each such row by the appropriate inverse minor of A′
+(corresponding to the nonzeroes of that row). This takes at most
+  M
+4M/5
+
+24M/5 ·2M ·poly(M) ≤5M ·poly(M)
+operations. Call this ALGORITHM 2.
+From ALGORITHM 2 we immediately obtain an algorithm for 24M/5 × 2M/5 ×
+  M
+4M/5
+
+24M/5 matrix mul-
+tiplication as well: given input matrices (C′′)T and (B′′)T of the respective dimensions, simply compute
+B′′ ·C′′ using ALGORITHM 2, and output the transpose of the answer. Call this ALGORITHM 3.
+21
+
+Finally, by “tensoring” ALGORITHM 2 with ALGORITHM 3, we derive an algorithm for matrix multipli-
+cation with dimensions
+ M
+4M/5
+
+24M/5 ·24M/5 ×22M/5 ×
+ M
+4M/5
+
+24M/5 ·24M/5 ≥5M/M ×4M/5 ×5M/M.
+That is, we divide the two input matrices of large dimensions into blocks of 24M/5 × 2M/5 and 2M/5 ×
+  M
+4M/5
+
+24M/5 dimenisons, respectively. We execute ALGORITHM 2 on the blocks, and call ALGORITHM 3
+when the product of two blocks is needed.
+As both ALGORITHM 2 and ALGORITHM 3 are explicit and efﬁcient, their “tensorization” inherits these
+properties. ALGORITHM 2 uses 5M · poly(M) operations, and each operation can take up to 5M · poly(M)
+time (due to calls to ALGORITHM 3). Therefore, we can perform a 5M × 42M/5 × 5M matrix multiply over
+ﬁelds with 2poly(M) elements, in 52M · poly(M) time. Setting n = log(M)/log(5), the algorithm runs in
+n2 ·poly(logn) time for ﬁelds with 2poly(logn) elements.
+22

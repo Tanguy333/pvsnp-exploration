@@ -1,0 +1,1153 @@
+Improving Exhaustive Search Implies
+Superpolynomial Lower Bounds
+Ryan Williams∗
+IBM Almaden Research Center
+May 4, 2010
+Abstract
+The P vs NP problem arose from the question of whether exhaustive search is necessary for problems
+with short veriﬁable solutions. We do not know if even a slight algorithmic improvement over exhaustive
+search is universally possible for all NP problems, and to date no major consequences have been derived
+from the assumption that an improvement exists.
+We show that there are natural NP and BPP problems for which minor algorithmic improvements
+over the trivial deterministic simulation already entail lower bounds such as NEXP ̸⊆P/poly and
+LOGSPACE ̸= NP. These results are especially interesting given that similar improvements have been
+found for many other hard problems. Optimistically, one might hope our results suggest a new path
+to lower bounds; pessimistically, they show that carrying out the seemingly modest program of ﬁnding
+slightly better algorithms for all search problems may be extremely difﬁcult (if not impossible).
+We also prove unconditional superpolynomial time-space lower bounds for improving on exhaustive
+search: there is a problem veriﬁable with k(n) length witnesses in O(na) time (for some a and some
+function k(n) ≤n) that cannot be solved in k(n)cna+o(1) time and k(n)cno(1) space, for every c ≥1.
+While such problems can always be solved by exhaustive search in O(2k(n)na) time and O(k(n) + na)
+space, we can prove a superpolynomial lower bound in the parameter k(n) when space usage is restricted.
+∗This work originated while the author was a member of the Institute for Advanced Study in Princeton, New Jersey, supported
+by NSF Grant CCF-0832797 (Expeditions in Computing) and NSF Grant DMS-0835373 (Pseudorandomness). At IBM, the author
+is supported by the Josef Raviv Memorial Fellowship.
+
+1
+Introduction
+To what extent can we avoid exhaustive search for generic search problems? This is one of the many
+offshoots of the P versus NP problem and it is the central question addressed in the area of exact algorithms
+for NP-hard problems.1 The general message of this research has been that the trivial enumeration of all
+possible solutions can be quantitatively improved upon for many problems (and their number is increasing
+every year). The broad success of this program leads one to wonder if all NP problems allow some modest
+improvement over brute-force search. More precisely, let V (x, y) be a veriﬁer that runs on witnesses y of
+length |x|c and takes O(|x|d) time. The runtime of exhaustive search for a witness is O(2|x|c|x|d). Can
+we always ﬁnd a witness in O(2.99|x|c|x|d)? What about O(2|x|c−log2 |x||x|100d)? Can we approximate the
+fraction of witnesses that V accepts in this time? If V uses only s(n) space, can we ﬁnd a witness in
+O(2.99|x|c|x|d) time and O(|x|100c + s(n)) space? These questions are the focus of the present paper.
+Here we offer the ﬁrst concrete evidence that the above minor improvements will be difﬁcult to achieve
+for some problems. We do not rule out the possibility of these improvements; rather, we show that they
+would already imply superpolynomial lower bounds in complexity theory. (Optimists might say we have
+given a new approach to proving class separations.) We show that the task of ﬁnding improved algorithms is
+connected naturally to the task of proving superpolynomial lower bounds. Regardless of one’s complexity-
+theoretic worldview, our results show that one cannot simultaneously believe that “superpolynomial lower
+bounds are far beyond our current techniques” and “simple tricks should sufﬁce for improved exponential
+algorithms.”2
+1.1
+Main Results
+1.1.1
+Improved Algorithms Imply Circuit Lower Bounds
+Let CIRCUIT SAT be the problem of ﬁnding a satisfying assignment to a Boolean circuit (over AND, OR,
+NOT gates). The CIRCUIT SAT problem is often the ﬁrst NP-complete problem introduced in textbooks.
+Due to its applications in hardware/software veriﬁcation and automated reasoning, the problem has been
+extensively studied in many areas of computer science. (Although CNF satisﬁability gets all the fanfare,
+most formulas obtained in practice start as Boolean circuits.) Clearly, for circuits with n input variables and
+poly(n) gates, the problem can be solved in 2n · poly(n) time on any robust model of computation, and it is
+not known how to solve the problem even slightly faster than this.3
+On a seemingly unrelated front, progress has been nearly nonexistent on proving superpolynomial circuit
+lower bounds for over a decade. It is known that the exponential-time version of Merlin-Arthur does not
+have polynomial size circuits [BFT98], but it is not known how to improve the lower bound to even EXPNP,
+the class of problems solvable in exponential time with an NP oracle. Since it appears unlikely that NP does
+not have polynomial size circuits, this is indeed a frustrating state of affairs.
+These two lines of research can be related to each other in a striking way:
+1In fact, in G¨odel’s famous letter to Von Neumann, he posed precisely this question:
+“It would be interesting to know... in the case of ﬁnite combinatorial problems, how strongly in general the number
+of steps vis-´a-vis dem blossen Probieren [the “bare trying” of solutions] can be reduced.” [Har89]
+2This was Mihai Patrascu’s eloquent way of putting it.
+3We use the poly(n) notation to denote O(nc) factors for a ﬁxed c > 0 independent of n.
+1
+
+Theorem 1.1 Suppose there is a superpolynomial function s(n) such that CIRCUIT SAT on circuits with n
+variables and nk gates can be solved in 2n · poly(nk)/s(n) time by a (co-non)deterministic algorithm, for
+all k. Then NEXP ̸⊆P/poly.
+That is, practically any nontrivial improvement over exhaustive search for CIRCUIT SAT (or nontrivial
+proofs of unsatisﬁability) would already imply superpolynomial circuit lower bounds for nondeterministic
+exponential time. The best known deterministic algorithm for CNF satisﬁability takes 2n−Ω(n/ ln(m/n))poly(m),
+where m is the number of clauses and n is the number of variables [DH08, CIP06]. For more complex cir-
+cuits, the current state of the art is a randomized SAT algorithm for AC0 circuits which runs in 2n−n1−o(1)
+time on circuits with n1+o(1) gates [CIP09]. Both time bounds are noticeably smaller than the hypothesis of
+Theorem 1.1.4 Of course this does not mean that the hypothesis can be achieved, but it does seem possible
+at the present time.
+One intuitive way of viewing Theorem 1.1 is that, if we could understand the structure of circuits well
+enough to solve their satisﬁability problem faster, then this understanding could be translated into concrete
+lower bounds for those circuits. We solidify this intuition in two ways, by extending Theorem 1.1 to re-
+stricted circuit classes, and by showing that even faster Circuit Satisﬁability would lead to stronger lower
+bounds.
+For example, if satisﬁability of Boolean formulas on n variables and nc connectives can be solved in
+2n · poly(nc)/s(n), then ENP does not have (non-uniform) polynomial size formulas.5 If satisﬁability of
+AC0[6] circuits (constant depth circuits with AND, OR, NOT, and MOD6 gates) on n variables and nc gates
+can be solved in 2n/2 · poly(nc)/s(n), then ENP does not have polynomial size AC0[6] circuits.
+Interestingly, it does not take a much stronger assumption to get a nearly optimal circuit lower bound for
+ENP, and consequently EXPNP:
+Theorem 1.2 If CIRCUIT SAT on n variables and m gates is in O(2(1−δ)npoly(m)) (co-non)deterministic
+time for some δ > 0, then there is ε > 0 and a language in ENP that does not have 2εn size circuits.
+That is, an algorithm for CIRCUIT SAT with running time comparable to the best known algorithms for
+k-CNF SAT would entail strong circuit lower bounds.6
+One may be skeptical that these small improvements are possible for Circuit Satisﬁability. Similar results
+can also be established for problems efﬁciently solvable with randomness. The Circuit Acceptance Prob-
+ability Problem (CAPP) is to approximate (within ±1/6) the fraction of satisfying assignments of a given
+Boolean circuit on n variables and nc gates for some c [KC99, KRC00, For01, Bar02, IKW02]. CAPP can
+be solved in O(nc) time with a randomized algorithm. It is known that CAPP is in polynomial time if and
+only if PromiseBPP = P [For01], so the problem is “complete” in some sense. We show that essentially
+any nontrivial derandomization for CAPP implies superpolynomial circuit lower bounds.
+4AC0 circuits have constant depth and are comprised of AND, OR, NOT gates, with unbounded fan-in for each gate.
+5Recall ENP is the class of languages recognized by an algorithm running in 2O(n) time that can query an NP oracle (with
+queries of 2O(n) length). To the best of our knowledge, linear size circuit lower bounds are not known for this class. However an
+n3−o(1) lower bound on formula size follows from work of Hastad [Has98].
+6This should be contrasted with the case of general CNF-SAT, where no algorithm of the kind required in Theorem 1.2 is known.
+Recent work with Patrascu indicates that the problem of ﬁnding such a CNF-SAT algorithm is also closely related to other problems
+in theoretical computer science [PW10].
+2
+
+Theorem 1.3 If there is an O(2n · poly(nc)/s(n)) nondeterministic algorithm for CAPP (for any super-
+polynomial s(n)), then NEXP ̸⊆P/poly.
+(Here, a nondeterministic approximation algorithm for CAPP always has at least one accepting compu-
+tation, and always outputs a good approximation when it enters an accept state.) The proof of Theorem 1.3
+holds even if we replace CAPP with the problem of distinguishing between circuits which are unsatisﬁable
+and circuits with at least 2n−1 satisfying assignments. We interpret Theorem 1.3 as saying that circuit lower
+bounds are much easier than derandomization: any weak derandomization of CAPP would already yield a
+circuit lower bound that is much stronger than anything we currently know.
+Theorem 1.3 also implies interesting “ampliﬁcation” results:
+Theorem 1.4 If CAPP has a nondeterministic O(2n · poly(n)/s(n)) time algorithm that succeeds on all
+inputs, then for all ε > 0, CAPP has a nondeterministic O(2nε) time algorithm with nε advice that succeeds
+on inﬁnitely many inputs.
+Theorem 1.5 If CAPP on n variables and m gates has a nondeterministic O(2(1−δ)n · poly(m)) time al-
+gorithm that succeeds on all inputs, then CAPP has a nondeterministic polynomial time algorithm with
+O(log n) advice that succeeds on inﬁnitely many inputs.
+The prospects seem better for achieving an improved CAPP algorithm. (Note we do not necessarily
+have to build a pseudorandom generator to achieve the simulations.) For CNF formulas of length n, Luby
+and Velikovic [LV96] have given a deterministic n2O(√log log n) algorithm for approximating the number of
+solutions. Note it was already known that NEXP ̸= MA iff NEXP ̸⊆P/poly [IKW02]. However it could
+still have been the case that NEXP = MA and yet Circuit SAT and CAPP have slightly better algorithms.
+The above results show this conjunction is impossible.
+1.1.2
+Improved Algorithms Imply LOGSPACE ̸= NP and Subexponential Algorithms
+One strength of the above results is that there is no space restriction needed for the improved algorithms:
+our hypotheses only require SAT algorithms running in O(2n/s(n)) time and O(2n/s(n)) space for suf-
+ﬁciently large s(n). Next we show that if exhaustive search can be improved in a way that preserves the
+veriﬁer’s space bound, then very surprising consequences result.
+Here we shall study problems with limited nondeterminism, which only need short witnesses (e.g., of
+poly(log n) length) although veriﬁcation still takes polynomial time. In particular we look at the case where
+the amount of nondeterminism is logarithmic in n (“log-nondeterminism”), and hence exhaustive search is
+already in polynomial time. This case is of interest as there are many polynomial time problems which fall
+in this category, and for which researchers have tried to ﬁnd faster algorithms than a canonical one. The
+3SUM problem is a well-known example [GO95]; satisﬁability of exponential size circuits is another.7
+It is natural to think that it may be easier to universally improve on log-nondeterminism problems. After
+all, the search space is no longer exponential in the running time of the veriﬁer — now they are both
+7In 3SUM, we are given a set A of n numbers and wish to ﬁnd three numbers that sum to zero. The problem can be easily
+solved in O(n2), and it is a key bottleneck in the solution of many problems in geometry and data structures. Finding an O(n1.99)
+algorithm is a major challenge. Note 3SUM (on poly(log n)-bit numbers) can be reduced to CIRCUIT SAT with log n inputs
+and O(n · poly(log n)) gates. The idea is to sort A in increasing order, and on input i ∈[n] use two pointers (one starting at
+the beginning of A and one at the end) to sweep A for numbers a and b such that the ith number plus a + b is zero. Thus any
+improvement on exhaustive search for exponential circuit satisﬁability implies a 3SUM improvement.
+3
+
+polynomials in n. From this perspective it appears more likely that a clever pruning of the search space can
+be done.
+Consider a problem solvable with witnesses of log n length, O(nc) time, and poly(log n) space.8 The
+obvious deterministic simulation runs in O(nc+1) time and poly(log n) space. We show that any universal
+improvement in the runtime exponent can be ampliﬁed into an arbitrary polynomial speedup with nondeter-
+ministic algorithms. Such a speedup would have dramatic consequences.
+Theorem 1.6 Suppose for all c, d ≥1 that every problem Π solvable with log n nondeterministic bits, nc
+time, and (log n)d space can be solved by some deterministic algorithm in O(nc+.99) time and poly(log n)d
+space. Then every such Π can also be solved by some nondeterministic algorithm in O(n3) time.
+Of course, the .99 is not special, and can be substituted with any δ < 1.
+Corollary 1.1 The hypothesis of Theorem 1.6 implies LOGSPACE ̸= NP; in fact, SC ̸= NP, where SC is
+the class of problems solvable in (simultaneous) polynomial time and polylogarithmic space.
+Corollary 1.2 The hypothesis of Theorem 1.6 implies that the quantiﬁed Boolean formula problem has a
+proof system where every QBF of length n has proofs of 2εn length for all ε > 0.
+That is, either the exponent in the trivial algorithm is optimal for some constant c, or we separate com-
+plexity classes in a surprising way. Note if the trivial algorithm is optimal for c = 1, then SAT cannot be
+solved in subquadratic time and polylog space, a problem that remains open despite much effort.9
+Identifying an explicit natural problem in place of “every problem” in Theorem 1.6 is nontrivial. (We
+could always use a form of the “Bounded Halting Problem”, but this is undesirable.) The proof of Theo-
+rem 1.6 uses a delicate inductive argument that makes it difﬁcult to extend to lower bounds on a natural
+problem.
+1.1.3
+Unconditional Lower Bounds
+We want to understand the extent to which the exponential part of exhaustive search (namely, the expo-
+nential runtime in the witness length) can be reduced, without affecting the runtime of veriﬁcation. We can
+prove unconditional lower bounds for improving on exhaustive search in this manner, based on Theorem 1.6
+and its consequences. We ﬁrst state a superpolynomial lower bound in terms of the witness length. To our
+knowledge no similar lower bounds have been reported.
+Theorem 1.7 There is a problem Π veriﬁable with k(n)-length witnesses in O(na) time (for some constant
+a and some k(n) ≤n) that cannot be solved in k(n)cna · poly(log n) time and k(n)c · (log n)c space, for
+all c.
+Note if we could “only” change the “some k(n)” to “all k(n)” then we would separate P from NP. The
+theorem does rule out certain (daffy, but until now possible) strategies for trying to show LOGSPACE = NP.
+For example, it is not possible to transform an arbitrary O(na) time veriﬁer with witnesses of length k into
+8In place of poly(log n) space, one may substitute any constructible function f(n) satisfying log n ≤f(n) ≤no(1) for the
+remaining results in this paper. We have chosen poly(log n) for concreteness.
+9In fact, using the above footnote on 3SUM, one can show that if 3SUM on N numbers (expressible in poly(log N) bits) cannot
+be solved in O(N 2−ε) for all ε > 0, then SAT cannot be solved in O(n2−ε), for all ε > 0.
+4
+
+an O(na+o(1)) time and O(poly(log n)) space veriﬁer with witnesses of length 1010 log k. The proof uses
+the framework of Theorem 1.6.
+Extending this result to circuit satisﬁability on general computational models is an interesting challenge.
+We manage to show a related lower bound for CIRCUIT SAT:
+Theorem 1.8 For every ε > 0, CIRCUIT SAT on k variables and m gates cannot be solved in k1−εm1+o(1)
+time and mo(1) space.
+This is already interesting, because we do not know how to prove that SAT is not in O(n2−ε) time and
+no(1) space on general models (the case where k = m).10 It is known that SAT (and consequently, CIRCUIT
+SAT) cannot be solved in less than n1.8 time and no(1) space [Wil08b]. It is also known (in a precise sense)
+that current techniques will not allow us to extend this bound to n2 [Wil10]. This limitation seems related
+to our inability to extend Theorem 1.8 to arbitrary polynomials in k.
+1.1.4
+A Nontrivial Simulation
+In Appendix B, we report a baby step towards improving brute force search. We observe a nontrivial
+deterministic simulation of nondeterministic multitape Turing machines, inspired by a nontrivial derandom-
+ization of randomized multitape Turing machines of Van Melkebeek and Santhanam [vMS05].
+Theorem 1.9 For every multitape Turing machine M running in time t that accesses a tape of nondeter-
+ministic bits, there is a δ > 0 and a deterministic TM that simulates M in O(2(1−δ)t) time.
+A group led by Lipton [Lip09a] has recently proved related results. Our simulation is not yet enough to
+imply lower bounds, as the simulation runtime does not scale with the amount of nondeterminism.
+1.2
+An Overview of Our Techniques
+Our basic approach is simple: we assume the opposite of the desired lower bound (i.e., that we have
+decent uniform algorithms and very good non-uniform circuits), and construct an efﬁcient simulation of the
+hard class, so tight that any nontrivial CIRCUIT SAT or CAPP algorithm contradicts a time hierarchy. This
+idea can be traced back to the ﬁrst paper on P/poly, by Karp and Lipton [KL80]. One of their corollaries
+(credited to Meyer) is that P = NP implies EXP ̸⊆P/poly. To prove this, one shows that (1) EXP ⊆P/poly
+implies EXP = Σ2P, and (2) P = NP implies Σ2P = P. Since P ̸= EXP, it cannot be that both are true.
+Our results can be seen as extreme sharpenings of this basic result: to get circuit lower bounds for classes
+like NEXP, we may assume far less than P = NP.
+To illustrate, let us sketch the result that faster circuit satisﬁability implies NEXP circuit lower bounds.
+It is known that NEXP ⊆P/poly implies a simulation of NTIME[2n] where we existentially guess a poly-
+nomial size circuit encoding a witness, then run an exponential time veriﬁer [IKW02]. We make the ob-
+servation that NEXP ⊆P/poly implies that every veriﬁer for an NEXP language has small circuits that
+encode witnesses. Therefore we are free to construct any veriﬁer we need to get a contradiction. We choose
+one that exploits efﬁcient reductions from NP to SAT, translated up to NEXP. Using a small witness cir-
+cuit, we can replace the exponential time veriﬁer with a single call to CIRCUIT SAT on n + O(log n)
+variables and poly(n) gates. It follows that an O(2n · poly(n)/s(n)) algorithm for CIRCUIT SAT implies
+10Here n is the total length of the input.
+5
+
+NTIME[2n] ⊆NTIME[2n · poly(n)/s(n)], a contradiction. For the lower bound that follows from approx-
+imating the solutions to a circuit, we use the highly efﬁcient PCP of Proximity veriﬁers of Ben-Sasson et
+al. [BGHSV05] in our CIRCUIT SAT instance.
+In order to prove that stronger improved algorithms yield stronger consequences such as LOGSPACE ̸=
+NP, we use ideas from the existing time-space lower bounds for SAT, along with an inductive trick that
+(assuming a universal speedup over exhaustive search) lets us repeatedly reduce any exponent in the time
+bound of a complexity class until it becomes a ﬁxed constant, leading to superpolynomial lower bounds.
+Further development of this trick produces unconditional lower bounds for bounded nondeterminism.
+2
+Preliminaries
+We assume the reader is familiar with basic concepts in complexity and algorithms. In the following
+paragraphs, we focus on a few particulars needed for this paper.
+2.1
+Notation and Background
+We deﬁne [n] := {1, . . . , n}. As usual, unless otherwise speciﬁed a function has domain N and co-
+domain N, is assumed to be time (or space) constructible within the appropriate bounds, and is monotone
+nondecreasing. All logarithms are in base two. A circuit is Boolean (with AND, OR, NOT gates), unless
+indicated otherwise.
+Computational Model and Complexity.
+In almost all our results one may assume any deterministic
+computational model in which O(poly(log n)) bits of information may be processed in a single step. This
+includes all ﬂavors of Turing machines (including random access), random access machines with logarithmic
+size registers, and so on. (The main reason for this is given below.) We shall indicate clearly when this is
+not the case.
+Fix a ﬁnite alphabet Σ. We usually assume Σ = {0, 1}. NTIME[t(n)] (TIME[t(n)]) denote the classes
+of languages recognized in O(t(n)) time by a nondeterministic (deterministic) algorithm, respectively.
+TISP[t(n), s(n)] denotes those languages recognized by some algorithm that runs in both O(t(n)) time
+and O(s(n)) space. Recall P = S
+k≥1 TIME[nk] and NP = S
+k≥1 NTIME[nk]. Steve’s Class (abbreviated
+SC) is S
+k≥1 DTISP[nk, (log n)k].
+i.o. −C is the class of languages L ⊂Σ∗such that there is a language L′ ∈C where L ∩Σn = L′ ∩Σn
+holds for inﬁnitely many n.
+(∃f(n))C is the class of languages which are recognized by machines with the following behavior: ﬁrst,
+the machine nondeterministically guesses f(n) bits, then it runs a subroutine recognizing a language in
+C. The class (∀f(n))C is deﬁned similarly. For example, a language in the class (∃n)TISP[n2, log n] is
+recognized by some machine that on input x guesses some |x|-bit string y then runs a computation taking
+O(|x|2) time and O(log |x|) space on the input ⟨x, y⟩. (We assume the machine has a tape alphabet large
+enough to accommodate an efﬁcient pairing function.)
+We shall use the following translation lemmas, whose proofs follow by standard “padding arguments.”.
+Lemma 2.1 (Translation Lemma) For all constructible f(n), t1(n), t2(n), and s(n),
+If NTIME[t1(n)] ⊆TISP[t2(n), s(n)] then NTIME[t1(f(n))] ⊆TISP[t2(f(n)), s(f(n))].
+If TISP[t2(n), s(n)] ⊆NTIME[t1(n)] then TISP[t2(f(n)), s(f(n))] ⊆NTIME[t1(f(n))].
+6
+
+We say that L is a unary language if L ⊆{1}∗. We use the following nondeterministic time hierarchy
+theorem.
+Theorem 2.1 ([Zak83]) Let t1 and t2 be time constructible functions such that t1(n+1) ≤o(t2(n)). There
+is a unary language in NTIME[t2(n)] that is not in NTIME[t1(n)].
+Inspecting our proofs, one observes that we do not need the full strength of Theorem 2.1 but merely
+that there is a unary language in NTIME[t1(n) logc t1(n))] that isn’t in NTIME[t1(n)], for some c > 0.
+This particular time hierarchy is model-independent because the class NTIME[n·poly(log n)] is very robust
+with respect to the computational model. This is a family of results due to Gurevich and Shelah [GS89]. For
+example, let NTIMERTM[t(n)] be the languages recognized with nondeterministic t(n) time random-access
+Turing machines, and let NTIMETM[t(n)] denote the same class for multitape Turing machines.
+Theorem 2.2 (Gurevich and Shelah [GS89]) S
+c>0 NTIMERTM[n logc n] = S
+c>0 NTIMETM[n logc n].
+The random-access Turing machine can be replaced by any model M which has programs of O(1) size
+and processes O(poly(log n)) bits of information in a single step. Let us sketch the proof of Theorem 2.2
+under this generic requirement. The idea is that a multitape TM can simulate an M-computation running in
+time O(n·poly(log n)) by guessing a computation history and verifying the correctness of the history. More
+precisely, the length of such a history is O(n · poly(log n)) bits: we use O(poly(log n)) bits for each step,
+giving a “snapshot” which describes the timestep, bits read and written, the memory locations of these bits,
+and the state or program counter during that step. These snapshots are guessed in temporal order: the ith
+snapshot corresponds to the ith step. In this ordering, a multitape TM can verify that, assuming that all the
+reads are correct, the program counter and writes are all correct. A multitape TM can (in O(n · poly(log n))
+time) sort these snapshots in spatial order as well, ordering the snapshots primarily by the index of the
+register/cell being read in that time step, and using the temporal order as a secondary key. In this ordering,
+a multitape TM can verify that the reads are correct by verifying that the previous snapshot wrote the same
+information.
+2.2
+Related Work
+Subexponential Complexity and Parameterized Complexity.
+A theory of (sub)exponential time com-
+plexity for NP-hard problems has been developing. Much work has gone into extending reducibility notions
+to subexponential time algorithms (e.g., [IP01, IPZ01, CJ03, CG07, CIP06, Tra08]). The theory has found
+interesting evidence for the exponential time hypothesis (ETH) that 3-SAT is not in 2o(m) time, where m is
+the number of clauses. If ETH is false, then many other problems have subexponential algorithms as well.
+In the ﬁeld of parameterized complexity initiated by Downey and Fellows [DF99], one studies paired
+problems with an input and an additional numerical parameter k. It is often convenient to deﬁne a param-
+eterized problem when the computational problem of interest is hard, but only for certain inputs where the
+difﬁculty can be measured by the parameter. For example, the LONGEST PATH problem is NP-complete,
+but if one wants to ﬁnd a longest path in a graph with treewidth at most k, there is a 2O(k log k)poly(n) algo-
+rithm [FL89]. Parameterized complexity is closely related to the study of exact algorithms for NP (although
+note that parameterized complexity can be used for other purposes as well, such as distinguishing between
+the efﬁciencies of approximation schemes, cf. [FG06]). A problem is ﬁxed-parameter tractable (FPT) when
+it has an algorithm with f(k)nc runtime for some function f and a universal c.
+7
+
+If a problem does not seem to be FPT, one tries to ﬁnd evidence for this, using reducibility notions similar
+to NP-completeness. There is a hierarchy of problems, all technically solvable in polynomial time when the
+parameter k is constant, which do not seem to be FPT. (In fact many hierarchies have been proposed; cf.
+the texts of Downey and Fellows [DF99] and Flum and Grohe [FG06].) The most basic is the W-hierarchy,
+where the lowest level is the class FPT of problems which are FPT. The next level W[1] already contains
+problems which are not in FPT, assuming ETH. There is a rough analogy between the W-hierarchy and
+the polynomial time hierarchy: in the W-hierarchy, f(k) log n bits are guessed in each alternation (instead
+of poly(n)), and the deterministic veriﬁer only reads some f(k) bits of the input. FPT equals the entire
+W-hierarchy if and only if Circuit SAT (with n variables and m gates) is in 2n/s(n)poly(m) time for some
+unbounded s(n) [ADF95]. (Note this runtime is faster than those in our hypotheses.) Indeed, there is a
+sense in which the aforementioned subexponential time theory is isomorphic to questions in parameterized
+complexity [CG07].
+Limited Nondeterminism.
+Kintala and Fisher [KF77] initiated the study of classes with limited nonde-
+terminism. Buss and Goldsmith [BG93] and Bloch, Buss, and Goldsmith [BBG98] considered classes with
+only logarithmic nondeterminism, as we study here. A related but more reﬁned model (the guess-and-check
+model) was introduced by Cai and Chen [CC97]. Flum, Grohe, and Weyer [FGW06] gave a framework
+connecting limited nondeterminism with parameterized complexity.
+Better Algorithms And Better Lower Bounds.
+The idea that better algorithms can lead to better lower
+bounds is a recurring theme in theoretical computer science. Here we cite a few examples which seem to be
+most relevant to our work.
+• Work of Francis Zane and his co-authors from the late 90’s [Zan98] alternated between ﬁnding faster
+SAT algorithms and proving new exponential lower bounds for depth-three circuits, both accom-
+plished using new structure theorems for CNF formulas.
+• In the DFA INTERSECTION problem, one is given k DFAs with at most n states each, and the task is
+to decide if all DFAs accept a common string. Karakostas, Lipton, and Viglas [KLV03] prove if DFA
+INTERSECTION is solvable in no(k) time then LOGSPACE ̸= NP. However DFA INTERSECTION
+is PSPACE-complete [Koz77], while the problems we consider are either in BPP or NP, and we do
+not need to assume subexponential algorithms. Lipton has also advocated this type of approach for
+proving lower bounds in his popular blog [Lip09b].
+• Impagliazzo, Kabanets, and Wigderson [IKW02] showed that if CAPP is solvable in nondeterministic
+2no(1) time inﬁnitely often, then NEXP ̸⊆P/poly. Kabanets and Impagliazzo [KI04] showed that a
+nondeterministic 2no(1) time algorithm for Polynomial Identity Testing implies that either NEXP ̸⊆
+P/poly or the Permanent does not have arithmetic circuits of polynomial size. Our results appear to
+be incomparable: while identity testing looks easier than the problems we study (even CAPP), our
+running time assumptions are much weaker and there is no “or” in our conclusion.
+• Mike Fellows (personal communication) has observed that new separations between complexity classes
+in parameterized complexity would follow from improving exhaustive search. In particular, if there
+is an no(k) time algorithm for k-Clique then M[1] ̸= XP, and if there is an no(k) algorithm for k-
+Dominating Set then W[1] ⊆M[2] ̸= XP. (Very roughly speaking, the “W[1] vs XP” and “M[1] vs
+XP” problems are parameterized complexity versions of the “NP vs EXP” problem: see [DF99, FG06]
+8
+
+for deﬁnitions.) These observations follow from theorems which show that if the desired above al-
+gorithms exist, then the respective M-class is equal to FPT [CHKX06, CCFHJKX06]; however it is
+known that FPT ̸= XP [DF99].
+If improved algorithms of the kind needed in this paper exist, their discovery probably will not be hin-
+dered by the known barriers in complexity theory (but perhaps another unforseen one). In Appendix C we
+brieﬂy discuss this.
+3
+Improved Algorithms Imply Circuit Lower Bounds
+We start by proving consequences of better CIRCUIT SAT algorithms. The notion of “universal witness
+circuits” shall be useful. A language L has universal witness circuits if every correct veriﬁer for L has
+circuits that encode a witness accepted by the veriﬁer, on every input in L.
+Deﬁnition 3.1 Let L ∈NTIME[t(n)]. A polynomial time algorithm V is a veriﬁer for L if x ∈L ⇐⇒
+(∃y : |y| ≤t(|x|))[V (x, y) = 1].
+Deﬁnition 3.2 A language L ∈NTIME[t(n)] has S(n)-size universal witness circuits if for all polynomial
+time veriﬁers V for L, there is a k and an O(S(n))-size Boolean circuit family {Cn} with the property:
+x ∈L ⇐⇒V (x, w(x)) = 1, where w(x) is the concatenation of the outputs of Cℓ(⟨x, z⟩) evaluated
+over all z ∈{0, 1}⌈log2 t(n)⌉+1 in lexicographical order, and ℓ≥n is an integer of appropriate length.
+The universal witness property may look strong, but all of NEXP has universal witness circuits of poly-
+nomial size, in the case that NEXP ⊆P/poly. The key to this observation is that if a language does not
+have such circuits, then some correct veriﬁer for NEXP accepts witnesses that cannot be encoded with small
+circuits, inﬁnitely often. This veriﬁer can be used to test strings for high circuit complexity, which is enough
+to obtain pseudorandom generators, leading to a contradiction. The following can be easily obtained from
+Impagliazzo, Kabanets, and Wigderson [IKW02]; we include a proof for completeness in Appendix A.
+Lemma 3.1 (Follows from [IKW02]) If NEXP ⊆P/poly then every language in NEXP has universal
+witness circuits of polynomial size.
+We also need a strong completeness result for satisﬁability.
+Theorem 3.1 (Tourlakis [Tou01], Fortnow et al. [FLvMV05]) There is a ﬁxed d such that for every L ∈
+NTIME[n], L reduces to 3SAT in O(n(log n)d) time. Moreover there is an algorithm (with random access
+to its input) that, given an instance of L and an integer i ∈[cn(log n)d] in binary (for some c depending on
+L), outputs the ith clause of the resulting 3SAT formula in O((log n)d) time.
+The value of d depends on the particular computational model chosen. For most models one can take d to
+be small, e.g. d = 4. Theorem 3.1 holds under any computational model that accesses up to O(poly(log n))
+bits per step. Most proofs of it essentially rely the fact that nondeterministic Turing machines can simulate
+most other nondeterministic models with polylog overhead, as well as the Hennie-Stearns two-tape simu-
+lation of multitape Turing machines (cf. [AB09], Section 1.7) which introduces another log overhead. The
+Hennie-Stearns simulation can be converted (with constant overhead) into a circuit [PF79], which can then
+9
+
+be efﬁciently converted to 3-CNF using the Tseitin transformation [Tse68]. See Van Melkebeek ([vM07],
+Lemma 2.2) for an alternative proof based on sorting networks. By standard translation/padding arguments
+(substituting 2n in place of n in the above), the theorem can be scaled up to exponential time bounds:
+Corollary 3.1 Every language L in NTIME[2n] can be reduced to 3SAT instances of c2n·n4 size. Moreover
+there is an algorithm that, given an instance of L and an integer i ∈[c2n · n4] in binary, outputs the ith
+clause of the resulting 3SAT formula in O(n4) time.
+We are now ready to prove the main result of this section: a generic theorem relating the solvability of
+CIRCUIT SAT to lower bounds on universal witness circuits for NEXP.
+Theorem 3.2 (Faster Circuit SAT Implies Circuit Lower Bounds) Let c ≥1. Let a(n) be a monotone
+increasing and unbounded function. Let S(n) and T(n) be functions such that
+• T(n)/(S(n) + n8)c ≥Ω(n4 · a(n)) and
+• n ≤S(n) ≤O(2n/n · 1/a(n)).
+Suppose CIRCUIT SAT on n variables and m gates can be solved in O(2nmc/T(n)) co-nondeterministic
+time. Then NTIME[2n] does not have S(n)-size universal witness circuits.
+Proof. Suppose NTIME[2n] has S(n) universal witness circuits. We show that a faster (co-non)deterministic
+algorithm for Circuit Satisﬁability implies a contradiction to the nondeterministic time hierarchy.
+Let L ∈NTIME[2n] be arbitrary. By Corollary 3.1, L can be reduced to 3SAT instances of c2n · n4 size,
+for some c. Let V (x, y) be a veriﬁer for L that reduces x to a 3-CNF formula φx of c2n · n4 size, substitutes
+the ith bit of y for the ith variable of φx, then returns 1 if and only if the resulting formula evaluates to 1.
+Since L has universal witness circuits, it is the case that for all x ∈L, there is some y of length at most
+c2n · n4 such that V (x, y) = 1, and y can be encoded with a S(|x|) size circuit. That is, for all x, there is a
+circuit Cy that takes inputs of length ℓ= log(c2|x||x|4) and has size at most S(|x|), such that the witness y
+equals the concatenation of Cy(z) over all z ∈{0, 1}ℓin lexicographical order.
+Consider the following nondeterministic algorithm N for L. On input x, existentially guess the circuit
+Cy, using O(S(|x|) log S(|x|)) ≤O(2n/a(n)) bits. Then construct a circuit D with ℓinput variables X,
+as follows. Given an integer i ∈[c2n · n4], the ith clause of φx can be computed in O(n4) time (via
+Corollary 3.1). By the standard translation of algorithms into circuits, it follows that the ith clause can be
+computed with an O(n8) size circuit; call it E. Lead the input variables X of D into the inputs of E, whose
+3n + O(log n) output wires encode the Xth clause of φx. These output wires encode the indices of three
+variables in φx, along with three “negation bits” indicating 1 for variables which are negated, if any. For
+convenience, call the variable indices z1, z2, z3. Evaluate a1 = Cy(z1), a2 = Cy(z2), and a3 = Cy(z3).
+Letting b1, b2, b3 be the negation bits of z1, z2, z3 (respectively), output ¬[(a1 ⊕b1)∨(a2 ⊕b2)∨(a3 ⊕b3)].
+That is, D(X) outputs 1 if and only if the Xth clause is not satisﬁed, i.e., D is unsatisﬁable if and only if
+Cy encodes a satisfying assignment for φx. The circuit D has O(n8 + S(|x|)) size and ℓinput variables.
+Finally, N calls a fast algorithm for circuit satisﬁability on D, and accepts if and only if D is unsatisﬁ-
+able. N runs in time
+O(2n/a(n) + 2ℓ· (n8 + S(n))c/T(n)) ≤O(2n/a(n) + 2nn4 · (n8 + S(n))c/T(n)).
+10
+
+By assumption on T(n) and S(n), this time bound is at most O(2n/a(n)).
+Recall that L was an arbitrary language from NTIME[2n], so we now have
+NTIME[2n] ⊆NTIME[2n/a(n)].
+Since 2n+1/a(n + 1) = o(2n), we have a contradiction to the strong nondeterministic time hierarchy
+theorem [SFM78, Zak83].
+□
+It is now easy to show that faster Circuit Satisﬁability implies NEXP ̸⊆P/poly. We say that a function
+f is superpolynomial in n if for all k, nk = o(f(n)).
+Reminder of Theorem 1.1 Suppose there is a superpolynomial function s(n) such that CIRCUIT SAT on
+circuits with n variables and nk gates can be solved in 2n · poly(nk)/s(n) time by a (co-non)deterministic
+algorithm, for all k. Then NEXP ̸⊆P/poly.
+Proof.
+Let S(n) = nk and T(n) = s(n) in Theorem 3.2. Then a 2n · poly(nk)/s(n) time algorithm for
+Circuit Satisﬁability implies that NTIME[2n] does not have nk universal witness circuits. Since k can be
+arbitrary, NTIME[2n] does not have polynomial size universal witness circuits, hence NEXP also does not.
+By the contrapositive of Lemma 3.1, we conclude that NEXP ̸⊆P/poly.
+□
+3.1
+Extensions
+It is also possible to extend Theorem 1.1 to larger circuit lower bounds, and to weaker problems such
+as FORMULA SAT, the problem of satisfying Boolean formulas. Unfortunately the derandomization results
+do not seem to apply to restricted circuit classes. Also, as far as we know, Lemma 3.1 does not extend
+to superpolynomial circuit sizes [Imp10], so we need another way to obtain universal witness circuits for
+NEXP. This can be accomplished with the following lemma:
+Lemma 3.2 (Folklore) Let C be any class of circuits. If ENP has (non-uniform) circuits of size S(n) from
+class C, then NTIME[2n] has universal witness circuits of size S(n) from class C.
+Proof.
+Let L be a language in NTIME[2n]. Let V (x, y) be a nondeterministic veriﬁer for L running in
+d2|x| time. Consider the following ENP machine:
+N(x, i): Binary search for the lexicographically smallest z such that V (x, z) accepts, by querying: given
+(x, y) where |y| = d2|x|, is there z ≤y such that V (x, z) accepts? Then output the ith bit of z.
+Note the queries can be computed in NP, and N needs at most d2n queries to the oracle. Since every
+such N has size S(n) circuits from class C, NTIME[2n] has S(n)-size universal witness circuits from C. □
+Reminder of Theorem 1.2 If CIRCUIT SAT on n variables and m gates is in O(2(1−δ)nmc) time for some
+δ > 0 and c ≥1, then there is ε > 0 and a language in ENP that does not have 2εn size circuits.
+Proof.
+Let T(n) = 2δn and S(n) = 2δn/c/n5. Note the constraints of Theorem 3.2 are satisﬁed, hence
+we have: if Circuit SAT on n variables and m gates is in O(2(1−δ)nmc) time, then NEXP does not have
+2δn/c/n5-size universal witness circuits. The result follows from Lemma 3.2 and setting ε < δ/c.
+□
+To get lower bound consequences from FORMULA SAT algorithms, we need another complete problem.
+11
+
+Theorem 3.3 ([BGHSV05], Section 4) There is a constraint graph problem Π such that every language in
+NTIME[2n] can be reduced to graph instances Π of size ℓ= O(2npoly(n)), such that the graph can be
+succinctly represented by a poly(n) size formula on n + O(log n) variables. In particular, on an input i the
+formula outputs the ith edge of the graph along with the relevant constraints for that edge.
+The proof goes through nearly the same process as the completeness theorem for SAT (Theorem 3.1).11
+First use the fact that every NTIME[2n] language can be accepted by a nondeterministic multitape Turing
+machine in O(2npoly(n)) time. (The polynomial factor depends on the computational model.) Then make
+this TM “oblivious” in that its head movements have extremely regular structure, running in O(2npoly(n)2)
+time. Now [BGHSV05] show this TM computation can be represented by a (deBruijn) graph of O(2npoly(n)4)
+size, where the edge function can be described by a poly(n) size formula. The latter step uses the regular
+structure of the simulation. Carrying out the same argument as Theorem 3.2, and applying Lemma 3.2:
+Theorem 3.4 Let s(n) be superpolynomial. If FORMULA SAT on n variables and nc connectives can be
+solved in 2n · poly(nc)/s(n) time, then ENP does not have (non-uniform) polynomial size formulas.
+Similarly, let C be any non-uniform class of circuits that contains AC0 and is closed under composition
+of circuits. That is, if {Cn} and {Dn} are families in C, then those circuit families consisting of circuits
+which take n bits of input, feed them to at most poly(n) copies of circuits from Cn, and feed those outputs
+to the inputs of Dpoly(n), are also circuit families in C. (Note that all well-studied classes of circuits have
+this property.)
+Theorem 3.5 If satisﬁability of C-circuits on n variables and nc gates can be solved in 2n/3 ·poly(nc)/s(n)
+time, then ENP does not have polynomial size C-circuits.
+Proof.
+(Sketch) By Theorem 2.2, we may assume (with only poly(n) extra multiplicative factors in
+computation time) that our machine model for nondeterminism is the multitape Turing machine.
+Let
+L ∈NTIME[2n] and let N be a nondeterministic multitape TM recognizing it. By a standard simulation,
+there is a single-tape machine N ′ that is equivalent to N and runs in O(22n) time and O(2n) space.
+Now consider a reduction from L(N ′) to 3SAT which uses the standard tableau reduction (originally due
+to Savage, cf. Theorem 7.30 in Sipser [Sip05]). Here the tableau has O(22n) rows and O(2n) columns, due
+to the time and space usage, respectively. This reduction creates a 3SAT instance on O(23n) clauses and
+O(23n) variables, such that if we are given an index i of 3n + O(1) bits, we can compute the ith clause of
+this formula with an AC0 circuit of poly(n) size. In particular, we can make an AC0 circuit D that given the
+pair (i, j) ∈[O(22n)]×[O(2n)] outputs a group of O(1) clauses which represent the circuitry for computing
+cell (i, j) in an accepting tableau. The only dependence that this circuitry has on i and j is that i and j are
+added to certain variable indices. Since addition is in AC0, the circuits have constant depth and polynomial
+size.
+If ENP has polysize C circuits, then there are universal witness C circuits for NTIME[23n] of polynomial
+size, by Lemma 3.2. So let M be a nondeterministic machine which on input x guesses a witness circuit C
+of |x|k size, constructs a circuit E which feeds its input i to D, obtains O(|x|) output bits specifying O(1)
+clauses, feeds all O(1) variable indices from these clauses to copies of C, then evaluates these outputs. E
+outputs 0 iff C encodes a satisfying assignment for the ith clause of the reduction. Provided C and D are C-
+circuits, E is a C-circuit also, since C is closed under composition. Finally, M runs a satisﬁability algorithm
+11In fact, the reduction of Theorem 3.3 can probably be carried out with SAT, although we have not veriﬁed this.
+12
+
+on E and accepts iff E is unsatisﬁable. By arguments similar to those of Theorem 3.2, we conclude that
+L(M) = L.
+If satisﬁability of C circuits with N variables and poly(N) gates can be determined in 2N/3poly(N)/s(N)
+time, the machine M runs in 2n/s(n) time, contradicting the nondeterministic time hierarchy.
+□
+The general approach also has the potential of proving non-linear circuit lower bounds for much smaller
+classes such as PNP. In this setting, we would need faster SAT algorithms for circuits with very few inputs.
+Here is an example theorem:
+Theorem 3.6 Let s(n) be superpolynomial. If there is a c > 1 such that CIRCUIT SAT on instances with
+cn inputs and O(2n · poly(n)) gates can be solved in O(2cn/s(n)) time, then PNP does not have linear size
+circuits.
+Proof.
+If PNP has linear size circuits, then there are linear size universal witness circuits for NP. (The
+proof is analogous to Lemma 3.2.) Applying the succinct SAT reduction of Theorem 3.1 and arguing sim-
+ilarly to Theorem 3.2, we can simulate an NTIME[nc] computation by guessing a linear size circuit, then
+solving a CIRCUIT SAT instance with c log n + O(log log n) inputs and O(n) gates. (Note that almost all of
+this circuit’s size comes from the three copies of the witness circuit; the remaining components have only
+O(poly(log n)) size.) The presumed circuit satisﬁability algorithm would imply an o(nc) time nondeter-
+ministic simulation, contradicting the nondeterministic time hierarchy.
+□
+Extending our approach to conclude EXP lower bounds is an interesting open problem. In order to get a
+lower bound for EXP, it seems we need much stronger hypotheses. The following can be easily shown.
+Proposition 1 If CIRCUIT SAT on n inputs and m gates is in 2no(1)poly(m) time, then EXP ̸⊆P/poly.
+Proposition 2 Let f : N →N satisfy f(f(nk)k) ≤o(2n/n2) for all constants k. If 3SAT is in O(f(n))
+time then EXP ̸⊆P/poly.
+3.2
+Extremely Weak Derandomization Implies Circuit Lower Bounds
+We now turn to the Circuit Acceptance Probability Problem (CAPP): given a Boolean circuit C with n
+input variables and poly(n) gates, the goal is to compute an approximation to the number of assignments
+satisfying C, within a factor of 1/6. More precisely, we wish to output a number v such that
+
+v −1
+2n ·
+X
+x∈{0,1}n
+C(x)
+
+< 1/6.
+CAPP has been studied extensively [KC99, KRC00, For01, Bar02, IKW02]. We prove:
+Reminder of Theorem 1.3 If there is an O(2n · poly(n)/s(n)) nondeterministic algorithm for CAPP (for
+any superpolynomial s(n)), then NEXP ̸⊆P/poly.
+In the previous section, we saw that strong reductions to 3SAT imply an efﬁcient NEXP veriﬁer. The
+veriﬁer universally tries all possible clauses in an exponentially long 3-CNF formula, and checks the values
+of three variables in each trial. This universal quantiﬁer is replaced with a poly(n) size circuit which (on
+a variable assignment) checks the clause indexed by the input to the circuit. Our idea is to replace this
+13
+
+universal quantiﬁer with a random choice, so that instead of testing satisﬁability of the circuit, it sufﬁces to
+approximate the number of solutions. Naturally, this suggests the use of probabilistically checkable proofs
+(PCPs). We use the PCPs of Proximity of Ben-Sasson, Goldreich, Harsha, Sudan, and Vadhan, which imply
+PCPs for NEXP with nice properties.12
+Theorem 3.7 ([BGHSV05]) Let T : Z+ →Z+ be a non-decreasing function. Then for every s > 0 and
+every language L ∈NTIME[T(n)] there exists a PCP veriﬁer V (x, y) with soundness s, perfect complete-
+ness, randomness complexity r = log2 T(|x|) + O(log log T(|x|)), query complexity q = poly(log T(|x|)),
+and veriﬁcation time t = poly(|x|, log T). More precisely:
+• V has random access to x and y, uses at most r random bits in any execution, makes q queries to the
+candidate proof y. and runs in at most t steps.
+• If x ∈L then there is a y of length T(|x|)poly(log T(|x|)) such that Pr[V (x, y) accepts] = 1.
+• If x /∈L then for all y, Pr[V (x, y) accepts] ≤s.
+We shall be interested in the case T(n) = 2n. Then the above PCP veriﬁer uses n + O(log n) bits of
+randomness, poly(n) veriﬁcation time, and poly(n) query complexity.
+Proof of Theorem 1.3.
+The proof proceeds similarly to Theorem 1.1. We start by assuming NEXP ⊆
+P/poly, so that all languages in NEXP have universal witness circuits. Let L be a language in NTIME[2n]−
+NTIME[2n · poly(n)/s(n)].
+Let V (x, y) be the PCP veriﬁer of Theorem 3.7 for L where T(n) = 2n and s = 1/2. For some k > 0,
+V tosses n + k log n coins, queries the O(2n) length string y in O(nk) places, and runs in O(nk) time. Let
+c > 0 be such that the circuit complexity of any function encoding a 2nnk-bit witness of V on inputs of
+length n is at most nc + c.
+We now describe an alternative nondeterministic algorithm N for L. On input x of length n, existentially
+guess a circuit C with nc + c size. Construct a circuit D that simulates V as follows. The circuit D has
+n + k log n input wires r, corresponding to the random bits of V . Once r is ﬁxed, the veriﬁer V runs in
+O(nk) time and queries y in O(nk) positions. By the standard translation of oracle machines to circuits, V
+can be simulated by a circuit of size O(n2k) with oracle gates for the string y. These oracle gates each have
+n + O(1) input wires and output the bit of y indexed by the input wires. Replace each oracle gate with a
+copy of C. The resulting circuit D has O(n2k+c) size. Run the presumed nondeterministic algorithm for
+CAPP on the D, and accept if and only if the fraction returned is greater than 3/4.
+Let y be the string obtained by evaluating C on all inputs in lexicographical order. By construction,
+D(z) = 1 if and only if V (x, y) outputs 1 on the string of coin tosses z.
+If there is a witness y for the input x, then there is a C of size O(nc) which encodes y. On such a C,
+the fraction of inputs accepted by D is 1. On the other hand, if there is no witness y for x, then certainly no
+circuit C encodes a witness for x, and hence on every circuit C, the fraction of inputs accepted by D is at
+most 1/2. Hence the algorithm N is correct.
+Assuming CAPP can be solved in 2n · poly(n)/s(n) time for some superpolynomial s(n), the running
+time of the entire simulation is 2n · poly(n)/s(n). This contradicts the choice of L.
+□
+12Note that Or Meir has recently found a more combinatorial approach to these results, cf. [Mei09].
+14
+
+The above proof can be generalized along the lines of Theorem 3.2 in a straightforward way. A com-
+pletely analogous argument to Theorem 1.2 shows the following.
+Theorem 3.8 If there is an O(2(1−δ)nmc) nondeterministic algorithm for CAPP on circuits of n variables
+and m gates, then NEXP does not have 2εn-size universal witness circuits for some ε > 0. Consequently,
+ENP does not have 2o(n) size circuits.
+Impagliazzo, Kabanets, Wigderson [IKW02] showed partial converses to Theorem 1.3 and Theorem 3.8:
+• If NEXP ̸⊆P/poly, then CAPP has a nondeterministic algorithm that works on inﬁnitely many inputs
+in O(2nε) time with nε advice, for every ε > 0.
+• (Implicitly shown) If NTIME[2n] does not have 2o(n)-size universal witness circuits, then CAPP has
+a nondeterministic polytime algorithm that works on inﬁnitely many inputs with O(log n) advice.13
+Combining these results with Theorem 1.3 and Theorem 3.8, we have the following “ampliﬁcations” of
+CAPP algorithms:
+Reminder of Theorem 1.4 If CAPP has a nondeterministic O(2n · poly(n)/s(n)) time algorithm that
+succeeds on all inputs, then for all ε > 0, CAPP (in fact, all of MA) has a nondeterministic O(2nε) time
+algorithm with nε advice that succeeds on inﬁnitely many inputs.
+Reminder of Theorem 1.5 If CAPP on n variables and m gates has a nondeterministic O(2(1−δ)n ·
+poly(m)) time algorithm that succeeds on all inputs, then CAPP has a nondeterministic polynomial time
+algorithm with O(log n) advice that succeeds on inﬁnitely many inputs.
+The above two results can also be viewed as gap theorems: if CAPP can’t be solved inﬁnitely often in
+NP with logarithmic advice, then CAPP can’t be in 2.99n · poly(m) nondeterministic time.
+Evidence for Derandomization of CAPP(?)
+The hypothesis of Theorem 1.3 looks potentially provable to
+us. Van Melkebeek and Santhanam [vMS05] have shown that for every probabilistic k-tape Turing machine
+running in time t, there is a δ > 0 such that the machine can be simulated deterministically in O(2(1−δ)t)
+time. Unfortunately this is not quite enough to achieve the circuit lower bound for NEXP. To do that,
+we would need (for example) that every probabilistic k-tape Turing machine with b(n) bits of randomness
+running in time t(n) can be simulated deterministically in poly(t) · 2b/s(b) time, for a superpolynomial
+function s. In our desired application, t(n) is a polynomial factor larger than b(n).
+13This follows because, if NTIME[2n] did not have such circuits, then there is an ε > 0 and a poly(2n) time algorithm with n
+bits of advice that, on inﬁnitely many inputs, nondeterministically generates a 2n-bit truth table of a Boolean function fn which has
+circuit complexity at least 2εn for sufﬁciently large n. (This is essentially the negation of what it means to have universal witness
+circuits: there is a veriﬁer for some L which on inﬁnitely many inputs xi ∈L, only accepts witnesses which do not have small
+circuits. Hardcoding these xi as advice, we get that any witness accepted by the veriﬁer on xi has high circuit complexity.) But it
+is known (even from [KvM99]) that this assumption implies pseudorandom generators for polynomial size circuits, strong enough
+to prove MA ⊆i.o. −NP/O(log n). Hence CAPP has the desired type of algorithm.
+15
+
+4
+Further Improvements Imply LOGSPACE ̸= NP and Subexponential proofs
+for QBF
+We now show that improving the runtime of exhaustive search for problems with limited nondeterminism
+would have surprising consequences. Our results use a tool from prior work on time-space lower bounds for
+satisﬁability. Namely, we use a lemma to “speed up” arbitrary space-bounded computations with alternating
+machines. (The notation below is discussed in the Preliminaries.14)
+Lemma 4.1 (Speedup Lemma [Kan84, FLvMV05]) Let a ≥2 and log n ≤s(n) ≤o(n). Then
+TISP[na, s(n)] ⊆(∃n)(∀log n −log s(n))TISP[na−1 · s(n), s(n)].
+Moreover, the TISP part of the RHS only reads n + O(s(n)) bits of its input, and erases the rest.
+Proof. Let M be an algorithm using na time and s(n) space. Note that a conﬁguration of M on an input of
+length n (a description of the entire state of the algorithm at any moment in time) can be represented within
+ℓ= dS(n) bits, for some d > 1.
+To simulate M in (∃n)(∀log n −log s(n))TISP[na−1 · s(n), s(n)], the machine N(x) existentially
+guesses a sequence of conﬁgurations C1, . . . , Cn/ℓof M(x), using n bits. Then N(x) appends the initial
+conﬁguration C0 to the beginning of the sequence and the (unique) accepting conﬁguration C(n/ℓ)+1 to the
+end of the sequence. Then N(x) universally guesses i ∈{0, . . . , n/ℓ} using log(n/ℓ)+1 ≤log n−log s(n)
+bits, erases all conﬁgurations except Ci and Ci+1, then simulates M(x) starting from Ci, accepting if and
+only if the Ci+1 is reached within na−1 · ℓsteps. It is easy to see the simulation is correct.
+□
+The key idea behind our results is to exploit the fact that the universal quantiﬁer in the Speedup Lemma
+is only logarithmic. Any improvement over exhaustive search of all log n −log s(n) bit strings gives us a
+very slight advantage, which can be ampliﬁed by repeated applications of the assumed algorithm. We arrive
+at the main theorem of this section.
+Reminder of Theorem 1.6 Suppose there is δ > 0 such that for all c, d ≥1, every problem Π solvable
+with log n nondeterministic bits, nc time, and (log n)d space can be solved by a deterministic algorithm in
+O(nc+(1−δ)) time and poly(log n)d space. Then every such Π can also be solved with a nondeterministic
+algorithm in O(n3) time, i.e., SC ⊆NTIME[n3].
+In fact, the proof shows that (∃n)TISP[nk, poly(log n)] ⊆(∃O(n))TISP[n3, poly(log n)], given the
+hypothesis. (Interestingly, this containment of classes is not known to be false, but as we shall see, it would
+be surprising if it were true.) The containment is proven by applying the Speedup Lemma along with the
+hypothesis for a constant number of times, with different values of c in each application.
+Proof of Theorem 1.6. Written in our complexity class notation, the hypothesis is:
+∀c, d ≥1, ∃k ≥1 (∃log n)TISP[nc, (log n)d] ⊆TISP[nc+1−δ, (log n)dk].
+(1)
+By taking the complement of both sides, we also have (∀log n)TISP[nc, (log n)d] ⊆TISP[nc+1−δ, (log n)dk].
+That is, there is always a deterministic algorithm which can determine if there is a witness iff there is always
+one that can determine if every string is a witness.
+14Readers familiar with the notation of our prior work [Wil08b, Wil10] should beware that the notation in this paper has very
+slightly different meaning. In this work, we must pay attention to the constant factors in alternations, whereas in prior work we did
+not bother even with no(1) factors. Our notation here reﬂects these differences.
+16
+
+Assume (1). First we prove the following containment by induction on ℓ, for all integers ℓ> 0, k > 2,
+and d > 0 satisfying k −δℓ≥2:
+(∃n)TISP[nk, (log n)d] ⊆(∃ℓn)TISP[nk−δℓ· poly(log n), poly(log n)],
+(2)
+(Note the poly factors depend only on k, d, and ℓ.)
+When ℓ= 1, we have
+(∃n)TISP[nk, (log n)d] ⊆(∃n)(∀log n −d log log n)TISP[nk−1(log n)d, (log n)d]
+(3)
+by the Speedup Lemma (Lemma 4.1). Consider the class (∀log n−d log log n)TISP[nk−1(log n)d, (log n)d]
+on the RHS of (3). An algorithm from the class receives an input of length 2n (the original input and the
+n bits guessed). Applying (1) with c = k −1 and taking the complement, the universal quantiﬁer can be
+removed, concluding that
+(∀log n −d log log n)TISP[nk−1(log n)d, (log n)d] ⊆TISP[nk−1+(1−δ) · poly(log n), poly(log n)],
+provided that k ≥2. Substituting the RHS of the above into (3), we obtain
+(∃n)TISP[nk, (log n)d] ⊆(∃n)TISP[nk−δ · poly(log n), poly(log n)].
+This completes the base case of (2). For the inductive step, consider the following chain of containments.
+First, the induction hypothesis says
+(∃n)TISP[nk, (log n)d] ⊆(∃ℓn)TISP[nk−δℓ· poly(log n), poly(log n)].
+Note the TISP[nk−δℓ·poly(log n), poly(log n)] part on the RHS receives an input of length (ℓ+1)n ≤O(n).
+Applying the Speedup Lemma to this part, the above class is then contained in
+(∃ℓn)(∃n)(∀log n −log log n)TISP[nk−δℓ−1poly(log n), poly(log n)].
+Observe that ∃quantiﬁers can be merged, resulting in the class
+(∃(ℓ+ 1)n)(∀log n −log log n)TISP[nk−δℓ−1poly(log n), poly(log n)].
+Applying (1) with c = k −δℓ−1 (this is possible when k −δℓ−1 ≥1), the above is in
+(∃(ℓ+ 1)n)TISP[nk−δℓ−1+(1−δ)poly(log n), poly(log n)].
+Finally, note that the exponent k −δℓ−1 + (1 −δ) = k −δ(ℓ+ 1). This completes the proof of (2).
+Now let k > 3 be arbitrary. Since δ > 0, the quantity δℓis positive and can be made as large as desired,
+provided that k −δℓ≥2.
+Set ℓ= ⌊(k −2)/δ⌋. We have k −δℓ≥k −δ(k −2)/δ = 2, and
+k −δℓ= k −δ⌊(k −2)/(δ)⌋< k −δ((k −2)/(δ) −1) = 2 + δ < 3.
+That is,
+(∃n)TISP[nk, (log n)d] ⊆(∃ℓn)TISP[nk−δℓ· poly(log n), poly(log n)]
+17
+
+by (2), and
+(∃ℓn)TISP[nk−δℓ· poly(log n), poly(log n)] ⊆(∃ℓn)TISP[n3, poly(log n)] ⊆NTIME[n3],
+by our choice of ℓ.
+□
+Reminder of Corollary 1.1 The hypothesis of Theorem 1.6 implies LOGSPACE ̸= NP.
+Proof.
+If LOGSPACE = NP then there is a c such that NTIME[n] ⊆TISP[nc, log n].
+We have
+NTIME[n4] ⊆TISP[n4c, log n] by the translation lemma (Lemma 2.1). By Theorem 1.6, TISP[n4c, log n] ⊆
+NTIME[n3]. This is a contradiction to the nondeterministic time hierarchy.
+□
+Reminder of Corollary 1.2 The hypothesis of Theorem 1.6 implies that the quantiﬁed Boolean formula
+problem has a proof system where every QBF of length n has proofs of 2εn length for all ε > 0.
+Proof. Theorem 1.6 says that for all k, TISP[nk, O(log n)] ⊆NTIME[n3].
+Let ε > 0, and let f(n) = 2εn/3. By the translation lemma (Lemma 2.1), TISP[f(n)k, O(log f(n))] ⊆
+NTIME[f(n)3], which is TISP[2εkn/3, O(n)] ⊆NTIME[2εn]. Since k can be arbitrarily large, it follows that
+SPACE[O(n)] ⊆NTIME[2εn]. A quantiﬁed Boolean formula of length n can be easily solved using O(n)
+space. Therefore quantiﬁed Boolean formulas of length n can be solved in 2εn time with a nondeterministic
+algorithm. The conclusion follows.
+□
+5
+Unconditional Lower Bounds
+The ideas of the previous section lead to an unconditional lower bound.
+Reminder of Theorem 1.7 For some a and some k(n) ≤n, there is a problem Π solvable with k(n)
+nondeterminism and O(na) time that cannot be solved in k(n)cna · poly(log n) time and k(n)c · poly(log n)
+space, for all constants c.
+Proof. Assume the opposite: for all a ≥1 and for every problem Π solvable with k(n) nondeterminism and
+O(na) time, there is a ca such that Π can be solved in k(n)cana · poly(log n) time and k(n)ca · poly(log n)
+space. For each a ≥1, deﬁne
+Πa = {(i, x) | ∃y ∈{0, 1}log |x|+1 machine Mi(x, y) accepts within |x|a + a steps}.
+Setting k(n) = log n, we have by assumption that
+Πa ∈TISP[na(log n)capoly(log n), (log n)capoly(log n)poly(log n)].
+By efﬁciently reducing all languages in (∃log n)TIME[na] to Πa, we have for all a ≥1 that
+(∃log n)TIME[na] ⊆TISP[na · poly(log n), poly(log n)]
+(∀log n)TIME[na] ⊆TISP[na · poly(log n), poly(log n)].
+(4)
+Setting k(n) = n and a = 2, we have a polynomial time algorithm for SAT. Let ℓbe an integer such that
+SAT is in O(nℓ) time. By Theorem 3.1, we have
+NTIME[n] ⊆TIME[nℓpoly(log n)].
+(5)
+18
+
+Similar to the proof of Theorem 1.6, we derive
+TIME[nℓ+1]
+⊆
+TISP[nℓ+1 · poly(log n), poly(log n)] (applying (4) with a = ℓ+ 1)
+⊆
+(∃n)(∀log n)TISP[nℓ· poly(log n), poly(log n)] (Speedup Lemma)
+⊆
+(∃n)TISP[nℓ· poly(log n), poly(log n)] (applying (4))
+⊆
+(∃2n)(∀log n)TISP[nℓ−1 · poly(log n), poly(log n)] (Speedup Lemma)
+⊆
+(∃2n)TISP[nℓ−1 · poly(log n), poly(log n)] (applying (4))
+⊆
+...
+⊆
+(∃ℓn)TISP[n · poly(log n), poly(log n)]
+⊆
+NTIME[n · poly(log n)] (trivial)
+⊆
+TIME[nℓ· poly(log n)],
+(applying (5))
+contradicting the deterministic time hierarchy.
+□
+In fact, a stronger statement holds: either polynomial nondeterminism cannot be simulated in polytime,
+or we have strong time lower bounds on simulating log-nondeterminism with polylog space.
+Theorem 5.1 Either P ̸= NP or there is a problem solvable with log n bits of nondeterminism in O(nc)
+time that is not solvable in O(nc+.99) time and poly(log n) space, for some c ≥1.
+Proof. Assume the opposite, so that P = NP and
+(∃log n)TIME[nc] ⊆TISP[nc+.99, poly(log n)].
+(6)
+for all c. Note that (6) implies the hypothesis of Theorem 1.6, so SC ⊆NTIME[n3] by Theorem 1.6.
+Moreover, (6) implies that P ⊆SC. Therefore NP ⊆NTIME[n3], a contradiction.
+□
+We cannot yet extend these lower bounds to problems like Circuit SAT on general computational models,
+due to the inefﬁciency of reductions from arbitrary languages to Circuit SAT. We could extend them to
+Circuit SAT on multitape Turing machines, but those lower bounds are easy: the opposite of the lower
+bound implies that Circuit Evaluation (the case where there are no input variables) is in n · poly(log n) time
+and poly(log n) space, which is already known to be false. (In fact, on multitape Turing machines the set of
+palindromes requires nearly quadratic time in the polylog space setting.)
+However we can extend the lower bound slightly to generic computational models, using the strong
+nondeterministic time hierarchy [Zak83] (Theorem 2.1).
+Theorem 5.2 For all ε > 0, CIRCUIT SAT on circuits with k input gates and m total gates cannot be
+solved in m1+o(1)k1−ε time and mo(1) space.
+Recall we do not know how to prove that SAT can’t be solved in O(N 2−ε) time and N o(1) space on
+general models (the particular case where k = m).
+Proof. Let ε > 0 be arbitrarily small. By Theorem 2.1, there is a unary language L that is in NTIME[n2]
+but not in NTIME[n2−ε+ε′] for all 0 < ε′ < ε.
+Assume that CIRCUIT SAT can always be solved in k1−εm1+o(1) time and mo(1) space. Letting k =
+m = n2, we have that L ∈NTIME[n2] implies L ∈DTISP[n4−2ε, no(1)] by Theorem 3.1 (the strong
+completeness theorem for SAT).
+19
+
+We now describe a nondeterministic algorithm for L that runs in n2−ε+o(1) time (a contradiction). Let
+A be an algorithm for L running in n4−2ε time and no(1) space. Start by rejecting if the input is not unary.
+Suppose the input is 1n.
+Similar to the Speedup Lemma (Lemma 4.1), nondeterministically guess a list of n2−ε conﬁgurations
+of A(1n) where the ﬁrst conﬁguration is the initial conﬁguration and the last conﬁguration is an accepting
+conﬁguration. Build a circuit with (2 −ε) log n input variables, which “selects” an adjacent pair out of the
+n2−ε conﬁgurations. This pair is then fed to another circuit, which given a pair of conﬁgurations of A(1n),
+outputs 1 iff the ﬁrst conﬁguration does not lead to the second conﬁguration within n2−ε steps of running
+A. To simulate A on the input 1n, store the length of the input n in a batch of O(log n) wires W. Then on
+any simulated step, the circuit just needs to check if the current position of the input head (or, the current
+input register being read) is greater than the value in W. If it is, the input symbol is blank, otherwise it is
+1. The circuit only has to carry the current conﬁguration and these wires W throughout the simulation of
+n2−ε steps. Without loss of generality, we may assume that A simply iterates through its working storage
+cell by cell in a predictive way, adding a multiplicative no(1) to the runtime. The upshot is that each step of
+A(1n) can be simulated by a circuit of no(1) size. The circuit size overall is n2−ε+o(1) and has (2 −ε) log n
+inputs. Observe that the circuit is unsatisﬁable if and only if the conﬁguration list is part of a valid accepting
+computation history for A(1n).
+Applying the assumed Circuit SAT algorithm to this circuit, we obtain a nondeterministic algorithm for
+L which guesses n2−ε+o(1) bits then runs deterministically in n2−ε+o(1) · O(log n)c time and no(1) space.
+That is, the nondeterministic algorithm for L runs in n2−ε time. This contradicts our choice of L.
+□
+6
+Discussion
+We have seen that universal improvements over exhaustive search, even marginal ones, would have sur-
+prising consequences in complexity theory. This connection between improved exponential algorithms and
+superpolynomial lower bounds shows that two communities have been implicitly working towards similar
+goals. Let us point to a few open problems that should produce further connections.
+1. It seems possible that we may be able to prove interesting non-uniform lower bounds assuming only a
+2.9n·poly(m) algorithm for CNF SAT on n variables and m clauses. Using the reduction from Theorem 3.5,
+one can show that if 3SAT is in 2εn time for all ε > 0, then we obtain mild circuit lower bounds.
+Theorem 6.1 If the Exponential Time Hypothesis is false, then ENP does not have linear size circuits.
+Proof.
+(Sketch) If ENP has O(n) size circuits, then NTIME[2n] has O(n)-size universal witness circuits.
+We can convert our nondeterministic machine into a single-tape one that uses O(22n) time and O(2n)
+space. Consider the veriﬁer that on input x constructs an accepting tableau of O(23n) size for the single-
+tape machine, turns that into a 3CNF formula φx, then treats the witness as a satisfying assignment to φx.
+We can therefore simulate every L ∈NTIME[2n] on input x by guessing a circuit C on cn gates (for some
+c) that encodes a satisfying assignment for φx, then calling CIRCUIT SAT on a circuit D with O(cn) wires
+and 3n + O(1) inputs, where D(i) determines if the ith clause of φx is satisﬁed by the variable assignment
+encoded by C. In more detail, the set of O(1) clauses corresponding to the (i, j) cell of an O(22n) × O(2n)
+tableau can be computed with O(n) size circuits which are given the indices i and j as input. This set of
+clauses is nearly identical for each cell, except in some places where i and j are added to the indices of some
+variables. However note that addition can be done with linear size circuits.
+20
+
+If 3SAT is in 2εn time for all ε > 0, then the CIRCUIT SAT call can be simulated in 2εn time for all ε > 0,
+regardless of the value of c. This would imply NTIME[2n] ⊆NTIME[2εn] for all ε > 0, a contradiction. □
+2. A very interesting open question (asked by Russell Impagliazzo [Imp10]) is if any converses to
+our results hold. For example, if NEXP ̸⊆P/poly, could this lower bound be used to obtain faster SAT
+algorithms? Note it is known how to partially derandomize CAPP assuming NEXP ̸⊆P/poly [IKW02].
+3. It would be nice to weaken the algorithmic hypotheses even further. Can we replace CAPP with a
+form of Polynomial Identity Testing (PIT) in our results? The known proofs that “subexponential algorithms
+for PIT imply circuit lower bounds” go through Toda’s theorem [Tod91], which prevents us from getting a
+tight simulation.
+4. We were able to show that some problems with k-bit witnesses veriﬁable in O(n) time cannot be
+solved in O(poly(k) · n) time and poly(k, log n) space. However we do not know if NP problems such as
+SAT have linear time algorithms when the space bound is relaxed. Such lower bounds are not even known
+for the PSPACE-complete QBF problem [Wil08a]. Perhaps progress can be made on these old questions
+by considering parameterized versions. Is it possible to prove unconditionally that QBFs with k quantiﬁer
+blocks cannot be solved in O(kn) time? The existence of such an algorithm would imply that SAT can be
+solved in linear time, and that QBF can be solved in quadratic time. It seems plausible that the conjunction
+of these two propositions can be more easily refuted.
+5. Finally, can we prove unconditionally that there is some k > 3 satisfying
+(∃n)TISP[nk, no(1)] ̸⊆(∃O(n))TISP[n3, no(1)]?
+Given our results, this separation would imply strong unconditional lower bounds for improving on ex-
+haustive search with space-bounded veriﬁers. (Interestingly, such lower bounds may be achievable without
+proving class separations like LOGSPACE ̸= NP.)
+Acknowledgments
+I am grateful to Russell Impagliazzo, Dick Lipton, Ken Regan, Mohan Paturi, and John Rogers for useful
+discussions on this work. Special thanks are due to V. Arvind, Andrew Drucker, Mike Fellows, and Rahul
+Santhanam for their valuable comments and corrections on a draft of this paper.
+References
+[ADF95] K. Abrahamson, R. G. Downey, and M. R. Fellows. Fixed-parameter tractability and completeness
+IV: On completeness for W[P] and PSPACE analogs. Annals of Pure and Applied Logic 73:235–
+276, 1995.
+[AB09] S. Arora and B. Barak. Computational Complexity – a modern approach. Cambridge University
+Press, 2009.
+[BFNW93] L. Babai, L. Fortnow, N. Nisan, and A. Wigderson. BPP has subexponential simulations unless
+EXPTIME has publishable proofs. Computational Complexity 3:307–318, 1993.
+[Bar02] B. Barak. A probabilistic-time hierarchy theorem for slightly non-uniform algorithms. In Proc. of
+RANDOM, 194–208, 2002.
+21
+
+[BGHSV05] E. Ben-Sasson, O. Goldreich, P. Harsha, M. Sudan, and S. Vadhan. Short PCPs veriﬁable in
+polylogarithmic time. In Proc. IEEE Conference on Computational Complexity, 120–134, 2005.
+[BBG98] S. Bloch, J. F. Buss, and J. Goldsmith. Sharply bounded alternation and quasilinear time. Theory
+of Computing Systems 31(2):187–214, 1998.
+[BFT98] H. Buhrman, L. Fortnow, and T. Thierauf. Nonrelativizing separations. In Proc. IEEE Conference
+on Computational Complexity, 8–12, 1998.
+[BG93] J. F. Buss and J. Goldsmith. Nondeterminism within P. SIAM J. Computing 22:560–572, 1993.
+[CJ03]
+L. Cai and D. Juedes. On the existence of subexponential parameterized algorithms. J. Computer
+and System Sciences 67(4):789–807, 2003.
+[CC97] L. Cai and J. Chen. On the amount of nondeterminism and the power of verifying. SIAM J. Com-
+puting 26(3):733–750, 1997.
+[CIP06] C. Calabro, R. Impagliazzo, and R. Paturi. A duality between clause width and clause density for
+SAT. In Proc. IEEE Conference on Computational Complexity, 252–260, 2006.
+[CIP09] C. Calabro, R. Impagliazzo, and R. Paturi. The complexity of satisﬁability of small depth circuits.
+In Proc. International Workshop on Parameterized and Exact Computation, 2009.
+[CCFHJKX06] J. Chen, B. Chor, M. Fellows, X. Huang, D. Juedes, I. A. Kanj, and G. Xia. Tight lower
+bounds for certain parameterized NP-hard problems. Inofmration and Computation 201:216–231,
+2006.
+[CHKX06] J. Chen, X. Huang, I. A. Kanj, and G. Xia. Strong computational lower bounds via parameter-
+ized complexity. J. Computer and System Sciences 72:1346–1367, 2006.
+[CG07] Y. Chen and M. Grohe. An isomorphism between subexponential and parameterized complexity
+theory. SIAM J. Computing 37:1228–1258, 2007.
+[DH08] E. Dantsin and E. A. Hirsch. Worst-case upper bounds. In Handbook of Satisﬁability, A. Biere, M.
+Heule, H. van Maaren and T. Walsh (eds.), 341–362, 2008.
+[DF99] R. G. Downey and M. R. Fellows. Parameterized complexity. Springer-Verlag, 1999.
+[FL89] M. R. Fellows and M. A. Langston. On search, decision and the efﬁciency of polynomial-time
+algorithms. In Proc. ACM Symposium on Theory of Computing, 501–512, 1989.
+[FGW06] J. Flum, M. Grohe, and M. Weyer. Bounded ﬁxed-parameter tractability and log2 n nondetermin-
+istic bits. J. Computer and System Sciences 72(1):34–71, 2006.
+[FG06] J. Flum and M. Grohe. Parameterized complexity theory. Springer, 2006.
+[For01] L. Fortnow. Comparing notions of full derandomization. In Proc. IEEE Conference on Computa-
+tional Complexity, 28–34, 2001.
+[FLvMV05] L. Fortnow, R. Lipton, D. van Melkebeek, and A. Viglas. Time-space lower bounds for satisﬁ-
+ability. JACM 52(6):835–865, 2005.
+22
+
+[GO95] A. Gajentaan and M. H. Overmars. On a class of O(n2) problems in computational geometry.
+Computational Geometry: Theory and Applications 5(3):165–185, 1995.
+[GS89] Y. Gurevich and S. Shelah. Nearly linear time. Logic at Botik ’89, Springer-Verlag LNCS 363,
+108–118, 1989.
+[Har89] J. Hartmanis. G¨odel, von Neumann, and the P?=NP problem. Bulletin of the European Association
+for Theoretical Computer Science 101–107, June 1989. See also: M. Sipser. The history and status
+of the P versus NP question. In Proc. ACM Symposium on Theory of Computing, 603–618, 1992.
+[Has98] J. Hastad. The shrinkage exponent of De Morgan formulae is 2. SIAM J. Computing, 27:48–64,
+1998.
+[Imp10] R. Impagliazzo, personal communication.
+[IKW02] R. Impagliazzo, V. Kabanets, and A. Wigderson. In search of an easy witness: exponential time
+versus probabilistic polynomial time. J. Computer and System Sciences 65(4):672–694, 2002.
+[IP01]
+R. Impagliazzo and R. Paturi. On the complexity of k-SAT. J. Computer and System Sciences
+62(2):367–375, 2001.
+[IPZ01] R. Impagliazzo, R. Paturi, and F. Zane. Which problems have strongly exponential complexity? J.
+Computer and System Sciences 63(4):512–530, 2001.
+[KC99] V. Kabanets and J.-Y. Cai. Circuit minimization problem. In Proc. ACM Symposium on Theory of
+Computing, 73–79, 2000.
+[KRC00] V. Kabanets, C. Rackoff, and S. A. Cook. Efﬁciently approximable real-valued functions. Elec-
+tronic Colloquium on Computational Complexity, TR00-034, 2000.
+[KI04]
+V. Kabanets and R. Impagliazzo. Derandomizing polynomial identity tests means proving circuit
+lower bounds. Computational Complexity 13(1-2):1–46, 2004.
+[Kan84] R. Kannan. Towards separating nondeterminism from determinism. Mathematical Systems Theory
+17(1):29–45, 1984.
+[KLV03] G. Karakostas, R. J. Lipton, and A. Viglas. On the complexity of intersecting ﬁnite state automata
+and NL versus NP. Theoretical Computer Science 302(1-3):257–274, 2003.
+[KL80] R. M. Karp and R. J. Lipton. Some connections between nonuniform and uniform complexity
+classes. In Proc. ACM Symposium on Theory of Computing 302–309, 1980.
+[KF77] C. M. R. Kintala and P. C. Fisher. Computations with a restricted number of nondeterministic steps
+(Extended Abstract). In Proc. ACM Symposium on Theory of Computing, 178–185, 1977.
+[KvM99] A. Klivans and D. van Melkebeek. Graph nonisomorphism has subexponential size proofs unless
+the polynomial-time hierarchy collapses. SIAM J. Computing 31(5):1501–1526, 2002.
+[Koz77] D. Kozen. Lower bounds for natural proof systems. In Proc. IEEE Symposium on Foundations of
+Computer Science, 254–266, 1977.
+23
+
+[Lip09a] R.
+J.
+Lipton.
+Simulation
+of
+nondeterministic
+machines.
+Weblog
+post
+available
+at
+http://rjlipton.wordpress.com/2009/05/11/simulation-of-nondeterministic-machines/
+[Lip09b] R.
+J.
+Lipton.
+An
+approach
+to
+the
+P=NP
+question?
+Weblog
+post
+available
+at
+http://rjlipton.wordpress.com/2009/10/02/an-approach-to-the-pnp-question/
+[LV96] M. Luby and B. Velickovic. On deterministic approximation of DNF. Algorithmica 16(4/5):415–
+433, 1996.
+[vMS05] D. van Melkebeek and R. Santhanam. Holographic proofs and derandomization. SIAM J. Com-
+puting, 35:59–90, 2005.
+[vM07] D. van Melkebeek. A survey of lower bounds for satisﬁability and related problems. Foundations
+and Trends in Theoretical Computer Science 2:197303, 2007.
+[Mei09] O. Meir. Combinatorial PCPs with efﬁcient veriﬁers. In Proc. IEEE Symposium on Foundations of
+Computer Science, 463–471, 2009.
+[PW10] M. Patrascu and R. Williams. On the possibility of faster SAT algorithms. In Proc. ACM-SIAM
+Symposium on Discrete Algorithms, 2010.
+[PF79]
+N. Pippenger and M. J. Fischer. Relations among complexity measures. JACM 26(2):361–381,
+1979.
+[SFM78] J. Seiferas, M. J. Fischer, and A. Meyer. Separating nondeterministic time complexity Classes.
+JACM 25:146–167, 1978.
+[Sip05] M. Sipser. Introduction to the theory of computation. Course Technology, 2005.
+[Tod91] S. Toda. PP is as hard as the polynomial-time hierarchy. SIAM J. Computing 20:865–877, 1991.
+[Tou01] I. Tourlakis. Time-space tradeoffs for SAT on nonuniform machines. J. Computer and System Sci-
+ences 63(2):268–287, 2001.
+[Tra08] P. Traxler. The time complexity of constraint satisfaction. In Proc. International Workshop on Pa-
+rameterized and Exact Computation, 190–201, 2008.
+[Tse68] G. Tseitin. On the complexity of derivation in propositional calculus. Studies in Constr. Math. and
+Math. Logic, 1968.
+[Wil08a] R. Williams. Non-linear time lower bound for (succinct) quantiﬁed Boolean formulas. ECCC
+Technical Report 08-076, August 2008.
+[Wil08b] R. Williams. Time-space lower bounds for counting NP solutions modulo integers. Computational
+Complexity 17(2):179–219, 2008.
+[Wil10] R. Williams. Alternation-trading proofs, linear programming, and lower bounds. In Proc. Sympo-
+sium on Theoretical Aspects of Computer Science, 2010.
+[Zak83] S. Zak. A Turing machine hierarchy. Theoretical Computer Science 26:327–333, 1983.
+[Zan98] F. Zane. Circuits, CNFs, and satisﬁability. Ph.D. Thesis, University of California at San Diego,
+1998.
+24
+
+A
+Appendix: Proof of Lemma 3.1
+Here we show that if NEXP ⊆P/poly, then every language in NEXP has universal witness circuits. The
+argument is analogous to that used in the proof that NEXP ⊆P/poly =⇒NEXP = MA [IKW02].
+Proof.
+First we show that the absence of witness-producing circuits for NEXP implies a faster nondeter-
+ministic simulation of MA. This is combined with the fact that NEXP ⊆P/poly implies an MA-simulation
+of NEXP, to yield a contradiction with a time hierarchy theorem.
+Suppose there is an L ∈NEXP which does not have universal witness circuits. Let c > 0 be such that
+L ∈NTIME[2nc]. Then there is some correct veriﬁer V for L such that for all constants d ≥1, there is an
+inﬁnite sequence of inputs S = {xik} with the properties:
+• for all k, xik ∈L and
+• for all sufﬁciently large k and all y of length 2|xik|c, V (xik, y) = 1 implies that the circuit complexity
+of the function f(xik, i) = yi is greater than |xik|d.
+Work of Babai et al. [BFNW93] and Klivans-Van Melkebeek [KvM99] shows the following hardness-
+randomness connection: for every ε > 0 there is a δ < ε and integer e such that, given random access to
+a Boolean function on nδ variables with circuit complexity at least nδe, there is a pseudorandom generator
+G : {0, 1}nε →{0, 1}n computable in 2O(nε) time which fools circuits of size n.
+We can simulate MA inﬁnitely often in nondeterministic time O(2n) with n bits of advice, as follows. Let
+P be an MA protocol, and suppose the computation of Arthur in P (given Merlin’s string) can be simulated
+by a circuit of size na. For each input length n, we set the advice for n-bit inputs to be the string xiℓ∈S,
+where xiℓhas length nεa; if there is no such string, we set the advice to 0n.
+On an input x of length n with advice xik, the MA simulation ﬁrst nondeterministically guesses a witness
+y of length 2|xik|c for the veriﬁer V , and checks that V (xik, y) = 1 (if this is not the case, the simulation
+rejects). Note by our choice of advice, this step takes O(2nεac) time. Next, we nondeterministically guess
+Merlin’s polynomial length string in the MA simulation. Finally, we simulate Arthur by evaluating G on all
+nεa possible seeds (treating the string y as a hard function), evaluating the circuit for Arthur on the outputs
+of G, and taking the majority answer.
+We claim the generator G fools Arthur. On the nεa length input xik, the string y can be treated as a
+Boolean function on nεac variables with circuit complexity at least nεad. We can make nεad ≥nεaδe since
+we can set d to be arbitrarily large. Hence G armed with y can fool circuits of size nεad/(δe) ≥na, by the
+hardness-randomness connection. That is, G fools circuits of size na, and therefore Arthur as well.
+The total running time of the simulation is O(2ncεa + 2nεa). Setting ε > 0 to be arbitrarily small (note
+it is independent of c and a), we have established MA ⊆i.o. −NTIME[2nε′
+]/nε′ for all ε′ > 0. Since
+NEXP ⊆P/poly, there is a ﬁxed constant q such that NTIME[2n]/n has circuits of size O(nq). So MA has
+inﬁnitely many input lengths that can be computed by a circuit family of O(nq) size. (In the language of
+complexity classes, we have MA ⊆i.o. −SIZE[O(nq)].)
+Now, EXP ⊆P/poly implies that EXP = MA, by Babai, Fortnow, Nisan, and Wigderson [BFNW93].
+Hence there is a c′ > 0 such that
+EXP = MA ⊆i.o. −NTIME[2n]/n ⊆i.o. −SIZE[O(nq)].
+However, the above is false, by a simple diagonalization argument.
+□
+25
+
+B
+Appendix: Proof of Theorem 1.9
+Reminder of Theorem 1.9 For every multitape Turing machine M running in time t and accessing a
+tape of nondeterministic bits, there is a δ > 0 and a deterministic Turing machine that can simulate M in
+O(2(1−δ)t) time.
+The idea is to perform a brute-force simulation of M up to (1 −δ)t, for an appropriate δ > 0. This
+generates 2(1−δ)t different conﬁguration states of M. Observe that for a k-tape machine, there are only 2kδt
+different tape cells that could possibly be accessed in δt steps. Hence we can “compress” these conﬁgura-
+tions so that only c2kδt conﬁgurations remain for some c > 0, and the necessary information to complete
+the simulation is still preserved. Then we simulate the remaining conﬁgurations for δt steps to see if any
+accept. We can choose δ so that these procedures all take less than 2t time.
+Proof.
+Let δ > 0 be a parameter. Let σ be the cardinality of the tape alphabet of M, and let k be the
+number of tapes of M. For all possible strings y of (1 −δ)t bits, simulate M for its ﬁrst (1 −δ)t steps,
+assuming the nondeterministic tape has y written on it. For each y, save the conﬁguration Cy of M after
+(1 −δ)t steps, where a conﬁguration consists of all tape cells that are within δt cells of some tape head. For
+each of the k tapes, there are 2δt + 1 such cells. Note that for the nondeterministic tape in Cy, some tape
+cells may be undetermined, as they refer to bits of the nondeterministic tape that have not yet been read by
+M. We denote those cells with a fresh symbol s that is not already in the alphabet of M.
+Note the total number of such conﬁgurations is (σ + 1)k(2δt+1). Hence in order to remember all possible
+conﬁgurations of M, it sufﬁces to store a bit array A of only (σ + 1)k(2δt+1) size.
+Now for every conﬁguration C marked in array A, and for all 22δt ways to ﬁll in the undetermined
+symbols of the nondeterministic tape in C with 2δt bits, simulate M for δt steps. If any simulation of M
+results in acceptance, then accept.
+To optimize the running time, we want to set δ to minimize 2(1−δ)t + 22δt(σ + 1)k(2δt+1). (Note that
+polynomial factors in t do not matter in the optimization, as they can be subsumed by simply adding an ε
+factor to the exponents.) Routine calculation shows that δ = 1/(3 + 2k log(σ + 1)) sufﬁces.
+□
+C
+A Remark About Barriers
+Certainly, a slightly faster Circuit SAT or CAPP algorithm will need signiﬁcantly new ideas. Let us
+remark why this strategy may be viable for proving lower bounds. Any potential approach to proving
+strong lower bounds must pass certain litmus tests that complexity theory has developed. The three primary
+barriers are relativization, natural proofs, and algebrization. We believe our work may provide a path that
+circumvents all three (provided the appropriate algorithms exist, of course!). The natural proofs barrier does
+not apply due to our use of diagonalization, which avoids the “largeness” of natural proofs. We believe the
+relativization and algebrization barriers would be avoided, because all nontrivial SAT algorithms that we
+know do not relativize or algebrize. That is, the interesting SAT algorithms in the literature cannot be used
+to solve SATA when the algorithm is given oracle access to an arbitrary oracle A (or its algebraic extension
+˜A).15
+15Recall that SATA is the problem of satisfying CNF formulas with clauses of the form (ℓ1 ∨· · · ∨ℓk ∨A(ℓk+1, . . . , ℓk+k′)),
+where the ℓi are literals, and the predicate A(ℓk+1, . . . , ℓk+k′) is true if and only if ℓk+1 · · · ℓk+k′ ∈A. It is the natural variant on
+SAT obtained by applying the Cook-Levin theorem to a language in NPA.
+26
+
+We invite the reader to examine their favorite (nontrivial) SAT algorithm to understand why it does not
+extend to SATA. As a simple example, consider the branching algorithm which looks for clauses of length
+one, and sets the variable in that clause accordingly. (If there is no length-one clause, say it branches on
+an arbitrary variable.) In an instance of SATA, a length-one clause may have the form A(ℓk+1, . . . , ℓk+k′),
+with possibly some 0-1 values substituted for some of the literals. Determining a correct assignment for
+the variables in this predicate requires at least an oracle for “Satisﬁability of A.” More precisely, we would
+need to efﬁciently solve the problem: given a pattern string p ∈{0, 1, ⋆}n, determine if there is a binary
+assignment to the ⋆’s in p which yields a string in A. This would require nondeterministic access to the oracle
+A. Furthermore, if the A-predicate has more than one satisfying assignment, then the correct assignment to
+A may simply be underdetermined. Access to the algebraic extension ˜A would not sufﬁce for simulating
+such queries to A.
+Given the above, we believe it is not outrageous to think that one might design slightly better CIRCUIT
+SAT or CAPP algorithms that circumvent all the known lower bound barriers in complexity theory.
+27

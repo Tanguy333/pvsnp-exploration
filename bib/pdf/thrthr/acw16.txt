@@ -1,0 +1,1743 @@
+arXiv:1608.04355v1  [cs.DS]  15 Aug 2016
+Polynomial Representations of Threshold Functions and
+Algorithmic Applications
+Josh Alman∗
+Timothy M. Chan†
+Ryan Williams‡
+Abstract
+We design new polynomials for representing threshold functions in three different regimes: proba-
+bilistic polynomials of low degree, which need far less randomness than previous constructions, polyno-
+mial threshold functions (PTFs) with “nice” threshold behavior and degree almost as low as the proba-
+bilistic polynomials, and a new notion of probabilistic PTFs where we combine the above techniques to
+achieve even lower degree with similar “nice” threshold behavior. Utilizing these polynomial construc-
+tions, we design faster algorithms for a variety of problems:
+• Ofﬂine Hamming Nearest (and Furthest) Neighbors: Given n red and n blue points in d-
+dimensional Hamming space for d = clogn, we can ﬁnd an (exact) nearest (or furthest) blue neigh-
+bor for every red point in randomized time n2−1/O(√clog2/3 c) or deterministic time n2−1/O(clog2 c).
+These improve on a randomized n2−1/O(clog2 c) bound by Alman and Williams (FOCS’15), and
+also lead to faster MAX-SAT algorithms for sparse CNFs.
+• Ofﬂine Approximate Nearest (and Furthest) Neighbors: Given n red and n blue points in d-
+dimensional ℓ1 or Euclidean space, we can ﬁnd a (1 + ε)-approximate nearest (or furthest) blue
+neighbor for each red point in randomized time near dn + n2−Ω(ε1/3/log(1/ε)). This improves on an
+algorithm by Valiant (FOCS’12) with randomized time near dn+n2−Ω(√ε), which in turn improves
+previous methods based on locality-sensitive hashing.
+• SAT Algorithms and Lower Bounds for Circuits With Linear Threshold Functions: We give
+a satisﬁability algorithm for AC0[m] ◦LTF ◦LTF circuits with a subquadratic number of linear
+threshold gates on the bottom layer, and a subexponential number of gates on the other layers, that
+runs in deterministic 2n−nε time. This strictly generalizes a SAT algorithm for ACC0 ◦LTF circuits
+of subexponential size by Williams (STOC’14) and also implies new circuit lower bounds for
+threshold circuits, improving a recent gate lower bound of Kane and Williams (STOC’16). We also
+give a randomized 2n−nε-time SAT algorithm for subexponential-sizeMAJ◦AC0◦LTF◦AC0◦LTF
+circuits, where the top MAJ gate and middle LTF gates have O(n6/5−δ) fan-in.
+∗Computer Science Department, Stanford University, jalman@cs.stanford.edu. Supported by NSF CCF-1212372 and
+NSF DGE-114747.
+†Cheriton School of Computer Science, University of Waterloo, tmchan@uwaterloo.ca. Supported by an NSERC grant.
+‡Computer Science Department, Stanford University, rrw@cs.stanford.edu. Supported in part by NSF CCF-1212372
+and CCF-1552651 (CAREER). Any opinions, ﬁndings and conclusions or recommendations expressed in this material are those of
+the authors and do not necessarily reﬂect the views of the National Science Foundation.
+
+1
+Introduction
+The polynomial method is a powerful tool in circuit complexity. The idea of the method is to transform all
+circuits of some class into “nice” polynomials which represent the circuit in some way. If the polynomial is
+always sufﬁciently nice (e.g. has low degree), and one can prove that a certain Boolean function f cannot
+be represented so nicely, one concludes that the circuit class is unable to compute f.
+Recently, these tools have found surprising uses in algorithm design. If a subproblem of an algorithmic
+problem can be modeled by a simple circuit, and that circuit can be transformed into a “nice” polyno-
+mial (or “nice” distribution of polynomials), then fast algebraic algorithms can be applied to evaluate or
+manipulate the polynomial quickly. This approach has led to advances on problems such as All-Pairs Short-
+est Paths [Wil14a], Orthogonal Vectors and Constraint Satisfaction [WY14, AWY15, Wil14d], All-Nearest
+Neighbor problems [AW15], and Stable Matching [MPS16].
+In most applications, the key step is to randomly convert simple circuits into so-called probabilistic
+polynomials. If f is a Boolean function on n variables, and R is a ring, a probabilistic polynomial over R
+for f with error 1/s and degree d is a distribution D of degree-d polynomials over R such that for all x ∈
+{0,1}n, Prp∼D[p(x) = f(x)] ≥1−1
+s. Razborov [Raz87] and Smolensky [Smo87] introduced the notion of a
+probabilistic polynomial, and showed that any low-depth circuit consisting of AND, OR, and PARITY gates
+can be transformed into a low degree probabilistic polynomial by constructing constant degree probabilistic
+polynomials for those three gates. Many polynomial method algorithms use this transformation.
+In this work, we are interested in polynomial representations of threshold functions. The threshold
+function THθ determines whether at least a θ fraction of its input bits are 1s. Threshold functions are among
+the simplest Boolean functions that do not have constant degree probabilistic polynomials: Razborov and
+Smolensky showed that the MAJORITY function (a special case of a threshold function) requires degree
+Ω(√nlogs). Nonetheless, as we will see throughout this paper, there are many important problems which
+can be reduced to evaluating circuits involving threshold gates on many inputs, and so further study of
+polynomial representations of threshold functions is warranted.
+Threshold functions have been extensively studied in theoretical computer science for many years; there
+are numerous applications of linear and polynomial threshold functions to complexity and learning theory
+(a sample includes [BRS91, BS92, ABFR94, Bei95, KS01, OS10, She14]).
+1.1
+Our Results
+We consider three different notions of polynomials representing THθ. Each achieves different tradeoffs
+between polynomial degree, the randomness required, and how accurately the polynomial represents THθ.
+Each leads to improved algorithms in our applications.
+Less Randomness. First, we revisit probabilistic polynomials. Alman and Williams [AW15] designed
+a probabilistic polynomial for THθ which already achieves a tight degree bound of Θ(√nlogs). However,
+their construction uses Ω(n) random bits, which makes it difﬁcult to apply in deterministic algorithms. We
+show how their low-degree probabilistic polynomials for threshold functions can use substantially fewer
+random bits:
+Theorem 1.1. For any 0 ≤θ ≤1, there is a probabilistic polynomial for the function THθ of degree
+O(√nlogs) on n bits with error 1/s that can be randomly sampled using only O(lognlog(ns)) random
+bits.
+Polynomial Threshold Function Representations. Second, we consider deterministic Polynomial
+Threshold Functions (PTFs). A PTF for a Boolean function f is a polynomial (not a distribution on poly-
+nomials) p : {0,1}n →R such that p(x) is smaller than a ﬁxed value when f(x) = 0, and p(x) is larger
+1
+
+than the value when f(x) = 1. In our applications, we seek PTFs with “good threshold behavior”, such that
+|p(x)| ≤1 when f(x) = 0, and p(x) is very large otherwise. We can achieve almost the same degree for a
+PTF as for a probabilistic polynomial, and even better degree for an approximate threshold function:
+Theorem 1.2. We can construct a polynomial Ps,t,ε : R →R of degree O(
+p
+1/ε logs), such that
+• if x ∈{0,1,...,t}, then |Ps,t,ε(x)| ≤1;
+• if x ∈(t,(1+ε)t), then Ps,t,ε(x) > 1;
+• if x ≥(1+ε)t, then Ps,t,ε(x) ≥s.
+For the “exact” setting with ε = 1/t, we can alternatively bound the degree by O(
+p
+t log(st)).
+By summing multiple copies of the polynomial from Theorem 1.2, we immediately obtain a PTF with
+the same degree for the OR of O(s) threshold functions (needed in our applications). This theorem fol-
+lows directly from known extremal properties of Chebyshev polynomials, as well as the lesser known dis-
+crete Chebyshev polynomials. Because Theorem 1.2 gives a single polynomial instead of a distribution
+on polynomials, it is especially helpful for designing deterministic algorithms. Chebyshev polynomials
+are well-known to yield good approximate polynomials for computing certain Boolean functions over the
+reals [NS94, Pat92, KS01, She13, Val12] (please see the Preliminaries for more background).
+Probabilistic PTFs. Third, we introduce a new (natural) notion of a probabilistic PTF for a Boolean
+function f. This is a distribution on PTFs, where for each input x, a PTF drawn from the distribution is
+highly likely to agree with f on x. Combining the techniques from probabilistic polynomials for THθ and
+the deterministic PTFs in a simple way, we construct a probabilistic PTF with good threshold behavior
+whose degree is lower than both the deterministic PTF and the degree bounds attainable by probabilistic
+polynomials (surprisingly breaking the “square-root barrier”):
+Theorem 1.3. We can construct a probabilistic polynomial ePn,s,t,ε : {0,1}n →R of degree O((1/ε)1/3 logs),
+such that
+• if ∑n
+i=1 xi ≤t, then |ePn,s,t,ε(x1,...,xn)| ≤1 with probability at least 1−1/s;
+• if ∑n
+i=1 xi ∈(t,t +εn), then ePn,s,t,ε(x1,...,xn) > 1 with probability at least 1−1/s;
+• if ∑n
+i=1 xi ≥t +εn, then ePn,s,t,ε(x1,...,xn) ≥s with probability at least 1−1/s.
+For the “exact” setting with ε = 1/n, we can alternatively bound the degree by O(n1/3 log2/3(ns)).
+The PTFs of Theorem 1.3 can be sampled using only O(log(n)·log(ns)) random bits as well; their lower
+degree will allow us to design faster randomized algorithms for a variety of problems. For emphasis, we
+will sometimes refer to PTFs as deterministic PTFs to distinguish them from probabilistic PTFs.
+These polynomials for THθ can be applied to many different problems:
+Ofﬂine Hamming Nearest Neighbor Search. In the Hamming Nearest Neighbor problem, we wish to
+preprocess a set D of n points in {0,1}d such that, for a query q ∈{0,1}d, we can quickly ﬁnd the p ∈D with
+smallest Hamming distance to q. This problem is central to many problems throughout Computer Science,
+especially in search and error correction [Ind04]. However, it suffers from the curse of dimensionality phe-
+nomenon, where known algorithms achieve the nearly trivial runtimes of either 2Ω(d) or Ω(n/poly(logn)),
+with matching lower bounds in many data structure models (see e.g. [BR02]). Using our PTFs, we instead
+design a new algorithm for the natural ofﬂine version of this problem:
+2
+
+Theorem 1.4. Given n red and n blue points in {0,1}d for d = clogn ≪log3 n/log5 logn, we can ﬁnd an
+(exact) Hamming nearest/farthest blue neighbor for every red point in randomized time n2−1/O(√clog3/2 c).
+Using the same ideas, we are also able to derandomize our algorithm, to achieve deterministic time
+n2−1/O(clog2 c) (see Remark 3 in Section 5). When d = clogn for constant c, these algorithms both have
+“truly subquadratic” runtimes. These both improve on Alman and Williams’ algorithm [AW15] which runs
+in randomized time n2−1/O(clog2 c), and only gives a nontrivial algorithm for d ≪log2 n/log3 logn. Applying
+reductions from [AW15], we can achieve similar runtimes for ﬁnding closest pairs in ℓ1 for vectors with
+small integer entries, and pairs with maximum inner product or Jaccard coefﬁcient.
+It is worth noting that there may be a serious limit to solving this problem much faster. Theorem 1.4 (and
+[AW15]) shows for all c there is a δ > 0 such that Ofﬂine Hamming Nearest Neighbor search in dimension
+d = clogn takes O(n2−δ) time. Showing that there is a universal δ > 0 that works for all c would disprove
+the Strong Exponential Time Hypothesis [AW15, Theorem 1.4].
+Ofﬂine Approximate Nearest Neighbor Search. The problem of ﬁnding high-dimensional approxi-
+mate nearest neighbors has received even more attention. Locality-sensitive hashing yields data structures
+that can ﬁnd (1+ε)-factor approximate nearest neighbors to any query point in ˜O(dn1−Ω(ε)) (randomized)
+time after preprocessing in ˜O(dn+n2−Ω(ε)) time and space,1 for not only Hamming space but also ℓ1 and ℓ2
+space [HIM12, AI06]. Thus, a batch of n queries can be answered in ˜O(dn2−Ω(ε)) randomized time. Excit-
+ing recent work on locality-sensitive hashing [AINR14, AR15] has improved the constant factor in the Ω(ε)
+bound, but not the growth rate in ε. In 2012, G. Valiant [Val12] reported a surprising algorithm running
+in ˜O(dn+ n2−Ω(√ε)) randomized time for the ofﬂine version of the problem in ℓ2. We obtain a still faster
+algorithm for the ofﬂine problem, with √ε improved to about ε1/3:
+Theorem 1.5. Given n red and n blue points in [U]d and ε ≫log6 logn
+log3 n , we can ﬁnd a (1+ε)-approximate ℓ1
+or ℓ2 nearest/farthest blue neighbor for each red point in (dn+n2−Ω(ε1/3/log(1/ε)))·poly(log(nU)) random-
+ized time.
+Valiant’s algorithm, like Alman and Williams’ [AW15], relied on fast matrix multiplication, and it also
+used Chebyshev polynomials but in a seemingly more complicated way. Our new probabilistic PTF con-
+struction is inspired by our attempt to unify Valiant’s approach with Alman and Williams’, which leads to
+not only a simpliﬁcation but also an improvement of Valiant’s algorithm. (We also almost succeed in deran-
+domizing Valiant’s n2−˜Ω(√ε) result in the Hamming case, except for an initial dimension reduction step; see
+Remark 3 in Section 5.)
+Numerous applications to high-dimensional computational geometry follow; for example, we can ap-
+proximate the diameter or Euclidean minimum spanning tree in roughly the same running time.
+MAX-SAT. Another application is MAX-SAT: ﬁnding an assignment that satisﬁes the maximum num-
+ber of clauses in a given CNF formula with n variables. In the sparse case when the number of clauses is cn,
+a series of papers have given faster exact algorithms, for example, achieving 2n−n/O(clogc) time by Dantsin
+and Wolpert [DW06], 2n−n/O(clogc)2/3 time by Sakai et al. [SSTT15a], and 2n−n/O(√c) time by Chen and
+Santhanam [CS15]. Using the polynomial method and our new probabilistic PTF construction, we obtain
+the following improved result:
+Theorem 1.6. Given a CNF formula with n variables and cn ≪n4/log10 n clauses, we can ﬁnd an assign-
+ment that satisﬁes the maximum number of clauses in randomized 2n−n/O(c1/3 log7/3 c) time.
+1Throughout the paper, the ˜O notation hides polylogarithmic factors, [U] denotes {0,1,...,U −1}, and poly(n) denotes a ﬁxed
+polynomial in n.
+3
+
+For general dense instances, the problem becomes tougher. Williams [Wil04] gave an O(20.792n)-time
+algorithm for MAX-2-SAT, but an O(2(1−δ)n)-time algorithm for MAX-3-SAT (for a universal δ > 0) has
+remained open; currently the best reported time bound [SSTT15b] is 2n−Ω(n/logn)1/3, which can be slightly
+improved to 2n−Ω(√
+n/logn) with more care. We make new progress on not only MAX-3-SAT but also MAX-
+4-SAT:
+Theorem 1.7. Given a weighted 4-CNF formula F with n variables with positive integer weights bounded by
+poly(n), we can ﬁnd an assignment that maximizes the total weight of clauses satisﬁed in F, in randomized
+2n−n/O(log2 nlog2 logn) time. In the sparse case when the clauses have total weight cn, the time bound improves
+to 2n−n/O(log2 clog2 logc).
+LTF-LTF Circuit SAT Algorithms and Lower Bounds. Using our small sample space for probabilis-
+tic MAJORITY polynomials (Theorem 1.1), we construct a new circuit satiﬁability algorithm for circuits
+with linear threshold functions (LTFs) which improves over several prior results. Let AC0[d,m] ◦LTF ◦
+LTF[S1,S2,S3] be the class of circuits with a layer of S3 LTFs at the bottom layer (nearest the inputs), a layer
+of S2 LTFs above the bottom layer, and a size-S1 AC0[m] circuit of depth d above the two LTF layers.2
+Theorem 1.8. For every integer d > 0, m > 1, and δ > 0, there is an ε > 0 and an algorithm for satisﬁability
+of AC0[d,m]◦LTF◦LTF[2nε ,2nε,n2−δ] circuits that runs in deterministic 2n−nε time.
+Williams [Wil14b] gave a comparable SAT algorithm for ACC0 ◦LTF circuits of 2nε size, where ε > 0 is
+sufﬁciently small.3 Theorem 1.8 strictly generalizes the previous algorithm, allowing another layer of n2−ε
+linear threshold functions below the existing LTF layer. Theorem 1.8 also trivially implies deterministic
+SAT algorithms for LTF ◦LTF circuits of up to n2−o(1) gates, improving over the recent SAT algorithms of
+Chen, Santhanam, and Srinivasan [CSS16] which only work for n1+ε-wire circuits for ε ≪1, and the SAT
+algorithms of Impagliazzo, Paturi, and Schneider [IPS13].
+Here we sketch the ideas in the SAT algorithm for ACC0 ◦LTF ◦LTF. Similar to the SAT algorithm for
+ACC0 ◦LTF circuits [Wil14b], the bottom layer of LTFs can be replaced by a layer of DNFs, via a weight
+reduction trick. We replace LTFs in the middle layer with AC0 ◦MAJ circuits (modifying a construction of
+Maciel and Thérien [MT98] to keep the fan-in of MAJ gates low), then replace these MAJ gates of n2−Θ(δ)
+fan-in with probabilistic F2-polynomials of degree n1−Θ(δ)+Θ(ε) over a small sample space, provided by
+Theorem 1.1. Taking a majority vote over all samples, and observing that an F2-polynomial is a MOD2 ◦
+AND circuit, we obtain a MAJ ◦ACC0 circuit, but with 2n1−O(δ) size in some of its layers. By carefully
+applying known depth reduction techniques, we can convert the circuit into a depth-two circuit of size
+2n1−Ω(ε) which can then be evaluated efﬁciently on many inputs. (This is not obvious: applying the Beigel-
+Tarui depth reduction to a 2O(n1−ε)-size circuit would make its new size quasi-polynomial in 2O(n1−ε), yielding
+an intractable bound of 2nO(1).)
+Applying the known connection between circuit satisﬁability algorithms and circuit lower bounds for
+ENP problems [Wil10, Wil14c, JMV15], the following is immediate:
+Corollary 1.1. For every d > 0, m > 1, and δ ∈(0,1), there is an ε > 0 such that the class ENP does not
+have non-uniform circuits in AC0[d,m]◦LTF ◦LTF[2nε,2nε ,n2−δ]. In particular, for every ε > 0, ENP does
+not have ACC0 ◦LTF◦LTF circuits where the ACC0 ◦LTF subcircuit has 2no(1) size and the bottom LTF layer
+has n2−ε gates.
+2Recall that for an integer m ≥2, AC0[m] refers to constant-depth unbounded fan-in circuits over the basis {AND,OR,MODm},
+where MODm outputs 1 iff the sum of its input bits is divisible by m.
+3Recall ACC0 is the inﬁnite union of AC0[m] for all integers m ≥2.
+4
+
+Most notably, Corollary 1.1 proves lower bounds with n2−ε LTFs on the bottom layer and subexponen-
+tially many LTFs on the second layer. This improves upon recent LTF ◦LTF gate lower bounds of Kane
+and Williams [KW16], at the cost of raising the complexity of the hard function from TC0
+3 to ENP. Sug-
+uru Tamaki [Tam16] has recently reported similar results for depth-two circuits with both symmetric and
+threshold gates.
+A Powerful Randomized SAT Algorithm. Finally, combining the probabilistic PTF for MAJORITY
+(Theorem 1.3) with the probabilistic polynomial of [AW15], we give a randomized SAT algorithm for a
+rather powerful class of circuits. The class MAJ ◦AC0 ◦LTF ◦AC0 ◦LTF denotes the class of circuits
+with a majority gate at the top, along with two layers of linear threshold gates, and arbitrary O(1)-depth
+AC0 circuitry between these three layers. This circuit class is arguably much more powerful than TC0
+3
+(MAJ◦MAJ◦MAJ), based on known low-depth circuit constructions for arithmetic functions (e.g. [CSV84,
+MT98, MT99]).
+Theorem 1.9. For all ε > 0 and integers d ≥1, there is a δ > 0 and a randomized satisﬁability algorithm
+for MAJ◦AC0 ◦LTF◦AC0 ◦LTF circuits of depth d running in 2n−Ω(nδ ) time, on circuits with the following
+properties:
+• the top MAJ gate, along with every LTF on the middle layer, has O(n6/5−ε) fan-in, and
+• there are O(2nδ ) many AND/OR gates (anywhere) and LTF gates at the bottom layer.
+Theorem 1.9 applies the probabilistic PTF of degree about n1/3 (Theorem 1.3) to the top MAJ gate, prob-
+abilistic polynomials over Z of degree about n1/2 (Theorem 1.1) to the middle LTFs, and weight reduction
+to the bottom LTFs; the rest can be represented with poly(nδ) degree.
+It would not be surprising (to at least one author) if the above circuit class contained strong pseudo-
+random function candidates; that is, it seems likely that the Natural Proofs barrier applies to this circuit
+class. Hence from the circuit lower bounds perspective, the problem of derandomizing the SAT algorithm
+of Theorem 1.9 is extremely interesting.
+2
+Preliminaries
+Notation. In what follows, for (x1,...,xn) ∈{0,1}n deﬁne |x| := ∑n
+i=1 xi. For a logical predicate P, we use
+the notation [P] to denote the function which outputs 1 when P is true, and 0 when P is false.
+For θ ∈[0,1], deﬁne THθ : {0,1}n →{0,1} to be the threshold function THθ(x1,...,xn) := [|x|/n ≥θ].
+In particular, TH1/2 = MAJORITY.
+For classes of circuits C and D, C ◦D denotes the class of circuits consisting of a single circuit C ∈C
+whose inputs are the outputs of some circuits from D. That is, C ◦D is simply the composition of circuits
+from C and D.
+Rectangular Matrix Multiplication. One of our key tools is fast rectangular matrix multiplication:
+Lemma 2.1 (Coppersmith [Cop82]). For all sufﬁciently large N, multiplication of an N ×N.172 matrix with
+an N.172 ×N matrix can be done in O(N2 log2 N) arithmetic operations over any ﬁeld.
+A proof can be found in the appendix of [Wil14b].
+Chebyshev Polynomials in TCS. Another key to our work is that we ﬁnd new applications of Cheby-
+shev polynomials to algorithm design. This is certainly not a new phenomenon in itself; here we brieﬂy
+survey some prior related usages of Chebyshev polynomials. First, Nisan and Szegedy [NS94] used Cheby-
+shev polynomials to compute the OR function on n Boolean variables with an “approximating” polynomial
+p : Rn →R, such that for all x ∈{0,1}n we have |OR(x) −p(x)| ≤1/3, yet deg(p) = O(√n). They also
+5
+
+proved the degree bound is tight up to constants in the big-O; Paturi [Pat92] generalized the upper and lower
+bound to all symmetric functions.
+This work has led to several advances in learning theory. Building on the polynomials of Nisan and
+Szegedy, Klivans and Servedio [KS01] showed how to compute an OR of t ANDs of w variables with
+a PTF of degree O(√wlogt), similar to our degree bound for computing an OR of t MAJORITYs of w
+variables of Theorem 1.2 (however, note our bound in the “exact” setting is a bit better, due to our use of
+discrete Chebyshev polynomials). They also show how to compute an OR of s ANDs on n variables with
+a deterministic PTF of O(n1/3 logs) degree, similar to our cube-root-degree probabilistic PTF for the OR
+of MAJORITY of Theorem 1.3 in the “exact” setting. However, it looks difﬁcult to generalize Klivans-
+Servedio’s O(n1/3 logs) degree bound to compute an OR of MAJORITY: part of their construction uses
+a reduction to decision lists which works for conjunctions but not for MAJORITY functions. Klivans,
+O’Donnell and Servedio [KOS04] show how to compute an AND of k MAJORITY on n variables with a
+PTF of degree O(√wlogk). By a simple transformation via De Morgan’s law, there is a polynomial for OR
+of MAJORITY with the same degree. Their degree is only slightly worse than ours in terms of k (because
+we use discrete Chebyshev polynomials).
+In streaming algorithms, Harvey, Nelson, and Onak [HNO08] use Chebyshev polynomials to design ef-
+ﬁcient algorithms for computing various notions of entropy in a stream. As a consequence of a query upper
+bound in quantum computing, Ambainis et al. [ACR+10] show how to approximate any Boolean formula
+of size s with a polynomial of degree √s1+o(1), improving on earlier bounds of O’Donnell and Serve-
+dio [OS10] that use Chebyshev polynomials. Sachdeva and Vishnoi [SV13] give applications of Chebyshev
+polynomials to graph algorithms and matrix algebra. Linial and Nisan [LN90] use Chebyshev polynomi-
+als to approximate inclusion-exclusion formulas, and Sherstov [She08] extends this to arbitrary symmetric
+functions.
+3
+Derandomizing Probabilistic Polynomials for Threshold Functions
+In this section, we revisit the previous probabilistic polynomial for the majority function on n bits, and show
+it can be implemented using only polylog(n,s) random bits. Our construction is essentially identical to that
+of [AW15], except that we use far fewer random bits to sample entries from the input vector in the recursive
+step of the construction.
+For the analysis, we need a Chernoff bound for bits with limited independence:
+Lemma 3.1 ([SSS95] Theorem 5 (I)(b)). If X is the sum of k-wise independent random variables, each of
+which is conﬁned to the interval [0,1], with µ = E[X], δ ≤1, and k = ⌊δ 2µe−1/3⌋, then
+Pr[|X −µ| ≥δµ] ≤e−δ 2µ/3.
+In particular, the following inequality appears in the analysis of [AW15]:
+Corollary 3.1. If x ∈{0,1}n with |x|/n = w, and ˜x ∈{0,1}n/10 is a vector each of whose entries is k-wise
+independently chosen entry of x, where k = ⌊20e−1/3 log(1/ε)⌋, with |˜x|/(n/10) = v, then for every ε < 1/4,
+Pr
+
+v ≤w−a
+√n
+
+≤ε
+4,
+where a =
+√
+10·
+p
+ln(1/ε).
+Proof. Apply Lemma 3.1 with X = |˜x|, µ = E[|˜x|] = wn, and δ =
+p
+40log(1/ε)/n.
+6
+
+Reminder of Theorem 1.1. For any 0 ≤θ ≤1, there is a probabilistic polynomial for the threshold function
+THθ of degree O(√nlogs) on n bits with error 1/s that can be randomly sampled using O(log(n)log(ns))
+random bits.
+Proof. Our polynomial is deﬁned recursively, just as in [AW15]. Set ε = 1/s. Using their notation, the
+polynomial Mn,θ,ε for computing THθ on n bits with error ε is deﬁned by:
+Mn,θ,ε(x) := An,θ,2a(x)·Sn/10,θ,a/√n,ε/4(˜x)+Mn/10,θ,ε/4(˜x)·(1−Sn/10,θ,a/√n,ε/4(˜x)).
+In [AW15], ˜x was a sample of n/10 bits of x, chosen independently at random. Here, we pick ˜x to be
+a sample of n/10 bits chosen k-wise independently, for k = ⌊20e−1/3 log(1/ε)⌋. The other polynomials in
+this recursive deﬁnition are as in [AW15]:
+• Mm,θ,ε for m < n is the (recursively deﬁned) probabilistic polynomial for THθ on m bits and ε error
+• Sm,θ,δ,ε(x) := (1−Mm,θ+δ,ε(x))·Mm,θ−δ,ε(x) for m < n
+• An,θ,g : {0,1}n →Z is an exact polynomial of degree at most 2g√n+1 which gives the correct answer
+to THθ for any vector x with |x| ∈[θn −g√n,θn + g√n], and may give arbitrary answers on other
+vectors.
+Examining the proof of correctness in Alman and Williams [AW15], we see that the only requirement
+of the randomness is that it satisﬁes their Lemma 3.4, a concentration inequality for sampling ˜x from x. Our
+Corollary 3.1 is identical to their Lemma 3.4, except that it replaces their method of sampling ˜x with k-wise
+sampling; the remainder of the proof of correctness is exactly as before.
+Our polynomial construction is recursive: we divide n by 10 and divide ε by 4, each time we move from
+one recursive layer to the next. At the jth recursive level of our construction, for 1 ≤j < log10(n), we need
+to O(log(4j/ε))-wise independently sample n/10j entries from a vector of length n/10j−1. Summing across
+all of the layers, we need a total of O(n) samples from a k-wise independent space, where k is never more
+than O(n/ε). This can be done all together using O(n) samples from {1,2,...,n} which are O(n/ε)-wise
+independent. Using standard constructions, this requires O(log(n)log(n/ε)) random bits.
+4
+PTFs for ORs of Threshold Functions
+In this section, we show how to construct low-degree PTFs representing threshold functions that have good
+threshold behavior, and consequently obtain low-degree PTFs for an OR of many threshold functions.
+4.1
+Deterministic Construction
+We begin by reviewing some basic facts about Chebyshev polynomials. The degree-q Chebyshev polynomial
+of the ﬁrst kind is
+Tq(x) :=
+⌊q/2⌋
+∑
+i=0
+q
+2i
+
+(x2 −1)ixq−2i.
+Fact 4.1. For any ε ∈(0,1),
+• if x ∈[−1,1], then |Tq(x)| ≤1;
+• if x ∈(1,1+ε), then Tq(x) > 1;
+• if x ≥1+ε, then Tq(x) ≥1
+2eq√ε.
+7
+
+Proof. The ﬁrst property easily follows from the known formula Tq(x) = cos(qarccos(x)) for x ∈[−1,1].
+The second and third properties follow from another known formula Tq(x) = cosh(qarcosh(x)) for x > 1,
+which for x ≥1+ε implies Tq(x) ≥cosh(q√ε) = 1
+2(eq√ε +e−q√ε).
+In certain scenarios, we obtain slightly better results using a (lesser known) family of discrete Chebyshev
+polynomials deﬁned as follows [Hir03, page 59]:
+Dq,t(x) :=
+q
+∑
+i=0
+(−1)i
+q
+i
+t −x
+q−i
+x
+i
+
+.
+(See also [Sze75, pages 33–34] or Chebyshev’s original paper [Che99] with an essentially equivalent deﬁ-
+nition up to rescaling.)
+Fact 4.2. Let cq,t = (t +1)q+1/q!. For all t > q ≥
+p
+8(t +1)ln(t +1),
+• if x ∈{0,1,...,t}, then |Dq,t(x)| ≤cq,t;
+• if x ≤−1, then Dq,t(x) ≥eq2/(8(t+1))cq,t.
+Proof. From [Hir03, page 61],
+t
+∑
+k=0
+Dq,t(k)2
+=
+2q
+q
+t +1+q
+2q+1
+
+=
+2q(2q−1)···q
+q(q−1)···1 · (t +1+q)(t +q)···(t +1−q)
+(2q+1)(2q)···1
+=
+(t +1)((t +1)2 −12)((t +1)2 −22)···((t +1)2 −q2)
+(2q+1)(q!)2
+≤(t +1)2q+2
+(q!)2
+.
+Thus, for every integer x ∈[0,t], we have |Dq,t(x)| ≤(t +1)q+1/q! = cq,t.
+For x ≤−1, we have (−1)i x
+i
+
+= (−x)(−x+1)···(−x+i−1)
+1·2···i
+≥1, and by the Chu–Vandermonde identity,
+Dq,t(x)
+≥
+q
+∑
+i=0
+q
+i
+t +1
+q−i
+
+=
+t +1+q
+q
+
+=
+(t +1)q(1+
+1
+t+1)(1+
+2
+t+1)···(1+
+q
+t+1)
+q!
+≥
+cq,t
+t +1e
+1+2+···+q
+2(t+1)
+= eq(q+1)/(4(t+1))−ln(t+1)cq,t ≥eq2/(8(t+1))cq,t.
+Reminder of Theorem 1.2. We can construct a polynomial Ps,t,ε : R →R of degree O(
+p
+1/ε logs), such
+that
+• if x ∈{0,1,...,t}, then |Ps,t,ε(x)| ≤1;
+• if x ∈(t,(1+ε)t), then Ps,t,ε(x) > 1;
+• if x ≥(1+ε)t, then Ps,t,ε(x) ≥s.
+For the “exact” setting with ε = 1/t, we can alternatively bound the degree by O(
+p
+t log(st)).
+8
+
+Proof. Set Ps,t,ε(x) := Tq(x/t) for a parameter q to be determined. The ﬁrst two properties are obvious from
+Fact 4.1. On the other hand, if x ≥(1+ε)t, then Fact 4.1 shows that Ps,t,ε(x) ≥1
+2eq√ε ≥s, provided we set
+q =
+lp
+1/ε ln(2s)
+m
+. This achieves O(
+p
+1/ε logs) degree.
+When ε = 1/t the above yields O(√t logs) degree; we can reduce the logs factor by instead deﬁn-
+ing Ps,t,ε(x) := Dq,t(t −x)/cq,t.
+Now, if x ≥t + 1, then Ps,t,ε(x) ≥eq2/(8(t+1)) ≥s by setting q =
+lp
+8(t +1)ln(max{s,t +1})
+m
+.
+Using Theorem 1.2, we can construct a low-degree PTF for computing an OR of s thresholds of n bits:
+Corollary 4.1. Given n,s,t,ε, we can construct a polynomial P : {0,1}ns →R of degree at most ∆:=
+O(
+p
+1/ε logs) and at most s·
+ n
+∆
+
+monomials, such that
+• if the formula Ws
+i=1
+
+∑n
+j=1 xij > t
+
+is false, then |P(x11,...,x1n,...,xs1,...,xsn)| ≤s;
+• if the formula Ws
+i=1
+
+∑n
+j=1 xij ≥t +εn
+
+is true, then P(x11,...,x1n,...,xs1,...,xsn) > 2s.
+For the exact setting with ε = 1/n, we can alternatively bound ∆by O(
+p
+nlog(ns)).
+Proof. Deﬁne P(x11,...,x1n,...,xs1,...,xsn)
+:=
+∑s
+i=1 Pn,3s,t,ε
+ ∑n
+j=1 xij
+
+, where Pn,3s,t,ε is from Theo-
+rem 1.2. The stated properties clearly hold. (In the second case, the output is at least 3s−(s−1) > 2s.)
+4.2
+Probabilistic Construction
+Allowing ourselves a distribution of PTFs to randomly draw from, we can achieve noticeably lower degree
+than the previous section. We start with a fact which follows easily from the (tight) probabilistic polynomial
+for MAJORITY:
+Fact 4.3. (Alman–Williams [AW15], or Theorem 1.1) We can construct a probabilistic polynomial Qn,s,t :
+{0,1}n →R of degree O(√nlogs), such that
+• if ∑n
+i=1 xi ≤t, then Qn,s,t(x1,...,xn) = 0 with probability at least 1−1/s;
+• if ∑n
+i=1 xi > t, then Qn,s,t(x1,...,xn) = 1 with probability at least 1−1/s.
+Reminder of Theorem 1.3.
+We can construct a probabilistic polynomial ePn,s,t,ε : {0,1}n →R of degree
+O((1/ε)1/3 logs), such that
+• if ∑n
+i=1 xi ≤t, then |ePn,s,t,ε(x1,...,xn)| ≤1 with probability at least 1−1/s;
+• if ∑n
+i=1 xi ∈(t,t +εn), then ePn,s,t,ε(x1,...,xn) > 1 with probability at least 1−1/s;
+• if ∑n
+i=1 xi ≥t +εn, then ePn,s,t,ε(x1,...,xn) ≥s with probability at least 1−1/s.
+For the “exact” setting with ε = 1/n, we can alternatively bound the degree by O(n1/3 log2/3(ns)).
+Proof. Let r and q be parameters to be set later. Draw a random sample R ⊆{1,...,n} of size r. Let
+tR := tr
+n −c0
+p
+rlogs
+and
+t−:= t −2c0
+ n
+√r
+p
+logs
+9
+
+for a sufﬁciently large constant c0. Deﬁne
+ePn,s,t,ε(x1,...,xd) := Qr,2s,tR({xi}i∈R) · Ps,t′,ε′
+ 
+n
+∑
+i=1
+xi −t−
+!
+,
+where Ps,t′,ε′ is the polynomial from Theorem 1.2, with t′ := t −t−= Θ((n/√r)√log s) and ε′ := εn/t′ =
+Θ(ε√r/√log s).
+To verify the stated properties, consider three cases:
+• CASE 1: ∑n
+i=1 xi < t−. By a standard Chernoff bound, with probability at least 1−1/(2s), we have
+∑i∈R xi < t−r/n+ c0
+√r log s ≤tR (assuming that r ≥log s). Thus, with probability at least 1−1/s,
+we have Qn,2s,tR({xi}i∈R) = 0 and so ePn,s,t,ε(x1, . . . , xn) = 0.
+• CASE 2: ∑n
+i=1 xi ∈[t−,t]. With probability at least 1−1/s, we have Qr,2s,tR({xi}i∈R) ∈{0, 1} and so
+|ePn,s,t,ε(x1, . . . , xn)| ≤1.
+• CASE 3: ∑n
+i=1 xi > t. By a standard Chernoff bound, with probability at least 1 −1/(2s), we have
+∑i∈R xi ≥tr/n+c0
+√r log s = tR. Thus, with probability at least 1−1/s, we have Qr,2s,tR({xi}i∈R) = 1
+and so ePn,s,t,ε(x1, . . . , xn) > 1 for ∑n
+i=1 xi ∈(t,t +εn), or ePn,s,t,ε(x1, . . . , xn) ≥s for ∑n
+i=1 xi ≥t +εn.
+The degree of ePn,s,t,ε is
+O
+p
+r log s+
+q
+(1/(ε√r))
+p
+log s log s
+
+and we can set r =
+
+(1/ε)2/3 log s
+
+. For the exact setting, the degree is
+O
+p
+r log s+
+q
+(n/√r)
+p
+log s·log(ns)
+
+and we can set r =
+l
+n2/3 log1/3(ns)
+m
+.
+Remark 1. Using the same techniques as in Theorem 1.1, we can sample a probabilistic polynomial from
+Theorem 1.3 with only O(log(n)log(ns)) random bits.
+Corollary 4.2. Given d,s,t,ε, we can construct a probabilistic polynomial eP : {0,1}ns →R of degree at
+most ∆:= O((1/ε)1/3 logs) with at most s·
+ n
+D
+
+monomials, such that
+• if Ws
+i=1
+
+∑n
+j=1 xij ≥t
+
+is false, then |eP(x11,...,x1n,...,xs1,...,xsn)| ≤s with probability at least 2/3;
+• if Ws
+i=1
+
+∑d
+j=1 xij ≥t +εn
+
+is true, then eP(x11,...,x1n,...,xs1,...,xsn) > 2s with probability at least
+2/3.
+For the exact setting with ε = 1/n, we can alternatively bound ∆by O(n1/3 log2/3(ns)).
+Proof. Deﬁne eP(x11,...,x1n,...,xs1,...,xsn) := ∑s
+i=1 ePn,3s,ti,ε(xi1,...,xin).
+Remark 2. The coefﬁcients of the polynomials from Fact 4.3 are poly(n)-bit integers, and it can be checked
+that the coefﬁcients of all our deterministic and probabilistic polynomials are rational numbers with poly(n)-
+bit numerators and a common poly(n)-bit denominator, and that the same bound for the number of mono-
+mials holds for the construction time, up to poly(n) factors. That is, computations with these polynomials
+have low computational overhead relative to n.
+10
+
+5
+Exact and Approximate Ofﬂine Nearest Neighbor Search
+We now apply our new probabilistic PTF construction to obtain a faster algorithm for ofﬂine exact near-
+est/farthest neighbor search in Hamming space:
+Reminder of Theorem 1.4. Given n red and n blue points in {0,1}d for d = clogn ≪log3 n/log5 logn,
+we can ﬁnd an (exact) Hamming nearest/farthest blue neighbor for every red point in randomized time
+n2−1/O(√clog3/2 c).
+Proof. We proceed as in Abboud, Williams, and Yu’s algorithm for Boolean orthogonal vectors [AWY15] or
+Alman and Williams’ algorithm for Hamming closest pair [AW15]. For a ﬁxed t, we ﬁrst solve the decision
+problem of testing whether the nearest neighbor distance is less than t for each red point. (Farthest neighbors
+are similar.) Let s = nα for some parameter α to be set later. Arbitrarily divide the blue point set into n/s
+groups of s points. For every group G of blue points and every red point q, we want to test whether
+F(G,q) :=
+
+min
+p∈G ∥p−q∥1 < t
+
+=
+_
+p∈G
+"
+d
+∑
+i=1
+(piqi +(1−pi)(1−qi)) > d −t
+#
+(where pi denotes the i-th coordinate of a point p). By Corollary 4.2, we can express F(G,q) as a proba-
+bilistic polynomial that has the following number of monomials:
+s·
+
+O(d)
+O(d1/3 log2/3(ds))
+
+≤
+nα ·O
+
+clogn
+c1/3α2/3 logn
+O(c1/3α2/3 logn)
+≤
+nα ·nO(c1/3α2/3 log c
+α ) ≪(n/s)0.1
+for large enough n, by setting α to be a sufﬁciently small constant times 1/(c1/3 log3/2 c). The same bound
+holds for the construction time of the polynomial.
+We can rewrite the polynomial for F(G,q) as the dot product of two vectors φ(G) and ψ(q) in (n/s)0.1
+dimensions over R. The problem of evaluating F(G,q) over all n/s groups G of blue points and all red points
+q then reduces to multiplying an n/s × (n/s)0.1 with an (n/s)0.1 × n matrix over R. This in turn reduces to
+s instances of multiplication of n/s × (n/s)0.1 with (n/s)0.1 × n/s matrices, each of which can be done in
+˜O(n/s)2 arithmetic operations on poly(d)-bit numbers over an appropriately large ﬁeld (Lemma 2.1). The
+total time is ˜O(poly(d)n2/s) = O(n2−1/O(c1/3 log3/2 c)).
+The error probability for each pair (G,q) is at most 1/3, which can be lowered to O(1/n3), for example,
+by repeating O(logn) times (and taking the majority of the answers). The overall error probability is then
+O(1/n). This solves the decision problem for a ﬁxed t, but we can compute all nearest neighbor distances
+by calling the decision algorithm d times for all values of t. For each red point, we can ﬁnd an actual nearest
+neighbor in additional O(s) time, since we know which group achieves the nearest neighbor distance.
+The same approach can be applied to solve approximate nearest neighbor search in Hamming space:
+Theorem 5.1. Given n red and n blue points in {0,1}d and ε ≫log6(d logn)/log3 n, we can ﬁnd an ap-
+proximate Hamming nearest/farthest blue neighbor with additive error at most εd for each red point in
+randomized time n2−Ω(ε1/3/log(
+d
+ε logn )).
+Proof. We mimic the proof of Theorem 1.4 up to the deﬁnition of the polynomial F(G,q). However, instead
+of applying the exact polynomial of Corollary 4.2, we insert the approximate polynomial construction from
+11
+
+the same corollary. While the exact polynomial had degree O(d1/3 log2/3(ds)), the approximate one has
+degree O((1/ε)1/3 logs). Setting
+s := nα := nΩ(ε1/3/log(
+d
+ε logn )),
+the number of monomials in the new polynomial is now
+s·
+
+O(d)
+O((1/ε)1/3 logs)
+
+≤
+nα ·O
+
+d
+(α/ε1/3)logn
+O((α/ε1/3)logn)
+≤
+nα ·nO((α/ε1/3)log
+d
+α logn ) ≪(n/s)0.1,
+for large enough n. The remainder of the algorithm is the same as the proof of Theorem 1.4, and the running
+time is ˜O(n2/s2) ≤n2−Ω(ε1/3/log(
+d
+ε logn )).
+Remark 3. For deterministic algorithms, using Corollary 4.1 instead, the time bounds for Theorems 1.4
+and 1.5 become n2−1/O(clog2 c) and n2−Ω(√ε/log(
+d
+ε logn)) respectively.
+The algorithm of Theorem 5.1 still has three drawbacks: (i) the exponent in the time bound depends
+on the dimension d, (ii) the result requires additive instead of multiplicative error, and (iii) the result is for
+Hamming space instead of more generally ℓ1 or ℓ2. We can resolve all three issues at once, by using known
+dimension reduction techniques:
+Reminder of Theorem 1.5.
+Given n red and n blue points in [U]d and ε ≫log6 logn
+log3 n , we can ﬁnd a
+(1+ε)-approximate ℓ1 or ℓ2 nearest/farthest blue neighbor for each red point in (dn+n2−Ω(ε1/3/log(1/ε)))·
+poly(log(nU)) randomized time.
+Proof. (The ℓ1 case.) We ﬁrst solve the decision problem for a ﬁxed threshold value t. We use a variant of ℓ1
+locality-sensitive hashing (see [And05]) to map points from ℓ1 into low-dimensional Hamming space (pro-
+viding an alternative to Kushilevitz, Ostrovsky, and Rabani’s dimension reduction technique for Hamming
+space [KOR00]). For each red/blue point p and each i ∈{1,...,k}, deﬁne hi(p) = (hi1(p),...,hid(p)) with
+hij(p) =
+
+(paij +bij)/(2t)
+
+where aij ∈{1,...,d} and bij ∈[0,2t) are independent uniformly distributed
+random variables. For each of the O(n) hashed values of hi, pick a random bit; let fi(p) be the random bit
+associated with hi(p). Finally, deﬁne f(p) = ( f1(p),..., fk(p)) ∈{0,1}k. For any ﬁxed p,q,
+Pr[hij(p) ̸= hij(q)]
+=
+1
+d
+d
+∑
+a=1
+min
+|pa −qa|
+2t
+,1
+
+Pr[ fi(p) ̸= fi(q)]
+=
+1
+2 Pr[hi(p) ̸= hi(q)] = 1
+2 Pr
+" k_
+j=1
+[hij(p) ̸= hij(q)]
+#
+.
+• If ∥p−q∥1 ≤t, then Pr[hij(p) ̸= hij(q)] ≤∥p−q∥1
+2dt
+≤1
+2d and Pr[ fi(p) ̸= fi(q)] ≤α0 := 1
+2(1−(1−1
+2d)d);
+• if ∥p−q∥1 ≥(1+ε)t, then Pr[hij(p) ̸= hij(q)] ≥min{∥p−q∥1
+2dt
+, 1
+d } ≥1+ε
+2d and Pr[ fi(p) ̸= fi(q)] ≥α1 :=
+1
+2(1−(1−1+ε
+2d )d).
+Note that α1 −α0 = Ω(ε). By a Chernoff bound, it follows (assuming k ≥logn) that
+• if ∥p−q∥1 ≤t, then ∥f(p)−f(q)∥1 ≤A0 := α0k +O(√klogn) with probability 1−O(1/n3);
+• if ∥p−q∥1 ≥(1+ε)t, then ∥f(p)−f(q)∥1 ≥A1 := α1k−O(√klogn) with probability 1−O(1/n3).
+12
+
+Note that A1 −A0 = Ω(εk) by setting k to be a sufﬁciently large constant times (1/ε)2 logn. We have
+thus reduced the problem to an approximate problem with additive error O(εk) for Hamming space in
+k = O((1/ε2)logn) dimensions, which by Theorem 5.1 requires n2−Ω(ε1/3/log(1/ε)) time. The initial cost of
+applying the mapping f is O(dkn).
+This solves the decision problem; we can solve the original problem by calling the decision algorithm
+O(log1+ε U) times for all t’s that are powers of 1+ε.
+Proof. (The ℓ2 case.) We use a version of the Johnson–Lindenstrauss lemma to map from ℓ2 to ℓ1 (see for
+example [Mat08]). For each red/blue point p, deﬁne f(p) = ( f1(p),..., fk(p)) ∈Rk with fi(p) = ∑k
+j=1 aijpj,
+where the aij’s are independent normally distributed random variables with mean 0 and variance 1. For each
+ﬁxed p,q ∈Rd, it is known that after rescaling by a constant, ∥f(p) −f(q)∥1 approximates ∥p −q∥2 to
+within 1 ± O(ε) factor with probability 1 −O(1/n3), by setting k = O((1/ε)2 logn). It sufﬁces to keep
+O(logU)-bit precision of the mapped points. The initial cost of applying the mapping f is O(dkn) (which
+can be slightly improved by utilizing a sparse Johnson–Lindenstrauss transform [AC09]).
+Numerous applications to high-dimensional computational geometry now follow. We brieﬂy mention
+just one such application, building on the work of [IM98, HIM12]:
+Corollary 5.1. Given n points in [U]d and ε ≫log6 logn/log3 n, we can ﬁnd a (1+ ε)-approximate ℓ1 or
+ℓ2 minimum spanning tree in (dn+n2−Ω(ε1/3/log(1/ε)))·poly(log(nU)) randomized time.
+Proof. Let Gr denote the graph where the vertex set is the given point set P and an edge pq is present
+whenever p and q have distance at most r. Har-Peled, Indyk, and Motwani [HIM12] gave a reduction of the
+approximate minimum spanning tree problem to the following approximate connected components problem:
+Given a value r, compute a partition of P into subsets with the properties that (i) two points
+in the same subset must be in the same component in G(1+ε)r, and (ii) two points in different
+subsets must be in different components in Gr.
+The reduction is based on Kruskal’s algorithm and increases the running time by a logarithmic factor.
+To solve the approximate connected components problem, Har-Peled, Indyk, and Motwani gave a further
+reduction to online dynamic approximate nearest neighbor search. Since we want a reduction to ofﬂine static
+approximate nearest neighbor search, we proceed differently.
+We ﬁrst reduce the approximate connected components problem to the ofﬂine approximate nearest for-
+eign neighbors problem:
+Given a set P of n colored points with colors from [n], for each point q ∈P, ﬁnd a (1 + ε)-
+approximate nearest neighbor NFNq among all points in P with color different from q’s color.
+The reduction can be viewed as a variant of Boruvka’s algorithm and is as follows: Initially assign each
+point a unique color and mark all colors as active. At each iteration, solve the ofﬂine approximate nearest
+foreign neighbors problem for points with active colors. For each q, if NFNq and q have distance at most
+(1+ε)r and have different colors, merge the color class of NFNq and q. If a color class has not been merged
+to other color classes during the iteration, mark its color as inactive. When all colors are inactive, output the
+color classes. Otherwise, proceed to the next iteration. The correctness of the algorithm is obvious. Since
+each iteration decreases the number of active colors by at least a half, the number of iterations is bounded
+by O(logn). Thus, the reduction increases the running time by a logarithmic factor.
+13
+
+To ﬁnish, we reduce the ofﬂine approximate nearest foreign neighbors problem to the standard (red/blue)
+ofﬂine approximate nearest neighbors problem by a standard trick: For each j = 1,...,⌈logn⌉, for each point
+q ∈P where the j-th bit of q’s color is 0 (resp. 1), compute an approximate nearest neighbor of q among all
+points p ∈P where the j-th bit of p’s color is 1 (resp. 0). Record the nearest among all approximate nearest
+neighbors found for each point q. The ﬁnal reduction increases the running time by another logarithmic
+factor.
+6
+Faster Algorithms For MAX-SAT
+Next, we apply our improved probabilistic PTFs to obtain faster algorithms for MAX-SAT for sparse in-
+stances with cn clauses. We ﬁrst consider MAX-k-SAT for small k before solving the general problem:
+Theorem 6.1. Given a k-CNF formula F (or k-CSP instance) with n variables and cn ≪n4/(k4 log6 n)
+clauses, we can ﬁnd an assignment that satisﬁes the maximum number of clauses (constraints) of F in
+randomized 2n−n/O(k4/3c1/3 log(kc)) time.
+Proof. We proceed as in the #k-SAT algorithm of Chan and Williams [CW16]. We ﬁrst solve the decision
+problem of testing whether there is a variable assignment satisfying more than t clauses for a ﬁxed t ∈[cn].
+Let s = αn for some parameter α < 1/2 to be set later.
+For j ∈[cn], deﬁne the function Cj(x1,...,xn) = 1 if the j-th clause of the given formula is satisﬁed, and
+0 otherwise. Note that each Cj can be expressed as a polynomial of degree at most k.
+Say that a variable is good if it occurs in at most 2kc clauses. By the pigeonhole principle, at least half of
+the variables are good, so we can ﬁnd s good variables x1,...,xs. Let xs+1,...,xn be the remaining variables,
+and let J ⊂[cn] be the set of indices of all clauses Cj that contain some occurrence of a good variable; note
+that |J| = O(kcs). Now for every variable assignment (xs+1,...,xn) ∈{0,1}n−s, we want to compute
+F(xs+1,...,xn) :=
+_
+(a1,...,as)∈{0,1}s
+"
+cn
+∑
+j=1
+Cj(a1,...,as,xs+1,...,xn) > t
+#
+.
+We will achieve this by computing for every t′ ∈[cn]:
+Gt′(xs+1,...,xn) :=
+_
+(a1,...,as)∈{0,1}s
+"
+∑
+j∈J
+Cj(a1,...,as,xs+1,...,xn) > t′
+#
+.
+Let us deﬁne T[xs+1,...,xn] := t −∑j̸∈JCj(0,...,0,xs+1,...,xn). (Observe that it is OK to zero out the
+good variables x1,...,xs here, because we are only summing over clauses that do not contain them.) Note
+that T can be viewed as a polynomial in n −s variables with only poly(n) monomials. Therefore for all
+(xs+1,...,xn) ∈{0,1}n−s, these T-values can be precomputed in poly(n)2n−s time. As these T-values are
+measuring the contribution from the variables xs+1,...,xn to the number of satisﬁed clauses, we have
+F(xs+1,...,xn) = GT[xs+1,...,xn](xs+1,...,xn).
+Applying Corollary 4.2 (in the exact setting), we can express any Gt′ as a sum of 2s probabilistic polynomials
+of degree k · O((kcs)1/3(s + log(kcs))2/3), where each probabilistic polynomial computes an expression
+of the form
+
+∑j∈J pj(xs+1,...,xn)
+
+with error probability at most 1/(10 · 2s), and for all j ∈J we have
+deg(pj(xs+1,...,xn)) ≤k. The number of monomials in our probabilistic polynomial for Gt′ is at most
+2s ·
+
+n−s
+k ·O((kcs)1/3(s+log(kcs))2/3)
+
+≤
+2αn ·O
+
+n
+k4/3c1/3αn
+O(k4/3c1/3αn)
+≤
+2αn ·2O(k4/3c1/3α log 1
+α )n ≪20.1n
+14
+
+by setting α to be a sufﬁciently small constant times 1/(k4/3c1/3 log(kc)). The same bound holds for the
+construction time of the polynomial.
+For each t′, we can evaluate the polynomial for Gt′ at all 2n−s input values by divide-and-conquer or
+dynamic programming using poly(n)2n−s arithmetic operations [Yat37, Wil14c] on poly(n)-bit numbers.
+The total time is 2n−n/O(k4/3c1/3 log(kc)). As before, the error probability can be lowered by taking the majority
+values over O(n) repetitions, and the original problem can be solved by calling the decision algorithm for at
+most cn times.
+Reminder of Theorem 1.6. Given a CNF formula with n variables and cn ≪n4/log10 n clauses, we can
+ﬁnd an assignment that satisﬁes the maximum number of clauses in randomized 2n−n/O(c1/3 log7/3 c) time.
+Proof. We use a standard width reduction technique [SST15] originally observed by Schuler [Sch05] and
+studied closely by Calabro, Impagliazzo, and Paturi [CIP06]. Consider the following recursive algorithm:
+• If all clauses have length at most k, then call the algorithm from Theorem 6.1 and return its output.
+• Otherwise, pick a clause (α1 ∨···∨αℓ) with ℓ> k. Return “SAT” if at least one of the two following
+calls return “SAT”:
+– Recursively solve the instance in which (α1 ∨···∨αℓ) is replaced by (α1 ∨···∨αk), and
+– recursively solve the instance in which α1,...,αk are all assigned false.
+Sakai, Seto, and Tamaki’s analysis for MAX-SAT [SST15] can be directly modiﬁed to show that the total
+time of this algorithm remains 2n−n/O(k4/3c1/3 log(kc)), when the parameter k is set to be a sufﬁciently large
+constant times logc.
+For MAX-k-SAT with k ≤4, we can obtain a much better dependency on the sparsity parameter c; in
+fact, we obtain signiﬁcant speedup even for general dense instances. The approach this time requires only
+the previous probabilistic polynomials by Alman and Williams [AW15]. Naively, the dense case seems to
+require threshold functions with superlinearly many arguments, but by incorporating a few new ideas, we
+manage to solve MAX-4-SAT using only O(n)-variate threshold functions.
+Reminder of Theorem 1.7.
+Given a weighted 4-CNF formula F with n variables with positive integer
+weights bounded by poly(n), we can ﬁnd an assignment that maximizes the total weight of clauses satisﬁed
+in F, in randomized 2n−n/O(log2 nlog2 logn) time. In the sparse case when the clauses have total weight cn, the
+time bound improves to 2n−n/O(log2 clog2 logc).
+Proof. (Dense case.) Let s = αn for some parameter α to be set later. Arbitrarily divide the n variables of
+F into three groups: x = {x1,...,x(n−s)/2}, y = {y1,...,y(n−s)/2}, and z = {z1,...,zs}. As in Theorem 6.1,
+it sufﬁces to solve the decision problem of whether there exist x,y ∈{0,1}(n−s)/2 and z ∈{0,1}s such that
+f(x,y,z) > t, for a given degree-4 polynomial f and a ﬁxed t ∈[nc0] (for an appropriately large constant c0).
+Since f has degree 4, observe that each term has either (a) at most one y variable, (b) at most one x variable,
+or (c) no z variable. We can thus write
+f(x,y,z) =
+(n−s)/2
+∑
+i=1
+fi(x,z)yi +
+(n−s)/2
+∑
+i=1
+gi(y,z)xi +h(x,y)
+where the fi’s and gi’s are degree-3 polynomials, and h is a degree-4 polynomial.
+For every x,y ∈{0,1}(n−s)/2, it sufﬁces to compute
+F(x,y) := ∑
+z∈{0,1}s
+[ f(x,y,z) > t].
+15
+
+More generally, we compute for every t′ ∈[nc0]:
+Gt′(x,y) := ∑
+z∈{0,1}s
+Hz,t′(x,y), with Hz,t′(x,y) :=
+"(n−s)/2
+∑
+i=1
+fi(x,z)yi +
+(n−s)/2
+∑
+i=1
+gi(y,z)xi > t′
+#
+.
+Then F(x,y) = Gt−h(x,y)(x,y); we can precompute all h(x,y) values in poly(n)2n−s time.
+The Hz,t′(x,y) predicate can be viewed as a weighted threshold function with O(n) arguments. To further
+complicate matters, these weights are not ﬁxed: they depend on x and y. We resolve the issue by extending
+the vectors x and y and using a binary representation trick.
+For each vector x ∈{0,1}(n−s)/2, deﬁne an extended vector x∗where x∗
+i = xi for each i = 1,...,(n−s)/2
+and x∗
+i,j,z is the j-th least signiﬁcant bit in the binary representation of fi(x,z) for each i = 1,...,(n−s)/2, j =
+0,...,ℓand z ∈{0,1}s, with ℓ= O(logn). Note that x∗is a vector in O(n·logn·2s) dimensions. Similarly,
+for each vector y ∈{0,1}(n−s)/2, deﬁne an extended vector y∗where y∗
+i = yi for each i = 1,...,(n −s)/2
+and y∗
+i,j,z is the j-th least signiﬁcant bit in the binary representation of gi(y,z) for each i = 1,...,(n−s)/2,
+j = 0,...,ℓand z ∈{0,1}s. We can precompute all extended vectors in 2(n−s)/2 ·poly(n)2s time.
+Then
+Hz,t′(x,y) := ∑
+(t0,...,tℓ)
+ℓ
+∏
+j=0
+"(n−s)/2
+∑
+i=1
+x∗
+i,j,zyi +
+(n−s)/2
+∑
+i=1
+y∗
+i,j,zxi = tj
+#
+,
+where the outer sum is over all tuples (t0,...,tℓ) ∈[nc0]ℓwith ∑ℓ
+j=0 2j ·tj > t′.
+By Fact 4.3, for each z ∈{0,1}s, j = 0,...,ℓ, and tj ∈[nc0], we can construct a probabilistic polynomial
+(over R or F2) for the predicate
+h
+∑i x∗
+i,j,zyi +∑iy∗
+i,j,zxi = tj
+i
+with degree O(√nlogS) with error probability
+at most 1/S. By the union bound, the probability that there is an error for some z, j,tj is at most O((1/S) ·
+2s ·logn·nO(1)), which can be made at most 1/4s, for example, by setting S = nc02s for a sufﬁciently large
+constant c0. Thus, the degree for each predicate is O(√ns) (assuming s ≥logn).
+For each z ∈{0,1}s and t′ ∈[nc0], by distributing over the product ∏ℓ
+j=0 we can then construct a proba-
+bilistic polynomial for Hz,t′(x,y) with degree O(√nsℓ) ≤O(√nslogn). For a ﬁxed z and t′, such a polyno-
+mial is a function of O(nlogn) free variables in x∗and y∗, and therefore has at most
+  O(nlogn)
+O(√nslogn)
+
+monomials.
+The same bound holds for the time needed to construct the probabilistic polynomial (note the number of
+tuples (t0,...,tℓ) is nO(logn), which is a negligible factor).
+For each t′ ∈[nc0], we can thus construct a probabilistic polynomial for Gt′(x,y) with degree
+O(√nslogn) over x∗and y∗, with the following number of monomials:
+2s ·
+ O(nlogn)
+O(√nslogn)
+
+≤
+2αn ·O
+
+nlogn
+√αnlogn
+O(√αnlogn)
+≤
+2αn ·2
+√αn(log(n))log(1/α) ≪20.1(n−s)/2
+by setting α to be a sufﬁciently small constant times 1/(logn · loglogn)2. The same bound holds for the
+construction time.
+We can rewrite the polynomial for Gt′(x,y) as the dot product of two vectors φ(x∗) and ψ(y∗) of
+20.1(n−s)/2 dimensions. The problem of evaluating Gt′(x,y) over all x,y ∈{0,1}(n−s)/2 then reduces to
+multiplying a 2(n−s)/2 × 20.1(n−s)/2 with a 20.1(n−s)/2 × 2(n−s)/2 matrix (over R or F2), which can be done
+in poly(n)2n−s time (Lemma 2.1). The total time is 2n−n/O(log2 nlog2 logn).
+Proof. (Sparse case.) If the clauses have total weight cn, we can reﬁne the analysis above, in the following
+way. Let µi and νi be the maximum value of fi(x,z) and gi(y,z) respectively. We know that ∑i(µi +νi) ≤cn.
+16
+
+The variable x∗
+i,j,z is needed only when j ≤log(µi), and the variable y∗
+i,j,z is needed only when j ≤log(νi).
+For each z, j,tj, the probabilistic polynomial for the predicate
+"
+∑
+i
+x∗
+i,j,zyi +∑
+i
+y∗
+i,j,zxi = tj
+#
+has degree O(√njs), where nj is the number of i’s with µi ≥2j or νi ≥2j.
+Observe that nj = O(cn/2j). It follows that the degree for the Hz,t′(x,y) polynomial is O(∑ℓ
+j=0
+√njs) =
+O(√nslogc + ∑j>logc
+p
+(cn/2j)s) = O(√nslogc).
+The number of variables in Hz,t′(x,y) is at most
+O(∑ℓ
+j=0 nj) = O(nlogc+∑j>logc(cn/2j)) = O(nlogc).
+Thus, the bound on the total number of monomials becomes
+2s ·
+ O(nlogc)
+O(√nslogc)
+
+≤
+2αn ·O
+
+nlogc
+√αnlogc
+O(√αnlogc)
+≤
+2αn ·2
+√αnlogclog(1/α) ≪20.1(n−s)/2
+by setting α to be a sufﬁciently small constant times 1/(logcloglogc)2.
+7
+Circuit Satisﬁability Algorithms
+In this section, we give new algorithms for solving the SAT problem on some rather expressive circuit
+classes. First, we outline some notions used in both algorithms.
+7.1
+Satisﬁability on a Cartesian Product
+In intermediate stages of our SAT algorithms, we will study the following generalization of SAT, where the
+task is to ﬁnd a SAT assignment in a “Cartesian product” of possible assignments.
+Deﬁnition 7.1. Let n be even, and let A,B ⊆{0,1}n/2 be arbitrary. The SAT problem on the set A×B is to
+determine if a given n-input circuit has a satisfying assignment contained in the set A×B.
+Recall that a Boolean function f : {0,1}n →{0,1} is a linear threshold function (LTF) if there are
+a1,...,an,t ∈R such that for all x ∈{0,1}n, f(x) = 1 ⇐⇒∑i aixi ≥t.
+Let Circuit ◦LTF[Z,S] be the class of circuits with a layer of S LTFs at the bottom (nearest the inputs),
+with Z additional arbitrary gates above that layer. Let Circuit ◦SUM◦AND[Z,S] be the analogous circuit
+class, but with S DNFs at the bottom layer with property that each DNF always has at most one conjunct true
+for every variable assignment. (Thus we may think of the DNF as simply an integer sum.) We ﬁrst prove that
+the SAT problem for Circuit ◦LTF can be reduced to the SAT problem for Circuit ◦SUM◦AND, utilizing a
+weight reduction trick that can be traced back to Matoušek’s algorithm for computing dominances in high
+dimensions [Mat91, Wil14b]:
+Lemma 7.1. Let A,B ⊆{0,1}n/2, with |A| = |B| = N ≤2n.
+Let K ∈[1,N] be an integer parameter.
+The SAT problem for Circuit ◦LTF[Z,S] circuits on the set A × B can be reduced to the SAT problem for
+Circuit ◦SUM◦AND[Z,S] where each DNF has at most O(logK) terms and each AND has fan-in at most
+2logK, on a prescribed set A′ × B′ with |A′| = |B′| = N and A′,B′ ⊆{0,1}2SlogK. The reduction has the
+property that if the latter SAT problem can be solved in time T, then the former SAT problem can be solved
+in time
+ T +N2 ·Z2/K +N ·S
+
+·poly(n).
+17
+
+Proof. For a given circuit C of type Circuit ◦LTF[Z,S], let the jth LTF in the bottom layer have weights
+αj,1,...,αj,n,tj. Let the assignments in A be a1,...,aN, and let the assignments in B be b1,...,bN. Denote
+the kth bit of ai and bi as ai[k] and bi[k], respectively.
+Make N ×S matrices MA and MB, where
+MA[i, j] =
+n/2
+∑
+k=1
+αj,k ·ai[k]
+and
+MB[i, j] = tj −
+n/2
+∑
+k=1
+αj,n/2+k ·bi[k].
+The key property of these matrices is that MA[i, j] ≥MB[i′, j] if and only if the n-variable assignment (ai,bi′)
+makes the jth LTF output 1.
+For each j = 1,...,S, let L j be the list of all 2· N entries in the jth column of MA and the jth column
+of MB, sorted in increasing order. Partition L j into K contiguous parts of O(N/K) entries each, and think of
+each part of L j as containing a set of O(N/K) assignments from A∪B. (So, the partition of L j is construed
+as a partition of the assignments in A ∪B.) There are two possible cases for a satisfying assignment to the
+circuit C:
+1. There is a satisfying assignment (ai,bi′) ∈A×B such that for some j = 1,...,S, ai and bi′ are in the
+same part of L j. By enumerating every ai ∈A, every j = 1,...,S, and all O(N/K) assignments bi′ of
+B which are in the same part of L j as ai, then evaluating the circuit C on the assignment (ai,bi′) in
+Z2 ·poly(n) time, we can determine satisﬁability for this case in O(N ·N/K ·Z2)·poly(n) time. If this
+does not uncover a SAT assignment, we move to the second case.
+2. There is a satisfying assignment (ai,bi′) ∈A×B such that for every j = 1,...,S, ai and bi′ are different
+parts of L j. Then for every LTF gate j = 1,...,S on the bottom layer of the circuit, we claim that the
+j-th LTF can be replaced by a sum of O(logK) ANDs on 2logK new variables. In particular, for the
+j-th LTF we deﬁne one new set of logK variables which encodes the index k = 1,...,K such that
+ai is in part k of L j, and another set of logK variables which encodes the index k′ such that bi′ is in
+part k′ of L j. Then, determining [k ≥k′] is equivalent to determining whether (ai,bi′) satisﬁes the j-th
+LTF gate. Finally, note that the predicate [k ≥k′] can be computed by a DNF of O(logK) conjuncts.
+(Take an OR over all ℓ= 0,...,logK, guessing that the ℓ-th bit is the most signiﬁcant bit in which
+k and k′ differ; we can verify that guess with a conjunction on 2logK variables.) On every possible
+input (k,k′) ∈{0,1}2log K, the DNF has at most one true conjunction. Thus we can construe the OR
+as simply an integer sum of ANDs, as desired. Preparing these new assignments for this new SAT
+problem takes time O(N ·S)·poly(n).
+7.2
+Simulating LTFs with AC0 of MAJORITY
+In our SAT algorithms, we will need a way to simulate LTFs with bounded-depth circuits with MAJORITY
+gates. This was also used in Williams’ work on solving ACC-LTF SAT [Wil14b], as a black box. However,
+here we must pay careful attention to the details of the construction. In fact, we will actually have to modify
+the construction slightly in order for our circuit conversion to work out. Let us review the construction
+here, and emphasize the parts that need modiﬁcation for this paper. Recall that MAJ denotes the majority
+function.
+18
+
+Theorem 7.1 (Follows from [MT98], Theorem 3.3). Every LTF can be computed by polynomial-size AC0 ◦
+MAJ circuits. Furthermore, the circuits can be constructed in polynomial time given the weights of the
+LTF, and the fan-in of each MAJ gate can be made n1+ε, for every desired ε > 0, and the circuit has depth
+O(log(1/ε)).
+It will be crucial for our ﬁnal results that the fan-in of the MAJ gates can be made arbitrarily close to
+linear.
+Proof. We begin by revisiting the circuit construction of Maciel and Thérien [MT98], which shows that
+the addition of n distinct n-bit numbers can be performed with polynomial-size AC0 ◦MAJ circuits. The
+original construction of Maciel and Thérien yields MAJ gates of fan-in ˜O(n2), which is too large for our
+purposes. We can reduce the fan-in of MAJ gates to O(n1+ε) by setting the parameters differently in their
+construction. Let us sketch their construction in its entirety, then describe how to modify it.
+Recall that SYM denotes the class of symmetric functions. First, we show that addition of n n-bit
+numbers can be done in AC0 ◦SYM. Suppose the n-bit numbers to be added are A1,...,An, where Ai =
+Ai,n ···Ai,1 for A j,i ∈{0,1}. Maciel and Thérien partition each Ai into m blocks of ℓbits, where m · ℓ= n.
+They compute the sum Sk of the n ℓ-bit numbers in each block k = 1,...,m, i.e.
+Sk =
+n
+∑
+i=1
+ℓ
+∑
+j=1
+Ai,(k−1)ℓ+ j ·2j−1,
+and note that the desired sum is
+z =
+m
+∑
+k=1
+Sk ·2(k−1)ℓ.
+Each Sk can be represented in ℓ+logn bits. Maciel and Thérien set ℓ= logn, so that each Sk is represented
+by 2ℓbits. They then split each Sk into ℓ-bit numbers Hk and Lk such that
+Sk = Hk ·2ℓ+Lk.
+Note that the “high” part Hk corresponds to the “carry bits” of Sk. They then note that if
+y1 :=
+m
+∑
+k=1
+Hk ·2kℓ, y2 :=
+m
+∑
+k=1
+Lk ·2(k−1)ℓ,
+we have
+(a) z = y1 +y2, and
+(b) each bit of yi is a function of exactly one Hk or Lk for some k. In turn, each Lk, Hk is a sum of n·ℓAi,j’s
+where each Ai,j is multiplied by a power of two in [0,2ℓ]. Therefore, each bit of yi can be computed
+by a SYM gate of fan-in at most n·ℓ·2ℓ≤n2.
+We have therefore reduced the addition of n n-bit numbers to adding the two O(n)-bit numbers y1 and y2,
+with a layer of SYM gates. Adding two numbers can be easily computed in AC0 (see for example [CFL85]),
+so the whole circuit is of the form AC0 ◦SYM.
+We wish to reduce the fan-in of the SYM gates to O(n1+ε) for arbitrary ε > 0. To reduce the fan-in
+further, it sufﬁces to ﬁnd a construction that lets us reduce ℓ. Naturally, we can try to set ℓ= ε logn for
+arbitrarily small ε ∈(0,1). Without loss of generality, let us assume 1/ε is an integer. Then, each Sk is
+represented in ℓ+ logn ≤(1 + 1/ε)ℓbits. Let t = 1 + 1/ε. If we then split each Sk into t ℓ-bit numbers
+Tt−1
+k
+,...,T 0
+k , ranging from high-order to low-order bits, we then have
+Sk = Tt−1
+k
+·2(t−1)ℓ+···+T 1
+k ·2ℓ+T 0
+k .
+19
+
+Deﬁning the t numbers
+yi :=
+m
+∑
+k=1
+T i
+k ·2(k+i−1)ℓ,
+the desired sum is z = ∑t−1
+i=0 yi. Just as before, each bit of yi is a function of exactly one T i
+k for some k,
+which is a sum of n· ℓAi,j’s where each Ai,j is multiplied by an integer in [0,2ℓ]. Hence each bit of yi can
+be computed by a SYM gate of fan-in at most n · ℓ· 2ℓ≤˜O(n1+ε). So with one layer of SYM gates, we
+have reduced the n number n-bit addition problem to the addition of t O(n)-bit numbers y0,...,yt−1. But
+for t ≤logn, addition of t n-bit numbers can be computed by AC0 circuits of poly(n)-size and ﬁxed depth
+independent of t (see e.g. [Vol99], p.14-15). This completes the description of our AC0 ◦SYM circuit.
+Observe that each SYM gate can be easily represented by an OR◦AND◦MAJ circuit. In particular, the
+OR is over all j ∈{0,1,...,n} such that the SYM gate outputs 1 when given j inputs are equal to 1, and the
+AND◦MAJ part computes ∑j xj = j. Again, the fan-in of each MAJ here is ˜O(n1+ε).
+We now apply the addition circuits to show how every LTF on n variables can be represented by a
+polynomial-size AC0 ◦MAJ circuit. Suppose our LTF has weights w1,...,wn+1, computing ∑n
+j=1 w jxj ≥
+wn+1. By standard facts about LTFs, we may assume for all j that |w j| ≤2bnlog2 n for some constant b > 0.
+Set W = bnlog2 n.
+Let D be a AC0 ◦MAJ circuit for adding n W-bit numbers as described above, where each MAJ gate has
+fan-in ˜O(n1+ε). For all j = 1,...,n, connect to the jth W-bit input of D a circuit which, given xj, feeds w j
+to D if the input bit xij = 1, and the all-zero W-bit string if xj = 0. Observe this extra circuitry is only wires,
+no gates: we simply place a wire from xj to all bits of the jth W-bit input where the corresponding bit of w j
+equals 1.
+This new circuit D′ clearly computes the linear form ∑n
+j=1 w jxj. The linear form can then be compared
+to wn+1 with an AC0 circuit, since the “less-than-or-equal-to” comparison of two integers can be performed
+in AC0. Indeed, this function can be represented as a quadratic-size DNF (SUM◦AND), as was noticed in
+Lemma 7.1. We now have an AC0 ◦MAJ circuit D′′ of size poly(W,t) ≤nb computing the LTF, where the
+MAJ gates have fan-in ˜O(n1+ε).
+7.3
+Satisﬁability Algorithm for ACC of LTF of LTF
+Let AC0[d,m] ◦LTF ◦LTF[S1,S2,S3] be the class of circuits with a layer of S3 LTFs at the bottom layer
+(nearest the inputs), a layer of S2 LTFs above the bottom layer, and a size S1 AC0[m] circuit of depth d above
+the two LTF layers.
+Reminder of Theorem 1.8. For every integer d > 0, m > 1, and δ > 0, there is an ε > 0 and an algorithm
+for satisﬁability of AC0[d,m]◦LTF◦LTF[2nε,2nε,n2−δ] circuits that runs in deterministic 2n−nε time.
+We use the following depth-reduction theorem of Beigel and Tarui (with important constructibility is-
+sues clariﬁed by Allender and Gore [AG94], and recent size improvements by Chen and Papakonstanti-
+nou [CP16]):
+Theorem 7.2 ([BT94, AG94]). Every SYM◦ACC circuit of size s can be simulated by a SYM◦AND circuit
+of 2(logs)c′
+size for some constant c′ depending only on the depth d and MODm gates of the ACC part.
+Moreover, the AND gates of the ﬁnal circuit have only (logs)c′ fan-in, the ﬁnal circuit can be constructed
+from the original in 2O((logs)c′) time, and the ﬁnal symmetric function at the output can be computed in
+2O((logs)c′) time.
+20
+
+Proof of Theorem 1.8.
+Let ε > 0 be a parameter to be set later. The plan is to start with a circuit as
+speciﬁed in the theorem statement, and slowly convert into a nice form that can be evaluated efﬁciently on
+many inputs.
+1. Trade Variables for Circuit Size. Our ﬁrst step is standard for ACC-SAT algorithms [Wil14b,
+Wil14c]: given an AC0[d,m] ◦LTF ◦LTF[2nε,2nε,n2−δ] circuit C with n variables, create a copy of the
+circuit Cv := C(v,·) for all possible assignments v ∈{0,1}nε to the ﬁrst nε variables of C, and deﬁne
+C′(xnε+1,...,xn) :=
+_
+v
+Cv(xnε+1,...,xn).
+Observe that C′ is satisﬁable if and only if C is satisﬁable, C′ has size at most 2O(nε), C′ is also an AC0 ◦
+LTF◦LTF circuit, and C′ has only n−nε variables.
+2. Replace the middle LTFs with MAJORITYs (Theorem 7.1). Note that each LTF on the second
+layer of C′ has fan-in at most n2−δ + n, since the number of LTFs on the ﬁrst layer is n2−δ. Applying the
+low fan-in transformation of Theorem 7.1, we can replace each of the LTFs on the second layer of C′ with
+poly(n)-size AC0 ◦MAJ circuits where each MAJ has fan-in at most n2−δ/2. This generates at most 2dnε
+new MAJ gates in the circuit C′, for some constant d > 0, and produces a circuit of type
+ACC0 ◦MAJ◦LTF.
+3. Replace those MAJORITYs with (derandomized) probabilistic polynomials over F2 (Theo-
+rem 1.1). We replace each of these new MAJ gates with our low-randomness probabilistic polynomials for
+the MAJORITY function, as follows. Recall from Theorem 1.1 that we can construct a probabilistic poly-
+nomial over F2 for k-bit MAJORITY with degree O(
+p
+klog(1/ε′)) and error at most ε′, using a distribution
+of kO(log(k/ε′)) uniformly chosen F2-polynomials. Setting k := n2−δ/2 for the fan-in of the MAJ gates, and
+the error to be ε′ := 1/22dnε , the degree becomes
+D := O
+p
+n2−δ/2 ·2dnε
+
+≤O(n1−δ/4+ε/2)
+and the sample space has size S = nO(nε). For ε ≪δ/4, we have D := O(n1−δ/8), and each polynomial in
+our sample space has at most
+  n2−δ
+n1−δ/8
+
+≤2O(n1−δ/8 logn) monomials. For every choice of the random seed r to
+the probabilistic polynomial, let C′
+r be the circuit C′ with the corresponding F2 polynomial Pr substituted in
+place of each MAJ gate. That is, each MAJ gate is substituted by an XOR of 2O(n1−δ/8 logn) ANDs of fan-in
+at most O(n1−δ/8).
+We now form a circuit C′′ which takes a majority vote over all 2O(nε logn) circuits C′
+r. The new circuit C′′
+therefore has the form
+MAJ◦ACC0 ◦XOR◦AND◦LTF,
+where the MAJ◦ACC0 part has size 2O(nε logn), and each XOR◦AND◦LTF subcircuit has size 2O(n1−δ/8 logn).
+Since our probabilistic polynomial computes MAJORITY with 1/22dnε error and there are at most 2dnε MAJ
+gates in C′, the new circuit C′′ is equivalent to the original circuit C′.
+4. Apply Beigel–Tarui to the top of the circuit, and distribute. It is very important to observe that
+we cannot apply Beigel–Tarui (Theorem 7.2) to the entire circuit C′′, as its total size is 2Ω(n1−δ/8 logn), and
+the quasi-polynomial blowup of Beigel–Tarui would generate a huge circuit of size Ω(2n), rendering our
+conversion intractable.
+However, the top MAJ ◦ACC0 part is still small. Invoking the depth reduction lemma of Beigel and
+Tarui (Theorem 7.2 above), we can replace the MAJ◦ACC0 part in C′′ of size 2O(nε logn) (even though it has
+2O(nε logn) inputs from the XOR layer!) with a SYM◦AND circuit of size 2na·ε for a constant a ≥1, where
+21
+
+each AND has fan-in at most naε, and a depends only on the (constant) depth d and (constant) modulus m
+of the ACC0 subcircuit.
+The resulting circuit C3 now has the form
+SYM◦AND◦XOR◦AND◦LTF.
+Applying the distributive law to the AND ◦XOR parts, where the ANDs have fan-in at most naε and the
+XORs have fan-in 2O(n1−δ/8 logn), each AND◦XOR parts can be converted into an XOR◦AND circuit of size
+2O(n1−δ/8+aε logn), where the fan-in of ANDs is at most naε. Letting ε ≪δ/(ca) for sufﬁciently large c ≥1,
+the fan-in of the new XORs is at most 2O(n1−ε). We now have a circuit C4 of the form
+SYM◦XOR◦AND◦LTF.
+Note that the fan-in of the SYM gate is at most 2na·ε, and the fan-in of the (merged) ANDs is O(n1−δ/8+aε).
+5. Apply modulus-amplifying polynomials to eliminate the XOR layer. We’d like to remove the
+XOR layer, to further reduce the depth of the circuit. But as the gates of this layer have very high fan-in, we
+must be careful not to blow the circuit size up to Ω(2n). The following construction will take advantage of
+the fact that we have only poly(n) total gates in the bottom LTF layer.
+We apply one step of Beigel-Tarui’s transformation [BT94] (from ACC0 to SYM ◦AND) to the
+SYM◦XOR◦AND part of our circuit. In particular, we apply a modulus-amplifying polynomial P (over the
+integers) of degree 2D′ = 2na·ε to each of the XOR ◦AND parts. Construing the XOR ◦AND as a sum of
+products ∑∏, the polynomial P has the property:
+• If the ∑∏= 1 mod 2, then P(∑∏) = 1 mod 2D′.
+• If the ∑∏= 0 mod 2, then P(∑∏) = 0 mod 2D′.
+So, composing P with each XOR ◦AND part, each P outputs either 0 or 1 modulo 2na·ε. The key property
+here is that the modulus exceeds the fan-in of the SYM gate, so the sum of all P(∑∏) simply counts the
+number of XOR◦ANDs which are true; this is enough to determine the output of the SYM gate. Construing
+the output of each bottom LTF gate as a variable, there are at most n2−ε variables. Expressing each P(∑∏)
+(expanded as a sum of products) as a multilinear polynomial in these LTF variables, the total number of
+terms is at most
+
+n2−ε
+D′ ·n1−δ/8+aε
+
+≤2O(D′·n1−δ/8+aε·logn) ≤2O(n2a·ε+1−δ/8·logn).
+Let ε := δ/(ca) for a sufﬁciently large constant c > 1 so that 2aε +1−δ/8 < 1−ε. We can then merge the
+sum of all P(∑∏)’s into the SYM gate, and obtain a SYM◦AND circuit where the SYM has fan-in
+2O(n2a·ε+(1−δ/8)) ≤2O(n1−ε),
+and the AND gates have fan-in O(n2a·ε+(1−δ/8)) ≤O(n1−ε). The result is a circuit C4 of the form
+SYM◦AND◦LTF.
+6. Replace the bottom threshold gates with DNFs (Theorem 7.1), and distribute. Note that the
+circuit C4 has n −nε variables, so our SAT algorithm would follow if we could evaluate C4 on all of its
+variable assignments in 2n−nε · poly(n) time. We are now in a position to apply Lemma 7.1, which lets us
+reduce the evaluation problem for SYM◦AND ◦LTF circuits to the evaluation problem for SYM◦AND ◦
+SUM ◦AND circuits, with a parameter K that needs setting. Recall the middle AND gates have fan-in
+O(n1−ε), and the fan-in of the SUM is O(logK). Therefore by the distributive law, we can rewrite the circuit
+as a SYM◦SUM ◦AND circuit, where each SUM gate has (logK)O(n1−ε) ANDs below it, and at most one
+22
+
+AND below each SUM is true. Thus we can wire these AND gates directly into the top SYM gate without
+changing the output.
+In more detail, let A,B = {0,1}(n−nε )/2, and set N = 2(n−nε)/2 and the integer parameter K := 2b·n1−ε for
+a sufﬁciently large constant b > 1. By Lemma 7.1, we can reduce the SAT problem for SYM◦AND ◦LTF
+circuits of size 2O(n1−ε) on the set A×B = {0,1}n−nε to the SAT problem for SYM◦SUM◦AND circuits of
+size
+2O(n1−ε) ·22bn1−ε ·n2−δ ≤2O(n1−ε)
+on a prescribed set A′ × B′ with |A′| = |B′| = N and A′,B′ ⊆{0,1}2bn2−δ ·n1−ε. By the distributive argument
+from the previous paragraph, we can convert the SYM◦SUM ◦AND circuit into a SYM ◦AND circuit of
+size at most
+2O(n1−ε) ·2O(n1−ε loglogK) ≤2O(n1−ε log(n)).
+By Lemma 7.1, we know that if the SYM◦AND SAT problem is solvable in time T on the set A′ ×B′, then
+the SAT problem for C4 on the set A×B can be solved in time O
+ T +N2 ·Z/K +N ·S
+
+·poly(n).
+7. Evaluate the depth-two circuit on many pairs of points. By applying fast rectangular matrix
+multiplication in a now-standard way [Wil14c, Wil14b], the resulting SYM◦AND circuit of 2 ˜O(n1−ε) size
+can be evaluated on all points in A′ × B′, in time poly(n) · 2n−nε, thus solving its SAT problem. Therefore,
+the SAT problem for C4 can be solved in time
+poly(n)·2n−nε + 2n−nε ·2O(n1−ε)
+2b·n1−ε
++2
+n−nε
+2
+·2O(n1−ε log(n)).
+Setting b > 1 to be sufﬁciently large, we obtain a SAT algorithm for C4 (and hence the original circuit C)
+running in poly(n)·2n−nε time.
+□
+7.4
+Satisﬁability for Three Layers of Majority + AC0
+In this section, we give our SAT algorithm for MAJ◦AC0 ◦LTF ◦AC0 ◦LTF circuits with low-polynomial
+fan-in at the output gate and the middle LTF layer:
+Reminder of Theorem 1.9. For all ε > 0 and integers d ≥1, there is a δ > 0 and a randomized satisﬁability
+algorithm for MAJ◦AC0 ◦LTF◦AC0 ◦LTF circuits of depth d running in 2n−Ω(nδ ) time, on circuits with the
+following properties:
+• the top MAJ gate, along with every LTF on the middle layer, has O(n6/5−ε) fan-in, and
+• there are O(2nδ ) many AND/OR gates (anywhere) and LTF gates at the bottom layer.
+We need one more result concerning probabilistic polynomials over the integers:
+Theorem 7.3 ([BRS91, Tar93]). For every AC0 circuit C with n inputs and size s, there is a distribution of
+n-variate polynomials D over Z such that every p has degree poly(logs) (depending on the depth of C) and
+for all x ∈{0,1}n, Prp∼D[C(x) = p(x)] ≥1−1/2poly(logs).
+Proof of Theorem 1.9. The SAT algorithm is somewhat similar in structure to Theorem 1.8, but with a few
+important changes. Most notably, we work with probabilistic polynomials over Z instead of F2.
+Start with a circuit C of the required form. Let s be the number of AND/OR gates in C plus the number
+of LTF gates on the bottom layer. Let f ≤n6/5−ε be the maximum fan-in of the top MAJ gate and the LTFs
+on the middle layer, and recall that we’re planning to consider C with size at most 2nδ where δ > 0 is a
+sufﬁciently small constant (depending on ε > 0 and the circuit depth) in the following. Our SAT algorithm
+runs as follows:
+23
+
+1. By Theorem 7.1, every LTF of fan-in f can be replaced by an AC0 ◦MAJ of fan-in f 1+o(1) and poly( f)
+size. Hence we can reduce C to a circuit of similar size, but of the form
+MAJ◦AC0 ◦MAJ◦AC0 ◦MAJ.
+The fan-ins of the majority gates in the middle and bottom layer can be made at most n6/5−ε′, for any
+ε′ > 0 which is smaller than ε. To be concrete, let us set ε′ := ε/2.
+2. Replace the “middle” majority gates of fan-in n6/5−ε/2 with probabilistic polynomials (over Z) of
+degree n3/5−ε/4poly(logs) and error 1/2poly(logs) [AW15] (Theorem 1.1 in this paper). Replace all
+the AC0 subcircuits of size s by probabilistic polynomials (over Z) of degree poly(logs) and error
+1/2poly(logs), via Lemma 7.3. Note that the latter poly(logs) factor depends on the depth of the circuit.
+3. Replace the majority gate at the output (of fan-in f ≤n6/5−ε) with the probabilistic PTF of Corol-
+lary 4.2, setting the threshold parameter s′ (which is called s in the statement of the corollary) to
+be 22nδ and setting the error (called ε in the statement of the corollary) to be 1/f. The resulting
+polynomial has degree n2/5−ε/3 ·poly(nδ).
+Applying the distributive law to all the polynomials from steps 2 and 3, the new circuit C′ can be
+viewed as an integer sum of at most T AND◦LTF circuits of at most T size, where
+T = 2n3/5−ε/4·n2/5−ε/3·poly(logs,nδ ) = 2n1−7ε/12·poly(logs,nδ )
+and all AND gates have fan-in at most n1−7ε/12 ·poly(logs,nδ ) (because the resulting polynomial has
+at most this degree).
+Now is a good time to mention our choice of δ, as it will considerably clean up the exponents in
+what follows. We will choose δ > 0 to be sufﬁciently small so that the poly(logs,nδ) factor in the
+exponent of T is less than nε/12. That is, we take δ := ε/c and the size parameter s < 2nδ = 2nε/c, for
+a sufﬁciently large constant c ≥12. (Note that c depends on the depth of the circuit, since the degree
+of the polylog factor depends on the depth.) Thus we have the size bound
+T = 2n1−7ε/12·poly(logs,nδ ) ≤O(2n1−7ε/12·nε/12) ≤O(2n1−ε/2),
+and all AND gates have fan-in at most n1−ε/2.
+4. For all assignments a to the ﬁrst nδ variables of C′, plug a into C′, creating a copy C′
+a. Let C′′ be the
+integer sum of all 2nδ circuits C′
+a. By the properties of the polynomial constructed in Theorem 1.3 and
+the chosen parameter s′ = 22nδ , with probability at least 2/3 there is a (computable) threshold value
+v = 3s/2 such that
+• C′′(x) > v when at least one C′
+a(x) outputs 1, and
+• C′′(x) < v when all C′
+a(x) output 0.
+The circuit C′′ is a Sum-of-AND ◦LTF circuit; note that C′′ has n−nδ variables.
+5. We now want to evaluate C′′ on all of its 2n−nδ possible variable assignments. Applying Lemma 7.1 for
+an integer parameter K ∈[2n] (to be determined), N = 2(n−nδ )/2, and Z,S = 2n1−ε/2, we can convert this
+evaluation problem for C′′ into a corresponding evaluation problem for a Sum-of-AND ◦SUM◦AND
+circuit C′′′, on an appropriate combinatorial rectangle A′ × B′ of 2n−nδ variable assignments in total.
+24
+
+The relative size of the circuit is unchanged, as each SUM◦AND has size O(log2 K) ≤O(n2). The
+time for conversion of C′′ into C′′′ is
+N2Z2
+K
++N ·S
+
+·poly(n) ≤2n−nδ ·22n1−ε/2 ·poly(n)
+K
+.
+Setting K := 22n1−ε/2 makes this time bound 2n−Ω(nδ ).
+Recall that in the Sum-of-AND ◦SUM◦AND circuit C′′′, the fan-in of the middle ANDs is at most
+n1−ε/2, and each SUM has O(n) fan-in. We can therefore apply the distributive law to each AND ◦
+SUM part, and obtain a SUM◦AND of size at most nO(n1−ε/2). Merging the SUMs into the SYM gate,
+we obtain a SYM◦AND circuit of size at most nO(n1−ε/2).
+6. Finally, applying rectangular matrix multiplication (Lemma 2.1) we can evaluate the Sum-of-AND
+C′′′ of nO(n1−ε/2) size on the combinatorial rectangle A′ ×B′ in 2n−Ω(nδ ) time, by preparing matrices of
+dimensions 2n/2−Ω(nδ ) ×nO(n1−ε/2) (for A′) and nO(n1−ε/2) ×2n/2−Ω(nδ ) (for B′), then multiplying them.
+Note that preparing these matrices takes time no more than 2n/2+O(n1−ε/2 logn), which is negligible for
+us.
+After multiplying the matrices, we obtain a value for C′′(x) for each assignment x, which is correct
+with probability at least 2/3. By repeating steps 2-5 for 100n times, we obtain correct values on all
+2n−nδ points with high probability.
+This completes the proof.
+□
+8
+Conclusion
+Our work has led to interesting algorithmic improvements for several core problems. Here are two open
+problems that we wish to highlight.
+First, it would be interesting to understand what are the power and limits of probabilistic polyno-
+mial threshold functions representing Boolean functions. How easy/difﬁcult is it to prove degree lower
+bounds for such representations? In this paper, we have demonstrated how probabilistic PTFs can be sig-
+niﬁcantly better than probabilistic polynomials or deterministic PTFs alone, by combining the strengths
+of the two representation methods. Informally, a probabilistic polynomial threshold function can be seen
+as an Approximate-MAJ ◦LTF ◦AND circuit or as an Approximate-MAJ ◦LTF ◦XOR circuit, so we are
+effectively asking about lower bounds regarding such circuit classes.
+Second, can our SAT algorithm for MAJ ◦AC0 ◦LTF ◦AC0 ◦LTF be derandomized? If so, the deran-
+domization should lead to new circuit lower bounds. Perhaps the ideas in Tamaki’s recent work [Tam16]
+will be helpful here.
+Acknowledgments
+The authors thank the FOCS referees for their helpful comments.
+References
+[ABFR94] James Aspnes, Richard Beigel, Merrick Furst, and Steven Rudich. The expressive power of
+voting polynomials. Combinatorica, 14(2):135–148, 1994.
+25
+
+[AC09]
+Nir Ailon and Bernard Chazelle. The fast Johnson–Lindenstrauss transform and approximate
+nearest neighbors. SIAM J. Comput., 39(1):302–322, 2009.
+[ACR+10] Andris Ambainis, Andrew M Childs, Ben W Reichardt, Robert Špalek, and Shengyu Zhang.
+Any and-or formula of size n can be evaluated in time n1/2+o(1) on a quantum computer. SIAM
+J. Computing, 39(6):2513–2530, 2010.
+[AG94]
+Eric Allender and Vivek Gore. A uniform circuit lower bound for the permanent. SIAM J.
+Computing, 23(5):1026–1049, 1994.
+[AI06]
+Alexandr Andoni and Piotr Indyk. Near-optimal hashing algorithms for approximate nearest
+neighbor in high dimensions. In FOCS, pages 459–468, 2006.
+[AINR14]
+Alexandr Andoni, Piotr Indyk, Huy L Nguyen, and Ilya Razenshteyn. Beyond locality-sensitive
+hashing. In SODA, pages 1018–1028, 2014.
+[And05]
+Alexandr Andoni. Approximate nearest neighbor problem in high dimensions. Master’s thesis,
+MIT, 2005.
+[AR15]
+Alexandr Andoni and Ilya Razenshteyn. Optimal data-dependent hashing for approximate near
+neighbors. In STOC, pages 793–801, 2015.
+[AW15]
+Josh Alman and Ryan Williams. Probabilistic polynomials and Hamming nearest neighbors. In
+FOCS, pages 136–150, 2015.
+[AWY15]
+Amir Abboud, Ryan Williams, and Huacheng Yu. More applications of the polynomial method
+to algorithm design. In SODA, pages 218–230, 2015.
+[Bei95]
+Richard Beigel. The polynomial method in circuit complexity. In IEEE Structure in Complexity
+Theory Conference, pages 82–95, 1995.
+[BR02]
+Omer Barkol and Yuval Rabani. Tighter lower bounds for nearest neighbor search and related
+problems in the cell probe model. JCSS, 64(4):873–896, 2002.
+[BRS91]
+Richard Beigel, Nick Reingold, and Daniel A. Spielman. The perceptron strikes back. In IEEE
+Structure in Complexity Theory Conference, pages 286–291, 1991.
+[BS92]
+Jehoshua Bruck and Roman Smolensky. Polynomial threshold functions, AC0 functions, and
+spectral norms. SIAM J. Comput., 21(1):33–42, 1992.
+[BT94]
+Richard Beigel and Jun Tarui. On ACC. Computational Complexity, pages 350–366, 1994.
+[CFL85]
+Ashok K. Chandra, Steven Fortune, and Richard J. Lipton.
+Unbounded fan-in circuits and
+associative functions. JCSS, 30(2):222–234, 1985.
+[Che99]
+Pafnuty L. Chebyshev. Sur l’interpolation. In A. Markoff and N. Sonin, editors, Oeuvres de
+P. L. Tchebychef, volume 1, pages 539–560. Commissionaires de L’Académie Impériale des
+Sciences, 1899.
+[CIP06]
+Chris Calabro, Russell Impagliazzo, and Ramamohan Paturi. A duality between clause width
+and clause density for SAT. In IEEE Conf. Computational Complexity, pages 252–260, 2006.
+[Cop82]
+Don Coppersmith. Rapid multiplication of rectangular matrices. SIAM J. Comput., 11(3):467–
+471, 1982.
+26
+
+[CP16]
+Shiteng Chen and Periklis A. Papakonstantinou. Depth-reduction for composites. Electronic
+Colloquium on Computational Complexity (ECCC), 23:85, 2016.
+[CS15]
+Ruiwen Chen and Rahul Santhanam. Improved algorithms for sparse MAX-SAT and MAX-k-
+CSP. In SAT, pages 33–45, 2015.
+[CSS16]
+Ruiwen Chen, Rahul Santhanam, and Srikanth Srinivasan. Average-case lower bounds and
+satisﬁability algorithms for small threshold circuits. In CCC, pages 1:1–1:35, 2016.
+[CSV84]
+Ashok K. Chandra, Larry Stockmeyer, and Uzi Vishkin. Constant depth reducibility. SIAM J.
+Computing, 13(2):423–439, 1984.
+[CW16]
+Timothy M. Chan and Ryan Williams. Deterministic APSP, orthogonal vectors, and more:
+Quickly derandomizing Razborov–Smolensky. In SODA, pages 1246–1255, 2016.
+[DW06]
+Evgeny Dantsin and Alexander Wolpert. MAX-SAT for formulas with constant clause density
+can be solved faster than in O(2n) time. In SAT, pages 266–276, 2006.
+[HIM12]
+Sariel Har-Peled, Piotr Indyk, and Rajeev Motwani. Approximate nearest neighbor: Towards
+removing the curse of dimensionality. Theory of Computing, 8(1):321–350, 2012.
+[Hir03]
+Mika Hirvensalo. Studies on Boolean Functions Related to Quantum Computing. PhD thesis,
+University of Turku, 2003.
+[HNO08]
+Nicholas J. A. Harvey, Jelani Nelson, and Krzysztof Onak. Sketching and streaming entropy
+via approximation theory. In FOCS, pages 489–498, 2008.
+[IM98]
+Piotr Indyk and Rajeev Motwani. Approximate nearest neighbors: Towards removing the curse
+of dimensionality. In STOC, pages 604–613, 1998.
+[Ind04]
+Piotr Indyk.
+Nearest neighbors in high-dimensional spaces.
+In Handbook of Discrete and
+Computational Geometry, pages 877–892. Chapman and Hall, 2nd edition, 2004.
+[IPS13]
+Russell Impagliazzo, Ramamohan Paturi, and Stefan Schneider. A satisﬁability algorithm for
+sparse depth two threshold circuits. In FOCS, pages 479–488, 2013.
+[JMV15]
+Hamid Jahanjou, Eric Miles, and Emanuele Viola. Local reductions. In ICALP Part I, pages
+749–760, 2015.
+[KOR00]
+Eyal Kushilevitz, Rafail Ostrovsky, and Yuval Rabani. Efﬁcient search for approximate nearest
+neighbor in high dimensional spaces. SIAM J. Computing, 30(2):457–474, 2000.
+[KOS04]
+Adam R. Klivans, Ryan O’Donnell, and Rocco A. Servedio. Learning intersections and thresh-
+olds of halfspaces. J. Comput. Syst. Sci., 68(4):808–840, 2004.
+[KS01]
+Adam R. Klivans and Rocco Servedio. Learning DNF in time 2 ˜O(n1/3). In STOC, pages 258–265,
+2001.
+[KW16]
+Daniel M. Kane and Ryan Williams. Super-linear gate and super-quadratic wire lower bounds
+for depth-two and depth-three threshold circuits.
+Electronic Colloquium on Computational
+Complexity (ECCC), 22:188, 2015. To appear in STOC’16.
+[LN90]
+Nathan Linial and Noam Nisan. Approximate inclusion-exclusion. Combinatorica, 10(4):349–
+365, 1990.
+27
+
+[Mat91]
+Jirí Matoušek. Computing dominances in En. Inf. Process. Lett., 38(5):277–278, 1991.
+[Mat08]
+Jirí Matoušek. On variants of the Johnson–Lindenstrauss lemma. Random Struct. Algorithms,
+33(2):142–156, 2008.
+[MPS16]
+Daniel Moeller, Ramamohan Paturi, and Stefan Schneider. Subquadratic algorithms for succinct
+stable matching. In Computer Science Symposium in Russia, pages 294–308, 2016.
+[MT98]
+Alexis Maciel and Denis Thérien. Threshold circuits of small majority-depth. Information and
+Computation, 146(1):55–83, 1998.
+[MT99]
+Alexis Maciel and Denis Thérien. Efﬁcient threshold circuits for power series. Information and
+Computation, 152(1):62–73, 1999.
+[NS94]
+Noam Nisan and Mario Szegedy. On the degree of Boolean functions as real polynomials.
+Computational Complexity, 4(4):301–313, 1994.
+[OS10]
+Ryan O’Donnell and Rocco A. Servedio. New degree bounds for polynomial threshold func-
+tions. Combinatorica, 30(3):327–358, 2010.
+[Pat92]
+Ramamohan Paturi. On the degree of polynomials that approximate symmetric boolean func-
+tions (preliminary version). In STOC, pages 468–474, 1992.
+[Raz87]
+A. A. Razborov. Lower bounds on the size of bounded depth circuits over a complete basis with
+logical addition. Mathematical Notes of the Academy of Sciences of the USSR, 41(4):333–338,
+1987.
+[Sch05]
+Rainer Schuler. An algorithm for the satisﬁability problem of formulas in conjunctive normal
+form. J. Algorithms, 54(1):40–44, 2005.
+[She08]
+Alexander A Sherstov. Approximate inclusion-exclusion for arbitrary symmetric functions. In
+CCC, pages 112–123, 2008.
+[She13]
+Alexander A. Sherstov. Making polynomials robust to noise. Theory of Computing, 9:593–615,
+2013.
+[She14]
+Alexander A. Sherstov. Breaking the Minsky–Papert barrier for constant-depth circuits. In
+STOC, pages 223–232, 2014.
+[Smo87]
+Roman Smolensky. Algebraic methods in the theory of lower bounds for Boolean circuit com-
+plexity. In STOC, pages 77–82, 1987.
+[SSS95]
+Jeanette P. Schmidt, Alan Siegel, and Aravind Srinivasan. Chernoff-Hoeffding bounds for ap-
+plications with limited independence. SIAM J. Discrete Mathematics, 8(2):223–250, 1995.
+[SST15]
+Takayuki Sakai, Kazuhisa Seto, and Suguru Tamaki. Solving sparse instances of Max SAT via
+width reduction and greedy restriction. Theory Comput. Syst., 57(2):426–443, 2015.
+[SSTT15a] Takayuki Sakai, Kazuhisa Seto, Suguru Tamaki, and Junichi Teruyama. Improved exact algo-
+rithms for mildly sparse instances of Max SAT. In IPEC, pages 90–101, 2015.
+[SSTT15b] Takayuki Sakai, Kazuhisa Seto, Suguru Tamaki, and Junichi Teruyama. A satisﬁability al-
+gorithm for depth-2 circuits with a symmetric gate at the top and AND gates at the bottom.
+Electronic Colloquium on Computational Complexity (ECCC), 22:136, 2015.
+28
+
+[SV13]
+Sushant Sachdeva and Nisheeth K Vishnoi. Faster algorithms via approximation theory. Theo-
+retical Computer Science, 9(2):125–210, 2013.
+[Sze75]
+Gabor Szegö. Orthogonal Polynomials. American Mathematical Society, 1975.
+[Tam16]
+Suguru Tamaki. A satisﬁability algorithm for depth two circuits with a sub-quadratic number of
+symmetric and threshold gates. Electronic Colloquium on Computational Complexity (ECCC),
+23:100, 2016.
+[Tar93]
+Jun Tarui. Probabilistic polynomials, AC0 functions and the polynomial-time hierarchy. Theor.
+Comput. Sci., 113(1):167–183, 1993.
+[Val12]
+Gregory Valiant. Finding correlations in subquadratic time, with applications to learning pari-
+ties and the closest pair problem. J. ACM, 62(2):13, 2015. Preliminary version in FOCS’12.
+[Vol99]
+Heribert Vollmer. Introduction to Circuit Complexity: A Uniform Approach. Springer, 1999.
+[Wil14a]
+Ryan Williams. Faster all-pairs shortest paths via circuit complexity. In STOC, pages 664–673,
+2014.
+[Wil14b]
+Ryan Williams. New algorithms and lower bounds for circuits with linear threshold gates. In
+STOC, pages 194–202, 2014.
+[Wil14c]
+Ryan Williams. Nonuniform ACC circuit lower bounds. J. ACM, 61(1):2, 2014.
+[Wil14d]
+Ryan Williams.
+The polynomial method in circuit complexity applied to algorithm design
+(invited talk). In 34th International Conference on Foundation of Software Technology and
+Theoretical Computer Science, FSTTCS, pages 47–60, 2014.
+[Wil04]
+Ryan Williams. A new algorithm for optimal 2-constraint satisfaction and its implications.
+Theor. Comput. Sci., 348(2-3):357–365, 2005. See also ICALP’04.
+[Wil10]
+Ryan Williams. Improving exhaustive search implies superpolynomial lower bounds. SIAM J.
+Comput., 42(3):1218–1244, 2013. See also STOC’10.
+[WY14]
+Ryan Williams and Huacheng Yu. Finding orthogonal vectors in discrete structures. In SODA,
+pages 1867–1877, 2014.
+[Yat37]
+F. Yates. The design and analysis of factorial experiments. Technical Communication No. 35,
+Commonwealth Bureau of Soil Science, Harpenden, UK, 1937.
+29

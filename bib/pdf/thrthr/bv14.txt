@@ -1,0 +1,1075 @@
+Short PCPs with projection queries
+Eli Ben-Sasson∗
+Department of Computer Science
+Technion — Israel Institute of Technology
+Emanuele Viola†
+College of Computer and Information Science
+Northeastern University
+April 22, 2014
+Abstract
+We construct a PCP for NTIME(2n) with constant soundness, 2npoly(n) proof
+length, and poly(n) queries where the veriﬁer’s computation is simple: the queries are
+a projection of the input randomness, and the computation on the prover’s answers is
+a 3CNF. The previous upper bound for these two computations was polynomial-size
+circuits. Composing this veriﬁer with a proof oracle increases the circuit-depth of the
+latter by 2. Our PCP is a simple variant of the PCP by Ben-Sasson, Goldreich, Harsha,
+Sudan, and Vadhan (CCC 2005). We also give a more modular exposition of the latter,
+separating the combinatorial from the algebraic arguments.
+If our PCP is taken as a black box, we obtain a more direct proof of the result
+by Williams, later with Santhanam (CCC 2013) that derandomizing circuits on n bits
+from a class C in time 2n/nω(1) yields that NEXP is not in a related circuit class C′.
+Our proof yields a tighter connection: C is an And-Or of circuits from C′. Along the
+way we show that the same lower bound follows if the satisﬁability of the And of any
+3 circuits from C′ can be solved in time 2n/nω(1).
+∗The research leading to these results has received funding from the European Community’s
+Seventh Framework Programme (FP7/2007-2013) under grant agreement number 240258.
+Email:
+eli@cs.technion.ac.il
+†Supported by NSF grants CCF-0845003, CCF-1319206. Email: viola@ccs.neu.edu
+
+1
+Introduction
+It has long been known that solving satisﬁability of circuits, or derandomizing probabilis-
+tic circuits implies new circuit lower bounds (for various exponential-time classes), see
+e.g. [KL80, IKW02]. In [Wil10] Williams gives an interesting instance of this phenomenon,
+where a non-trivial lower bound against a circuit class C follows from a satisﬁability or de-
+randomization algorithm for circuits of a related class C′ that runs in time 2n/nω(1), where n
+is the number of variables of circuits in C′. It is an interesting question whether the approach
+based on satisﬁability or the one based on derandomization should be pursed to obtain new
+circuit lower bounds.
+The satisﬁability approach – not the derandomization approach – has given non-trivial
+lower bounds [Wil11]. Moreover this approach has been tightened, by making C′ closer to
+C, in [SW13, JMV13, Oli13], making it plausible that more lower bounds will be obtained.
+In fact, we will tighten it a bit more in this work. However, it is not clear how much this ap-
+proach can be pushed. Do we believe that the satisﬁability of (unrestricted) polynomial-size
+circuits can be solved faster than brute-force search? Even for seemingly simple problems
+such as MAX3SAT, no satisﬁability algorithm better than brute-force search is known, de-
+spite attempts since a decade ago [Wil05]. Note that the MAX3SAT problem – given a
+3CNF and an integer ℓ, is there an assignment that satisﬁes ≥ℓclauses? – corresponds to
+the restricted class of depth-2 circuits known as MAJ ◦AND3: a Majority on And’s on three
+variables. The lack of progress on MAX3SAT is an obstacle for obtaining new lower bounds
+from satisﬁability.
+A priori, the approach based on derandomization should apply more broadly, because
+most researchers indeed believe that derandomization is possible (and a long line of research
+has shown that indeed derandomization is possible based on lower bounds). Also, for sev-
+eral classes we have nontrivial derandomization algorithms but not satisﬁability ones. For
+example, for the class mentioned above of MAJ ◦AND3 circuits a derandomization is given
+in [LVW93, Vio07]. Even when both types of algorithms are available, the speed of the de-
+randomization one often outperforms that of the satisﬁability one. For example, the running
+time for the derandomization of CNF, see [GMR13] for the latest, vastly outperforms that
+of satisﬁability algorithms, cf. [Her11]. For another example, consider the class of poly-size,
+constant-depth circuits with Or, Not, and Parity gates (AC0 with parity gates). To our
+knowledge, the best satisﬁability algorithm is the one in [Wil11] which has running time
+2n−nϵ. By contrast, [FSUV13] derandomize these circuits in time 2n−n/poly log n (building on
+available lower bounds).
+One advantage of satisﬁability over derandomization is that the corresponding connection
+to lower bounds is simpler and incurs less overhead. To obtain lower bounds from deran-
+domization one relies on probabilistically checkable proofs (PCP), speciﬁcally the somewhat
+intricate work by Ben-Sasson, Goldreich, Harsha, Sudan, and Vadhan [BGH+05]. The intri-
+cacy of this work reﬂects on two aspects of the approach. First, to make it apply to restricted
+circuit classes such as ACC0 or TC0, previous to this work one needed a roundabout argu-
+ment, provided by Santhanam and Williams [SW13], which actually relies on a subsequent
+PCP by Mie [Mie09] combining [BGH+05] with Dinur’s gap ampliﬁcation [Din07]. Second,
+1
+
+the indirect aspect of the argument is reﬂected in the overhead in the reduction. For ex-
+ample, to obtain a lower bound against circuits of depth d, one needed a derandomization
+algorithm for circuits of depth cd for a constant c > 1.
+1.1
+Our results
+In this work we provide a variant of the PCP [BGH+05] where the computation of the
+veriﬁer is quite modest: Given randomness, the veriﬁer computes its queries just by taking
+projections of the randomness, and the computation on the prover’s answers is a 3CNF. The
+previous upper bound for these two computations was polynomial-size circuits.
+Theorem 1.1 (Short PCPs with projection queries). Let M be an algorithm running in time
+T = T(n) ≥n on inputs of the form (x, y) where |x| = n. Given x ∈{0, 1}n one can output in
+time poly(n, log T) circuits Query : {0, 1}r →[2r]t for t = poly(r) and Dec : {0, 1}t →{0, 1}
+such that:
+• Proof length. 2r ≤T · poly log T,
+• Completeness. If there exists y such that M(x, y) accepts then there exists a map
+π : [2r] →{0, 1} such that for any z ∈{0, 1}r we have Dec(π(q1), . . . , π(qt)) = 1 where
+(q1, . . . , qt) = Query(z),
+• Soundness. If no y causes M(x, y) to accept, then for every map π : [2r] →{0, 1}, at
+most 1/n10 fraction of the z ∈{0, 1}r have Dec(π(q1), . . . , π(qt)) = 1 where (q1, . . . , qt) =
+Query(z),
+• Complexity. Query is a projection (a.k.a. 1-local), i.e., each output bit of Query is
+one input bit, the negation of an input bit, or a constant; Dec is a 3CNF.
+The polynomial in the soundness item in Theorem 1.1 can be traded with the number t
+of queries.
+There is a substantial literature that develops PCPs with optimized parameters. One
+focus of this literature has been to optimize the complexity of Dec. However typically these
+works do not produce PCPs of length quasilinear in T, and the complexity of Query is not
+optimized. Both these aspects are critical for our applications.
+Remark 1.2 (Number of queries vs. Query complexity). Relaxing the complexity of Query
+to be a poly(r)-computation allows to reduce the number of queries made to the oracle to
+a constant, while obtaining constant soundness [Mie09]. It is an interesting open problem
+to ﬁnd the lowest complexity obtainable for Query in a PCP statement with proof length
+quasilinear in T, polylogarithmic veriﬁer running time, and where soundness, alphabet, and
+number of queries are all constant. In particular, it is not clear to us if it is possible in such
+a case to have Query be a projection.
+2
+
+Along the way we give a more accessible presentation of [BGH+05]. Our presentation is
+modular and separates the combinatorial steps (given in Theorem 2.2) from the algebraic
+ones (given in §4).
+Taking Theorem 1.1 as a black box, we eliminate the roundabout argument mentioned
+before from the result in [SW13] that derandomizing TC0 circuits on n bits in time 2n/nω(1)
+implies that NEXP is not in TC0.
+Also, Theorem 1.1 is a small variant on [BGH+05],
+whereas as we mentioned [SW13] needs Mie’s PCP [Mie09]. Finally, we also obtain the
+following alternative argument, which only uses the PCP result in [BGH+05] as a black-box.
+The alternative argument.
+Given as a black-box a PCP such as [BGH+05], i.e., with
+the parameters as in Theorem 1.1 but where the complexity is replaced by polynomial-size
+circuits, we can construct a PCP where the veriﬁer has low-complexity but makes adaptive
+queries to the proof. Speciﬁcally, we will rely on the prover to obtain the indices of our
+queries, and later query the prover at those indices and also verify the prover’s computation,
+again with the help of the prover. This latter veriﬁcation, as well as the computation Dec on
+the prover’s answers, can be done by a 3CNF via a simple use of the Cook-Levin theorem –
+cf. Lemma 1.6.
+Again, this alternative argument is suﬃcient to recover the TC0 result in [SW13]. How-
+ever, with Theorem 1.1 we obtain better parameters. Indeed, we seek very tight connections
+in the hope they will lead to progress on various challenges in computational lower bounds
+such as those mapped in [Vio13].
+The concurrent work [Wil14] shows that the ability to count the number of satisfying
+assignments to circuits faster than brute-force search yields lower bounds against related
+circuits. This connection is used to obtain some new lower bounds. By our work the same
+lower bounds can be obtained from a satisﬁability algorithm (using Theorem 1.5) or even a
+derandomization algorithm (using Theorem 1.4).
+Next we state the tighter connections we obtain between derandomization and lower
+bounds. First we make a deﬁnition.
+Deﬁnition 1.3. Let Cn be a set of functions from {0, 1}n to {0, 1}.
+We say that Cn
+is eﬃciently closed under projections if functions in Cn have a poly(n)-size description
+and given (the description of) a function f ∈Cn, indexes i, j ≤n, and a bit b, we can
+compute in time poly(n) the functions notf, f(x1, . . . , xi−1, b XOR xj, xi+1, . . . , xn), and
+f(x1, . . . , xi−1, b, xi+1, . . . , xn), all of which are in Cn.
+Most of the standard classes have this property. For the theorem, the two occurrences of
+“poly(n)” above can be relaxed. We also use the notation ∧poly(n) ∨3 Cn+O(log n) to indicates
+the And of poly(n) Or of 3 functions from Cn+O(log n), all on the same n input bits.
+Theorem 1.4 (Derandomization implies lower bounds, tightly). Let Cn be eﬃciently closed
+under projections.
+If the acceptance probability of functions of the form h = ∧poly(n) ∨3 Cn+O(log n) can be
+distinguished from being = 1 or ≤1/n10 in Time(2n/nω(1)), then there is a function f in
+ENP such that fn ̸∈Cn.
+3
+
+One can place f in NEXP if we replace Cn+O(log n) with Cpoly(n) and reason as in [IKW01,
+Wil13, Wil11].
+The ﬁrst step of our more modular exposition of [BGH+05] is a reduction to 3SAT that
+builds on [JMV13] (cf. [BCGT13a]) but achieves incomparable guarantees (Theorem 2.2).
+Using that, we can obtain the following connection between satisﬁability algorithms and
+lower bounds.
+Theorem 1.5 (Satisﬁability implies lower bounds, tightly). Let Cn be eﬃciently closed under
+projections.
+If the satisﬁability of functions h = g1∧g2∧g3, where gi ∈Cn+O(log n) is in Time(2n/nω(1)),
+then there is a function f in ENP such that fn ̸∈Cn.
+The overhead to go from a satisﬁability algorithm to a lower bound is evident from the
+theorem. The loss in size is a multiplicative factor 3 + o(1). Previous losses were polynomial
+[Wil10], or multiplicative by a larger constant [JMV13]. The loss in depth is 2 for circuits
+with fan-in 2. For unbounded fan-in (or even fan-in 3) circuits with And gates (or threshold)
+the depth loss is 1. Previous losses were 2 [JMV13, Oli13].
+Recall that the best lower bound for an explicit function on n bits is 3n −o(n) (non-
+input) gates [Blu84] (cf. [DK11]). This seems to be the best known even for functions in
+ENP (note the number of circuits of size 3n is superlinear, so one cannot easily diagonalize
+against them in ENP). By Theorem 1.5, to obtain a function in ENP of circuit complexity
+3n one would need to solve satisﬁability of a circuit with 3(3n) non-input gates and n inputs
+– ignoring lower-order terms. The Cook-Levin theorem reduces this to a 3SAT instance on
+9n + n = 10n variables. So one would need to solve 3SAT in deterministic time cn for any
+c < 21/10 = 1.07 . . . The current record is c = 1.33 . . . [MTY11], cf. [Her11].
+1.2
+Techniques
+Ideas behind the proof of Theorem 1.1.
+We start with the PCP in [BGH+05] and
+follow its proof closely. There are two computations of the veriﬁer in this PCP that we need
+to optimize. The ﬁrst — Query — is taking the input randomness to the queries, which we
+call preprocess. The second — Dec — is the computation on the prover’s answers, which we
+call postprocess. We discuss them separately.
+Postprocess:
+It is a common experience in theoretical computer science research, to
+study at length an intricate proof in the reckless hope of optimizing parameters, only to be
+surprised by the late realization that a trivial, sweeping argument takes the complex proof
+as a black-box and gets a pretty good parameter optimization, too.
+Lemma 1.6 (Making Dec a 3CNF). Suppose Theorem 1.1 holds except that Dec is an
+unrestricted circuit of size poly(r). Then Theorem 1.1 holds as stated.
+Proof. By the Cook-Levin theorem we reduce Dec to a 3CNF with poly(r) variables and
+terms. The veriﬁer will ask the prover for an additional poly(r) queries to obtain the satis-
+fying assignments for this 3CNF corresponding to the input randomness. On input z, these
+4
+
+queries are of the form (z, i), where i is an O(log r)-bit index to a variable in the 3CNF. The
+proof contains the values of the variables in the 3CNF that verify the computation on the
+outputs of the queries that are made by the veriﬁer on input z.
+This general technique shows that we can always make the postprocess a 3CNF as long as
+we allow for poly(r) queries. Using it, there is no beneﬁt in reducing the number of queries
+to a constant.
+Preprocess: This is in turn comprised of two parts, acting in parallel, known as “alge-
+braic constraint satisfaction” and “low-degree testing”, and in this work we oﬀer a clear
+separation between the two. In the ﬁrst part we reduce the succinct constraint satisfac-
+tion problem (CSP) associated with verifying the M accepts x in T steps, to an algebraic
+CSP (ACSP) problem, one stated as a question about equality of polynomials. We oﬀer
+a deﬁnition of ACSP that is algebraically cleaner than [BS08] and following works (e.g.,
+[BGH+05, BCGT13b]). In particular, previous deﬁnitions included degree bounds on the
+“assignment polynomial” and involved a “zero-testing” problem. In contrast, Deﬁnition 4.1
+deﬁnes a satisfying assignment as one that causes a polynomial to vanish, and degree-bounds
+are dealt with by the separate low-degree testing part, discussed later. We now elaborate on
+how we obtain eﬃcient preprocessing in each of the two parts.
+In the ACSP part, our veriﬁer simply selects a random ﬁeld element α, generates poly(r)
+queries to the prover where the ith query is α + σi where σi is ﬁxed and independent of
+α, cf. §4. Each such query can be veriﬁed to be a projection. To reach this simple form
+of preprocessing we use a modular reduction from the combinatorial succinct CSP captured
+by Theorem 2.1 to the succinct ACSP stated in Theorem 4.2. The mid-point between the
+combinatorial and algebraic settings is given in Theorem 2.2. In it we reach a 3CNF formula
+with ≈T clauses where each clause (i.e., the three variables of the clause and their polarities)
+can be computed by a simple XOR operation. Since XOR is addition in ﬁelds of characteristic
+2, irrespective of the basis chosen for them, we get a simpler ACSP than [BS08, BGH+05]
+albeit one that has a super-constant number of variables.
+Turning to the second part, low-degree testing, we use auxiliary information in form of
+a PCP of Proximity (PCPP) [BSGH+06, DR06]. This part is essentially from [BS08] and
+regrettably remains an intricate step of the proof. The answers to queries of the veriﬁer in
+[BS08] can be seen as arranged in the nodes of a tree. The query at each node is indeed a
+projection. However, the veriﬁer uses part of its input randomness to select a path in this
+tree, reaching a leaf, then possibly redirects the query to a node higher up in the tree. This
+computation is more complicated than just a projection. Here we use the following simple,
+key idea. The path from root to leaf is determined by only O(log r) of the veriﬁer’s r input
+bits (cf. Claim 6.3). Additionally, the process of redirecting a query from a leaf to a node
+elsewhere in the tree is also determined by only O(log r) input bits (cf. Claim 6.4). Instead
+of following the path, we let the veriﬁer query every possible endpoint. This multiplies the
+number of queries by a factor poly(r), which we can aﬀord. We delegate the task of picking
+the right query to the postprocess.
+One more complication is that each of the two parts needs to be combined with a
+randomness-eﬃcient hitter to achieve constant soundness. Using e.g. Cayley expanders built
+5
+
+from small-bias sets, this step is again just a projection (cf. §4.3).
+Ideas behind the proof of Theorem 1.5.
+A natural idea is to improve the previous
+constant-locality result [JMV13] to locality 1. But this may not be possible. Instead, we
+show how to reduce arbitrary computation to a polynomial number of 3CNF formulae, each
+of which has locality 1. By enumerating over these 3CNF, and running the satisﬁability
+algorithm on each of them, we get the result. This idea is similar to the one described above
+to make [BS08] a projection: after reading a logarithmic number of bits, the rest of the
+computation becomes just a projection.
+Open problems.
+Improve Theorem 1.4 to have the same overhead as Theorem 1.5.
+Organization.
+In §2 we give a variant of the reduction of non-deterministic time to 3SAT
+given in [JMV13]. Using that and Theorem 1.1 as a black-box, in §3 we give the proofs of
+theorems 1.4 and 1.5. In §4 we give the new exposition of [BGH+05] based on the reduction
+in §2. By Lemma 1.6, we only need to verify that Query can be implemented by projections.
+§4 states two main claims, and then proves Theorem 1.1 assuming those. The main claims
+are in turn discussed in §5, 6.
+2
+A combinatorial reduction to 3SAT
+Our starting point is the following result from [JMV13].
+Theorem 2.1 ([JMV13]). Let M be an algorithm running in time T = T(n) ≥n on inputs
+of the form (x, y) where |x| = n. Given x ∈{0, 1}n one can output a circuit D : {0, 1}ℓ→
+{0, 1}3v+3 in time poly(n, log T) mapping an index to a clause of a 3CNF φ in v-bit variables,
+for v = Θ(ℓ), such that
+1. φ is satisﬁable iﬀthere is y ∈{0, 1}T such that M(x, y) accepts, and
+2. For any r ≤n we can have ℓ= max(log T, n/r) + O(log n) + O(log log T) and each
+output bit of D is a decision tree of depth O(log r).
+Note that for T = 2n and r = O(1) this gives a 3CNF with Tpoly log T clauses such that
+each clause can be computed from its index by a function with constant locality.
+We need an incomparable variant of the latter. We enlarge the locality to O(log n), but
+at the same time there are only O(log n) input bits that aﬀect more than 1 bit. If we ﬁx
+these bits, the rest of the computation is just a bit-wise xor.
+Theorem 2.2. Let M be an algorithm running in time T = T(n) ≥n on inputs of the
+form (x, y) where |x| = n.
+Let ℓ1 = log T.
+For some ℓ2 = O(log log T) + O(log n) the
+6
+
+following is true. Given x ∈{0, 1}n one can output in time poly(n, log T) six circuits (of
+size poly(n, log T))
+Si : {0, 1}ℓ2 →{0, 1}ℓ1+ℓ2,
+bi : {0, 1}ℓ2 →{0, 1},
+for i = 1, 2, 3, such that:
+Let φx be the 3CNF with 2ℓ1+ℓ2 = Tpoly(n, log T) clauses (and variables) whose (α, β) ∈
+{0, 1}ℓ1 × {0, 1}ℓ2 clause contains variables
+Vi = (α, β) ⊕Si(β)
+and corresponding sign bits
+bi = bi(β),
+where i = 1, 2, 3 and ⊕is bit-wise xor. Then φx is satisﬁable iﬀthere is y ∈{0, 1}T such
+that M(x, y) accepts.
+Note that in the case T = 2O(n) each output bit of D depends only on |β| + 1 = O(log n)
+bits of the input.
+The next proof heavily builds on previous works. We give a sketch that highlights the
+tiny changes from previous proofs, and to work out parameters. The closest previous proof
+is [JMV13], to which we also refer for a discussion of other related works.
+Proof sketch. Without loss of generality the algorithm is implemented by a random-access
+Turing machine running in time T ′ = Tpoly log n and only using memory cells at indexes
+≤poly(T) (see e.g. [NEU12] for details).
+Consider a circuit-sat instance where the circuit ﬁrst guesses a computation trace con-
+sisting of T ′
+conﬁgurations of size O(log T) each; and then the circuit checks its validity and accep-
+tance.
+The validity check consists of two separate checks.
+The ﬁrst is the check of the
+consistency of the transition function of the machine, assuming that memory reads are cor-
+rect. The second is the check of the consistency of the memory reads and writes. The trace is
+valid if and only if both checks pass. These two checks are implemented in a similar fashion;
+we only describe the second.
+Consider a matrix of r × T ′ conﬁgurations, where r = poly log T. We use α to index a
+column in this matrix. (This actually gives |α| = ℓ1 = log T ′ = log T + O(log log T), but the
+low-order summand can be swallowed in ℓ2.) We use β to index a row, and the gates within
+the subcircuits discussed next.
+The ﬁrst row is the computation trace mentioned above that the circuit guessed. For every
+t = 1, . . . , T we have a poly(n, log T)-size subcircuit which checks the pair of conﬁgurations
+(C, C′) at positions (1, t) and (r, t) in the matrix, i.e., in the same column but at antipodal
+rows. This subcircuit veriﬁes that either C′ accesses the same memory cell of C and has the
+timestamp of C plus one, or C′ accesses a memory cell with index greater than that of the
+cell accessed by C, or – the wrap-around condition – it does nothing if C′ is the conﬁguration
+7
+
+with timestamp 0. If all these checks pass then for every t the conﬁguration at position (t, r)
+is the one that comes next the conﬁguration at position (t, 1) in the order given by memory
+location accessed breaking ties by timestamp. The subcircuit then veriﬁes consistency of the
+memory read and write in C and C′. In particular it veriﬁes that cells read for the ﬁrst time
+are blank, and that the cells 1, . . . , n read for the ﬁrst time contain the input x. Note that
+the latter is possible because our circuits have size ≥n and are built with knowledge of x.
+Observe that these subcircuits operate independently on each column, and are identical
+across columns. Their connections depend only on the row index and an index to one of
+their gates. By including these two indexes inside β, these connections can be computed in
+the required format.
+It remains to discuss connections across columns, which are needed to move conﬁgurations
+around to put them in the right order. For this we use routing networks such as Beneˇs’,
+which are a simple composition of butterﬂy networks. The index of a neighbor in column
+α is obtained by xoring α with a string (of Hamming weight 1) which only depends on the
+row, which in turn is part of β. This leads to the desired format for Vi. The implementation
+of the routing network also needs a simple gadget to swap two conﬁgurations depending on
+a nondeterministic bit. This gadget is the same for every column and row. From this it
+follows that the Vi and bi are in the desired format.
+3
+Lower bounds from fast algorithms
+In this section we prove theorems 1.4 and 1.5. First we restate the theorem.
+Theorem 1.5 (Satisﬁability implies lower bounds, tightly). Let Cn be eﬃciently closed under
+projections.
+If the satisﬁability of functions h = g1∧g2∧g3, where gi ∈Cn+O(log n) is in Time(2n/nω(1)),
+then there is a function f in ENP such that fn ̸∈Cn.
+For the proof we use Theorem 2.2, and we enumerate over the β in its statement. The
+key observation is that for any ﬁxed β, the reduction is only computing xor which can be
+hardwired with no loss in resources. This enumeration is feasible because |β| = O(log n). To
+get better constants we also work with unary languages.
+Proof of Theorem 1.5. Suppose that every function in ENP belongs to Cn when restricted to
+inputs of length n. Let L be a unary language in NTime(2n)\NTime(o(2n)) [Coo73, SFM78,
+Z´ak83]. Consider the ENP algorithm that on input x′ ∈{0, 1}O(log n) and i ≤2npoly(n)
+computes x = 1x′, the 3CNF φx corresponding to L through Theorem 2.2, computes its ﬁrst
+satisfying assignment if one exists, and outputs its ith bit. By assumption, on inputs of
+length m = n + O(log n) this function is in Cm. Also, by assumption, if we hardwire x′ the
+resulting function still belongs to Cm. Call this function gx.
+We contradict the assumption on L by showing how to decide it in Ntime(o(2n)). Let
+D, Si, α, β, Vi and bi be as in Theorem 2.2. Consider the algorithm that on input x = 1n
+guesses gx. Then it constructs the function g′
+x that operates as follows. The input is that
+8
+
+of D. Then it connects three copies of gx to the output variables Vi. Further, the output of
+the ith copy is negated and then xored with bi. And ﬁnally an And is taken. Call g′
+x this
+new function (which may not belong to any Cn). Note that g′
+x(i) = 1 iﬀthe ith clause is
+not satisﬁed (by satisfying assignment gx). So by determining the satisﬁability of g′
+x we can
+determine if x ∈L or not.
+The satisﬁability algorithm enumerates over all poly(n) choices for β. For each ﬁxed β,
+the bi are determined, and the remaining computation to obtain the Vi is an xor by Si(β).
+All this can be hardwired into g′
+x in time poly(m), because Cm is eﬃciently closed under
+projections. For every i this gives a new function gi ∈Cm. There remains to solve the
+satisﬁability of g1 ∧g2 ∧g3. The latter can be done in time 2m/mω(1) by assumption. So
+overall the running time is poly(n, m)2m/mω(1) = 2n/nω(1) = o(2n).
+Theorem 1.4 (Derandomization implies lower bounds, tightly). Let Cn be eﬃciently closed
+under projections.
+If the acceptance probability of functions of the form h = ∧poly(n) ∨3 Cn+O(log n) can be
+distinguished from being = 1 or ≤1/n10 in Time(2n/nω(1)), then there is a function f in
+ENP such that fn ̸∈Cn.
+Proof sketch. Proceed as the proof of Theorem 1.5, but let φx be instead of the 3CNF
+produced by Theorem 2.2 the constraint satisfaction problem corresponding to our main
+theorem, 1.1.
+As before, we obtain a function g′
+x that on input i determines if the ith
+constraint is satisﬁed. (To show that the complexity of this function is as desired, we merge
+the Not gates of the 3CNF corresponding to Dec with the circuits in Cn+O(log n), using the
+closure of the class.) Thus, approximately determining how many constraints are satisﬁed
+amounts to approximately determinining the number of satisfying assignments to g′
+x.
+4
+Proof of Main Theorem 1.1
+In this section we prove Theorem 1.1.
+To do so we recall that the succinct veriﬁer of
+[BS08, BGH+05] contains two sub-veriﬁers, the ﬁrst one checks an Algebraic Constraint
+Satisfaction Problem (ACSP) problem and the second veriﬁes proximity to Reed-Solomon
+codes. To prove the main theorem we need to show that both can be computed with low
+computational complexity. In §4.1 we discuss the eﬃcient veriﬁcation of ACSP. In §4.2 we
+state the eﬃciency of the proximity tester. In §4.3 we state the needed derandomization
+tools for boosting soundness via repetition and in §4.4 we complete the proof.
+4.1
+Algebraic CSP
+The following deﬁnition is a variant on that of a univariate ACSP appearing in [BS08,
+BGH+05] (cf. [Mie09, BCGT13b]). It slightly diﬀers as it requires an assignment which is a
+pair of univariate polynomials (previous works required a single univariate polynomial) but
+its deﬁnition of satisﬁability (1) is cleaner from an algebraic point of view.
+9
+
+Deﬁnition 4.1 (Algebraic CSP). A univariate ACSP (or, simply, an ACSP) instance ψ is
+a quadruple ψ = (F, J, V, Q) where
+• F is a ﬁnite ﬁeld
+• J is a ﬁnite set of indices
+• V = {Vj | j ∈J} is a set of univariate polynomials (Vj ∈F[X]) indexed by J
+• Q = Q(X, Z, Y = {Yj | j ∈J}) is a multi-variate polynomial over variables X, Z and
+the set of variables Y which, like V, is indexed by J.
+An assignment to ψ is given by two polynomials A, B ∈F[X]. We say (A, B) satisﬁes ψ if
+Q (X, A(X), B(X), {Yj ←A(Vj(X)) | j ∈J}) ≡0
+(1)
+where equality is over the ring F[X] and Yj ←A(Vj(X)) means substituting Yj by A(Vj(X)).
+The ﬁrst part in the proof of Theorem 1.1 is
+Theorem 4.2. Let M be an algorithm running in time T = T(n) ≥n on inputs of the form
+(x, y) where |x| = n. There exists an integer c and another algorithm that given x ∈{0, 1}n
+and integer a ≥2, outputs in time poly(n, log T, a) an ACSP instance ψ = (F, J, V, Q) as in
+Deﬁnition 4.1. This ACSP is satisﬁable iﬀthere is y ∈{0, 1}T s.t. M(x, y) accepts, and has
+the following features:
+• Characteristic 2. F is the ﬁeld of size 2ℓ+a where ℓ= log(n + T) · O(log log(n + T)).
+• Preprocessing. |J| = poly(log T, n) and deg(Vj) ≤1 for all j ∈J. Moreover, Vj is
+of the form Vj(X) = X + γj where γj ∈F.
+• Degree bounds. If Q is satisﬁable then it is satisﬁed by polynomials A and B of
+degrees at most 2ℓand 2ℓ+c respectively.
+• Postprocessing.
+Q is computed by an arithmetic circuit over F of size at most
+poly(log T, n).
+Note that by the Preprocessing feature, each Vj is computed by a projection as per the
+last bullet of Theorem 1.1.
+Remark 4.3 (Constant size J). The construction of [BGH+05, BCGT13b] has constant size
+J (i.e., constant query complexity). However, this comes at the price of a more complicated
+construction, resulting in preprocessing that is not necessarily a projection. Also note that
+even if J were to be constant, proximity-testing (discussed in next section) requires super-
+constant query complexity.
+10
+
+Following [BGH+05, BCGT13b], the proof idea is to “arithmetize” the circuit D from
+Theorem 2.1 into a polynomial Q: Inputs and outputs of this arithmetized version are
+elements of a ﬁeld F of size roughly 2ℓand an assignment is supposed to be the interpolation
+(or “low-degree extension”) of the assignment to the variables. We denote the assignment
+by A(X). (The role of the polynomial B is to solve the “zero-testing” problem and will be
+explained later.) Since the deﬁnition above allows A to be any polynomial over F we need
+to add a set of “range-checking” constraints, not appearing in D, that force A to evaluate
+only to {0, 1} on the domain of interest.
+4.2
+Reed Solomon PCP of Proximity
+We view a linear error correcting code C as a set of functions C = {w : L →F} from a ﬁnite
+domain L of size n (the code’s blocklength) to a ﬁnite ﬁeld F.
+Deﬁnition 4.4 (Succinct PCPP for a linear code). Let C = {w : L →F} be a linear error
+correcting code over ﬁnite ﬁeld F. A PCP of proximity (PCPP) for C is a set of functions,
+one for each codeword of C, denoted Π = {πw : L′ →Fq | w ∈C}, where L ∩L′ = ∅. A
+succinct PCPP-veriﬁer for (C, Π) is a pair (Query, Dec) where
+• Preprocessing
+Query : {0, 1}r →Ft × (L ∪L′)q.
+In what follows we denote by
+x(R)
+1 , . . . , x(R)
+t+q are the outputs of Query(R) on input R ∈{0, 1}r
+• Postprocessing Dec is an arithmetic circuit over F with t + q inputs
+The proof length of this PCPP is |L′|, its alphabet is F, the randomness complexity is r,
+query complexity is q and decision complexity is |Dec|. We say C has a PCPP system with
+soundness s for proximity parameter δ0 if there exists a PCPP Π for C satisfying:
+• Completeness: If w ∈C then
+Pr
+R∈{0,1}r[Dec(x(R)
+1 , . . . , x(R)
+t
+, y1, . . . , yq) = 0] = 1
+where yi = (w ◦πw)(x(R)
+i+t) is the answer given to query xi+t
+• Soundness: If w is δ0-far from C then for any π : L′ →F,
+Pr
+R∈{0,1}r[Dec(x(R)
+1 , . . . , x(R)
+t
+, y1, . . . , yq) ̸= 0] ≥s
+We ﬁnd it helpful to deﬁne Reed-Solomon codes in a somewhat non-standard way, using
+fractional degree δ instead of regular degree.
+Deﬁnition 4.5 (RS-codes). For F a ﬁnite ﬁeld, L ⊂F and constant δ ∈(0, 1]
+RS[F, L, δ] = {p : L →F | deg(p) < δ|L|}
+where deg(p) is the minimal degree of a polynomial P(X) whose evaluation over L is p.
+11
+
+The second part in the proof of Theorem 1.1 is given next.
+Theorem 4.6 (Preprocessing eﬃcient veriﬁer for RS codes). Let F be a ﬁnite ﬁeld of char-
+acteristic 2 and L ⊆F be an F2-aﬃne space of dimension k and let a ≥3 be an integer. For
+any proximity parameter δ0 > 0 there exists a succinct PCPP system for RS[F, L, 2−a] with
+soundness 1/kc for a positive constant c independent of k, satisfying
+• Proof length is 2k · poly(k) and alphabet is F
+• Query complexity is kc′ for positive constant c′ independent of k
+• Preprocessing: Query is a projection according to the last bullet of Theorem 1.1
+• Postprocessing: |Dec| = poly(k)
+We point out that all points but for preprocessing were proved in [BS08, BGH+05].
+Therefore our proof of the theorem in Section 6 will focus only on preprocessing.
+4.3
+Randomness eﬃcient sampling via ϵ-biased sets
+For boosting soundness in an eﬃcient way, i.e., one that preserves 1-local preprocessing, we
+need to use samplers based on ϵ-biased sets. After recalling the necessary information about
+them we complete the proof of Theorem 1.1.
+The following lemma is a well-known corollary of the expander mixing lemma (cf. [ASE92])
+and the observation that a Cayley graph generated by an ϵ-biased set has normalized second
+eigenvalue at most ϵ (cf. [NN90]). We state it without proof.
+Lemma 4.7 (ϵ-biased hitting sets). Let G be a Cayley graph over vertex set {0, 1}n generated
+by an ϵ-biased set S. Then for any V ⊂{0, 1}n of density µ = |V |/2n, the set U of vertices
+that have no edge to V has density
+|U|
+2n ≤ϵ2
+µ
+We also use the existence of eﬃciently constructible ϵ-biased sets (cf. [NN90, AGHP92]).
+Lemma 4.8 (ϵ-biased sets). Given ϵ ∈(0, 1) and integer n there exists a deterministic
+algorithm running in time poly(n, 1/ϵ) that outputs an ϵ-biased set S. Consequently, |S| ≤
+poly(n, 1/ϵ).
+4.4
+Proof of Theorem 1.1
+Recall the proof of [BS08, BGH+05]. On input x one invokes Theorem 4.2 with integer
+a = c + 10 to obtain an ACSP instance as stated there (we use the notation from that
+theorem). Veriﬁer expects a PCP proof containing (i) a function pA : F →F with PCPP πA
+for RS[F, F, 2ℓ
+|F|] where F is the ﬁnite ﬁeld of size 2ℓand ℓ= log(n + T) · O(log log(n + T));
+The function pA is supposed to be the evaluation of A on F, and (ii) a function pB : F →F
+12
+
+with PCPP πB for RS[F, F, 2ℓ+c
+|F| ]. Now veriﬁer applies (i) the RS-PCPP sub-veriﬁer on each
+of (pA, πA) and (pB, πB), and (ii) checks that (1) in Deﬁnition 4.1 holds for a random choice
+of ξ ∈F, and using pA, pB as proxies for A and B; all of these tests reuse randomness. If
+all tests pass, veriﬁer accepts, else she rejects. It is shown in [BS08] that this PCP has
+perfect completeness, soundness 1/poly(n), query and decision complexities poly(n, log T),
+proof length (n + T) · poly log(n + T) and randomness complexity log ℓ+ O(log log ℓ). Thus,
+what is left is to argue is that we can repeat the process poly(n) times to boost soundness
+to 1 −1/poly(n) and do this while maintaining the preprocessing as a 1-local computation,
+or projection, and the decision complexity of poly(n, log T) which can then be converted to
+a 3CNF of size poly(n, log T) using the Cook-Levin Theorem (cf. Claim 1.6).
+The preprocessing of a single invocation of the veriﬁer described above is a 1-local com-
+putation, as argued for the ACSP veriﬁer in Theorem 4.2 and for the RS-PCPP veriﬁer in
+Theorem 4.6. Let S ⊂{0, 1}r be an ϵ-biased set for a suitably small ϵ = 1/poly(n) to be
+ﬁxed later. Lemma 4.8 implies |S| = poly(n). Given randomness R ∈{0, 1}r we invoke the
+veriﬁer above (which has soundness 1/poly(n)) on R ⊕s for each s ∈S, where ⊕denotes
+xor. The transformation R 7→R ⊕s is 1-local because s is ﬁxed so the new veriﬁer still has
+a 1-local preprocessing computation. Postprocessing and query complexity can be seen by
+inspection to be poly(n) and soundness is now boosted to 1 −1/poly(n) due to Lemma 4.7.
+Indeed, let V ⊂{0, 1}r be the set of randomness strings that cause the single-invocation
+veriﬁer to reject, and let U ⊂{0, 1}r be the “bad” set of R such that R ⊕s ̸∈V for every
+s ∈S. Lemma 4.7 implies that the density of U in {0, 1}r can be reduced to at most 1/nc1
+by ﬁxing ϵ = 1/nc2 for a constant c2 depending only on c1.
+This completes the proof of Theorem 1.1.
+5
+Proof of Theorem 4.2
+5.1
+Algebraic preliminaries
+In our proof we need to use selector polynomials and their eﬃcient construction, deﬁned
+next.
+Deﬁnition 5.1 (Vanishing and selector polynomials). For S ⊂F the vanishing polynomial
+of S is ZeroS(X) = Q
+s∈S(X −s). In words, it is the unique monic polynomial of degree
+|S| whose set of roots, counted with multiplicitiy, is precisely S. For S′ ⊂S we deﬁne the
+selector polynomial of S′ in S to be
+SelS′⊂S(X) ≜ZeroS(X)/ZeroS′(X)
+noticing it has degree |S| −|S′|, vanishes on S \ S′ and is nonzero on S′. We use Selβ∈S(X)
+as a shorthand for Sel{β}⊂S(X).
+Lemma 5.2 (Succinct aﬃne selector polynomials). If S′ ⊂S are two Fq-aﬃne subspaces
+inside FqN of respective dimensions d′ < d, then SelS′⊂S(X) = ZeroS(X)/ZeroS′(X) is com-
+puted by an arithmetic circuit over F of size poly(d).
+13
+
+Proof. Follows from the fact that ZeroS(X), ZeroS′(X) are linearized polynomials, hence each
+have d, d′ nonzero coeﬃcients respectively.
+5.2
+Proof of Theorem 4.2
+Notation
+For F a ﬁeld of characteristic 2 and B = (β1, . . . , βn) linearly independent over F2
+and α ∈F, let span(B) be the span of B. For S, T ⊂F let S +T = {α + β | α ∈S, β ∈T}.
+For α ∈F let α + S = {α} + S = {α + x | x ∈S}, noticing α + span(B) is the aﬃne shift
+of span(B) by α.
+Proof of Theorem 4.2. The proof goes by arithmetizing the circuits and constraint satisfac-
+tion problem of Theorems 2.1, 2.2, so we use the parameters and notation stated there.
+Associate {0, 1} with elements of F2 in the natural way. Let N > ℓ, let F be the ﬁeld of
+size 2N and let ζ1, . . . , ζN be a basis for it.
+Embedding the inputs to D in F
+Embed the ﬁrst ℓ1 inputs of D into H1 = span(ζ1, . . . , ζℓ1)
+by mapping α = (α1, . . . , αℓ1) ∈{0, 1}ℓ1 to Pℓ1
+i=1 αiζi.
+Similarly map the last ℓ2 input
+bits of D into H2 = span(ζℓ1+1, . . . , ζℓ) by mapping β = (β1, . . . , βℓ2) to Pℓ2
+i=1 βiζℓ1+i. Let
+H′ = span(ζ1, . . . , ζℓ) be the direct sum of H1, H2 and let H = span(ζ1, . . . , ζℓ+1) noticing H′
+is subspace of codimension 1 inside H. (Recall N > ℓso H is well-deﬁned.) From here on
+we overload notation and treat α appearing in Theorem 2.2 as an element of H1. Likewise β
+is an element of H2 and Si(β) will be viewed as an element of H′. All arithmetic operations
+appearing henceforth are in F.
+Preprocessing variable selection functions
+For each i ∈{1, 2, 3} and β ∈H1 let
+Vi,β(X) ≜X + Si(β),
+(2)
+noticing it is a degree-1 polynomial. We also need the range-checking indexing function
+Vrange(X) ≜X + ζℓ+1
+(3)
+We set the index set of variables Y and addressing functions V to be
+J =
+
+(i, β) | i ∈{1, 2, 3} , β ∈{0, 1}ℓ2	
+∪{range} .
+The proof of the next claim follows by inspection of (2), (3).
+Claim 5.3 (Preprocessing). For every α ∈H1 and β ∈H2 we have Vi,β(α+β) = α+β+Si(β).
+In particular, all preprocessing functions appearing in (2) and (3) are projections.
+14
+
+Sub-polynomials of Q
+The polynomial Q will be composed of poly(log T, n) many poly-
+nomials, each of constant degree and with a constant number of variables. We now deﬁne
+these sub-polynomials. For β ∈H2 let b1(β), b2(β), b3(β) denote the three sign-bits of the
+clause depending on β. Let Qβ(Y1, Y2, Y3) be the constraint that arithmetizes the relevant
+clause,
+Qβ(Y1, Y2, Y3) ≜(Y1 −b1(β)) · (Y2 −b2(β)) · (Y3 −b3(β))
+Additionally, we need the range-testing polynomial Qrange(Z) = Z2 −Z whose roots are
+{0, 1}, i.e., Qrange(Z) = Zero{0,1}(Z).
+Gluing the subpolynomials to obtain Q
+To “glue” together the sub-polynomials dis-
+cussed above we use selector polynomials, each selecting an aﬃne subspace of H. These
+subspaces are deﬁned for each β ∈H2:
+β + H1 = {α + β | α ∈H1}
+Notice that Selβ+H1⊂H is a selector polynomial for an aﬃne subspace of H of codimension
+O(log log T +log n) in H, thus can be computed by a small circuit (cf. Lemma 5.2). Similarly
+let ζℓ+1 + H1 denote the aﬃne shift of H1 by ζℓ+1 and notice this is a space of constant co-
+dimension inside H. We now deﬁne
+ˆQ(X, Y) = ˆQ (X, Y = {Yi,β,a | i ∈{1, 2, 3} , β ∈H2, a ∈F2} ∪{Yrange}) =
+X
+β∈H2
+Selβ+H1⊂H(X) · Qβ(Y1,β, Y2,β, Y3,β) + Selζℓ+1+H′⊂H(X) · Qrange(Yrange)
+(4)
+and
+Q(X, Z, Y) = ˆQ(X, Y) −Z · ZeroH(X)
+(5)
+which conforms with (1).
+Completeness and Soundness
+Follow from the next two claims.
+Claim 5.4. Let A(X) be a polynomial. There exists a polynomial B(X) such that (A, B)
+satisfy Q iﬀthe polynomial
+QA(X) = ˆQ(X, {Yj ←A(Vj(X)) | j ∈J})
+vanishes for every h ∈H, i.e., QA(h) = 0 for every h ∈H.
+Proof. Recall that (A, B) satisfy Q iﬀ
+Q(X, Z ←B(X), {Yj ←A(Vj(X)) | j ∈J}) ≡0
+Which means
+QA(X) ≡ZeroH(X) · B(X)
+15
+
+where equivalence is in the ring F[X]. One direction is immediate: the right hand side in the
+last equation above vanishes on H by construction of ZeroH and hence QA(X) must vanish
+on every h ∈H too. In the other direction, if QA(X) vanishes on h ∈H then it is divisible
+by the polynomial (X −h). This is because F[X] is a unique factorization domain. Hence
+QA(X) is divisible by Q
+h∈H(X −h) = ZeroH(X), which means there exists B(X) such that
+QA(X) ≡ZeroH(X) · B(X).
+Claim 5.5. QA(X) vanishes on every h ∈H if and only if:
+1. A(α + β) ∈F2 for every α ∈H1, β ∈H2, and (recalling H′ = H1 + H2 is identiﬁed
+with {0, 1}ℓand F2 is identiﬁed with {0, 1})
+2. the boolean assignment A : {0, 1}ℓ→{0, 1} satisﬁes the succinct CSP deﬁned by D.
+Proof. The ﬁrst observation is that for any h ∈H there is at most one summand of (4) that
+does not vanish. This follows from the deﬁnition of the selector polynomial and because the
+sets β + H1 and ζℓ+1 + H′ are all mutually disjoint.
+To prove part 1 we start with the very last term in (4) and notice that, for x ∈H, the
+selector polynomial selects only x of the form x′ + ζℓ+1 for x′ ∈H′. The function Vrange adds
+ζℓ+1 to its input, thus (Yrange ←Vrange) evaluated on x′ + ζℓ+1 is simply x′. Hence QA(X)
+vanishes on x ∈H′ +ζℓ+1 iﬀQrange(A(α+β)) = 0 for every α ∈H1, β ∈H2 which establishes
+part 1.
+Part 2 follows by inspection, using the same rationale as used in proving part 1. Notice
+that the selector for β + H1 evaluates to 1 on x ∈H if and only if x is of the form α + β
+for α ∈H1. This, together with Claim 5.3, means that (Yi,β ←Vi,β) evaluated on x is
+simply α + β + Si(β). It follows from the deﬁnition of Qβ that the term corresponding to
+x vanishes iﬀthe xth clause is satisﬁed by the assignment given by A to its three variables.
+This completes the proof.
+Computational Eﬃciency
+Postprocessing complexity is equal to the size of Q in (5),
+this size is poly(n), as implied by Lemma 5.2. Regarding preprocessing, it can be done via
+projections as shown in Claim 5.3.
+6
+Preprocessing Complexity of the RS-PCPP veriﬁer
+In this section we prove Theorem 4.6.
+The completeness, soundness, query complexity,
+randomness and decision time of the RS-PCPP veriﬁer are already given by [BS08, BGH+05]
+(cf. [BCGT13b]) and here we focus solely on showing that preprocessing can be done via
+projections. This will be argued by following the proof in [BS08, Section 6] and specifying
+the query-format to the PCPP oracle and the preprocessing done to the randomness by the
+PCPP-veriﬁer. We assume the reader is familiar with that proof (including the notation
+there) and point out, using footnotes, the minor modiﬁcations needed for our proof.
+We start by recalling the RS-PCPP from [BS08, Section 6]. We consider a system for
+verifying proximity to RS[F, L, 2−a] where F is a ﬁeld of characteristic 2 and size > 2k+a and
+16
+
+L is an aﬃne space1 of dimension k. The proximity-veriﬁcation problem for RS[F, L, 2−a] is
+reduced to 2 · 2⌈k/2⌉many instances of the proximity-veriﬁcation problems for RS[F, L′, 2−a]
+where L′ is an aﬃne space of dimension ≤⌈k/2⌉+ a.2 Applying the same kind of reduction
+recursively — we stop it when dim(L′) ≤2a — leads after O(log k) many iterations to
+constant-size domains L′, for which the proximity-veriﬁcation problem is solved by querying
+the relevant function on all of its domain and checking it has fractional degree less than
+2−a. Consequently, the combination of p and its RS-PCPP oracle can be viewed as residing
+in a tree. Each node v of the tree refers to a function fv : Lv →F where Lv is an aﬃne
+space of dimension k = kv, which we call also the dimension of v. The function p refers to
+the root of the tree. Lv is speciﬁed by a shift b0 and a basis b1, . . . , bk, so a query to fv is
+speciﬁed by (r1, . . . , rk) ∈Fk
+2 and answered by f(b0 + P
+i ribi). One thing that complicates
+the situation is that the various functions residing in the tree must be consistent, i.e., they
+must give the same value to certain pairs of points. (This is because the functions fu residing
+in the sons of v interpolate certain values of fv, in a way explained later on.) We deal with
+this by redirecting queries from fu to the relevant fu′. In particular, our query-generating
+preprocessing algorithm runs in two phases: In the down phase we use randomness to go
+down the tree and reach a leaf, generating an initial set of queries. In the up phase we take
+our query and, if needed, redirect it either to a sibling or to its father, and continue the
+process. Thus, to prove Theorem 4.6 we will argue that each step of each of the phases is
+a projection. To state the two claims we explain more the structure of the RS-PCPP proof
+tree.
+6.1
+Overview of a single level of the RS-PCPP system
+We continue to assume familiarity with [BS08, Section 6] and use the notation there. Assume
+p : L →F belongs to RS[F, L, 2−a] and let P(X) be the polynomial whose evaluation is p
+(i.e., p(x) = P(x) for all x ∈L and deg(P) < |L|/2a). Let ℓ= ⌊k/2⌋and as in [BS08,
+Equation (6.2)] let
+L0
+≜
+span(b1, . . . , bℓ),
+dim(L0) = ℓ
+L′
+0
+≜
+c0 + L0 + span(c1, . . . , ca−1),
+dim(L′
+0) = ℓ+ a −1
+(6)
+L1
+≜
+b0 + span(bℓ+1, . . . , bk),
+dim(L1) = k −ℓ
+and q(X) ≜qL0(x) be the subspace polynomial vanishing on span(b1, . . . , bℓ). Notice L′
+0 ∩
+L1 = ∅so that we have a simpler version of [BS08, Equation (6.3)]: For β ∈L1 let
+Lβ ≜L′
+0 ∪β + L0 + span(c1, . . . , ca−1),
+dim(Lβ) = ℓ+ a
+(7)
+and notice Lβ ⊃β + L0.
+1[BS08, Section 6] assumes L is a linear space.
+The generalization to aﬃne-spaces is immediate, cf.
+[BCGT13b].
+2In [BS08, Section 6] a = 3, i.e., fractional degree is 1/8. This can be generalized to arbitrary constant a
+as we assume here.
+17
+
+By [BS08, Proposition 6.3] there exists a unique bivariate polynomial Q(X, Y ) satisfying
+degX(Q) < 2ℓ, degY (Q) < 2(k−ℓ)−a and
+Q(X, Y ) ≡P(X) mod Y −q(X),
+or equivalently
+P(X) = Q(X, q(X)).
+(8)
+Assuming p is the evaluation of P and using q and Q above, view p : L →F as a partial
+bivariate function p : T →F for T ⊂F × F
+T =
+[
+β∈L1
+{(β + L0) × {q(β)}} .
+(9)
+In what follows for T ⊂F × F let the β-row of T be Rβ[T] = {α | (α, β) ∈T} and the
+α-column is Cα[T] = {β | (α, β) ∈T}.
+Next, as in [BS08, Deﬁnition 6.5] let f : S →F where
+S =
+ [
+β∈L1
+{Lβ × {q(β)}}
+!
+\ T
+is supposedly the evaluation of Q on S and in what follows we denote by ˆf : S ∪T →F
+the function that agrees with p on T and with f on S. Assuming p is the function residing
+at the root v, there is one row-edge leaving v for each nonempty row of S ∪T and one
+column-edge leaving v for every α-column of S, where α ∈L′
+0. The number and structure
+of these outgoing edges is given by the following analog of [BS08, Proposition 6.6].
+Proposition 6.1 (Structure of S and T). The set S ∪T is the disjoint union of q(β)-rows
+for β ∈L1. The q(β)-row of S ∪T is the aﬃne space Lβ. Similarly, for every α ∈L′
+0, the
+α-column of S ∪T is the aﬃne space q(L1), and it has no intersection with T.
+If ˆf is indeed the evaluation of Q, then every row of ˆf is a polynomial of degree < 2ℓ
+and every column is of degree < 2(k−ℓ)−a. This leads to the following recursive deﬁnition of
+the RS-PCPP tree, which complements [BS08, Deﬁnition 6.5] by providing a more explicit
+query-access to nodes in the tree.
+Deﬁnition 6.2 (RS-PCPP tree node labels). Let v be a node in a RS-PCPP tree, and
+assume it is labeled by aﬃne shift b0, basis b1, . . . , bk, auxiliary shift c0 and auxiliary basis
+c1, . . . , ca−1 where b0, . . . , bk, c0, . . . , ca−1 are linearly independent (in particular, b0 and c0
+are nonzero). A query to the node is speciﬁed by r1, . . . , rk and the answer is interpreted
+as f(b0 + Pk
+i=1 ribi). (Notice that the auxiliary shift and basis are not used in querying fv,
+rather they are needed for the recursion speciﬁed next.)
+If k ≤2a then v is a leaf. Otherwise, let L0, L′
+0, L1, Lβ be as in (6) and (7). Then v has
+the following edges
+1. v has 2k−ℓrow-edges, each edge labeled by β ∈L1, and the node u at the other end of the
+edge is labeled by the aﬃne shift β and basis b1, . . . , bℓ, c1, . . . , ca−1, (c0 + β), auxiliary
+shift c′
+0 and auxiliary basis c′
+1, . . . , c′
+a−1 that are linearly independent of β, b1, . . . , bℓ, (c0+
+β), c1, . . . , ca−1.
+18
+
+2. Additionally, v has 2ℓ+a−1 column-edges, each edge labeled by α ∈L′
+0. The node u at the
+other end of the edge is labeled by shift q(b0) and basis q(bℓ+1), . . . , q(bk), auxiliary shift
+c′
+0 and auxiliary basis c′
+1, . . . , c′
+a−1 that are linearly independent of q(b0), q(bℓ+1), . . . , q(bk).
+Intuitively, we assume the prover provides a function fv : Lv →F for each node v in our
+tree. We associate Lv with Tv ⊂F × F as in (9), view fv as a partial bivariate function with
+domain Tv. We then deﬁne a set Sv as in Proposition 6.1 and assume the prover provides for
+each q(β)-row of Sv ∪Tv the evaluation of ˆf restricted to that row. This evaluation resides in
+the node u at the end of the row-edge labeled by β. Similarly, the evaluation of ˆf restricted
+to an α-column of Sv ∪Tv resides in the node w at the end of the column-edge labeled by
+α. By deﬁnition, the q(β)-row of Sv ∪Tv — which resides in node u — has non-empty
+intersection with Tv. On inputs in Tv we should require fv to equal fu. Similarly, every
+element in the α-column — which resides in node w — is also an element of some q(β)-row,
+so we require fw to equal fu for the relevant u. To enforce this consistency between functions
+residing in diﬀerent nodes of the RS-PCPP tree, we deﬁne a query generation preprocess
+that traverses the RS-PCPP proof tree in two phases: In the down phase we use randomness
+to go down the tree and reach a leaf, generating an initial set of queries. In the up phase we
+take each query that was generated at the end of the down phase and, if needed, redirect it
+as follows: If the query is to a column-node (i.e., w reached from v via a column edge) then
+we refer the query to the proper row-sibling; if the query is to a row-node u (reached from
+v) and furthermore resides in Tv we refer it to the father v of u. Thus, to prove Theorem 4.6
+we will argue that each step of each of the two phases is a projection. We start by describing
+the down phase.
+Claim 6.3 (Down phase). At non-leaf v of dimension k = kv denote the k bits of initial
+randomness by r = (r1, . . . , rk). The down step consists of
+• Partitioning the bits into r′′ = (r1, . . . , rℓ) and r′′′ = (rℓ+1, . . . , rk)
+• Appending a constant number a −1 of new bits r′ = (r′
+1, . . . , r′
+a−1) to r′′.
+• Tossing a coin r′
+0 and based on its outcome either use r′′ as a label for a column-edge
+v →u and apply another down-step to u with randomness r′′′, or use r′′′ as a label for
+a row-edge v →u′ and apply another down-step to u′ with randomness r′′.
+This down phase process is initialized at the root with k bits of randomness, and continued
+until a leaf u of dimension k ≤2a is reached. (Recall a is a constant.) All 2a elements of fv
+are designated as queries and we apply the up phase to each one of them separately. The
+up phase consists of O(log k) many steps, at most 2 up-steps at each level of the tree.
+Claim 6.4 (Up phase). Let u be a node of dimension ku and let r = (r1, . . . , rk) be the
+randomness used to query it. If u is the root, then the up-phase terminates and the query r
+is sent to fu. Otherwise, let v be the father of u and let r′ be the bit-sequence specifying its
+edge-label. A number a of the bits of r′ are examined in a non-adaptive manner and based on
+their value, the up-step chooses one of three possibilities: (i) make query r to fu, (ii) redirect
+the query r′ to the son u′ of v with edge v →u′ labeled r, or (iii) redirect the query r ◦r′ to
+v.
+19
+
+Proof of Theorem 4.6. Proof length is proved in [BS08]. As shown there, a single invocation
+of the RS-PCPP veriﬁer has query complexity O(1) (over alphabet F) and soundness 1/kc
+for a universal constant c.
+We now argue that preprocessing can be achieved by a projection. First, notice that
+generating R + y from R is a projection according to the last bullet of Theorem 1.1. Having
+ﬁxed the initial randomness, the key point is that only O(log k) bits are examined in all
+down-steps and up-steps. Hence, consider a modiﬁed veriﬁer which ﬁxes in advance every
+possible setting for these O(log k) bits. The query complexity of the modiﬁed veriﬁer is
+poly(k). Soundness can only increase because of this modiﬁcation. Crucially, once these
+O(log k) bits are ﬁxed in advance, the remaining preprocessing is a projection according to
+the last bullet of Theorem 1.1. A down-phase consists of permuting the bits; at the leaf a
+constant number of bits are ﬂipped; and the up phase consists yet again of permuting the
+bits. This completes the proof of Theorem 4.6.
+6.2
+Down phase — Proof of Claim 6.3
+Assume f : L →F resides at node v; we have k bits of randomness r1, . . . , rk passed on
+from v’s father and a new bits of randomness r′
+0, . . . , r′
+a; L is speciﬁed by shift b0 and basis
+b1, . . . , bk for L, and v has an auxiliary shift c0 and auxiliary basis c1, . . . , ca−1 for. Then by
+Deﬁnition 6.2 v has one row-son labeled by β for each β ∈L1, and one column-son labeled
+by α for each α ∈L′
+0. We use the ﬁrst bit of new randomness r′
+0 to select a row (r′
+0 = 0) or
+column (r′
+0 = 1) edge. If a row-edge is selected we use rℓ+1, . . . , rk to select a β ∈L1 (recall
+from (6) that dim(L1) = k −ℓ) and pass (r1, . . . , rℓ, r′
+1, . . . , r′
+a) as randomness to the row-
+node uβ. (Deﬁnition 6.2 and (7) imply dim(uβ) = ℓ+ a.) If a column-edge is selected we use
+(r1, . . . , rℓ, r′
+1, . . . , r′
+a−1) to select a column α ∈L′
+0 (recall from (6) that dim(L′
+0) = ℓ+ a −1)
+and pass (rℓ+1, . . . , rk) to the column-node uα of dimension k −ℓ.
+Notice that in either case (row/column) the operations performed on r1, . . . , rk, r′
+0, . . . , r′
+a
+consist of (i) partitioning the bits in a ﬁxed way into a single bit (r′
+0) and two roughly
+equisized sets R0, R1. Then, based on r′
+0 we either use R0 as an edge label and pass R1
+as randomness to the next node, or vice versa (use R1 as and edge label and pass R0 as
+randomness to next node). Thus, each down phase examines O(1) bits and then (possibly)
+a ﬁxed permutation of the remaining bits. This completes the proof of Claim 6.3.
+6.3
+Up phase — Proof of Claim 6.4
+If u is the root, then query fu at (r1, . . . , rk). Otherwise, there are two cases to consider:
+Column nodes
+In this case suppose u is an (k−ℓ)-dimensional column node whose father
+is an k-dimensional node v and the edge leading from v to u is labeled by α ∈L′
+0 and the
+query to fu is r1, . . . , rk−ℓ. The crucial point is that the shift and basis for querying fu are
+q(b0) and q(b1), . . . , q(bℓ), so the query to fu is q(β) where β = b0 + Pk−ℓ
+i=1 riq(bi). On the
+other hand, the shift for the row-sibling u′ of u down the edge labeled by r1, . . . , rk−ℓis β
+and the basis is b1, . . . , b)ℓ, c1, . . . , ca−1, (c0 + β). Thus, assuming fu is the restriction of ˆf to
+20
+
+the α-column, and fu′ is the restriction of ˆf to the q(β)-row, we see that the answer of fu at
+α should equal the answer of fu′ on query β and this is precisely case (ii) of Claim 6.4.
+Row nodes
+In this case suppose u is a ℓ+ a-dimensional row-node whose father is an k
+dimensional node v and the edge leading from v to u is labeled by β and the query to fu is
+labeled by α = β+Pℓ
+i=1 ribi+Pa−1
+j=1 rℓ+jcj +rℓ+a(c0+β) where r1, . . . , rℓ+a is the randomness
+used to specify the query. We need to redirect the query to fv if and only if α ∈Lβ ∩Tv
+which, inspection reveals, happens iﬀrℓ+a = 1 and rℓ+1 = . . . = rℓ+a−1 = 0. This can be
+determined by inspecting a bits of the randomness, and if needed, the query comprised of
+randomness r1, . . . , rℓ−k is concatenated with the ℓbits of randomness specifying the edge
+β and the total k bits are redirected to the father node v.
+This completes case (iii) of
+Claim 6.4.
+We conclude that in each case, the up-phase step occurring at level i of the tree involves
+at most 2 hops — one from column-node to a sibling row-node, the other from a row-node to
+its father. In each case the processing needed to be done involves inspecting at most a bits,
+and based on this redirecting the query by possibly permuting its randomness bits. This
+completes the proof of Claim 6.4.
+Acknowledgements
+The ﬁrst co-author is grateful to the SCIPR-lab (www.scipr-lab.org) members — Alessan-
+dro Chiesa, Daniel Genkin, Lior Greenblatt, Shaul Kﬁr, Michael Riabzev, Gil Timnat, Eran
+Tromer and Madars Virza — for helpful discussions. The second co-author thanks Ramamo-
+han Paturi for a conversation on MAX3SAT.
+References
+[AGHP92]
+Noga Alon, Oded Goldreich, Johan H˚astad, and Ren´e Peralta. Simple constructions
+of almost k-wise independent random variables. Random Structures & Algorithms,
+3(3):289–304, 1992.
+[ASE92]
+Noga Alon, Joel H. Spencer, and Paul Erd˝os.
+The Probabilistic Method.
+Wiley-
+Interscience Series in Discrete Mathematics and Optimization. John Wiley and Sons,
+Inc., 1992.
+[BCGT13a] Eli Ben-Sasson, Alessandro Chiesa, Daniel Genkin, and Eran Tromer. Fast reduc-
+tions from RAMs to delegatable succinct constraint satisfaction problems. In ACM
+Innovations in Theoretical Computer Science conf. (ITCS), pages 401–414, 2013.
+[BCGT13b] Eli Ben-Sasson, Alessandro Chiesa, Daniel Genkin, and Eran Tromer. On the con-
+crete eﬃciency of probabilistically-checkable proofs. In ACM Symp. on the Theory of
+Computing (STOC), pages 585–594, 2013.
+[BGH+05]
+Eli Ben-Sasson, Oded Goldreich, Prahladh Harsha, Madhu Sudan, and Salil P. Vadhan.
+Short PCPs veriﬁable in polylogarithmic time.
+In IEEE Conf. on Computational
+Complexity (CCC), pages 120–134, 2005.
+21
+
+[Blu84]
+Norbert Blum. A boolean function requiring 3n network size. Theoretical Computer
+Science, 28:337–345, 1984.
+[BS08]
+Eli Ben-Sasson and Madhu Sudan. Short PCPs with polylog query complexity. SIAM
+J. on Computing, 38(2):551–607, 2008.
+[BSGH+06] Eli Ben-Sasson, Oded Goldreich, Prahladh Harsha, Madhu Sudan, and Salil P. Vadhan.
+Robust PCPs of proximity, shorter PCPs, and applications to coding. SIAM J. on
+Computing, 36(4):889–974, 2006.
+[Coo73]
+Stephen A. Cook. A hierarchy for nondeterministic time complexity. J. of Computer
+and System Sciences, 7(4):343–353, 1973.
+[Din07]
+Irit Dinur. The PCP theorem by gap ampliﬁcation. J. of the ACM, 54(3):12, 2007.
+[DK11]
+Evgeny Demenkov and Alexander S. Kulikov. An elementary proof of a 3n−o(n) lower
+bound on the circuit complexity of aﬃne dispersers. In Symp. on Math. Foundations
+of Computer Science (MFCS), pages 256–265, 2011.
+[DR06]
+Irit Dinur and Omer Reingold. Assignment testers: Towards a combinatorial proof of
+the PCP theorem. SIAM J. on Computing, 36(4):975–1024, 2006.
+[FSUV13]
+Bill Feﬀerman, Ronen Shaltiel, Christopher Umans, and Emanuele Viola. On beating
+the hybrid argument. Theory of Computing, 9:809–843, 2013.
+[GMR13]
+Parikshit Gopalan, Raghu Meka, and Omer Reingold. DNF sparsiﬁcation and a faster
+deterministic counting algorithm. Computational Complexity, 22(2):275–310, 2013.
+[Her11]
+Timon Hertli. 3-SAT faster and simpler - unique-SAT bounds for PPSZ hold in general.
+In IEEE Symp. on Foundations of Computer Science (FOCS), pages 277–284, 2011.
+[IKW01]
+Russell Impagliazzo, Valentine Kabanets, and Avi Wigderson. In search of an easy
+witness: Exponential time vs. probabilistic polynomial time. In IEEE Conf. on Com-
+putational Complexity (CCC), 2001.
+[IKW02]
+Russell Impagliazzo, Valentine Kabanets, and Avi Wigderson. In search of an easy
+witness: exponential time vs. probabilistic polynomial time.
+J. of Computer and
+System Sciences, 65(4):672–694, 2002.
+[JMV13]
+Hamid Jahanjou, Eric Miles, and Emanuele Viola. Local reductions. Available at
+http://www.ccs.neu.edu/home/viola/, 2013.
+[KL80]
+Richard M. Karp and Richard J. Lipton. Some connections between nonuniform and
+uniform complexity classes. In ACM Symp. on the Theory of Computing (STOC),
+pages 302–309, 1980.
+[LVW93]
+Michael Luby, Boban Veliˇckovi´c, and Avi Wigderson.
+Deterministic approximate
+counting of depth-2 circuits. In 2nd Israeli Symposium on Theoretical Computer Sci-
+ence (ISTCS), pages 18–24, 1993.
+[Mie09]
+Thilo Mie. Short pcpps veriﬁable in polylogarithmic time with o(1) queries. Ann.
+Math. Artif. Intell., 56(3-4):313–338, 2009.
+[MTY11]
+Kazuhisa Makino, Suguru Tamaki, and Masaki Yamamoto. Derandomizing HSSW
+algorithm for 3-SAT. CoRR, abs/1102.3766, 2011.
+[NEU12]
+NEU. From RAM to SAT. Available at http://www.ccs.neu.edu/home/viola/, 2012.
+[NN90]
+J. Naor and M. Naor. Small-bias probability spaces: eﬃcient constructions and appli-
+cations. In 22nd ACM Symp. on the Theory of Computing (STOC), pages 213–223.
+ACM, 1990.
+[Oli13]
+Igor C. Oliveira. Algorithms versus circuit lower bounds. CoRR, abs/1309.0249, 2013.
+[SFM78]
+Joel I. Seiferas, Michael J. Fischer, and Albert R. Meyer. Separating nondeterministic
+22
+
+time complexity classes. J. of the ACM, 25(1):146–167, 1978.
+[SW13]
+Rahul Santhanam and Ryan Williams.
+On medium-uniformity and circuit lower
+bounds. In IEEE Conf. on Computational Complexity (CCC), 2013.
+[Vio07]
+Emanuele Viola. Pseudorandom bits for constant-depth circuits with few arbitrary
+symmetric gates. SIAM J. on Computing, 36(5):1387–1403, 2007.
+[Vio13]
+Emanuele Viola.
+Challenges in computational lower bounds.
+Available at
+http://www.ccs.neu.edu/home/viola/, 2013.
+[Wil05]
+Ryan Williams. A new algorithm for optimal 2-constraint satisfaction and its impli-
+cations. Theoretical Computer Science, 348(2-3):357–365, 2005.
+[Wil10]
+Ryan Williams. Improving exhaustive search implies superpolynomial lower bounds.
+In 42nd ACM Symp. on the Theory of Computing (STOC), pages 231–240, 2010.
+[Wil11]
+Ryan Williams. Non-uniform ACC circuit lower bounds. In IEEE Conf. on Compu-
+tational Complexity (CCC), pages 115–125, 2011.
+[Wil13]
+Ryan Williams. Improving exhaustive search implies superpolynomial lower bounds.
+SIAM J. on Computing, 42(3):1218–1244, 2013.
+[Wil14]
+Ryan Williams. New algorithms and lower bounds for circuits with linear threshold
+gates. CoRR, abs/1401.2444, 2014.
+[Z´ak83]
+Stanislav Z´ak. A turing machine time hierarchy. Theoretical Computer Science, 26:327–
+333, 1983.
+23

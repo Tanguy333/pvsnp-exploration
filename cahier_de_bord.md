@@ -1635,6 +1635,99 @@ calcul** du fil AS n'avaient pas atteint.
 >   familles ; 14 extractions bib/pdf/tfnp/. Audit :
 >   `bib/tfnp_paysage.md` ; fiche : `tasks/done/A-022.md`.
 >
+> - [x] **PR-005 (déposée, 2026-08-11)** — **candidature INTERNE du
+>   Réfuteur (ordre utilisateur « crois en toi », dérogation
+>   ponctuelle règle 1 consignée) : « la frontière algorithmique
+>   THR∘THR »** — armer le verrou de la ligne 7 (le seul moteur
+>   convertissant prouvablement algorithmes en séparations) avec les
+>   instruments propres du dépôt (lois W du corpus MC, mur F-001,
+>   solveur ν ≤ 8). Pas une 21e ligne : un fil ligne 7, assumé.
+>   Sous-lemme : le poids sous restrictions (W(IP|ρ) s'effondre-t-il ?
+>   contrôle EXACT_k), exécutable aujourd'hui. Manque n° 1 nommé :
+>   audit A-023 (transfert Murray-Williams pour THR∘THR, verbatim).
+>   Conflit de rôles déclaré — instruction adverse à faire par rôles
+>   INVERSÉS (Qwen réfute) ou passe VER. Candidature :
+>   `prompts/candidature_pr005_frontiere_algorithmique.md`.
+>
+> - [x] **Fil ALG ouvert (décision utilisateur, 2026-08-11 :
+>   « allons-y »)** — sur la candidature PR-005, avec la clarification
+>   HONNÊTE consignée et acceptée : l'algorithme THR∘THR n'est pas
+>   promis (frontière ouverte du domaine depuis 2014) — le fil livre
+>   des mesures, des audits et des verrous, et vise l'algorithme.
+>   Lancés : ALG-001 (le poids SYM+ sous restrictions — IP vs contrôle
+>   EXACT, n = 4/6/8, fractions 1/4 et 1/2, 20 tirages/cas, graine
+>   consignée) et A-023 (l'audit du transfert exact pour THR∘THR —
+>   Williams 2011/2014, Murray-Williams 2018, ACW 2016, la frontière
+>   2014-2026 ; leçon A-022 : aucun numéro fantôme). Dette : 
+>   instruction adverse de PR-005 (rôles inversés ou VER).
+>
+> - [x] **ALG-001 (fait, 2026-08-11)** — **LE SOUS-LEMME A PRIS SON
+>   PROPRE AUTEUR.** Médianes W(IP|ρ) = 1.0-3.0, trop basses pour un
+>   effondrement — vérification à la main : W_MinSYM+(IP_{2k}) ≤ k
+>   trivialement (p = Σ m_{paires} — IP est un SYM∘AND de k portes).
+>   La candidature confondait le poids PTF (le mur 20/119/640 de
+>   F-001, représentation en SIGNE) et le poids MinSYM+ (couvert
+>   exact, les lois MC). Contrôle EXACT conforme (l'instrument est
+>   bon) ; 240 résolutions certifiées < 15 s. Correction MARQUÉE en
+>   tête de candidature ; ALG-002 (poids PTF sous restrictions)
+>   nommée puis suspendue à A-023. Leçon : toute mesure nommée AVEC
+>   sa définition. Pièces : `data/alg001_poids_restrictions.md`,
+>   `tasks/done/ALG-001.md`.
+>
+> - [x] **PR-006 (fait, 2026-08-11, ordre utilisateur)** —
+>   **L'AUTO-RÉFUTATION de PR-005 : LACUNE RÉPARABLE, à la limite de
+>   la faille fatale comme fil.** Constitué : la confusion de mesures
+>   (aggravée — la revendication « instruments uniques » RÉFUTÉE pour
+>   le paramètre pertinent : le poids PTF est un objet classique,
+>   Sherstov/Forster) ; le surétiquetage de la flèche 2 (« PROUVÉE
+>   modulo audit » = OUVERTE avec dette) ; le trou de folklore-check
+>   sur la frontière 2014-2026 ; la non-discriminance probable
+>   d'ALG-002 ; le retour au profil « carte ». Debout : le verrou
+>   ligne 7, A-023, les barrières. Règle PRÉ-DÉCLARÉE : réparation
+>   ssi A-023 livre (i) transfert bien posé + (ii) paramètre-goulot
+>   atelier discriminant + (iii) frontière ouverte — sinon clôture.
+>   Dossier : `tours/candidature_pr005_autorefutation.md` ; fiche :
+>   `tasks/done/PR-006.md`.
+>
+> - [x] **A-023 (fait, 2026-08-11, agent — 29e audit)** — **LE
+>   TRANSFERT EST FONDÉ ET L'ATTRIBUTION CORRIGÉE : la flèche est
+>   Chen-Williams CCC 2019, Theorem 8** (CAPP erreur constante OU
+>   SAT, poly-taille, 2ⁿ/n^{ω(1)} ⟹ NEXP ⊄ THR∘THR) — pas Williams
+>   2010/JACM14 ni MW18 (leurs clôtures ✗ pour THR∘THR ; l'obstacle
+>   OR-clôture, nommé par Williams 2014 note 6, contourné dès 2019 :
+>   ⊕₂-clôture folklore Lemma 50 + PCPP à 2 requêtes Lemma 25) ;
+>   forme E^NP ciblée : BW24 §3.3 via CTW26 Lemma 3.8. Frontière :
+>   #SAT déterministe n^{2−δ} portes (ACW16), CAPP déterministe o(1)
+>   de ⊕₂∘THR∘THR jusqu'à n^{2.5−ε} (CTW26, STOC 2026, mars) ;
+>   poly-taille OUVERT (verbatim). LE POINT DÉCISIF POUR LE DÉPÔT :
+>   le transfert ne consomme AUCUN paramètre de poids (unique
+>   hypothèse : le temps du CAPP) ; CW19 Cor 10 — le mur F-001 ne
+>   barre pas la route CAPP ; poids restreints subsumés depuis les
+>   années 1990 (Nisan, FKL+01). RR non établie profondeur 2 (KL01
+>   [TEXTE NON OUVERT], marqué). 16 textes ouverts, révisions ×2,
+>   extractions versionnées `bib/pdf/thrthr/`. Audit :
+>   `bib/transfert_thrthr.md` ; cellule ligne 7 refondée (matrice
+>   22 × 8 vérifiée) ; fiche : `tasks/done/A-023.md`.
+>
+> - [x] **Fil ALG CLOS (2026-08-11 — la règle pré-déclarée de PR-006
+>   appliquée à la chute d'A-023)** : (i) transfert bien posé ✓,
+>   (iii) frontière ouverte ✓, (ii) paramètre-goulot atelier
+>   discriminant ✗ — rien de ce que l'atelier mesure n'est consommé
+>   par le transfert, et les goulots réels (degré probabiliste,
+>   constantification Littlewood-Offord, types quasi-poly) sont de la
+>   machinerie publiée et active. Ouvert et clos LE MÊME JOUR : le
+>   filtre adverse a fonctionné contre son propre auteur, en trois
+>   actes exécutables (ALG-001 → PR-006 → A-023). Deux brouillons
+>   d'exploration algorithmique archivés en l'état, JAMAIS consignés
+>   en tâche — aucune mesure n'en est revendiquée
+>   (`checks/explo_sharpsat_thrthr_polyweight.py` : #SAT par DP à
+>   poids polynomiaux, réplication déclarée en tête ;
+>   `checks/dense_thrthr_base.py` : base calibrée du régime dense).
+>   ALG-002 ANNULÉE ;
+>   la dette d'instruction tierce tombe avec le fil ; A-023 versé à
+>   la ligne 7 comme acquis durable. Leçons au prompt v4 : 6e régime
+>   d'échec candidat (la confusion de mesures), champ 6 durci.
+>
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le
 > contredisent — « Inventaire des pièces » et « Les trois lectures » §3, dont

@@ -1,0 +1,1713 @@
+Towards Stronger Depth Lower Bounds
+Gabriel Bathie 
+LaBRI, Université de Bordeaux
+DIENS, PSL Research University
+R. Ryan Williams 
+CSAIL, Massachusetts Institute of Technology
+Abstract
+A fundamental problem in circuit complexity is to ﬁnd explicit functions that require large depth to
+compute. When considering the natural DeMorgan basis of {OR, AND}, where negations incur no
+cost, the best known depth lower bounds for an explicit function in NP have the form (3−o(1)) log2 n,
+established by Håstad (building on others) in the early 1990s. We make progress on the problem of
+improving this factor of 3, in two diﬀerent ways:
+We consider an “algorithmic method” approach to proving stronger depth lower bounds for
+non-uniform circuits in the DeMorgan basis. We show that slightly faster algorithms (than
+what is known) for counting the number of satisfying assignments on subcubic-size DeMorgan
+formulas would imply supercubic-size DeMorgan formula lower bounds, implying that the depth
+must be at least (3 + ε) log2 n for some ε > 0. For example, if #SAT on formulas of size n2+2ε
+can be solved in 2n−n1−ε logk n time for some ε > 0 and a suﬃciently large constant k, then
+there is a function computable in 2O(n) time with a SAT oracle which does not have n3+ε-size
+formulas. In fact, the #SAT algorithm only has to work on formulas that are a conjunction of
+n1−ε subformulas, each of which is n1+3ε size, in order to obtain the supercubic lower bound. As
+a proof of concept, we show that our new algorithms-to-lower-bounds connection can be applied
+to prove new lower bounds for “hybrid” DeMorgan formula models which compute interesting
+functions at their leaves.
+Turning to the {NAND} basis, we establish a greater-than-(3 log2 n) depth lower bound against
+uniform circuits solving the SAT problem, using an extension of the “indirect diagonalization”
+method for NAND formulas. Note that circuits over the NAND basis are a special case of circuits
+over the DeMorgan basis; however, hard functions such as Andreev’s function (known to require
+depth (3 −o(1)) log2 n in the DeMorgan basis) can still be computed with NAND circuits of
+depth (3 + o(1)) log2 n. Our results imply that SAT requires polylogtime-uniform NAND circuits
+of depth at least 3.603 log2 n.
+2012 ACM Subject Classiﬁcation
+Keywords and phrases DeMorgan formulas, depth complexity, circuit complexity, lower bounds,
+#SAT, NAND gates, SAT
+Funding Gabriel Bathie: Portions of this work were completed while the author was visiting MIT.
+R. Ryan Williams: Supported by NSF CCF-2127597 and a Frank Quick Faculty Research Innovation
+Fellowship. Portions of this work was completed while the author was visiting the Simons Institute
+for the Theory of Computing, at the University of California at Berkeley.
+ 
+ISSN 1433-8092 
+Electronic Colloquium on Computational Complexity, Report No. 184 (2023)
+
+G. Bathie and R. R. Williams
+1
+1
+Introduction
+How deep must Boolean circuits be, in order to compute explicit functions? A simple counting
+argument shows that, with high probability, a random function f : {0, 1}n →{0, 1} requires
+circuit depth at least Ω(n), for circuits over any bounded fan-in basis. However, ﬁnding
+speciﬁc (interesting) functions that require high depth is a major open problem. For example,
+it is open whether there are functions computable with a circuit family of size s(n) that
+require circuits of ω(log s(n)) depth: this is essentially equivalent to the famous P vs NC1
+question which asks whether every polynomial-time problem can be simulated in parallel in
+only O(log n) depth.1 Focusing on the natural case of the DeMorgan basis, where the gates of
+our circuits are ANDs and ORs of fan-in two with NOTs for free, it is only known that there
+is a function computable in P that requires circuits of depth (3 −o(1)) log2 n. This lower
+bound was established thirty years ago by Håstad in FOCS 1993 (following earlier work),
+with some low-order improvements since then [3, 26, 39, 22, 46]. (For more general bases,
+e.g., where all functions g : {0, 1}2 →{0, 1} are allowed as gates, only a (2 −o(1)) log2 n
+depth lower bound is known [38].)
+There has been a stream of recent work, motivated by a compelling conjecture of Karcher-
+Raz-Wigderson [31], working towards stronger depth lower bounds via communication
+complexity [18, 21, 17, 35]. For example, a recent work of Dinur and Meir [18] recovers a
+(3 −o(1)) log2 n depth lower bound for Andreev’s function using communication complexity
+techniques. Mihajlin and Sofronova [35] use communication complexity methods to show
+(for instance) that a modiﬁed version of Andreev’s function [3] requires 3.15 log2(n) depth
+when the top 0.29 log2(n) layers are AND gates.2
+Note: All logarithms in this paper will be in base two. From here on, we shall drop the
+subscript 2 in our logarithms.
+1.1
+Our Results
+In this paper, we provide two rather diﬀerent lines of attack on the notorious problem of
+ﬁnding functions with a provable (3 + α) log n depth lower bound, for some α > 0. We
+ﬁrst give a plausible “algorithmic method” approach for the non-uniform case, showing
+how faster algorithms for solving #SAT on subcubic-size DeMorgan formulas would imply
+supercubic-size DeMorgan formula lower bounds (thus implying a (3 + α) log n depth lower
+bound as well)3, and we present unconditional depth lower bounds against uniform circuits
+attempting to solve the SAT problem, based on an extension of “indirect diagonalization”
+arguments to formulas.
+An Approach via #SAT Algorithms.
+Over the last decade, many connections have been shown between non-trivial algorithms
+for analyzing small circuits, and the task of constructing non-trivial functions that do
+not have small non-uniform circuits (e.g., [41, 24, 56, 57, 52, 15, 37, 28, 12] for a sample).
+1 As is standard, we say the size of a circuit is its number of gates, and the size of a formula is its number
+of leaves.
+2 Similar results (for a diﬀerent modiﬁed Andreev’s function) follow from average-case lower bounds via
+restriction-based techniques (Komargodski-Raz-Tal [32]) instead of communication complexity.
+3 Note that while an nc size lower bound against formulas implies a c log n depth lower bound, the
+converse is not immediately true. One may obtain an nc size lower bound from an αc log n depth lower
+bound, where α > 1 depends on the gate basis, by applying the results of Brent [8] and Spira [44].
+
+2
+Towards Stronger Depth Lower Bounds
+The setting most relevant to us is that of subcubic-size DeMorgan formulas.
+Explicit
+lower bounds against them have been known for decades [45, 3, 26, 39, 22] by “shrinkage
+arguments”, in which one sets variables to the formula in a careful way, and argues that
+the formula must “shrink” drastically in size from a relatively small number of variable
+settings. Analogues of these shrinkage arguments have been applied to derive faster algorithms
+for the Formula Satisﬁability (Formula-SAT) problem and its counting version #Formula-
+SAT [41, 15, 14, 16, 47]. For example, it is known that, for ε > 0:
+[16] there is a #SAT algorithm running in 2n−nε/1.63 time on n2.63−ε-size formulas, and
+[47] there is a #SAT algorithm running in 2n−nε time on formulas of n3−16ε size.
+In the case of “slightly superquadratic” formulas of size n2.001 (for example), the above
+results imply #SAT algorithms running in 2n−n0.385 time and 2n−n0.06 time, respectively.
+Our ﬁrst main result is that a seemingly minor-looking improvement on the running time of
+#SAT algorithms for “slightly superquadratic” formulas would already yield a non-trivial
+function with a supercubic DeMorgan formula lower bound.
+▶Theorem 1.1 (#SAT For “Small” Formulas Implies “Large” Formula Lower Bounds). There
+is a universal constant k > 0 such that, for every ε ∈(0, 1), if #SAT for n2+2ε+o(1) size
+formulas can be solved in 2n−n1−ε logk n time (even in zero-error randomized time), then there
+is a function in ENP = TIME[2O(n)]SAT that does not have n3+ε size formulas.
+In fact, the desired #SAT algorithm only has to succeed against DeMorgan formulas
+which are the conjunction of n1−ε+o(1) subformulas, where each subformula has O(n1+3ε)
+size. It looks quite plausible that such a #SAT algorithm may be derivable from known
+methods: it is already known that such formulas are signiﬁcantly more limited than general
+n2+2ε+o(1)-size formulas [32, 35], and current algorithms [16] can solve #SAT on n1+3ε-size
+formulas in time O(2n−n1−1.8ε), for small ε > 0.
+The proof of Theorem 1.1 proceeds by ﬁrst showing that the #SAT algorithmic hypothesis
+in fact implies a “non-trivial derandomization” for large, n3+ε-size formulas: for any desired
+constant β > 0, there is an algorithm running in 2n/nω(1) time which can distinguish
+unsatisﬁable n3+ε-size formulas from those with at least β · 2n satisfying assignments (a.k.a.,
+a Gap-SAT algorithm, see Section 3 for a deﬁnition). Our reduction from Gap-SAT on
+“large” formulas to #SAT on “small” formulas works by applying approximating polynomials
+for DeMorgan formulas to a signiﬁcant portion of the given “large” formula, in such a way that
+the counting of SAT assignments implicitly performs a portion of the large formula evaluation
+for us, allowing us to distinguish between the unsatisﬁable and “highly satisﬁable” cases.
+From there, we carefully adapt known strong connections between Gap-SAT algorithms
+for circuits and circuit lower bounds [13], to show an “ultra-ﬁne-grained” connection: a
+non-trivial Gap-SAT algorithm for formulas of size O(s(n)) implies size-s(n) formula lower
+bounds. That is, the diﬀerence between the size handled by the Gap-SAT algorithm and
+the size lower bound is only constant factor.
+Generalization to Other Circuit Classes.
+Along the way to Theorem 1.1, the connection proved between Gap-SAT algorithms and
+circuit lower bounds is rather general: any non-trivial Gap-SAT algorithm for a size-O(s(n))
+circuit class C such that
+(a) C can compute PARITY in size s(n),
+(b) C is closed under the OR of 3 copies of C, and
+(c) C is closed under negations of their outputs, and projections (0-1 assignments to some of
+the variables, and negations to some of the variables),
+
+G. Bathie and R. R. Williams
+3
+implies size-s(n) lower bounds against C. Two other natural examples of such C are n2+ε-size
+formulas over the full binary basis, and O(n)-size circuits over any complete basis.
+We use this connection to conclude some new unconditional circuit lower bounds. Ka-
+banets, Koroth, Lu, Myrisiotis, and Oliveira [28] studied the class Formula[s]◦G of Boolean
+functions computed by size-s DeMorgan formulas where the leaves may be any Boolean
+functions from a class G. They showed that when the functions in G have low communication
+complexity, one can give interesting #SAT algorithms and pseudorandom generators for
+Formula[n2−ε] ◦G, and consequently also lower bounds (where ε > 0 denotes an arbitrarily
+small constant). Using our connection, we can prove lower bounds on Formula[n2−ε] ◦G
+for classes G that do not have low communication complexity. The general statement is:
+▶Theorem 1.2. For every ε > 0 and every class of functions G such that:
+G is closed under variable projections,
+Formula[n2−ε] ◦G contains PARITY, and
+the acceptance probability of a conjunction of O(n) functions from G, over n variables,
+can be additively approximated to within 1/2n1−ε/3 in 2n−Ω(n1−ε/3) deterministic time,
+ENP does not have Formula[n2−ε] ◦G circuits.
+Applying Theorem 1.2 and prior work, we can conclude lower bounds against DeMorgan
+formulas composed with low-degree F2-polynomials.
+▶Corollary 1.3. For all ε > 0, ENP does not have Formula[n2−ε] ◦G circuits, where G is
+the class of nε/3-degree polynomials over F2.
+Note that such circuits require 2Ω(nε) bits to describe, to encode the polynomials.
+An Approach via Indirect Diagonalization Methods.
+A line of work initiated by Fortnow [19, 20, 48] proved model-independent time-space
+lower bounds (or equivalently, lower bounds against small-space algorithms) for SAT and
+related problems within the polynomial-time hierarchy. This approach was extended by
+Williams [53, 54, 55] into a framework which culminated in a proof that SAT does not have
+an no(1)-space algorithm running in time n2 cos(π/7) ≃n1.801. (Buss and Williams [9] later
+proved that the 2 cos(π/7) exponent is optimal for this framework.)
+An interesting feature of this line of work is that the proofs are highly algorithmic: one
+assumes SAT has a suﬃciently eﬃcient algorithm, and applies that algorithm in various ways
+until a contradiction to a known lower bound (by diagonalization) is reached. This type of
+reasoning is sometimes called “indirect diagonalization”; many other examples of such lower
+bounds can be found in the literature (e.g., [30, 2, 49, 48, 36]).
+Here, we develop an indirect diagonalization method for lower bounds against uniform
+O(log n)-depth circuits (and equivalently, O(log n)-depth formulas). We establish supercubic
+depth lower bounds on solving SAT with uniform circuits over the NAND basis, where every
+gate computes the function
+NAND : x, y 7→¬(x ∧y).
+There are no internal negations; only input variables can be negated. It is well-known that
+the NAND basis is universal (every Boolean function can be computed with a NAND circuit),
+and it is surprisingly expressive. For example, it is known that every boolean function on
+n variables has NAND formulas of depth n + O(log∗n) [34], nearly matching the n + O(1)
+depth in DeMorgan’s basis. Furthermore, the hard example function for DeMorgan formulas,
+
+4
+Towards Stronger Depth Lower Bounds
+Andreev’s function, has NAND formulas of depth (3 + o(1)) log n (and therefore has NAND
+formulas of size n3+o(1)), matching the lower bound for the DeMorgan basis up to low-order
+terms [22]. (See Appendix A for a construction of low-depth formulas for Andreev’s function).
+Therefore, one cannot use Andreev’s function to prove a signiﬁcantly stronger depth lower
+bound for NAND formulas, and the lower bound proved in this work have deeper implications
+than a weak expressiveness of NAND formulas.
+Here, our main result is that SAT requires supercubic depth for uniform circuits composed
+of NAND gates:
+▶Theorem 1.4. For every c < 4 cos(π/7) ≃3.603, SAT does not have uniform NAND
+formulas of depth (c −o(1)) log n.
+Our notion of uniformity can be deﬁned as follows.
+▶Deﬁnition 1.5 (“Input-aware” polylog-time uniform formulas). A family of formulas (ϕn)n≥1
+of depth (c + o(1)) log n is polylog-time uniform if there exists a RAM machine Aϕ such
+that for every n, every x ∈{0, 1}n and every b ∈{0, 1}≤(c+o(1)) log n, Aϕ(x, b, n) outputs a
+description of the gate at position b in ϕn in time logO(1) n. The gate at position b in
+Here, for a bitstring b of length at most (c + o(1)) log n, the “gate at position b” in ϕn is
+the gate reached by iterating over all bits of b, starting from the root, moving to the left child
+of the current gate when reading a 0, and to its right child otherwise. We will see the need
+for this stronger deﬁnition in Section 4.2, where we need to give O(log n) bits of information
+from the input to the descriptor to dynamically select a subformula.
+Observe that this is a more general notion than (say) PLOGTIME-uniformity, which is
+common in the literature [51], hence the lower bounds that we give against this model also
+hold for PLOGTIME-uniform formulas.
+Under the hood, indirect diagonalization results often provide an unconditional method
+for simulating weak algorithms super-eﬃciently, using more powerful models. For example,
+all proofs that SAT cannot be solved in n1+δ time and poly log(n) space, for various δ > 0,
+exploit the fact that algorithms using small space can be quickly simulated by algorithms that
+use a small number of alternations [11] (a generalization of nondeterminism). Theorem 1.4 is
+obtained from constructing an extremely eﬃcient method for evaluating a uniform NAND
+formula, with an algorithm using a small number of alternations. This evaluation method is
+combined with other ideas from previous indirect diagonalization lower bounds (in particular,
+results on “alternation-trading proofs” [55, 9]) to obtain the result.
+Organization of the Rest of the Paper. Section 2 covers some preliminaries. Sec-
+tion 3 proves that faster #SAT algorithms for superquadratic-size formulas would imply
+supercubic-size lower bounds, along with an “ultra-ﬁne-grained” connection from Gap-SAT
+algorithms to circuit lower bounds. Section 4 proves SAT lower bounds against NAND circuits
+of depth 3.6 log n. Section 5 concludes with a discussion of further work.
+2
+Preliminaries
+We ﬁrst recall some basic notions in circuit complexity that are relevant for the paper. Later
+in the preliminaries, we discuss some notions particular to the paper.
+
+G. Bathie and R. R. Williams
+5
+Formulas.
+A Boolean formula φ over n inputs is a rooted full binary tree4 whose internal nodes, called
+gates, are labeled by a function f : {0, 1}2 →{0, 1}, and leaves are labeled with either a
+variable xi, its negation ¬xi for some i, 1 ≤i ≤n, or a constant c ∈{0, 1}. The depth of
+a formula is the depth of the underlying tree. A formula is read-once if each of its input
+variables appears on at most one leaf. Given an input x ∈{0, 1}n, the value of φ at x can be
+deﬁned as the value of its root on input x, where the value of a gate is deﬁned inductively as
+follows:
+φ(g) =
+
+
+
+
+
+
+
+
+
+
+
+c
+if g is labeled with the constant c ∈{0, 1}
+xi
+if g is labeled with the variable xi
+¬xi
+if g is labeled with ¬xi
+f(φ(g1), φ(g2))
+if g is labeled f, and g1, g2 are the children of g
+Throughout this paper, we are concerned with formulas over the DeMorgan basis of func-
+tions f : {0, 1}2 →{0, 1}, including all 2-input Boolean functions except the XOR and
+EQUALS function. It is not hard to show that this is equivalent to considering formulas
+over AND/OR/NOT, with NOT gates considered to be “free” (zero cost in size and depth).
+In the half of this work on SAT lower bounds (4), we focus on NAND formulas, that
+is, whose gates are all labeled with the function NAND : x, y 7→¬(x ∧y). DeMorgan’s law
+implies that NAND(x, y) = ¬x ∨¬y, therefore NAND formulas are equivalent to “alternating
+OR/AND” formulas (up to negations of some inputs) where all gates of even depth are ORs,
+and odd-depth gates are ANDs (and the root is said to have depth 0). This “alternating”
+point of view will be useful when describing procedures to compute the value of a formula.
+A formula family is a sequence {φn}n∈N of formulas such that for every n, φn is a formula
+on n inputs x1, . . . , xn. A language L ⊆{0, 1}∗is computed by5 the formula family {φn}n∈N
+if for every n and every x ∈{0, 1}n, φn(x) = 1 ⇔x ∈L.
+Since a separate formula is allowed for each input length, there are formula families of
+constant size and depth computing undecidable languages.
+The depth complexity of a function f : {0, 1}⋆→{0, 1} is the function d : N →N such
+that d(n) is the minimum depth of any formula computing fn, the restriction of f to n-bit
+inputs. Observe that the notion does not change when we replace “formula” with “circuit”:
+any circuit of depth d can be simulated by a formula of depth d and size O(2d). For this
+reason, formula size lower bounds imply depth complexity lower bounds, but the converse
+does not necessarily hold.
+Uniformity.
+In the half of this paper on SAT lower bounds (Section 4), we restrict our attention to
+uniform formulas: formula families such that the description of the n-input formula can be
+computed eﬃciently. We recall here the notion of uniformity, stated in the introduction, that
+we use.
+▶Deﬁnition 1.5 (“Input-aware” polylog-time uniform formulas). A family of formulas (ϕn)n≥1
+of depth (c + o(1)) log n is polylog-time uniform if there exists a RAM machine Aϕ such
+4 Full means that every node has either zero or two children.
+5 In what follows, we may use “L has formulas ...” for “L is computed by a formula family...”
+
+6
+Towards Stronger Depth Lower Bounds
+that for every n, every x ∈{0, 1}n and every b ∈{0, 1}≤(c+o(1)) log n, Aϕ(x, b, n) outputs a
+description of the gate at position b in ϕn in time logO(1) n. The gate at position b in
+New to This Paper: An Important Complexity Class.
+Finally, for any c ≥0, we deﬁne NDepth [c log n] to be the class of languages that have
+uniform polylog-time NAND formulas of depth(c + o(1)) log n. Observe that uniform log-
+depth NAND formulas can be eﬃciently simulated by random-access machines, due to the
+negligible runtime overhead of the description: for every c > 1, we have
+NDepth [c log n] ⊆TISP
+h
+nc, no(1)i
+,
+where TISP
+
+nc, no(1)
+denotes the class of languages solvable by an algorithm (in a standard
+random-access model) running in nc+o(1) time and no(1) space.
+Notation for Alternating Complexity Classes
+Along with the above notation for NAND formula complexity classes, in Section 4 it will be
+extremely convenient to use quantiﬁer notation to express alternating complexity classes,
+that deﬁne a ﬁned-grained version of the polynomial hierarchy, just as was used in prior work
+on alternation-trading proofs [54, 55, 9, 36]).
+Given a complexity class C (deﬁned by some machine model) and constants k, (ai)i≤k,
+we consider the alternating complexity class (Q1 na1) . . . (Qk nak) C, where, for every i, Qi
+is one of ∀or ∃. Computation in an alternating complexity class is deﬁned as follows:
+▶Deﬁnition 2.1 (Alternating computation). A language L is in (Q1 na1) . . . (Qk nak) C
+is deﬁned by k RAM machines A1, . . . , Ak and a C machine M such that, given an input
+x of length n: for every i ≤k, Ai takes as input xi along with yi, a string of nai+o(1)
+nondeterministic bits, runs in time nai+o(1) and outputs a string xi of length at most
+nai+o(1), with the convention that x0 := x. The output of the last stage, xk, is passed to the
+machine M.
+The computation accepts x starting from stage i if either:
+i = k + 1 and M accepts xk,
+Qi is ∃, and there exists a yi such that the computation accepts xi starting from stage
+i + 1,
+Qi is ∀, and for every yi, the computation accepts xi starting from stage i + 1.
+An input x is in L if the computation x accepts starting from stage 1.
+3
+Counting SAT Assignments to “Small” Formulas Implies Lower
+Bounds for “Large” Formulas
+In this section, we prove the following theorem:
+Reminder of Theorem 1.1.
+There is a universal constant k > 0 such that, for every
+ε ∈(0, 1), if #SAT for n2+2ε size formulas can be solved in 2n−n1−ε logk n time (even in
+randomized zero-error time), then there is a function in ENP = TIME[2O(n)]SAT that does not
+have n3+ε size formulas.
+The proof is broken into two parts.
+First, in Section 3.1, we show that the #SAT
+hypothesis of Theorem 1.1 implies that the following promise problem can be solved in
+2n/nω(1) time, for all constants β > 0.
+
+G. Bathie and R. R. Williams
+7
+Problem: Gap-Formula-SAT with gap β ∈(0, 1)
+Input: A DeMorgan formula F on n inputs, with n3+ε size.
+Promise: Either F is unsatisﬁable, or at least β · 2n of its 2n assignments are satisfying.
+Decide: which is the case.
+Second, in Section 3.2, we show that the resulting algorithm for Gap-Formula-SAT for
+all constant β > 0 implies the circuit lower bound, building on prior work [56, 6, 13].
+3.1
+Obtaining a Gap-Formula-SAT Algorithm
+In this section, we prove the following lemma:
+▶Lemma 3.1. There is a universal constant k > 0 such that, for every ε ∈(0, 1), if #SAT
+for n2+2ε+o(1)-size formulas can be solved in 2n−n1−ε logk n time, then for any β ∈(0, 1), the
+Gap-Formula-Sat problem with gap β on DeMorgan formulas of n inputs and size n3+ε
+can be solved in 2n/nω(1) time.
+Our Gap-Formula-SAT requires a couple of ingredients. First, we will use the following
+fundamental result for approximating DeMorgan formulas with low-degree polynomials,
+which built on a long line of prior work.
+▶Theorem 3.2 (Reichardt [40], Kabanets-Koroth-Lu-Myrisiotis-Oliveira [29]). For every positive
+integer s and α ∈(0, 1/2), and for every DeMorgan formula F of size s, there is a polynomial
+PF of degree t ≤O(√s log(1/α)), with rational coeﬃcients of bit-length O(t·log2 s·log(1/α)),
+such that for every a ∈{0, 1}n,
+|PF (a) −F(a)| ≤α.
+Furthermore, given the description of F, a description of a PF with the above property and
+degree O(√s log(1/α) log s) can be constructed in sO(√s log(1/α) log(s)) time.
+The proof of Reichardt only shows the existence of such a polynomial PF , and does not
+consider the cost of constructing it. Kabanets-Koroth-Lu-Myrisiotis-Oliveira [29] credit an
+anonymous reviewer with an algorithm for constructing the polynomial PF ; see their paper
+for details.
+The second ingredient we need (which incidentally, is also used in the algorithm of
+Theorem 3.2) is the following decomposition result for formulas:
+▶Theorem 3.3 (Impaglizzo-Meka-Zuckerman [25], Tal [46]). There is a polynomial-time
+algorithm that, given a formula F of size S and a parameter K ∈[S], outputs a read-once
+formula F ′ of size t ≤O(K) and subformulas G1, . . . , Gt of F of size O(S/K), such that
+F is the composition of F ′ with G1, . . . , Gt (that is, inserting Gi into the i-th input of F ′,
+yields F).
+We now turn to proving Lemma 3.1. Suppose we are given a formula F of size n3+ε, and
+we are promised that F is either unsatisﬁable, or has at least β2n satisfying assignments. We
+want to determine which is the case, using a #SAT algorithm for formulas of only n2+2ε+o(1)
+size.
+First, we apply Theorem 3.3 with K := n2−2ε, decomposing F into an F ′ of size O(n2−2ε)
+and t = O(n2−2ε) subformulas G1, . . . , Gt of size O(n1+3ε).
+
+8
+Towards Stronger Depth Lower Bounds
+Second, we compute an approximating polynomial PF ′ of degree O(n1−ε log n · log(1/α))
+for the polynomial F ′, with error α ∈(0, 1). (For now, let us leave α as a parameter.)
+By Theorem 3.2, such a PF ′ can be computed in 2 ˜
+O(n1−ε log(1/α)) time, and has T :=
+2 ˜
+O(n1−ε log(1/α)) terms.
+Over the boolean hypercube, the polynomial PF ′ can be naturally written as a sum
+of T conjunctions on t = O(n2−2ε) variables each, where each conjunction has width
+O(n1−ε log n log(1/α)).
+Composing PF ′ with the subformulas G1, . . . , Gt, our n3+ε-size
+formula F is close (in the sense of Theorem 3.2) to an expression of the generic form:
+S(x) :=
+X
+2 ˜
+O(n1−ε log(1/α))
+c ·
+^
+O(n1−ε log n log(1/α))
+[formula of O(n1+3ε) size].
+That is, S(x) is a sum of T = 2 ˜
+O(n1−ε log(1/α)) terms, where each term is a conjunction of
+t = O(n1−ε log n log(1/α)) formulas, each formula has O(n1+3ε) size, and each coeﬃcient c
+has bit-length O(t · log2 s · log(1/α)) ≤O(n). By Theorem 3.2, the sum S(x) approximately
+computes F(x), in that for all a ∈{0, 1}n, |F(a) −S(a)| < α.
+Now, suppose we have an algorithm that can solve #SAT for formulas of size n2+2ε+o(1)
+in time O(2n/T 2) ≤2n−n1−ε log(1/α) logk n, for a suﬃciently large constant k > 0. Then, as
+every summand of S(x), i.e. each expression of the form
+^
+O(n1−ε)
+[formula of O(n1+3ε) size],
+has size ˜O(n2+2ε) ≤n2+2ε+o(1), we can compute the sum P
+a S(a) over all inputs, which has
+the form
+X
+a∈{0,1}n
+S(a) =
+X
+2 ˜
+O(n1−ε log(1/α))
+
+X
+a
+^
+˜
+O(n1−ε log(1/α))
+[formula of O(n1+3ε) size]
+
+,
+in time T · O(2n/T 2) ≤O(2n/T) ≪2n/nω(1).
+Finally, we observe that computing P
+a S(a) is enough to determine Gap-Formula-SAT,
+for an appropriate choice of the parameters α and β.
+Suppose F is UNSAT. Since F(a) = 0 for all a, we have P
+a S(a) ≤α2n, because
+|S(a) −F(a)| ≤α.
+Suppose F has at least β · 2n SAT assignments. Then, every SAT assignment to F adds
+at least 1 −α to the sum, while each UNSAT assignment subtracts no more than α from
+the sum, in the worst case. So in this case,
+X
+a
+S(a) ≥(1 −α) · β2n −α · (1 −β)2n = [(1 −α)β −α(1 −β)] · 2n.
+Provided that (1 −α)β −α(1 −β) > α, we can distinguish between the two cases using the
+value P
+a S(a). Manipulating the inequality, we ﬁnd:
+(1 −α)β −α(1 −β) > α ⇔β −α > α ⇔β > 2α ⇔β/2 > α.
+Thus for any gap parameter β ∈(0, 1), the above inequality holds for α := β/3. (We could
+even let β := 1/2no(1), for example.)
+This concludes the proof of Lemma 3.1.
+
+G. Bathie and R. R. Williams
+9
+A Generic Tradeoﬀ.
+We remark that the above approach is easily generalizable. Letting t ≪n be a parameter,
+every formula of size n3+ε can be converted into a sum of the form
+S(x) :=
+X
+2 ˜
+O(t)
+^
+˜
+O(t)
+[formula of O(n3+ε/t2) size].
+Note that such a transformation is only meaningful for t ≪n: otherwise, the running time
+of converting the formula into S(x) already exceeds 2n. The above argument shows that if
+we can solve #SAT on formulas of O(n3+ε/t) size (in fact, a conjunction of O(t) formulas
+of n3+ε/t2 size), in time 2n−Ω(t/(log n)2), then we obtain a nontrivial Gap-Formula-SAT
+algorithm.
+Discussion: What Can Current Formula-SAT Algorithms Achieve?
+Before moving on, let us brieﬂy comment on how known #SAT algorithms based on shrinkage
+behave, and speculate on whether they can be generalized to achieve the kind of running
+time / formula size tradeoﬀthat we seek.
+Roughly speaking, all state-of-the-art algorithms work in the following way. First, they
+solve #SAT on all O(n/ log2 n)-size formulas by brute force, building a 2o(n)-size look-up
+table for them. Next, they apply a concentration version of a shrinkage lemma to show that,
+by setting all possible assignments to some n −k variables, a formula of size s shrinks to size
+approximately k2 · s/n2, on all but 2n−Ω(k) assignments. When k2 · s/n2 < O(n/ log2 n), the
+algorithm can consult the lookup table in the shrunken case, which means we need
+s <
+n3
+k2 log2 n
+to use the lookup table eﬃciently, and obtain 2n−Ω(k) time. In summary, one might expect
+to obtain 2n−Ω(k) time for solving #SAT on formulas of size n3/(k2 log2 n), for the relevant
+values of k.
+However, for our desired running time in the hypothesis of Theorem 1.1, we require
+k > n1−ε. In that case, the algorithm will only work for size
+s <
+n3
+n2−2ε log2 n = n1+2ε
+log2 n.
+In principle, this is not necessarily a major issue: recall that we only need to solve #SAT
+on formulas which are conjunctions of n1−ε subformulas of size n1+2ε. It appears plausible
+to us that a form of “simultaneous shrinkage”, where we consider the shrinkage of n1−ε
+subformulas of size n1+2ε simultaneously under a common random restriction (analogous to
+“multi-switching” lemmas that work on a set of formulas [24, 23]), could be applied to obtain
+the necessary #SAT algorithm.
+3.2
+Formula Size Lower Bounds from Gap-Formula-SAT
+Next, we show that the Gap-Formula-SAT algorithm derived in the previous subsection
+would be suﬃcient to establish the desired lower bound. Recall in the previous section, we
+showed that, under the #SAT algorithm hypothesis of Theorem 1.1, it follows that for every
+constant β ∈(0, 1), we can solve Gap-Formula-SAT on formulas of size n3+ε in time
+2n−Ω(n1−ε), in that we can distinguish UNSAT formulas from those satisﬁed by at least a
+(1 −β)-fraction of possible assignments.
+
+10
+Towards Stronger Depth Lower Bounds
+Chen and Williams [13] show there is a universal constant β⋆> 0 such that, for any class
+of circuits C that is closed under taking negations of the output, and variable projections
+(negating inputs and/or replacing inputs by constants), if there is a Gap-SAT algorithm
+running in 2n/nω(1) time for polynomial-size circuits C which are the AND of three circuits
+from C, distinguishing UNSAT circuits from those with at least β⋆2n satisfying assignments,
+then NEXP does not have polynomial-size circuits from C.
+Here, we will explain how to modify their argument, by combining other ideas from
+[56, 6, 13], to show that a faster Gap-Formula-SAT algorithm for formulas of size O(n3+ε)
+actually implies that there is a function in ENP = TIME[2O(n)]SAT which does not have
+formulas of size n3+ε. The main diﬃculty is that we have to be very careful to “respect”
+the formula size in the argument, so that it does not ever increase by more than a constant
+factor. We achieve this by (yet) another level of indirection, using the hypothesis ENP has
+formulas of size n3+ε in multiple ways.
+Indeed, we start by assuming that ENP does have formulas of size n3+ε. We will eventually
+show that every unary language L ∈NTIME[2n] (languages over the input alphabet {1})
+can then be solved in nondeterministic time o(2n), contradicting the Nondeterministic Time
+Hierarchy Theorem (which holds for unary languages as well).
+Reducing L to Gap-SAT.
+In the following, let k > 0 be a suﬃciently large universal constant. First, we show (drawing
+from prior work) that a non-trivial Gap-Circuit-Sat algorithm for poly(n)-size circuits
+would imply our desired lower bound.
+Next, we will show that a Gap-Formula-Sat
+algorithm suﬃces for the lower bound, even if the algorithm only works on O(n3+ε)-size
+formulas.
+▶Lemma 3.4 ([56, 6, 13]). If Gap-Circuit-Sat on circuits with n + k log n inputs and
+size O(nk · n3+ε) can be solved in 2n/nω(1) time, then ENP does not have DeMorgan formulas
+of size O(n3+ε). (In fact, circuit lower bounds would follow.)
+Proof. Let L ∈NTIME[2n] be an arbitrary unary language. Our goal is to show that a
+nontrivial Gap-Circuit-Sat algorithm, combined with small circuits for ENP, would allow
+us to nondeterministically decide L in o(2n) time, contradicting the Nondeterministic Time
+Hierarchy theorem [4].
+Following prior work [56, 6, 13], we can choose a succinct PCP veriﬁer V for L, with
+proofs of length 2n · nk, randomness n + k log n, and for each choice of randomness, the
+veriﬁer’s q = O(1) queries can be computed by a ﬁxed nk-size circuit Cn which takes in
+the n + k log n bits of randomness as input, and outputs q strings of length n + k log n
+corresponding to the indices of the proof bits for each query, along with sign bits (whether
+the outcome of the query should be negated, or not). The veriﬁer accepts on a given random
+string if and only if the OR of the q queries is true, and the nk-size circuit Cn implementing
+the veriﬁer can be constructed in poly(nk) time.
+If ENP has formulas of size n3+ε, then for every n, if 1n ∈L, there exists a family
+of formulas Fn of size n3+ε on n + k log n inputs such that the 2n · nk-bit truth table of
+Fn encodes a PCP π that the PCP veriﬁer V accepts with probability 1. Indeed, there
+exists a 2O(n)-time algorithm with a SAT oracle (a.k.a. an ENP algorithm) that on input
+(1n, i) outputs the i-th bit of such a proof π: this follows by a standard reduction from
+search-to-decision [56], augmented with exhaustive search over all random strings of length
+n + k log n to verify that the probability that V accepts π is 1.
+
+G. Bathie and R. R. Williams
+11
+We can simulate L on the input 1n as follows. First, nondeterministically guess a formula
+Fn of size n3+ε that is intended to encode a PCP πn for the PCP veriﬁer V on 1n. Next,
+we construct a nk-size circuit Cn with n + k log n input bits encoding the veriﬁer’s query
+computation. Supposing the veriﬁer makes q = O(1) queries, we compose Cn with q copies
+of the formula Fn, and take the OR of the q copies of Fn. More precisely, letting the q
+output strings of Cn be C(1)
+n (r), . . . , C(q)
+n (r) be subcircuits of Cn such that C(i)
+n (r) prints the
+(n + k log n)-bit index of the i-th query on randomness r, and letting S(i)
+n (r) be the sign bit
+for the i-th query, we construct the circuit
+Ccheck(r) =
+q_
+i=1
+(Fn(C(i)
+n (r)) ⊕S(i)
+n (r)).
+(1)
+This circuit Ccheck has size at most O(nk · n3+ε), and Ccheck(r) = 1 if and only if the veriﬁer
+V on randomness r accepts with proof oracle Fn.
+Since V is a PCP, we have two properties:
+If 1n ∈L, then there is a choice of Fn of n3+ε size such that Ccheck is true on all inputs
+r. (Note such Fn exists, only assuming ENP has n3+ε size formulas.)
+If 1n /∈L, then for every choice of Fn, Ccheck is false on at least a 1 −β fraction of its
+possible inputs r, where β ∈(0, 1) is determined by the soundness probability of the PCP
+protocol.
+To line this up with our Gap-SAT formulation, we work with the negation of Ccheck:
+either ¬Ccheck is unsatisﬁable, or ¬Ccheck is satisﬁable on at least a (1 −β)-fraction of its
+possible assignments.
+So now we are faced with the following task: given a circuit Ccheck with n + k log n
+inputs and O(nk · n3+ε) size, and we wish to distinguish whether Ccheck is unsatisﬁable on
+all possible inputs, or is satisﬁable on at least a β-fraction. So far, everything is analogous to
+what one ﬁnds in earlier work showing how improving exhaustive search implies circuit lower
+bounds [56, 6]. If we can solve this task in o(2n) time, we will contradict the Nondeterministic
+Time Hierarchy Theorem.
+◀
+From Gap-SAT to Gap-Formula-SAT via PCP of Proximity and ECCs.
+Our goal now is to show that, if ENP has n3+ε-size DeMorgan formulas, and Gap-Formula-
+Sat can be solved in 2n/nω(1) time on O(n3+ε)-size formulas for arbitrary constant-sized
+gaps, then we actually obtain the Gap-Circuit-Sat algorithm needed in the previous part.
+We will apply ideas similar to that of the proof of Theorem 5 of Chen and Williams [13],
+which shows how to prove super-polynomial C-circuit lower bounds for NEXP from a Gap-
+SAT algorithm for the conjunction (AND) of three C-circuits that distinguishes the case where
+C is UNSAT from the case where C has a non-zero constant fraction of SAT assignments.
+(The following exposition is not entirely self-contained, but it should be quite friendly to a
+reader who has [13] open at their proof of Theorem 5.)
+We work with a polynomial-time linear constant-rate error-correcting code Enc : {0, 1}n →
+{0, 1}cn with a polynomial-time decoder Dec : {0, 1}cn →{0, 1}n, which can decode up to
+some relative distance δECC > 0 [43]. We use the ECC to modify the circuit Ccheck we want
+to solve Gap-SAT for, so that if Ccheck has a satisfying assignment, then the resulting circuit
+D has an assignment that is δECC-far from any of its satisfying assignments. More precisely,
+as in [13], we deﬁne a circuit
+D(y) := ¬Ccheck(Dec(y)),
+
+12
+Towards Stronger Depth Lower Bounds
+where Dec is the decoder for the aforementioned error-correcting code.
+Since Dec is a
+polynomial-time function, it has a circuit of size at most O(nk) for large enough k, and the
+circuit D can be implemented in size at most O(n2k).
+▷Claim 3.5.
+Let x ∈{0, 1}n and let y = Enc(x). Then:
+If x is a satisfying assignment of Ccheck, then y is δECC-far from any satisfying assignment
+of D. That is, one must ﬂip more than a δECC-fraction of bits of y in order to obtain a
+satisfying assignment to D.
+If x is a non-satisfying assignment of Ccheck, then y satisﬁes D.
+Proof. Let x be such that Ccheck(x) = 1, and let y = Enc(x). For any string z that has
+relative distance at most δECC from y, we have Dec(z) = x by the deﬁnition of an ECC with
+decoding distance δECC. Therefore we also have D(z) = ¬Ccheck(Dec(z)) = ¬Ccheck(x) = 0.
+It follows that y must be δECC-far from any z such that D(z) = 1.
+For the second item, observe that D(y) = D(Enc(x)) = ¬Ccheck(Dec(Enc(x))) = ¬Ccheck(x).
+So if x does not satisfy Ccheck, then y satisﬁes D.
+◀
+As in [13], we employ a PCP of Proximity (PCPP) for the Circuit-Eval problem [5]:
+given a circuit D on n inputs and y ∈{0, 1}n, the Circuit-Eval problem asks whether
+D(y) = 1. The following lemma describes the important properties of this PCPP.
+▶Lemma 3.6 (3-query PCP of Proximity for Circuit Evaluation with perfect completeness [13,
+Lemma 24]). For any proximity parameter δP CP ∈(0, 1), there exists s ∈(0, 1) such that
+there is a PCP of proximity system for Circuit-Eval with proximity δP CP , soundness s,
+randomness r ≤O(log n), and the following properties:
+Given the r random coins, a polynomial-time veriﬁer V computes the OR on three queried
+bits (with some bits possibly negated), accepting if and only if the OR is true.
+Given a pair (D, y) such that D is a circuit, y is an input of length n, and D(y) = 1,
+a proof π can be constructed in poly(|D| + |y|) time that makes the veriﬁer V accept
+(D, y, π) with probability 1.
+Given (D, y), if y is δP CP -far from all satisfying assignments to D, then for all proofs π,
+the veriﬁer V accepts (D, y, π) with probability at most s.
+In other words, the PCPP consists of an eﬃcient veriﬁer which is given a circuit D and input
+y, queries only three bits of the proof π, and tries to determine if D(y) = 1. If D(y) = 1
+is true, then there is a proof π of this fact that always convinces the veriﬁer, and can be
+eﬃciently constructed. If D(y) = 0 is false, and y is in fact far in Hamming distance from
+every SAT assignment to D, then the veriﬁer will catch that D(y) ̸= 1 with probability at
+least 1 −s, regardless of the proof π.
+We apply this PCPP to the circuit D deﬁned above, with input y = Enc(x), and show
+how we can combine it with the algorithm of Lemma 3.1 to decide Gap-SAT for C. The
+PCPP has randomness r ≤O(log n), proximity parameter δP CP > 0, and soundness s < 1,
+for ﬁxed constants δP CP and s. Letting V be the veriﬁer for the PCPP, as we vary over the
+m := 2r = poly(n) possible random strings, we obtain a set of 3-OR constraints on a given
+proof (y, π). Let H1, . . . , Hm be the corresponding constraints. From the properties of the
+PCPP, we ﬁnd:
+If Ccheck(x) = 0, then D(y) = 1, and there is a proof π such that all Hi are satisﬁed by
+the pair (y, π).
+If Ccheck(x) = 1, then y is δECC-far from the set of all satisfying assignments to D. By
+setting δP CP < δECC, at most an s fraction of the constraints {Hi} are ever satisﬁed by
+(y, π).
+
+G. Bathie and R. R. Williams
+13
+In the case where Ccheck is unsatisﬁable, there is a proof π(x) for every y = Enc(x), such
+that the veriﬁer V accepts (D, y, π(x)) with probability 1. For our setting, it is crucial that
+the proof function π(x) can be computed in ENP (so that it will also have n3+ε-size DeMorgan
+formulas, by assumption).
+To verify this, we go back to the original argument (before we began to invoke Chen
+and Williams [13]). Given an input (n, x, i) of length n + O(log n), where n is encoded in
+O(log n) bits, x is n + O(log n) bits, and i is O(log n) bits, here is an ENP procedure (an
+algorithm running in 2O(n) time with a SAT oracle) for constructing a proof π(x) for the
+relevant circuit Ccheck deﬁned in (1):
+First, use a SAT oracle to construct the lexicographically ﬁrst formula Fn of size n3+ε
+which is a witness for our original PCP veriﬁer for L (if 1n ∈L, then Fn exists). Then,
+build the circuit Ccheck using Fn, evaluate y = Enc(x), and construct the proof π(x)
+for (Ccheck, x) in polynomial time (which can be done by the construction of the PCP
+of Proximity). Finally, output the i-th bit of the proof π(x).
+Since this is an ENP procedure with input of length O(n), there is a formula of size O(n3+ε)
+that, given (x, i), outputs the i-th bit of π(x).
+Following the notation of [13], we let Ti be the O(n3+ε)-size formula printing the i-th
+bit of π(x), and let T(x) be the concatenation of all Ti(x). We let Gi(x) be the constraint
+Hi (an OR of 3 literals) evaluated on the pair (Enc(x), T(x)), and recall that there are only
+m = poly(n) constraints H1, . . . , Hm. As our error-correcting code is linear, each bit of
+Enc(x) is a parity over some bits of x. Therefore, each Gi is an OR of 3 formulas, some of
+which are parities over a subset of the bits of x, and some of which are copies of Tj(x) for
+some j. Observe (crucially) that, since PARITY has O(n2)-size DeMorgan formulas, every
+formula Gi in fact has size only O(n3+ε).
+Finally, we compare the two cases when Ccheck is UNSAT, and when Ccheck has many
+satisfying assignments, and show that a non-trivial Gap-Formula-SAT algorithm for
+O(n3+ε) size is suﬃcient for distinguishing these cases.
+When 1n ∈L and we’ve guessed the “good” formula Fn of size O(n3+ε), the constructed
+circuit Ccheck is UNSAT. In that case, as we argued above, there exists a polynomial-sized
+set of formulas {Ti} that we can guess, each of size O(n3+ε), so that the veriﬁer V always
+outputs 1, over all choices of randomness. Therefore for all i ∈[m], every constraint formula
+Gi(x) will be true, over all assignments x. It follows that, if we run a Gap-Formula-SAT
+algorithm on ¬Gi for all i = 1, . . . , m, it will always return an “UNSAT” answer.
+When 1n /∈L, then no matter what formula Fn we guess to construct Ccheck with, the
+circuit Ccheck will be satisﬁed by at least a (1 −β)-fraction of its possible assignments. Then,
+for all possible choices of the set of formulas {Ti}, over all assignments x, and all i, at most a
+β + s fraction of pairs (x, i) are such that Gi(x) is true. By averaging, there must be some i⋆
+such that Gi⋆(x) has at most a β + s fraction of SAT assignments. Let β > 0 be suﬃciently
+small, so that (1 −β −s) ≥(1 −s)/2. Then, given a Gap-Formula-SAT algorithm that
+outputs “MANY-SAT” when at least a (1 −s)/2 > 0 fraction of assignments are satisfying,
+this algorithm will return “MANY-SAT” on at least one ¬Gi.
+Therefore, our Gap-Formula-SAT algorithm (which works for any constant fraction of
+SAT assignments) lets us determine whether or not 1n is in L. After poly(n) bits of guessing,
+our nondeterministic algorithm for deciding L calls the Gap-Formula-SAT algorithm for
+poly(n) times, on formulas of size O(n3+ε). Therefore the entire nondeterministic procedure
+runs in only o(2n) time, assuming the Gap-Formula-SAT algorithm runs in 2n/nω(1) time.
+Thus we can decide L in NTIME[o(2n)], contradicting the Nondeterministic Time Hierarchy
+Theorem. This completes the proof.
+
+14
+Towards Stronger Depth Lower Bounds
+Finally, observe that, even if our Gap-Formula-SAT algorithm was zero-error random-
+ized, this would still suﬃce for constructing a nondeterministic algorithm for L.
+Let us summarize this subsection with the tight connection between algorithms and lower
+bounds that we have proved:
+▶Theorem 3.7. Let ε > 0. Suppose for every β > 0, there is a Gap-Formula-SAT
+algorithm for O(n3+ε)-size formulas that runs in 2n/nω(1) time, and distinguishes unsatisﬁable
+formulas from those with at least a β-fraction of satisfying assignments. Then ENP does not
+have O(n3+ε)-size formulas.
+3.3
+Generalization to Other Circuit Classes
+It is easy to see that the proof of Theorem 3.7 can be generalized to other circuit classes,
+beyond just DeMorgan formulas. The properties we used of DeMorgan formulas are that
+they are:
+closed under negation of their output,
+closed under variable projections (replacing variables with constants or their negations),
+closed under the OR of three copies, and
+PARITY has subcubic-size DeMorgan formulas—below the size bound of our DeMorgan
+formulas.
+We can generalize the connection from Gap-Sat algorithms to lower bounds, as follows.
+Recall that Formula[n2−ε] ◦G denotes the functions computable by DeMorgan formulas of
+size n2−ε with functions from the class G at their leaves [28].
+Reminder of Theorem 1.2.
+For every ε > 0 and every class of functions G such that:
+G is closed under variable projections,
+Formula[n2−ε] ◦G contains PARITY, and
+the acceptance probability of a conjunction of O(n) functions from G, over n variables,
+can be additively approximated to within 1/2n1−ε/3 in 2n−Ω(n1−ε/3) deterministic time,
+ENP does not have Formula[n2−ε] ◦G circuits.
+We conﬁne ourselves to a sketch of the proof of Theorem 1.2, as it closely mimics the
+proofs of previous subsections. First, in the proof of Lemma 3.1, we reduced the problem
+of computing Gap-SAT for a formula of size n3+ε, to the problem of computing #SAT
+on a formula of size n2−2ε. In particular, the reduction produced 2 ˜
+O(n1−ε log n) instances of
+#SAT on formulas which are conjunctions of ˜O(n1−ε) formulas of O(n1+3ε) size. This was
+accomplished by ﬁrst applying Theorem 3.3 to decompose the n3+ε-size formula into an
+O(n2−2ε)-size formula of O(n1+3ε)-size formulas, then applying Theorem 3.2 to reduce the
+O(n2−2ε)-size formula to a linear sum of 2 ˜
+O(n1−ε log n) conjunctions on ˜O(n1−ε) variables.
+Let C be a circuit from Formula[n2−2ε] ◦G. (For simplicity of exposition, we consider
+size n2−2ε instead of n2−ε, to more closely model the situation in Lemma 3.1.) Performing
+exactly the same steps as above on the n2−2ε-sized formula part of C, we can reduce C to a
+sum of 2 ˜
+O(n1−ε log n) conjunctions of ˜O(n1−ε) functions from G. By the same analysis as in
+Lemma 3.1, if we have a deterministic 2n−Ω(n1−2ε/3)-time algorithm for approximating the
+acceptance probability of a conjunction of functions from G to within a gap of 1/2n1−2ε/3,
+then we can determine Gap-Sat for the circuit C in time
+2
+˜
+O(n1−ε log n) · 2n−Ω(n1−2ε/3) ≤2n/nω(1).
+Next, assuming that G satisﬁes the hypotheses of Theorem 1.2, it follows that the circuit
+class Formula[n2−ε]◦G is closed under negation of the output (because DeMorgan formulas
+
+G. Bathie and R. R. Williams
+15
+are), closed under the OR of three copies (because DeMorgan formulas are), closed under
+variable projections (by assumption on G, and contains PARITY (by assumption). Therefore
+this class has all the closure properties necessary to apply the proof of Theorem 3.7 directly.
+Applying our algorithm for Gap-Sat on Formula[n2−ε]◦G circuits (obtained in the previous
+paragraph), we can conclude that ENP does not have Formula[n2−ε] ◦G circuits.
+Here is one example of a canonical class that has high communication complexity, yet we
+can still prove circuit lower bounds for it.
+Reminder of Corollary 1.3.
+For all ε > 0, ENP does not have Formula[n2−ε] ◦G
+circuits, where G is the class of nε/3-degree polynomials over F2.
+Proof. Observe that Formula[n2−ε]◦G contains PARITY (a degree-one F2-polynomial), and
+that G is closed under variable projections. It remains to show that the algorithmic hypothesis
+of Theorem 1.2 is satisﬁed: namely, that we can estimate the acceptance probability of
+conjunctions of functions from G in 2n−Ω(n1−ε/3) time.
+Building on the randomized algorithm of Lokshtanov, Paturi, Tamaki, Williams, and
+Yu [33], Chan and Williams [10] show that the #SAT problem for systems of m degree-d
+F2-polynomials in n variables can be solved in deterministic 2n−n/O(d) · poly(m) time. Their
+algorithm works for all d < o(√n). Therefore we can set d = nε/3 and get a #SAT algorithm
+running in 2n−Ω(n1−ε/3) time, satisfying the algorithmic hypothesis of Theorem 1.2.
+◀
+Let us remark that we could have also applied known pseudorandom generators for
+degree-d F2-polynomials to obtain a good Gap-Sat algorithm, but we would have obtained
+a weaker degree bound. Namely, the best-known seed length for a PRG fooling degree-d
+F2-polynomials is Ω(2d) [50], so enumerating over all seeds would cost at least 2Ω(2d) time.
+4
+Uniform Depth Lower Bounds for SAT
+4.1
+Overview of the methodology
+We now give an overview of how we implement “indirect diagonalization” to show that
+SAT does not have uniform NAND formulas of depth less than c log n, for a value of c > 3
+that we will specify later.
+Recall (Section 2) that we deﬁne NDepth [c log n] to be the
+class of languages that have uniform polylog-time NAND formulas of depth (c + o(1)) log n.
+A central component of our proof technique is a construction that allows us to simulate
+NDepth [c log n] very eﬃciently, using alternating machines with a low number of alternations.
+Following [54, 9], we call it a “Speedup Rule”.
+▶Lemma 4.1 (Speedup Rule for NAND Formulas). For every d > 0 and 0 ≤x ≤d, we have
+NDepth [d log n] ⊆(∃nx/2)(∀n)NDepth [(d −x) log n] and
+NDepth [d log n] ⊆(∀nx/2)(∃n)NDepth [(d −x) log n]
+The preliminaries (Section 2) cover the above complexity class notation in detail, but let
+us brieﬂy remind the reader what it means. An inclusion like
+NDepth [d log n] ⊆(∃nx/2)(∀n)NDepth [(d −x) log n]
+roughly means that we can evaluate a NAND formula of depth d log n on an input X of
+length n by ﬁrst existentially guessing nx/2+o(1) bits Y , then universally choosing n1+o(1)
+bits Z, then evaluating a NAND formula of depth (d −x) log n on the input (X, Y, Z) (with
+
+16
+Towards Stronger Depth Lower Bounds
+some low-overhead computation). That is, NAND formulas of depth d log n can informally
+be simulated by “Σ2-type” NAND formulas of depth (d −x) log n, with nx/2+o(1) auxiliary
+bits of input.
+To prove that SAT does not have NAND formulas of depth less than c log n, we start
+by assuming that SAT ∈NDepth [c log n], and aim to reach a contradiction. As SAT is
+NP-complete under polylog-time computable ﬁrst-order projections [20, 48, 27], this inclusion
+extends to every language in NTIME[n] with negligible overhead. Since NDepth [c log n]
+corresponds to NAND depth (c+o(1)) log n (and NDepth [c log n] is closed under complement),
+we have:
+SAT ∈NDepth [c log n] ⇒NTIME[n] ∪coNTIME[n] ⊆NDepth [c log n] .
+Using this property, we can derive another important ingredient in the lower bound,
+the so-called Slowdown Rule, which allows us to reduce the number of quantiﬁers in an
+alternating computation, at the cost of an increased NAND depth:
+▶Lemma 4.2 (Slowdown Rule). Assume that SAT is in NDepth [c log n] for some c > 0.
+Then, for every a, b ≥1 and d > 0, we have:
+. . . (Q na)(¬Q nb)NDepth [d log n] ⊆. . . (Q na)NDepth [c · max(d/2, a, b) log n] ,
+where Q ∈{∃, ∀} and ¬Q is the opposite quantiﬁer.
+On the other hand, we show that the assumption NTIME[n] ⊆NDepth [c log n] allows us
+to lift the Nondeterministic Time Hierarchy Theorem to NAND formulas.
+▶Theorem 4.3 (Conditional Depth Hierarchy Theorem). For every c > 0, if NTIME[n] ⊆
+NDepth [c log n], then for all b > a ≥1,
+NDepth [a log n] ⊊NDepth [b log n] .
+The core of our proof consists in repeatedly applying the rules of Lemmas 4.1 and 4.2 with
+suitable parameters, known as alternation-trading proofs, until we obtain a class containment
+that contradicts Theorem 4.3.
+As a warm-up, let us apply the above rules to show that SAT does not have NAND
+formulas of depth less than 2.8284 log n, using a very simple alternation-trading proof. Assume
+SAT ∈NAND-depth[c log n] for some c > 0. Then, we have
+NDepth [4 log n] ⊆(∃n)(∀n)NDepth [2 log n]
+(Speedup Rule with x = 2)
+⊆(∃n)NDepth [c log n]
+(Slowdown Rule)
+⊆NDepth
+
+(c2/2) log n
+
+(Slowdown Rule)
+For c2/2 < 4 ⇔c < 2
+√
+2 ≃2.8284 . . ., this contradicts the Conditional Depth Hierarchy
+(Theorem 4.3). (Those familiar with the proof that SAT does not have algorithms running in
+n
+√
+2−o(1) time and no(1) space [20] may be experiencing a feeling of déjà vu.)
+The remainder of this section is organized as follows: Section 4.2 gives a proof of the
+above rules and of the hierarchy theorem, while Section 4.3 details the construction of
+alternation-trading proofs that extend this result to any c < 4 cos(π/7).
+4.2
+Speedups, Slowdowns and a Depth Hierarchy
+Speedup and Slowdown
+We ﬁrst discuss the Speedup and Slowdown Rules.
+
+G. Bathie and R. R. Williams
+17
+▶Lemma 4.1 (Speedup Rule for NAND Formulas). For every d > 0 and 0 ≤x ≤d, we have
+NDepth [d log n] ⊆(∃nx/2)(∀n)NDepth [(d −x) log n] and
+NDepth [d log n] ⊆(∀nx/2)(∃n)NDepth [(d −x) log n]
+Proof. We prove the statement for ∃∀computations, the other direction follows since
+NDepth [d log n] is closed under complement (recall, we are allowed depth (d + o(1)) log n; it
+is easy to add an extra layer on the top of a NAND circuit which performs negation).
+We view the input NAND formula as an alternating OR/AND formula φ, using the
+connection described in Section 2. The intuitive idea is to select, for each OR gate (starting
+from the output), one of its children which is intended to be true. Furthermore, for every
+choice of an “OR child” that we make, the size of the remaining formula that we have to
+evaluate drops by half, as we do not have to consider the subformula rooted at the other
+child. We use the non-deterministic bits from the existential quantiﬁer to select these “OR
+children”, for the OR gates among the top x log n levels of the formula. Then we use a
+sublinear number of bits from the universal quantiﬁer to handle the remaining AND gates.
+Let y denote the nx/2+o(1) bits received from the universal quantiﬁer. Let us describe
+the procedure from the output gate (which is an OR). If the ﬁrst bit of y is 0, the OR gate
+is replaced by its left child, otherwise it is replaced by its right child. In both cases, we
+reach an AND gate. We then apply this procedure recursively on the two OR gates below
+that AND gate, using the separately the two halves of the rest of y, until we reach depth
+x/2 log n. The resulting formula φ′ starts with (x/2) log n levels of AND gates, followed by
+smaller alternating OR/AND formulas φi of depth (d −x + o(1)) log n. Using the above
+observation, for a given x, there is a choice of yx such that φ′(x) = 1 if and only if φ(x) = 1.
+The ∃stage outputs the input x and the corresponding string yx. Upon receiving (x, y), the
+∀stage universally guesses x
+2 log n nondeterministic bits z that represent an index i, and
+outputs x and x log n bits that encode a path from the root of φ to the root of φi. As φ′ is
+the conjunction of the nx/2 formulas φi, it evaluates to 1 on input x if and only if for every
+index i ≤nx/2, φi(x) = 1.
+Finally, recall that the deﬁnition of alternating computation requires that there exists
+a single machine M ′ that runs the ﬁnal stage of computation for every possible choice of
+nondeterministic bits: that is, the machine cannot depend on the nondeterministic bits. This
+is where our strong notion of uniformity comes in (from Deﬁnition 1.5), where the descriptor
+machine has random access to the input: giving M ′ access to (a few) bits of the input,
+allows us to adapt its behavior depending on the nondeterministic bits. If M is a machine
+that describes φ, we deﬁne the machine M ′, that on input a′ of length n′ = n + x log n
+for some n, sets a′ = ab, where a has length n and b has length x log n, and returns
+M ′(a′, i, n′) = M(a, bi, n). We use the random access to move x log n bits from the input to
+the position of the gate that we want to describe.
+◀
+Combining Lemma 4.1 and the simulation of NDepth [d log n] by TISP
+
+nd, no(1)
+machines
+(machines running in time nd and space no(1)) gives us an eﬃcient simulation of formulas by
+nondeterministic Turing machines that is faster than the deterministic simulation.
+▶Corollary 4.4. For every d ≥1, we have
+NDepth [d log n] ⊆NTIME[nd/2+o(1)] ∩coNTIME[nd/2+o(1)].
+Proof. Applying Lemma 4.1 with x = d, we obtain
+NDepth [d log n] ⊆(∃nd/2)(∀n)NDepth [0 log n] ⊆(∃nd/2)(∀n)TISP
+h
+no(1), no(1)i
+.
+
+18
+Towards Stronger Depth Lower Bounds
+A close inspection of the proof of Lemma 4.1 reveals that the ∀quantiﬁer here uses only d
+2 log n
+nondeterministic bits. Therefore, we can use exhaustive search over the nd/2 strings of non-
+deterministic bits of length d
+2 log n to remove this quantiﬁer. For every such string, we perform
+a no(1)-time computation, hence we get that NDepth [d log n] ⊆(∃nd/2)TIME[nd/2+o(1)] =
+NTIME[nd/2+o(1)].
+The inclusion in coNTIME[nd/2+o(1)] follows from the closure of NDepth [d log n] under
+complement.
+◀
+Next, we show that the assumption SAT ∈NDepth [c log n] extends to every language in
+NP without signiﬁcant overhead.
+▶Lemma 4.5. If SAT ∈NDepth [c log n], then for every d ≥1, NTIME[nd]∪coNTIME[nd] ⊆
+NDepth [c · d log n].
+Later, this result will allow us to remove the quantiﬁer from an alternating class, at the cost
+of an increased depth of the veriﬁer.
+A key idea for the proof of Lemma 4.5 is the fact that any language in NTIME[n] can be
+reduced to SAT via so-called uniform poly-log time ﬁrst-order projections, where instances of
+size n can be mapped to formulas of size n1+o(1) [20, 48]. A ﬁrst-order projection is a depth
+0 circuit, i.e., each output bit is either a constant (0 or 1), an input xi, or its negation ¬xi.
+For an in-depth exposition of ﬁrst-order projections, see for example [1, End of Sec. 3].
+Proof of Lemma 4.5. We ﬁrst prove that SAT ∈NDepth [c log n] implies that NTIME[n] ⊆
+NDepth [c log n].
+Let L ∈NTIME[n]. As stated above, L is Karp-reducible to SAT via uniform poly-log
+time ﬁrst-order projections, with instances of size n reduced to formulas of size n1+o(1). Now,
+notice that the composition of a NAND formula of depth d with a ﬁrst-order projection
+is also a NAND formula of depth d: it only consists in relabeling leaves of the formula.
+Poly-log time uniformity is also preserved. Therefore, we can use (c+o(1)) log n-depth NAND
+formulas for SAT on n1+o(1) inputs to decide L by composing them with the ﬁrst-order
+projection; the resulting formula has size (c + o(1)) log(n1+o(1)) = (c + o(1)) log n, therefore
+L ∈NDepth [c log n].
+We now use a padding argument to lift this result to NTIME[nd]. Let d > 1 and let
+L ∈NTIME[nd]: the padded language L′ = {x1|x|d−|x| | x ∈L} is in NTIME[n], and therefore
+L′ ∈NDepth [c log n]. We can then use the formula descriptor A for L′ to build a machine B
+that describes formulas of depth (c + o(1)) log
+ nd+o(1)
+= (c · d + o(1)) log n for L as follows.
+On input (x, b, n), the machine B calls A on the input (x1|x|d−|x|, b, nd). If A outputs a gate
+type or a constant, B outputs the same information. If A outputs a literal x∗
+i , B outputs the
+same x∗
+i if i ≤n, and 1 otherwise. Passing x as input to the resulting formula is equivalent
+to passing x1|x|d−|x| as input to the formula described by A. This construction shows that
+L ∈NDepth [c · d log n]. In summary, we have shown that
+∀d ≥1, NTIME[nd] ⊆NDepth [c · d log n] .
+The result follows since NDepth [c · d log n] is closed under complement.
+◀
+We need to be careful when applying this result to alternating classes6: the (i + 1)-th
+computation stage takes as input a string of length m = nai, not n. Since the previous result
+6 See Deﬁnition 2.1 for the deﬁnition of alternating classes and of (ai).
+
+G. Bathie and R. R. Williams
+19
+only holds for NTIME[nd] when d is at least 1, we need to take into account the edge case
+where the running time of the (i + 1)-th stage is sublinear in the size of its input. (This is
+the case below in the proof of Lemma 4.2.)
+While the primary use of the Speedup Rule (Lemma 4.1) is to reduce the depth of the
+veriﬁer at the cost of increasing the number of quantiﬁers, we show that we can combine it with
+the above lemma to eﬃciently remove quantiﬁers from an alternating NDepth computation.
+▶Lemma 4.2 (Slowdown Rule). Assume that SAT is in NDepth [c log n] for some c > 0.
+Then, for every a, b ≥1 and d > 0, we have:
+. . . (Q na)(¬Q nb)NDepth [d log n] ⊆. . . (Q na)NDepth [c · max(d/2, a, b) log n] ,
+where Q ∈{∃, ∀} and ¬Q is the opposite quantiﬁer.
+Proof. Without loss of generality, assume that Q = ∀, and therefore ¬Q = ∃. In that case,
+for all q, r > 0, we have (∃nq)NTIME[nr] ⊆NTIME[nmax(q,r)]. Applying Corollary 4.4 on the
+NDepth [d log n] part, and applying the above observation, leads to the following:
+. . . (∀na)(∃nb)NDepth [d log n] ⊆. . . (∀na)(∃nb)NTIME[nd/2+o(1)]
+⊆. . . (∀na)NTIME[nmax(d/2,b)+o(1)].
+Now, consider the NTIME[nmax(d/2,b)+o(1)] language L that corresponds to the last stage
+of the alternating computation, and its corresponding nondeterministic machine M. This
+M takes as input a string of length m = na, and its runtime, as a function of m, is
+mmax(d/2,b)/a+o(1). We apply the Slowdown Rule (Lemma 4.2) to M. There are two possible
+cases:
+If max(d/2, b)/a < 1, then we have
+L ∈NTIME[mmax(d/2,b)/a] ⊆NTIME[m] ⊆NDepth[c log m] ⊆NDepth [c · a log n] .
+Since max(d/2, b) < a, we have a = max(d/2, a, b) and therefore NDepth [c · a log n] =
+NDepth [c · max(d/2, a, b) log n].
+Otherwise, max(d/2, b) ≥a, and applying the Slowdown Rule yields
+L ∈NTIME[mmax(d/2,b)/a] = NTIME[nmax(d/2,b)] ⊆NDepth [c · max(d/2, a, b) log n] .
+◀
+Conditional Depth Hierarchy for NAND Formulas
+We now prove the Conditional Depth hierarchy theorem, stated without proof in Section 4.1.
+▶Theorem 4.3 (Conditional Depth Hierarchy Theorem). For every c > 0, if NTIME[n] ⊆
+NDepth [c log n], then for all b > a ≥1,
+NDepth [a log n] ⊊NDepth [b log n] .
+Proof. Assume that there exists c such that NTIME[n] ⊆NDepth [c log n]. In that case, the
+hypotheses of Lemma 4.5 are satisﬁed.
+We prove the theorem by contradiction. Assuming there exists 1 ≤a < b such that
+NDepth [b log n] ⊆NDepth [a log n], we show this implies for every d ≥a that NDepth [d log n] ⊆
+NDepth [a log n]. Indeed, a padding argument shows that NDepth [r · a log n] ⊆NDepth [a log n]
+
+20
+Towards Stronger Depth Lower Bounds
+implies NDepth
+
+r2 · a log n
+
+⊆NDepth [r · a log n] ⊆NDepth [a log n] for any r > 1. Taking
+r = b/a > 1 and iterating this argument t = ⌈log2 logr(d/a)⌉times, we get
+NDepth [d log n] ⊆NDepth
+h
+r2t log n
+i
+⊆NDepth [a log n] .
+Now, assuming that there exists c ≥1/2 such that NTIME[n] ⊆NDepth [c log n], we have:
+NTIME[n2a] ⊆NDepth [2ca log n]
+⊆NDepth [a log n]
+⊆NTIME[na+o(1)].
+The ﬁrst inclusion follows Lemma 4.5, whereas the second inclusion follows from the above
+argument, as 2c > 1. The last inclusion uses the eﬃcient simulation of NDepth by (non-
+deterministic) RAMs. The proof for c < 1/2 is similar, except that the second inclusion
+follows from 2c < 1. We have proven NTIME[n2a] = NTIME[na+o(1)] for some a ≥1, which
+contradicts the Nondeterministic Time Hierarchy Theorem.
+◀
+Note that this theorem relies heavily on the assumption that SAT ∈NDepth [c log n], hence
+this theorem is conditional, but it is suﬃcient for our use case. It is an open problem to give an
+unconditional depth hierarchy theorem that separates NDepth [a log n] from NDepth [b log n]
+for any a < b.
+4.3
+The Structure of Good Proofs
+In this section, we show how to construct alternation-trading proofs that reach a contradiction
+from the assumption SAT ∈NDepth [c log n] for any c < 4 cos(π/7). While these proofs might
+not be the shortest that yield a contradiction for a given c, they present a very simple
+inductive structure that makes them easier to analyze.
+We introduce here the proof annotation notation of Williams [36], that succinctly de-
+scribes an alternation-trading proof: let 1x denote an application of the Speedup Rule with
+parameter x, and let 0 denote an application of the Slowdown Rule. The proof annotation
+of an alternation-trading proof is the string corresponding to the concatenation of the rep-
+resentations of each step. For example, the proof annotation corresponding to the short
+alternation-trading proof presented in Section 4.1 is 1200 (one application of the Speedup
+Rule with parameter x = 2, followed by two applications of the Slowdown Rule).
+▶Observation 4.6. Consider an alternation-trading proof starting from
+. . . (Qk nak)NDepth [d log n]
+and that never goes below k quantiﬁers and ends with the class
+. . . (Qk nak)NDepth [d′ log n] .
+Then we have d′ ≥c · ak.
+This is due to the presence of ak, the exponent of the last quantiﬁer, inside the max that
+deﬁnes the depth of the class obtained after an application of the Slowdown Rule (Lemma 4.2).
+In what follows, we aim to reach d′ = c · ak, and want to apply this process inductively, i.e.,
+the last line before . . . (Qk nak)NDepth [d log n] will be
+. . . (Qk+1 nak+1)NDepth [c · ak+1 log n] ,
+which implies that d = c2
+2 ak+1. Not all values can be reduced to c · ak: a study of necessary
+and suﬃcient conditions will give us a lower and an upper bound on ak+1 in terms of c and
+ak, from which we will derive an explicit construction of an optimal choice of values for (ak)k.
+
+G. Bathie and R. R. Williams
+21
+4.3.1
+Reducing the Depth
+The critical part is managing to reduce the depth of the veriﬁer from
+
+c2
+2 · ak+1
+
+log n to
+cak log n, while preserving the last quantiﬁer exponent to ak. One way to do this is by
+applying a sequence of Speedup-Slowdown alternation. One application of Speedup then
+Slowdown proves the following:
+. . . (Qk nak)NDepth [d log n] ⊆. . .
+
+Qk nmax(ak,x)
+(Qk+1 n)NDepth [(d −2x) log n] (Speedup with x)
+⊆. . .
+
+Qk nmax(ak,x)
+NDepth [c · max(ak, x, (d −2x)/2, 1) log n] (Slowdown)
+Since we do not want to increase the exponent of the Qk quantiﬁer, we get the following
+constraint:
+x ≤ak
+(2)
+Moreover, assuming that ak is at least 1 allows us to reformulate the last class as
+. . . (Qk nak) NDepth [c · max(ak, (d −2x)/2) log n] .
+From here, we can get the following:
+▶Lemma 4.7 (“Squiggle rule”). Let a, d be positive real numbers such that ac < d < 2ca
+c−2.
+Then, the proof (1a0)t for t =
+l
+d
+(4−c)a
+m
++ 1 proves that
+. . . (Q na)NDepth [d log n] ⊆. . . (Q na)NDepth [ca log n] .
+Proof. If d/2 −a ≤a, or equivalently, d ≤4a, then we get the desired result using an
+application of the Speedup Rule with x = d/2 −a, followed by the Slowdown Rule.
+We now assume that d > 4a, and show that we can get to d′ ≤4a in a ﬁnite number
+of steps. When d ≥4a, applying the Speedup Rule with parameter x = a followed by the
+Slowdown Rule transforms d is into c · (d/2 −a).
+This is an improvement whenever d is such that:
+d < 2ca
+c −2
+(3)
+Moreover, as long as c < 4, we have
+2c
+c−2 > 4, hence there is a gap between 4a and 2ca
+c−2 where
+we can get a non-trivial improvement.
+The improvement is d(1 −c/2) + ca, which is at least (4 −c)a, since we are in the case
+d > 4a. Therefore, as the improvement is bounded below by a constant independent of d,
+iterating this process starting from d reaches a value below 4a in at most
+l
+d
+(4−c)a
+m
+steps,
+after which one more step with parameter x = d/2 −a yields the desired ca log n depth.
+◀
+4.3.2
+Putting it all together
+Lemma 4.7 shows that, in order to reach depth cak log n starting from depth d log n, we
+need d < 2cak
+c−2 . As we aim for an inductive structure with d = c2
+2 ak+1, we obtain:
+ak+1 <
+4ak
+c(c −2)
+(4)
+Notice that
+4
+c(c−2) < 1 whenever c > 2φ = 1 +
+√
+5, where φ denotes the golden ratio.
+Equation (4) captures most of the requirements for the parameters of an alternation-
+trading proof that yields a contradiction under the assumption SAT ∈NDepth [c log n], which
+leads us to the following deﬁnition:
+
+22
+Towards Stronger Depth Lower Bounds
+▶Deﬁnition 4.8. Let c > 2φ. A sequence of real number (ak)k=0,...,t is well-behaved for c
+if the following holds:
+1. for every k = 0, . . . , t, ak ≥1,
+2. at = 1,
+3. for every k = 0, . . . , t, cak+1/2 ≥ak, and
+4. for every k = 0, . . . , t −1, ak+1 <
+4ak
+c(c−2).
+Notice that constraint 4 above implies that ak+1 < ak, since
+4
+c(c−2) < 1 when c > 2φ.
+The following lemma gives a formal proof of the intuition that the conditions of Deﬁni-
+tion 4.8 are suﬃcient to obtain a contradiction using an alternation-trading proof.
+▶Lemma 4.9. Let c > 2φ, let (ak)k=0,...,t be a sequence well-behaved for c, and let d0 =
+2
+
+1 + Pt
+k=0 ak
+
+. Then there exists an alternation trading proof that shows
+NDepth [d0 log n] ⊆NDepth
+c2
+2 a0 log n
+
+.
+Proof. The proof starts by applying t speedups, with respective parameters 2a1, 2a2, . . . , 2at.
+We obtain the following:
+NDepth [d0 log n] ⊆(∃na0)(∀n)NDepth [d0 −2a0 log n]
+⊆(∃na0)(∀na1)(∃n)NDepth [d0 −2a0 −2a1 log n]
+⊆...
+⊆(∃na0) . . . (Qtnat)(Qt+1n)NDepth
+"
+d0 −2
+t
+X
+k=0
+ak log n
+#
+= (∃na0) . . . (Qtnat)(Qt+1n)NDepth [2 log n]
+The last equality follows from the deﬁnition of d0.
+Then, applying the Slowdown Rule yields the class
+(∃na0) . . . (Qtnat)NDepth [c · at log n] .
+We will now repeat t successive applications of the Slowdown Rule and Squiggle rule.
+Informally, it will give us the following inclusions:
+(∃na0) . . . (Qtnat)NDepth [c · at log n] ⊆(∃na0) . . . (Qt−1nat−1)NDepth
+c2
+2 · at log n
+
+(Slowdown)
+⊆(∃na0) . . . (Qt−1nat−1)NDepth [c · at−1 log n] (Squiggle)
+...
+⊆(∃na0)NDepth [c · a0 log n]
+⊆NDepth
+c2
+2 a0 log n
+
+(Slowdown)
+This can be shown formally by induction, using the fact that (ak)k is well-behaved for c:
+during the i-th step (i = 0, . . . , t −1), we have the following properties:
+1. before applying the Slowdown Rule, the depth of the veriﬁer is c · at−i log n,
+2. after applying the Slowdown Rule, the depth is c2
+2 at−i log n,
+3. after applying the Squiggle rule, the depth is c · at−i−1 log n.
+
+G. Bathie and R. R. Williams
+23
+At step i = t, we only apply the Slowdown Rule (we cannot apply the Squiggle Rule: there
+is no leading quantiﬁer).
+Property 1 is true for i = 0, and then holds by induction when Property 3 holds for
+i −1. Property 2 holds whenever Property 1 holds, by deﬁnition of the Slowdown Rule
+(Lemma 4.2), and using the fact that ai ≥1 and cai > ai−1. Finally, Property 3 hold when
+Property 2 holds: we can apply the Squiggle rule (Lemma 4.7) as a is well-behaved for c,
+which ensures that i = 0, . . . , t −1, ai+1 <
+4ai
+c(c−2).
+◀
+Given c < 4 cos(π/7), the last step is to construct a sequence of parameters that is
+well-behaved for c and such that d0 > c2
+2 a0, which yields the desired contradiction. Using
+the insight gained in this section, we can construct such a sequence explicitly.
+▶Lemma 4.10. Let c ∈(2φ, 4 cos(π/7)), and let τ = c(c−2)
+4
+. Then there exists an integer t
+such that, for ε = 1/(t + 1),
+the sequence (ak = r · τ t−k −ε)k=0,...,t, where r = 1 + ε, is well-behaved for c,
+d0 = 2
+
+1 + Pt
+k=0 ak
+
+is greater than c2
+2 a0.
+Proof. We ﬁrst check that (ak)k is well-behaved for c. First, as r = 1 + ε, we have at = 1,
+and since τ > 1, we have ak ≥1 for every k = 1, . . . , t. Now, for every k < t, we have
+ak + ε = τ · (ak+1 + ε), which, combined with τ > 1 implies that
+ak+1 = ak/τ + ε(τ −1 −1) < ak
+τ =
+4ak
+c(c −2).
+The constraint cak+1 ≥ak can be rewritten as
+ak+1
+ c
+2 −τ
+
+≥ε(τ −1).
+As ε = 1/(t + 1) and τ is independent of t, the RHS of this inequality goes to 0 as t goes to
+inﬁnity, and ( c
+2 −τ) > 0 when c is greater than 3 (which is the case here since c > 2φ > 3).
+Therefore, there exists a t such that the inequality holds for every k, and the sequence
+(ak)k=1,...,t is well-behaved for c.
+We now show that there exists a t such that d0 > c2
+2 a0. We have:
+d0 = 2
+ 
+1 −(t + 1)ε +
+t
+X
+k=0
+rτ k
+!
+= 2
+ 
+1 −1 + r
+t
+X
+k=0
+τ k
+!
+= 2rτ t+1 −1
+τ −1
+Therefore, we have
+d0 > c2
+2 a0 ⇔2rτ t+1 −1
+τ −1
+> c2a0
+2
+⇔rττ t −1
+τ −1
+> c2(rτ t −ε)
+4
+⇔rτ t
+c2
+4 −
+τ
+τ −1
+
+<
+−1
+τ −1 + εc2
+4
+⇔c2
+4 τ −c2
+4 −τ < (rτ t)−1
+
+−1 + c2(τ −1)
+4(t + 1)
+
+⇔c2
+4 τ −c2
+4 −τ <
+−1
+(1 + ε)τ t +
+c2(τ −1)
+4(t + 1)(1 + ε)τ t
+(∗)
+
+24
+Towards Stronger Depth Lower Bounds
+We can rewrite the LHS of the last inequality (∗) as follows:
+c2
+4 τ −c2
+4 −τ = c3(c −2)
+16
+−c2
+4 −c(c −2)
+4
+= 1
+4
+c4
+4 −c3
+2 −2c2 + 2c
+
+= c
+16
+ c3 −2c2 −8c + 8
+
+This allows us to rewrite the inequality (∗) as:
+c3 −2c2 −8c + 8 < 16
+c
+−1
+(1 + ε)τ t +
+c2(τ −1)
+4(t + 1)(1 + ε)τ t
+(5)
+The LHS of Inequality (5) does does not depend on t, while the RHS is negative and goes
+to 0 as t goes to inﬁnity. Therefore, for every δ < 0, there exists a t such that the RHS is
+greater than δ, and therefore Inequality (5) is satisﬁed as soon as we have:
+c3 −2c2 −8c + 8 < δ.
+The polynomial P = X3 −2X2 −8X + 8is negative whenever X is between its 2nd largest
+root r2 ≃0.89 and its largest root r1 = 4 cos(π/7): our parameter c satisﬁes this condition.
+Therefore, if we choose δ = P(c)/2, there exists a t such that we have
+P(c) < δ < 16
+c
+−1
+(1 + ε)τ t +
+c2(τ −1)
+4(t + 1)(1 + ε)τ t ,
+i.e. Inequality (5) is satisﬁed, and d0 > c2
+2 a0.
+As the alternation-trading proof with parameters (ak)k shows that
+NDepth [d0 log n] ⊆NDepth
+c2
+2 a0 log n
+
+,
+we get a contradiction of Theorem 4.3 from the assumption SAT ∈NDepth [c log n].
+◀
+Lemma 4.10 proves Theorem 1.4 for c ∈(2φ, 4 cos(π/7)). To extend this result to c ≤2φ,
+it suﬃces to notice that in that case, we have NDepth [c log n] ⊆NDepth [(2φ + ε) log n],
+hence it reduces to the former case.
+Optimality of the Results.
+Finally, we comment brieﬂy on the potential optimality of our results (within known tech-
+niques). In the case of SAT vs small-space algorithms, Buss and Williams [9] proved that
+the result SAT /∈TISP
+
+nc, no(1)
+for c < 2 cos(π/7) is optimal for the alternation-trading
+proofs framework. This was later extended and simpliﬁed by Mudigonda and Williams [36],
+who showed lower bounds against randomized and quantum classes. As far as we can tell, it
+appears that their generalization covers our framework as well, therefore we cannot prove
+SAT /∈NDepth [c log n] for c ≥4 cos(π/7) without ﬁnding a new (and improved) way to speed
+up NDepth computation using alternations.
+5
+Conclusion
+In this paper, we have considered two rather disparate approaches to proving stronger depth
+lower bounds: one for the non-uniform setting, and another for the uniform case. Let us
+highlight a few interesting steps for further work.
+
+G. Bathie and R. R. Williams
+25
+The Non-Uniform Setting.
+Obviously the most pressing open problem is to design faster #SAT algorithms for DeMorgan
+formulas. Until now, researchers designing faster SAT algorithms for formulas and other weak
+classes have generally stated their time bounds in the form 2n−nδ where δ > 0 is unspeciﬁed.
+Our work has shown that improving these δ factors, even for slightly-superquadratic formulas,
+would have interesting lower bound implications.
+Another open problem is to consider other forms of circuit-analysis algorithms, and
+understand their implications. It is surprising (to us) that #SAT for formulas can be so
+powerful. The main intuition is that, by using low-degree approximate polynomials for
+formulas, the act of counting SAT assignments actually performs a non-trivial amount of the
+formula evaluation itself. Are there other representations of formulas which can be similarly
+exploited?
+The Uniform Setting.
+As mentioned in the introduction, the uniform lower bounds we have proved are “merely”
+depth lower bounds, which are weaker than size lower bounds, since the latter directly imply
+the former. However, Spira [44], Brent [8], and Bonet and Buss [7] have given a partial
+converse, that allows converting a cα log n depth lower bounds into an nc size lower bound,
+where α > 1 depends on the computational basis. Unfortunately, for NAND formulas, the
+best known conversion theorems have α > 2, making them useless for our purposes. For most
+families of formulas, the current best constants in the depth-to-size conversion theorems are
+not known to be tight.7 So it might be possible to improve them, and use our result to prove
+nontrivial (and even super-cubic) size lower bounds.
+The depth hierarchy theorem that we use in this work is conditional, and to our knowledge
+there is no unconditional equivalent.
+The diagonalization arguments used for uniform
+computational models are hard to translate to low-depth formulas, as there is no known
+eﬃcient universal simulation of NAND gate formulas by a slightly larger NAND gate formula.
+Finally, another immediate open problem is to lift our lower bounds for NAND gates to
+other computational bases. For example, one may allow AND/OR gates in any arrangement,
+or one might allow layers of XOR and ¬XOR (equality) gates, along with layers of OR/AND
+gates.
+References
+1
+Eric Allender, José Balcázar, and Neil Immerman. A ﬁrst-order isomorphism theorem. SIAM
+Journal on Computing, 26(2):557–567, 1997.
+2
+Eric Allender, Michal Koucký, Detlef Ronneburger, Sambuddha Roy, and V. Vinay. Time-space
+tradeoﬀs in the counting hierarchy. In Proceedings of the 16th Annual IEEE Conference on
+Computational Complexity, Chicago, Illinois, USA, June 18-21, 2001, pages 295–302. IEEE
+Computer Society, 2001.
+3
+Alexander E. Andreev. On a method for obtaining more than quadratic eﬀective lower bounds
+for the complexity of π-schemes. Moscow Univ. Math. Bull., 42(1):63–66, 1987.
+4
+Sanjeev Arora and Boaz Barak. Computational Complexity - A Modern Approach. Cambridge
+University Press, 2009.
+7 See Sergeev [42] (in Russian) for a recent exposition best upper and lower bounds known on the constants
+of multiple classes of formulas.
+
+26
+Towards Stronger Depth Lower Bounds
+5
+Eli Ben-Sasson, Oded Goldreich, Prahladh Harsha, Madhu Sudan, and Salil P. Vadhan. Robust
+PCPs of proximity, shorter PCPs, and applications to coding. SIAM J. Comput., 36(4):889–974,
+2006. doi:10.1137/S0097539705446810.
+6
+Eli Ben-Sasson and Emanuele Viola. Short PCPs with projection queries. In International
+Colloquium on Automata, Languages, and Programming, pages 163–173. Springer, 2014.
+7
+Maria Luisa Bonet and Samuel R Buss. Size-depth tradeoﬀs for Boolean formulae. Information
+Processing Letters, 49(3):151–155, 1994.
+8
+Richard P Brent. The parallel evaluation of general arithmetic expressions. Journal of the
+ACM (JACM), 21(2):201–206, 1974.
+9
+Samuel R Buss and Ryan Williams. Limits on alternation trading proofs for time–space lower
+bounds. computational complexity, 24(3):533–600, 2015.
+10
+Timothy M. Chan and R. Ryan Williams. Deterministic apsp, orthogonal vectors, and more:
+Quickly derandomizing razborov-smolensky. ACM Trans. Algorithms, 17(1):2:1–2:14, 2021.
+doi:10.1145/3402926.
+11
+Ashok K Chandra, Dexter C Kozen, and Larry J Stockmeyer. Alternation. Journal of the
+ACM (JACM), 28(1):114–133, 1981.
+12
+Lijie Chen, Zhenjian Lu, Xin Lyu, and Igor Carboni Oliveira. Majority vs. approximate linear
+sum and average-case complexity below NC1. In 48th International Colloquium on Automata,
+Languages, and Programming, ICALP, volume 198 of LIPIcs, pages 51:1–51:20. Schloss
+Dagstuhl - Leibniz-Zentrum für Informatik, 2021. doi:10.4230/LIPIcs.ICALP.2021.51.
+13
+Lijie Chen and R. Ryan Williams. Stronger connections between circuit analysis and circuit
+lower bounds, via PCPs of proximity. In 34th Computational Complexity Conference, CCC,
+volume 137 of LIPIcs, pages 19:1–19:43. Schloss Dagstuhl - Leibniz-Zentrum für Informatik,
+2019.
+14
+Ruiwen Chen and Valentine Kabanets. Correlation bounds and #SAT algorithms for small
+linear-size circuits. Theoretical Computer Science, 654:2–10, 2016.
+15
+Ruiwen Chen, Valentine Kabanets, Antonina Kolokolova, Ronen Shaltiel, and David Zuckerman.
+Mining circuit lower bound proofs for meta-algorithms. Computational Complexity, 24:333–392,
+2015.
+16
+Ruiwen Chen, Valentine Kabanets, and Nitin Saurabh. An improved deterministic #SAT
+algorithm for small De Morgan formulas. Algorithmica, 76:68–87, 2016.
+17
+Susanna F. de Rezende, Or Meir, Jakob Nordström, Toniann Pitassi, and Robert Robere.
+KRW composition theorems via lifting. In 61st IEEE Annual Symposium on Foundations of
+Computer Science, FOCS, pages 43–49. IEEE, 2020. doi:10.1109/FOCS46700.2020.00013.
+18
+Irit Dinur and Or Meir. Toward the KRW Composition Conjecture: Cubic Formula Lower
+Bounds via Communication Complexity. In CCC 2016, pages 3:1–3:51, 2016.
+19
+Lance Fortnow. Time-space tradeoﬀs for satisﬁability. J. Comput. Syst. Sci., 60(2):337–353,
+2000. doi:10.1006/jcss.1999.1671.
+20
+Lance Fortnow, Richard J. Lipton, Dieter van Melkebeek, and Anastasios Viglas. Time-space
+lower bounds for satisﬁability. J. ACM, 52(6):835–865, 2005.
+21
+Dmitry Gavinsky, Or Meir, Omri Weinstein, and Avi Wigderson. Toward better formula
+lower bounds: The composition of a function and a universal relation. SIAM J. Comput.,
+46(1):114–131, 2017. doi:10.1137/15M1018319.
+22
+Johan Håstad.
+The shrinkage exponent of DeMorgan formulas is 2.
+SIAM J. Comput.,
+27(1):48–64, 1998. Preliminary version in FOCS’93.
+23
+Johan Håstad. On the correlation of Parity and small-depth circuits. SIAM J. Comput.,
+43(5):1699–1708, 2014. doi:10.1137/120897432.
+24
+Russell Impagliazzo, William Matthews, and Ramamohan Paturi. A satisﬁability algorithm for
+AC0. In Proceedings of the twenty-third annual ACM-SIAM symposium on Discrete Algorithms,
+pages 961–972. SIAM, 2012.
+25
+Russell Impagliazzo, Raghu Meka, and David Zuckerman. Pseudorandomness from shrinkage.
+J. ACM, 66(2):11:1–11:16, 2019. doi:10.1145/3230630.
+
+G. Bathie and R. R. Williams
+27
+26
+Russell Impagliazzo and Noam Nisan. The eﬀect of random restrictions on formula size.
+Random Struct. Algorithms, 4(2):121–134, 1993.
+27
+Hamid Jahanjou, Eric Miles, and Emanuele Viola. Local reductions. In Automata, Languages,
+and Programming - 42nd International Colloquium, ICALP, Proceedings, Part I, pages 749–760,
+2015. doi:10.1007/978-3-662-47672-7_61.
+28
+Valentine Kabanets, Sajin Koroth, Zhenjian Lu, Dimitrios Myrisiotis, and Igor C. Oliveira.
+Algorithms and lower bounds for de morgan formulas of low-communication leaf gates. ACM
+Trans. Comput. Theory, 13(4):23:1–23:37, 2021.
+29
+Valentine Kabanets, Sajin Koroth, Zhenjian Lu, Dimitrios Myrisiotis, and Igor Carboni Oliveira.
+Algorithms and lower bounds for de morgan formulas of low-communication leaf gates. In 35th
+Computational Complexity Conference, CCC, volume 169 of LIPIcs, pages 15:1–15:41. Schloss
+Dagstuhl - Leibniz-Zentrum für Informatik, 2020. doi:10.4230/LIPIcs.CCC.2020.15.
+30
+Ravi Kannan. Alternation and the power of nondeterminism. In Proceedings of the 15th
+Annual ACM Symposium on Theory of Computing, pages 344–346. ACM, 1983. doi:10.1145/
+800061.808764.
+31
+Mauricio Karchmer, Ran Raz, and Avi Wigderson. Super-logarithmic depth lower bounds
+via the direct sum in communication complexity. Comput. Complex., 5(3/4):191–204, 1995.
+doi:10.1007/BF01206317.
+32
+Ilan Komargodski, Ran Raz, and Avishay Tal. Improved average-case lower bounds for de
+Morgan formula size: Matching worst-case lower bound. SIAM J. Comput., 46(1):37–57, 2017.
+33
+Daniel Lokshtanov, Ramamohan Paturi, Suguru Tamaki, R. Ryan Williams, and Huacheng
+Yu. Beating brute force for systems of polynomial equations over ﬁnite ﬁelds. In Proceedings
+of the Twenty-Eighth Annual ACM-SIAM Symposium on Discrete Algorithms, SODA, pages
+2190–2202. SIAM, 2017.
+34
+William Finlay McColl. Some results on circuit depth. PhD thesis, University of Warwick,
+1976. URL: http://wrap.warwick.ac.uk/59627/1/WRAP_THESIS_McColl_1977.pdf.
+35
+Ivan Mihajlin and Anastasia Sofronova. A better-than-3log(n) depth lower bound for De Morgan
+formulas with restrictions on top gates. In 37th Computational Complexity Conference, CCC,
+volume 234 of LIPIcs, pages 13:1–13:15. Schloss Dagstuhl - Leibniz-Zentrum für Informatik,
+2022. doi:10.4230/LIPIcs.CCC.2022.13.
+36
+Abhijit S Mudigonda and R Ryan Williams. Time-space lower bounds for simulating proof
+systems with quantum and randomized veriﬁers. arXiv preprint arXiv:2012.00330, 2020.
+37
+Cody D. Murray and R. Ryan Williams. Circuit lower bounds for nondeterministic quasi-
+polytime from a new easy witness lemma. SIAM J. Comput., 49(5), 2020. doi:10.1137/
+18M1195887.
+38
+É. I. Nechiporuk. On a boolean function. Dokl. Akad. Nauk SSSR, 169:765–766, 1966.
+39
+Mike Paterson and Uri Zwick. Shrinkage of de Morgan formulae under restriction. Random
+Struct. Algorithms, 4(2):135–150, 1993.
+40
+Ben Reichardt. Reﬂections for quantum query algorithms. In Proceedings of the Twenty-Second
+Annual ACM-SIAM Symposium on Discrete Algorithms (SODA), pages 560–569. SIAM, 2011.
+doi:10.1137/1.9781611973082.44.
+41
+Rahul Santhanam. Fighting perebor: New and improved algorithms for formula and QBF
+satisﬁability. In 2010 IEEE 51st Annual Symposium on Foundations of Computer Science,
+pages 183–192. IEEE, 2010.
+42
+Igor Sergeevich Sergeev. On a relation between the depth and complexity of monotone Boolean
+formulas. Diskretnyi Analiz i Issledovanie Operatsii, 26(4):108–120, 2019.
+43
+Daniel A. Spielman. Linear-time encodable and decodable error-correcting codes. IEEE Trans.
+Information Theory, 42(6):1723–1731, 1996. doi:10.1109/18.556668.
+44
+Philip Spira. On time-hardware complexity tradeoﬀs for Boolean functions. In Proceedings of
+the 4th Hawaii Symposium on System Sciences, 1971, pages 525–527, 1971.
+45
+Bella Abramovna Subbotovskaya. Realizations of linear functions by formulas using and, or,
+not. In Soviet Mathematics Doklady, volume 2, pages 110–112, 1961.
+
+28
+Towards Stronger Depth Lower Bounds
+46
+Avishay Tal. Shrinkage of De Morgan formulae by spectral techniques. In FOCS 2014, pages
+551–560. IEEE, 2014.
+47
+Avishay Tal. #SAT algorithms from shrinkage. Electron. Colloquium Comput. Complex.,
+TR15-114, 2015. URL: https://eccc.weizmann.ac.il/report/2015/114, arXiv:TR15-114.
+48
+Dieter van Melkebeek. A survey of lower bounds for satisﬁability and related problems. Found.
+Trends Theor. Comput. Sci., 2(3):197–303, 2006. doi:10.1561/0400000012.
+49
+Dieter van Melkebeek and Ran Raz. A time lower bound for satisﬁability. Theor. Comput.
+Sci., 348(2-3):311–320, 2005. doi:10.1016/j.tcs.2005.09.020.
+50
+Emanuele Viola. The sum of D small-bias generators fools polynomials of degree D. Comput.
+Complex., 18(2):209–217, 2009. doi:10.1007/s00037-009-0273-5.
+51
+Heribert Vollmer. Introduction to Circuit Complexity - A Uniform Approach. Texts in Theoret-
+ical Computer Science. An EATCS Series. Springer, 1999. doi:10.1007/978-3-662-03927-4.
+52
+R. Ryan Williams. New algorithms and lower bounds for circuits with linear threshold gates.
+Theory of Computing, 14(1):1–25, 2018. Preliminary version in STOC’14. doi:10.4086/toc.
+2018.v014a017.
+53
+Ryan Williams. Inductive time-space lower bounds for SAT and related problems. Computa-
+tional Complexity, 15(4):433–470, 2006.
+54
+Ryan Williams. Time-space tradeoﬀs for counting NP solutions modulo integers. In Twenty-
+Second Annual IEEE Conference on Computational Complexity (CCC’07), pages 70–82. IEEE,
+2007.
+55
+Ryan Williams. Alternation-trading proofs, linear programming, and lower bounds. ACM
+Transactions on Computation Theory (TOCT), 5(2):1–49, 2013.
+56
+Ryan Williams. Improving exhaustive search implies superpolynomial lower bounds. SIAM J.
+Comput., 42(3):1218–1244, 2013.
+57
+Ryan Williams. Nonuniform ACC circuit lower bounds. Journal of the ACM (JACM), 61(1):2,
+2014.
+A
+Andreev’s Function in Low NAND Depth
+In this section, we show that Andreev’s function, known to require depth (3 −o(1)) log2(n)
+for DeMorgan formulas, can be implemented by NAND formulas of (3 + o(1)) log2(n) depth.
+This makes our depth lower bound against the Satisﬁability problem all the more compelling.
+Andreev’s function is the composition of two functions: the “indexing function” or
+“storage address function”, which takes as input a bitstring of length n = 2k and an index i
+encoded in binary on k bits and outputs xi, the i-th bit of x, and the PARITY function. In
+particular, In Andreev’s function, each bit of the index i in the indexing function is replaced
+by a PARITY on 2k/k bits, so that the overall function takes O(2k) inputs.
+We claim that the indexing function on bitstrings of length n has a NAND formula of
+depth (1 + o(1)) log2(n), and the PARITY function on n variables has a NAND formula of
+depth (2+o(1)) log2(n). It follows that Andreev’s function has NAND depth (3+o(1)) log2(n).
+First, we observe the depth bound for PARITY. In fact, the natural recursive construction
+works. For n = 2, PARITY on x, y is equivalent to
+(x ∧¬y) ∨(¬x ∧y)
+and ¬PARITY is equivalent to
+(x ∧y) ∨(¬x ∧¬y).
+Since
+(a ∧b) ∨(c ∧d) ≡NAND(NAND(a, b), NAND(c, d)),
+
+G. Bathie and R. R. Williams
+29
+there is an NAND formula of depth 2 for n = 2 variables. Let us inductively assume that
+PARITY and its negation on 2k variables both have NAND formulas of depth 2k. Then,
+PARITY on n = 2k+1 variables can be expressed as
+(X ∧¬Y ) ∨(¬X ∧Y ) ≡NAND(NAND(X, ¬Y ), NAND(¬X, Y )),
+where X and Y denote parities on 2k variables. This corresponds to a NAND formula of
+depth 2k + 2. Similarly, ¬PARITY on 2k variables has NAND depth 2k + 2.
+We now show that the indexing function has NAND depth close to log2 n.
+▶Lemma A.1. For every n = 2k, the indexing function over length-n bitstrings has NAND
+formulas of depth log2(n) + O(log log n).
+Proof. We ﬁrst show by induction over k a slightly diﬀerent statement: for every n = 2k,
+the indexing function over length-n bitstrings has a formula that is a NAND tree of depth
+log2 n composed with n (arbitrary) formulas of size k = O(log n), each of these formulas
+having a single bit of x among their inputs (along with bits of i).
+For k = 1, given x ∈{0, 1}2 and i ∈{0, 1}, we have
+Index(x, i) = (x0 ∧¬i) ∨(x1 ∧i) = NAND(NAND(x0, ¬i), NAND(x1, i))
+, hence the indexing function over 2 inputs can be written as a NAND tree of depth 1
+composed with formulas of size 1 (which happen to be NANDs in that case).
+Now, assume that we have such a formula for some k. To build a formula for k + 1, we
+compose with a NAND gate the tree T0 for indexing ¬x0, . . . , ¬x2k−1 with i0, . . . , ik−1 and
+the tree T1 for indexing ¬x2k, . . . , ¬x2k+1 with i0, . . . , ik−1. If i0, . . . , ik−1 encode the integer
+t, the output of this formula is NAND(¬xt, ¬x2k+t) = xt ∨x2k+t. By replacing the literals
+x∗
+l in the formulas at the leaves of the tree by x∗
+l ∧¬ik in T0 and by x∗
+l ∧ik in T1 for every l,
+we obtain a formula equivalent to
+(xt ∧¬ik) ∨(x2k+t ∧ik),
+which is equal to xt if ik is 0, and to x2k+t otherwise: this is exactly xi. Notice that, since
+each leaf formula contains a single xl as input, this transformation adds at most one gate to
+each leaf formula, which has size at most k + 1. This concludes the induction.
+To obtain the desired result, notice that an arbitrary formula of size s can be turned into
+an equivalent NAND formula of size O(s), and using the result of Brent [8] and Spira [44],
+one can turn a NAND formula of size s′ into an equivalent NAND formula of depth O(log s′).
+Applying these transformations to the formulas of size O(k) at the leaves of the NAND
+tree, we obtain a formula of depth log2 n + O(log k) = log2(n) + O(log log n) for the indexing
+function.
+◀
+Notice that this implies in particular that any boolean function on n variables has NAND
+formulas of depth n + O(log n), as any function can be written as indexing over its truth
+table. This result can be improved to n + O(log∗n), see [34, Theorem 3.6] for further details.
+This is similar to what can be achieved in the DeMorgan basis, and shows the expressiveness
+of NAND formulas.
+ECCC 
+  ISSN 1433-8092 
+https://eccc.weizmann.ac.il

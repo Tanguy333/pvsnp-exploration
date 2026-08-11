@@ -1,0 +1,2011 @@
+Number-Theoretic Constructions of Efﬁcient
+Pseudo-Random Functions
+MONI NAOR
+Weizmann Institute of Science, Rehovot, Israel
+AND
+OMER REINGOLD
+Weizmann Institute of Science, Rehovot, Israel
+Abstract. We describe efﬁcient constructions for various cryptographic primitives in private-key as
+well as public-key cryptography. Our main results are two new constructions of pseudo-random
+functions. We prove the pseudo-randomness of one construction under the assumption that factoring
+(Blum integers) is hard while the other construction is pseudo-random if the decisional version
+of the Difﬁe–Hellman assumption holds. Computing the value of our functions at any given point
+involves two subset products. This is much more efﬁcient than previous proposals. Furthermore,
+these functions have the advantage of being in TC0 (the class of functions computable by constant
+depth circuits consisting of a polynomial number of threshold gates). This fact has several interesting
+applications. The simple algebraic structure of the functions implies additional features such as a
+zero-knowledge proof for statements of the form “y = fs(x)” and “y ̸= fs(x)” given a commitment
+to a key s of a pseudo-random function fs.
+Categories and Subject Descriptors: E.3 [Data Encryption]; F.1.3 [Computation by Abstract
+Devices]: Complexity Measures and Classes; F.2 [Analysis of Algorithms and Problem Com-
+plexity]; G.3 [Probability and Statistics]; G.4 [Mathematical Software]
+General Terms: Algorithms, Security, Theory
+Additional Key Words and Phrases: Pseudo-random functions, factoring, decision Difﬁe–Hellman,
+constant-depth threshold circuits, natural proofs, learning theory
+A preliminary version of this article appeared as “Number-theoretic constructions of efﬁcient pseudo-
+random functions,” In Proceedings of the 38th IEEE Symposium on Foundations of Computer Science,
+IEEE Computer Society Press, Los Alamitos, Calif., 1977, pp. 458–467.
+The research of M. Naor was supported by grant no. 356/94 from the Israel Science Foundation,
+administered by the Israeli Academy of Sciences.
+Some of the research of O. Reingold was performed while he was at AT&T Labs–Research, Florham
+Park, New Jersey.
+The research of O. Reingold was supported by a Clore Scholars award.
+Authors’ current address: Department of Computer Science and Applied Math, Weizmann Institute
+of Science, Rehovot 76100, Israel, e-mail: {naor;omer.reingold}@wisdom.weizmann.ac.il.
+Permission to make digital or hard copies of part or all of this work for personal or classroom use is
+granted without fee provided that copies are not made or distributed for proﬁt or direct commercial
+advantage and that copies show this notice on the ﬁrst page or initial screen of a display along with the
+full citation. Copyrights for components of this work owned by others than ACM must be honored.
+Abstracting with credit is permitted. To copy otherwise, to republish, to post on servers, to redistribute
+to lists, or to use any component of this work in other works requires prior speciﬁc permission and/or
+a fee. Permissions may be requested from Publications Dept., ACM, Inc., 1515 Broadway, New York,
+NY 10036 USA, fax: +1 (212) 869-0481, or permissions@acm.org.
+C⃝2004 ACM 0004-5411/04/0300-0231 $5.00
+Journal of the ACM, Vol. 51, No. 2, March 2004, pp. 231–262.
+
+232
+M. NAOR AND O. REINGOLD
+1. Introduction
+This article studies the efﬁcient construction of several fundamental cryptographic
+primitives. Our main result are two related constructions of pseudo-random func-
+tions based on number-theoretic assumptions. The ﬁrst construction gives pseudo-
+random functions iff the decisional version of the Difﬁe–Hellman assumption
+(DDH-Assumption) holds. The second construction is at least as secure as the
+assumption that factoring the so called Blum-integers is hard.1 Having efﬁcient
+pseudo-random functions based on factoring is very desirable since this is one of
+the most established concrete intractability assumption used in cryptography. The
+construction based on the DDH-Assumption is also attractive since these pseudo-
+random functions are even more efﬁcient (in that they have a larger output size)
+and since the construction is linear preserving (see Remark 4.1). We consider the
+study of the DDH-Assumption (which was recently used in quite a few interesting
+applications) to be one of the contributions of this article.
+1.1. PROPERTIES OF OUR PSEUDO-RANDOM FUNCTIONS.
+Pseudo-random func-
+tions were introduced by Goldreich et al. [1986] and have innumerable applica-
+tions (e.g., Bellare and Goldwasser [1990], Blum et al. [1994], Chor et al. [1994],
+Goldreich [1987], Goldreich and Ostrovsky [1996], Goldreich et al. [1985], Luby
+and Rackoff [1988], and Naor and Reingold [1999a]). A distribution of functions is
+pseudo random if: (1) It is easy to sample functions according to the distribution and
+to compute their value, (2) It is hard to tell apart a function sampled in accordance
+with this distribution from a uniformly distributed function given access to the
+function as a black-box. The properties of our new pseudo-random functions are:
+Efﬁciency.
+Computing the value of the function at a given point is comparable
+with two modular exponentiations and is more efﬁcient by an (n) factor than
+any previous proposal (that is proven to be as secure as some standard intractability
+assumption). This is essential for the efﬁciency of the many applications of pseudo-
+random functions.
+Depth.
+Given appropriate preprocessing of the key, the value of the functions
+at any given point can be computed in TC0, compared with TC1 previously (in Naor
+and Reingold [1999b]). Therefore, this construction:
+(1) achievesreducedlatencyforcomputingthefunctionsinparallelandinhardware
+implementations.
+(2) has applications to computational complexity (i.e., Natural Proofs [Razborov
+and Rudich 1997]) and to computational learning-theory [Kearns and Valiant
+1994].
+Simplicity.
+The simple algebraic structure of the functions implies additional
+desirable features. To demonstrate this, we showed in Naor and Reingold [1997] a
+simple zero-knowledge proof for the value of the function and other protocols. We
+suggest the task of designing additional protocols and improving the current ones
+as a line for further research.
+1 In fact, we prove the security of the second construction based on a generalized version of the com-
+putational DH-Assumption (GDH-Assumption). However, breaking the GDH-Assumption modulo, a
+composite would imply an efﬁcient algorithm for factorization (see Biham et al. [1997] and Shmuely
+[1985]).
+
+Constructions of Efﬁcient Pseudo-Random Functions
+233
+More on the motivation of such a construction and on pseudo-random functions
+in general can be found in Section 2.2.
+1.2. THE DDH-ASSUMPTION.
+As mentioned above, we base our constructions
+on two number-theoretic assumptions: Factoring and the DDH-Assumption. While
+the assumption that factoring is hard is a well-established cryptographic assump-
+tion that needs little introduction the DDH-Assumption is relatively new. In the
+following few paragraphs, we brieﬂy describe the DDH-Assumption, its different
+applications and the current knowledge on its security. In addition, we brieﬂy de-
+scribe the contribution of this article to the study of this assumption. A more detailed
+description appears in Section 3.1.
+The DH-Assumption was introduced in the context of the Difﬁe and Hellman
+[1976] key-exchange protocol (among quite a few of the fundamental ideas and
+concepts of public-key cryptography). Any method for exchanging even a single
+bit, using this protocol, relies on the computational version of the DH-Assumption
+(CDH-Assumption). By assuming its (stronger) decisional version one can ex-
+change many bits. For concreteness, we consider the DDH-Assumption in a sub-
+group of Z∗
+P (the multiplicative group modulo P) of order Q, where P and Q are
+large primes and Q divides P −1. For such P and Q the DDH-Assumption is:
+There is no efﬁcient algorithm that, given ⟨P, Q, g, ga, gb⟩, distin-
+guishes between ga·b and gc with non-negligible advantage, where g
+is a uniformly chosen element of order Q in Z∗
+P, and a, b and c are
+uniformly chosen from Z Q (naturally all exponentiations are in Z∗
+P).
+Note that this assumption does not hold when g is a generator of Z∗
+P.
+It turns out that the DDH-Assumption was assumed in quite a few previous
+works (both explicitly and implicitly). All these applications rely on the average-
+case assumption described above. In Section 3.3, we show that for any given P and
+Q the DDH-assumption can be reduced to its worst-case version:
+There is no efﬁcient algorithm that, given ⟨P, Q, g, ga, gb, gc⟩, decides
+with overwhelming success probability whether or not c = a · b for
+every a, b and c in Z Q and every element, g, of order Q in Z∗
+P.
+The randomized reduction we describe is based on the random-self-reducibility
+of the DDH-Problem that was previously used by Stadler [1996]. This reduction
+may strengthen our conﬁdence in the DDH-Assumption and in the security of its
+many applications. Additional evidence to the validity of the DDH-Assumption lies
+in the fact that it endured the extensive research of the related CDH-Assumption. To
+some extent, the DDH-Assumption is also supported by the results on the strength of
+the CDH-Assumption in several groups [Boneh and Venkatesan 1996; Maurer and
+Wolf 1999; McCurley 1988; Shmuely 1985] (even though there exist groups where
+the DDH-Assumption does not hold whereas the CDH-Assumption still seems valid
+[Joux and Nguyen 2001]), and by additional results [Boneh and Venkatesan 1996;
+Canetti et al. 1997; Shoup 1997]. For instance, Shoup [1997] showed that the DDH-
+Problem is hard for any “generic” algorithm. However, a main conclusion of this
+article is that the DDH-Assumption deserves more attention since it implies the
+security of many attractive cryptographic constructions.
+The most obvious application of the DDH-Assumption is to the Difﬁe–Hellman
+key-exchange protocol and to the related public-key cryptosystem [El Gamal 1985].
+
+234
+M. NAOR AND O. REINGOLD
+In the El Gamal cryptosystem, given the public key ga, the encryption of a message
+m is ⟨gb, ga·b ·m⟩. In Section 3, we show how to adjust this cryptosystem in order to
+obtain a probabilistic encryption-scheme whose semantic security (see Goldwasser
+and Micali [1984]) is equivalent to the DDH-Assumption.2 The price of encrypting
+many bits using the El Gamal cryptosystem is a single (or two) exponentiation. This
+is comparable with the Blum–Goldwasser cryptosystem [Blum and Goldwasser
+1984]. Other applications that previously appeared are Bellare and Micali [1990],
+Brands [1993], Canetti [1997], Franklin and Haber [1996], Steiner et al. [1996],
+and Stadler [1996], and recently Cramer and Shoup [1998] (we describe these
+applications in Section 3.1, see also the excellent survey of Boneh [1998]).
+To previous applications, one can add a pseudo-random generator [Blum and
+Micali 1984; Yao 1982] that practically doubles the input length and a pseudo-
+random synthesizer (see deﬁnition in Naor and Reingold [1999b]) whose output
+length is similar to its arguments length. Essentially, the generator is deﬁned by
+G P,g,ga(b) = ⟨gb, ga·b⟩and the synthesizer by SP,g(a, b) = ga·b. Both these con-
+structions are overshadowed by our new construction of a very efﬁcient family of
+pseudo-random functions. The pseudo-random function is deﬁned by n +1 values,
+⟨a0, a1, . . . , an⟩, chosen uniformly in Z Q. The value of the function on an n-bit
+input x = x1x2 · · · xn is essentially
+fP,g,a0,a1···an(x)
+def
+=
+
+ga0
+xi =1 ai .
+For some applications, we still need to hash this value as described in Section 4.1.
+Note that, after appropriate preprocessing, the computation required consists of two
+subset products. This can be done in TC0 (see Section 4.2). The simple structure of
+the functions gives several attractive properties as was shown in Naor and Reingold
+[1997] (see further details in Section 2.2).
+1.3. THE GDH-ASSUMPTION AND FACTORING.
+In Section 5, we suggest a re-
+lated construction of pseudo-random functions that is based on the (computational)
+GDH-Assumption. This generalization of the DH-Assumption was previously con-
+sidered in the context of a key-exchange protocol for a group of parties (see, for
+example, Shmuely [1985] and Steiner et al. [1996]). The GDH-Assumption is
+implied by the DDH-Assumption (as shown in Steiner et al. [1996] and in this
+article) but the assumptions are not known to be equivalent. In addition, the GDH-
+Assumption modulo a Blum-integer is not stronger than the assumption that factor-
+ing Blum-integers is hard (see Biham et al. [1997] and Shmuely [1985]). This im-
+plies an attractive construction of pseudo-random functions that are at least as secure
+as Factoring:
+Let N be distributed over Blum-integers (N = P · Q, where P and Q are
+primes and P = Q = 3 mod 4) and assume that (under this distribution) it is
+hard to factor N. Let g be a uniformly distributed quadratic residue in Z∗
+N, let
+⃗a = ⟨a1,0, a1,1, a2,0, a2,1, . . . , an,0, an,1⟩be a uniformly distributed sequence of 2n
+elements in [N]
+def
+= {1, 2, . . . , N} and let r be a uniformly distributed bit string of
+2 The semantic security of the original cryptosystem is equivalent to the DDH-Assumption only when
+the message space is restricted to the subgroup generated by g.
+
+Constructions of Efﬁcient Pseudo-Random Functions
+235
+the same length as N. Then the Binary function, fN,g,⃗a,r, is pseudo-random. Here
+the value of fN,g,⃗a,r on any n-bit input, x = x1x2 · · · xn, is deﬁned by:
+fN,g,⃗a,r(x)
+def
+=
+
+g
+n
+i=1 ai,xi
+
+⊙r
+(⊙denotes the inner product mod 2).
+This construction was recently improved by Naor et al. [2000]. The work in
+Naor et al. [2000] provides a method of expanding the one bit output of fN,g,⃗a,r
+to polynomially many bits while paying only a small overhead in the complexity
+of the evaluation (i.e., one modular multiplication for each additional output bit).
+In particular, this implies a length-preserving pseudo-random function that is at
+least as secure as Factoring whose evaluation requires only a constant number of
+modular multiplications per output bit.
+1.4. PREVIOUS WORK.
+In addition to introducing pseudo-random functions,
+Goldreich et al. [1986] provided a construction of such functions (GGM-
+Construction) based on pseudo-random generators. Naor and Reingold [1999b]
+recently showed a parallel construction based on a new primitive called a pseudo-
+random synthesizer. Under concrete intractability assumptions like “factoring is
+hard” this construction gives pseudo-random functions in TC1. Our work is moti-
+vated by Naor and Reingold [1999b] both in the task of reducing the depth of the
+pseudo-random functions and in the construction itself (see Section 5.2). Parallel
+constructions of other cryptographic primitives were provided by Impagliazzo and
+Naor [1996] based on the hardness of subset sum and factoring, and by Blum et al.
+[1994] based on hard-to-learn problems.
+The construction of this article is not only more parallelizable than the concrete
+constructions based on Goldreich et al. [1986] and Naor and Reingold [1999b], but
+it is also much more efﬁcient. Though this construction seems very different than
+the constructions of Goldreich et al. [1986] and Naor and Reingold [1999b], we
+were able to relate the proof of security of this construction to both Goldreich et al.
+[1986] and Naor and Reingold [1999b] (see Sections 4.1 and 5).
+It turns out that there are a number of researchers who observed that the average-
+case DDH-Assumption yields pseudo-random generators with good expansion.
+One such construction was proposed by C. Rackoff (unpublished). A different
+construction is suggested by Gertner and Malkin [1997]. This construction is
+similar to the pseudo-random generator one gets by scaling down our pseudo-
+random functions.
+1.5. ORGANIZATION.
+In Section 2, we describe the notation and conventions
+used in this article. In Section 2.2, we describe some applications and constructions
+of pseudo-random functions and the motivation for our construction. In Section 3,
+we further consider the DDH-Assumption and show a simple randomized reduction
+between its worst-case and average-case. In Section 4, we describe a construction
+of pseudo-random functions based on the DDH-Assumption, prove its security
+and consider its complexity. In Section 5, we deﬁne the GDH-Assumption and
+show a related construction of pseudo-random functions based on this assumption.
+In Section 6, we consider some of the possible features of our pseudo-random
+functions and suggest directions for further research.
+
+236
+M. NAOR AND O. REINGOLD
+2. Preliminaries
+2.1. NOTATION AND CONVENTIONS
+—For any integer N the multiplicative group modulo N is denoted by Z∗
+N and the
+additive group modulo N is denoted by Z N.
+—For any integer k, denote by [k] the set of integers - {1, 2, . . . , k}. For any two
+integers k < m, denote by [k..m] the set of integers - {k, k + 1, . . . , m}.
+—For any two bit-strings of the same length, x and y, the inner product mod 2 of
+x and y is denoted by x ⊙y.
+2.2. PSEUDO-RANDOMFUNCTIONS.
+Asmentionedintheintroduction,ourmain
+result is a construction of a pseudo-random function that is efﬁcient, has shallow
+depth and is simple. We devote this section to motivate such a construction and
+to describe previous constructions and applications of pseudo-random functions.
+Good references on pseudo-random functions and pseudo-randomness in general
+are Goldreich [1995, 1998] and Luby [1996].
+Theconceptofapseudo-randomfunction-ensemblewasintroducedbyGoldreich
+et al. [1986]. Loosely, this is an efﬁcient function-ensemble that cannot be efﬁciently
+distinguished from the uniform function-ensemble by an adversary that has access
+to the functions as a black-box (see Deﬁnition 2.1). In addition, Goldreich et al.
+[1986] provided a construction of pseudo-random functions (GGM-Construction).
+This construction uses pseudo-random generators [Blum and Micali 1984; Yao
+1982] as building blocks, which in turn can be obtained from any one-way function
+(as shown by Hastad et al. [1999]).
+A pseudo-random function is a powerful cryptographic primitive that can re-
+place functions chosen truly uniformly at random in many applications. Probably,
+the most notable applications of pseudo-random functions are in private-key cryp-
+tography. They provide parties who share a common key straightforward protocols
+for sending secret messages to each other, for identifying themselves and for authen-
+ticating messages [Brassard 1988; Goldreich et al. 1985; Luby 1996]. As shown by
+Luby and Rackoff [1988], it is possible to efﬁciently construct pseudo-random per-
+mutations (which, in particular, can be used as block-ciphers) from pseudo-random
+functions (see also Naor and Reingold [1999a] for an “optimal” construction).
+However, pseudo-random functions have many other applications including appli-
+cations in public-key cryptography. For example, Bellare and Goldwasser Bellare
+and Goldwasser [1990] showed how to use pseudo-random functions and a non-
+interactive zero-knowledge proof of their values to construct digital-signatures.
+Another interesting example was given by Goldreich [1987] who showed how to
+eliminate the state in the Goldwasser-Micali-Rivest signature scheme (the tech-
+nique of Goldreich [1987] is very general). For some of the additional applications
+of pseudo-random functions, see Blum et al. [1994]; Chor et al. [1994]; Goldreich
+[1987]; Goldreich and Ostrovsky [1996].
+For quite a while, the GGM-Construction was the only known construction of
+pseudo-random functions (that was proven to be as secure as some general or
+concrete intractability assumption). Motivated by the inherent sequentiality of the
+GGM-Construction, Naor and Reingold [1999b] recently showed a parallel con-
+struction based on a new primitive called a pseudo-random synthesizer. In addition,
+they showed how to construct pseudo-random synthesizers in parallel from gen-
+eral cryptographic-primitives (such as trapdoor permutations) and based on several
+
+Constructions of Efﬁcient Pseudo-Random Functions
+237
+concrete intractability assumption. Their concrete constructions give NC2 (or ac-
+tually TC1) pseudo-random functions. In fact, our work is motivated by Naor and
+Reingold [1999b], as described in Section 5.2.
+The construction of this article gives pseudo-random functions computable in
+TC0 (given appropriate preprocessing). We brieﬂy summarize part of the discussion
+that appears in Naor and Reingold [1999b] on the applications of parallel pseudo-
+random functions:
+—It is likely that pseudo-random functions will be implemented in hardware (as
+is the case for DES). In such implementations, having shallow-depth pseudo-
+random functions implies reduced latency in computing those functions which,
+for some applications (such as the encryption of messages on a network),
+is essential.
+—As was observed by Valiant [1984], if a concept class contains pseudo-random
+functions, then it cannot be learned: There exists a distribution of concepts,
+computable in this class, that is hard for every efﬁcient learning algorithms, for
+every “nontrivial” distribution on the instances even when membership queries
+are allowed. Notice that the unlearnability result implied by the existence of
+pseudo-random functions is very strong. Weaker unlearnability results for NC1
+and TC0, based on other cryptographic assumptions, were obtained in Angluin
+and Kharitonov [1995], Kharitonov [1993], and Kearns and Valiant [1994]. It is
+also interesting to compare with the result of Linial et al. [1993], who showed
+that AC0 can be learned in time slightly super-polynomial under the uniform
+distribution on the examples.
+—Another application of pseudo-random functions in complexity was suggested
+by Razborov and Rudich [1997]. They showed that if a circuit class contains
+pseudo-random functions (that are secure against a subexponential-time adver-
+sary), then there are no (what they called) Natural Proofs (which include all previ-
+ously known lower bound techniques) for separating this class from P/poly. We
+therefore get from our construction that if the GDH-Assumption holds against
+a subexponential-time adversary (and in particular if factoring is sufﬁciently
+hard), then there are no Natural Proofs for separating TC0 from P/poly.
+We note that one can extract a similar result (assuming the hardness of factor-
+ing) from the work of Kharitonov [1993], which is based on the pseudo-random
+generator of Blum et al. [1986].
+Except of being more parallelizable, our construction has two additional advan-
+tages over previous ones:
+(1) It is efﬁcient: computing the value of the function at any given point is com-
+parable with two exponentiations. This is the ﬁrst construction that seems efﬁ-
+cient enough to be implemented and indeed these functions were implemented
+by Langberg [1998]. Given the many applications of pseudo-random func-
+tions it is clear that having efﬁcient pseudo-random functions is an impor-
+tant goal.
+A somewhat surprising fact is that although our construction is much more
+efﬁcient than previous ones it is still closely related to the GGM-Construction
+and to the construction of Naor and Reingold [1999b]. The connection with
+previous constructions is described in Sections 4.1 and 5.2.
+
+238
+M. NAOR AND O. REINGOLD
+(2) It has a simple algebraic structure. To see our main motivation here, consider the
+Bellare–Goldwasser signature scheme. The public key in this scheme contains
+a commitment for a key s of a pseudo-random function. The signature for a
+message m is composed of a value y and a noninteractive zero-knowledge proof
+that y = fs(m). In order for this scheme to be attractive, we must have a simple
+non-interactive zero-knowledge proof for claims of the form y = fs(m). In
+this and other scenarios we might wish to have additional properties for the
+functions such as a simple function-sharing scheme in the sense of De Santis
+et al. [1994]. It seems that for such properties to be possible we need a simple
+construction of pseudo-random functions.
+In Naor and Reingold [1997], we considered some desirable features of
+pseudo-random functions. We also presented preliminary results in obtaining
+these features for our construction of pseudo-random functions: (1) A rather
+simple zero-knowledge proof for claims of the form y = fs(m) and y ̸=
+fs(m). (2) A way to distribute a pseudo-random function among a set of parties
+such that only an authorized subset can compute the value of the function at
+any given point. (3) A protocol for “oblivious evaluation” of the value of the
+function: Assume that a party, A, knows a key s of a pseudo-random function.
+Then A and a second party, B, can perform a protocol during which B learns
+exactly one value fs(x) of its choice whereas A does not learn a thing (and,
+in particular, does not learn x). This protocol was subsequently simpliﬁed in
+Naor and Pinkas [1999]. We consider the task of improving these protocols and
+designing additional ones to be an interesting line for further research.
+2.2.1. Deﬁnition of Pseudo-Random Functions.
+For the sake of concreteness,
+we include the deﬁnition of pseudo-random functions almost as it appears in
+Goldreich [1995, 1998]:
+Deﬁnition 2.1 (Efﬁciently Computable Pseudo-Random Function Ensemble).
+Let {An, Bn}n∈N be a sequence of domains and let F = {Fn}n∈N be a function
+ensemble such that the random variable Fn assumes values in the set of An →Bn
+functions. Then F is called an efﬁciently computable pseudo-random function
+ensemble if the following conditions hold:
+(1) (pseudo-randomness) for every probabilistic polynomial-time oracle machine
+M, every constant c > 0, and all but a ﬁnite number of n’s
+| Pr[MFn(1n) = 1] −Pr[MRn(1n) = 1]| < 1
+nc ,
+where R = {Rn}n∈N is the corresponding uniform function ensemble (i.e., ∀n,
+Rn is uniformly distributed over the set of An →Bn functions).
+(2) (efﬁcient computation) There exist probabilistic polynomial time algorithms,
+I and V, and a mapping from strings to functions, φ, such that φ(I(1n)) and
+Fn are identically distributed and V(i, x) = (φ(i))(x).
+Remark 2.1.
+In this deﬁnition, as well as the other deﬁnitions of this article,
+“efﬁcient adversary” is interpreted as “probabilistic polynomial-time algorithm”
+and “negligible” is interpreted as “smaller than 1/poly”. In fact, all the proofs
+in this article easily imply more quantitative results. For a discussion on security
+preserving reductions, see Luby [1996].
+
+Constructions of Efﬁcient Pseudo-Random Functions
+239
+3. The Decisional Difﬁe–Hellman Assumption
+As mentioned above, we base our ﬁrst construction of pseudo-random functions
+(described in Section 4) on the DDH-Assumption (the decisional version of the DH-
+Assumption). This assumption is relatively new, or more accurately, was explicitly
+considered only recently. We therefore devote this section to a discussion of the
+DDH-Assumption: we describe and deﬁne the assumption, consider some of its
+different applications and the current knowledge on its security. Furthermore, we
+show in Section 3.3 a randomized reduction of the worst-case DDH-Assumption to
+its average case. In Section 5, we describe a related construction of pseudo-random
+functions based on a more conservative assumption: the assumption that factoring
+Blum-integers is hard (in fact, this construction is based on the GDH-Assumption
+that in turn can be reduced to Factoring).
+3.1. BACKGROUND.
+The DH-Assumption was introduced in the context of the
+Difﬁe and Hellman [1976] key-exchange protocol. Informally, a key-exchange pro-
+tocol is a way for two parties, A and B, to agree on a common key, KA,B, while
+communicating over an insecure (but authenticated) channel. Such a protocol is
+secure if any efﬁcient third party, C, with access to the communication between A
+and B (but not to their private random strings) cannot tell apart KA,B from a random
+value (i.e., KA,B is pseudo-random to C). This guarantees that it is computationally
+infeasible for an eavesdropper to gain “any” partial information on KA,B.
+Given a large prime P and a generator g of Z∗
+P (both publicly known), the Difﬁe–
+Hellman key-exchange protocol goes as follows: A chooses an integer a uniformly
+at random in [P −2] and sends ga to B. In return, B chooses an integer b uniformly
+at random in [P −2] and sends gb to A. Both A and B can now compute ga·b and
+their common key, KA,B, is deﬁned by ga·b in some publicly known manner. For
+this protocol to be secure, we must have, at the minimum, that the CDH-Assump-
+tion holds:
+Given ⟨g, ga, gb⟩, it is hard to compute ga·b.
+The reason is that if this assumption does not hold, then C (as above) can also
+compute KA,B.
+One method to produce the key, KA,B, is to apply the Goldreich–Levin [1989]
+hard-core function3 to ga·b (an important improvement on the security of such an
+application was made by Shoup [1997]). If the CDH-Assumption holds, then this
+method indeed gives a pseudo-random key. However, the proof in Goldreich and
+Levin [1989] only implies the pseudo-randomness of the key in case its length is
+at most logarithmic in the security parameter. A much more ambitious method is
+to take ga·b itself as the key. For instance, in the El Gamal cryptosystem, given the
+public key ga the encryption of a message m is ⟨gb, ga·b · m⟩. The security of the
+key-exchange protocol now relies on the DDH-Assumption:
+Given ⟨g, ga, gb, z⟩, it is hard to decide whether or not z = ga·b.
+However, when g is a generator of Z∗
+P, we have that ga and gb do give some
+information on ga·b. For example, if either ga or gb is a quadratic residue, then so
+3 For example, to get a key of one bit, we can deﬁne KA,B to be the inner product mod 2 of ga·b and
+a random string r (chosen by one of the parties and sent to the other over the insecure channel).
+
+240
+M. NAOR AND O. REINGOLD
+is ga·b. A standard solution for this problem is to take g to be a generator of the
+subgroup of Z∗
+P of order Q, where Q is a large prime divisor of P −1. In fact, for
+most applications, using g of order Q is an advantage since Q may be much smaller
+than P (say, 160 bits long) which results in a substantial improvement in efﬁciency.
+The reason that Q may be so small is that all known subexponential algorithms for
+computing the discrete log are subexponential in the length of P (as long as P −1
+is not too smooth) even when applied to the subgroup of size Q generated by g (see
+McCurley [1990] and Odlyzko [1993] for surveys on algorithms for the discrete
+log; the best known algorithm for general groups has time square root of the size
+of the largest prime divisor of the group).
+3.1.1. How Much Conﬁdence Can We Have in the DDH-Assumption?.
+It is
+clear that the computational DH-Problem is at most as hard as computing the
+discrete log (given ⟨g, ga⟩ﬁnd a). Recent works by Maurer and Wolf [1999] and
+Boneh and Lipton [1996] show that in several settings these two problems are in
+fact equivalent. For example, Maurer and Wolf [1999] showed that given some
+information which only depends on P and an efﬁcient algorithm for computing
+the DH-Problem in Z∗
+P, one can efﬁciently compute the discrete log in Z∗
+P (so in
+some non-uniform sense these problems are equivalent). Shoup [1997] showed that
+there are no efﬁcient “generic” algorithms for computing the discrete log or the DH-
+Problem, where loosely speaking, a generic algorithm is one that does not exploit
+any special properties of the encoding of group elements. A bit more formally, a
+generic algorithm is one that works for a “black-box” group (where each element
+has a random encoding and given the encodings of a and b the algorithm can query
+for the encodings of a + b and −a).
+Perhaps the best evidence for the validity of the CDH-Assumption is the fact
+that it endured extensive research over the last two decades. This research does
+not seem to undermine the (stronger) decisional version of the DH-Assumption as
+well. In addition, the DDH-Assumption did appear both explicitly and implicitly in
+several previous works. However, it seems that, given the many applications of the
+DDH-Assumption, a more extensive study of its security is in place. In particular, it
+should be noted that there exist groups where the DDH-Assumption does not hold
+whereas the CDH-Assumption still seems valid (see e.g., Joux and Nguyen [2001]).
+To some extent, the DDH-Assumption is supported by the work of Shoup [1997]
+and the work of Boneh and Venkatesan [1996]. Shoup showed that the DDH-
+Problem is hard for any generic algorithm (where a generic algorithm is as deﬁned
+above). Boneh and Venkatesan showed that computing the k (≈√log P) most
+signiﬁcant bits of ga·b (given ⟨g, ga, gb⟩) is as hard as computing ga·b itself. A
+recent result with applications to the DDH-Assumption was shown by Canetti et al.
+[1997].
+In Section 3.3, we prove an attractive feature of the DDH-Assumption: There is
+a quite simple randomized reduction between its worst-case and its average-case
+for ﬁxed P and Q. More speciﬁcally:
+For any primes P and Q (such that Q divides P −1), the following
+statements are equivalent:
+—Given ⟨P, Q, g, ga, gb⟩, it is easy to distinguish with non-negligible
+advantage between ga·b and gc, where g is a uniformly chosen element
+of order Q in Z∗
+P, and a, b and c are uniformly chosen from Z Q.
+
+Constructions of Efﬁcient Pseudo-Random Functions
+241
+—Given ⟨P, Q, g, ga, gb, gc⟩, it is easy to decide with overwhelming
+success probability whether or not c = a · b, where a, b and c are
+any three elements in Z Q and g is any element of order Q in Z∗
+P.
+This reduction is based on the random-self-reducibility of the DDH-Problem that
+was previously used by Stadler [1996]. The reduction may strengthen our conﬁ-
+dence in the DDH-Assumption and in the security of its applications.
+For most applications of the DDH-Assumption (including ours), there is no
+reason to insist on working in a subgroup of Z∗
+P (where P is a prime). There-
+fore, a natural question is how valid is this assumption for other groups. Spe-
+ciﬁc groups that were considered in the context of the CDH-Assumption are:
+(1) Z∗
+N where N is a composite. McCurley [1988] and Shmuely [1985] showed
+that for many of those groups breaking the CDH-Assumption is at least as hard
+as factoring N, (2) Elliptic-curve groups, for which (in some cases) no subex-
+ponential algorithms for the discrete log are currently known. We stress that
+the randomized reduction mentioned above relies on the primality of the order
+of g.
+3.1.2. The Decisional DH-Assumption Is Very Attractive.
+It turns out that the
+DDH-Assumption was assumed in several previous works (both explicitly and
+implicitly). In the following, we brieﬂy refer to some of those works and describe
+some additional applications. For additional details, see the excellent survey of
+Boneh [1998].
+The most obvious application of the DDH-Assumption is to the Difﬁe–Hellman
+key-exchange protocol and to the related public-key cryptosystem, namely the
+ElGamal cryptosystem—given the public key ga the encryption of a message m is
+⟨gb, ga·b·m⟩. Assume that the message space is restricted to the subgroup generated
+by g. In this case, it is easy to see that the semantic security (see Goldwasser and
+Micali [1984]) of the cryptosystem is equivalent to the DDH-Assumption. In the
+general case (without the restriction on the message space), we can use the following
+related cryptosystem: given the public key ⟨ga, h⟩the encryption of a message m
+is ⟨gb, h(ga·b) ⊕m⟩, where h is a pair-wise independent hash function from n-bit
+strings to strings of approximately the length of Q (see Lemma 4.2 for more details
+on the role of h). Therefore, given the DDH-Assumption, we get a probabilistic
+encryption of many bits for the price of a single (or two) exponentiation. This
+is comparable with the Blum–Goldwasser cryptosystem [Blum and Goldwasser
+1984].
+Other applications that previously appeared are:
+—Bellare and Micali [1990] showed an efﬁcient noninteractive oblivious transfer
+of many bits that relies on the DDH-Assumption.
+—Brands [1993] pointed out that several suggestions for undeniable signatures (as
+the one in Chaum and van Antwerpen [1990], where this concept was introduced)
+implicitly rely on the DDH-Assumption. If this assumption does not hold then
+such schemes are in fact ordinary digital signatures.
+—Canetti [1997] gave a simple construction based on the DDH-Assumption for a
+new cryptographic primitive called “Oracle Hashing” (later renamed “perfectly
+one-way probabilistic hash functions”). Loosely, these are hash functions that
+“hide all partial information” on their input.
+
+242
+M. NAOR AND O. REINGOLD
+—Franklin and Haber [1996] showed a construction of a joint encryption scheme
+based on the DDH-Assumption modulo a composite. Using this scheme, they
+showed how to obtain an efﬁcient protocol for secure circuit computation.
+—Stadler [1996] presents veriﬁable secret sharing based on the DDH-Assumption.
+—Steiner et al. [1996] showed how to extend the Difﬁe–Hellman protocol to a key-
+exchange protocol for a group of parties. They reduced the security of the ex-
+tended protocol to the DDH-Assumption (by showing that the DDH-Assumption
+implies the decisional GDH-Assumption).
+A very attractive application of the DDH-Assumption was recently proposed by
+Cramer and Shoup [1998]. They have presented a new public-key cryptosystem that
+is secure against adaptive chosen ciphertext attacks. Both encryption and decryption
+in this cryptosystem only require a few exponentiations (in addition to universal
+one-way hashing).
+To all these applications we can add:
+—A pseudo-random generator that practically doubles the input length. Essentially,
+the generator is deﬁned by G P,Q,g,ga(b) = ⟨gb, ga·b⟩.4 As mentioned in the
+introduction, several unpublished constructions of pseudo-random generators
+based on the DDH-Assumption were previously suggested.
+—A pseudo-random synthesizer (see deﬁnition in Naor and Reingold [1999b]),
+whose output length is similar to its arguments length, essentially deﬁned by
+SP,Q,g(a, b) = ga·b.
+Both these constructions are overshadowed by the construction of pseudo-random
+functions introduced in Section 4.1.
+3.2. FORMAL DEFINITION.
+To formalize the DDH-Assumption, we ﬁrst need to
+specify an efﬁciently samplable distribution for P, Q and g (where g is an element
+of order Q in Z∗
+P).
+Let n be the security parameter. For some function ℓ: N →N we want to choose
+an n-bit prime P with an ℓ(n)-bit prime Q that divides P−1. A natural way to do this
+is to choose P and Q uniformly at random subject to those constraints. However, it
+is possible to consider different distributions. For example, it is not inconceivable
+that the assumption holds when for every n we have a single possible choice of P, Q
+and g. Another common example is letting P and Q satisfy P = 2· Q+1 (although
+choosing a smaller Q may increase the efﬁciency of most applications). In order
+to keep our results general, we let P, Q and g be generated by some probabilistic
+polynomial-time algorithm IG (where IG stands for instance generator). On input 1n
+the output of IG is distributed over triplets ⟨P, Q, g⟩, where P is an n-bit prime, Q a
+(large)primedivisorof P−1and g anelementoforder Q in Z∗
+P.Anyinstantiationof
+IG will imply a different DDH-Assumption and a different construction of pseudo-
+random functions. Our proof of pseudo-randomness of the functions based on the
+DDH-Assumption is independent of the particular instantiation of IG.
+4 In fact, the output of G P,Q,g,ga is a pseudo-random pair of values in the subgroup generated by g.
+In order to obtain a pseudo-random value in {0, 1}ℓ, for ℓof approximately twice the length of Q,
+one needs to hash the output of the generator (see Lemma 4.2). A similar observation holds for the
+constructions of pseudo-random synthesizers and pseudo-random functions.
+
+Constructions of Efﬁcient Pseudo-Random Functions
+243
+For the various applications of the DDH-Assumption we need its average-case
+version. Namely, when a and b are uniformly chosen and c is either a·b or uniformly
+chosen. In Section 3.3, it is shown that a worst-case choice of a, b and c can be
+reduced to a uniform choice. Similarly, the assumption is not strengthened if g
+(generated by IG) is taken to be a uniformly chosen element of order Q in Z∗
+P.
+Assumption 3.1 (Decisional Difﬁe–Hellman).
+For every probabilistic poly-
+nomial-time algorithm A, every constant α > 0 and all but a ﬁnite number
+of n’s
+| Pr[A(P, Q, g, ga, gb, ga·b) = 1] −Pr[A(P, Q, g, ga, gb, gc) = 1]| < 1
+nα ,
+where the probabilities are taken over the random bits of A, the choice of ⟨P, Q, g⟩
+in accordance with the distribution IG(1n) and the choice of a, b and c uniformly
+at random in Z Q.
+3.3. A RANDOMIZED REDUCTION.
+In this section, we use a simple randomized
+reduction to show that for every P, Q and g the DDH-Problem is either very hard
+on the average or very easy in the worst case. Given the current knowledge of the
+DDH-Problem, such a result strengthens our belief in the DDH-Assumption. The
+main part of the reduction (Lemma 3.2) was previously used by Stadler [1996].
+Deﬁnition 3.1.
+For any ⟨P, Q, g⟩such that P is a prime, Q a prime divisor of
+P −1 and g an element of order Q in Z∗
+P the function DDHP,Q,g is deﬁned by
+DDHP,Q,g(ga, gb, gc) =
+1
+if c = a · b
+0
+otherwise
+for any three elements a, b, c in Z Q.
+THEOREM 3.1.
+Let A be any probabilistic algorithm with running time t = t(n)
+and ϵ = ϵ(n) any positive function such that 1/ϵ is efﬁciently constructible. There
+exist a polynomial p = p(n) and a probabilistic algorithm A′ with running time
+(t(n) · p(n))/(ϵ(n))2 such that, for any choice of ⟨P, Q, g⟩as in Deﬁnition 3.1, if:
+| Pr[A(P, Q, g, ga, gb, ga·b) = 1] −Pr[A(P, Q, g, ga, gb, gc) = 1]| > ϵ(n),
+where the probabilities are taken over the random bits of A and the choice of a, b
+and c uniformly at random in Z Q, then for any a, b and c in Z Q:
+Pr[A′(P, Q, g, ga, gb, gc) ̸= DDHP,Q,g(ga, gb, gc)] < 2−n,
+where the probability is only over the random bits of A′.
+In particular, if A is probabilistic polynomial-time and ϵ(n) ≥1/poly(n), then
+A′ is also probabilistic polynomial-time.
+Blum and Micali [1984] introduced the concept of random-self-reducibility (and
+randomized reductions). Informally, a problem is random-self-reducible if solving
+the problem on any instance x can be efﬁciently reduced to solving the problem
+on a random instance y (or on a polynomial number of random instances). That is,
+for any instance x, a random instance y can be efﬁciently sampled using a random
+string r such that given r and the solution of the problem on y it is easy to compute
+the solution of the problem on x. A problem that is random-self-reducible can either
+
+244
+M. NAOR AND O. REINGOLD
+be efﬁciently solved for every instance with overwhelming success probability or
+it cannot be solved for a random instance with non-negligible success probability.
+Our randomized reduction is closely related to other known reductions. Blum and
+Micali [1984] showed that for any speciﬁc prime P and generator g, the discrete log
+problem is random-self-reducible: given ⟨P, g, ga⟩for any a it is easy to generate a
+random instance ⟨P, g, ga+r = ga · gr⟩(where r is uniform in [P −1]). Given the
+solution for the random instance (i.e., a +r) it is easy to compute the solution for the
+original instance (i.e., a). A similar property was shown for the CDH-Problem (e.g.,
+Maurer and Wolf [1999]): given ⟨P, g, ga, gb⟩for any a and b it is easy to generate
+a random instance ⟨P, g, ga+r, gb+s⟩(where r and s are uniform in [P −1]). Given
+the solution for the random instance (i.e., z = g(a+r)·(b+s)) it is easy to compute the
+solution for the original instance (i.e., ga·b = z · (ga)−s · (gb)−r · g−s·r).
+However, in order to prove Theorem 3.1, we need a somewhat different reduction.
+In particular, we need to use the fact that g is an element of prime order: Theorem 3.1
+can only hold when g is a generator of Z∗
+P if the DDH-Problem is always easy (in
+which case the theorem holds trivially).
+LEMMA 3.2.
+There exists a probabilistic polynomial-time algorithm, R such
+that on any input
+⟨P, Q, g, ga, gb, gc⟩,
+where P is a prime, Q a prime divisor of P −1, g an element of order Q in Z∗
+P
+and a, b, c are three elements in Z Q the output of R is:
+⟨P, Q, g, ga′, gb′, gc′⟩,
+where if c = a · b, then a′ and b′ are uniform in Z Q and c′ = a′ · b′ and if c ̸= a · b,
+then a′, b′ and c′ are all uniform in Z Q.
+PROOF.
+R chooses s1, s2 and r uniformly in Z Q, computes
+ga′ = (ga)r · gs1,
+gb′ = gb · gs2,
+gc′ = (gc)r · (ga)r·s2 · (gb)s1 · gs1·s2
+and outputs
+⟨P, Q, g, ga′, gb′, gc′⟩.
+Let c = a · b + e for e in Z Q, then:
+a′ = r · a + s1, b′ = b + s2, c′ = a′b′ + e · r.
+If e = 0, we have that a′ and b′ are uniformly distributed in Z Q and c′ = a′ · b′. If
+e ̸= 0, we have that a′, b′ and c′ are all uniformly distributed in Z Q (this is the place
+we use the fact that Q is a prime which implies that e ·r is uniformly distributed in
+Z Q). Therefore, the output of R has the desired distribution.
+PROOF OF THEOREM 3.1. Let A be any probabilistic algorithm with running
+time t = t(n), let ϵ = ϵ(n) be any positive function such that 1/ϵ is efﬁciently
+constructible and let ⟨P, Q, g⟩be as in Deﬁnition 3.1. Assume that:
+| Pr[A(P, Q, g, ga, gb, ga·b) = 1] −Pr[A(P, Q, g, ga, gb, gc) = 1]| > ϵ(n),
+
+Constructions of Efﬁcient Pseudo-Random Functions
+245
+where the probabilities are taken over the random bits of A and the choice of a, b
+and c uniformly at random in Z Q.
+Let R be the probabilistic polynomial-time algorithm that is guaranteed to exist
+by Lemma 3.2. By the deﬁnition of R and our assumption, we have that for any
+a, b and c ̸= a · b in Z Q:
+|Pr[A(R(P, Q, g, ga, gb, ga·b)) = 1]−Pr[A(R(P, Q, g, ga, gb, gc)) = 1]|> ϵ(n).
+Now the probabilities are only taken over the random bits of A and R. Therefore,
+by standard methods of ampliﬁcation (see e.g., Goldreich [1998] and references
+therein) we can deﬁne a probabilistic algorithm A′ such that for anya, b and c ̸= a·b
+in Z Q:
+Pr[A′(P, Q, g, ga, gb, ga·b) = 1] −Pr[A′(P, Q, g, ga, gb, gc) = 1] > 1 −2−n.
+On any input ⟨P, Q, g, ga, gb, gc⟩, the output of A′ is essentially a threshold func-
+tion of O(n/(ϵ(n))2) independent values—A(R(P, Q, g, ga, gb, gc)). It is clear
+that A′ satisﬁes the conditions required in Theorem 3.1.
+4. Construction of Pseudo-Random Functions
+In this section, we describe a construction of pseudo-random functions based on
+the DDH-Assumption, prove its security and consider its complexity. A related
+construction (based on a weaker assumption) is described in Section 5.
+4.1. CONSTRUCTION AND MAIN RESULT
+Construction 4.1.
+We deﬁne the function ensemble F = {Fn}n∈N. For every
+n, a key of a function in Fn is a tuple, ⟨P, Q, g, ⃗a⟩, where P is an n-bit prime, Q a
+prime divisor of P −1, g an element of order Q in Z∗
+P and ⃗a = ⟨a0, a1, . . . , an⟩a
+sequence of n+1 elements of Z Q. For any n-bit input, x = x1x2 · · · xn, the function
+fP,Q,g,⃗a is deﬁned by:
+fP,Q,g,⃗a(x)
+def
+= (ga0)
+
+xi =1 ai.
+The distribution of functions in Fn is induced by the following distribution on their
+keys: ⃗a is uniform in its range and the distribution of ⟨P, Q, g⟩is IG(1n).
+It is clear that F is efﬁciently computable (since IG is efﬁcient). The pseudo-
+randomness property of F is the following:
+THEOREM 4.1.
+Let F = {Fn}n∈N be as in Construction 4.1. If the DDH-
+Assumption (Assumption 3.1) holds, then for every probabilistic polynomial-time
+oracle machine M, every constant α > 0, and all but a ﬁnite number of n’s
+| Pr[M fP,Q,g,⃗a(P, Q, g) = 1] −Pr[MRP,Q,g(P, Q, g) = 1]| < 1
+nα ,
+where in the ﬁrst probability, fP,Q,g,⃗a is distributed according to Fn, and in the
+second probability, the distribution of ⟨P, Q, g⟩is IG(1n) and RP,Q,g is uniformly
+chosen in the set of functions with domain {0, 1}n and range ⟨g⟩(the subgroup of
+Z∗
+P generated by g).
+
+246
+M. NAOR AND O. REINGOLD
+Moreover,ifthereexistsaprobabilisticoraclemachinewithrunningtimet = t(n)
+that distinguishes fP,Q,g,⃗a from RP,Q,g (as above) with advantage ϵ = ϵ(n). Then
+there exists a probabilistic algorithm with running time poly(n) · t(n) that breaks
+the DDH-Assumption with advantage ϵ(n)/n.
+Remark 4.1.
+The “moreover” part of Theorem 4.1 implies that the security
+of the functions does not signiﬁcantly decrease when the number of queries the
+distinguisher makes increases. More formally, we have that this reduction is in fact
+linear-preserving (see Luby [1996]). This is a strong and quite unique property
+(and, in particular, it is very different from the proofs of security for the functions
+in Goldreich et al. [1986] and Naor and Reingold [1999b]).
+Given Theorem 4.1, we have that F is “almost” an efﬁciently computable pseudo-
+random function ensemble. There is one difference: A function fP,Q,g,⃗a in Fn has
+domain {0, 1}n and range ⟨g⟩. Therefore, different functions in Fn have different
+ranges which deviates from the standard deﬁnition of pseudo-random functions
+(Deﬁnition 2.1). However, for many applications of pseudo-random functions this
+deviation does not present a problem (e.g., the applications of pseudo-random
+functions to private-key authentication and identiﬁcation and their applications to
+digital signatures [Bellare and Goldwasser 1990]). In addition, it is rather easy to
+construct from F pseudo-random functions under Deﬁnition 2.1. In order to show
+this, we need the following lemma which is a simple corollary of the leftover hash
+lemma [Hastad et al. 1999; Impagliazzo and Zuckerman 1989]:
+LEMMA 4.2.
+Let n, ℓand e be three positive integers such that 3e+1 < ℓ< n.
+Let X ⊆{0, 1}n be a set of at least 2ℓ−1 elements and x uniformly distributed in X.
+Let H be a family of pair-wise independent, {0, 1}n →{0, 1}ℓ−1−3e, hash functions.
+Then for all but a 2−e fraction of h ∈H the uniform distribution over {0, 1}ℓ−1−3e
+and h(x) are of statistical distance of at most 2−e.
+Lemma 4.2 suggests the following construction:
+Construction 4.2.
+Let ℓ= ℓ(n) be an integer-valued function such that for any
+output, ⟨P, Q, g⟩, of IG(1n) we have that Q is ℓ(n)-bit long. Let F = {Fn}n∈N be as
+in Construction 4.1 and ∀n, let Hn be a family of pair-wise independent, {0, 1}n →
+{0, 1}⌊ℓ(n)/2⌋, hash functions. We deﬁne the function ensemble ˜F = { ˜Fn}n∈N. For
+every n, a key of a function in ˜Fn is a pair, ⟨k, h⟩, where k is a key of a function in
+Fn and h ∈Hn. For any n-bit input, x, the function ˜f k,h is deﬁned by:
+˜f k,h(x)
+def
+= h( fk(x)).
+The distribution of functions in ˜Fn is induced by the following distribution on their
+keys: h is uniform in Hn and the distribution of k is the same as the distribution of
+keys in Fn.
+Note that choosing the range of the hash functions to be {0, 1}⌊ℓ(n)/2⌋is arbitrary.
+One can choose the range to be {0, 1}ℓ(n)−e(n) for any function e(n) such that 2−e(n)
+is negligible.
+THEOREM 4.3.
+If the DDH-Assumption (Assumption 3.1) holds, then ˜F =
+{ ˜Fn}n∈N (as in Construction 4.2) is an efﬁciently computable pseudo-random func-
+tion ensemble.
+
+Constructions of Efﬁcient Pseudo-Random Functions
+247
+PROOF.
+The proof easily follows from Theorem 4.1 and Lemma 4.2. From
+Theorem 4.1, a function fP,Q,g,⃗a selected from Fn is indistinguishable from a
+uniform function with domain {0, 1}n and range ⟨g⟩. The size of ⟨g⟩is at least 2ℓ−1.
+Therefore, from Lemma 4.2, for all but a negligible fraction of the hash functions
+h in Hn, the distribution of h(x) where x is uniform in ⟨g⟩is indistinguishable
+from the uniform distribution on ⌊ℓ/2⌋-bit strings. We can therefore conclude that
+a distinguisher for ˜F can be used to distinguish F from truly random functions.
+Remark 4.2.
+The proofs of Theorems 4.1 and 4.3 imply that ˜F = { ˜Fn}n∈N
+remains indistinguishable from the uniform function-ensemble even when the
+distinguisher has access to ⟨P, Q, g⟩and to h (as in the deﬁnition of functions
+in ˜Fn).
+4.1. PROOF OF SECURITY.
+There are a few possible approaches to proving
+Theorem 4.1. One approach is related to the construction of Naor and Reingold
+[1999b] (and in particular to the concept of an n-dimensional synthesizer). Indeed,
+the construction of Naor and Reingold [1999b] has motivated the constructions of
+this article (the connection is described in Section 5.2). However, the proof we give
+here for Theorem 4.1 follows an analogous line to the proof of security for the
+GGM-Construction of pseudo-random functions [Goldreich et al. 1986]. This may
+seem surprising since the two constructions look very different. Nevertheless, in
+some sense, one may view our construction as a careful application (or a general-
+ization) of the GGM-Construction. In the following few paragraphs, we describe
+the similarities and differences between the two constructions.
+Let G be a pseudo-random generator that doubles its input. Deﬁne G0 and
+G1 such that for any n-bit string x, both G0(x) and G1(x) are n-bit strings and
+G(x) = ⟨G0(x), G1(x)⟩. Under the GGM-Construction, the key of a pseudo-
+random function fs : {0, 1}n →{0, 1}n is a uniformly chosen n-bit string s. For
+any n-bit input, x = x1x2 · · · xn, the function fs is deﬁned by:
+fs(x)
+def
+= Gxn(· · · (Gx2(Gx1(s)) · · · ).
+The deﬁnition of fs can be thought of as a recursive labeling process of a depth-n
+binary tree. The key s is the label of the root and it induces a labeling of all the
+nodes in the tree. The labels of the 2n leaves correspond to the 2n different outputs
+of the function. In contrast, in our construction, no tree appears in the design and
+no particular order is attached to the input bits. Nevertheless, we were able to relate
+the proof of security of the two constructions.
+The DDH-Assumption implies a simple pseudo-random generator that practi-
+cally doubles its input: G P,Q,g,ga(b)
+def
+= ⟨gb, ga·b⟩(whose output is a pseudo-random
+pair of values in the subgroup generated by g) . It is tempting to use this generator
+for the GGM-Construction. However, a straightforward application of the GGM-
+Construction would give a rather inefﬁcient function. We therefore suggest a slight
+change to the deﬁnition of the generator:
+˜G P,Q,g,ga(gb) =
+ ˜G0
+P,Q,g,ga(gb), ˜G1
+P,Q,g,ga(gb)
+	 def
+= ⟨gb, ga·b⟩.
+At a ﬁrst look this seems absurd: ˜G P,Q,g,ga is not efﬁciently computable unless
+the DH-Problem is easy. Therefore, if ˜G P,Q,g,ga is efﬁciently computable, then it
+is not pseudo-random. However, ˜G P,Q,g,ga has the following property that allows
+
+248
+M. NAOR AND O. REINGOLD
+us to use a generalization of the GGM-Construction: ˜G P,Q,g,ga(gb) is efﬁciently
+computable if either a or b are known. A more general way to state this is:
+(1) ˜G P,Q,g,ga is efﬁciently computable (on any input), given the random bits that
+were used to sample it (in particular, given a).
+(2) For any
+˜G P,Q,g,ga, it is easy to generate the distribution of its output,
+˜G P,Q,g,ga(gb), on a uniformly chosen input (this fact implies Lemma 4.2).
+We now obtain the pseudo-random functions of Construction 4.1 using the GGM-
+Construction where at each level of the construction we use a different value, ga,
+for the generator:
+fP,Q,g,a0,a1,...,an(x)
+def
+= ˜Gxn
+P,Q,g,gan
+
+· · ·
+ ˜Gx2
+P,Q,g,ga2
+ ˜Gx1
+P,Q,g,ga1(ga0)
+
+· · ·
+
+.
+We turn to the formal proof of Theorem 4.1. First, we show (in Lemma 4.4)
+that a polynomial sample, ⟨˜G P,Q,g,ga(gb1), . . . , ˜G P,Q,g,ga(gbt)⟩is pseudo-random
+iff a single sample, ˜G P,Q,g,ga(gb), is pseudo-random. In preliminary versions of
+this paper the proof of Lemma 4.4 used a hybrid-argument based on property (2)
+above (which is similar to the corresponding argument in Goldreich et al. [1986]).
+However, Victor Shoup (personal communication) has pointed out that one can use
+the randomized-reduction of the DDH-Problem (see Section 3.3) for an alternative
+proof of the lemma. The new proof is both simpler and more security-preserving.
+Given a distinguisher for the polynomial-sample we get a distinguisher for the single
+sample that achieves the same advantage. Based on this property, the security of
+the functions in our proof of Theorem 4.1 does not signiﬁcantly decrease when the
+number of queries the distinguisher makes increases (which is very different from
+the proofs of security for the functions in Goldreich et al. [1986] and Naor and
+Reingold [1999b]).
+Deﬁnition 4.1.
+Let n and t be any pair of positive integers. Deﬁne the two
+distributions I n,t
+R
+and I n,t
+PR as follows:
+I n,t
+R
+def
+= ⟨P, Q, g, ga, gb1, gc1, . . . , gbt, gct⟩
+and
+I n,t
+PR
+def
+= ⟨P, Q, g, ga, gb1, ga·b1, . . . , gbt, ga·bt⟩,
+where ⟨P, Q, g⟩is distributed in accordance with IG(1n) and all the values in
+⟨a, b1, . . . , bt, c1, . . . , ct⟩are uniform in Z Q.
+LEMMA 4.2 (INDISTINGUISHABILITY
+OF
+A POLYNOMIAL SAMPLE).
+If the
+DDH-Assumption (Assumption 3.1) holds, then for every probabilistic polynomial-
+time algorithm D, every polynomial t(·), every constant α > 0 and all but a ﬁnite
+number of n’s
+
+
+ Pr
+
+D
+
+I n,t(n)
+PR
+
+= 1
+
+−Pr
+
+D
+
+I n,t(n)
+R
+
+= 1
+
+
+ < 1
+nα .
+Moreover, if there exists a probabilistic algorithm with running time p = p(n)
+that distinguishes I n,t(n)
+PR
+from I n,t(n)
+R
+(as above) with advantage ϵ = ϵ(n). Then there
+exists a probabilistic algorithm with running time poly(n) · t(n) + p(n) that breaks
+the DDH-Assumption with advantage ϵ(n).
+
+Constructions of Efﬁcient Pseudo-Random Functions
+249
+PROOF.
+It is enough to prove the “moreover” part of the lemma as setting
+ϵ(n) =
+1
+nα it implies the ﬁrst part of the lemma.
+Let ϵ = ϵ(n) be any positive real-valued function. Assume that there exists a
+probabilistic algorithm D with running time p = p(n) and a polynomial t(·) such
+that for inﬁnitely many n’s
+
+
+ Pr
+
+D
+
+I n,t(n)
+PR
+
+= 1
+
+−Pr
+
+D
+
+I n,t(n)
+R
+
+= 1
+
+
+ > ϵ(n).
+We deﬁne a probabilistic algorithm A with running time poly(n) · t(n) + p(n) such
+that for inﬁnitely many n’s
+| Pr[A(P, Q, g, ga, gb, ga·b) = 1] −Pr[A(P, Q, g, ga, gb, gc) = 1]| > ϵ(n),
+where the probabilities are taken over the random bits of A, the choice of ⟨P, Q, g⟩
+according to the distribution IG(1n) and the choice of a, b and c uniformly at random
+in Z Q.
+Let the input of A be ⟨P, Q, g, ga, gb, g˜c⟩, where P is n-bit long and ˜c is either
+a · b or uniform in Z Q. Using a randomized reduction similar to that in the proof
+of Lemma 3.2, A generates t(n) random pairs gbi, g˜ci such that ∀i, ˜ci = a · bi iff
+˜c = a ·b. A now invokes D on these values to distinguish between the two possible
+distributions of its own input. More formally, A executes the following algorithm:
+(1) Deﬁne t = t(n) and sample each one of the values in ⟨d1, . . . , dt, e1, . . . , et⟩
+uniformly at random in Z Q.
+(2) Deﬁne the sequence I to be
+⟨P, Q, g, ga, ˜Rd1,e1(ga, gb, g˜c), . . . , ˜Rdt,et(ga, gb, g˜c)⟩,
+where
+∀i, ˜Rdi,ei(ga, gb, g˜c)
+def
+= (gb)di · gei, (g˜c)di · (ga)ei.
+(3) Output D(I)
+Denote by gbi, g˜ci the value ˜Rdi,ei(ga, gb, g˜c). By the same arguments used in
+the proof of Lemma 3.2, we have that:
+—If ˜c = a · b, then b1, . . . , bt are uniform in Z Q (and independent of each other
+and of a) and ∀i, ˜ci = a · bi.
+—If ˜c ̸= a · b, then b1, . . . , bt, ˜c1, . . . , ˜ct are all uniform in Z Q (and independent
+of each other and of a).
+Therefore, by the deﬁnitions of A, I n,t
+PR and I n,t
+R , it easily follows that:
+Pr[A(P, Q, g, ga, gb, ga·b) = 1] = Pr
+
+D
+
+I n,t
+PR
+
+= 1
+
+and
+Pr[A(P, Q, g, ga, gb, gc) = 1] = Pr
+
+D
+
+I n,t
+R
+
+= 1
+
+.
+It is now immediate that inﬁnitely many n’s
+| Pr[A(P, Q, g, ga, gb, ga·b) = 1] −Pr[A(P, Q, g, ga, gb, gc) = 1]| > ϵ(n),
+where the probabilities are as above.
+The proof of Theorem 4.1 given Lemma 4.4 uses an hybrid argument, which
+is a proof-technique for showing that two distributions are indistinguishable. See
+Goldreich [1995, 1998] for details on hybrid arguments. Loosely, the method for
+
+250
+M. NAOR AND O. REINGOLD
+showing that D and D′ are indistinguishable is to (1) Deﬁne a polynomial-length
+sequence of efﬁcient distributions D0, D1, . . . , Dm with D0 = D and Dm = D′.
+(2) Show that any two neighboring distributions D j−1 and D j are indistinguishable.
+In fact, in the uniform version of this argument (e.g., in the proof of Theorem 4.1)
+we usually show that it is hard to distinguish DJ−1 and DJ where J is uniformly
+chosen in [m]. Furthermore, in the proof of Theorem 4.1 (as well as in the corre-
+sponding proofs in Goldreich et al. [1986] and Naor and Reingold [1999b]), the
+n + 1 distributions that are (implicitly) deﬁned are not efﬁciently samplable. For
+example, one of the two extreme distributions is of uniform functions (which is
+certainly not efﬁciently samplable). Nevertheless, a uniform function can be efﬁ-
+ciently “simulated” by an algorithm that answers each query at random (under the
+restriction of keeping consistency of its answers for repeating queries). Since all
+other intermediate function distributions can be “simulated” in the same sense we
+can still apply the hybrid argument. We now turn to the formal proof (where the
+arguments described above are implicit).
+PROOF OF THEOREM 4.1. It is enough to prove the “moreover” part of the theo-
+rem as setting ϵ(n) =
+1
+nα it implies the ﬁrst part of the theorem.
+Let ϵ = ϵ(n) be any positive real-valued function. Assume that there exists a
+probabilistic oracle machine M with running time t = t(n) such that for inﬁnitely
+many n’s
+| Pr[M fP,Q,g,⃗a(P, Q, g) = 1] −Pr[MRP,Q,g(P, Q, g) = 1]| > ϵ(n),
+where the probabilities are as in Theorem 4.1. We deﬁne a probabilistic algorithm
+D with running time poly(n) · t(n), such that for inﬁnitely many n’s
+
+
+ Pr
+
+D
+
+I n,t(n)
+PR
+
+= 1
+
+−Pr
+
+D
+
+I n,t(n)
+R
+
+= 1
+
+
+ > 1
+n · ϵ(n).
+By Lemma 4.4, this completes the proof of the theorem.
+On any input ⟨P, Q, g, ga, gb1, g ˜c1, gb2, g ˜c2, . . . , gbt, g ˜ct⟩, where P is n bits long
+(and either each ˜ci is a · bi or each ˜ci is uniform in Z Q), D executes the follow-
+ing algorithm:
+(1) Sample J uniformly at random in [n].
+(2) Sample each one of the values in ⟨aJ+1, aJ+2, . . . , an⟩uniformly at random in
+Z Q.
+(3) Invoke M on input ⟨P, Q, g⟩and answer its queries in the following way:
+Let the queries asked by M be ⟨x1, x2, . . . , xm⟩. The ith query xi is an n-
+bit string. Denote xi = ¯xixi
+J xi
+J+1 · · · xi
+n, where ¯xi is a (J −1)-bit string and
+xi
+J, xi
+J+1, . . . , xi
+n are single bits. To answer the ith query deﬁne ℓ= ℓ(i) =
+min{i′|¯xi′ = ¯xi} and answer the query by
+
+(g ˜cℓ)
+
+xi
+k =1,k>J ak
+if xi
+J = 1
+(gbℓ)
+
+xi
+k =1,k>J ak
+if xi
+J = 0
+These answers are well deﬁned since m ≤t.
+(4) Output whatever M outputs.
+
+Constructions of Efﬁcient Pseudo-Random Functions
+251
+From the deﬁnition of D, we have that for fP,Q,g,⃗a and RP,Q,g as in Theorem 4.1,
+Pr
+
+D
+
+I n,t
+PR
+
+= 1 | J = 1
+
+= Pr[M fP,Q,g,⃗a(P, Q, g) = 1],
+Pr
+
+D
+
+I n,t
+R
+
+= 1 | J = n
+
+= Pr[MRP,Q,g(P, Q, g) = 1]
+and for any 0 < j < n
+Pr
+
+D
+
+I n,t
+R
+
+= 1 | J = j
+
+= Pr
+
+D
+
+I n,t
+PR
+
+= 1 | J = j + 1
+
+.
+By the assumption we get that for inﬁnitely many n’s
+
+
+ Pr
+
+D
+
+I n,t
+PR
+
+= 1
+
+−Pr
+
+D
+
+I n,t
+R
+
+= 1
+
+
+=
+
+
+
+
+1
+n ·
+n
+
+j=1
+Pr
+
+D
+
+I n,t
+PR
+
+= 1 | J = j
+
+−1
+n ·
+n
+
+j=1
+Pr
+
+D
+
+I n,t
+R
+
+= 1 | J = j
+
+
+
+
+= 1
+n ·
+
+
+ Pr
+
+D
+
+I n,t
+PR
+
+= 1 | J = 1
+
+−
+
+D
+
+I n,t
+R
+
+= 1 | J = n
+
+
+= 1
+n · | Pr[M fP,Q,g,⃗a(P, Q, g) = 1] −Pr[MRP,Q,g(P, Q, g) = 1]|
+> 1
+n · ϵ(n).
+This completes the proof of the theorem.
+4.2. EFFICIENCY OF THE CONSTRUCTION.
+Consider a function fP,Q,g,⃗a ∈Fn
+(where ⃗a = ⟨a0, a1, . . . , an⟩) as in Construction 4.1. Computing the value of this
+function at any given point, x, involves one multiple product (a product of polyno-
+mially many numbers), y = a0 · 
+xi=1 ai (which can be performed modulo Q),
+and one modular exponentiation, gy. This gives a pseudo-random function that is
+much more efﬁcient than previous constructions. Furthermore, one can use pre-
+processing in order to get improved efﬁciency. The most obvious preprocessing
+is computing the values g2i (for every positive integer i up to the length of Q).
+Now, computing the value of the function requires two multiple products modulo a
+prime.5 Additional preprocessing can reduce the work by a factor of O(log n) (see
+Brickell et al. [1992]). Actually, to compute the value of the pseudo-random func-
+tion of Construction 4.2, we also need one application of a pairwise independent
+hash function, but this operation is very cheap compared with a multiple product
+or a modular exponentiation.
+As described in the Introduction and in Section 2.2, we are also interested in
+ﬁnding the parallel-time complexity of the pseudo-random functions. In order to
+do so, let us ﬁrst recall the result of Beame et al. [1986], who showed that division
+and related operations including multiple product are computable in NC1. Based
+on this result, Reif [1987] and Reif and Tate [1992] showed that these operations
+are also computable in TC0. The exact depth required for these operations was
+considered in Siu et al. [1993] and Siu and Roychowdhury [1994], where it was
+5 In the case that Q is much smaller than P, we have that the ﬁrst multiple product is much cheaper
+than the second.
+
+252
+M. NAOR AND O. REINGOLD
+shown that multiple sum is in TC0
+2, multiplication and division in TC0
+3 and multiple
+product in TC0
+4 (recall that for every integer d the class of functions computable by
+depth d circuits consisting of a polynomial number of threshold gates is denoted
+by TC0
+d).
+By the results above, we immediately get that after preprocessing (i.e., computing
+the values g2i), it is possible to evaluate the function fP,Q,g,⃗a in TC0 (since all the
+necessary operations can be performed in TC0):
+THEOREM 4.5.
+Let F = {Fn}n∈N be as in Construction 4.1. Then there exists
+a polynomial, p(·), and an integer i such that, for every n ∈N and every function
+fk ∈Fn, there exists a depth d threshold circuit of size bounded by p(n) that
+computes fk.
+4.2.1. The Exact Depth of the Functions.
+As discussed above, Theorem 4.5
+can be obtained by a naive application of the results in Siu et al. [1993] and Siu
+and Roychowdhury [1994]. In Naor and Reingold [1997], we noted that a more
+detailed analysis of the function fP,Q,g,⃗a implies further optimization in the depth.
+We described several methods that enable to evaluate this function in TC0
+5 (using
+additional preprocessing): First, note that in both multiple products we can assume
+any preprocessing of the values in the multiplication (since these values are taken
+from the sequence ⟨a0, a1, . . . , an⟩or from the set {g2i}). Second, we don’t need
+the actual value of the ﬁrst multiple product, y = 
+xi=1 ai: Computing values ri
+(obtained by the CRT-representation) for which y =  mi ·ri (where the values mi
+are known in advance and can be preprocessed) is just as good. Finally, the value P
+is also known in advance. Therefore, the depth of the ﬁnal modular reduction can
+be reduced by precomputing the values 2i mod P. Using similar ideas and a much
+more careful analysis, Krause and Lucks [2001] managed to further reduce the
+depth to four. This is especially interesting as pseudo-random functions cannot be
+evaluated in TC0
+2 (see Krause and Lucks [2001] for exact statements). This means
+that the depth required for evaluating the pseudo-random functions of this article is
+almost the smallest possible. A natural question that remains open is whether there
+exist pseudo-random functions in TC0
+3.
+Remark 4.3.
+Similar analysis holds for efﬁciency and depth of the pseudo-
+random functions of Construction 5.1.
+5. Construction Based on Factoring or the GDH-Assumption
+In this section, we show an additional construction of pseudo-random functions—
+Construction 5.1—that is very similar to Construction 4.2. The security of Construc-
+tion 5.1 is reduced to the GDH-Assumption which is a generalization of the com-
+putational DH-Assumption. This construction is interesting for two main reasons:
+(1) The GDH-Assumption is implied by the DDH-Assumption but they are not
+known to be equivalent. Therefore, Construction 5.1 may still be valid even if
+the DDH-Assumption does not hold. In addition, the GDH-Assumption modulo
+a so called Blum-integer is not stronger than the assumption that factoring
+Blum-integers is hard. This gives an attractive construction of pseudo-random
+functions that is at least as secure as Factoring (which was recently improved
+in Naor et al. [2000]).
+
+Constructions of Efﬁcient Pseudo-Random Functions
+253
+(2) Construction 5.1 is based on a somewhat different methodology than Con-
+struction 4.2. It may be easier to apply this methodology in order to construct
+pseudo-random functions based on additional assumptions (in fact, Construc-
+tion 4.2 was obtained as a modiﬁcation of Construction 5.1).
+5.1. THE GDH-ASSUMPTION.
+The GDH-Assumption was previously consid-
+ered in the context of a key-exchange protocol for a group of parties (see, e.g.,
+Shmuely [1985] and Steiner et al. [1996]). In this protocol, party i ∈[n] chooses
+a secret value, ai. After executing the protocol, each of these parties can compute
+g
+
+i∈[n] ai and this value deﬁnes their common key. While executing the protocol, an
+eavesdropper may learn values of the form g
+
+i∈I ai for several proper subsets I of
+[n]. It is essential to assume that even with this knowledge it is hard to compute
+g
+
+i∈[n] ai. The GDH-Assumption is even stronger: Informally, this assumption says
+that it is hard to compute g
+
+i∈[n] ai for an algorithm that can query g
+
+i∈I ai for any
+proper subset, I of [n] of its choice.
+To remain consistent with the DDH-Assumption, we state the GDH-Assumption
+(Assumption 5.1) in a subgroup of Z∗
+P of order Q (where P and Q are primes).
+In fact, the corresponding assumption in any other group implies a corresponding
+construction of pseudo-random functions. For example, since breaking the GDH-
+Assumption modulo a composite is at least as hard as factoring Biham et al. [1997]
+and Shmuely [1985], we obtain in Section 5.4 a construction of pseudo-random
+functions which is at least as secure as Factoring. Furthermore, in contrast with the
+DDH-Assumption, one can consider the GDH-Assumption in Z∗
+P itself (i.e., when
+g is a generator of Z∗
+P).
+In order to formalize the GDH-Assumption, we use the following deﬁnition:
+Deﬁnition 5.1.
+Let ⟨P, Q, g⟩be any possible output of IG(1n) and let ˜a =
+⟨˜a1, ˜a2, . . . , ˜an⟩be any sequence of n elements of Z Q. Deﬁne the function h P,Q,g,˜a
+with domain {0, 1}n such that for any n-bit input, x = x1x2 · · · xn,
+h P,Q,g,˜a(x)
+def
+= g
+
+xi =1 ˜ai.
+Deﬁne hr
+P,Q,g,˜a to be the restriction of h P,Q,g,˜a to inputs {0, 1}n \ {1n}.
+Assumption 5.1 (Generalized Difﬁe–Hellman).
+For every probabilistic poly-
+nomial-time oracle machine A, every constant α > 0 and all but a ﬁnite number
+of n’s
+Pr[Ahr
+P,Q,g,˜a(P, Q, g) = h P,Q,g,˜a(1n)] < 1
+nα ,
+where the probability is taken over the random bits of A, the choice of ⟨P, Q, g⟩
+in accordance with the distribution IG(1n) and the choice of each of the values in
+˜a = ⟨˜a1, ˜a2, . . . , ˜an⟩uniformly at random in Z Q.
+As a corollary of Theorem 4.1, we have that if the DDH-Assumption holds, then
+so does the GDH-Assumption. In fact, we get that the DDH-Assumption implies
+the decisional GDH-Assumption (this was also previously shown in Steiner et al.
+[1996]):
+COROLLARY 5.1.
+If the DDH-Assumption (Assumption 3.1) holds, then for ev-
+ery probabilistic polynomial-time oracle machine A, every constant α > 0 and all
+
+254
+M. NAOR AND O. REINGOLD
+but a ﬁnite number of n’s
+
+
+Pr[Ahr
+P,Q,g,˜a(P, Q, g, h P,Q,g,˜a(1n)) = 1] −Pr[Ahr
+P,Q,g,˜a(P, Q, g, gc) = 1]
+
+
+ < 1
+nα ,
+where the probabilities are taken over the random bits of A, the choice of
+⟨P, Q, g⟩according to the distribution IG(1n), the choice of each of the values
+in ˜a = ⟨˜a1, ˜a2, . . . , ˜an⟩uniformly at random in Z Q and the choice of c uniformly
+at random in Z Q.
+5.2. MOTIVATION TO THE CONSTRUCTION.
+Construction 5.1 is motivated by
+the concept of pseudo-random synthesizers and the construction of pseudo-random
+functions using pseudo-random synthesizers as building blocks [Naor and Reingold
+1999b]. Informally, a pseudo-random synthesizer, S, is:
+An efﬁciently computable function of two arguments such that given
+polynomially-many, uniformly chosen, inputs for each argument, {xi}m
+i=1
+and {yi}m
+i=1, the output of S on all the combinations, (S(xi, y j))m
+i, j=1,
+cannot be efﬁciently distinguished from uniform.
+A natural generalization is a k-dimensional pseudo-random synthesizer. Informally,
+a k-dimensional pseudo-random synthesizer, S, may be deﬁned to be:
+An efﬁciently computable function of k arguments such that given
+polynomially-many, uniformly chosen, inputs for each argument,
+{{x j
+i }m
+i=1}k
+j=1, the output of S on all the combinations, M = (S(x1
+i1,
+x2
+i2, . . . , xk
+ik))m
+i1,i2,...,ik=1, cannot be efﬁciently distinguished from uniform
+by an algorithm that can access M at points of its choice.
+The construction of Naor and Reingold [1999b] can be viewed as ﬁrst recursively
+applying a 2-dimensional synthesizer to get an n-dimensional synthesizer, S, and
+then deﬁning the pseudo-random function, f , by:
+f⟨a1,0,a1,1,a2,0,a2,1,...,an,0,an,1⟩(σ1σ2 · · · σn)
+def
+= S(a1,σ1, a2,σ2, . . . , an,σn).
+However, using this construction, the depth of the n-dimensional synthesizer (and
+the pseudo-random functions) is larger by a logarithmic factor than the depth of
+the 2-dimensional synthesizer. Therefore, a natural problem is to come up with a
+direct construction of an n-dimensional synthesizer.
+In this section, it is shown that under the GDH-Assumption the function, SP,Q,g,r,
+deﬁned by SP,Q,g,r(a1, a2, . . . , an)
+def
+= (g
+n
+i=1 ai) ⊙r, is an n-dimensional synthe-
+sizer. Construction 5.1 is then obtained as described above.
+5.3. THE CONSTRUCTION.
+We turn to the construction of pseudo-random
+functions:
+Construction 5.1.
+We deﬁne the function ensemble F = {Fn}n∈N. For ev-
+ery n, a key of a function in Fn is a tuple, ⟨P, Q, g, ⃗a,r⟩, where P is an
+n-bit prime, Q a prime divisor of P −1, g an element of order Q in Z∗
+P,
+⃗a = ⟨a1,0, a1,1, a2,0, a2,1, . . . , an,0, an,1⟩a sequence of 2n elements of Z Q and r an
+
+Constructions of Efﬁcient Pseudo-Random Functions
+255
+n-bit string. For any n-bit input, x = x1x2 · · · xn, the Binary-function, fP,Q,g,⃗a,r, is
+deﬁned by:
+fP,Q,g,⃗a,r(x)
+def
+=
+
+g
+n
+i=1 ai,xi 
+⊙r,
+(where ⊙denotes the inner product mod 2). The distribution of functions in Fn is
+induced by the following distribution on their keys: ⃗a and r are uniform in their
+range and the distribution of ⟨P, Q, g⟩is IG(1n).
+THEOREM 5.2.
+If the GDH-Assumption (Assumption 5.1) holds, then F =
+{Fn}n∈N (as in Construction 5.1) is an efﬁciently computable pseudo-random func-
+tion ensemble.
+In order to prove Theorem 5.2 we need the following corollary of the Goldreich–
+Levinhard-core-bittheorem[GoldreichandLevin1989](moreprecisely,thesetting
+of this corollary is somewhat different than the one considered in Goldreich and
+Levin [1989] but their result still applies):
+COROLLARY 5.3.
+If the GDH-Assumption (Assumption 5.1) holds, then for ev-
+ery probabilistic polynomial-time oracle machine A, every constant α > 0 and all
+but a ﬁnite number of n’s
+| Pr[Ahr
+P,Q,g,˜a(P, Q, g,r, (h P,Q,g,˜a(1n)) ⊙r) = 1]
+−Pr[Ahr
+P,Q,g,˜a(P, Q, g,r, σ) = 1]| < 1
+nα ,
+where the probabilities are taken over the random bits of A, the choice of ⟨P, Q, g⟩
+in accordance with the distribution IG(1n), the choice of each of the values in
+˜a = ⟨˜a1, ˜a2, . . . , ˜an⟩uniformly at random in Z Q, the choice of r uniformly at
+random in {0, 1}n and the choice of σ uniformly at random in {0, 1}.
+PROOF OF THEOREM 5.2. Let F = {Fn}n∈N be as in Construction 5.1. It is clear
+that F is efﬁciently computable. Assume that F is not pseudo-random, then there
+exists a probabilistic polynomial-time oracle machine M and a constant α > 0
+such that for inﬁnitely many n’s
+
+
+Pr[M fP,Q,g,⃗a,r(P, Q, g,r) = 1] −Pr[MRn(P, Q, g,r) = 1]
+
+
+ > 1
+nα ,
+where in the ﬁrst probability, fP,Q,g,⃗a,r is distributed according to Fn, and in the
+second probability Rn is uniformly distributed over the set of {0, 1}n →{0, 1}
+functions, ⟨P, Q, g⟩is distributed according to IG(1n) and r is a uniformly chosen
+n bit string.
+Let t(·) be a polynomial that bounds the running time of M. We deﬁne a proba-
+bilistic polynomial-time oracle machine A such that for inﬁnitely many n’s
+| Pr[Ahr
+P,Q,g,˜a(P, Q, g,r, (h P,Q,g,˜a(1n)) ⊙r) = 1]
+−Pr[Ahr
+P,Q,g,˜a(P, Q, g,r, σ) = 1]| >
+1
+nα · t(n),
+where the probabilities are as in Corollary 5.3. By Corollary 5.3, this would con-
+tradict the GDH-Assumption and would complete the proof of the theorem.
+
+256
+M. NAOR AND O. REINGOLD
+Given access to hr
+P,Q,g,˜a and on input ⟨P, Q, g,r, ˜σ⟩(where we expect ˜σ to
+either be uniformly chosen or to be (h P,Q,g,˜a(1n)) ⊙r), A executes the follow-
+ing algorithm:
+(1) Deﬁne t = t(n) and sample J uniformly at random in [t].
+(2) Sample each one of ⟨b1, b2, . . . , bn⟩uniformly at random in Z Q.
+(3) Invoke M on input ⟨P, Q, g,r⟩and answer its queries in the following way: Let the queries
+asked by M be ⟨x1, x2, . . . , xm⟩and assume without loss of generality that all those queries
+are distinct.
+—Answer each one of the ﬁrst J −1 queries with a uniformly chosen bit.
+—Answer the Jth query with ˜σ.
+—Let xi be the ith query for i > J and deﬁne the n-bit string z = z1z2 · · · zn such that zk is 1 if
+the kth bit of xi and the kth bit of x J are equal and 0 otherwise. Since xi ̸= x J we have that
+z ̸= 1n. Finally, answer the ith query with
+
+hr
+P,Q,g,˜a(z)
+
+zk =0 bk
+⊙r.
+(4) Output whatever M outputs.
+From the deﬁnition of A, we have that all its answers to queries xi for i > J are
+fP,Q,g,⃗a,r(xi), where ⃗a = ⟨a1,0, a1,1, a2,0, a2,1, . . . , an,0, an,1⟩depends on the Jth
+query x J = x J
+1 x J
+2 · · · x J
+n as follows: For every 1 ≤k ≤n, if x J
+k = 0, then ak,0 = ˜ak
+and ak,1 = bk, and if x J
+k = 1, then ak,1 = ˜ak and ak,0 = bk. The ﬁrst J −1 queries
+are answered by A uniformly at random. The only answer that depends on ˜σ is
+the Jth answer itself. This answer is, of course, uniformly distributed in case ˜σ is
+uniform. It is also not hard to verify that the Jth answer is fP,Q,g,⃗a,r(x J) in case
+˜σ = (h P,Q,g,˜a(1n)) ⊙r. We can therefore conclude that:
+Pr[Ahr
+P,Q,g,˜a(P, Q, g,r, (h P,Q,g,˜a(1n)) ⊙r) = 1 | J = 1]
+= Pr[M fP,Q,g,⃗a,r(P, Q, g,r) = 1],
+as well as
+Pr[Ahr
+P,Q,g,˜a (P, Q, g,r, σ) = 1 | J = t(n)]
+= Pr[MRn(P, Q, g,r) = 1],
+and
+Pr[Ahr
+P,Q,g,˜a (P, Q, g,r, σ) = 1 | J = j]
+= Pr[Ahr
+P,Q,g,˜a(P, Q, g,r, (h P,Q,g,˜a(1n)) ⊙r) = 1 | J = j + 1],
+where the probabilities are as above. Therefore, by the standard hybrid argument,
+we get from the assumption that for inﬁnitely many n’s
+| Pr[Ahr
+P,Q,g,˜a(P, Q, g,r, (h P,Q,g,˜a(1n)) ⊙r) = 1]
+−Pr[Ahr
+P,Q,g,˜a(P, Q, g,r, σ) = 1]| >
+1
+nα · t(n).
+Remark 5.1.
+From the proof of Theorem 5.2, we get that F is pseudo-random
+even if the distinguisher (denoted by M in the proof) has access to P, Q, g
+and r.
+
+Constructions of Efﬁcient Pseudo-Random Functions
+257
+5.4. PSEUDO-RANDOM FUNCTIONS AT LEAST AS SECURE AS FACTORING.
+The
+proof of Theorem 5.2 does not rely on the speciﬁc group for which the GDH-
+Assumption is deﬁned. Therefore, the corresponding assumption in any other group
+implies a corresponding construction of pseudo-random functions. An especially
+interesting example is taking the GDH-Assumption modulo a composite. Since
+breaking this assumption is at least as hard as factoring [Biham et al. 1997; Shmuely
+1985], we obtain an attractive construction of pseudo-random functions that is at
+least as secure as Factoring. As mentioned in the introduction, this construction was
+recently improved in Naor et al. [2000]. In this section, we repeat the deﬁnition of
+the GDH-Assumption and the construction of pseudo-random functions with the
+group set to Z∗
+N, where N is a Blum-integer. The proof of security is practically the
+same as the proof of Theorem 5.2 (and is therefore omitted).
+Similarly to the case of the DDH-Assumption, we keep our results general by
+letting the composite N be generated by some polynomial-time algorithm FIG
+(where FIG stands for factoring-instance-generator). We assume that on input 1n
+of FIG its output, N, is distributed over 2n −bit integers, where N = P · Q for two
+n −bit primes, P and Q, such that P ≡Q ≡3 mod 4 (such an integer is known
+as a Blum-integer).
+5.4.1. The GDH-Assumption Modulo a Composite
+Deﬁnition 5.2.
+Let N be any possible output of FIG(1n), let g be any quadratic-
+residue in Z∗
+N and let ˜a = ⟨˜a1, ˜a2, . . . , ˜an⟩be any sequence of n elements of
+[N]. Deﬁne the function hN,g,˜a with domain {0, 1}n such that for any n-bit input,
+x = x1x2 · · · xn,
+hN,g,˜a(x)
+def
+= g
+
+xi =1 ˜ai.
+Deﬁne hr
+N,g,˜a to be the restriction of hN,g,˜a to inputs {0, 1}n \ {1n}.
+Assumption 5.2 (Generalized Difﬁe–Hellman in Z∗
+N ).
+For every probabilistic
+polynomial-time oracle machine A, for every constant α > 0 and all but a ﬁnite
+number of n’s
+Pr[Ahr
+N,g,˜a(N, g) = hN,g,˜a(1n)] < 1
+nα ,
+where the probability is taken over the random bits of A, the choice of N in
+accordance with the distribution FIG(1n), the choice of g uniformly at random
+in the set of quadratic-residues in Z∗
+N and the choice of each of the values in
+˜a = ⟨˜a1, ˜a2, . . . , ˜an⟩uniformly at random in [N].
+5.4.2. The Construction and Its Security
+Construction 5.2.
+We deﬁne the function ensemble F = {Fn}n∈N. For every n,
+a key of a function in Fn is a tuple, ⟨N, g, ⃗a,r⟩, where N is a 2n-bit Blum-integer, g
+is a quadratic-residue in Z∗
+N, ⃗a = ⟨a1,0, a1,1, a2,0, a2,1, . . . , an,0, an,1⟩is a sequence
+of 2n values in [N] and r is a 2n-bit string. For any n-bit input, x = x1x2 · · · xn,
+the Binary-function, fN,g,⃗a,r, is deﬁned by:
+fN,g,⃗a,r(x)
+def
+=
+
+g
+n
+i=1 ai,xi 
+⊙r.
+The distribution of functions in Fn is induced by the following distribution on their
+keys: g, ⃗a and r are uniform in their range and the distribution of N is FIG(1n).
+
+258
+M. NAOR AND O. REINGOLD
+In the same way Theorem 5.2 is proven, we get that:
+THEOREM 5.4.
+If the GDH-Assumption in Z∗
+N (Assumption 5.1) holds, then
+F = {Fn}n∈N (as in Construction 5.2) is an efﬁciently computable pseudo-random
+function ensemble.
+However, breaking the GDH-Assumption in Z∗
+N is at least as hard as factor-
+ing N:
+THEOREM 5.5 (BIHAM ET AL. 1997; SHMUELY 1985).
+If the GDH-Assump-
+tion in Z∗
+N (Assumption 5.1) does not hold, then there exists a probabilistic
+polynomial-time oracle machine A and a constant α > 0 such that for inﬁnitely
+many n,
+Pr[A(P · Q) = ⟨P, Q⟩] > 1
+nα ,
+where the distribution of N = P · Q is FIG(1n).
+Furthermore, the reduction is linear-preserving (see Luby [1996]): Assume that
+there exists a probabilistic algorithm A′ with running-time t(n) that breaks the
+GDH-Assumption in Z∗
+N with probability ϵ(n). Then there exists a probabilis-
+tic algorithm A with running-time t(n) · poly(n) for factoring with success-prob-
+ability ϵ(n).
+We can therefore deduce that:
+COROLLARY 5.6 OF THEOREM 5.4 AND THEOREM 5.5.
+Let F = {Fn}n∈N be as in
+Construction 5.2 and assume that F is not an efﬁciently computable pseudo-random
+function ensemble. Then there exists a probabilistic polynomial-time algorithm A
+and a constant α > 0 such that for inﬁnitely many n’s:
+Pr[A(P · Q) = ⟨P, Q⟩] > 1
+nα ,
+where the distribution of N = P · Q is FIG(1n).
+6. Additional Features and Further Research
+This article shows two, very efﬁcient, constructions of pseudo-random functions.
+The ﬁrst construction is based on the decisional DH-Assumption (Assumption 3.1)
+and the second construction is based on a generalization of the computational DH-
+Assumption (Assumption 5.1). Therefore, a natural line for further research is the
+study of the validity of these assumptions and the relations between these assump-
+tions and the standard computational DH-Assumption. Since our constructions can
+be based on the corresponding assumptions for other groups (e.g., in elliptic-curve
+groups), it is interesting to study the validity of these assumptions as well.
+The pseudo-random functions of Constructions 4.2 and 5.1 have a simple alge-
+braic structure. We consider this to be an important advantage over all previous
+constructions, mainly since several attractive features seem more likely to exist for
+a simple construction of pseudo-random functions. In Naor and Reingold [1997]
+we presented preliminary results in obtaining such features for our construction of
+pseudo-random functions: (1) A rather simple zero-knowledge proof for claims of
+
+Constructions of Efﬁcient Pseudo-Random Functions
+259
+the form y = fs(m) and y ̸= fs(m); (2) A way to distribute a pseudo-random func-
+tion among a set of parties such that only an authorized subset can compute the value
+of the function at any given point; and (3) A protocol for “oblivious evaluation” of
+the value of the function: Assume that a party, A, knows a key s of a pseudo-random
+function. Then A and a second party, B, can perform a protocol during which B
+learns exactly one value fs(x) of its choice whereas A does not learn a thing (and,
+in particular, does not learn x). Though there is much room for improving these
+designs, they are still a signiﬁcant improvement over the protocols that are available
+for all previous constructions of pseudo-random functions (including commonly
+used block-ciphers such as DES) and they serve as a demonstration to the potential
+of our construction.
+We consider the task of improving the protocols given in Naor and Reingold
+[1997] and designing additional ones to be an interesting line for further research.
+A particularly interesting example arises by the work of Bellare and Goldwasser
+[1990]. They suggest a way to design a digital-signature scheme that is very at-
+tractive given efﬁcient pseudo-random functions and an efﬁcient noninteractive
+zero-knowledge proof for claims of the form y = fs(m) (when a commitment to
+a key s of a pseudo-random function fs is available as part of the public-key).
+Another very attractive scheme one may desire is a function-sharing scheme for
+pseudo-random functions (in an analogous meaning to function-sharing schemes
+for trapdoor one-way permutations as deﬁned in De Santis et al. [1994]). Two
+examples for applications of such schemes are efﬁcient metering of web usage
+[Naor and Pinkas 1998] and the distribution of KDCs (key-distribution centers)
+[Naor et al. 1999].
+In Section 5.2, the concept of a k-dimensional pseudo-random synthesizer and the
+immediateconstructionofpseudo-randomfunctionsfromn-dimensionalsynthesiz-
+ers are described. Assumption 5.1 gives a simple construction of an n-dimensional
+synthesizer which indeed translates to a construction of pseudo-random functions
+(Construction 5.1). An interesting problem is to construct efﬁcient n-dimensional
+synthesizers using other intractability assumptions.
+ACKNOWLEDGMENTS.
+We thank Ran Canetti, Joe Kilian, Kobbi Nissim and Amnon
+Ta-Shma for many helpful discussions and comments. Special thanks to Victor
+Shoup for suggesting the improved proof of Lemma 4.2 and for bringing Stadler
+[1996] to our attention. Finally, we would like to thank the anonymous referees for
+many helpful comments.
+REFERENCES
+ANGLUIN, D., AND KHARITONOV, M. 1995.
+When won’t membership queries help?, J. Comput. Syst.
+Sci. 50, 336–355.
+BEAME, P. W., COOK, S. A., AND HOOVER, H. J. 1986.
+Log depth circuits for division and related
+problems. SIAM J. Comput. 15, 994–1003.
+BELLARE, M., AND GOLDWASSER, S. 1990.
+New paradigms for digital signatures and message authentica-
+tionbasedonnon-interactivezeroknowledgeproofs.InProceedingsofAdvancesinCryptology–CRYPTO
+’89. Lecture Notes in Computer Science, Springer-Verlag, New York, 194–211.
+BELLARE, M., AND MICALI, S. 1990.
+Non-interactive oblivious transfer and applications. In Proceedings
+of Advances in Cryptology—CRYPTO ’89. Lecture Notes in Computer Science, Springer-Verlag, New
+York, 547–557.
+BIHAM, E. BONEH, D., AND REINGOLD, O. 1997.
+Breaking generalized Difﬁe–Hellman modulo a com-
+posite is no easier than Factoring. Theory of Cryptography Library, Record 97-14 at: http://theory.
+lcs.mit.edu/ tcryptol/homepage.html
+
+260
+M. NAOR AND O. REINGOLD
+BLUM, L. BLUM, M., AND SHUB, M. 1986.
+A simple secure unpredictable pseudo-random number
+generator. SIAM J. Comput. 15, 364–383.
+BLUM, M., EVANS, W., GEMMELL, P., KANNAN, S., AND NAOR, M. 1994.
+Checking the correctness of
+memories. Algorithmica, 225–244.
+BLUM, M., AND GOLDWASSER, S. 1984.
+An efﬁcient probabilistic public-key encryption scheme which
+hides all partial information. In Proceedings of Advances in Cryptology—CRYPTO ’84. Lecture Notes
+in Computer Science, vol. 196. Springer-Verlag, New York, 289–302.
+BLUM, M., AND MICALI, S. 1984.
+How to generate cryptographically strong sequence of pseudo-random
+bits. SIAM J. Comput. 13, 850–864.
+BONEH, D. 1998.
+The decision Difﬁe–Hellman problem. In Proceedings of the 3rd Algorithmic Number
+Theory Symposium. Lecture Notes in Computer Science, vol. 1423. Springer-Verlag, New York, 48–
+63.
+BONEH, D., AND LIPTON, R. 1996.
+Algorithms for black-box ﬁelds and their application to cryptography.
+In Proceedings of the Advances in Cryptology—CRYPTO ’96, Lecture Notes in Computer Science,
+vol. 1109. Springer-Verlag, New York, 283–297.
+BONEH, D., AND VENKATESAN, R. 1996.
+Hardness of computing most signiﬁcant bits in secret keys in
+Difﬁe–Hellman and related schemes. In Proceedings of Advances in Cryptology—CRYPTO ’96. Lecture
+Notes in Computer Science, vol. 1109. Springer-Verlag, New York, 129–142.
+BRANDS, S. 1993.
+An efﬁcient off-line electronic cash system based on the representation problem. CWI
+Tech. Rep., CS-R9323.
+BRASSARD, G. 1988.
+Modern cryptology. Lecture Notes in Computer Science, vol. 325. Springer-Verlag,
+New York.
+BRICKELL, E. F., GORDON, D. M., MCCURLEY, K. S., AND WILSON, D. B. 1992.
+Fast exponentiation
+with precomputation. In Proceedings of Advances in Cryptology—EUROCRYPT ’92. Lecture Notes in
+Computer Science, Springer-Verlag, New York, 200–207.
+CANETTI, R. 1997.
+Towards realizing random oracles: hash functions that hide all partial information. In
+Proceedings of Advances in Cryptology—CRYPTO ’97. Lecture Notes in Computer Science. Springer-
+Verlag, New York, 455–469.
+CANETTI, R., FRIEDLANDER, J., AND SHPARLINSKI, I. 1997.
+On certain exponential sums and the distri-
+bution of Difﬁe–Hellman triples. Research report, IBM T. J. Watson Research Center, Number RC 20915
+(92645), July.
+CHAUM, D., AND VAN ANTWERPEN, H. 1990.
+Undeniable signatures. In Proceedings of Advances in
+Cryptology—CRYPTO ’89. Lecture Notes in Computer Science. Springer-Verlag, New York, 212–
+216.
+CHOR, B., FIAT, A., AND NAOR, M. 1994.
+Tracing traitors. In Proceedings of Advances in Cryptology—
+CRYPTO’ 94. Lecture Notes in Computer Science, vol. 839. Springer-Verlag, 257–270.
+CRAMER, R., AND SHOUP, V. 1998.
+A practical public key cryptosystem provably secure against adaptive
+chosen ciphertext attack. In Proceedings of Advances in Cryptology—CRYPTO ’98. Lecture Notes in
+Computer Science, vol. 1462. Springer-Verlag, New York, 13–25.
+DE SANTIS, A., DESMEDT, Y., FRANKEL, Y., AND YUNG, M. 1994.
+How to share a function securely. In
+Proceedings of the 26th ACM Symposium on Theory of Computing. ACM, New York, 522–533.
+DIFFIE, W., AND HELLMAN, M. 1976.
+New directions in cryptography. IEEE Trans. Inform. Theory 22,
+6, 644–654.
+EL GAMAL, T. 1985.
+A public-key cryptosystem and a signature scheme based on discrete logarithms.
+In Proceedings of Advances in Cryptology—CRYPTO ’84. Lecture Notes in Computer Science, vol. 196.
+Springer-Verlag, New York, 10–18.
+FRANKLIN, M., AND HABER, S. 1996.
+Joint encryption and message-efﬁcient secure computation. J.
+Cryptology 9, 4, 217–232.
+GERTNER, Y., AND MALKIN, T. 1997.
+A PSRG based on the decision Difﬁe–Hellman assumption,
+preprint.
+GOLDREICH, O. 1987.
+Two remarks concerning the Goldwasser–Micali–Rivest signature scheme. In
+Proceedings of Advances in Cryptology—CRYPTO’ 86. Lecture Notes in Computer Science, vol. 263.
+Springer-Verlag, New York, 104–110.
+GOLDREICH, O. 1995.
+Foundations of Cryptography (fragments of a book). Electronic publica-
+tion: http://www.eccc.uni-trier.de/eccc/info/ECCC-Books/eccc-books.html (Elec-
+tronic Colloquium on Computational Complexity).
+GOLDREICH, O. 1998.
+Modern cryptography, probabilistic proofs and pseudo-randomness. Algorithms
+Combin. 17.
+
+Constructions of Efﬁcient Pseudo-Random Functions
+261
+GOLDREICH, O., GOLDWASSER, S., AND MICALI, S. 1985.
+On the cryptographic applications of random
+functions. In Proceedings of Advances in Cryptology—CRYPTO ’84. Lecture Notes in Computer Science,
+vol. 196. Springer-Verlag, New York, 276–288.
+GOLDREICH, O., GOLDWASSER, S., AND MICALI, S. 1986.
+How to construct random functions. J. ACM
+33, 792–807.
+GOLDREICH, O., AND LEVIN, L. 1989.
+A hard-core predicate for all one-way functions. In Proceedings
+of the 21st Annual ACM Symposium on Theory of Computing. ACM, New York, 25–32.
+GOLDWASSER, S., AND MICALI, S. 1984.
+Probabilistic encryption. J. Comput. Syst. Sci. 28, 2, 270–299.
+GOLDREICH, O., AND OSTROVSKY, R. 1996.
+Software protection and simulation on oblivious RAMs. J.
+ACM 43, 3, 431–473.
+HASTAD, J., IMPAGLIAZZO, R., LEVIN, L. A., AND LUBY, M. 1999.
+Construction of a pseudo-random
+generator from any one-way function. SIAM J. Comput. 28, 4, 1364–1396.
+IMPAGLIAZZO, R., AND NAOR, M. 1996.
+Efﬁcient cryptographic schemes provably secure as subset sum.
+J. Crypt. 9, 199–216.
+IMPAGLIAZZO, R., AND ZUCKERMAN, D. 1989.
+Recycling random bits. In Proceedings of the 30th IEEE
+Symposium on Foundations of Computer Science. IEEE Computer Society Press, Los Alamitos, Calif.,
+248–253.
+JOUX, A., AND NGUYEN, K. 2001.
+Separating decision Difﬁe–Hellman from Difﬁe–Hellman in crypto-
+graphic groups, Cryptology ePrint Archive, Report 2001/003, 2001. http://eprint.iacr.org.
+KEARNS, M., AND VALIANT, L. 1994.
+Cryptographic limitations on learning Boolean formulae and ﬁnite
+automata. J. ACM 41, 1, 67–95.
+KHARITONOV, M. 1993.
+Cryptographic hardness of distribution-speciﬁc learning. In Proceedings of the
+25th ACM Symposium on Theory of Computing. 372–381.
+KRAUSE, M., AND LUCKS, S. 2001.
+On the minimal hardware complexity of pseudorandom function
+generators. In Proceedings of the 18th Annual Symposium on Theoretical Aspects of Computer Science
+419–430.
+LANGBERG, M. 1998.
+An implementation of efﬁcient pseudo-random functions. At: http://www.
+wisdom.weizmann.ac.il/~naor/p_r_func/abs/abs.html.
+LINIAL, N. MANSOUR, Y., AND NISAN, N. 1993.
+Constant depth circuits, Fourier transform, and learn-
+ability. J. ACM 40, 3, 607–620.
+LUBY, M. 1996.
+Pseudo-randomness and applications. Princeton University Press, Princeton, N.J.
+LUBY, M., AND RACKOFF, C. 1988.
+How to construct pseudorandom permutations and pseudorandom
+functions. SIAM J. Comput. 17, 373–386.
+MAURER, U., AND WOLF, S. 1999.
+Towards the equivalence of breaking the Difﬁe–Hellman protocol
+and computing discrete logarithms. SIAM J. Comput. 28, 5, 1689–1721.
+MCCURLEY, K. 1988.
+A key distribution system equivalent to factoring. J. Crypt. 1, 95–105.
+MCCURLEY, K. 1990.
+The discrete logarithm problem. In Cryptography and Computational Number
+Theory, Proceedings of the Symposium on Applied Mathematics. AMS Lecture Notes, vol. 42, 49–74.
+NAOR, M., AND PINKAS, B. 1998.
+Secure and efﬁcient metering. In Proceedings of Advances in
+Cryptology—EUROCRYPT ’98. Lecture Notes in Computer Science, vol. 1462. Springer-Verlag,
+New York.
+NAOR, M., AND PINKAS, B. 1999.
+Oblivious transfer with adaptive queries. In Proceedings of Advances
+in Cryptology—CRYPTO ’99. Lecture Notes in Computer Science, vol. 1666, Springer-Verlag, New
+York. 573–590.
+NAOR, M., PINKAS, B., AND REINGOLD, O. 1999.
+Distributed pseudo-random functions and KDCs. In
+Proceedings of Advances in Cryptology—Eurocrypt ’99. Lecture Notes in Computer Science, vol. 1592.
+Springer-Verlag, New York, 327–346.
+NAOR, M., AND REINGOLD, O. 1997.
+Number-theoretic constructions of efﬁcient pseudo-random func-
+tions. In Proceedings of the 38th IEEE Symposium on Foundations of Computer Science. IEEE Com-
+puter Society Press, Los Alamitos, Calif., 458–467. (Full version at http://www.wisdom.weizmann.
+ac.il/%7Enaor/PAPERS/gdh_abs.html.)
+NAOR, M., AND REINGOLD, O. 1999a.
+On the construction of pseudo-random permutations: Luby–
+Rackoff revisited. J. Crypt. 12, 1, 29–66. (Preliminary version: STOC’97.)
+NAOR, M., AND REINGOLD, O. 1999b.
+Synthesizers and their application to the parallel construction of
+pseudo-random functions. J. Comput. Syst. Sci. 58, 2, 336–375. (Preliminary version: FOCS’95.)
+NAOR, M., REINGOLD, O., AND ROSEN, A. 2000.
+Pseudo-random functions and factoring. In Proceedings
+of the 32nd ACM Symposium on Theory of Computing. ACM, New York.
+ODLYZKO, A. M. 1993.
+Discrete logarithms and smooth polynomials. Contemp. Math.
+
+262
+M. NAOR AND O. REINGOLD
+RAZBOROV, A., AND RUDICH, S. 1997.
+Natural proofs. J. Comput. Syst. Sci. 55, 1, 24–35.
+REIF, J. 1987.
+On threshold circuits and polynomial computation. In Proceedings of the 2nd Conference
+on Structure in Complexity Theory. 118–123.
+REIF, J., AND TATE, S. 1992.
+On threshold circuits and polynomial computation. SIAM J. Comput. 5,
+896–908.
+SHMUELY, Z. 1985.
+Composite Difﬁe–Hellman public-key generating systems are hard to break, Tech.
+Rep. No. 356, Computer Science Dept., Technion, Technion City, Israel.
+SHOUP, V. 1997.
+Lower bounds for discrete logarithms and related problems. In Proceedings of Advances
+in Cryptology—EUROCRYPT ’97. Lecture Notes in Computer Science, vol. 1233. Springer-Verlag, New
+York, 256–266.
+SIU, K.-Y., BRUCK, J., KAILATH, T., AND HOFMEISTER, T. 1993.
+Depth efﬁcient neural network for
+division and related problems. IEEE Trans. Inform. Theory 39, 946–956.
+SIU, K.-Y., AND ROYCHOWDHURY, V. P. 1994.
+On optimal depth threshold circuits for multiplication
+and related problems. SIAM J. Disc. Math. 7, 2, 284–292.
+STADLER, M. 1996.
+Publicly veriﬁable secret sharing. In Proceedings of Advances in Cryptology—
+EUROCRYPT ’96, Lecture Notes in Computer Science, vol. 1070. Springer-Verlag, New York, 190–199.
+STEINER, M., TSUDIK, G., AND WAIDNER, M. 1996.
+Difﬁe–Hellman key distribution extended to group
+communication. In Proceedings of the 3rd ACM Conference on Computer and Communications Security.
+ACM, New York, 31–37.
+VALIANT, L. G. 1984.
+A theory of the learnable. Commun. ACM 27, 1134–1142.
+YAO, A. C. 1982.
+Theory and applications of trapdoor functions. In Proceedings of the 23rd IEEE
+Symposium on Foundations of Computer Science. ACM, New York, 80–91.
+RECEIVED NOVEMBER 2000; REVISED APRIL 2003; ACCEPTED SEPTEMBER 2003
+Journal of the ACM, Vol. 51, No. 2, March 2004.

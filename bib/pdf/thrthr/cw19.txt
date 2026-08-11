@@ -1,0 +1,2501 @@
+Stronger Connections Between Circuit Analysis
+and Circuit Lower Bounds, via PCPs of Proximity
+Lijie Chen
+MIT, Cambridge, MA, USA
+R. Ryan Williams
+MIT, Cambridge, MA, USA
+Abstract
+We considerably sharpen the known connections between circuit-analysis algorithms and circuit lower
+bounds, show intriguing equivalences between the analysis of weak circuits and (apparently diﬃcult)
+circuits, and provide strong new lower bounds for approximately computing Boolean functions with
+depth-two neural networks and related models.
+We develop approaches to proving THR ◦THR lower bounds (a notorious open problem), by
+connecting algorithmic analysis of THR ◦THR to the provably weaker circuit classes THR ◦MAJ
+and MAJ ◦MAJ, where exponential lower bounds have long been known. More precisely, we
+show equivalences between algorithmic analysis of THR ◦THR and these weaker classes. The
+ε-error CAPP problem asks to approximate the acceptance probability of a given circuit to within
+additive error ε; it is the “canonical” derandomization problem. We show:
+There is a non-trivial (2n/nω(1) time) 1/ poly(n)-error CAPP algorithm for poly(n)-size
+THR ◦THR circuits if and only if there is such an algorithm for poly(n)-size MAJ ◦MAJ.
+There is a δ > 0 and a non-trivial SAT (δ-error CAPP) algorithm for poly(n)-size THR ◦THR
+circuits if and only if there is such an algorithm for poly(n)-size THR ◦MAJ.
+Similar results hold for depth-d linear threshold circuits and depth-d MAJORITY circuits.
+These equivalences are proved via new simulations of THR circuits by circuits with MAJ gates.
+We strengthen the connection between non-trivial derandomization (non-trivial CAPP algorithms)
+for a circuit class C, and circuit lower bounds against C. Previously, [Ben-Sasson and Viola,
+ICALP 2014] (following [Williams, STOC 2010]) showed that for any polynomial-size class
+C closed under projections, non-trivial (2n/nω(1) time) CAPP for ORpoly(n) ◦AND3 ◦C yields
+NEXP ̸⊂C. We apply Probabilistic Checkable Proofs of Proximity in a new way to show it would
+suﬃce to have a non-trivial CAPP algorithm for either ⊕2 ◦C, AND2 ◦C or OR2 ◦C.
+A direct corollary of the ﬁrst two bullets is that NEXP ̸⊂THR ◦THR would follow from either:
+a non-trivial δ-error CAPP (or SAT) algorithm for poly(n)-size THR ◦MAJ circuits, or
+a non-trivial 1/ poly(n)-error CAPP algorithm for poly(n)-size MAJ ◦MAJ circuits.
+Applying the above machinery, we extend lower bounds for depth-two neural networks and
+related models [R. Williams, CCC 2018] to weak approximate computations of Boolean functions.
+For example, for arbitrarily small ε > 0, we prove there are Boolean functions f computable in
+nondeterministic nlog n time such that (for inﬁnitely many n) every polynomial-size depth-two
+neural network N on n inputs (with sign or ReLU activation) must satisfy maxx∈{0,1}n |N(x) −
+f(x)| > 1/2 −ε. That is, short linear combinations of ReLU gates fail miserably at computing
+f to within close precision. Similar results are proved for linear combinations of ACC ◦THR
+circuits, and linear combinations of low-degree Fp polynomials. These results constitute further
+progress towards THR ◦THR lower bounds.
+2012 ACM Subject Classiﬁcation Theory of computation →Circuit complexity
+Keywords and phrases PCP of Proximity, Circuit Lower Bounds, Derandomization, Threshold
+Circuits, ReLU
+Digital Object Identiﬁer 10.4230/LIPIcs.CCC.2019.19
+Funding Supported by NSF CCF-1741615 (Common Links in Algorithms and Complexity) and a
+Google Faculty Research Award.
+© Lijie Chen and R. Ryan Williams;
+licensed under Creative Commons License CC-BY
+34th Computational Complexity Conference (CCC 2019).
+Editor: Amir Shpilka; Article No. 19; pp. 19:1–19:43
+Leibniz International Proceedings in Informatics
+Schloss Dagstuhl – Leibniz-Zentrum für Informatik, Dagstuhl Publishing, Germany
+
+19:2
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+Acknowledgements Part of this work was completed while the authors were visiting the Simons
+Institute at UC Berkeley, as part of the program on Lower Bounds in Computational Complexity.
+We thank them for their hospitality and excellent environment. We also thank Josh Alman for
+helpful last-minute proofreading, and the CCC reviewers for useful comments.
+1
+Introduction
+Recall TC0 is the class of decision problems that are computable with circuit families of
+constant depth, composed of MAJORITY and NOT gates. As this class remains the same
+when “MAJORITY” is replaced by other more expressive functions such as linear threshold
+functions [21, 32], TC0 naturally captures many mathematical models of neural computing,
+and contains many natural arithmetic functions (for example, see [9, 38, 26]).
+What interesting functions do not have polynomial-size TC0 circuits? Despite substantial
+research eﬀort [23, 2, 4, 17, 19, 21, 22, 24, 25, 29, 28, 35, 37, 40, 51, 44, 3, 31] it is consistent
+with current knowledge that the huge class nondeterministic exponential time (NEXP) has
+polynomial-size THR ◦THR circuits, which are depth two and can compute arbitrary linear
+threshold functions at both layers.1 It seems obvious that “shallow” nets cannot be so
+powerful, but concrete proofs of their limitations have been elusive.
+In 2011, R. Williams [49, 52] proved that NEXP does not have polynomial-size ACC0
+circuits (a presumably weaker circuit class), by showing how circuit lower bounds follow from
+non-trivial algorithms2 for problems such as circuit satisﬁability or circuit derandomization.
+The canonical circuit derandomization problem is CAPP, where the task is to approximate
+the acceptance probability of a given circuit within an additive constant error (less than 1/3,
+say). Along these lines, subsequent works have followed Williams’ program [50, 51, 12, 30, 3,
+47, 44, 48], and more circuit lower bounds have been proved by either introducing new SAT
+algorithms, or tightening the algorithms-to-lower-bounds connection. For an example of the
+latter, Murray and Williams [34] recently showed that nondeterministic quasi-polynomial
+time does not have polynomial-size ACC0 ◦THR circuits using a strengthened connection.
+A potential next step in this program would be to prove that NEXP does not have
+polynomial-size depth-two threshold circuits (THR ◦THR). Partial progress has already been
+made: for example, in [44, 3], it is shown that ENP does not have n2−o(1) size THR ◦THR
+circuits. Until now, essentially all lower bounds proven by this program have applied very
+strong circuit-analysis algorithms, such as circuit satisﬁability or #SAT algorithms. It looks
+diﬃcult to ﬁnd such strong circuit-analysis algorithms for THR ◦THR circuits. Indeed,
+even for the simpler MAX-k-SAT problem (equivalent to the SAT problem for MAJ ◦ANDk
+circuits), no non-trivial algorithms are known for k(n) = ω(log n) (see [8]). For slightly larger
+circuit classes such as NC1 (a.k.a. poly(n)-size formulas), it has been conjectured that there
+are no non-trivial SAT algorithms [1].
+An approach based on derandomizing a circuit class (ﬁnding non-trivial algorithms for
+CAPP) looks more plausible than one based on SAT solving, because most researchers believe
+“full” derandomization is possible and that CAPP is in P even for arbitrary circuits. However,
+there is still a substantial obstacle for proving NEXP ̸⊂THR ◦THR via derandomization
+approaches. While previous works ([30, 13]) have shown that NEXP ̸⊂C would follow from a
+non-trivial satisﬁability algorithm for AND3 ◦C (i.e., an AND of three C-circuits), the best
+1 See Section 2.1 for formal deﬁnitions.
+2 Throughout the paper, we use the term “non-trivial algorithm” to mean that, for every constant c ≥1,
+the algorithm runs in 2n/nω(1) time on circuits of n inputs and nc gates.
+
+L. Chen and R. R. Williams
+19:3
+known connection theorem (namely, that of Ben-Sasson and Viola [13]) is that non-trivial
+derandomization of ORpoly(n) ◦AND3 ◦C (i.e., a non-trivial CAPP algorithm for a 3-DNF
+on poly(n) many C circuits) implies NEXP ̸⊂C. Finding a tighter correspondence (with no
+“DNF overheads” in the connection) has been an intriguing open problem.
+In this work, applying Probabilistically Checkable Proofs of Proximity (PCPPs), we
+substantially tighten the connection given by Ben-Sasson and Viola, showing that non-trivial
+derandomization for depth-d TC circuits would directly imply NEXP does not have depth-d
+TC circuits. That is, in order to show NEXP ̸⊂THR ◦THR, it suﬃces to ﬁnd a non-trivial
+derandomization of THR ◦THR. Furthermore, we show that non-trivial derandomization
+algorithms for THR ◦THR is in fact equivalent to derandomization for the weaker class
+THR ◦MAJ (tightly) and derandomization for the even weaker class MAJ ◦MAJ (with inverse
+polynomial error). (THR ◦MAJ circuits are the special case of THR ◦THR circuits where all
+gates on the bottom layer only compute linear threshold functions with polynomial integer
+weights; MAJ ◦MAJ circuits have that restriction on both layers. See Section 2.1 for formal
+deﬁnitions.) Therefore, for our desired lower bounds against THR ◦THR, it suﬃces to obtain
+non-trivial CAPP algorithms for THR◦MAJ or MAJ◦MAJ circuits, for which exponential-size
+circuit lower bounds have long been known [19, 23].
+As an additional application, we apply our new PCPP approach to strengthen recent depth-
+two neural network lower bounds of R. Williams [48] for approximate computation of Boolean
+functions. For example, we show that for every ε > 0 and every (non-uniform) polynomial-
+size family of depth-two neural nets {Nn} with sign or ReLU activation functions, there
+are Boolean functions f in nondeterministic nO(log⋆n) time such that maxx∈{0,1}n |Nn(x) −
+f(x)| > 1/2 −ε for inﬁnitely many n. That is, arbitrary linear combinations of ReLU gates
+fail miserably at computing f to within any close precision. Versions of the PCP theorem are
+crucial elements in the proofs of these lower bounds; indeed, our overall argument involves
+applications of a PCP in two diﬀerent places. Previously, all concrete circuit lower bounds
+proved via the algorithmic approach have not required the full power of the PCP theorem [5, 6]
+for the argument to work.
+To formally describe our results, we recall three circuit-analysis problems.
+1. CAPP with error δ: Given a circuit C on n inputs, estimate the probability that
+C(a) = 1 over uniformly random input a ∈{0, 1}n, to within ±δ.
+2. SAT: Given a circuit C, determine if there is an input a such that C(a) = 1.
+3. Gap-UNSAT with gap δ: Given a circuit C, output YES when C(a) = 0 for all a, and
+NO when C has at least δ · 2n satisfying assignments. Note that Gap-UNSAT with gap δ
+is easier than the other two problems: either a SAT algorithm or a CAPP algorithm with
+error δ would immediately imply a Gap-UNSAT algorithm with gap δ.
+1.1
+Equivalence Between Algorithmic Analysis of THR ◦THR,
+THR ◦MAJ, MAJ ◦MAJ
+Our ﬁrst results give equivalences between algorithmic analysis of THR ◦THR, THR ◦MAJ,
+and MAJ ◦MAJ circuits. These equivalences are surprising, because the latter two classes
+are provably weaker than THR ◦THR [16]. In fact, 2Ω(n)-size lower bounds are well-known
+for them [23, 19].
+CCC 2019
+
+19:4
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+Poly-Size THR ◦MAJ and THR ◦THR are Equivalent for Circuit-Analysis
+Algorithms
+We say an algorithm running on n-input circuits is non-trivial if for all c, it runs in 2n/nω(1)
+time for all circuits of size nc. We ﬁrst show that, in terms of designing non-trivial SAT or
+CAPP algorithms, THR ◦MAJ and THR ◦THR are equally hard or easy.
+▶Theorem 1. The following two statements hold:
+Equivalence of Non-Trivial SAT Algorithms: There is a non-trivial SAT algorithm
+for THR ◦MAJ circuits of poly(n)-size if and only if there is such an algorithm for
+poly(n)-size THR ◦THR circuits.
+Equivalence of Non-Trivial CAPP Algorithms With Constant Error: For any
+constant δ > 0, If there is a non-trivial CAPP algorithm with error δ for THR ◦MAJ
+circuits of poly(n) size, then there is a non-trivial CAPP algorithm with error δ + 1/n for
+poly(n)-size THR ◦THR circuits.
+Theorem 1 generalizes readily to TC circuits of any constant depth d. Let LTd be the
+class of the depth-d circuits consisting entirely of arbitrary linear threshold functions, and
+let c
+LTd be the subclass of LTd with the restriction that all gates have polynomially-bounded
+integer weights (see Section 2.1 for formal deﬁnitions). E.g., c
+LT2 = MAJ ◦MAJ.
+▶Corollary 2. The following two statements hold for every constant d:
+Equivalence of Non-Trivial SAT Algorithms: There is a non-trivial SAT algorithm
+for THR ◦c
+LTd−1 circuits of poly(n)-size if and only if there is such an algorithm for
+poly(n)-size LTd circuits.
+Equivalence of Non-Trivial CAPP Algorithms With Constant Error: For any
+constant ε > 0, if there is a non-trivial CAPP algorithm with error ε for THR ◦c
+LTd−1
+circuits of poly(n)-size, then there is a non-trivial CAPP algorithm with error ε + 1/n for
+poly(n)-size LTd circuits.
+Weaker Equivalence Between Poly-Size THR ◦THR and MAJ ◦MAJ
+We also obtain some weaker equivalences between circuit-analysis algorithms for THR ◦THR
+and MAJ ◦MAJ circuits.
+▶Theorem 3. The following two statements hold:
+Equivalence of 2(1−ε)n-time SAT Algorithms: If SAT for poly(n)-size MAJ ◦MAJ
+circuits is in 2(1−ε)n time for an ε > 0, then SAT for poly(n)-size THR ◦THR circuits is
+in 2(1−ε′)n time for an ε′ > 0.
+Equivalence of Non-Trivial CAPP Algorithms with Inverse Polynomial Error:
+If there is a non-trivial CAPP algorithm with 1/poly(n) error for poly(n)-size MAJ ◦MAJ
+circuits, then there is a non-trivial CAPP algorithm with 1/ poly(n) error for poly(n)-size
+THR ◦THR circuits.
+Again, a similar result holds for TC circuits of any constant depth d.
+▶Corollary 4. The following two statements hold for any constant d:
+Equivalence of 2(1−ε)n-time SAT Algorithms: If SAT for c
+LTd circuits of poly(n)-size
+is in 2(1−ε)n time for an ε > 0, then SAT for poly(n)-size LTd circuits is in 2(1−ε′)n time
+for an ε′ > 0.
+
+L. Chen and R. R. Williams
+19:5
+Equivalence of Non-trivial CAPP Algorithms with inverse polynomial error:
+If there is a non-trivial CAPP algorithm with 1/poly(n) error for poly(n)-size c
+LTd cir-
+cuits, then there is a non-trivial CAPP algorithm with 1/ poly(n) error for poly(n)-size
+LTd circuits.
+1.2
+Tighter Connection Between Circuit Lower Bounds and Non-trivial
+Derandomization
+Our next results give a tighter connection between non-trivial circuit-analysis algorithms
+for C, and circuit lower bounds against C. We say a circuit class C is typical if it is closed
+under taking negations of the output, and variable projections.3 We show that, to prove
+NEXP ̸⊂C, it suﬃces to obtain non-trivial derandomization of AND3 ◦C, OR2 ◦C, or ⊕2 ◦C
+(a.k.a. XOR2 ◦C).
+▶Theorem 5 (Lower Bounds From Non-Trivial Gap-UNSAT or CAPP Algorithms). There is an
+absolute constant δ > 0, such that for any typical circuit class C, if one of the following holds:
+there is a non-trivial Gap-UNSAT algorithm with gap δ for poly(n)-size AND3 ◦C circuits,
+or
+there is a non-trivial CAPP algorithm with error δ for poly(n)-size OR2 ◦C, ⊕2 ◦C, or
+AND2 ◦C circuits,
+then NEXP ̸⊂C. Moreover, in the second bullet, C does not need to be closed under negation.
+Comparison with Ben-Sasson and Viola
+Ben-Sasson and Viola [12] showed that non-trivial Gap-UNSAT algorithms for ORpoly(n) ◦
+AND3 ◦C, or non-trivial satisﬁability algorithms for AND3 ◦C would imply NEXP ̸⊂C.
+Theorem 5 is a strict strengthening of these two connections, as Gap-UNSAT is an easier
+problem than SAT. In particular, note we avoid the unbounded fan-in OR entirely.
+Applying the “easy witness lemma for NP” results of Murray and Williams [34], we can
+naturally generalize to circuit lower bounds for NP if faster algorithms are used.
+▶Theorem 6 (NP Lower Bounds From Faster Gap-UNSAT or CAPP Algorithms). There is an
+absolute constant α > 0, such that for any typical circuit class C, if there is a constant δ such
+that one of the following holds:
+Gap-UNSAT for 2δn-size AND3 ◦C circuits with gap α can be solved in 2n−δn time, or
+CAPP for 2δn-size OR2 ◦C, ⊕2 ◦C, or AND2 ◦C circuits with error α can be solved in
+2n−δn time,
+then for every k there is a function in NP that doesn’t have nk-size C circuits. Moreover, in
+the second bullet, C does not need to be closed under negation.
+▶Remark 7. In Theorems 5 and 6, the desired algorithms can even be non-deterministic,
+as long as on all computation paths the algorithm either outputs don’t know or the correct
+answer, and the correct answer always appears on at least one path.
+In terms of techniques, our approach is very diﬀerent from that of the previous derandom-
+ization connection proved by Ben-Sasson and Viola [12]. They constructed a highly eﬃcient
+PCP for NTIME[T(n)], where the queries are projections of random bits, and the veriﬁer is a
+3-CNF. Their results were then obtained by directly plugging this PCP construction into the
+original argument of [49].
+3 See Section 2.1 for the details.
+CCC 2019
+
+19:6
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+Our approach is less direct. Our key insight in proving Theorem 5 (and Theorem 6
+similarly) is to use PCPs of Proximity to reduce circuit evaluation tasks to derandomization
+tasks. Using eﬃcient PCPs for NTIME[2n] [10], Williams [49] showed NEXP ̸⊂P/ poly follows
+from non-trivial Gap-UNSAT algorithms for poly(n)-size general circuits. Applying PCPs of
+Proximity to the Circuit Evaluation Problem, we design a Gap-UNSAT algorithm for general
+circuits, only assuming that NEXP ⊂C and a Gap-UNSAT algorithm for AND3 ◦C, which
+results in a contradiction when C ⊂P/ poly. Therefore our overall argument applies PCP
+constructions in two diﬀerent ways: ﬁrst on a nondeterministic 2n-time computation to reduce
+to a Gap-UNSAT problem, and then on a poly(n)-size circuit evaluation. See Section 1.6 for
+an overview of the whole argument.
+1.3
+Potential Approaches to THR ◦THR Circuit Lower Bounds
+As a direct corollary of Theorem 5 and the folklore result that and XOR of two THR◦THR can
+be written as a polynomially-larger THR ◦THR,4 it follows that non-trivial CAPP algorithms
+for THR ◦THR circuits with small constant error would imply NEXP ̸⊂THR ◦THR. With a
+little additional work, the same can be shown for non-trivial SAT algorithms for THR ◦THR
+circuits.
+▶Theorem 8. There is an absolute constant δ > 0, such that if δ-error CAPP for poly(n)-
+size THR◦THR circuits can be solved in 2n/nω(1) time, then NEXP ̸⊂THR◦THR. The same
+is true with SAT in place of CAPP.
+The above theorem generalizes to TC circuits of any constant depth d (LTd circuits).
+▶Theorem 9. There is an absolute constant δ > 0, such that for any constant d, if CAPP
+for poly(n)-size LTd circuits with error δ can be solved in 2n/nω(1) time, then NEXP ̸⊂LTd.
+The same is true with SAT in place of CAPP.
+It still appears to be a tough challenge to obtain a non-trivial CAPP algorithm for
+polynomial-size THR ◦THR circuits, as it is usually the case that derandomizations come
+from circuit lower bounds (and ironically, our goal here is to prove circuit lower bounds for
+THR ◦THR!). However, armed with our new equivalence results between algorithmic analysis
+of THR ◦THR circuits and THR ◦MAJ or MAJ ◦MAJ circuits (Theorem 1 and Theorem 3), it
+suﬃces for us to obtain non-trivial CAPP algorithms for THR ◦MAJ or MAJ ◦MAJ circuits,
+for which 2Ω(n) lower bounds are known.
+▶Corollary 10. There is an absolute constant δ > 0, such that if one of the following holds:
+1. CAPP (or SAT) for poly(n)-size THR ◦MAJ circuits with error δ is in 2n/nω(1) time, or
+2. CAPP for poly(n)-size MAJ ◦MAJ circuits with 1/poly(n) error is in 2n/nω(1) time,
+then NEXP ̸⊂THR ◦THR.
+Therefore NEXP ̸⊂THR ◦THR follows if we can “mine” the known 2Ω(n) lower bounds
+for THR ◦MAJ or MAJ ◦MAJ, and design non-trivial circuit-analysis algorithms from them!
+1.4
+Lower Bounds on Representing Boolean Functions Approximately
+by Linear Combinations of Simple Functions
+Finally, we apply our new techniques to strengthen recent depth-two lower bounds of
+R. Williams [48]. He studied the problem of representing a Boolean function f exactly by a
+linear combination of simple functions from a class C. Here we introduce an approximate
+form of such representations.
+4 See e.g. Lemma 50 for a proof.
+
+L. Chen and R. R. Williams
+19:7
+▶Deﬁnition 11. Let C be a class of functions from {0, 1}n →R and ε ∈[0, 0.5). We
+say f : {0, 1}n →{0, 1} admits a g
+Sumε ◦C circuit of sparsity S, if there are S functions
+C1, C2, . . . , CS from C, together with S coeﬃcients α1, α2, . . . , αS in R, such that for all
+x ∈{0, 1}n,
+
+S
+X
+i=1
+αi · Ci(x) −f(x)
+ ≤ε.
+We use Sum ◦C to denote the special case of ε = 0, which was the case studied in prior
+work [48].
+When C is the class of AND gates (or PARITY gates, respectively), we are asking for the
+sparsest ε-approximate polynomial for f, with respect to the standard (or Fourier basis,
+respectively). This is related to the ε-approximate degree5 of f, which is already a highly-
+nontrivial notion; for instance, the approximate degrees of simple natural functions have only
+recently been determined [15, 14, 42].
+In prior work, Williams [48] showed that non-trivial algorithms for the so-called “Sum-
+Product”6 of O(1) functions from C implies sparsity lower bounds against Sum ◦C, and he
+obtained sparsity lower bounds against various Sum ◦C circuits by designing corresponding
+Sum-Product algorithms.
+Applying our new techniques together with other new ideas, we show that Sum-Product
+algorithms in fact yield sparsity lower bounds against g
+Sumε◦C. That is, we can systematically
+“lift” the Sum ◦C lower bounds in [48] to lower bounds for g
+Sumε ◦C.
+First, we generalize the lower bounds for Sum ◦THR in [48] to g
+Sumε ◦THR. Such circuits
+are also known in the machine learning literature as depth-two neural networks with sign
+activation functions.
+▶Theorem 12 (Lower Bound for g
+Sumε ◦THR). For all k and constant ε < 1/2, there
+is a function in NP without g
+Sumε ◦THR circuits of nk sparsity. Furthermore, if α(n) is
+unbounded such that nα(n) is time-constructible, then NTIME[nα(n)] ̸⊂g
+Sumε ◦THR for all
+constant ε < 1/2.
+A ReLU (rectiﬁed linear unit) gate is a function f : {0, 1}t →R+ such that there is a
+vector w ∈Rt and scalar a ∈R such that for all x,
+f(x) = max{0, ⟨x, w⟩+ a}.
+Linear combinations of ReLU gates are also known as depth-two neural networks with ReLU
+activation functions, and they are intensely studied in machine learning.7
+Next we generalize the lower bounds for Sum ◦ReLU in [48] to g
+Sumε ◦ReLU.
+▶Theorem 13 (Lower Bound for g
+Sumε ◦ReLU). For all k and constant ε < 1/2, there
+is a function in NP without g
+Sumε ◦ReLU circuits of nk sparsity. Furthermore, if α(n) be
+unbounded such that nα(n) is time-constructible, then NTIME[nα(n)] ̸⊂g
+Sumε ◦ReLU for all
+constant ε < 1/2.
+We also obtain analogous lower bounds for g
+Sumε◦(O(1)-degree Fp-polynomials), strength-
+ening lower bounds for exact linear combinations of O(1)-degree polynomials [48].
+5 The ε-approximate degree of f is the lowest degree of all polynomial p : {0, 1}n →{0, 1} such that
+∥p −f∥∞≤ε. Note that a low degree polynomial is also sparse.
+6 See Section 6 for a formal deﬁnition. Intuitively, the “Sum-Product” problem generalizes #SAT.
+7 We refer the readers to [48] and the references therein for more discussion on this topic.
+CCC 2019
+
+19:8
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+▶Theorem 14 (Lower Bound for g
+Sumε ◦(Fp-polynomials)). For all prime p, integers k, d,
+and constant ε < 1/2, there is a function in NP without g
+Sumε ◦MODp ◦ANDd circuits of
+nk sparsity. Furthermore, if α(n) be unbounded such that nα(n) is time-constructible, then
+NTIME[nα(n)] ̸⊂g
+Sumε ◦MODp ◦ANDd for all constant ε < 1/2.
+Finally, using the known #SAT algorithm for ACC0 ◦THR [51], we show a sparsity lower
+bound for g
+Sumε ◦ACC0 ◦THR circuits.
+▶Theorem 15. For every d, m ≥1 and ε ∈[0, 0.5), there is a b ≥1 and an f ∈
+NTIME[nlogb n] that does not have g
+Sumε ◦AC0
+d[m] ◦THR circuits of na size, for every a.
+Therefore, no polynomially-sparse linear combination of AC0
+d[m] ◦THR circuits can
+approximate the value of the hard function in Theorem 15.
+This constitutes the strongest known circuit class for which we can presently prove lower
+bounds for nondeterministic quasi-polynomial time (improving [34]).
+1.5
+Techniques: Two Structure Lemmas for THR ◦THR
+Two major technical ingredients in our results are structure lemmas for THR ◦THR, which
+are of interest in their own right. Informally, our ﬁrst structure lemma says that every
+THR ◦THR is equivalent to a polynomial-sized OR of Threshold-of-Majority circuits. The
+second structure lemma says that every THR ◦THR circuit is equivalent to a subexponential-
+sized OR of Majority-of-Majority circuits. For the program of proving THR ◦THR lower
+bounds, this is signiﬁcant, as exponential-size Majority-of-Majority and Threshold-of-Majority
+lower bounds are well-known [23, 19].
+In the following, DOR refers to a “disjoint” OR gate: an OR gate with the promise that
+at most one of its inputs is ever true, and Gap-ORδ refers to a “gapped” OR gate with a
+error parameter δ: an OR gate with the promise that either all inputs are false or at least a
+1 −δ fraction of the inputs are true. We also use Gap-OR to denote Gap-OR1/2 for simplicity.
+(See Section 2.1 for formal deﬁnitions.)
+▶Lemma 16 (Structure Lemma I for THR ◦THR circuits). Let n be the number of inputs, let
+s = s(n) ≥n be a size function, and let δ = δ(n) ∈(0, 1) be an error function. Every s-size
+THR ◦THR circuit C is equivalent to a Gap-ORδ ◦THR ◦MAJ circuit C′ such that:
+The top Gap-ORδ gate of C′ has poly(s, δ−1) fan-in.
+Each THR ◦MAJ subcircuit of C′ has size poly(s, δ−1).
+The transformation from C to C′ can be computed in deterministic poly(s, δ−1) time.
+▶Lemma 17 (Structure Lemma II for THR ◦THR circuits). Let n be the number of inputs
+and let s = s(n) ≤2o(n) be a size parameter. Let ε ∈
+
+log s
+n , 1
+
+. Every s-size THR ◦THR
+circuit C is equivalent to a DOR ◦MAJ ◦MAJ circuit such that:
+The top DOR gate has 2O(εn) fan-in.
+Each sub MAJ ◦MAJ circuit has size sO(1/ε).
+The reduction can be computed in randomized 2O(εn) · sO(1/ε) time.
+Previously, Goldmann-Håstad-Razborov [21] showed that every THR ◦THR circuit has
+an equivalent MAJ ◦MAJ ◦MAJ circuit of polynomially larger size. The top OR gates in our
+structure lemmas have additional beneﬁts: for instance, an OR ◦C circuit is satisﬁable, if
+and only if one of its C subcircuits is satisﬁable. Therefore, solving SAT on an OR ◦C circuit
+is easily reduced to solving SAT on C circuits.
+In Appendix C, we discuss more applications of the above two structure lemmas, beyond
+the algorithmic equivalences for THR ◦THR, THR ◦MAJ, and MAJ ◦MAJ circuits.
+
+L. Chen and R. R. Williams
+19:9
+1.6
+Intuition: Solving Gap-UNSAT with Probabilistic Checkable Proofs
+of Proximity
+Here we provide an overview of the ideas behind our new tightened connection between
+circuit lower bounds and circuit-analysis algorithms.
+Starting Point: Designing Gap-UNSAT Algorithms for General Circuits, Assuming
+NEXP ⊂C
+Suppose C ⊂P/ poly. We want to show that a non-trivial Gap-UNSAT algorithm with
+a constant gap for poly(n)-size AND3 ◦C circuits implies NEXP ̸⊂C. We start with the
+following connection of R. Williams [49]:
+If Gap-UNSAT with gap 1−1/n10 for (fan-in 2) circuits with n inputs and poly(n) size
+is solvable in O(2n/nω(1)) nondeterministic time, then NEXP doesn’t have poly(n)-size
+(fan-in 2) circuits.
+Our strategy is to assume NEXP ⊂C, and use our non-trivial Gap-UNSAT algorithm for
+AND3 ◦C to derive a non-trivial Gap-UNSAT algorithm for general fan-in-2 circuits. This
+would imply a contradiction, since by the above connection, it follows that NEXP ̸⊂P/ poly
+and therefore NEXP ̸⊂C.
+So suppose we are given a poly(n)-size general circuit C : {0, 1}n →{0, 1} with the
+promise that either C is unsatisﬁable (the YES case) or C has at least (1 −1/n10) · 2n
+satisfying assignments (the NO case), where our goal is to distinguish the two cases in
+2n/nω(1) non-deterministic time.
+To simplify the discussion, we negate the circuit C. Now we are promised C is a tautology,
+or C has at most 1/n10 · 2n satisfying assignments, and we must nondeterministically prove
+C is a tautology (when that is the case) in 2n/nω(1) time.
+Review of the Approach in Williams’ ACC Lower Bound
+It will be useful to review the previous approach ([52]) ﬁrst, and see where we deviate
+from it.8 Let the circuit C be given as above. First, assuming NEXP ⊂C (which implies
+Circuit-Eval ∈C), there is an equivalent poly(n)-size C circuit D equivalent to C. Since we
+are allowed to use non-deterministic algorithms, we might try to guess a C circuit D, and
+verify that D is equivalent to C. If this veriﬁcation can be done in 2n/nω(1) time, then we
+could apply the Gap-UNSAT algorithm for C to the circuit D, and solve Gap-UNSAT for C.
+Indeed, this is the original approach of Wiliams [52].
+Since the NAND gate (NAND(z1, z2) := ¬(z1 ∧z2)) is universal, we may assume C consists
+of m = poly(n) NAND gates, the ﬁrst n gates are the inputs (that is, the i-th gate is the
+input bit xi for i ∈[n]), and the m-th gate is the output gate. Let Ci be the subcircuit of C
+where the i-th gate is the output. Since we are assuming Circuit-Eval ∈C, for all Ci there is
+always an equivalent C-circuit Ti of poly(n) size.
+The overall guess-and-verify algorithm works as follows:
+Guess m −n C-circuits Tn+1, Tn+2, . . . , Tm, such that Ti is intended to be equivalent to
+Ci. For i ∈[n], we set Ti to be a trivial circuit which always outputs the i-th bit of the
+input.
+8 Our presentation here is slightly diﬀerent from the original proof.
+CCC 2019
+
+19:10
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+For i ∈{n+1, n+2, . . . , m}, let i1 and i2 be the indices of the two gates which are inputs
+to the i-th gate of C. We want to verify
+NAND(Ti1(x), Ti2(x)) = Ti(x)
+(1)
+is true for all x ∈{0, 1}n. This can be reduced to solving SAT for AND3 ◦C circuits.
+If all the above checks pass, then we know Tm is equivalent to C.
+The Proof System View
+The above approach requires using SAT algorithms to verify (1) is true for all x ∈{0, 1}n,
+whereas we only want to assume non-trivial Gap-UNSAT algorithms (which could be much
+weaker). Here we present a diﬀerent perspective on the above approach.
+Letting π(x) := (Tn+1(x), Tn+2(x), . . . , Tm(x)), we can view π(x) as a certain “locally-
+checkable proof” for C(x) = 1.
+That is, C(x) = 1 if and only if there is a proof
+π(x) ∈{0, 1}m−n such that for the string z = x ◦π(x) (◦means concatenation), we
+have NAND(zi1, zi2) = zi for all i ∈{n + 1, n + 2, . . . , m}, and zm = 1.
+Can we obtain something better from the “locally-checkable” perspective? We may
+write all the constraints checked in our proof system as a 3-CNF formula ϕ on z = x ◦π(x)
+of ℓ= O(m) = poly(n) clauses. (Note, this simply mimics the standard reduction from
+Circuit-Eval to 3-SAT.) Suppose the i-th clause is Fi(z) := ∨3
+j=1(zij ⊕bi,j).
+As before, we guess C circuits Tn+1(x), Tn+2(x), . . . , Tm(x), but this time with the
+intention that T(x) = (Tn+1(x), Tn+2(x), . . . , Tm(x)) is the correct proof for input x.
+When C is a tautology, there is a guess T(x) such that Ex∼Un Ei∈[ℓ][Fi(x ◦T(x))] = 1.
+Otherwise, for all guessed T(x), we have Ex∼Un Ei∈[ℓ][Fi(x ◦T(x))] ≤1/n10 + ℓ−1
+ℓ,
+since for at least a 1 −1/n10 fraction of inputs, we have C(x) = 0, and therefore at most
+ℓ−1 clauses can be satisﬁed by x ◦T(x).
+Note that Fi(x◦T(x)) is an OR3◦C circuit. We can try to estimate Ex∼Un[Fi(x◦T(x))] for
+each i ∈[ℓ] to distinguish between the above two cases. Note there is only a 1/ℓ= 1/ poly(n)
+gap between the above two cases. Therefore, this argument does show that, if we assume to
+have non-trivial CAPP algorithms for OR3◦C with 1/ poly(n) error, the above guess-and-verify
+approach already suﬃces to obtain lower bounds against C.
+However, in our case, we are only assuming to have a Gap-UNSAT algorithm with a
+constant gap. It is not clear how to make further progress with the above idea.
+A Better Proof System?
+The above idea does not work, essentially because the described “proof system” is a pretty
+bad PCP! Given the pair (x, T(x)), if the veriﬁer draws a random i ∈[ℓ] and checks whether
+the clause Fi is satisﬁed, it is only promised to detect an error with probability ≥1/ℓwhen
+C(x) = 0 and the proof T(x) is incorrect. In other words, it has a completeness/soundness
+gap of only 1/ℓ= 1/ poly(n). A natural response to this observation is to try using a better
+proof system for proving that C(x) = 1; it comes as no surprise that we turn to the PCP
+Theorem [5, 6].
+However, there is a subtle issue. In the above proof system, the veriﬁer does not need to
+know the input x beforehand, and only needs to query a bit of x when verifying a clause Fi
+containing that bit. The most important property here is that the veriﬁer’s queries do not
+depend on the input x, as otherwise we cannot formulate the condition “the veriﬁer accepts
+with the random index i and proof T(x) on input x” as a simple function Fi(x ◦T(x)) which
+can be represented by an OR3 ◦C circuit.
+
+L. Chen and R. R. Williams
+19:11
+Suppose we forced the veriﬁer to access the input x using only O(1) queries, as in the
+above proof system, but the circuit is computing a highly-sensitive function such as the
+parity of x. There is no way that a veriﬁer querying x for only O(1) times can correctly
+infer (with high probability) that the parity of x is odd! This is because if the parity of x is
+odd, the parity will change if we ﬂip a random bit of x, so it is not possible for a veriﬁer to
+distinguish between these two cases with constant probability, if the veriﬁer can only query
+x for O(1) times.
+Error Correcting Codes and Probabilistic Checkable Proofs of Proximity
+To avoid the above trivial counterexample, our next key idea is to provide the PCP veriﬁer
+an error-correcting encoding of the input. Now we are at the right position to introduce
+the main technical concept used in this paper: Probabilistic Checkable Proofs of Proximity
+(PCPP) for the Circuit-Eval problem. When properly applied, PCPPs allow us to reduce the
+error requirement on the CAPP algorithms from inverse polynomial to only a constant.
+In this type of proof system9, a circuit E is ﬁxed in advance, the veriﬁer V (E) gets
+oracle access to the input x of length n and a proof string π, tosses some random coins, and
+makes at most 3 non-adaptive queries. The proof system has constant parameters δ > 0 and
+s ∈(0, 1), and satisﬁes two important properties:
+(Perfect Completeness.) E(x) = 1 ⇒there is a π such that Pr[V (E) accepts x ◦π] = 1.
+(Soundness on inputs far from being correct.) If x is δ-far from the set {y : E(y) = 1},
+where δ is the proximity parameter, then for all possible proofs π, V (E) accepts x ◦π
+with probability at most s < 1.
+To clarify the second point, we are saying that if x has hamming distance more than δn
+from all y that satisfy E, then V (E) has decent probability of rejection on any proof π.
+Suppose we use a linear error correcting code with an eﬃcient encoder Enc and decoder
+Dec, and deﬁne the circuit E by E(y) := C(Dec(y)). That is, E treats its input y as an
+encoding of an input to the circuit C; it ﬁrst decodes y to a string z, then feeds z to C to
+get its output.
+Let x ∈{0, 1}n be an input to C. We instantiate a PCP of proximity proof system with
+the circuit E and the input Enc(x). It is not hard to see that when C(x) = 0, Enc(x) is
+δ1-far from the accepting inputs for E for a constant δ1 depending on the error correcting
+code. We can ensure that δ1 > δ.
+The Final Reduction
+Now, suppose there are ℓpossible outcomes of the random coins, and assume that the
+proof π is of length ℓas well. Let Fi(Enc(x) ◦T(x)) be the indicator that given a random
+outcome i ∈[ℓ], whether the veriﬁer V (E) accepts the oracle Enc(x) ◦T(x). By deﬁnition,
+Fi(Enc(x) ◦T(x)) is a function on 3 coordinates of Enc(x) ◦T(x) (we can assume WLOG
+that Fi is simply an OR, by using a special PCP of proximity proof system; see Lemma 24).
+Note that a bit of Enc(x) is just a parity over a subset of bits in x. For simplicity, let us
+further assume C = THR ◦THR, which can compute parity (note, this assumption can be
+removed). Then Fi(Enc(x) ◦T(x)) can now be formulated as an OR3 ◦C circuit. Now we
+proceed similarly as before.
+9 see Deﬁnition 20
+CCC 2019
+
+19:12
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+We again try to guess C circuits T1(x), T1(x), . . . , Tℓ(x), but this time with the hope that
+T(x) = (T1(x), T2(x), . . . , Tℓ(x)) is the correct proof for the veriﬁer V (E) given input
+Enc(x).
+When C is a tautology, there is a guess T(x) such that Ex∼Un Ei∈[ℓ][Fi(Enc(x)◦T(x))] = 1.
+Otherwise, for all guesses T(x), Ex∼Un Ei∈[ℓ][Fi(Enc(x) ◦T(x))] ≤1/n10 + s, since for at
+least a 1 −1/n10 fraction of inputs, we have C(x) = 0, and therefore at most an s fraction
+of Fi’s can be satisﬁed by Enc(x) ◦T(x), because Enc(x) is δ-far from any accepting
+input to E.
+In this new situation, it now suﬃces to estimate Ex∼Un[Fi(x ◦T(x))] for each i ∈[ℓ]
+within suﬃciently small constant error. A careful examination of the above argument shows
+it suﬃces to use a non-trivial Gap-UNSAT algorithm for AND3 ◦C circuits with a constant gap
+(note that the negation of Fi is an AND3 ◦C circuit), because we have perfect completeness
+in the case where C is a tautology.
+Lower Bounds From CAPP Algorithms for OR2 ◦C, AND2 ◦C, or ⊕2 ◦C Circuits
+The above shows how to use a non-trivial CAPP algorithm for OR3 ◦C; how can we use
+a non-trivial CAPP algorithm for OR2 ◦C, AND2 ◦C, or ⊕2 ◦C? The natural idea is to
+instead use a 2-query PCPP for Circuit-Eval. Unfortunately, there is no PCPP with only 2
+queries with perfect completeness for Circuit-Eval, unless P = NP.10 Thus we must use a
+construction with imperfect completeness. Luckily, there is a 2-query PCPP for Circuit-Eval
+with a constant soundness/completeness gap (Lemma 25). We use that PCPP in the above
+argument, together with other ideas, to establish the connection with a non-trivial CAPP
+algorithm for OR2 ◦C, AND2 ◦C or ⊕2 ◦C circuits.
+1.7
+Related Work
+For more history on previous works on lower bounds for constant-depth threshold circuits,
+see the corresponding sections in [51, 31]. We only discuss a few recent results here.
+In 2014, Williams [51] showed that NEXP is not contained in ACC0◦THR, by devising a fast
+satisﬁability algorithm for ACC0 ◦THR. The lower bound was recently improved by Murray
+and Williams [34] to show NTIME[npolylog(n)] is not contained in ACC0 ◦THR. Tamaki [44],
+Alman, Chan and Williams [3] proved that ENP does not have n2−o(1) size THR◦THR circuits.
+Most recently, Williams [48] showed that there are functions in NTIME[nlogω(1)(n)] that can
+not be represented by a linear combination of polynomially many ACC0 ◦THR circuits.
+Tell [46] constructed a quantiﬁed derandomization algorithm for TC circuits with depth d
+and n1+exp(−d) wires, and showed that a modest improvement of his algorithm would imply
+standard derandomization of TC0, and consequently NEXP ̸⊆TC0.
+Using random restrictions, Kane and Williams [31] proved that any THR ◦THR circuits
+computing Andreev’s function requires eΩ(n1.5) gates and eΩ(n2.5) wires. Chattopadhyay
+and Mande [16] recently showed an exponential size separation between THR ◦MAJ and
+THR ◦THR, by constructing a function in THR ◦THR with exponential sign-rank.
+10 A 2-query PCPP for Circuit-Eval with perfect completeness implies a 2-query PCP for NP with perfect
+completeness [11], which in turn implies P = NP, as 2-SAT is in P.
+
+L. Chen and R. R. Williams
+19:13
+1.8
+Organization of the Paper
+In Section 2 we discuss necessary preliminaries. In Section 3 we prove equivalences between
+non-trivial circuit analysis tasks of THR ◦THR and that of THR ◦MAJ or MAJ ◦MAJ. In
+Section 4 we establish a tighter connection between non-trivial derandomization and circuit
+lower bounds. In Section 5, we propose approaches toward proving NEXP ̸⊂THR ◦THR. In
+Section 6 we prove lower bounds for various g
+Sumε ◦C circuits. In Section 7 we prove two
+new structure lemmas for THR ◦THR circuits.
+2
+Preliminaries
+The Circuit Evaluation Problem (Circuit-Eval) is the language of pairs {(C, w)} such that
+when C is a general fan-in-2 circuit and w is a Boolean input, (C, w) ∈Circuit-Eval if and
+only if C(w) = 1. For two strings a, b, we use a ◦b to denote their concatenation11.
+2.1
+Circuit Classes
+Let C be a circuit class. We use Cs
+n to denote the set of C of circuits with n inputs and size at
+most s. Slightly abusing notation, we also use Cs
+n to denote the Boolean functions computed
+by circuits in Cs
+n, when convenient.
+We say a circuit class C is typical, if given the description of a circuit C from Cs
+n, for all
+indices 1 ≤i, j ≤n and b ∈{0, 1}, the following functions are in Cs
+n:
+¬C, C(x1, . . . , xi−1, xj ⊕b, xi+1, . . . , xn), C(x1, . . . , xi−1, b, xi+1, . . . , xn).
+Furthermore, we require that given a description of C, descriptions of all the above circuits
+can be constructed in poly(s) time. That is, C is typical if it is closed under both eﬃciently-
+computable negation and eﬃciently-computable projection.
+Notations for Circuit Classes
+As many circuit classes are discussed in this work, we begin with some notation for such
+classes.
+Let x ∈{0, 1}n. For w ∈Rn and t ∈R, we deﬁne THRw,t(x) (the threshold function)
+to be the indicator function for the condition w · x ≥t. Similarly, ETHRw,t(x) (the exact
+threshold function) is the indicator function for the condition w · x = t. The values in the
+vector w are called the weights, and the real t is called the threshold of THRw,t and ETHRw,t.
+We say these weights and thresholds are realizations of the Boolean functions they deﬁne. A
+ﬁxed Boolean function may have many diﬀerent realizations. It is known that, without loss of
+generality, the weights and thresholds are integers of absolute value at most 2O(n log n) [33, 7].
+For a threshold or exact threshold function with weight w, we call L(x) := w · x its associated
+linear function.
+We use MAJn and EMAJn to denote the corresponding threshold (exact threshold)
+functions on n inputs where all weights are 1 and the threshold value is n/2. Slightly abusing
+notation, we also use THR, ETHR, MAJ, EMAJ to denote the classes of all such functions. We
+also consider ⊕k (PARITY), ANDn, and ORn, with their usual meanings. We use DORn
+to denote the disjoint OR function, that is, an OR function with the promise that at most
+11 Note that we also use ◦for the composition of two circuits, but throughout the paper the meaning of
+the symbol ◦will always be clear from the context
+CCC 2019
+
+19:14
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+one input bit is true over all inputs. We use Gap-ORn,δ to denote the gap-OR function on
+n inputs, that is, an OR function with the promise that either all n inputs are false, or at
+least a 1 −δ fraction of the n inputs are true. (The function may have undeﬁned behavior
+on other inputs.)
+For two classes of functions like THR and MAJ, we use THR ◦MAJ to denote the
+corresponding class of depth-two circuits. Similar notations are used for more than two classes.
+We use AC0[m]d to denote depth-d AC0[m] circuits (with unbounded fan-in OR, AND,
+and MODm gates). We use LTd to denote the depth-d THR circuit class, that is, LTd :=
+THR ◦. . . ◦THR
+|
+{z
+}
+d times
+. Similarly, we use c
+LTd to denote its unweighted version, that is, c
+LTd :=
+MAJ ◦. . . ◦MAJ
+|
+{z
+}
+d times
+.
+Previous Known Containment Results
+We need the following known circuit classes containment results for this paper.
+▶Proposition 18. The following hold:
+1. THR ⊆MAJ ◦MAJ [21, 27].
+2. THR ⊆DOR ◦ETHR [24]. (also see Appendix B)
+3. MAJ ◦THR and MAJ ◦ETHR are contained in MAJ ◦MAJ [21, 24].
+4. ETHR ◦ETHR ⊆THR ◦THR [24].
+5. AND ◦ETHR ⊆ETHR [24].
+6. EMAJ ⊆MAJ ◦AND2 [24].
+7. ⊕k ◦THR ◦THR ⊆THR ◦THR for a constant k. (see Appendix B)
+8. THR ◦EMAJ ⊆THR ◦MAJ [24].
+Moreover, all the above have corresponding polynomial-time, deterministic constructions.
+For the containment THR ⊆DOR◦ETHR, we present an alternative proof in Appendix B,
+which is more eﬃcient than the previously known construction of Hansen and Podolskii [24].12
+The last containment is folklore; we present a proof in Appendix B for completeness.
+2.2
+Approximation Theory
+We need the following standard result from approximation theory.
+▶Lemma 19 ([39] Corollary.1.4.1). Let 0 < ε1 < ε2 < 1/2 be two constants, there is an
+Oε1,ε2(1) degree polynomial P : R →R, such that:
+for all z ∈[−ε2, ε2], P(z) ∈[−ε1, ε1], and
+for all z ∈[1 −ε2, 1 + ε2], P(z) ∈[1 −ε1, 1 + ε1].
+2.3
+Probabilistic Checkable Proofs of Proximity
+The concept of probabilistically checkable proofs of proximity is crucial for this paper. In
+the following we introduce its deﬁnition and several instantiations useful for this paper.
+12 Hansen and Podolskii [24] proved that a THR gate on n bits with weights of absolute value no greater
+than W, can be written as a DOR of O(n2 · log W) many ETHR gates. In Appendix B we show it can
+be improved to O(n · log W) many ETHR gates.
+
+L. Chen and R. R. Williams
+19:15
+▶Deﬁnition 20 (Probabilistic Checkable Proofs of Proximity (PCP of proximity, or PCPP)).
+For s, δ : N →[0, 1] and r, q : N →N, a veriﬁer V is a PCP of proximity system for a pair
+language L with proximity parameter δ, soundness parameter s, number of random bits r
+and query complexity q if the following holds for all x, y:
+If (x, y) ∈L, there is a proof π such that V (x) accepts oracle y ◦π with probability 1.
+If y is δ(|x|)-far from L(x) := {z : (x, z) ∈L}, then for all proofs π, V (x) accepts oracle
+y ◦π with probability at most s(|x|).
+V (x) tosses r(|x|) random coins, and makes at most q(|x|) non-adaptive queries.
+▶Remark 21. We can also relax the ﬁrst condition to be that there is a proof π such that
+V (x) accepts oracle y ◦π with probability at least c = c(|x|), where c is the completeness
+parameter. In the above deﬁnition we assume c = 1, i.e., the perfect completeness.
+▶Lemma 22 (Theorem 3.3 in [11]). For any constants 0 < δ, s < 1, there is a PCP of
+proximity system for Circuit-Eval with proximity δ, soundness s, number of random bits
+r = O(log n) and query complexity q = O(1). Moreover, given the pair (C, w) ∈Circuit-Eval,
+a proof π making V (C) always accepts can be constructed in poly(|C| + |w|) time.
+▶Remark 23. The moreover part is not explicitly stated in [11], but it is evident from the
+constructions.
+The exact number of queries used in a PCPP will be signiﬁcant for us, so we use query-
+eﬃcient PCPPs. They are already implicit in the literature; for completeness, we provide
+expositions for them in Appendix A.
+▶Lemma 24 (3-query PCPP with perfect completeness). For any constant δ > 0 there is
+a constant 0 < s < 1, such that there is a PCP of proximity system for Circuit-Eval with
+proximity δ, soundness s, random bits r = O(log n), and query complexity q = 3. Moreover,
+the system satisﬁes two additional properties:
+(1) Given the random coins, the veriﬁer simply computes an OR on these 3 queried bits or
+their negations, and accepts iﬀthe OR is true.
+(2) Given the pair (C, w) ∈Circuit-Eval, we can construct a proof π in poly(|C| + |w|) time
+that makes V (C) accept with probability 1.
+▶Lemma 25 (2-query PCPP with constant completeness/soundness gap). For any constant
+δ > 0 there two constants 0 < s < c < 1, such that there is a PCP of proximity system
+for Circuit-Eval with proximity δ, soundness s, completeness c, number of random bits
+r = O(log n) and query complexity q = 2. Moreover, it satisﬁes two additional properties:
+(1) Given the random coins, the veriﬁer computes an OR on the 2 queried bits or their
+negations, and accepts iﬀthe OR is true.
+(2) Given the pair (C, w) ∈Circuit-Eval, a proof π can be constructed in poly(|C| + |w|) time
+that makes V (C) accept with probability at least c.
+CCC 2019
+
+19:16
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+2.4
+Error Correcting Codes
+We also need standard constructions of constant-rate linear error correcting codes.
+▶Lemma 26 ([43]). There is a constant δ > 0 such that there is a constant-rate linear
+error correcting code ECC with minimum relative distance δ, an eﬃcient encoder Enc and an
+eﬃcient decoder Dec recovering error up to c1 · δ, where c1 is a universal constant.
+We use a slight modiﬁcation of the above construction, which is convenient when we want
+to guess-and-verify a circuit for the encoder.
+▶Lemma 27. There is a constant δ > 0 such that there is a constant-rate linear error
+correcting code ECC with minimum relative distance δ, an eﬃcient encoder Enc and an
+eﬃcient decoder Dec recovering error up to c1 · δ, where c1 is a universal constant. Moreover,
+each bit of the codeword depends on at most n/2 bits of the input.
+Proof. Given a message x ∈{0, 1}n, we split it into three parts x1, x2, x3, each of length
+between ⌊n/3⌋and ⌈n/3⌉. Let Enc′ and Dec′ be the corresponding encoder and decoder of
+Lemma 26.
+We construct our new error correcting code by setting Enc(x) := Enc′(x1) ◦Enc′(x2) ◦
+Enc′(x3). Given a codeword y, we split it into three strings y1, y2, y3 of appropriate lengths,
+and let Dec(y) := Dec′(y1) ◦Dec′(y2) ◦Dec′(y3).
+◀
+2.5
+Norms and Inequalities for Functions on Boolean Cube
+For our lower bounds on approximate sums of functions, we will require a bit of Fourier
+analysis on Boolean functions. Here we introduce some notations and inequalities for real-
+valued functions on the Boolean hypercube. (See [36] for an excellent reference on this
+topic.)
+Let f : {0, 1}n →R be a function and p ∈R+. We deﬁne
+∥f∥p :=
+
+E
+x∼Un [|f(x)|p]
+1/p
+.
+We also deﬁne the inﬁnity norm in the usual way:
+∥f∥∞=
+max
+x∈{0,1}n |f(x)|.
+By the standard relations between diﬀerent Lp-norms, for all 0 < p < q ≤∞, we have
+∥f∥p ≤∥f∥q.
+For two functions f, g : {0, 1}n →R, we deﬁne their inner product as
+⟨f, g⟩:=
+E
+x∼Un[f(x) · g(x)].
+Note that the Cauchy-Schwarz inequality implies ⟨f, g⟩≤∥f∥2 · ∥g∥2. We need the following
+simple lemma for this paper.
+▶Lemma 28. For functions f1, f2 and g1, g2 from {0, 1}n →R and positive ε, α ∈R,
+suppose for all i ∈[2] we have:
+∥fi∥2 ≤α and ∥gi∥2 ≤α,
+∥fi −gi∥2 ≤ε.
+Then ⟨f1, f2⟩−⟨g1, g2⟩∥≤2 · α · ε.
+
+L. Chen and R. R. Williams
+19:17
+Proof. We have
+∥⟨f1, f2⟩−⟨g1, g2⟩∥≤∥⟨f1, f2⟩−⟨f1, g2⟩∥+ ∥⟨f1, g2⟩−⟨g1, g2⟩∥
+≤∥⟨f1, f2 −g2⟩∥+ ∥⟨f1 −g1, g2⟩∥
+≤2 · α · ε.
+◀
+2.6
+Connections Between Nondeterministic Gap-UNSAT Algorithms
+and Circuit Lower Bounds
+We also appeal to several known connections between Gap-UNSAT algorithms which improve
+upon exhaustive search and circuit lower bounds against nondeterministic time classes [49,
+30, 41, 13].
+▶Theorem 29 ([49]). If Gap-UNSAT with gap 1 −1/n10 for (general) circuits with n inputs
+and poly(n) size is solvable in O(2n/nω(1)) nondeterministic time, then NEXP doesn’t have
+poly(n)-size (general) circuits.
+▶Theorem 30 ([34]). If there is an ε > 0 such that Gap-UNSAT with gap 1 −1/n10 for
+(general) circuits with n inputs and 2εn size is solvable in O(2n−εn) nondeterministic time,
+then for every k there is a function in NP that does not have nk-size (general) circuits.
+▶Theorem 31 (Corollary 12 in Tell [45], following [34]). If there is a δ > 0 and c ≥1 such
+that Gap-UNSAT with gap 1 −1/n10 for (general) circuits with n variables and m gates is
+solvable in O(2n(1−δ) · mc) nondeterministic time, then for every unbounded α(n) such that
+nα(n) is time-constructible, there is a function in NTIME[nα(n)] that is not in P/ poly.
+▶Theorem 32 ([34]). If there is an ε > 0 such that Gap-UNSAT with gap 1 −1/n10 for
+(general) circuits with n inputs and 2nε size is solvable in O(2n−nε) nondeterministic time,
+then for every k there is a function in NTIME[npoly(log n)] that does not have nlogk n-size
+(general) circuits.
+3
+Equivalence Between Algorithmic Analysis of THR ◦THR and of
+THR ◦MAJ or MAJ ◦MAJ
+In this section, building on our new structure lemmas for THR◦THR circuits. We show several
+equivalence results between canonical circuit-analysis tasks (SAT or CAPP) of THR ◦THR
+circuits and that of THR ◦MAJ or MAJ ◦MAJ circuits.
+3.1
+Poly-Size THR ◦MAJ and THR ◦THR are Equivalent for
+Circuit-Analysis Algorithms
+We ﬁrst show that, in terms of designing non-trivial circuit-analysis algorithms, THR ◦THR
+and THR ◦MAJ circuits are essentially equivalent.
+▶Reminder of Theorem 1. The following two statements hold:
+Equivalence of Non-Trivial SAT Algorithms: There is a non-trivial SAT algorithm
+for THR ◦MAJ circuits of poly(n)-size if and only if there is such an algorithm for
+poly(n)-size THR ◦THR circuits.
+Equivalence of Non-Trivial CAPP Algorithms With Constant Error: For any
+constant δ > 0, If there is a non-trivial CAPP algorithm with error δ for THR ◦MAJ
+circuits of poly(n) size, then there is a non-trivial CAPP algorithm with error δ + 1/n for
+poly(n)-size THR ◦THR circuits.
+CCC 2019
+
+19:18
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+Proof. We begin with the ﬁrst equivalence. We only have to show that a 2n/nω(1) time
+SAT algorithm for poly(n)-size THR ◦MAJ circuits implies such an algorithm for THR ◦THR
+circuits. By Lemma 16, given any THR ◦THR circuit of poly(n) size, in poly(n) time we can
+construct an equivalent poly(n)-size Gap-OR ◦THR ◦MAJ circuit C. Applying the assumed
+SAT algorithm for THR◦MAJ circuits on all THR◦MAJ subcircuits of C completes the proof
+of the ﬁrst equivalence.
+For the second equivalence, given any THR ◦THR circuit C of poly(n) size, we construct
+in poly(n) time a Gap-OR1/n ◦THR ◦MAJ circuit D that is equivalent to C, by Lemma 16.
+Let D1, D2, . . . , Dm be the THR ◦MAJ subcircuits of C, where m = poly(n).
+By the deﬁnition of a Gap-OR1/n gate, for all x ∈{0, 1}n, we have
+C(x) −
+E
+i∈[m] Di(x)
+ ≤1/n.
+Therefore, to estimate Ex∼Un[C(x)] within error δ + 1/n, it suﬃces to estimate Ex∼Un[Di(x)]
+for each i ∈[m] within error δ. Applying the non-trivial CAPP algorithm for THR ◦MAJ
+circuits from the assumption completes the proof.
+◀
+With an argument similar to the proof of Theorem 1 and using the fact that MAJ◦THR ⊆
+MAJ ◦MAJ (potentially multiple times), it is not hard to generalize Theorem 1 to hold for
+TC circuits of any constant depth d.
+▶Reminder of Corollary 2. The following two statements hold for any constant d:
+Equivalence of Non-Trivial SAT Algorithms: There is a non-trivial SAT algorithm
+for THR ◦c
+LTd−1 circuits of poly(n)-size if and only if there is such an algorithm for
+poly(n)-size LTd circuits.
+Equivalence of Non-Trivial CAPP Algorithms With Constant Error: For any
+constant ε > 0, if there is a non-trivial CAPP algorithm with error ε for THR ◦c
+LTd−1
+circuits of poly(n)-size, then there is a non-trivial CAPP algorithm with error ε + 1/n for
+poly(n)-size LTd circuits.
+3.2
+Weaker Equivalence Between Poly-Size THR ◦THR and
+MAJ ◦MAJ
+We also show a weaker equivalence for THR ◦THR and MAJ ◦MAJ circuits.
+▶Reminder of Theorem 3. The following two statements hold:
+Equivalence of 2(1−ε)n-time SAT Algorithms: If SAT for poly(n)-size MAJ ◦MAJ
+circuits is in 2(1−ε)n time for some constant ε > 0, then SAT for poly(n)-size THR ◦THR
+circuits is in 2(1−ε′)n time for some ε′ > 0.
+Equivalence of Non-Trivial CAPP Algorithms with Inverse Polynomial Error:
+If there is a non-trivial CAPP algorithm with 1/poly(n) error for poly(n)-size MAJ ◦MAJ
+circuits, then there is a non-trivial CAPP algorithm with 1/ poly(n) error for poly(n)-size
+THR ◦THR circuits.
+Proof. We begin with the ﬁrst equivalence.
+The ﬁrst equivalence. Suppose we have a 2(1−ε1)n time SAT algorithm for poly(n) size
+MAJ ◦MAJ circuits for a constant ε1 > 0, and want to design a 2n−Ω(n) time SAT
+algorithm for poly(n) size THR ◦THR circuits.
+Let c be the hidden constant in the big-O of the fan-in of the top DOR gate from
+Lemma 17. Set ε := ε1/2c, and apply Lemma 17 to the given poly(n)-size THR ◦THR
+
+L. Chen and R. R. Williams
+19:19
+circuit. We obtain an equivalent DOR ◦MAJ ◦MAJ circuit with top fan-in 2cεn = 2ε1/2·n
+and poly(n)-size MAJ ◦MAJ subcircuits. Then we can apply our SAT algorithm for
+poly(n)-size MAJ ◦MAJ circuits to solve the SAT problem for poly(n) size THR ◦THR
+circuits, which completes the proof of the ﬁrst equivalence.
+The second equivalence. To show the second equivalence, suppose for all constants k′, there
+is a CAPP algorithm for poly(n)-size MAJ ◦MAJ circuits with error 1/nk′. We have to
+design such an algorithm for poly(n)-size THR ◦THR circuits.
+Given a THR ◦THR circuit C of s = poly(n) ≤nc1 size and a constant k, we want to
+estimate
+E
+x∼Un[C(x)]
+(2)
+within error 1/nk.
+Since THR ⊆DOR ◦ETHR (item (2) of Proposition 18), we can write C as a DOR of
+m = poly(s) = poly(n) ETHR ◦THR subcircuits C1, C2, . . . , Cm. By the deﬁnition of
+DOR, we have
+E
+x∼Un[C(x)] =
+E
+x∼Un
+" m
+X
+i=1
+Ci(x)
+#
+=
+m
+X
+i=1
+E
+x∼Un[Ci(x)].
+Therefore, in order to estimate (2) within error 1/nk, it suﬃces to estimate
+E
+x∼Un[Ci(x)]
+within error 1/(m · nk) for each i ∈[m].
+So ﬁx an i ∈[m]. Let D = Ci, and let D’s top ETHR gate be G. By construction, G
+has weights of absolute value at most 2nc, for a constant c depending on c1. Deﬁne
+L : {0, 1}n →Z so that L(x) is the value of the linear function associated with G on
+input x. That is, D(x) = 1 if and only if L(x) = T for the threshold T of G.
+Suppose we pick a random prime number p in the interval [2, M], where M = n2c · (2m ·
+nk)2 ≤poly(n). Then for a ﬁxed x ∈{0, 1}n, if L(x) ̸= T, the probability that L(x) ≡T
+(mod p) is less than 1/(2m · nk).
+Recall that for a prime p and an ETHR gate G(x) = [Pn
+i=1 wi · xi = T], we use Gp to
+denote its “mod p” version (see Deﬁnition 41). Let Dp denote the circuit obtained by
+replacing the top G gate in D by Gp. For all x ∈{0, 1}n, by the above discussion, we
+have
+D(x) −
+E
+prime p ∈[2, M][Dp(x)]
+ ≤1/(2m · nk).
+Therefore, in order to estimate Ex∼Un[D(x)] within error 1/(m·nk), it suﬃces to estimate
+E
+x∼Un[Dp(x)]
+for all primes p ≤M, within error 1/(2m · nk).
+By Lemma 42, each Dp can be written as a DOR of O(n) EMAJ◦ETHR circuits of poly(n)
+size. Since EMAJ ⊆MAJ ◦AND2, AND ◦ETHR ⊆ETHR and MAJ ◦ETHR ⊆MAJ ◦MAJ
+(items (6), (5), and (3) of Proposition 18), Dp can be further written as a DOR of cn
+MAJ ◦MAJ circuits Dp
+1, Dp
+2, . . . , Dp
+cn of poly(n) size, for a universal constant c.
+CCC 2019
+
+19:20
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+Therefore, to estimate Ex∼Un[Dp(x)] within error 1/(2m · nk), it suﬃces to estimate
+Ex∼Un[Dp
+i (x)] within error 1/(2m · nk · cn), for each i ∈[cn].
+Observe that 2m · nk · cn ≤poly(n), and all Dp
+i ’s are poly(n)-size MAJ ◦MAJ circuits.
+Applying the assumed CAPP algorithm completes the proof of the second equivalence.
+◀
+Again applying the fact that MAJ ◦THR ⊆MAJ ◦MAJ, the generalization to TC circuits
+of any constant depth d is immediate.
+▶Reminder of Corollary 4. The following two statements hold for any constant d:
+Equivalence of 2(1−ε)n-time SAT Algorithms: If SAT for c
+LTd circuits of poly(n)-size
+is in 2(1−ε)n time for a constant ε > 0, then SAT for poly(n)-size LTd circuits is in
+2(1−ε′)n time for some ε′ > 0.
+Equivalence of Non-trivial CAPP Algorithms with inverse polynomial error:
+If there is a non-trivial CAPP algorithm with 1/poly(n) error for poly(n)-size c
+LTd circuits,
+then there is a non-trivial CAPP algorithm with 1/ poly(n) error for poly(n)-size LTd
+circuits.
+4
+Tighter Connection Between Derandomization and Circuit Lower
+Bounds
+In this section we show that C circuit lower bounds for NEXP or NP follow from better-than-2n
+time derandomization of AND3 ◦C, OR2 ◦C, ⊕2 ◦C or AND2 ◦C circuits.
+▶Reminder of Theorem 5. There is an absolute constant δ > 0, such that for any typical
+circuit class C, if one of the following holds:
+there is a non-trivial Gap-UNSAT algorithm with gap δ for poly(n)-size AND3 ◦C circuits,
+or
+there is a non-trivial CAPP algorithm with error δ for poly(n)-size OR2 ◦C, ⊕2 ◦C, or
+AND2 ◦C circuits,
+then NEXP ̸⊂C. Moreover, in the second bullet, C does not need to be closed under negation.
+Proof. We use Un to denote the uniform distribution on {0, 1}n.
+We will show there is an absolute constant δ > 0, such that if one of the algorithmic
+assumptions of the theorem holds and NEXP ⊂C, then Gap-UNSAT with gap 1 −1/n10 for
+poly(n)-size general circuits can be solved in 2n/nω(1) non-deterministic time. This proves
+the theorem, since by Theorem 29, we have NEXP ̸⊂P/ poly, which is a contradiction to
+NEXP ⊂C.
+We are given a poly(n)-size general circuit C : {0, 1}n →{0, 1} with the promise that
+either C is unsatisﬁable, or C has at least (1 −1/n10) · 2n satisfying assignments. Our goal
+is to distinguish between these two cases in 2n/nω(1) non-deterministic time.
+Let δ1 > 0 be the constant of Lemma 27. We ﬁx a constant-rate linear error correcting code
+with minimum relative distance δ1, as guaranteed by Lemma 27. Let Enc : {0, 1}n →{0, 1}cn
+and Dec : {0, 1}cn →{0, 1}n be the corresponding encoder and decoder, where c ≥1 is a
+constant corresponding to the rate of the code. Let δDec = c1 · δ1, which is error rate that
+Dec can recover.
+We also need a C circuit for the parity function on n/2 bits for computing Enc (by
+Lemma 27, the code is linear, and each output bit depends on at most n/2 input bits). By
+the assumption NEXP ⊂C, the parity function must have a C-circuit of poly(n) size. We
+can guess a C-circuit Parn/2, and brute-force verify that it is correct in 2n/2 · poly(n) time.
+
+L. Chen and R. R. Williams
+19:21
+Let D : {0, 1}cn →{0, 1} be the circuit deﬁned as D(y) = ¬C(Dec(y)). Since C has
+poly(n) size and Dec is eﬃcient, D also has poly(n) size. Then we can see
+Pr
+x∼Un[C(x) = 0] = Pr
+x∼Un[D(Enc(x)) = 1] = Pr
+x∼Un[(D, Enc(x)) ∈Circuit-Eval].
+With non-trivial Gap-UNSAT algorithms for poly-size AND3 ◦C circuits. We ﬁrst prove
+the theorem under the ﬁrst assumption. For that purpose we make use of a PCP of
+proximity system V for Circuit-Eval, with δPCPP < δDec, r = O(log n), q = 3 and a constant
+s < 1, whose existence is guaranteed by Lemma 24. We ﬁx the circuit to be D, and write
+the veriﬁer as V (D).
+We can view the veriﬁcation of V (D) as m = 2r(|D|) = poly(n) many constraints on the
+oracle y ◦π. We can also assume |π| = ℓ= poly(n). Suppose there are F1, F2, . . . , Fm
+constraints on y ◦π, each constraint is an OR on q = 3 variables or their negations.
+Then the properties of PCP of proximity system translate to:
+If y = Enc(x) such that C(x) = 0, then D(y) = 1 and there is a proof π ∈{0, 1}ℓsuch
+that all constraints Fi’s are satisﬁed by y ◦π.
+If y = Enc(x) such that C(x) = 1, then for all z ∈{0, 1}cn with dist(z, y) ≤δDec, we
+have D(z) = C(Dec(z)) = C(x) = 0. Therefore, y is δDec-far from Circuit-Eval(D) =
+{z : z ∈{0, 1}cn and (D, z) ∈Circuit-Eval}. Since δDec > δPCPP, we have that for all
+proofs π ∈{0, 1}ℓ, at most a s fraction of constraints Fi’s are satisﬁed by y ◦π.
+When C is unsatisﬁable, then there is a proof π(x) for each y = Enc(x), such that V (D)
+accepts y ◦π(x) with probability 1. Note that by Lemma 24, such a proof π(x) can be
+computed in polynomial time from y and D, which in particular means that π(x) admits
+a polynomial-size circuit, hence each bit of π(x) admits a nproof = poly(n) size C circuit
+(here we use the assumption that NEXP ⊂C).
+Next, we guess a list of nproof-size C circuits T1, T2, . . . , Tℓsuch that
+T(x) = (T1(x), T2(x), . . . , Tℓ(x))
+is intended to be the proof π(x) for y = Enc(x). Slightly abusing notation, we also use Fi
+to denote the function Fi(x) := Fi(Enc(x) ◦T(x)). Since a bit of Enc(x) is just a parity
+on at most n/2 bits in x, and since C is typical, each Fi can be written as an OR3 ◦C
+circuit. We also set Ei(x) = ¬Fi(x), which is an AND3 ◦C circuit.
+Therefore, when C is unsatisﬁable, by the previous discussion, on some guesses of the
+Ti’s, we have
+Pr
+x∼Un[V (D)Enc(x)◦T (x) = 1] =
+E
+x∼Un
+E
+i∈[m][Fi(x)] = 1.
+Therefore, for all i ∈[m],
+E
+x∼Un[Ei(x)] = 0.
+When C has at most 2n/n10 unsatisfying assignments, for all possible T1, T2, . . . , Tℓ, we
+have
+E
+x∼Un
+E
+i∈[m][Fi(x)] ≤1/n10 + s.
+By an averaging argument, there must be an i such that
+E
+x∼Un[Fi(x)] ≤1/n10 + s,
+CCC 2019
+
+19:22
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+or equivalently
+E
+x∼Un[Ei(x)] ≥1 −s −1/n10 ≥1 −s
+2
+.
+Next, we set δ = 1−s
+2 . When C is unsatisﬁable, all Ei’s are unsatisﬁable on the correct
+guesses. When C has at most 1/n10 · 2n unsatisfying assignments, then for all guesses,
+there is at least one i such that Ei has at least δ·2n satisfying assignments. Hence, solving
+Gap-UNSAT with gap δ for all Ei’s suﬃces to non-deterministically distinguish between
+the two cases. By the ﬁrst assumption, that takes 2n/nω(1) time, and the theorem follows
+from Theorem 29.
+With non-trivial CAPP algorithms for poly(n)-size AND2 ◦C, ⊕2 ◦C or OR2 ◦C circuits.
+The theorem under the second assumption can be proved similarly if we use the 2-query
+PCP of proximity system for Circuit-Eval instead, which is given by Lemma 25. The proof
+here is similar in parts to the one we just described for AND3 ◦C; for completeness we
+will give the proof in full.
+Now we make use of a PCP of proximity system V for Circuit-Eval, with δPCPP < δDec,
+r = O(log n), q = 2 and constants 0 < s < c < 1, whose existence is guaranteed by
+Lemma 25. We again ﬁx the circuit to be D, and write the veriﬁer as V (D).
+Similarly, we can view the veriﬁcation of V (D) as m = 2r(|D|) ≤poly(n) many con-
+straints on the oracle y ◦π. We can also assume |π| = ℓ≤poly(n). Suppose there
+are F1, F2, . . . , Fm constraints on y ◦π, where each constraint is a function on q = 2
+coordinates of y ◦π.
+Then the properties of PCP of proximity system translate to:
+If y = Enc(x) such that C(x) = 0, then D(y) = 1 and there is a proof π ∈{0, 1}ℓsuch
+that at least a c-fraction of Fi’s are satisﬁed by y ◦π.
+If y = Enc(x) such that C(x) = 1, then for all z ∈{0, 1}cn with dist(z, y) ≤δDec, we
+have D(z) = C(Dec(z)) = C(x) = 0. Therefore, y is δDec-far from Circuit-Eval(D).
+Since δDec > δPCPP, we have that for all proofs π ∈{0, 1}ℓ, at most an s-fraction of
+Fi’s are satisﬁed by y ◦π.
+If C is unsatisﬁable, then there is a proof π(x) for each y = Enc(x) that makes V (D)
+accept y ◦π(x) with probability at least c. By Lemma 24, such a proof π(x) can be
+computed in polynomial time from y and D, which in particular means that π(x) has a
+polynomial-size circuit. Therefore each output bit of π(x) has an nproof = poly(n) size
+C-circuit, from the assumption that NEXP ⊂C.
+The next step is to guess a list of nproof-size C circuits T1, T2, . . . , Tℓsuch that T(x) =
+(T1(x), T2(x), . . . , Tℓ(x)) is supposed to the proof π(x) given input y = Enc(x). Slightly
+abusing notation, Fi is also used to denote the function Fi(x) := Fi(Enc(x) ◦T(x)).
+When C is unsatisﬁable, by the previous discussion, there is a guess of Ti’s such that
+Pr
+x∼Un[V (D)Enc(x)◦T (x) = 1] =
+E
+x∼Un
+E
+i∈[m][Fi(x)] ≥c.
+When C has at most 2n/n10 unsatisfying assignments, then for all possible T1, T2, . . . , Tℓ,
+we have
+E
+x∼Un
+E
+i∈[m][Fi(x)] ≤1/n10 + s.
+Now set δ1 := c−s
+2 . In order for us to non-deterministically distinguish between the above
+two cases, it suﬃces to estimate
+E
+x∼Un[Fi(x)]
+
+L. Chen and R. R. Williams
+19:23
+to within δ1, for each i ∈[m].
+Since each output bit of Enc(x) is simply a parity on at most n/2 bits of x, each Fi can
+be written as a function Fi(x) = P(C1(x), C2(x)), where C1, C2 are two C circuits, and
+P is a function from {0, 1}2 →{0, 1}. (Recall that in this case, we do not require C to be
+closed under negation.)
+Now we write P as a polynomial:
+P(z1, z2) =
+X
+S⊆[2]
+αS ·
+Y
+i∈S
+zi =
+X
+S⊆[2]
+αS ·
+^
+i∈S
+zi,
+where each coeﬃcient αS ∈[−4, 4]. Given two C circuits C1, C2, to estimate
+E
+x∼Un[P(C1(x), C2(x))] =
+X
+S⊆[2]
+αS ·
+E
+x∼Un
+"^
+i∈S
+Ci(x)
+#
+within error δ1, it suﬃces to estimate each
+E
+x∼Un
+"^
+i∈S
+Ci(x)
+#
+within error δ = δ1/16. Finally, we can apply our assumed non-trivial CAPP algorithm
+for poly(n)-size AND2 ◦C circuits to non-deterministically distinguish the two cases, and
+the theorem follows from Theorem 29.
+When we only have non-trivial CAPP algorithms for ⊕2 ◦C or OR2 ◦C circuits, we can
+simply write P in the basis of OR functions or ⊕functions instead. That is, we can write
+P(z1, z2) =
+X
+S⊆[2]
+α′
+S ·
+M
+i∈S
+zi,
+or
+P(z1, z2) =
+X
+S⊆[2]
+α′′
+S ·
+_
+i∈S
+zi.
+The rest of the argument is the same as the case of AND2 ◦C circuits.
+◀
+Using Theorem 30, the following theorem can be proved with the same argument as of
+Theorem 5.
+▶Reminder of Theorem 6. There is an absolute constant α > 0, such that for any typical
+circuit class C, if there is a constant δ such that one of the following holds:
+Gap-UNSAT for 2δn-size AND3 ◦C circuits with gap α can be solved in 2n−δn time, or
+CAPP for 2δn-size OR2 ◦C, ⊕2 ◦C, or AND2 ◦C circuits with error α can be solved in
+2n−δn time,
+then for every k there is a function in NP that doesn’t have nk-size C circuits. Moreover, in
+the second bullet, C does not need to be closed under negation.
+5
+Approaches For THR ◦THR Circuit Lower Bounds
+In this section we propose approaches for proving NEXP ̸⊂THR ◦THR. We will see that
+surprisingly weak algorithms suﬃce for proving this lower bound.
+Applying Theorem 5 and the fact that ⊕2 ◦THR ◦THR ⊆THR ◦THR, we ﬁrst show
+that NEXP ̸⊂THR ◦THR would follow from a non-trivial CAPP algorithm for poly(n)-size
+THR ◦THR circuits.
+CCC 2019
+
+19:24
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+▶Reminder of Theorem 8. There is an absolute constant δ > 0, such that if δ-error CAPP
+for poly(n)-size THR◦THR circuits can be solved in 2n/nω(1) time, then NEXP ̸⊂THR◦THR.
+The same is true with SAT in place of CAPP.
+Proof. The theorem for CAPP follows directly from the fact that ⊕2◦THR◦THR ⊆THR◦THR
+(item (7) of Proposition 18) and Theorem 5.
+Suppose SAT for poly(n)-size THR ◦THR circuits can be solved in 2n/nω(1) time. By
+Theorem 5, it suﬃces to give a 2n/nω(1) time algorithm for solving SAT for AND3◦THR◦THR
+circuits of poly(n) size (note that Gap-UNSAT is easier than SAT).
+Given such an AND3 ◦THR◦THR circuit C, we ﬁrst use the fact that THR ⊆DOR◦ETHR
+(item (2) of Proposition 18) to transform it into a poly(n) size AND3 ◦DOR ◦ETHR ◦ETHR
+circuit C′.
+Treating the DOR as an addition gate (that has at most one true input), and the
+AND3 as a multiplication, we can apply distributivity to the circuit. Together with the
+fact that AND ◦ETHR ⊆ETHR (item (5) of Proposition 18), C′ is then equivalent to a
+DOR ◦ETHR ◦ETHR circuit C′′ of poly(n) size.
+Finally, observe that solving SAT for C′′ can be reduced to solving SAT for its poly(n)
+ETHR ◦ETHR subcircuits, and note that ETHR ◦ETHR can be converted eﬃciently into
+THR◦THR (item (4) of Proposition 18). Therefore, applying the 2n/nω(1) time SAT algorithm
+for poly(n)-size THR ◦THR circuits from the assumption completes the proof.
+◀
+In fact, similar results apply to TC circuits of any constant depth d (i.e., LTd circuits).
+The following theorem can be proved in exactly the same way.
+▶Reminder of Theorem 9. There is an absolute constant δ > 0, such that for any constant
+d, if CAPP for poly(n)-size LTd circuits with error δ can be solved in 2n/nω(1) time, then
+NEXP ̸⊂LTd. The same is true with SAT in place of CAPP.
+Now, combing Theorem 8 and our equivalence theorems (Theorem 1 and Theorem 3),
+the following corollary follows immediately.
+▶Reminder of Corollary 10. There is an absolute constant δ > 0, such that if one of the
+following holds:
+1. CAPP (or SAT) for poly(n)-size THR◦MAJ circuits with error δ can be solved in 2n/nω(1)
+time, or
+2. CAPP for poly(n)-size MAJ ◦MAJ circuits with 1/poly(n) error can be solved in 2n/nω(1)
+time.
+Then NEXP ̸⊂THR ◦THR.
+6
+Lower Bounds for
+g
+Sumε ◦C Circuits
+We now present our lower bounds for various g
+Sumε ◦C circuits. In the following we slightly
+abuse notation, by also using C to denote a class of functions from {0, 1}n →R. Note that
+Boolean circuit classes are special cases of real-valued function classes. We also assume C
+contains the constant functions 0 and 1 for simplicity.
+We ﬁrst deﬁne the Sum-Product problem over functions from C.
+Sum-Product over C
+Given k functions f1, . . . , fk : {0, 1}n →R from C, compute
+X
+x∈{0,1}n
+k
+Y
+i=1
+fi(x).
+
+L. Chen and R. R. Williams
+19:25
+6.1
+The Main Challenge: Guessed Sumε ◦C Circuits Could be Invalid
+The main idea is to follow the proof of Theorem 5. Suppose we are given g
+Sumε ◦C circuits
+C1 and C2 computing two Boolean functions f1 and f2, respectively. One can see that their
+product C(x) := C1(x)·C2(x) (which is a real function on {0, 1}n), is an (3·ε)-approximation
+to f1 ∧f2, for small enough ε > 0.
+Therefore, if we simply computed
+X
+x∈{0,1}n
+C1(x) · C2(x),
+(3)
+we would have estimated Prx∈{0,1}n[(f1(x) ∧f2(x)) = 1] within 3ε. Note that if C1 (C2)
+is a linear sum of m1 (m2) C-circuits, then the above quantity can be reduced to m1 · m2
+instances of the sum-product problem over C.
+However, the above reasoning does not complete the proof. The problem is that in the
+proof of Theorem 5, one actually has to guess the g
+Sumε ◦C circuits which are supposed to
+compute the PCPP proofs. It could well be the case that our guessed representations are not
+valid at all. That is, it could be that for some x ∈{0, 1}n, PS
+i=1 αi · Ci(x) is much larger
+than 1, or much less than 0. If C1 and C2 are not valid Sumε ◦C circuits to begin with, then
+the quantity (3) would not be useful.
+6.2
+Testing Whether a Linear Representation is Close to Boolean
+This issue also occurs in Williams’ lower bounds on Sum ◦C circuits [48]. There, the problem
+is solved by using a clever algorithm to verify whether a given Sum ◦C circuit is valid. In
+particular, the test of whether a Sum ◦C outputs 0 or 1 on every Boolean input is eﬀectively
+reduced to a small number of Sum-Product calls. But this argument crucially uses the fact
+that the Sum ◦C must output one of two discrete values on every Boolean input. It appears
+to be much harder to verify that a given g
+Sumε ◦C circuit is valid.
+We will later show that it suﬃces to test whether a given g
+Sumε ◦C circuit is close to a
+Boolean function with respect to ℓ2 distance, in which case we know how to get an algorithm.
+It will be convenient to introduce some notation. Let dbin(z) = minb∈{0,1} |z −b|. Intuit-
+ively, dbin(z) measures how close z is to a bit-value. For a function f : {0, 1}n →R, deﬁne
+its closest binary function binf as follows: for all x ∈{0, 1}, if f(x) ≥1/2, binf(x) := 1,
+otherwise binf(x) := 0. By deﬁnition, for any p > 0 we have
+∥f −binf∥p =
+
+E
+x∼Un [|dbin(f(x))|p]
+1/p
+,
+and
+∥f −binf∥∞=
+max
+x∈{0,1}n |dbin(f(x))| .
+Let f = PS
+i=1 αi · Ci be a linear combination of functions from C; we wish to verify that f is
+a g
+Sumε ◦C circuit for some Boolean function. With respect to the above deﬁnitions, f is a
+valid g
+Sumε ◦C circuit for some Boolean function if and only if ∥f −binf∥∞≤ε.
+The following algorithm shows that, given an algorithm for evaluating the Sum-Product
+of 4 functions from C, the algorithm can be used to distinguish between the case that
+∥f −binf∥∞is small and the case that ∥f −bin∥2 is large.
+CCC 2019
+
+19:26
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+▶Lemma 33. For S ∈N, suppose we are given S reals {αi}i∈[S], S functions from C
+{Ci}i∈[S], and parameter ε < 0.01. Suppose Sum-Product of 4 functions on n bits from C
+can be solved in T(n) time. Let f = PS
+i=1 αi · Ci.
+There is an algorithm A such that:
+If ∥f −binf∥∞≤ε, then A always accepts. (That is, if PS
+i=1 αi · Ci is a valid g
+Sumε ◦C
+circuit for some Boolean function, then A always accepts.)
+If ∥f −binf∥2 ≥3 · ε, then A always rejects.
+Otherwise, A can output anything.
+A runs in T(n) · (S + 1)4 + 2o(n) time.
+Proof. We deﬁne a polynomial of degree 4,
+P(z) := z2 · (1 −z)2,
+to approximate dbin(z). Simple calculations conﬁrm the following facts about P(z):
+P(z) ≤dbin(z)2 · (1 + dbin(z))2, and
+P(z) ≥dbin(z)2 · 2−2.
+When dbin(z) ≤ε, we have P(z) ≤ε2 · (1 + ε)2. This means that if ∥f −binf∥∞≤ε, then
+we have
+E
+x∼Un [P(f(x))] ≤ε2 · (1 + ε)2 ≤ε2 · (1 + 0.01)2.
+On the other hand, if ∥f −binf∥2 ≥3 · ε, then by deﬁnition we have
+E
+x∼Un
+
+dbin(f(x))2
+≥(3 · ε)2,
+therefore
+E
+x∼Un [P(f(x))] ≥(3/2)2 · ε2.
+Therefore, it suﬃces to compute
+E
+x∼Un [P(f(x))]
+(4)
+to distinguish between these two cases.
+Expanding out P(f(x)) = P(PS
+i=1 αi · Ci), it can be written as a R-sum of at most
+(S + 1)4 products of 4 functions from C. By rearranging the order of summation (summing
+all (S + 1)4 terms ﬁrst), we see that (4) can be evaluated by making at most (S + 1)4 calls
+to the assumed Sum-Product algorithm. Assuming that algorithm runs in T(n) time, the
+sum (4) can be evaluated in time T(n) · (S + 1)4 + 2o(n).
+◀
+6.3
+Meta-Theorem for
+g
+Sumε ◦C Lower Bounds
+Now we are ready to prove the following meta theorem for lower bounds on g
+Sumε ◦C circuits.
+▶Theorem 34. Suppose every C ∈C has a poly(n)-bit representation, where each C can be
+evaluated in poly(n) time. Assume there is a δ > 0 such that for all constant integers k > 0,
+there is a poly(n) · 2n−δn-time algorithm for computing the Sum-Product of k functions on n
+bits from C. Then:
+
+L. Chen and R. R. Williams
+19:27
+For every k and constant ε < 1/2, there is a function in NP without g
+Sumε ◦C circuits of
+nk sparsity.
+For every unbounded function α(n) such that nα(n) is time-constructible, NTIME[nα(n)]
+doesn’t have g
+Sumε ◦C circuits of polynomial sparsity for all constant ε < 1/2.
+The most important component in the proof of the above meta-theorem is an argument
+that we can solve Gap-UNSAT faster, given a non-trivial algorithm for evaluating Sum-
+Product of functions from C and the assumption that Circuit-Eval has a small g
+Sumε ◦C circuit.
+Formally, we have the following lemma, whose proof follows similar reasoning as the proof of
+Theorem 5, while taking care of the issue that a guessed g
+Sumε ◦C circuit may not be a valid
+one with the algorithm from Lemma 33.
+▶Lemma 35. There is an absolute constant ε > 0 such that if:
+there is a δ > 0 such that for all integers k ≤4, there is a poly(n) · 2n−δn-time algorithm
+for computing the Sum-Product of k functions on n bits from C, and
+Circuit-Eval has a g
+Sumε ◦C circuit of sparsity nk for some k > 0,
+then there is a non-deterministic 2n−δn · poly(n, s) time algorithm for Gap-UNSAT with gap
+1 −1/n10, on general (fan-in 2) circuits with n inputs and s gates.
+Proof. Suppose we are given an s-size general circuit C : {0, 1}n →{0, 1} with the promise
+that either C is unsatisﬁable or C has at least (1 −1/n10) · 2n satisfying assignments. We
+want to distinguish between these two cases in 2n−δn · poly(n, s) non-deterministic time.
+Let δ1 be the constant from Lemma 27. Fix a constant-rate linear error correcting code
+with minimum relative distance δ1, as guaranteed by Lemma 27, letting Enc : {0, 1}n →
+{0, 1}cn and Dec : {0, 1}cn →{0, 1}n be the corresponding encoder and decoder, for a
+constant c corresponding to the rate of the code. Let δDec = c1 · δ1, which is error rate that
+Dec can recover.
+We also need a g
+Sumε ◦C circuit for the parity function on n/2 bits for computing Enc
+(by Lemma 27, the code is linear and each output bit depends on at most n/2 input bits).
+Applying the second assumption of the theorem, and the fact that parity reduces easily to
+Circuit-Eval (parity has linear-size circuits), there is a g
+Sumε◦C circuit of sparsity nparity = nO(k)
+for the parity function on n/2 inputs. We can guess such a g
+Sumε ◦C circuit Parn/2 of nparity
+size, and verify it is correct in 2n/2 · poly(nparity) = 2n/2 · poly(n) time, as in the proof of
+Theorem 5.
+Let D : {0, 1}cn →{0, 1} be the circuit deﬁned as D(y) = ¬C(Dec(y)). Since C is of s
+size and Dec is eﬃcient, D is of size nD = poly(n, s).
+Then we observe that
+Pr
+x∼Un[C(x) = 0] = Pr
+x∼Un[D(Enc(x)) = 1] = Pr
+x∼Un[(D, Enc(x)) ∈Circuit-Eval].
+Now we make use of a PCP of proximity system V for Circuit-Eval, with parameters
+δPCPP < δDec, r = O(log n), q = 2, and constants 0 < s < c < 1, with existence guaranteed
+by Lemma 25. We ﬁx the circuit to be D, and write the veriﬁer as V (D).
+We can view the veriﬁcation of V (D) as m = 2r(|D|) = poly(nD) ≤poly(n, s) constraints
+on the oracle y ◦π. We can also assume |π| = ℓ≤poly(n, s). Suppose there are m constraints
+F1, F2, . . . , Fm on y ◦π, where each constraint is a function on two coordinates of y ◦π. Then
+the properties of the PCP of proximity yield the following consequences:
+If y = Enc(x) such that C(x) = 0, then D(y) = 1 and there is a proof π ∈{0, 1}ℓsuch
+that such that at least a c-fraction of the Fi’s are satisﬁed by y ◦π.
+CCC 2019
+
+19:28
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+If y = Enc(x) such that C(x) = 1, then for all z ∈{0, 1}cn with dist(z, y) ≤δDec, we
+have D(z) = C(Dec(z)) = C(x) = 0. Therefore, y is δDec-far from Circuit-Eval(D). Since
+δDec > δPCPP, we have that for all proofs π ∈{0, 1}ℓ, at most an s-fraction of the Fi’s are
+satisﬁed by y ◦π.
+When C is unsatisﬁable, it means there is a proof π(x) for each y = Enc(x), so that V (D)
+accepts y ◦π(x) with probability at least c. Note that by Lemma 25, such a proof π(x) can
+be computed in polynomial time from y and D, which in particular means that π(x) admits
+a poly(n, nD) = poly(n, s)-size circuit. By our second assumption, each bit of π(x) therefore
+has a g
+Sumε ◦C circuit of sparsity nproof = poly(n, s)O(k) ≤poly(n, s).
+Now, we guess a list of (presumably) g
+Sumε ◦C circuits T1, T2, . . . , Tℓeach of sparsity nproof,
+and denote Hi = binTi. We want H(x) = (H1(x), H2(x), . . . , Hℓ(x)) to be the proof π(x) for
+the input y = Enc(x). Let each Ti = Pnproof
+j=1 αi,j · Ei,j, where each αi,j ∈R and Ei,j ∈C.
+Slightly abusing notation, we also use Fi to denote the function Fi(x) := Fi(Enc(x) ◦H(x)).
+First, for all i, we apply the test of Lemma 33 on Ti with parameter ε. We reject
+immediately if some test rejects. Note that by Lemma 33 and our ﬁrst assumption, all the
+tests take 2n−δn · poly(n, s) time in total.
+If all guesses are valid g
+Sumε ◦C circuits, (that is, ∥Hi −Ti∥∞≤ε for all i), then all the
+tests are passed by Lemma 33. Furthermore if all tests passed, we know that ∥Hi−Ti∥2 ≤3·ε
+for all i ∈[ℓ] by Lemma 33.
+Therefore, when C is unsatisﬁable, by the previous discussion, there is some guess of Ti’s
+such that
+Pr
+x∼Un[V (D)Enc(x)◦H(x) = 1] = Pr
+x∼Un Pr
+i∈[m][Fi(x) = 1] ≥c.
+When C has at most 2n/n10 unsatisfying assignments, then for all possible T1, T2, . . . , Tℓ,
+we have
+Pr
+x∼Un Pr
+i∈[m][Fi(x)] ≤1/n10 + s.
+Note that Fi is a function on two coordinates of Enc(x) ◦H(x). In particular, since each bit
+of Enc(x) is a just a parity of some inputs in x (it is a linear code), we only need to estimate
+the following quantity for a function P : {0, 1}2 →{0, 1}:
+E
+x∼Un[P(L1(x), L2(x))],
+(5)
+where for each function Li(x), we have an approximate linear representation Ti = Pnﬁnal
+j=1 αi,j ·
+Ei,j, such that ∥Ti −Li∥2 ≤3 · ε, where each Ei,j ∈C and nﬁnal = max(nproof, nparity) ≤
+poly(n, s).13 (Note that when Li(x) is a bit in the error correcting code, we can simply use
+the guessed circuit Parn/2.)
+Let ε2 = c−s
+2 . In order to non-deterministically distinguish between the above two cases,
+we only have to estimate (5) within error ε2.
+We can write P : {0, 1}2 →{0, 1} as a multi-linear polynomial, with
+P(z) :=
+X
+S⊆[2]
+αS ·
+Y
+i∈S
+zi,
+13 Here we don’t need the fact that Fi is an OR on variables or their negations.
+
+L. Chen and R. R. Williams
+19:29
+where each αS ∈[−22, 22]. Therefore, to estimate (5) within ε2, we only need to estimate
+E
+x∼Un
+"Y
+i∈S
+Li(x)
+#
+within error ε2/16, for each |S| ≥1. (when S = ∅, it is 1 by deﬁnition.)
+Now, instead of the above, we compute
+E
+x∼Un
+"Y
+i∈S
+Ti(x)
+#
+.
+(6)
+When |S| = 1 and in particular S = {i}, we have
+E
+x∼Un [Li(x)] −
+E
+x∼Un [Ti(x)] ≤∥Li −Ti∥1 ≤∥Li −Ti∥2 ≤3 · ε.
+When |S| = 2, we want to bound
+|⟨L1, L2⟩−⟨T1, T2⟩|.
+Since Li is Boolean, we have ∥Li∥2 = 1, and therefore ∥Ti∥2 ≤1 + 3 · ε by the triangle
+inequality. By Lemma 28, we have
+|⟨L1, L2⟩−⟨T1, T2⟩| ≤(1 + 3ε) · 2 · 3ε.
+Now we set ε such that (1 + 3ε) · 2 · 3ε = ε2/16.
+Finally, for each S ⊆[2], computing (6) can be reduced to n|S|
+ﬁnal ≤poly(n, s) evaluations
+of Sum-Products of |S| ≤2 functions on n bits from C. By assumption, thse evaluations can
+be computed in 2n−δn · poly(n, s) time, which completes the proof.
+◀
+Now we are ready to prove Theorem 34.
+Proof of Theorem 34. For the ﬁrst consequence, assume every function in NP has a g
+Sumε
+circuit of nk sparsity, for some ﬁxed k > 0 and 0 < ε < 0.5. Let ε1 be the absolute constant
+speciﬁed in Lemma 35. By Lemma 19, there is a polynomial P of degree d = O(1), such that
+for all b ∈{0, 1}, if |z −b| ≤ε then |P(z) −b| ≤ε1.
+Let L : {0, 1}⋆→{0, 1} be any function in NP and Pnk
+i=1 αi · Ci be the g
+Sumε ◦C circuit
+for Ln : {0, 1}n →{0, 1}, where each Ci ∈C.
+Consider the function
+P
+
+
+nk
+X
+i=1
+αi · Ci
+
+.
+(7)
+By the deﬁnition of P, for all x ∈{0, 1}n, we have
+
+P
+
+
+nk
+X
+i=1
+αi · Ci(x)
+
+−Ln(x)
+
+≤ε1.
+Expanding the expression of (7) into a sum of products, we obtain a g
+Sumε1 ◦C⊗d circuit
+for Ln of sparsity nk′, where C⊗d consists of all possible products of d functions from C, and
+k′ ≤O(d · k) ≤O(k). Observe that the Sum-Product problem for at most 4 functions from
+CCC 2019
+
+19:30
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+C⊗d is simply the Sum-Product problem for at most 4 · d functions from C, which admits a
+poly(n) · 2n−δn time algorithm by assumption.
+Since Circuit-Eval ∈NP, both conditions of Lemma 35 are now satisﬁed for C⊗d. Therefore
+Gap-UNSAT with gap 1 −1/n10 for s-gate n-input circuits of fan-in 2 has a 2n−δn · poly(n, s)
+time non-deterministic algorithm. It follows from Lemma 30 that, for every k, there is
+a function in NP which does not have general circuits of nk size and fan-in 2. This is a
+contradiction, since every g
+Sumε ◦C circuit of nk sparsity can be simulated by an nα·k-size
+general fan-in-2 circuit, for a universal constant α ≥1.
+The second consequence follows the same way, by applying Theorem 31 instead.
+◀
+6.4
+Lower Bounds for
+g
+Sumε ◦THR/ReLU/Fp-polynomials
+In order to apply Theorem 34, we need the following algorithms from [48], for computing the
+Sum-Product of O(1) functions from the function classes we care about.
+▶Lemma 36 (Theorem 4.1 in [48]). The Sum-Product of k THR functions on n variables
+(with weight in [−nn, nn]) can be computed in 2n/2 · nO(k) time.
+▶Lemma 37 (Theorem 5.1 in [48]). The Sum-Product of k ReLU functions on n variables
+(with weight in [−W, W]) can be computed in 2n/2 · nO(k) · poly(k, n, log W) time.
+▶Lemma 38 (Theorem 6.1 in [48]). The Sum-Product of k degree-d polynomials p1, . . . , pk ∈
+Fp[x1, . . . , xn] can be computed in p2k · (1.9n + 2n−n/(6dp)) · poly(n) time.
+Applying Theorem 34 with the above algorithms for computing the Sum-Product for
+functions from THR, ReLU and O(1)-degree Fp-polynomials, Theorem 12, Theorem 13 and
+Theorem 14 follow immediately.
+6.5
+Lower Bounds for
+g
+Sumε ◦ACC0 ◦THR
+Theorem 15 follows via a similar argument as Theorem 34, and the known #SAT algorithms
+for ACC0 ◦THR [52]. Formally, we prove
+▶Reminder of Theorem 15. For every d, m ≥1 and ε ∈[0, 0.5), there is a b ≥1 and an
+f ∈NTIME[nlogb n] that does not have g
+Sumε ◦AC0
+d[m] ◦THR circuits of na size, for every a.
+Using the argument of Lemma 35, we can show:
+▶Lemma 39. There is an absolute constant ε > 0 such that if the following two conditions
+hold:
+there is a δ > 0 such that for all integer k ≤4, there is a poly(n) · 2n−nδ-time algorithm
+for computing the Sum-Product of k functions on n bits from C, and
+Circuit-Eval has a g
+Sumε ◦C of sparsity nk for some k > 0.
+Then there is non-deterministic 2n−nδ · poly(n, s) time algorithm for Gap-UNSAT with
+gap 1 −1/n10 and a general fan-in-2 circuit with n input and s gates.
+Theorem 15 then follows from exactly the same arguments as that of Theorem 34,
+combining the following two facts:
+1. For every depth d and integer m ≥2, there is an ε > 0 such that the Sum-Product of
+O(1) AC0
+d[m] ◦THR circuits of 2nε size can be computed in 2n−nε time. This simply
+applies the algorithm for counting satisfying assignments of AC0
+d[m] ◦THR circuits ([51]).
+
+L. Chen and R. R. Williams
+19:31
+2. If for some α > 0 there is a nondeterministic 2n−nα-time Gap-UNSAT algorithm with
+gap 1 −1/n10 for 2nα-size circuits, then for every a ≥1, there is a b ≥1 such that
+NTIME[nlogb n] does not have nloga n-size circuits (this is a theorem of Murray and
+Williams [34]).
+6.6
+A Note on the Coeﬃcients in the
+g
+Sumε ◦C Circuits
+In our proof, we have to guess a g
+Sumε ◦C circuit, so it is crucial that all g
+Sumε ◦C circuits we
+consider have “reasonable” coeﬃcients, with in poly(n)-bit complexity. When all functions
+in C are Boolean-valued, the following proposition provides this guarantee.
+▶Proposition 40. Let ε ∈[0, 0.5) be a constant of bit complexity b.14 Let C be a class of
+functions with co-domain {0, 1}, and let C be a Sumε ◦C circuit of sparsity s for a Boolean
+function f : {0, 1}n →{0, 1}. There is an equivalent g
+Sumε ◦C circuit C′ such that every
+weight in the linear combination of C has the form j/k, where both j and k are integers in
+[−spoly(s,b), spoly(s,b)].
+Proof. Let C be a linear combination of s functions from C. We may assume without loss of
+generality that these s functions are linearly independent. The problem of ﬁnding coeﬃcients
+for these s functions to ε-approximate a given boolean function f is equivalent to ﬁnding a
+solution to a certain linear programming instance ∥Ax −b∥∞≤ε in s unknowns over the
+rationals, where b ∈{0, 1}2n represents the truth-table of the function f and A ∈{0, 1}2n×s.
+Standard results from the theory of linear programming show that, if the instance is
+feasible, then there is a valid solution corresponding to the unique solution of a linear system
+where some of the inequalities are tight (that is (Ax −b)i = ε or (Ax −b)i = −ε). Then
+proposition then follows from Cramer’s rule.
+◀
+The case for g
+Sumε ◦ReLU circuits is more involved. Luckily, Maass [32] showed that the
+weights for such a circuit of sparsity s needs only poly(s, n) bits of precision.
+7
+Structure Lemmas for THR ◦THR Circuits
+In this section we present our structure lemmas for THR ◦THR circuits. We ﬁrst need a
+simple construction, which will be used in both proofs.
+▶Deﬁnition 41 (Mod p Exact Threshold Gate). Let G be an ETHR gate with n inputs, p
+be a prime and Gp be the “mod p” version of G. That is, let L and T be the corresponding
+linear function and threshold of G, Gp(x) := [L(x) ≡T (mod p)].
+▶Lemma 42. Let G be an ETHR gate with n inputs and p be a prime. Then Gp can be
+written as a DOR ◦ETHR circuit such that
+The top DOR gate has O(n) fan-in.
+All ETHR gates have positive weights and thresholds smaller than O(np).15
+Proof. Let w1, w2, . . . , wn and T be the corresponding weights and threshold of G. Reduce
+each weight wi in G to wi mod p (the corresponding integer between 0 and p −1). This
+yields another circuit with associate top linear function L′(x), whose value is always at
+most np. Setting t = T mod p, L(x) ≡T (mod p) is equivalent to L′(x) = t + k · p for
+14 That is, we assume ε can be speciﬁed as the ratio of two b-bit integers.
+15 Therefore, when p ≤poly(n), the ETHR gate can be seen as an EMAJ gate.
+CCC 2019
+
+19:32
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+some k ∈{0, 1, 2, . . . , n}. Therefore, by taking an OR over all possible k on the condition
+L′(x) = t + k · p, it is a disjoint OR, and we obtain the equivalent DOR ◦ETHR circuit.
+◀
+7.1
+Proof of Structure Lemma I
+We begin with the proof of Structure Lemma I for THR ◦THR circuits (restated below).
+▶Reminder of Lemma 16. Let n be number of inputs, s = s(n) ≥n be a size parameter
+and δ = δ(n) be the error parameter. Every s-size THR ◦THR circuit C is equivalent to a
+Gap-ORδ ◦THR ◦MAJ circuit such that:
+The top Gap-ORδ gate has poly(s, δ−1) fan-in.
+Each sub THR ◦MAJ circuit has size poly(s, δ−1).
+Moreover, the reduction can be computed in deterministic poly(s, δ−1) time.
+Proof. Let C′ be the given THR ◦THR circuit. By negating some of its input gates (THR is
+closed under negation), we may assume all weights in the top THR gate of C′ are ≤0. Since
+every THR can be converted into a DOR ◦ETHR (item (2) of Proposition 18), C′ can be
+transformed into an equivalent THR ◦ETHR circuit C of size t = poly(s).
+Let G1, G2, . . . , Gt, w1, w2, . . . , wt be the ETHR gates on the bottom layer and their
+corresponding weights in the top gate of C. By assumption, we also have wi ≤0 for all i.
+Let T be the threshold of the top gate. For all inputs x of n bits, we have
+C(x) =
+"
+t
+X
+i=1
+wi · Gi(x) ≥T
+#
+.
+By construction, we may assume that the weights in Gi are bounded by 2nc for a constant c.
+Suppose we ﬁx an input x, and let p be a random prime from 2 to n2c · t2 · δ−1 = poly(s, δ−1).
+With probability at least 1 −δ/t, we have Gp
+i (x) = Gi(x). Let Cp be the circuit obtained by
+replacing all Gi’s in C by corresponding Gp
+i ’s.
+When C(x) = 1, it follows from a union bound that Cp(x) = C(x) = 1 with probability
+at least 1 −δ. When C(x) = 0, note that for all primes p, we have Gp
+i (x) ≥Gi(x) for all i,
+therefore we must have Ps
+i wi · Gp
+i (x) ≤Ps
+i wi · Gi(x) < T (all wi’s are ≤0) and Cp(x) = 0.
+Therefore C is equivalent to a Gap-ORδ over all Cp’s, for every prime p (recall their
+total number is poly(s, δ−1)). By Lemma 42, each Cp can be expressed as a poly(s, δ−1)-
+size THR ◦EMAJ circuit. Converting each THR ◦EMAJ into a THR ◦MAJ (item (8) of
+Proposition 18) completes the proof.
+◀
+7.2
+Proof of Structure Lemma II
+Now we turn to proving Lemma 17. The proof has two steps, provided by Lemma 43 and
+Lemma 45.
+▶Lemma 43 (Weight Reduction at the Top THR gate). Every size-s THRd ◦C circuit (having
+a top THR gate of fan-in d) is equivalent to a DOR ◦ETHR ◦C circuit such that:
+The top DOR gate has poly(d) fan-in.
+Each ETHR gate has fan-in d, with positive weights and threshold value, all of which are
+less than poly(d) · 2n.
+The C-part is unchanged.
+The same statement also holds for ETHRd ◦C circuits. Moreover, the reductions can be
+computed in randomized poly(s) time.
+
+L. Chen and R. R. Williams
+19:33
+Proof. We only consider the THRd ◦C case (the ETHRd ◦C case is even easier).
+Let C be the given circuit. First, by the fact that THR ⊆DOR ◦ETHR (item (2) of
+Proposition 18), C can be transformed to an equivalent DOR ◦ETHR ◦C circuit C′.
+Let G be a ETHR gate in C′; note that G has fan-in d. Let D be the subcircuit with top
+gate G. By construction, G has weights of absolute value at most Mold = 2poly(d).
+Next, we deﬁne L : {0, 1}n →Z such that L(x) is the value of the linear function
+associated with the gate G when the input is x. That is D(x) = 1 if and only if L(x) = T
+for the threshold T of G.
+Pick a random prime number m in the interval [2, Mnew], where Mnew = dc · 2n and c
+is a suﬃciently large constant. For a ﬁxed x ∈{0, 1}n, if L(x) ̸= T, the probability that
+L(x) ≡T (mod m) is smaller than
+log(Mold)
+Mnew/ ln(Mnew) =
+poly(d)
+Θ(2n · dc/(n + c log d)) ≤d−c/2/2n,
+for a suﬃciently large c. Applying the union bound over all inputs x, with probability at
+least 1 −d−c/2, we have L(x) ≡T (mod m) if and only if L(x) = T for all x ∈{0, 1}n.
+Finally, applying Lemma 42 with prime m, we can replace G with an equivalent DOR ◦
+ETHR subcircuit, whose ETHR gates have positive weights and thresholds smaller than
+poly(d) · 2n.
+Union-bounding over all ETHR gates, and choosing c to be a large enough constant, this
+completes the randomized reduction.
+◀
+▶Remark 44. One can observe that the above reduction indeed only introduces one-sided
+error. That is, even if it chooses some “bad” primes, the resulting circuit D satisﬁes the
+property that D(x) = 1 whenever C(x) = 1.
+▶Lemma 45 (Decomposition of the top ETHR gate). Given an ETHRd ◦C circuit C (a
+circuit with a top ETHR gate of fan-in d) of size s and a real ε ∈
+
+log d
+n , 1
+
+, suppose the top
+ETHR gate in C has positive weights and threshold smaller than 22n. C is equivalent to a
+DOR ◦MAJ ◦AND2 ◦C circuit such that:
+The top DOR gate has 2O(εn) fan-in.
+Each MAJ gate has fan-in dO(1/ε).
+The C part is unchanged.
+Moreover, the reduction can be computed in deterministic
+2O(εn) · dO(1/ε) + poly(s)
+time.
+Proof. Let Gtop be the top ETHR in C, and let G1, G2, . . . , Gd be its input gates. Let wi’s
+and T be the weights and the threshold of Gtop and L(x) be the associated linear function.
+We have for all x ∈{0, 1}n that
+L(x) =
+d
+X
+i=1
+wi · Gi(x).
+Observe that the binary representations of wi’s and T are of length at most log(22n) ≤2n.
+Break each of their binary representations into D =
+l
+ε·n
+log d
+m
+blocks, where each block has
+B ≤2/ε·log d bits. Let wi,j, Tj ∈[2B−1] be the values of wi’s and T’s j-th block, respectively
+(where blocks are numbered from the least signiﬁcant bit to the most signiﬁcant bit).
+CCC 2019
+
+19:34
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+Consider adding the wi · Gi(x)’s in base 2B, keeping track of all D −1 carries on each
+position, except for the highest one. Let c = (c1, c2, . . . , cD−1) ∈{0, 1, . . . , d −1}D−1 be such
+a carry sequence. Observe that Pd
+i=1 wi · Gi(x) = T with carry sequence c if and only if for
+all j ∈[D]:
+d
+X
+i=1
+wi,j · Gi(x) + cj−1 = Tj + 2B · cj,
+where we set CD and C0 to be 0 for notational convenience. That is, after we ﬁx the carries
+cj’s for all j, the sums Pd
+i=1 wi,j · Gi(x) are also forced to be T c
+j = Tj + 2B · cj −cj−1.
+Therefore, consider the sum
+ε·n
+X
+j=1
+ d
+X
+i=1
+wi,j · Gi(x) −T c
+j
+!2
+.
+Checking whether this sum is at most 0 can be formulated as a poly(d) · 2O(B) = dO(1/ε) size
+MAJ ◦AND2 subcircuit, with input gates G1, G2, . . . , Gd.
+Each of these addition checks corresponds to one carry sequence. By enumerating all
+possible dD−1 carry sequences, the above transforms Gtop into a DOR◦MAJ◦AND2 subcircuit
+with input gates G1, G2, . . . , Gd, having top fan-in:
+dD−1 = dO(ε·n/ log d) = 2O(ε·n),
+which completes the proof.
+◀
+Finally, the Structure Lemma II for THR ◦THR circuits follows from applying Lemma 43
+and Lemma 45 in the appropriate way.
+▶Reminder of Lemma 17. Let n be the number of inputs and let s = s(n) ≤2o(n) be a
+size parameter. Let ε ∈
+
+log s
+n , 1
+
+. Every s-size THR ◦THR circuit C is equivalent to a
+DOR ◦MAJ ◦MAJ circuit such that:
+The top DOR gate has 2O(εn) fan-in.
+Each sub MAJ ◦MAJ circuit has size sO(1/ε).
+The reduction can be computed in randomized 2O(εn) · sO(1/ε) time.
+Proof. First, since THR ⊆DOR ◦ETHR (item (2) of Proposition 18), C is equivalent to a
+poly(s)-size THR ◦ETHR circuit C1. Moreover, we can convert C into C1 in polynomial time.
+Second, we apply Lemma 43 to transform C1 into a DORpoly(s) ◦ETHR ◦ETHR circuit
+C2, such that all middle-layer ETHR gates have positive weights and thresholds smaller than
+poly(s) · 2n < 22n.
+Third, we apply Lemma 45 to C2, which changes all middle-layer ETHR gates of C2 into
+DOR ◦MAJ ◦AND2 subcircuits, with top gate fan-in 2O(ε·n). This yields a DOR ◦MAJ ◦
+AND ◦ETHR circuit. Converting the remaining AND ◦ETHR subcircuits into ETHR’s (item
+(5) of Proposition 18), we obtain a DOR2O(ε·n) ◦MAJ ◦ETHR circuit where all MAJ ◦ETHR
+subcircuits have size at most sO(1/ε).
+Finally, converting each MAJ ◦ETHR into a MAJ ◦MAJ (item (3) of Proposition 18)
+completes the reduction. The running time bound follows from plugging in the time bounds
+of Lemma 43 and Lemma 45.
+◀
+Setting the parameter ε carefully in Lemma 17, we have the following corollary.
+
+L. Chen and R. R. Williams
+19:35
+▶Corollary 46. Let n be the number of inputs and let s = s(n) ≤2o(n) be a size parameter.
+Let ε ∈
+
+log s
+n , 1
+
+. Every s-size THR ◦THR circuit C is equivalent to a DOR ◦MAJ ◦MAJ
+circuit C′ such that:
+The top DOR gate of C′ has sO(1/ε) fan-in.
+Every sub MAJ ◦MAJ circuit of C′ has size 2O(ε·n).
+The reduction can be computed in randomized 2O(εn) · sO(1/ε) time.
+References
+1
+Amir Abboud and Karl Bringmann. Tighter Connections Between Formula-SAT and Shaving
+Logs. In 45th International Colloquium on Automata, Languages, and Programming, ICALP
+2018, July 9-13, 2018, Prague, Czech Republic, pages 8:1–8:18, 2018. doi:10.4230/LIPIcs.
+ICALP.2018.8.
+2
+Eric Allender and Michal Koucký. Amplifying lower bounds by means of self-reducibility. J.
+ACM, 57(3):14:1–14:36, 2010. doi:10.1145/1706591.1706594.
+3
+Josh Alman, Timothy M. Chan, and R. Ryan Williams.
+Polynomial Representations of
+Threshold Functions and Algorithmic Applications. In IEEE 57th Annual Symposium on
+Foundations of Computer Science, FOCS 2016, 9-11 October 2016, Hyatt Regency, New
+Brunswick, New Jersey, USA, pages 467–476, 2016. doi:10.1109/FOCS.2016.57.
+4
+Kazuyuki Amano and Akira Maruoka. On the Complexity of Depth-2 Circuits with Threshold
+Gates. In Mathematical Foundations of Computer Science 2005, 30th International Symposium,
+MFCS 2005, Gdansk, Poland, August 29 - September 2, 2005, Proceedings, pages 107–118,
+2005. doi:10.1007/11549345_11.
+5
+Sanjeev Arora, Carsten Lund, Rajeev Motwani, Madhu Sudan, and Mario Szegedy. Proof
+Veriﬁcation and the Hardness of Approximation Problems. J. ACM, 45(3):501–555, 1998.
+doi:10.1145/278298.278306.
+6
+Sanjeev Arora and Shmuel Safra. Probabilistic Checking of Proofs: A New Characterization
+of NP. J. ACM, 45(1):70–122, 1998. doi:10.1145/273865.273901.
+7
+László Babai, Kristoﬀer Arnsfelt Hansen, Vladimir V Podolskii, and Xiaoming Sun. Weights
+of exact threshold functions. In International Symposium on Mathematical Foundations of
+Computer Science, pages 66–77. Springer, 2010.
+8
+Swapnam Bajpai, Vaibhav Krishan, Deepanshu Kush, Nutan Limaye, and Srikanth Srinivasan.
+A #SAT Algorithm for Small Constant-Depth Circuits with PTF Gates. In 10th Innovations
+in Theoretical Computer Science Conference, ITCS 2019, January 10-12, 2019, San Diego,
+California, USA, pages 8:1–8:20, 2019. doi:10.4230/LIPIcs.ITCS.2019.8.
+9
+Paul Beame, Stephen A. Cook, and H. James Hoover. Log Depth Circuits for Division and
+Related Problems. SIAM J. Comput., 15(4):994–1003, 1986. doi:10.1137/0215070.
+10
+Eli Ben-Sasson, Oded Goldreich, Prahladh Harsha, Madhu Sudan, and Salil P. Vadhan. Short
+PCPs Veriﬁable in Polylogarithmic Time. In 20th Annual IEEE Conference on Computational
+Complexity (CCC 2005), 11-15 June 2005, San Jose, CA, USA, pages 120–134, 2005. doi:
+10.1109/CCC.2005.27.
+11
+Eli Ben-Sasson, Oded Goldreich, Prahladh Harsha, Madhu Sudan, and Salil P. Vadhan.
+Robust PCPs of Proximity, Shorter PCPs, and Applications to Coding. SIAM J. Comput.,
+36(4):889–974, 2006. doi:10.1137/S0097539705446810.
+12
+Eli Ben-Sasson and Emanuele Viola. Short PCPs with Projection Queries. In Automata,
+Languages, and Programming - 41st International Colloquium, ICALP 2014, Copenha-
+gen, Denmark, July 8-11, 2014, Proceedings, Part I, pages 163–173, 2014. doi:10.1007/
+978-3-662-43948-7_14.
+13
+Eli Ben-Sasson and Emanuele Viola. Short PCPs with projection queries. In International
+Colloquium on Automata, Languages, and Programming, pages 163–173. Springer, 2014.
+CCC 2019
+
+19:36
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+14
+Mark Bun, Robin Kothari, and Justin Thaler. The polynomial method strikes back: tight
+quantum query bounds via dual polynomials. In Proceedings of the 50th Annual ACM SIGACT
+Symposium on Theory of Computing, STOC 2018, Los Angeles, CA, USA, June 25-29, 2018,
+pages 297–310, 2018. doi:10.1145/3188745.3188784.
+15
+Mark Bun and Justin Thaler. A Nearly Optimal Lower Bound on the Approximate Degree of
+AC0. In 58th IEEE Annual Symposium on Foundations of Computer Science, FOCS 2017,
+Berkeley, CA, USA, October 15-17, 2017, pages 1–12, 2017. doi:10.1109/FOCS.2017.10.
+16
+Arkadev Chattopadhyay and Nikhil S. Mande. A Short List of Equalities Induces Large Sign
+Rank. In 59th IEEE Annual Symposium on Foundations of Computer Science, FOCS 2018,
+Paris, France, October 7-9, 2018, pages 47–58, 2018. doi:10.1109/FOCS.2018.00014.
+17
+Ruiwen Chen and Rahul Santhanam. Improved Algorithms for Sparse MAX-SAT and MAX-
+k-CSP. In Theory and Applications of Satisﬁability Testing - SAT 2015 - 18th International
+Conference, Austin, TX, USA, September 24-27, 2015, Proceedings, pages 33–45, 2015. doi:
+10.1007/978-3-319-24318-4_4.
+18
+Irit Dinur. The PCP theorem by gap ampliﬁcation. J. ACM, 54(3):12, 2007. doi:10.1145/
+1236457.1236459.
+19
+Jürgen Forster, Matthias Krause, Satyanarayana V. Lokam, Rustam Mubarakzjanov, Niels
+Schmitt, and Hans Ulrich Simon. Relations Between Communication Complexity, Linear
+Arrangements, and Computational Complexity. In FST TCS 2001: Foundations of Software
+Technology and Theoretical Computer Science, 21st Conference, Bangalore, India, December
+13-15, 2001, Proceedings, pages 171–182, 2001. doi:10.1007/3-540-45294-X_15.
+20
+M. R. Garey, David S. Johnson, and Larry J. Stockmeyer. Some Simpliﬁed NP-Complete Graph
+Problems. Theor. Comput. Sci., 1(3):237–267, 1976. doi:10.1016/0304-3975(76)90059-1.
+21
+Mikael Goldmann, Johan Håstad, and Alexander A. Razborov. Majority Gates VS. General
+Weighted Threshold Gates.
+Computational Complexity, 2:277–300, 1992.
+doi:10.1007/
+BF01200426.
+22
+Hans Dietmar Groeger and György Turán. A linear lower bound for the size of threshold
+circuits. Bulletin-European Association For Theoretical Computer Science, 50:220–220, 1993.
+23
+András Hajnal, Wolfgang Maass, Pavel Pudlák, Mario Szegedy, and György Turán. Threshold
+Circuits of Bounded Depth.
+J. Comput. Syst. Sci., 46(2):129–154, 1993.
+doi:10.1016/
+0022-0000(93)90001-D.
+24
+Kristoﬀer Arnsfelt Hansen and Vladimir V. Podolskii. Exact Threshold Circuits. In Proceedings
+of the 25th Annual IEEE Conference on Computational Complexity, CCC 2010, Cambridge,
+Massachusetts, June 9-12, 2010, pages 270–279, 2010. doi:10.1109/CCC.2010.33.
+25
+Kristoﬀer Arnsfelt Hansen and Vladimir V. Podolskii. Polynomial threshold functions and
+Boolean threshold circuits. Inf. Comput., 240:56–73, 2015. doi:10.1016/j.ic.2014.09.008.
+26
+William Hesse, Eric Allender, and David A. Mix Barrington. Uniform constant-depth threshold
+circuits for division and iterated multiplication. J. Comput. Syst. Sci., 65(4):695–716, 2002.
+doi:10.1016/S0022-0000(02)00025-9.
+27
+Thomas Hofmeister.
+A Note on the Simulation of Exponential Threshold Weights.
+In
+Computing and Combinatorics, Second Annual International Conference, COCOON ’96, Hong
+Kong, June 17-19, 1996, Proceedings, pages 136–141, 1996. doi:10.1007/3-540-61332-3_146.
+28
+Russell Impagliazzo, Ramamohan Paturi, and Michael E. Saks.
+Size-Depth Tradeoﬀs
+for
+Threshold
+Circuits.
+SIAM J. Comput.,
+26(3):693–707,
+1997.
+doi:10.1137/
+S0097539792282965.
+29
+Russell Impagliazzo, Ramamohan Paturi, and Stefan Schneider. A Satisﬁability Algorithm
+for Sparse Depth Two Threshold Circuits. In 54th Annual IEEE Symposium on Foundations
+of Computer Science, FOCS 2013, 26-29 October, 2013, Berkeley, CA, USA, pages 479–488,
+2013. doi:10.1109/FOCS.2013.58.
+30
+Hamid Jahanjou, Eric Miles, and Emanuele Viola. Local Reductions. In Automata, Languages,
+and Programming - 42nd International Colloquium, ICALP 2015, Kyoto, Japan, July 6-10,
+2015, Proceedings, Part I, pages 749–760, 2015. doi:10.1007/978-3-662-47672-7_61.
+
+L. Chen and R. R. Williams
+19:37
+31
+Daniel M. Kane and Ryan Williams. Super-linear gate and super-quadratic wire lower bounds
+for depth-two and depth-three threshold circuits. In Proceedings of the 48th Annual ACM
+SIGACT Symposium on Theory of Computing, STOC 2016, Cambridge, MA, USA, June
+18-21, 2016, pages 633–643, 2016. doi:10.1145/2897518.2897636.
+32
+Wolfgang Maass. Bounds for the Computational Power and Learning Complexity of Analog
+Neural Nets. SIAM J. Comput., 26(3):708–732, 1997. doi:10.1137/S0097539793256041.
+33
+Saburo Muroga, Iwao Toda, and Satoru Takasu. Theory of majority decision elements. Journal
+of the Franklin Institute, 271(5):376–418, 1961.
+34
+Cody Murray and R. Ryan Williams. Circuit lower bounds for nondeterministic quasi-polytime:
+an easy witness lemma for NP and NQP. In Proceedings of the 50th Annual ACM SIGACT
+Symposium on Theory of Computing, STOC 2018, Los Angeles, CA, USA, June 25-29, 2018,
+pages 890–901, 2018. doi:10.1145/3188745.3188910.
+35
+Noam Nisan. The communication complexity of threshold gates. Combinatorics, Paul Erdos
+is Eighty, 1:301–315, 1993.
+36
+Ryan O’Donnell. Analysis of Boolean Functions. Cambridge University Press, 2014. URL:
+http://www.cambridge.org/de/academic/subjects/computer-science/algorithmics-
+complexity-computer-algebra-and-computational-g/analysis-boolean-functions.
+37
+Ramamohan Paturi and Michael E. Saks. Approximating Threshold Circuits by Rational
+Functions. Inf. Comput., 112(2):257–272, 1994. doi:10.1006/inco.1994.1059.
+38
+John H. Reif and Stephen R. Tate. On Threshold Circuits and Polynomial Computation.
+SIAM J. Comput., 21(5):896–908, 1992. doi:10.1137/0221053.
+39
+Theodore J Rivlin. An introduction to the approximation of functions. Courier Corporation,
+2003.
+40
+Vwani P. Roychowdhury, Alon Orlitsky, and Kai-Yeung Siu. Lower bounds on threshold and
+related circuits via communication complexity. IEEE Trans. Information Theory, 40(2):467–
+474, 1994. doi:10.1109/18.312169.
+41
+Rahul Santhanam and Ryan Williams. On Medium-Uniformity and Circuit Lower Bounds.
+In Proceedings of the 28th Conference on Computational Complexity, CCC 2013, K.lo Alto,
+California, USA, 5-7 June, 2013, pages 15–23, 2013. doi:10.1109/CCC.2013.40.
+42
+Alexander A. Sherstov. Algorithmic polynomials. In Proceedings of the 50th Annual ACM
+SIGACT Symposium on Theory of Computing, STOC 2018, Los Angeles, CA, USA, June
+25-29, 2018, pages 311–324, 2018. doi:10.1145/3188745.3188958.
+43
+Daniel A. Spielman. Linear-time encodable and decodable error-correcting codes. IEEE Trans.
+Information Theory, 42(6):1723–1731, 1996. doi:10.1109/18.556668.
+44
+Suguru Tamaki. A Satisﬁability Algorithm for Depth Two Circuits with a Sub-Quadratic Num-
+ber of Symmetric and Threshold Gates. Electronic Colloquium on Computational Complexity
+(ECCC), 23:100, 2016. URL: http://eccc.hpi-web.de/report/2016/100.
+45
+Roei Tell. Proving that prBPP=prP is as hard as “almost” proving that P ̸= NP. Electronic
+Colloquium on Computational Complexity (ECCC), 25:3, 2018. URL: https://eccc.weizmann.
+ac.il/report/2018/003.
+46
+Roei Tell. Quantiﬁed derandomization of linear threshold circuits. In Proceedings of the 50th
+Annual ACM SIGACT Symposium on Theory of Computing, STOC 2018, Los Angeles, CA,
+USA, June 25-29, 2018, pages 855–865, 2018. doi:10.1145/3188745.3188822.
+47
+R. Ryan Williams. Natural Proofs versus Derandomization. SIAM J. Comput., 45(2):497–529,
+2016. doi:10.1137/130938219.
+48
+Richard Ryan Williams. Limits on Representing Boolean Functions by Linear Combinations of
+Simple Functions: Thresholds, ReLUs, and Low-Degree Polynomials. In 33rd Computational
+Complexity Conference, CCC 2018, June 22-24, 2018, San Diego, CA, USA, pages 6:1–6:24,
+2018. doi:10.4230/LIPIcs.CCC.2018.6.
+49
+Ryan Williams. Improving Exhaustive Search Implies Superpolynomial Lower Bounds. SIAM
+J. Comput., 42(3):1218–1244, 2013. doi:10.1137/10080703X.
+CCC 2019
+
+19:38
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+50
+Ryan Williams. Towards NEXP versus BPP? In Computer Science - Theory and Applications
+- 8th International Computer Science Symposium in Russia, CSR 2013, Ekaterinburg, Russia,
+June 25-29, 2013. Proceedings, pages 174–182, 2013. doi:10.1007/978-3-642-38536-0_15.
+51
+Ryan Williams. New algorithms and lower bounds for circuits with linear threshold gates. In
+Symposium on Theory of Computing, STOC 2014, New York, NY, USA, May 31 - June 03,
+2014, pages 194–202, 2014. doi:10.1145/2591796.2591858.
+52
+Ryan Williams. Nonuniform ACC circuit lower bounds. Journal of the ACM (JACM), 61(1):2,
+2014.
+A
+Constructions of Super Query-Eﬃcient PCP of Proximity Systems
+In this appendix we present proofs for Lemma 24 and Lemma 25 for completeness. We
+remark that we did not make any eﬀort to optimize the soundness/completeness constants s
+and c in our construction; any universal constant suﬃces in our applications.16
+We start with Lemma 24 (restated below).
+▶Reminder of Lemma 24 (3-query PCPP with perfect completeness). For any constant
+δ > 0 there is a constant 0 < s < 1, such that there is a PCP of proximity system for
+Circuit-Eval with proximity δ, soundness s, random bits r = O(log n), and query complexity
+q = 3. Moreover, the system satisﬁes two additional properties:
+(1) Given the random coins, the veriﬁer simply computes an OR on these 3 queried bits or
+their negations, and accepts if the OR is true.
+(2) Given the pair (C, w) ∈Circuit-Eval, we can construct a proof π in poly(|C| + |w|) time
+that makes V (C) accept with probability 1.
+Proof. By Lemma 22, there is a PCP of proximity system V for Circuit-Eval with proximity
+δ, soundness s = 1/2, number of random bits r = O(log n) and query complexity q = Oδ(1).
+Let the circuit be C. Suppose we are given random bits R ∈{0, 1}r, so that V (C) queries
+positions k1 = k1(C, R), k2 = k2(C, R), . . . , kq = kq(C, R) of the oracle z = w ◦π, computes
+a predicate P = P(C, R) on these bits, and outputs P(zk1, zk2, . . . , zkq).
+We construct a new PCP of proximity system V ′ as follows. Fix the circuit C. and let
+PR = P(C, R). Slightly abusing notation, we let xj denote the bit zkj. PR can be computed
+by a circuit DR of Oq(1) size; therefore PR can computed in size S for a universal constant
+S only depending on q. We can construct a group of auxiliary variables {yR,ℓ}ℓ∈[S], and
+a group of constraints {Fw,ℓ}ℓ∈[S], where each constraint is an OR of three bits (or their
+negations) from the xj’s and yR,ℓ’s, such that Pw(x1, x2, . . . , xq) = 1 if and only if there
+exists an assignment to the yR,ℓ’s such that all constraints FR,ℓ’s are satisﬁed.
+The veriﬁer V ′(C) treats its oracle as three parts. The ﬁrst two parts are w and π
+(where π is supposed to be a proof for V (C)), while the third part πy is supposed to contain
+assignments to all yR,ℓ’s for all R ∈{0, 1}r and ℓ∈[S]. V ′(C) ﬁrst tosses r random coins
+to get a random string R ∈{0, 1}r, then tosses log(S) more coins to pick a random integer
+ℓ∈[S]. Then V ′(C) queries the 3 bits appearing in the constraint FR,ℓ, and accepts if and
+only if the constraint is satisﬁed by those 3 bits. We denote its proof to be π′ = (π, πy).
+We claim that V ′(C) is a correct PCP of Proximity system. If (C, w) ∈Circuit-Eval, let π
+be a proof such that V (C) accepts w ◦π with probability 1. Then by our construction of
+V ′(C), there is a πy such that V ′(C) accepts w ◦(π ◦πy) with probability 1.
+16 Here we are actually composing the PCPP from [11] with some trivial PCPP constructions for constant-
+size functions. There are much better constructions, see e.g. [18].
+
+L. Chen and R. R. Williams
+19:39
+Otherwise, suppose w is δ-far from the set {z : C(z) = 1}. Then for any proof π, V (C)
+accepts (w◦π) with probability at most 1/2. This means for all additional proofs πy, at least a
+1/2-fraction of R ∈{0, 1}r are such that at least one constraint from {FR,ℓ}ℓ∈[S] is not satisﬁed
+by w ◦(π ◦πy). Therefore, V ′(C) rejects with probability at least 1/2 · 1/S = Ωq(1) = Ωδ(1),
+which completes the proof.
+◀
+In order to get a 2-query PCP of proximity system from the above, we use the following
+classical gadget by Garey, Johnson, and Stockmeyer [20], originally used to prove the
+NP-hardness of MAX-2-SAT.
+▶Lemma 47. Let X1, X2, X3 and Y be 4 Boolean variables. Consider the following 10
+constraints:
+X1, X2, X3, ¬X1 ∨¬X2, ¬X2 ∨¬X3, ¬X3 ∨¬X1,
+Y, X1 ∨¬Y, X2 ∨¬Y, X3 ∨¬Y.
+If X1 ∨X2 ∨X3, then there exists an assignment to Y such that 7 of the above constraints
+are satisﬁed. Otherwise, all assignments to Y satisfy at most 6 of the above constraints.
+▶Reminder of Lemma 25 (2-query PCPP with constant completeness/soundness gap). For
+any constant δ > 0 there two constants 0 < s < c < 1, such that there is a PCP of proximity
+system for Circuit-Eval with proximity δ, soundness s, completeness c, number of random
+bits r = O(log n) and query complexity q = 2. Moreover, the system satisﬁes two additional
+properties:
+(1) Given the random coins, the veriﬁer computes an OR on the 2 queried bits or their
+negations, and accepts iﬀthe OR is true.
+(2) Given the pair (C, w) ∈Circuit-Eval, a proof π can be constructed in poly(|C| + |w|) time
+that makes V (C) accept with probability at least c.
+Proof. By Lemma 24, there is a PCP of proximity system V for Circuit-Eval with proximity
+δ, soundness s = s(δ) < 1, number of random bits r = O(log n) and query complexity q = 3.
+The veriﬁer computes an OR on these 3 queried bits or their negations, and accepts if it is
+true.
+Let the circuit be C. We begin as in the previous proof. Suppose we have randomness
+R ∈{0, 1}r, and V (C) queries positions k1 = k1(C, R), k2 = k2(C, R), k3 = k3(C, R) of
+the oracle z = w ◦π, computes a predicate P = P(C, R) on these bits, then outputs
+P(zk1, zk2, zk3). Slightly abusing notation, we use xj to denote the bit zkj. By Lemma 24,
+we can assume
+P(x1, x2, x3) = ∨j∈[3](xj ⊕bj),
+where bj = bj(C, R) is whether it negates the bit xj.
+Our new PCP of proximity system V ′ works as follows.
+Fix the circuit C and let
+PR = P(C, R). By Lemma 47, we can construct an auxiliary variable yR and a group of
+constraints {FR,ℓ}ℓ∈[10], each is an OR of 2 bits (or their negations) from xj’s and yR17 such
+that if Pw(x1, x2, x3) = 1 then there is an assignment to the yR such that 7 constraints from
+{FR,ℓ}ℓ∈[10] are satisﬁed; otherwise, for all assignments to yR, at most 6 constraints from
+{FR,ℓ}ℓ∈[10] are satisﬁed.
+17 In Lemma 47, constraint Xi can be written as Xi ∨Xi, which is an OR of 2 bits.
+CCC 2019
+
+19:40
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+As in the 3-query PCPP, V ′(C) treats its oracle as three parts: the ﬁrst two are w
+and π (π is intended to be a proof in V (C)), and the third part πy is intended to contain
+assignments to all yR’s, for all R ∈{0, 1}r. Our V ′(C) ﬁrst tosses r random coins to get
+R ∈{0, 1}r, then tosses O(1) more coins to pick a random integer ℓ∈[10]. Then it simply
+queries the 2 bits appearing in the constraint FR,ℓ, and accepts iﬀthat constraint is satisﬁed.
+We denote its proof to be π′ = (π, πy).
+Let us argue V ′(C) satisﬁes our requirement. If (C, w) ∈Circuit-Eval, let π be a proof
+such that V (C) accepts w ◦π with probability 1. Then by our construction of V ′(C), there
+is a πy such that V ′(C) accepts w ◦(π ◦πy) with probability at least 7/10.
+Now suppose w is δ-far from the set {z : C(z) = 1}. Then for all proofs π, V (C) accepts
+(w ◦π) with probability at most s. This means that for any additional proof πy, there is
+at most an s-fraction of R ∈{0, 1}r such that 7 constraints from {FR,ℓ}ℓ∈[S] are satisﬁed
+by w ◦(π ◦πy); for the remaining R’s, at most 6 constraints from {FR,ℓ}ℓ∈[S] are satisﬁed.
+Therefore, V ′(C) accepts with probability at most s · 7/10 + (1 −s) · 6/10 < 7/10, which
+completes the proof.
+◀
+B
+Proofs for THR ⊆DOR ◦ETHR and
+⊕k ◦THR ◦THR ⊆THR ◦THR
+Here we present an alternative proof that THR ⊆DOR ◦ETHR, which has a better weight
+dependence than prior work [24] and is arguably simpler. We ﬁrst give a construction for the
+special case when all the weights and the threshold value are non-negative. Then we show
+that the general case can be easily reduced to this case.
+▶Lemma 48. Let G be a THR gate on n bits deﬁned as G(x) := [Pn
+i=1 wi · xi > T], such
+that all wi’s and T are integers in [0, 2L −1] for some L ∈N. Then G can be written as a
+DOR of O(n · L) many ETHR gates, each with weights and threshold from [0, 2L+1 −1].
+Proof. For each weight wi ∈[0, 2L −1], write it in its binary representation
+wi,L, wi,L−2, . . . , wi,1 ∈{0, 1}L,
+such that
+wi =
+L
+X
+j=1
+2j−1 · wi,j.
+In this way, we can view w as a Boolean matrix from {0, 1}n×L. For each position (a, b) ∈
+[n] × [L], we build a partial matrix w(a,b) as follows: for (i, j) ∈[n] × [L],
+w(a,b)
+i,j
+=
+(
+wi,j
+(j > b) or ((j = b) and (i ≥a))
+0
+otherwise
+That is, w(a,b) is the sub-matrix of w, consisting of entries which are either to the right of
+(a, b), or directly above (a, b). (We number the rows of the matrix from bottom to top, and
+the columns of the matrix from left to right.)
+Given x ∈{0, 1}n, we deﬁne
+w(a,b) · x :=
+n
+X
+i=1
+
+
+L
+X
+j=1
+2j−1 · w(a,b)
+i,j
+
+· xi.
+
+L. Chen and R. R. Williams
+19:41
+That is, we treat each row of w(a,b) as the L-bit binary representation of the corresponding
+weight on xi. By deﬁnition, we have w(1,1) · x = w · x = Pn
+i=1 wi · xi.
+Now, ﬁx x ∈{0, 1}n, and consider the sequence S, deﬁned as:
+w(n,L) ·x, w(n−1,L) ·x, . . . , w(1,L) ·x, w(n,L−1) ·x, . . . , w(1,L−1) ·x, . . . , w(n,1) ·x, . . . , w(1,1) ·x.
+By deﬁnition of w(a,b), we are including 1-entries of the matrix w one-by-one, hence the
+sequence S is non-decreasing (and begins with 0).
+Suppose w · x = w(1,1) · x > T. Then there must be a unique position (a, b) ∈[n] × [L]
+such that w(a,b) · x is the ﬁrst value in the sequence S which is greater than T. For each
+(a, b) ∈[n] × [L], we will use an ETHR gate E(a,b) to specify the condition that w(a,b) · x is
+the ﬁrst value greater than T from S. Then when G(x) is true, exactly one of the E(a,b)(x)’s
+is true, and when G(x) is false, all of the E(a,b)(x)’s are false.
+To see that an ETHR gate suﬃces, we observe that w(a,b) · x is the ﬁrst value greater
+than T from the sequence S, if and only if the following conditions hold:
+1. w(a,b) · x > T (it is greater than T),
+2. (wa,b = 1) ∧(xa = 1) (it is bigger than the previous value), and
+3. w(a,b) · x −2b−1 ≤T (the previous value is no greater than T).
+We crucially observe that w(a,b) ·x is a multiple of 2b−1. In the matrix w(a,b), we only include
+nonzero wi,j’s where j ≥b. Thus in w(a,b) · x, every 1 in x is getting multiplied by a power
+of two which is at least 2b−1.
+By division, T = 2b−1 · Tb + Tr, for some 0 ≤Tr < 2b−1 and Tb > 0. Then w(a,b) · x > T
+if and only if w(a,b) · x ≥2b−1 · (Tb + 1). Furthermore, w(a,b) · x −2b−1 ≤T if and only if
+w(a,b) · x ≤2b−1 · (Tb + 1). Therefore, the above conditions are equivalent to
+1. (wa,b = 1) ∧(xa = 1), and
+2. w(a,b) · x = 2b−1 · (Tb + 1).
+Now all these conditions are linear equations, so we can deﬁne an ETHR function E(a,b)
+that checks all of them. In particular, set E(a,b) to be the constant function 0 if wa,b = 0;
+otherwise set
+E(a,b)(x) :=
+h
+(2 · w(a,b) · x) + xa = 2b · (Tb + 1) + 1
+i
+.
+This completes the proof.
+◀
+Now we reduce the general case to the non-negative weights and thresholds case, and
+complete the reduction from THR to DOR ◦ETHR.
+▶Lemma 49. Let G be a THR gate on n bits, G(x) := [Pn
+i=1 wi · xi > T], such that all wi’s
+and T are integers from [−W, W] for some W ∈N. Then G can be written as a DOR of
+O(n · log W) many ETHR gates, each with weights and threshold from [−Θ(W), Θ(W)].
+Proof. We start by deﬁning n new variables z1, z2, . . . , zn ∈{0, 1}n. Set zi := xi if wi ≥0,
+and zi := 1 −xi otherwise. Letting S = {i : wi ≥0}, we have
+n
+X
+i=1
+wi · xi =
+X
+i∈S
+wi · zi +
+X
+i/∈S
+wi · (1 −zi)
+=
+X
+i∈S
+wi · zi +
+X
+i/∈S
+−wi · zi +
+X
+i/∈S
+wi.
+Let bwi = |wi|, and bT = T −P
+i/∈S wi. Observe that
+" n
+X
+i=1
+wi · xi > T
+#
+⇔
+" n
+X
+i=1
+bwi · zi > bT
+#
+.
+CCC 2019
+
+19:42
+Stronger Connections Between Circuit Analysis and Circuit Lower Bounds
+If bT is negative, then G(x) = 1 on all Boolean inputs x (since all bwi’s are non-negative,
+and the zi are Boolean) and we are done.
+Otherwise, we can apply Lemma 48 with
+bG(z) :=
+hPn
+i=1 bwi · zi > bT
+i
+. Substituting each zi by 1 −xi, we obtain the desired DOR
+decomposition for G(x).
+◀
+▶Lemma 50. Let k be a constant, a ⊕k ◦THR ◦THR circuit of s = s(n) size on n bits is
+equivalent to a THR ◦THR circuit of sO(k) size. Moreover, the corresponding THR ◦THR
+circuit can be constructed deterministically in sO(k) time.
+Proof. First, by Lemma 49, the given ⊕k ◦THR ◦THR circuit can be transformed into a
+⊕k ◦THR ◦ETHR circuit C of t = poly(s) size.
+Let C1, C2, . . . , Ck be the THR ◦ETHR subcircuits of C. For each Ci, let Ei,1, . . . , Ei,t be
+its ETHR gates, wi,1, . . . , wi,t be the corresponding weights in the output threshold function,
+and Ti be the threshold value of the output threshold function. We have
+Ci(x) :=
+
+
+t
+X
+j=1
+wi,j · Ei,j(x) > Ti
+
+.
+By slightly perturbing the wi,j’s and Ti, we can ensure that Pt
+j=1 wi,j · Ei,j(x) −Ti is never
+equal to 0, over all x ∈{0, 1}n. Next, we deﬁne
+F(x) =
+
+
+k
+Y
+i=1
+
+Ti −
+t
+X
+j=1
+wi,j · Ei,j(x)
+
+< 0
+
+.
+(8)
+Noting that Ci(x) = 1 if and only if Ti −Pt
+j=1 wi,j ·Ei,j(x) < 0, we observe that F(x) = 1
+when an odd number of Ci(x)’s are 1, and F(x) = 0 otherwise. Therefore, F computes the
+same function as the original circuit C.
+Finally, expanding the product of k sums in (8) into a sum of sO(k) products, and recalling
+that AND ◦ETHR ⊆ETHR (Proposition 18), F can be written as a THR ◦ETHR circuit.
+Converting this back to a THR ◦THR circuit (Proposition 18), the proof is complete.
+◀
+C
+More Applications of Structure Lemmas for THR ◦THR Circuits
+Here we discuss more applications of Lemma 16 and Lemma 17.
+C.1
+Generalization to Threshold Circuits of Constant Depth
+Lemma 17 generalizes readily to threshold circuits of any constant depth. In the following
+LTd denotes threshold circuits of depth-d, while c
+LTd denotes depth-d majority circuits (see
+Section 2.1 for formal deﬁnitions).
+▶Corollary 51. Let n be number of inputs and s = s(n) be a size parameter. Let ε ∈
+
+log s
+n , 1
+
+and d be a constant. For s = 2o(n), every s-size LTd circuit is equivalent to a DOR ◦c
+LTd
+circuit such that:
+The top DOR gate has 2O(ε·n) fan-in.
+Each sub c
+LTd circuit has size O
+ sO(1/ε)
+.
+Proof. We apply Lemma 17 to the top 2 layers, and then apply item (5) of Proposition 18
+recursively to obtain an equivalent DOR ◦c
+LTd circuit.
+◀
+
+L. Chen and R. R. Williams
+19:43
+C.2
+A Structure Lemma for Polynomial Threshold Functions
+Our ideas can also be used to derive a structure lemma for polynomial threshold functions of
+degree k, i.e., THR ◦ANDk circuits:
+▶Corollary 52. Let n be number of inputs and s = s(n) be a size parameter. Let ε ∈
+
+log s
+n , 1
+
+and k be a constant. Assuming s = 2o(n), an s-size THR ◦ANDk circuit is equivalent to a
+DOR ◦MAJ ◦AND2k circuit such that:
+The top DOR gate has 2O(ε·n) fan-in.
+Each sub MAJ ◦AND2k circuit has size O
+ sO(1/ε)
+.
+The above still holds if we replaced both ANDk and AND2k by unbounded fan-in AND
+gates.
+Proof. We simply apply Lemma 43 and Lemma 45, and merge each AND2 ◦ANDk subcircuits
+into a single AND2k gate.
+◀
+That is, every polynomial threshold function of degree k with arbitrary weights can be
+simulated by a subexponential-size disjoint OR of polynomial threshold functions of degree
+2k with small weights.
+The following corollary follows from that the SAT problem for THR ◦ANDk circuits is
+equivalent to the weighted MAX-k-SAT problem (given a CNF formula ϕ with weights on
+each clause, ﬁnd an assignment satisfying clauses of maximum total weight), and that SAT
+for MAJ ◦AND2k is equivalent to the (unweighted) MAX-2k-SAT problem.
+▶Corollary 53. For any integer k, if there is a 2(1−Ω(1))n time algorithm for polynomial
+size unweighted MAX-2k-SAT, then so does polynomial size weighted MAX-k-SAT.18
+To prove the above corollary, we need the following folklore lemma, which helps us to
+transform between MAJ ◦AND circuits and MAJ ◦OR circuits.
+▶Lemma 54. Let x = x1, x2, . . . , xk be the inputs, there are k OR functions O1, O2, . . . , Ok
+on the inputs (or their negations) such that:
+AND(x) =
+ k
+X
+i=1
+Oi(x)
+!
+−(k −1).
+Proof. We deﬁne
+Oi(x) :=
+
+
+i−1
+_
+j=1
+¬xj
+
+∨xi.
+That is, Oi(x) = 0 if and only if the ﬁrst i −1 bits are 1, and the i-th bit is 0. Now, note
+that if AND(x) = 1, then all bits are 1, which means all Oi(x)’s are 1. When AND(x) = 0,
+let i be the index of the ﬁrst 0-bit, it is easy to see that Oi(x) = 0 and all other Oj(x)’s are
+1, and hence Pk
+i=1 Oi(x) = k −1.
+◀
+Proof of Corollary 53. We can use Lemma 54 to transform the bottom AND gates to OR
+gates for THR ◦AND and MAJ ◦AND circuits. From there, the proof is the same as of
+Theorem 3.
+◀
+18 We assume the weights are at most 2poly(n) for making the input polynomial size.
+CCC 2019

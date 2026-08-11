@@ -1,0 +1,1916 @@
+Average-Case Lower Bounds and Satisﬁability Algorithms for
+Small Threshold Circuits
+Ruiwen Chen
+University of Edinburgh
+Rahul Santhanam
+University of Edinburgh
+Srikanth Srinivasan
+Indian Institute of Technology, Bombay
+November 23, 2015
+Abstract
+We show average-case lower bounds for explicit Boolean functions against bounded-depth thresh-
+old circuits with a superlinear number of wires. We show that for each integer d > 1, there is "d > 0
+such that Parity has correlation at most 1/n⌦(1) with depth-d threshold circuits which have at most
+n1+"d wires, and the Generalized Andreev Function has correlation at most 1/2n⌦(1) with depth-d
+threshold circuits which have at most n1+"d wires. Previously, only worst-case lower bounds in this
+setting were known [22].
+We use our ideas to make progress on several related questions. We give satisﬁability algorithms
+beating brute force search for depth-d threshold circuits with a superlinear number of wires. These
+are the ﬁrst such algorithms for depth greater than 2. We also show that Parity cannot be computed
+by polynomial-size AC0 circuits with no(1) general threshold gates. Previously no lower bound for
+Parity in this setting could handle more than log(n) gates. This result also implies subexponential-
+time learning algorithms for AC0 with no(1) threshold gates under the uniform distribution.
+In
+addition, we give almost optimal bounds for the number of gates in a depth-d threshold circuit
+computing Parity on average, and show average-case lower bounds for threshold formulas of any
+depth.
+Our techniques include adaptive random restrictions, anti-concentration and the structural theory
+of linear threshold functions, and bounded-read Cherno↵bounds.
+1
+Introduction
+One of the main goals in complexity theory is to prove circuit lower bounds for explicit functions in P or
+NP. We seem quite far from being able to prove that there is a problem in NP that requires superlinear
+Boolean circuits. We have some understanding, via formulations such as the relativization barrier [5], the
+”natural proofs” barrier [39] and the algebrization barrier [1], of why current techniques are inadequate
+for this purpose.
+However, the community has had more success proving explicit lower bounds against bounded-depth
+circuits of various kinds. Thanks to pioneering work of Ajtai [2], Furst-Saxe-Sipser [13], Yao [49] and
+Hastad [19], we know that the Parity and Majority functions require bounded-depth unbounded fan-in
+circuits of exponential size if only AND and OR gates are allowed. Later Razborov [38] and Smolensky [46]
+showed that Majority requires exponential size even when MODp gates are allowed in addition to AND
+and OR gates, for any prime p. The case of bounded-depth circuits with AND, OR and MODm gates,
+where m is a composite, has been open for nearly thirty years now, even though Majority is conjectured
+to be hard for such circuits.
+Williams [47] recently made signiﬁcant progress by showing that non-
+deterministic exponential time does not have super-polynomial size circuits with AND, OR and MODm
+gates, for any m.
+For all the bounded-depth circuit classes above, Majority is either known or conjectured to be hard.
+How about circuit classes which incorporate majority gates, or more generally, gates that are arbitrary
+linear threshold functions? Note that such gates generalize AND and OR, though not MODp. In the 90s,
+1
+ 
+ISSN 1433-8092 
+Electronic Colloquium on Computational Complexity, Report No. 191 (2015)
+
+there was some work on studying the power of bounded-depth threshold circuits. Paturi and Saks [34]
+showed that depth-2 circuits with majority gates computing Parity require ˜⌦(n2) wires; there is also a
+nearly matching upper bound for Parity. Impagliazzo, Paturi and Saks [22] considered bounded-depth
+threshold circuits with arbitrary linear threshold gates, and showed that for each depth d, there is a
+constant ✏d > 0 such that Parity requires n1+✏d wires to compute with depth d threshold circuits.
+These lower bounds are worst case lower bounds - they show that for any sequence of small circuits,
+there exist inputs of every length on which the circuits fail to compute Parity. There are several reasons to
+be interested in average case lower bounds under the uniform distribution, or equivalently, in correlation
+upper bounds. For one, average-case lower bounds show that a randomly chosen input is likely to be hard,
+and thus give a way to generate hard instances eﬃciently. Second, average-case lower bounds are closely
+tied to pseudo-random generators via the work of Nisan-Wigderson [30], and are indeed a pre-requisite for
+obtaining pseudo-random generators with non-trivial seed length for a circuit class. Third, recent work
+on satisﬁability algorithms [42, 20, 7] indicates that the design and analysis of non-trivial satisﬁability
+algorithms is closely tied to proving average-case lower bounds, though there is no formal connection.
+Fourth, the seminal work of Linial-Mansour-Nisan [26] shows that average-case lower bounds for Parity
+against a circuit class are tied to non-trivially learning the circuit class under the uniform distribution.
+With these di↵erent motivations in mind, we systematically study average-case lower bounds for
+bounded-depth threshold circuits. Our ﬁrst main result shows correlation upper bounds for Parity and
+another explicit function known as the Generalized Andreev function with respect to threshold circuits
+with few wires. No correlation upper bounds for explicit functions against bounded-depth threshold
+circuits with superlinear wires was known before our work.
+Theorem 1. For each depth d ≥1, there is a constant ✏d > 0 such that for all large enough n, no
+threshold circuit of depth d with n1+✏d wires agrees with Parity on more than 1/2 + 1/n✏d fraction of
+inputs of length n, and with the Generalized Andreev function on more than 1/2 + 1/2n✏d fraction of
+inputs of length n.
+Theorem 1 captures the content of Theorem 37 and Theorem 40 in Section 4.
+We constructivize the ideas of the proof of the strong correlation upper bounds for the Generalized
+Andreev function to get non-trivial satisﬁability algorithms for bounded-depth threshold circuits with
+few wires. Previously, such algorithms were only known for depth 2 circuits, due to Impagliazzo-Paturi-
+Schneider [21] and Tamaki (unpublished).
+Theorem 2. For each depth d ≥1, there is a constant ✏d > 0 such that the satisﬁability of depth-d
+threshold circuits with n1+✏d wires can be solved in randomized time 2n−n✏d poly(n).
+Theorem 2 is re-stated and proved as Theorem 49 in Section 5.
+Using our ideas, we also show correlation bounds against AC0 circuits with a few threshold gates, as
+well as learning algorithms under the uniform distribution for such circuits.
+Theorem 3. For each constant d, there is a constant γ > 0 such that Parity has correlation at most
+1/n⌦(1) with AC0 circuits of depth d and size at most nlog(n)0.4 augmented with at most nγ threshold
+gates. Moreover, the class of AC0 circuits of size at most nlog(n)0.4 augmented with at most nγ threshold
+gates can be learned to constant error under the uniform distribution in time 2n1/4+o(1).
+Theorem 3 captures the content of Corollary 54 and Theorem 57 in Section 7.
+Having summarized our main results, we now describe related work and our proof techiques in more
+detail.
+1.1
+Related Work
+There has been a large body of work proving upper and lower bounds for constant-depth threshold
+circuits. Much of this work has focused on the setting of small gate complexity, which seems to be
+the somewhat easier case to handle. A distinction must also be drawn between work that has focused
+on the setting where the threshold gates are assumed to be majority gates (i.e. the linear function sign
+representing the gate has integer coeﬃcients that are bounded by a polynomial in the number of variables)
+and work that focuses on general threshold gates, since analytic tools such as rational approximation
+that are available for majority gates do not work in the setting of general threshold gates.
+We discuss the work on wire complexity ﬁrst, followed by the results on gate complexity.
+2
+
+Wire complexity.
+Paturi and Saks [34] considered depth-2 Majority circuits and showed an ˜⌦(n2)
+lower bound on the wire complexity required to compute Parity; this nearly matches the upper bound
+of O(n2). They also showed that there exist majority circuits of size n1+⇥("d
+1) and depth d computing
+Parity; here "1 = 2/(1 +
+p
+5). Impagliazzo, Paturi, and Saks [22] showed a depth-d lower bound for
+general threshold circuits computing Parity: namely, that any such circuit must have wire complexity
+at least n1+"d
+2 where "2 < "1.
+The proof of [22] proceeds by induction on the depth d. The main technical lemma shows that a
+circuit of depth d can be converted to a depth d −1 circuit of the same size by setting some of the
+input variables. The variables that are set are set in a random fashion, but not according to the uniform
+distribution. In fact, this distribution has statistical distance close to 1 from the uniform distribution
+and furthermore, depends on the circuit whose depth is being reduced. Therefore, it is unclear how to
+use this technique to prove a correlation bound with respect to the uniform distribution. In contrast, we
+are able to reduce the depth of the circuit by setting variables uniformly at random (though the variables
+that we restrict are sometimes chosen in a way that depends on the circuit), which yields the correlation
+bounds we want.
+Gate complexity.
+The aforementioned work of Paturi and Saks [34] also proved a near optimal ˜⌦(n)
+lower bound on the number of gates in any depth-2 majority circuits computing Parity.
+Siu, Roychowdhury, and Kailath [45] considered majority circuits of bounded depth and small gate
+complexity. They showed that Parity can be computed by depth-d circuits with O(dn1/(d−1)) gates.
+Building on the ideas of [34], they also proved a near matching lower bound of ˜⌦(dn1/(d−1)). Further,
+they also considered the problem of correlation bounds and showed that there exist depth-d majority
+circuits with O(dn1/2(d−1)) gates that compute Parity almost everywhere and that majority circuits of
+signiﬁcantly smaller size have o(1) correlation with Parity (i.e. these circuits cannot compute Parity on
+more than a 1/2 + o(1) fraction of inputs; recall that 1/2 is trivial since a constant function computes
+Parity correctly on 1/2 of its inputs). Impagliazzo, Paturi, and Saks [22] extended the worst case lower
+bound to general threshold gates, where they proved a slightly weaker lower bound of ⌦(n1/2(d−1)). As
+discussed above, though, it is unclear how to use their technique to prove a correlation bound.
+Beigel [6] extended the result of Siu et al. to the setting of AC0 augmented with a few majority
+gates. He showed that any subexponential-sized depth-d AC0 circuit with signiﬁcantly less than some
+k = n⇥(1/d) majority gates has correlation o(1) with Parity. The techniques of all the above works
+with the exception of [22] were based on the fact majority gates can be well-approximated by low-
+degree rational functions. However, this is not true for general threshold functions [44] and hence, these
+techniques do not carry over the case of general threshold gates.
+A lower bound technique that does carry over to the setting of general threshold gates is that of
+showing that the circuit class has low-degree polynomial sign-representations. Aspnes, Beigel, Furst and
+Rudich [3] used this idea to prove that AC0 circuits augmented with a single general threshold output
+gate — we refer to these circuits as TAC0 circuits as in [15] — of subexponential-size and constant-depth
+have correlation o(1) with Parity. More recently, Podolskii [36] used this technique along with a trick
+due to Beigel [6] to prove similar bounds for subexponential-sized AC0 circuits augmented with general
+threshold gates. However, this trick incurs an exponential blow-up with the number of threshold gates
+and hence, in the setting of the Parity function, we cannot handle k > log n threshold gates.
+Another technique that has proved useful in handling general threshold gates is Communication
+Complexity, where the basic idea is to show that the circuit — perhaps after restricting some variables
+— has low communication complexity in some suitably deﬁned communication model. We can then use
+results from communication complexity to infer lower bounds or correlation bounds. Nisan [29] used
+this technique to prove exponential correlation bounds for general threshold circuits (not necessarily
+even constant-depth) with n1−⌦(1) threshold gates. Using Beigel’s trick and multiparty communication
+complexity bounds of Babai, Nisan and Szegedy [4], Lovett and Srinivasan [27] (see also [40, 17]) proved
+exponential correlation bounds for any polynomial-sized AC0 circuits augmented with up to n
+1
+2 −⌦(1)
+threshold gates.
+We do not use this technique in our setting for many reasons. Firstly, it cannot be used to prove
+lower bounds or correlation bounds against functions such as Parity (which has small communication
+complexity in most models). In particular, these ideas do not yield the noise sensitivity bounds we get
+here. Even more importantly, it is unclear how to use these techniques to prove any sort of superlinear
+3
+
+lower bound on wire complexity, since there are functions that have threshold circuits with linearly
+many wires, but large communication complexity even after applying restrictions (take a generic read-
+once depth-2 Majority formula for example).
+Perhaps most closely related to our work is that of Gopalan and Servedio [15] who use analytic
+techniques to prove correlation bounds for AC0 circuits augmented with a few threshold gates. Their
+idea is to use Noise sensitivity bounds (as we do as well) to obtain correlation bounds for Parity with
+TAC0 circuits and then extend these results in the same way as in the work of Podolskii [36] mentioned
+above. As a result, though, the result only yields non-trivial bounds when the number of threshold gates
+is bounded by log n, whereas our result yields correlation bounds for up to n1/2(d−1) threshold gates.
+1.2
+Proof Techniques
+In recent years, there has been an explosion of work on the analytic properties (such as Noise Sensitivity)
+of linear threshold functions (LTFs) and their generalizations polynomial threshold functions (PTFs)
+(e.g., [43, 33, 9, 18, 10, 28, 23]). We show here that these techniques can be used in the context of
+constant-depth threshold circuits as well.
+Our ﬁrst result (Theorem 29 in Section 3) is a tight correlation bound for Parity with threshold
+circuits of depth d and gate complexity much smaller than n1/2(d−1). This generalizes both the results
+of Siu et al. [45], who proved such a result for majority circuits, and Impagaliazzo, Paturi, and Saks [22],
+who proved a worst case lower bound of the same order. The proof uses a fundamental theorem of
+Peres [35] on the noise sensitivity of LTFs; Peres’ theorem has also been used by Klivans, O’Donnell,
+and Servedio [24] to obtain learning algorithms for functions of a few threshold gates. We use Peres’
+theorem to prove a noise sensitivity upper bound on small threshold circuits of constant depth.
+The observation underlying the proof is that the noise sensitivity of a function is exactly the expected
+variance of the function after applying a suitable random restriction (see also [31]). Seen in this light,
+Peres’ theorem says that, on application of a random restriction, any threshold function becomes quite
+biased in expectation and hence is well approximated by a constant function.
+Our analysis of the
+threshold circuit therefore proceeds by applying a random restriction to the circuit and replacing all the
+threshold gates at height 1 by the constants that they are well approximated by to obtain a circuit of
+depth d −1. A straightforward union bound tells us that the new circuit is a good approximation of
+the original circuit after the restriction. We continue this way with the depth-d −1 circuit until the
+entire circuit becomes a constant, at which point we can say that after a suitable random restriction, the
+original circuit is well approximated by a constant, which means its variance is small. Hence, the Noise
+Sensitivity of the original circuit must be small as well and we are done.
+This technique is expanded upon in Section 7, where we use a powerful Noise Sensitivity upper bound
+for low degree PTFs due to Kane [23] along with standard switching arguments [19] to prove similar
+results for AC0 circuits augmented with almost n1/2(d−1) threshold gates. This yields Theorem 3.
+In Section 4, we consider the problem of extending the above correlation bounds to threshold circuits
+with small (slightly superlinear) wire complexity. The above proof breaks down even for depth-2 threshold
+circuits with a superlinear number of wires, since such circuits could have a superlinear number of gates
+and hence the union bound referred to above is no longer feasible.
+In the case of depth-2 threshold circuits, we are nevertheless able to use Peres’ theorem, along with
+ideas of [3] to prove correlation bounds for Parity with circuits with nearly n1.5 wires. This result is
+tight, since by the work of Siu et al. [45], Parity can be well approximated by depth-2 circuits with
+O(pn) gates and hence O(n1.5) wires. This argument is in Section B.
+Unfortunately, however, this technique needs us to set a large number of variables, which renders it
+unsuitable for larger depths. The reason for this is that, if we set a large number of variables to reduce
+the depth from some large constant d to d −1, then we may be in a setting where the number of wires
+is much larger than the number of surviving variables and hence correlation bounds with Parity may no
+longer be possible at all.
+We therefore use a di↵erent strategy to prove correlation bounds for larger constant depths. The
+lynchpin in the argument is a qualitative reﬁnement of Peres’ theorem (Lemma 34) that says that on
+application of a random restriction to an LTF, with good probability, the variance of the LTF becomes
+negligible (even exponentially small for suitable parameters). The proof of this argument is via anticon-
+centration results based on the Berry-Esseen theorem and the analysis of general threshold functions via
+a critical index argument as in many recent works [43, 33, 9, 28].
+4
+
+The above reﬁnement of Peres’ theorem allows us to proceed with our argument as in the gates
+case. We apply a random restriction to the circuit and by the reﬁnement, with good probability (say
+1 −n−⌦(1)) most gates end up exponentially close to constants. We can then set these “imbalanced”
+gates to constants and still apply a union bound to ensure that the new circuit is a good approximation
+to the old one. For the small number of gates that do not become imbalanced in this way, we set all
+variables feeding into them. Since the number of such gates is small, we do not set too many variables.
+We now have a depth d −1 circuit. Continuing in this way, we get a correlation bound of n−⌦(1) with
+Parity. This gives part of Theorem 1.
+We then strengthen this correlation bound to exp(−n⌦(1)) for the Generalized Andreev function,
+which, intuitively speaking, has the following property: even after applying any restriction that leaves a
+certain number of variables unﬁxed, the function has exponentially small correlation with any LTF on
+the surviving variables. To prove lower bounds for larger depth threshold circuits, we follow more or less
+the same strategy, except that in the above argument, we need most gates to become imbalanced with
+very high probability (1 −exp(−n⌦(1))). To ensure this, we use a bounded read Cherno↵bound due to
+Gavinsky, Lovett, Saks, and Srinivasan [14]. We can use this technique to reduce depth as above as long
+as the number of threshold gates at height 1 is “reasonably large”. If the number of gates at height 1 is
+very small, then we simply guess the values of these few threshold gates and move them to the top of
+the circuit and proceed. This gives the other part of Theorem 1.
+This latter depth-reduction lemma can be completely constructivized to design a satisﬁability al-
+gorithm that runs in time 2n−n⌦(1). The algorithm proceeds in the same way as the above argument,
+iteratively reducing the depth of the circuit. A subtlety arises when we replace imbalanced gates by
+constants, since we are changing the behaviour of the circuit on some (though very few) inputs. Thus, a
+circuit which was satisﬁable only at one among these inputs might now end up unsatisﬁable. However,
+we show that there is an eﬃcient algorithm that enumerates these inputs and can hence check if there
+are satisﬁable assignments to the circuits from among these inputs. This gives Theorem 2.
+In Section 6, we prove correlation bounds for the Generalized Andreev function with threshold for-
+mulas of any arity and any depth. The proof is based on a retooling of the argument of Neˇciporuk for
+formulas of constant arity over any basis and yields a correlation bound as long as the wire complexity
+is at most n1.5−⌦(1).
+2
+Preliminaries
+2.1
+Basic Boolean function deﬁnitions
+A Boolean function on n variables will be a function f : {−1, 1}n ! {−1, 1}. We use the standard inner
+product on functions f, g : {−1, 1}n ! R deﬁned by hf, gi = Ex⇠{−1,1}n[f(x)g(x)].
+Given Boolean functions f, g on n variables, the Correlation between f and g — denoted Corr(f, g)
+— is deﬁned as
+Corr(f, g) := |hf, gi| =
+!!!!
+E
+x⇠{−1,1}n[f(x)g(x)]
+!!!! = |2 Pr
+x [f(x) = g(x)] −1|
+Also, we use δ(f, g) to denote the fractional distance between f and g: i.e., δ(f, g) = Prx[f(x) 6= g(x)].
+Note that for Boolean f, g, we have Corr(f, g) = |1 −2δ(f, g)|. We say that f is δ-approximated by g if
+δ(f, g) δ.
+We use Parn to denote the parity function on n variables. I.e. Parn(x1, . . . , xn) = Qn
+i=1 xi.
+Deﬁnition 4 (Restrictions). A restriction on n variables is a function ⇢: [n] ! {−1, 1, ⇤}. A random
+restriction is a distribution over restrictions. We use Rn
+p to denote the distribution over restrictions on
+n variables obtained by setting each ⇢(x) = ⇤with probability p and to 1 and −1 with probability 1−p
+2
+each. We will often view the process of sampling a restriction as picking a pair (I, y) where I ✓[n] is
+obtained by picking each element of [n] to be in I with probability p and y 2 {−1, 1}n−|I| uniformly at
+random.
+Deﬁnition 5 (Restriction trees and Decision trees). A restriction tree T on {−1, 1}n of depth h is a
+binary tree of depth h all of whose internal nodes are labelled by one of n variables, and the outgoing
+edges from an internal node are labelled +1 and -1; we assume that a node and its ancestor never query
+5
+
+the same variable. Each leaf ` of T deﬁnes a restriction ⇢` that sets all the variables on the path from
+the root of the decision tree to ` and leaves the remaining variables unset. A random restriction tree T
+of depth h is a distribution over restriction trees of depth h.
+Given a restriction tree T, the process of choosing a random edge out of each internal node generates
+a distribution over the leaves of the tree (note that this distribution is not uniform: the weight it puts
+on leaf ` at depth d is 2−d). We use the notation ` ⇠T to denote a leaf ` of T picked according this
+distribution.
+A decision tree is a restriction tree all of whose leaves are labelled either by +1 or -1. We say a decision
+tree has size s if the tree has s leaves. We say a decision tree computes a function f : {−1, 1}n ! {−1, 1}
+if for each leaf ` of the tree, f|⇢` is equal to the label of `.
+Fact 6 (Facts about correlation). Let f, g, h : {−1, 1}n ! {−1, 1} be arbitrary.
+1. Corr(f, g) 2 [0, 1].
+2. If Corr(f, g) " and δ(g, h) δ, then Corr(f, h) " + 2δ.
+3. Let g1, . . . , gN be Boolean functions such that no two of them are simultaneously true and let h
+denote their (disjoint) OR. Then, Corr(f, h) P
+i max{Corr(f, 1), Corr(f, gi)}, where 1 denotes
+the constant 1 function.
+4. Let T be any random restriction tree. Then Corr(f, g) ET ⇠T ,`⇠T [Corr(f|⇢`, g|⇢`)].
+Deﬁnition 7 (Noise sensitivity and Variance [32]). Given a Boolean function f : {−1, 1}n ! {−1, 1}
+and a parameter p 2 [0, 1], we deﬁne the Noise senstivity of f with noise parameter p — denoted NSp(f)
+— as follows. Pick x 2 {−1, 1}n uniformly at random and y 2 {−1, 1}n by negating (i.e. ﬂipping) each
+bit of x independently with probability p; we deﬁne NSp(f) = Pr(x,y)[f(x) 6= f(y)]. The variance of f —
+denoted Var(f) — is deﬁned to be 2NS1/2(f).
+Proposition 8. Let f : {−1, 1}n ! {−1, 1} be any Boolean function. Then,
+1. For p 1/2, NSp(f) = 1
+2 E⇢⇠Rn
+2p[Var(f|⇢)].
+2. If p ≥1
+n, then Corr(f, Parn) O(NSp(f)).
+The above fact is folklore, but we couldn’t ﬁnd explicit proofs in the literature. Therefore we present
+them in the appendix (see Appendix A).
+Fact 9. Let f : {−1, 1}n ! {−1, 1} be any Boolean function. Let p = min{Prx[f(x) = 1], Prx[f(x) =
+−1]} where x is chosen uniformly from {−1, 1}n. Then, Var(f) = ⇥(p).
+2.2
+Threshold functions and circuits
+Deﬁnition 10 (Threshold functions and gates). A Threshold gate is a gate φ labelled with a pair (w, ✓)
+where w 2 Rm for some m 2 N and ✓2 R. The gate computes the Boolean function fφ : {−1, 1}m !
+{−1, 1} deﬁned by fφ(x) = sgn(hw, xi −✓) (we deﬁne sgn(0) = −1 for the sake of this deﬁnition). The
+fan-in of the gate φ — denoted fan-in(φ) — is m. A Linear Threshold function (LTF) is a Boolean
+function that can be represented by a Threshold gate.
+Deﬁnition 11 (Threshold circuits). A Threshold circuit C is a Boolean circuit whose gates are all
+threshold gates. There are designated output gates, which compute the functions computed by the circuit.
+Unless explicitly mentioned, however, we assume that our threshold circuits have a unique output gate.
+The gate complexity of C is the number of (non-input) gates in the circuit, while the wire complexity is
+the sum of all the fan-ins of the various gates.
+A Threshold map from n to m variables is a depth-1 threshold circuit C with n inputs and m outputs.
+We say that such a map is read-k if each input variable is an input to at most k of the threshold gates
+in C.
+The proof of the following can be found for example in [41].
+Lemma 12 ([41]). The number of distinct linear threshold functions on n bits is at most 2O(n2).
+6
+
+Deﬁnition 13 (Restrictions of threshold gates and circuits). Given a threshold gate φ of fan-in m
+labelled by the pair (w, ✓) and a restriction ⇢on m variables, we use φ⇢to denote the threshold gate over
+the variables indexed by ⇢−1(⇤) obtained in the natural way by setting variables according to ⇢.
+We will also need Peres’ theorem, which bounds the Noise Sensitivity of threshold functions.
+Theorem 14 (Peres’ theorem[35, 32]). Let f : {−1, 1}n ! {−1, 1} be any LTF. Then,
+E
+⇢⇠Rn
+p
+[Var(f|⇢)] = NS p
+2 (f) = O(pp).
+Using the above for p = 1/n and Proposition 8, we obtain
+Corollary 15. Let f : {−1, 1}n ! {−1, 1} be any threshold function. Then Corr(f, Parn) O(n−1/2).
+2.3
+Description lengths and Kolmogorov Complexity
+Deﬁnition 16 (Kolmogorov Complexity). The Kolmogorov complexity of an n-bit Boolean string x is
+the length of the shortest bit string of the form (M, w) where M is the description of a Turing Machine
+and w an input to M such that M(w) = x. We use K(x) to denote the Kolmogorov complexity of x.
+Fact 17. For any ↵2 (0, 1), the fraction of n-bit strings x satisfying K(x) (1−↵)n is at most 2−↵n+1.
+Deﬁnition 18 (Descriptions of circuits). We can also talk about the description lengths of threshold
+circuits, which we deﬁne as follows. By Lemma 12, we know that the number of LTFs on n bits is
+2O(n2), and hence we can ﬁx some O(n2)-bit description for each such function. The description of
+a threshold circuit C is a description of the underlying graph theoretic structure of C followed by the
+descriptions of the threshold functions computed by each of its gates and the input variables labelling its
+input gates. We use σ(C) to denote the length of this description of C.
+Proposition 19. For any threshold circuit C with wire complexity at most s on at most n variables,
+σ(C) = O(s2 + s log n). If s ≥n, then the description length is at most O(s2).
+Proof. Since the wire complexity is at most s, the graph underlying the circuit can be described using
+O(s log s) bits (for example, for each wire, we can describe the gates that it connects). Let φ1, . . . , φm
+be the threshold gates in the circuit. We can write down a description of the LTFs f1, . . . , fm using
+P
+i O(k2
+i ) bits where ki is the fan-in of φi; this is at most O(P
+i ki)2 = O(s2). Finally, to describe the
+input variable assignments to the input gates, we need O(s log n) bits.
+2.4
+The Generalized Andreev function
+We state here the deﬁnition of a generalization of Andreev’s function, due to Komargodski and Raz, and
+Chen, Kabanets, Kolokolova, Shaltiel, and Zuckerman [25, 7]. This function will be used to give strong
+correlation bounds for constant-depth threshold circuits with slightly superlinear wire complexity.
+We ﬁrst need some deﬁnitions.
+Deﬁnition 20 (Bit-ﬁxing extractor). A function E : {−1, 1}n ! {−1, 1}m is a (n, k, m, ⇣) bit-ﬁxing
+extractor if for every random variable X that is uniform on a subcube of {−1, 1}n of dimension at least
+k, the function E(X) is ⇣-close to uniform on {−1, 1}m.
+We have the following explicit construction of a bit-ﬁxing extractor.
+Theorem 21 ([37]). There is an absolute constant c ≥1 so that the following holds.
+There is a
+polynomial-time computable function E : {−1, 1}n ! {−1, 1}m that is an (n, k, m, ⇣)-bit ﬁxing extractor
+for any k ≥(log n)c, m = 0.9k, and ⇣2−k⌦(1).
+Also recall that a function Enc : {−1, 1}a ! {−1, 1}b deﬁnes (↵, L)-error-correcting code for param-
+eters ↵2 [0, 1] and L 2 N if for any z 2 {−1, 1}b, the number of elements in the image of Enc that are
+at relative Hamming distance at most ↵from z is bounded by L.
+The following theorem is a folklore result, and stated explicitly in the work of Chen et al. [7].
+7
+
+Theorem 22 ([7], Theorem 6.4). Let r = nβ for any ﬁxed 0 < β < 1. There exists an (↵, L)-error
+correcting code with Enc : {−1, 1}4n ! {−1, 1}2r where ↵= 1
+2 −O(2−r/4) and L = O(2r/2). Further,
+there is a poly(n) time algorithm, which when given as input x 2 {−1, 1}n and i 2 [2r] in binary, outputs
+Enc(x)i, the ith bit of Enc(x).
+Now we can deﬁne the generalized Andreev function as in [7].
+The function is F : {−1, 1}4n ⇥
+{−1, 1}n ! {−1, 1} and is deﬁned as follows. Let γ > 0 be a constant parameter. The parameter will
+be ﬁxed later according to the application at hand.
+Let E be any (n, nγ, m = 0.9nγ, 2−n⌦(γ)) extractor (we can obtain an explicit one using Theorem 21).
+We interpret the output of E as an integer from [2m] in the natural way. Let Enc : {−1, 1}4n ! {−1, 1}2m
+deﬁne a ( 1
+2 −O(2−m/4), 2m/2)-list decodable code as in Theorem 22. Then, we deﬁne F(x1, x2) by
+F(x1, x2) = Enc(x1)E(x2).
+(1)
+Given a 2 {−1, 1}4n, we use Fa(·) to denote the resulting sub-function on n bits obtained by ﬁxing
+x1 = a.
+The following lemma was proved as part of Theorem 6.5 in [7].
+Lemma 23 ([7], Theorem 6.5). Let C be any circuit on nγ variables with binary description length
+σ(C) n according to some ﬁxed encoding scheme. Let ⇢be any restriction of n variables leaving nγ
+variables unﬁxed. Let f(y) := Fa|⇢(y) for a 2 {−1, 1, }4n satisfying K(a) ≥3n. Then
+Corr(f, C) exp(−n⌦(γ))
+2.5
+Concentration bounds
+We state a collection of concentration bounds that we will need in our proofs. The proofs of Theorems 24
+and 26 may be found in the excellent book by Dubhashi and Panconesi [11].
+Theorem 24 (Cherno↵bound). Let w 2 Rn be arbitrary and x is chosen uniformly from {−1, 1}n.
+Then
+Pr
+x [|hw, xi| ≥t · kwk2] exp(−⌦(t2)).
+Deﬁnition 25 (Imbalance). We say that a threshold gate φ labelled by (w, ✓) is t-imbalanced if |✓| ≥
+t · kwk2 and t-balanced otherwise.
+We also need a multiplicative form of the Cherno↵bound for sums of Boolean random variables.
+Theorem 26 (Multiplicative Cherno↵bound). Let Y1, . . . , Ym be independent Boolean random variables
+such that E[Yi] = pi for each i 2 [m]. Let p denote the average of the pi. Then, for any " > 0
+Pr[|
+X
+i
+Yi −pm| ≥"pm] exp(−⌦("2pm)).
+Let Y1, . . . , Ym be random variables deﬁned as functions of independent random variables X1, . . . , Xn.
+For i 2 [m], let Si ✓[n] index those random variables among X1, . . . , Xn that inﬂuence Yi. We say that
+Y1, . . . , Ym are read-k random variables if any j 2 [n] belongs to Si for at most k di↵erent i 2 [m].
+The notation D(p||q) represents the KL-divergence (see, e.g., [8]) between the two probability distri-
+butions on {0, 1} where the probabilities assigned to 1 are p and q respectively.
+Theorem 27 (A read-k Cherno↵bound [14]). Let Y1, . . . , Ym be {0, 1}-valued read-k random variables
+such that E[Yi] = pi. Let p denote the average of p1, . . . , pm. Then, for any " > 0,
+Pr[
+X
+i
+Yi ≥pm(1 + ")] exp(−D(p(1 + ")||p)m/k).
+Using standard estimates on the KL-divergence, we get
+Corollary 28. Let Y1, . . . , Ym be as in the statement of Theorem 27 and assume E[P
+i Yi] µ. Then,
+Pr[
+X
+i
+Yi ≥2µ] exp(−⌦(µ/k)).
+8
+
+3
+Correlation bounds for threshold circuits with small gate
+complexity
+In this section, we show that constant-depth threshold circuits with a small number of gates cannot
+correlate well with the Parity function.
+It should be noted that Nisan [29] already proved strong correlation bounds for the Inner Product
+function against any threshold circuit (not necessarily constant-depth) with a sub-linear (much smaller
+than n/ log n) number of threshold gates. The idea of the proof is to ﬁrst show that each threshold gate
+on n variables has a δ-error randomized protocol with complexity O(log(n/δ)) [29, Theorem 1]. One can
+use this to show that any threshold circuit as in the theorem can be written as a decision tree of depth
+n/k querying threshold functions and hence has a exp(−⌦(k))-error protocol of complexity at most n/10.
+Standard results in communication complexity imply that any such function can have correlation at most
+exp(−⌦(k)) with inner product.
+However, such techniques cannot be used to obtain lower bounds or correlation bounds for the parity
+function, since the parity function has low communication complexity (even in the deterministic setting).
+An even bigger disadvantage to this technique is that it cannot be used to obtain any superlinear lower
+bound on the wire complexity, since threshold circuits with a linear number of wires can easily compute
+functions with high communication complexity (such as the Disjointness function).
+The techniques we use here can be used to give correlation bounds for the parity function; further,
+these correlation bounds are nearly tight (Theorem 33). In fact, we prove something stronger: we upper
+bound the noise sensitivity of small constant-depth threshold circuits, which additionally implies the
+existence of non-trivial learning algorithms [24, 15]. Further, our techniques also imply noise sensitivity
+bounds for AC0 circuits augmented with a small number of threshold gates.
+In this section, we illustrate our technique with the case of threshold circuits with a small number
+of gates. The generalizations to AC0 circuits augmented with a small number of threshold gates are
+obtained in Section 7.
+3.1
+Correlation bounds via noise sensitivity
+Theorem 29. Let C be a depth d threshold circuit with at most k threshold gates.
+Then, for any
+parameters p, q 2 [0, 1], we have
+NSpd−1q(C) O(kpp + pq)
+Proof. We assume that q 1
+2, since otherwise the statement of the theorem is trivial. We will instead
+prove that for pd := 2pd−1q 2 [0, 1] and ⇢d ⇠Rn
+pd (n is the number of input variables to C), we have
+E
+⇢d[Var(C|⇢d)] O(kpp + pq).
+(2)
+This will imply the theorem, since by Proposition 8, we have NSpd−1q(C) = 1
+2 E⇢d[Var(C|⇢d)].
+The proof of (2) is by induction on the depth d of the circuit. The base case d = 1 is just Peres’
+theorem (Theorem 14).
+Now assume that C has depth d > 1. Let k1 be the number of threshold circuits at height 1 in the
+circuit. We choose a random restriction ⇢⇠Rn
+p and consider the circuit C|⇢. It is easy to check that
+E
+⇢d[Var(C|⇢d)] = E
+⇢[ E
+⇢d−1[Var((C|⇢)|⇢d−1)]]
+(3)
+and hence to prove (2), it suﬃces to bound the expectation of Var((C|⇢)|⇢d−1).
+Let us ﬁrst consider the circuit C|⇢. Peres’ theorem tells us that on application of the restriction ⇢,
+each threshold gate at height 1 becomes quite biased on average. Formally, by Theorem 14 and Fact 9,
+for each threshold gate φ at height 1, there is a bit bφ,⇢2 {−1, 1} such that
+E
+⇢[
+Pr
+x2{−1,1}|⇢−1(⇤)|[φ⇢(x) 6= bφ,⇢]] O(pp)
+In particular, replacing φ⇢by bφ,⇢in the circuit C|⇢yields a circuit that di↵ers from C|⇢on only an
+O(pp) fraction of inputs (in expectation). Applying this replacement to each of the k1 threshold gates
+9
+
+at height 1 yields a circuit C0
+⇢with k −k1 threshold gates and depth d −1 such that
+E
+⇢[δ(C|⇢, C0
+⇢)] O(k1
+pp).
+(4)
+where δ(C|⇢, C0
+⇢) denotes the fraction of inputs on which the two circuits di↵er. On the other hand, we
+can apply the inductive hypothesis to C0
+⇢to obtain
+E
+⇢d−1[Var((C0
+⇢)|⇢d−1)] O((k −k1)pp + pq).
+(5)
+Therefore, to infer (2), we put the above together with (4) and the following elementary fact.
+Proposition 30. Say f, g : {−1, 1}m ! {−1, 1} and δ = δ(f, g). Then, for any r 2 [0, 1], we have
+E⇢⇠Rn
+r [Var(f|⇢)] E⇢⇠Rn
+r [Var(g|⇢)] + 4δ.
+Proof of Proposition 30. By Proposition 8, we know that E⇢⇠Rn
+r [Var(f|⇢)] = 2NSr/2(f), and similarly
+for g. By deﬁnition of noise sensitivity, we have NSr/2(f) = Pr(x,y)[f(x) 6= f(y)] where x 2 {−1, 1}m is
+chosen uniformly at random and y is chosen by ﬂipping each bit of x with probability r/2. Note that
+each of x and y is individually uniformly distributed over {−1, 1}m and hence, both f(x) = g(x) and
+f(y) = g(y) hold with probability at least 1 −2δ. This yields
+NSr/2(f) = Pr
+(x,y)[f(x) 6= f(y)] Pr
+(x,y)[g(x) 6= g(y)] + 2δ = NSr/2(g) + 2δ,
+which implies the claimed bound.
+Corollary 31. Let d ≥2 and δ 2 [0, 1] be arbitrary parameters. Assume that C is a depth d threshold
+circuit over n variables with at most δn
+1
+2(d−1) threshold gates. Then, Corr(C, Parn) O(δ(1−1
+d )).
+Proof. Let k δn1/2(d−1) be the number of gates in the threshold circuit C. We apply Theorem 29 with
+the following optimized parameters: p =
+1
+n1/d ·
+1
+k2/d and q 2 [0, 1] such that pd−1q = 1
+n. It may be veriﬁed
+that for this setting of parameters, Theorem 29 gives us
+NS1/n(C) O
+✓k1−1/d
+n1/(2d)
+◆
+O(δ1−1
+d ).
+As noted in Proposition 8, we have Corr(C, Parn) O(NS1/n(C)). This completes the proof.
+Remark 32. It is instructive to compare the above technique with the closely related work of Gopalan and
+Servedio [15]. The techniques of [15] applied to the setting of Theorem 29 show that NSp(C) O(k2kpp),
+which gives a better dependence on the noise parameter p, but a much worse dependence on k. Indeed,
+this is not surprising since in this setting, the technique of Gopalan and Servedio does not use the fact
+that the circuit is of depth d. The threshold circuit is converted to a decision tree of depth k querying
+threshold functions and it is this tree that is analyzed.
+We believe that the right answer should incorporate the best of both bounds: NSp(f) Od(kd−1 · pp).
+As in Corollary 31, this would show that Corr(C, Parn) = o(1) if k = o(n1/2(d−1)), but additionally, we
+would also get Corr(C, Parn) n−1
+2 +o(1) as long as k = no(1), which we are not able to prove currently.
+It is known from the work of Siu, Roychowdhury and Kailath [45, Theorem 7] that Corollary 31 is
+tight in the sense that there do exist circuits of gate complexity roughly n1/2(d−1) that have signiﬁcant
+correlation with Parn. More formally,
+Theorem 33 (Theorem 7 in [45]). Let " > 0 be an arbitrary constant. Then, there is a threshold circuit
+of depth d with O(d)·(n log(1/"))1/2(d−1) gates that computes Parn correctly on a 1−" fraction of inputs.
+10
+
+4
+Correlation bounds for threshold circuits with small wire
+complexity
+The following is a key lemma that will be used in the proofs of our correlation bounds. We state the
+lemma here and prove our correlation bounds. The lemma will be proved in Section 4.2.
+Lemma 34 (Main Structural lemma for threshold gates). For any threshold gate φ over n variables with
+label (w, ✓) and any p 2 [0, 1], we have
+Pr
+⇢⇠Rn
+p
+[φ⇢is
+1
+p⌦(1) -balanced] p⌦(1).
+The proof of the correlation bounds proceed by iteratively reducing the depth of the circuit. In order
+to perform this depth-reduction for a depth d circuit, we need to analyze the threshold map deﬁned by
+the threshold gates at depth d −1. The ﬁrst observation, which follows from Markov’s inequality, shows
+that we may assume (after setting a few variables) that the map reads each variable only a few times.
+Fact 35 (Small wire-complexity to small number of reads). Let C be any threshold circuit on n variables
+with wire complexity at most cn. Then, there is a set S of at most n/2 variables such that each variable
+outside S is an input variable to at most 2c many gates in C.
+The second observation is that if the fan-ins of all the threshold gates are small, then depth-reduction
+is easy (after setting some more variables).
+Proposition 36 (Handling small fan-in gates). Let C = (φ1, . . . , φm) be any read-k threshold map on
+n variables such that maxi fan-in(φi) t. Then, there is a set S of n/kt variables such that each φi
+depends on at most one variable in S.
+Proof. This may be done via a simple graph theoretic argument. Deﬁne an undirected graph whose
+vertex set is the set of n variables and two variables are adjacent i↵they feed into the same threshold
+gate. We need to pick an S that is an independent set in this graph. Since the graph has degree at most
+kt, we can greedily ﬁnd an independent set of size at least n/kt. Let S be such an independent set.
+4.1
+Proofs of Correlation bounds
+Let B > 2 be a constant real parameter that we will choose to satisfy various constraints in the proofs
+below. For d ≥1, deﬁne "d = B−(2d−1) and δd = B"d.
+Theorem 37 (Correlation bounds for parity). For any d ≥1 and c n"d, any depth-d threshold circuit
+C with at most cn wires satisﬁes Corr(C, Parn) O(n−"d) where the O(·) hides absolute constants
+(independent of d and n).
+Proof. The proof is by induction on the depth d of C. The base case is d = 1, which is the case when C
+is only a single threshold gate. In this case, Corollary 15 tells us that Corr(C, Parn) O(n−1/2) n−"1,
+since B > 2.
+Now, we handle the inductive case when the depth d > 1. Our analysis proceeds in phases.
+Phase 1
+: We ﬁrst transform the circuit into a read-2c circuit by setting n/2 variables. This may be
+done by Fact 35. This deﬁnes a restriction tree of depth n/2. By Fact 6, it suﬃces to show that each leaf
+of this restriction tree, the correlation of the restricted circuit and Parn/2 remains bounded by O(n−"d).
+Let n1 now denote the new number of variables and let C1 now be the restricted circuit at some
+arbitrary leaf of the restriction tree. By renaming the variables, we assume that they are indexed by the
+set [n1].
+Phase 2
+: Let φ1, . . . , φm be the threshold gates at depth d −1 in the circuit C1. We call φi large if
+fan-in(φi) > nδd and small otherwise. Let L ✓[m] be deﬁned by L = {i 2 [m] | φi large}. Assume that
+|L| = `. Note that ` · nδd n1+"d and hence ` n1+"d−δd n.
+11
+
+We restrict the circuit with a random restriction ⇢= (I, y) ⇠Rn1
+p , where p = n−δd/2. By Lemma 34,
+we know that for each i 2 [m] and some t =
+1
+p⌦(1) and q = p⌦(1),
+Pr
+⇢[φi|⇢t-balanced] q.
+(6)
+Further, we also know that for each i 2 L, the expected value of fan-in(φi|⇢) = p · fan-in(φi), since
+each variable is set to a constant with probability 1 −p. Since i 2 L, the expected fan-in of each φi
+(i 2 L) is at least nδd/2. Hence, by a Cherno↵bound (Theorem 26), we see that for any i 2 L,
+Pr
+⇢[fan-in(φi|⇢) > 2p · fan-in(φi)] exp(−⌦(nδd/2)).
+(7)
+Finally another Cherno↵bound (Theorem 26) tells us that
+Pr
+⇢=(I,y)[|I| < n1p
+2 ] exp(−⌦(n1p)) = exp(−⌦(np)).
+(8)
+We call a set I generic if |I| ≥n1p
+2
+and fan-in(φi|⇢) 2p · fan-in(φi) for each i 2 L. Let G denote
+the event that I is generic. By (7) and (8), we know that PrI[¬G] ` exp(−⌦(nδd/2)) + exp(−⌦(np)) 
+exp(−nδd/4). In particular, conditioning on G doesn’t change (6) by much.
+Pr
+⇢=(I,y)[φi|⇢t-balanced | G] q + exp(−nδd/4) 2q.
+(9)
+Our aim is to further restrict the circuit by setting all the input variables to the gates φi that are
+t-balanced. In order to analyze this procedure, we deﬁne random variables Yi (i 2 L) so that Yi = 0 if
+φi|⇢is t-imbalanced and fan-in(φi|⇢) otherwise. Let Y = P
+i2L Yi. Note that
+E
+⇢[Yi | G] (2p · fan-in(φi)) · Pr
+⇢[φi|⇢t-balanced | G] 4pq · fan-in(φi)
+where the ﬁrst inequality follows from the fact that since we have conditioned on I being generic, we
+have fan-in(φi|⇢) 2p · fan-in(φi) with probability 1. Hence, we have
+E
+⇢[Y | G] 4pq ·
+X
+i
+fan-in(φi) 4pq · n1+"d.
+(10)
+We let µ := 4pq · n1+"d. By Markov’s inequality,
+Pr
+⇢[Y ≥µ
+pq | G] pq.
+(11)
+In particular, we can condition on a ﬁxed generic I ✓[n] such that for random y ⇠{−1, 1}n1−|I|, we
+have
+Pr
+y [Y ≥µ
+pq ] pq.
+The above gives us a restriction tree T (that simply sets all the variables in [n1] \ I) such that at
+all but 1 −2pq fraction of leaves λ of T, the total fan-in of the large gates at depth 1 in C1 that are
+t-balanced is at most
+µ
+pq; call such λ good leaves. Let n2 denote |I|, which is the number of surviving
+variables.
+Phase 3
+: We will show that for any good leaf λ, we have
+Corr(Cλ, Parn2) n−"d
+(12)
+where Cλ denotes C1|⇢λ. This will prove the theorem, since we have by Fact 6,
+Corr(C1, Parn1) E
+λ⇠T[Corr(Cλ, Parn2)]
+Pr
+λ [λ not good] + max
+λ good Corr(Cλ, Parn2)
+2pq + n−"d 2n−"d
+12
+
+where we have used the fact that Parn1|⇢λ = ±Parn2 for each leaf λ, and also that 2pq n−"d for a
+large enough choice of the constant B.
+It remains to prove (12). We do this in two steps.
+In the ﬁrst step, we set all large t-imbalanced gates to their most probable constant values. Formally,
+for a t-imbalanced threshold gate φ labelled by (w, ✓), we have |✓| ≥t·kwk2. We replace φ by a constant
+bφ which is 1 if ✓≥t·kwk2 and by −1 if −✓≥t·kwk2. This turns the circuit Cλ into a circuit C0
+λ of at most
+the wire complexity of Cλ. Further, note that for any x 2 {−1, 1}n1, Cλ(x) = C0
+λ(x) unless there is a t-
+imbalanced threshold gate φ such that φ(x) 6= bφ(x). By the Cherno↵bound (Theorem 24) the probability
+that this happens for any ﬁxed imbalanced threshold gate is at most exp(−⌦(t2)) exp(−n⌦(δd)). By a
+union bound over the ` n large threshold gates, we see that Prx[Cλ(x) 6= C0
+λ(x)] n exp(−n⌦(δd)). In
+particular, we get by Fact 6
+Corr(Cλ, Parn2) Corr(C0
+λ, Parn2) + n exp(−⌦(nδd)) Corr(C0
+λ, Parn2) + exp(−n"d).
+(13)
+In the second step, we further deﬁne a restriction tree Tλ such that C0
+λ becomes a depth-(d−1) circuit
+with at most cn wires at all the leaves of Tλ. We ﬁrst restrict by setting all variables that feed into any
+of the t-balanced gates. The number of variables set in this way is at most
+µ
+pq 4ppq · n1+"d (pn) · (4pqn"d) pn
+8 n2
+2
+for a large enough choice of the constant B. This leaves n3 ≥n2
+2 variables still alive. Further, all the
+large t-balanced gates are set to constants with probability 1. Finally, by Proposition 36, we may set all
+but a set S of n4 = n3/2cnδd variables to ensure that with probability 1, all the small gates depend on
+at most one input variable each. At this point, the circuit C0
+λ may be transformed to a depth-(d −1)
+circuit C00
+λ with at most as many wires as C0
+λ, which is at most cn.
+Note that the number of unset variables is n4 ≥pn/8cnδd ≥n1−2δd, for large enough B. Hence, the
+number of wires is at most cn n
+1+"d
+1−2δd
+4
+n(1+"d)(1+3δd)
+4
+n1+"d−1
+4
+for suitably large B. Thus, by the
+inductive hypothesis, we have
+Corr(C00
+λ, Parn4) O(n−"d−1
+4
+) n−"d/2.
+with probability 1 over the choice of the variables restricted in the second step. Along with (13) and
+Fact 6, this implies (12) and hence the theorem.
+4.1.1
+Strong correlation bounds for the generalized Andreev function
+We now prove an exponentially strong correlation bound for the generalized Andreev function deﬁned
+in Section 2.4 with any γ < 1/6. As in the case of Theorem 37, the proof proceeds by an iterative depth
+reduction. We prove the depth-reduction in a separate lemma.
+Deﬁnition 38 (Simplicity). We call a threshold circuit C (t, d, w)-simple if there is a set R of r t
+threshold functions g1, . . . , gr such that for every setting of these threshold functions to bits b1, . . . , br,
+the circuit C can be represented on the corresponding inputs (i.e., inputs x satisfying gi(x) = bi for each
+i 2 [r]) by a depth-d threshold gate of wire complexity at most w.
+In particular, note that a (t, d, w)-simple circuit C may be expressed as
+C(x) =
+_
+b1,...,br2{−1,1}
+ 
+Cb1,...,br ^
+^
+i:bi=−1
+gi ^
+^
+i:bi=1
+(¬gi)
+!
+.
+(14)
+where each Cb1,...,br is a depth d circuit of wire complexity at most w.
+Further, note that the OR
+appearing in the above expression is disjoint (i.e. no two terms in the OR can be simultaneously true).
+Lemma 39. Let d ≥1 be any constant and assume that "d, δd are deﬁned as above. Say we are given
+any depth d threshold circuit C on n variables with at most n1+"d wires.
+There is a restriction tree T of depth n−n1−2δd with the following property: for a random leaf λ ⇠T,
+let E(λ) denote the event that the circuit C|⇢λ is exp(−n"d)-approximated by an (nδd, d−1, n1+"d)-simple
+circuit. Then, Prλ[¬E(λ)] exp(−n"d).
+13
+
+Proof. Let φ1, . . . , φm be the threshold gates appearing at height 1 in the circuit C. We say that φi is
+large if fan-in(φi) ≥nδd and small otherwise. Let L = {i | φi large} and S = [m] \ L. Let ` = |L|. Note
+that ` n1+"d−δd n. Let c = n"d.
+As in the inductive case of Theorem 37, our construction proceeds in phases.
+Phase 1
+: This is identical to Phase 1 in Theorem 37. We thus get a restriction tree of depth n/2
+such that at all leaves of this tree, the resulting circuit is a read-2c circuit with at most cn wires. Let C1
+denote the circuit obtained at some arbitrary leaf of the restriction tree and let n1 denote the number
+of variables.
+Phase 2
+: This basic idea here is similar to Phase 2 from Theorem 37. However, there are technical
+di↵erences from Theorem 37 since we apply a concentration bound to ensure that the circuit simpliﬁes
+with high probability.
+We restrict the circuit with a random restriction ⇢= (I, y) ⇠Rn1
+p , where p = n−δd/2.
+As in
+Theorem 37, we have for some t =
+1
+p⌦(1) , q = p⌦(1), and for each i 2 [m],
+Pr
+⇢[φi|⇢t-balanced] q
+(15)
+Pr
+⇢[fan-in(φi|⇢) > 2p · fan-in(φi)] exp(−⌦(nδd/2))
+(16)
+Pr
+⇢=(I,y)[|I| < n1p
+2 ] exp(−⌦(np))
+(17)
+Now, we partition L as L = L1 [ · · · [ La, where a 
+1
+"d , as follows. The set Lj indexes all threshold
+gates of fan-in at least nδd+(j−1)"d and less than nδd+j"d. We let `j denote |Lj|. For each i 2 L, let Yi
+be a random variable that is 1 if φi|⇢is t-balanced and 0 otherwise. Note that this deﬁnes a collection
+of read-2c Boolean random variables (the underlying independent random variables are ⇢(k) for each
+k 2 [n1]).
+Let Zj = P
+i2Lj Yi, the number of t-balanced gates in Lj. We have E[Zj] = P
+i2Lj E[Yi] q`j by
+(15). Thus, by an application of the read-2c Cherno↵bound in Theorem 27, we have
+Pr[Zj ≥2q`j] exp{−⌦(q`j/c)}.
+Assuming that `j ≥n3δd/4 and B = δd/"d is a large enough constant, the right hand side of the above
+inequality is upper bounded bounded by exp{−2n"d}. On the other hand if `j < n3δd/4, then Zj < n3δd/4
+with probability 1. Hence, we have Pr⇢=(I,y)[Zj ≥max{2q`j, n3δd/4}] exp{−2n"d} and by a union
+bound
+Pr
+⇢=(I,y)[9j 2 [a], Zj ≥max{2q`j, n3δd/4}] a exp{−2n"d}.
+(18)
+We call a set I generic if |I| ≥n1p
+2
+and fan-in(φi|⇢) 2p · fan-in(φi) for each i 2 L. Let G denote the
+event that I is generic. By (16) and (17), we know that PrI[¬G] ` exp(−⌦(nδd/2)) + exp(−⌦(np)) 
+exp(−nδd/4). In particular, similar to Theorem 37, we get,
+Pr
+⇢=(I,y)[9j 2 [a], Zj ≥max{2q`j, n3δd/4} | G] a exp{−2n"d} + exp(−nδd/4) 2a exp{−2n"d}.
+(19)
+We ﬁx any generic I such that
+Pr
+y [9j 2 [a], Zj ≥max{2q`j, n3δd/4}] 2a exp{−2n"d}.
+(20)
+Consider the restriction tree T that sets all the variables not in I. The tree leaves n2 ≥pn1/2 = pn/4
+variables unﬁxed. We call a leaf λ of the tree good if for each j 2 [a] we have Zj < max{2q`j, n3δd/4}
+and bad otherwise. We have
+Pr
+λ⇠T[λ a bad leaf] 2a exp(−2n"d)
+(21)
+For good leaves λ, we show how to approximate Cλ := C1|⇢λ as claimed in the lemma statement.
+14
+
+For the remainder of the argument, ﬁx any good leaf λ. We partition [a] = J1 [ J2 where J1 = {j 2
+[a] | Zj < 2q`j}. Note that for any j 2 J1, we have
+X
+i2Lj
+Yi · fan-in(φi|⇢λ) 
+X
+i2Lj
+Yi · 2p · fan-in(φi)
+2p · nδd+j·"d · Zj nδd+j·"d · 4pq`j
+= 4pqn"d · `j · nδd+(j−1)·"d 4pqn"dn1+"d
+= 4pqn1+2"d
+where for the last inequality, we have used the fact that since we have `j gates of fan-in at least nδd+(j−1)"d
+each, we must have `j · nδd+(j−1)"d n1+"d, the total wire complexity of the circuit.
+In particular, we can bound the total fan-in of all the t-balanced gates indexed by S
+j2J1 Lj by
+X
+j2J1
+X
+i2Lj
+Yi · fan-in(φi|⇢λ) 4pqn1+2"d
+"d
+(22)
+Phase 3
+: We proceed in two steps as in Theorem 37. Since the steps are very similar, we just sketch
+the arguments. In the ﬁrst step, we replace all large t-imbalanced gates by their most probable values.
+This yields a circuit C0
+λ of at most the wire complexity of Cλ and such that
+Pr
+x [Cλ(x) 6= C0
+λ(x)] ` exp(−n⌦(δd)) n exp(−n⌦(δd)) exp(−n"d).
+(23)
+In the second step, we construct another restriction tree rooted at λ that simpliﬁes the circuit to
+the required form. We ﬁrst restrict by setting all variables that feed into the t-balanced gates that are
+indexed by S
+j2J1 Lj. By (22), the number of variables set is bounded by
+4pqn1+2"d
+"d
+4pn · n"d−⌦(δd)
+"d
+pn
+8 n2
+2
+for a large enough choice of the constant B. This sets all the t-balanced gates indexed by S
+j2J1 Lj to
+constants while leaving n3 ≥n2
+2 variables still alive. Finally, by Proposition 36, we may set all but a
+set of n4 = n3/2cnδd variables to ensure that with probability 1, all the small gates depend on at most
+one input variable each. We may replace the small gates by the unique variable they depend on or a
+constant (if they do not depend on any variable) without increasing the wire complexity of the circuit.
+Call the circuit thus obtained C00
+λ.
+At this point, the only threshold gates at height 1 in the circuit C00
+λ are the gates indexed by the
+t-balanced gates in S
+j2J2 Lj. But by the deﬁnition of J2, there can be at most
+1
+"d ·n3δd/4 nδd of them.
+For every setting of these threshold gates to constants, the circuit becomes a depth-(d −1) circuit of size
+at most n1+"d. Hence, we have a (nδd, d −1, n1+"d)-simple circuit, as claimed.
+Note that the number of variables still surviving is given by n4 ≥pn/8cnδd ≥n1−2δd, for a large
+enough choice of the parameter B. Hence, the restriction tree constructed satisﬁes the required depth
+constraints.
+For a random leaf ⌫⇠T, the probability E(⌫) does not occur is at most the probability that in Phase
+2, the leaf sampled is bad. By (21), this is bounded by 2a exp(−2n"d) exp(−n"d) as claimed.
+We now prove the correlation bound for threshold circuits with the generalized Andreev function.
+For the sake of induction, it helps to prove a statement that is stronger in two ways: ﬁrstly, we consider
+any function Fa = F(a, ·) where a 2 {−1, 1}4n has high Kolmogorov complexity and the input to Fa is
+further restricted by an arbitrary restriction ⇢that leaves a certain number of variables alive; secondly,
+we prove a correlation bound against circuits which are the AND of a small threshold circuit with a
+small number of threshold gates.
+Formally, say that f : {−1, 1}n ! {−1, 1} is (N, d, t, ↵)-intractable if for any restriction ⇢on n
+variables that leaves m ≥N variables unset, any depth-d threshold circuit C on m variables of wire
+complexity at most m1+"d, and any set S of at most t threshold functions, we have
+Corr(f, C ^
+^
+g2S
+g) ↵.
+15
+
+The stronger correlation bound is the following.
+Theorem 40 (Generalized version of strong correlation). Fix any constant d ≥1. Let a 2 {−1, 1}4n be
+any string with K(a) ≥3n. Then, the function Fa is (n1−"d, d, n"d, exp(−n"d/2))-intractable.
+The proof is by induction on d. The properties of Fa are only used to prove the base case of the
+theorem, which can then be used to prove the induction case using Lemma 39. We prove the base case
+separately below (we assume that the constant B > 0 is large enough so that this implies the base case
+of the theorem stated above).
+Lemma 41 (Base case of induction). Let a 2 {−1, 1}4n be any string with K(a) ≥3n. Then, the
+function Fa is (pn, 1, pn, exp(−n⌦(1)))-intractable.
+Proof. Let γ < 1/6 in the deﬁnition of the Generalized Andreev function in Section 2.4. Let ⌧be any
+restriction of n variables leaving m ≥pn variables unﬁxed. Deﬁne f := Fa|⌧. Let C be a conjunction
+of pn + 1 threshold gates each on m variables. We wish to prove that
+Corr(f, C) exp(−n⌦(γ)).
+We build a restriction tree T for C of depth m −nγ, by restricting all but nγ arbitrarily chosen
+variables. For any leaf ` of T, the restricted circuit C` := C|⇢` is a conjunction of pn + 1 threshold gates
+each on nγ variables. By Lemma 12, each threshold function can be described using n2γ bits. Hence, the
+entire circuit can be described in a standard way using (pn + 1) · O(n2γ) < n bits. Then, by Lemma 23,
+we have Corr(f|⇢`, C`) exp(−n⌦(γ)). By Fact 6, we then obtain Corr(f, C) exp(n−⌦(γ)).
+Proof of Theorem 40. We only need to prove the inductive case. Assume that d ≥2 is given. Fix any
+restriction ⇢that sets all but m ≥n1−"d variables and let f = Fa|⇢. Let C be a depth-d threshold circuit
+on the surviving variables of wire complexity at most m1+"d. Let S be any set of at most n"d threshold
+functions on the m variables. We need to show that Corr(f, C ^ V
+g2S g) exp(−n"d/2).
+Apply Lemma 39 to circuit C to ﬁnd a restriction tree T as guaranteed by the statement of the
+lemma. By Fact 6, we have
+Corr(f, C ^
+^
+g2S
+g) E
+`⇠T[Corr(f`, C` ^
+^
+g2S
+g`)]
+Pr
+` [¬E(`)] +
+max
+`:E(`) holds Corr(f`, C` ^
+^
+g2S
+g`)
+(24)
+where f` denotes f|⇢` and similarly for C` and g`, and E(`) is the event deﬁned in the statement of
+Lemma 39.
+Fix any leaf ` so that E(`) holds. We want to bound Corr(f`, C` ^ V
+g2S g`). By deﬁnition of E(`), we
+know that C` is exp(−m"d)-approximated by a (mδd, d −1, m1+"d)-simple circuit C0
+`. This implies that
+C` ^ V
+g2S g` is exp(−m"d)-approximated by C0
+` ^ V
+g2S g`. Hence, we have
+Corr(f`, C` ^
+^
+g2S
+g`) Corr(f`, C0
+` ^
+^
+g2S
+g`) + exp(−m"d).
+(25)
+Further, by the deﬁnition of simplicity and its consequence (14), we know that there exist r mδd
+threshold functions h`
+1, . . . , h`
+r such that
+C0
+` =
+_
+b1,...,br2{−1,1}
+Cb1,...,br ^
+^
+i:bi=−1
+h`
+i ^
+^
+i:bi=1
+¬h`
+i
+where each Cb1,...,br is a depth d−1-threshold circuit of size at most m1+"d and the OR above is disjoint.
+This further implies that
+C0
+` ^
+^
+g2S
+g` =
+_
+b1,...,br2{−1,1}
+0
+@Cb1,...,br ^
+^
+i:bi=−1
+h`
+i ^
+^
+i:bi=1
+¬h`
+i ^
+^
+g2S
+g`
+1
+A
+(26)
+and the OR remains disjoint.
+16
+
+Note that we may apply the induction hypothesis to obtain a bound on the correlation with each term
+in the OR at this point, since the number of surviving variables is at least m1 = m1−2δd ≥n1−"d−2δd ≥
+n1−"d−1 (throughout, we assume that B is a large enough constant for many of the inequalities to hold);
+and the wire complexity of each depth-(d −1) circuit Cb1,...,br is at most m1+"d m(1+"d)/(1−2δd)
+1
+
+m1+"d+3δd
+1
+m1+"d−1
+1
+; further, the number of threshold functions in each term is at most n"d + nδd <
+m"d−1. Thus, by the inductive hypothesis, we obtain for any b1, . . . , br,
+Corr(f, Cb1,...,br ^
+^
+i:bi=−1
+h`
+i ^
+^
+i:bi=1
+¬h`
+i ^
+^
+g2S
+g`) exp(−n"d−1/2).
+Using the fact that the OR in (26) is disjoint, from Fact 6, we obtain
+Corr(f, C0
+` ^
+^
+g2S
+g`) 2r · exp(−n"d−1/2) 2nδd · exp(−n"d−1/2) exp(−n"d).
+Putting the above together with (24) and (25), we obtain
+Corr(f, C ^
+^
+g2S
+g) exp(−m"d) + exp(−n"d) exp(−n"d/2).
+which proves the induction case and hence the theorem.
+Corollary 42 (Correlation bounds for Andreev’s function). For any d ≥1, any depth-d threshold circuit
+C of wire complexity at most n1+"d satisﬁes Corr(C, F) 2 exp(−n"d/2).
+Proof. For a random a 2 {−1, 1}4n, we know by Fact 17 that K(a) ≥3n with probability 1−exp(−⌦(n)).
+For each such a, by Theorem 40, we have Corr(Ca, Fa) exp(−n"d/2), where Ca is the circuit obtained
+by substituting x1 = a in C. Hence, we have
+Corr(C, F) E
+a [Corr(Ca, Fa)] exp(−⌦(n)) + exp(−n"d/2) 2 exp(−n"d/2)
+as claimed.
+4.2
+Proof of Main Structural Lemma
+We need the following deﬁnitions and facts that have appeared many times before in the literature on
+threshold functions (see, e.g., [9]).
+Let " 2 [0, 1] be a real parameter. We say that w 2 Rn is "-regular if for each i 2 [n], |wi| " · kwk2.
+Assume for simplicity that the co-ordinates of the vector w are sorted so that |w1| ≥|w2| ≥· · · ≥|wn|.
+Let w>i 2 Rn−i denote the vector obtained by removing the ﬁrst i co-ordinates of w. We deﬁne the
+"-critical index of w be the least K = K(") so that the vector w>K is "-regular. Note that K = 0 if w
+is already "-regular and we deﬁne K = n if the "-critical index is not deﬁned.
+We say that an n-variable threshold gate φ labelled by (w, ✓) is "-regular if w is.
+Similarly, the
+"-critical index of φ is deﬁned to be the "-critical index of w.
+Also, we deﬁne L = L(") = 100 log2(1/")
+"3
+for a large constant A that will be made precise later.
+The Berry Esseen theorem (see, e.g., [12]) yields the following standard anticoncentration lemma for
+linear functions. (See [9, Corollary 2.2] for this particular statement.)
+Lemma 43 (Anticoncentration for regular linear functions). Let w 2 Rn be "-regular and let J ✓R be
+any interval. Then,
+!!!!
+Pr
+x2{−1,1}n[hw, xi 2 J] −Φ(J)
+!!!! O(")
+where Φ(·) denotes the cdf of the standard Gaussian with mean 0 and variance kwk2
+2. In particular, if
+|J| denotes the length of J, then
+Pr
+x [hw, xi 2 J] 
+|J|
+kwk2
++ O(").
+17
+
+We now proceed with the proof of Lemma 34. We start with an easier case of the lemma for regular
+threshold gates. Throughout, we work with random restrictions sampled from Rn
+p where p 2 [0, 1] is
+the probability from the statement of Lemma 34: equivalently, we pick a pair (I, y) where I ✓[n] and
+y 2 {−1, 1}n−|I|. Let " = p
+1
+8 . Let t = p−1
+16 .
+Let the threshold gate φ be labelled by pair (w, ✓), where w 2 Rn. We may assume that the variables
+of the threshold gate have been sorted so that |w1| ≥|w2| ≥· · · |wn|.
+Note that after applying a
+restriction ⇢, the threshold gate φ⇢is labelled by pair (w0, ✓0), where w0 is the restriction of w to the
+coordinates in I and
+✓0 = ✓0(⇢) = ✓−hw00, yi.
+(27)
+Above, we use w00 to denote the vector w restricted to the indices in [n] \ I.
+For a random restriction ⇢⇠Rn
+p, deﬁne the following “bad” events:
+1. B(⇢): φ⇢is t-balanced: i.e., ✓0 t · kw0k2. This is the event whose probability we want to upper
+bound.
+2. B1(⇢): P
+i2I w2
+i ≥pp · kwk2
+2.
+3. Bk
+2(⇢) (k a parameter): One of the ﬁrst k variables x1, . . . , xk is set to ⇤by ⇢.
+We have the following simple upper bounds on the probabilities of some of the above bad events:
+• Since each variable is set to ⇤with probability p, we have E⇢[P
+i2I w2
+i ] = p · kwk2
+2. By Markov’s
+inequality, we have Pr⇢[B1(⇢)] pp.
+• By a union bound, for any k, we have Pr⇢[Bk
+2(⇢)] pk.
+We start with a simpler subcase of the lemma that follows almost directly from Lemma 43. We
+assume throughout that p is a small enough constant, since otherwise the statement of Lemma 34 is
+trivial.
+Lemma 44 (The regular case). Say that w is "-regular. Then Pr⇢[B(⇢)] p⌦(1).
+Proof. We bound Pr⇢[B(⇢)] as follows.
+Pr
+⇢[B(⇢)] Pr
+⇢[B1(⇢)] + Pr
+⇢[B(⇢) | ¬(B1(⇢))]
+pp + Pr
+⇢[B(⇢) | ¬(B1(⇢))].
+(28)
+Now, note that the event ¬B1(⇢) only depends on the choice of ⇢−1(⇤) = I. Hence we can condition
+on an I so that this event occurs; choosing ⇢is now equivalent to choosing a random assignment y to
+the variables in [n] \ I.
+We have ✓0 = ✓−hw00, yi. Using the fact that B1(⇢) doesn’t occur, we have
+• kw00k2 ≥kwk2
+p1 −pp ≥kwk2/2. Using the "-regularity of w, for each i 62 I, we have |wi| 
+(")kwk2 2"kw00k2. Thus, w00 is 2"-regular.
+• kw0k2 p1/4kwk2 2p1/4kw00k2,
+Using the above, we can see that the probability that
+Pr
+⇢[B(⇢) | ¬B1(⇢)] Pr
+y [|✓0| t · kw0k2] Pr
+y [|✓0| 2tp1/4 · kw00k2]
+Pr
+y [hw00, yi 2 [✓−2tp1/4 · kw00k2, ✓+ 2tp1/4 · kw00k2]]
+4tp1/4 + O(") = O(") = p⌦(1)
+where the ﬁnal inequality uses the anti-concentration bound in Lemma 43. Putting the above together
+with (28), we are done.
+18
+
+Proof of Lemma 34. The proof of the lemma is a standard case analysis based on the "-critical index of
+the threshold gate φ (see [43, 33, 9, 28]).
+The ﬁrst case is when the critical index K L. In this case, we bound the probability of B(⇢) by
+Pr
+⇢[B(⇢)] Pr
+⇢[BK
+2 (⇢)] + Pr
+⇢[B(⇢) | ¬BK
+2 (⇢)]
+pK + Pr
+⇢[B(⇢) | ¬BK
+2 (⇢)] pp + Pr
+⇢[B(⇢) | ¬BK
+2 (⇢)]
+(29)
+where the ﬁnal inequality follows from the fact that pK pL pp by our choice of parameters. The
+event ¬B2(⇢) only depends on the choice of the sub-restriction ⇢|[K] and we can condition on ⇢|[K] so that
+this event occurs. From now on, the random choice will be a restriction ⇢0 ⇠Rn−K
+p
+on the remaining
+variables.
+Since the restricted linear function is now "-regular by the deﬁnition of the "-critical index, we can
+apply Lemma 44 to conclude that Pr⇢0[B(⇢) | ¬BK
+2 (⇢)] p⌦(1). Along with (27), this implies the lemma
+in the case that K L.
+The second case is when K > L. As in previous cases, we ﬁrst condition on some bad event not
+occurring. We have
+Pr
+⇢[B(⇢)] Pr
+⇢[BL
+2 (⇢)] + Pr
+⇢[B(⇢) | ¬BL
+2 (⇢)]
+pL + Pr
+⇢[B(⇢) | ¬BL
+2 (⇢)] pp + Pr
+⇢[B(⇢) | ¬BL
+2 (⇢)]
+(30)
+As in Lemma 44, we can condition on a ﬁxed I so that ¬BL
+2 (⇢) occurs (i.e. none of the ﬁrst L variables
+belong to I). We then use the following claim that is implicit in [9].
+Proposition 45. Let L0 = 10r log(1/")
+"2
+and assume that K > L0. Let y be a random assignment to any set
+of variables including the ﬁrst L0 = 10r log(1/")
+"
+variables. Then, the probability over y that the restricted
+threshold gate is not ( 1
+")-imbalanced is at most 2−r.
+Applying the above proposition with L0 = L and r = 10 log(1/"), we have Pr⇢[B(⇢) | ¬BL
+2 (⇢)] "10.
+Putting this together with (30), we have the claimed upper bound on Pr⇢[B(⇢)] in the case that K >
+L.
+We give a proof sketch of Proposition 45 in Section C.
+5
+Satisﬁability Algorithms Beating Brute-Force Search
+In this section, we give satisﬁability algorithms beating brute force search for bounded-depth threshold
+circuits with few wires. Until now, such algorithms were only known for threshold circuits of depth 2.
+We will assume that each threshold gate on m input bits is given as a pair (w, ✓), where w 2 Zm and
+✓2 Z, and ✓as well as each component of w has bit complexity poly(n). Note that this assumption
+is without loss of generality for a threshold function, and that some assumption on representability of
+threshold functions is necessary in an algorithmic context.
+The satisﬁability algorithm relies on an algorithmic version of Lemma 39, along with a couple of
+additional ideas. Essentially, we use the algorithmized version of the lemma to reduce the satisﬁability
+of bounded-depth circuits to satisﬁability of ANDs of threshold functions, which we can then solve using
+a recent result of Williams, stated below.
+Theorem 46. [48] There is a deterministic algorithm, which given a bounded-depth circuit C on n
+variables of size 2no(1) with ANDs, ORs and threshold gates, and with the threshold gates appearing only
+at the bottom layer, decides if C is satisﬁable in time 2n−n"0
+poly(n), where "0 > 0 is a constant that
+depends only on the depth of the circuit.
+We also need the following fact about threshold gates on n input bits: the set of inputs evaluating
+to 1 (and dually, the set of inputs evaluating to -1) of a linear threshold gate can be enumerated in time
+proportional to the number of such inputs, modulo a poly(n) factor.
+19
+
+Proposition 47. Let (w, ✓) represent a threshold function φ on m input bits, where w 2 Zm and ✓2 Z
+are integers of bit complexity poly(m). Let S be the set of inputs on which φ evaluates to 1. Then S can
+be enumerated in time |S|poly(n).
+Proof. We will show how to construct a decision tree for φ in time |S|poly(n), where S is the set of
+inputs on which φ takes value 1. Given a decision tree of size at most |S|poly(n), it is easy to enumerate
+the set of inputs on which φ takes value 1 in time |S|poly(n) by scanning through leaves labelled 1 and
+outputting all assignments corresponding to any such leaf.
+The decision tree is constructed recursively as follows. Check if φ restricted according to the current
+partial assignment is satisﬁable (in the sense that there is a total assignment consistent with the partial
+assignment for which φ evaluates to 1). Note that satisﬁability of a linear threshold gate with polynomial
+bit complexity of the weights can be done trivially in polynomial time. If the satisﬁability check fails,
+make the current node a leaf and label it with -1. If it succeeds, check if the current partial assignment
+is falsiﬁable. If this check fails, make the current node a leaf and label it with 1. Otherwise, branch on
+an arbitrary unassigned variable and recurse.
+Clearly, this decision tree can be constructed with polynomial work at each node, and hence in time
+Npoly(n), where N is the number of leaves of the tree. We show that N |S|n. Indeed, we prove
+inductively that for any internal node v of the tree of height h ≥1, the number of -1 leaves of the tree
+rooted at v is at most h times the number of 1 leaves, from which the claim follows as the height of the
+tree n.
+For the inductive claim, the base case h = 1 is clear as any node at height 1 must have one leaf
+labelled 1 and the other labelled -1. Assume the claim for height h. Consider a node v at height h + 1.
+Either one of its children is a leaf, or not. If one of the children is a leaf, then the other one v0 is not and
+by the induction hypothesis, since it is of height h, has at most h times as many -1 leaves as 1 leaves.
+The number of -1 leaves of v is at most one plus the number of -1 leaves of v0, and hence at most h + 1
+times the number of 1 leaves. In case both children of v are internal nodes, then they are both of height
+at most h, and by the induction hypothesis, both have at most h times as many -1 leaves as 1 leaves,
+which implies that the same holds for v.
+Deﬁnition 48. We use THR to refer to the class of linear threshold functions. We use AND ◦THR
+to refer to the class of polynomial-size circuits with an AND gate at the top and threshold gates at the
+bottom layer.
+Theorem 49. For each integer d > 0, there is a constant ✏d > 0 such that satisﬁability of a depth d
+threshold circuit with at most n1+✏d wires on n variables can be solved by a randomized algorithm in time
+2n−⌦(n✏d)poly(n).
+Proof. As the proof follows the proof of Lemma 39 closely, we just give a sketch. Call a circuit depth-d
+AND ◦THR-skew if the top gate is an AND and all but one child of the top gate is a bottom-level
+threshold gate, with the possibly exceptional child being a depth-d −1 threshold circuit with few wires.
+We follow the depth reduction argument in the lemma to give a recursive algorithm which reduces
+satisﬁability of polynomial-size depth-d AND ◦THR-skew circuits to the satisﬁability of polynomial-size
+depth-d −1 AND ◦THR-skew circuits by appropriately restricting variables.
+For the base case d = 1, we simply appeal to the algorithm given by Theorem 46, which solves
+satisﬁability of AND ◦THR circuits of polynomial size in time 2n−n"0
+poly(n) for some constant "0 > 0.
+For the inductive case, we simulate the proof of Lemma 39, which performs and analyzes a certain
+kind of adaptive random restriction. Various bad events might happen at Phases 2 and 3 of this random
+restriction process, however each step of the restriction process as well as the check that a bad event
+happens can be implemented in polynomial time. Moreover, the probability that a bad event happens
+is at most 2−n✏d . Whenever a bad event happens, we simply do brute force search on the remaining
+variables of the circuit, but thanks to the exponentially small probability that a bad event happens, with
+high probability, we only spend time 2n−n✏d on such brute force searches.
+In Phase 3 of the restriction process, we replace imbalanced gates by their most probable values.
+This changes the functionality of the circuit and might lose us satisfying assignments or give us new
+invalid satisfying assignments. To get around this, for each such imbalanced gate, we use Proposition 47
+to eﬃciently enumerate the inputs evaluating to the minority value for each imbalanced gate, and for
+20
+
+each such input check whether it satisﬁes the original circuit. If it does, we just output ’yes’. We also
+append to the top gate of the skew circuit a child representing the assignment of the imbalanced gate to
+its majority value - this needs to be done so that we don’t end up with ’false positives” in the base case
+of the recursive algorithm. Although each such false positive can be tested, there might be too many of
+them, and this could destroy all the savings we accrue through the course of the algorithm. The total
+time spent in enumerating minority values of imbalanced gates is again at most 2n−n✏d poly(n), with high
+probability, using the eﬃcient enumeration and the imbalance property.
+Finally, there are a few balanced gates — with high probability at most O(nδd) of them — for which
+we need to try all possible values. This could be expensive, but is compensated for by an increased
+savings for depth d −1, just by setting the constant B large enough in the proof of Lemma 39. We also
+need to set B large enough so that the savings given by the application of Williams’ algorithm in the
+base case overwhelms the loss due to branching on balanced threshold gates at depth d = 2.
+Thus the total running time, once B is chosen appropriately, is 2n−⌦(n✏d)poly(n), using the fact that
+✏d < ✏d−1 < . . . < ✏2.
+6
+Threshold formulas
+A threshold formula is a threshold circuit such that the fan-out of each gate is at most 1. A formula can
+be viewed as a tree. Note that a depth-2 threshold circuit can always be converted to a threshold formula
+without increasing either the wire complexity or the gate complexity (recall that the gate complexity
+only measures the number of non-input gates).
+Let F : {−1, 1}4n⇥{−1, 1}n ! {−1, 1} be the generalized Andreev function deﬁned in Section 2.4. Re-
+call that F is constructed with (n, nγ, m = 0.9nγ, 2−n⌦(γ)) bit ﬁxing extractor E : {−1, 1}n ! {−1, 1}m,
+and (1/2 −O(2−m/4), 2m/2) list decodable code Enc: {−1, 1}4n ! {−1, 1}2m.
+Theorem 50.
+Any threshold formula on n variables with at most n1.5−γ wires for has correlation at
+most exp(−n⌦(γ)) with the generalized Andreev function.
+Proof. Let C be a threshold formula with n inputs and s = n1.5−γ wires. Let L be the number of leaves
+in the formula tree; then L s 2L. We build a restriction tree T for C up to depth n −pn for
+p = nγ/2/n, by greedily restricting the most frequent variables appearing in the formula. Since the most
+frequent variable appears at least L/n times in C, after restricting one variable, the formula tree has at
+most L(1 −1/n) leaves left. Continue until pn variables left unrestricted; then the number of remaining
+leaves is at most L · n−1
+n
+· n−2
+n−1 · · · · ·
+pn
+pn+1 = pL. Thus, for any leaf l of T, the restricted formula C|⇢l (on
+pn = nγ/2 variables) has s(C|⇢l) 2pL 2ps wires, and by Proposition 19, the description length is at
+most O(p2s2) O(n1−γ) < n. Let a 2 {−1, 1}4n be a string with Kolmogorov complexity K(a) ≥3n,
+and let Fa(x) := F(a, x). Then, by Lemma 23, Corr(Fa, C) exp(−n⌦(γ)).
+Therefore, for any formula D with 5n inputs and n1.5−γ wires, Prx[F(a, x) = D(a, x)] 1/2 +
+exp(−n⌦(γ)). Since a random a 2 {−1, 1}4n has K(a) ≥3n with probability 1 −2−⌦(n), the correlation
+of D and F is at most 2−⌦(n) + exp(−n⌦(γ)) = exp(−n⌦(γ)).
+7
+Correlation bounds for AC0 with a few threshold gates
+Following Gopalan and Servedio [15], we deﬁne TAC0[k] to be the class of constant-depth circuits made
+up of AND and OR gates and at most k arbitrary threshold gates.
+We prove upper bounds on the noise sensitivity of small depth-d TAC0[k] circuits for k much smaller
+than n1/2(d−1). The basic idea is the same as in Theorem 29, but we also need to use the following
+powerful result of Kane [23, Corollary 3].
+Deﬁnition 51 (Polynomial Threshold functions). A Boolean function f : {−1, 1}n ! {−1, 1} is a
+degree-D Polynomial Threshold function if there is a degree-D polynomial p(x) such that f(x) = sgn(p(x))
+for all x 2 {−1, 1}n.
+21
+
+Lemma 52 (Kane [23]). Let f be a degree-D PTF. Then, for any p > 0,
+NSp(f) pp(log(1/p))O(D log D)2O(D2 log D).
+The main theorem of the section is the following.
+Theorem 53. Fix any constant d ≥1. Let C be a depth-d TAC0[k] circuit with at most M gates overall.
+Then, for any p, q 2 [0, 1] and any D ≥1, we have
+NSpd−1q(C) O(k↵(p, D) + ↵(q, D) + M(10pD)D)
+where ↵(p, D) := pp(log(1/p))O(D log D)2O(D2 log D) and O(·) hides an absolute constant (independent of
+d).
+Proof. This is a standard switching argument (see, e.g., [19]) augmented with the ideas of Theorem 29.
+We assume throughout that q 1
+2 w.l.o.g. since otherwise ↵(q, D) ≥q ≥1
+2 and the claim is trivial.
+We say that a threshold gate is a true threshold gate if it is not an AND or OR gate.
+For any parameters k1, d1, t1, s1 2 N with d1 ≥2, we deﬁne TAC0[k1, d1, t1, s1] to be the class of
+constant-depth circuits made up of AND, OR and threshold gates such that:
+• The overall depth is at most d1,
+• The total number of gates at depth at most d1 −2 in the circuit is at most s1,
+• All the true threshold gates are at depth at most d1 −2 and there are at most k1 of them, and
+• The bottom fan-in of the circuit (i.e. the maximum fan-in of a gate at depth d1 −1) is at most t1.
+Note that the circuit C in the statement of the theorem is in the class TAC0[k, d + 1, 1, M], since we
+may replace the input literals with (say) AND gates of fan-in 1 at the expense of increasing the depth
+by 1 but in the process satisfying all the criteria of the above deﬁnition. We prove the following stronger
+statement: for any p, q, D as in the statement of the theorem, and any C from the class TAC0[k, d, D, M]
+with d ≥2, we have
+NSpd−2q(C) = E
+⇢d[Var(C|⇢d)] O(k↵(p, D) + ↵(q, D) + M(10pD)D)
+(31)
+where ⇢d ⇠Rn
+pd and pd := 2pd−2q 2 [0, 1]. Proving (31) will clearly prove the theorem.
+The proof is by induction on d. The base case is d = 2. In this case, since there are no true threshold
+gates at depth d−1 by assumption, a true threshold gate can only occur as the output gate of the circuit
+C. Since AND and OR gates are also threshold gates, we can assume that the output gate is a threshold
+gate. The bottom fan-in being at most D implies that each gate at depth 1 can be represented exactly
+as a polynomial of degree at most D and therefore that the function computed by C is a degree-D PTF.
+Hence, Lemma 52 trivially implies the result.
+Now assume d > 2. Let  1, . . . ,  s denote the AND and OR gates at depth exactly d−2 in the circuit
+and let φ1, . . . , φm denote the true threshold gates. By assumption m k and s M. We sample a
+random restriction ⇢⇠Rn
+p and consider the restricted circuit C|⇢.
+H˚astad’s switching lemma [19] tells us that for each i 2 [s], we have
+Pr
+⇢[DT-depth( i|⇢) ≥D] (10pD)D,
+(32)
+and hence by a union bound,
+Pr
+⇢[9i 2 [s] : DT-depth( i|⇢) ≥D] s(10pD)D,
+(33)
+Also, as in the base case, we see that each φj computes a degree-D PTF. Hence, Lemma 52 gives us
+E
+⇢[
+X
+j2[m]
+Var(φj|⇢)] m↵(p, D).
+(34)
+Consider the circuit C0
+⇢obtained from C|⇢as follows: if there is an i 2 [s] such that DT-depth( i|⇢) ≥
+D, then C0
+⇢is deﬁned to be a trivial circuit that always outputs 1; otherwise, C0
+⇢is the depth-d−1 circuit
+obtained from C|⇢as follows:
+22
+
+• We replace each φj|⇢by a bit bj,⇢2 {−1, 1} so that by Fact 9, we have
+Pr
+x2{−1,1}|⇢−1(⇤)|[φj(x) 6= bj,⇢] O(Var(φj)),
+• Since each  i|⇢is a depth-D decision tree, we can write it as a D-DNF or D-CNF or as a disjoint
+sum of terms of size at most D each. For each gate χ at depth at most d −3 that takes  i as an
+input, we do the following:
+– If χ is an OR gate, then we take the D-DNF representing  i|⇢and feed the terms of the DNF
+directly into χ, eliminating the output OR gate of the D-DNF.
+– If χ is an AND gate, we do the same as above, except that we use the D-CNF representation
+of  i|⇢and eliminate the output AND gate.
+– If χ is a threshold gate, then we write  i|⇢as a disjoint sum of terms of size at most D each
+and feed each of the terms directly to χ. The gate χ now has many inputs in the place of
+ i|⇢, and the weight given to each of these inputs is the same as the weight given to  i|⇢.
+Note that the above operations do not increase the number of gates at depth at most d −3 in the
+circuit.
+Note that C0
+⇢has depth d −1 and bottom fan-in at most D. Further, the number of gates at depth
+at most d −3 in C0
+⇢is at most M −s. Hence, C0
+⇢is a circuit from the class TAC0[k −m, d −1, D, M].
+We can thus apply the induction hypothesis and obtain
+E
+⇢d−1[Var(C0
+⇢|⇢d−1)] O((k −m)↵(p, D) + ↵(q, D) + (M −s)(10pD)D)
+(35)
+To obtain (31), we use
+E
+⇢d[Var(C)] = E
+⇢d−1[E
+⇢[Var(C|⇢)|⇢d−1]] E
+⇢d−1[E
+⇢[Var(C0
+⇢)|⇢d−1]] + O
+✓
+E
+⇢[δ(C|⇢, C0
+⇢)]
+◆
+= E
+⇢[ E
+⇢d−1[Var(C0
+⇢)|⇢d−1]] + O
+✓
+E
+⇢[δ(C|⇢, C0
+⇢)]
+◆
+(36)
+where the inequality follows from Proposition 30. Inequality (35) allows us to bound the ﬁrst term on
+the right hand size.
+It remains to analyze the last term on the right hand side of (36). Deﬁne a Boolean random variable
+Z = Z(⇢) which is 1 i↵there is an i 2 [s] such that φi is not a depth-D decision tree. Let ∆= ∆(⇢) be
+the random variable deﬁned by ∆:= Z + P
+j2[m] Var(φj|⇢).
+It easily follows from the deﬁnition of C0
+⇢that for any choice of ⇢, either Z = 1 — in which case we
+can trivially bound δ(C0
+⇢, C|⇢) by 1 — or δ(C0
+⇢, C|⇢) P
+j δ(φj|⇢, bj,⇢) = P
+j Prx[φj|⇢(x) 6= bj,⇢]. Hence,
+for any choice of ⇢, we get
+δ(C0
+⇢, C|⇢) Z +
+X
+j2[m]
+Pr
+x2{−1,1}|⇢−1(⇤)|[φj|⇢(x) 6= bj,⇢] O(∆).
+Further, by (33) and (34), we have E⇢[∆] O(m↵(p, D) + s(10pD)D). Putting this together with
+(35) and (36)1 gives the claimed bound. This completes the induction.
+This yields the following correlation bound as in Corollary 31.
+Corollary 54. The following is true for any constant d ≥2. Say C is a depth-d TAC0[k] circuit with
+at most M gates where k δ · n1/2(d−1) and M = no(p
+log n/ log log n). Then Corr(C, Parn) no(1) · δ1−1
+d .
+In particular, if δ = n−⌦(1), then Corr(C, Parn) = n−⌦(1).
+1Of course, we need to be judicious in our choice of constants in the O(·). We leave this matter to the interested reader.
+23
+
+Proof. We choose a D = o(
+p
+log n/ log log n) so that M no(D) and p, q as in Corollary 31. We can
+then use Theorem 53 to obtain NS1/n(C) no(1) · δ1−1
+d + M · (10pD)D. Since the latter term is
+1
+n!(1) ,
+we get NS1/n(C) no(1)δ1−1
+d . By Proposition 8, we have Corr(C, Parn) O(NS1/n(C)), which proves
+the claim.
+Remark 55. The above corollary can be strengthened considerably if a widely believed strengthening
+of Lemma 52 — named the Gotsman-Linial conjecture [16] — is known to hold. The Gotsman-Linial
+conjecture is a conjecture about the average sensitivity of low-degree PTFs. We do not recall the exact
+statement of the conjecture here, and refer the reader to the work of Gopalan and Servedio [15] instead.
+As noted by [15, Corollary1 13], the Gotsman-Linial conjecture implies that for any p and any degree D
+PTF, we have NSp(f) O(Dpp). Plugging in this bound in place of Lemma 45, it is not hard to see
+that we can obtain Corr(C, Parn) = o(1) for any circuit C of size 2no(1) from the class TAC0[k] where
+k = n1/2(d−1)−⌦(1). This is almost a complete generalization of the result of Beigel [6] who proved such
+a result in the setting where all the threshold gates are of polynomial weight. In contrast, the results of
+Podolskii [36] and Gopalan and Servedio [15] can prove such correlation bounds only if k < log n.
+7.1
+Learning algorithms for TAC0[k] circuits
+Theorem 53 also allows us to obtain an algorithm to learn small TAC0[k] circuits under the uniform
+distribution via an observation of Klivans, O’Donnell, and Servedio [24]. We have the following lemma
+that can be obtained by putting together Fact 9 and Corollary 15 in [24].
+Lemma 56. Let F be a class of Boolean functions deﬁned on {−1, 1}n. Assume that we know that for
+some " > 0 and f 2 F, there is a γ > 0 such that NSγ(f) "/3. Then, there is an algorithm that learns
+F with error " in time nO(1/γ).
+Using the above lemma and Theorem 53, we get subexponential-time (i.e. 2o(n)-time) learning algo-
+rithms for TAC0[k] circuits of small size.
+Theorem 57. Let d be any ﬁxed constant. The class of TAC0[k] circuits of depth d and size M where
+M = no(p
+log n/ log log n) and k = δn1/2(d−1) for some δ > 0 can be learned to within error " > 0 in time
+nO(m) where m = max{n1+o(1)δ2(d−1)/"2d, n1/4+o(1)/"2}. In particular, if δ = n−⌦(1) and " = ⌦(1),
+then the running time of the algorithm is 2o(n).
+Proof. We can assume that " ≥1/n1/2d since otherwise, we can just run a brute force algorithm that
+takes time 2O(n). We choose a D = o(
+p
+log n/ log log n) so that M = no(D). Theorem 53 tells us that
+for any p, q ≥1
+n any C from the class of circuits described in the theorem statement, we have
+NSpd−1q(C) Akpp + Bpq + O(M(10pD)D)
+where A and B are no(1).
+We choose p, q so that the ﬁrst two terms above are each bounded by "/10.
+This requires p 
+"2/O(k2A) and q "2/O(B). Further, to ensure that the last term is at most "/10, it suﬃces to choose
+p n−⌦(1) (in fact, this ensures that the third term is n−!(1) whereas " ≥n−1/2d by assumption). Thus,
+we ﬁx p = min{"2/O(k2A), n−1/4d} and q = "2/O(B) so that all the above conditions are satisﬁed. This
+gives
+NSγ(C) "/3
+where γ = pd−1q. Hence, by Lemma 56, we obtain the statement of the theorem.
+Remark 58. Assuming the Gotsman Linial conjecture, the above technique yields subexponential time
+constant-error learning algorithms as long as M 2no(1) and δ = n−⌦(1). To contrast again with the
+work of Gopalan and Servedio [15], the results of [15] — even assuming the Gotsman Linial conjecture —
+only yield subexponential time learning algorithms in setting when k < log n. However, the dependence
+on the error parameter in [15] is better than the dependence we obtain here (the running time there has
+a "3 in place of the "2d that we obtain here).
+24
+
+References
+[1] Scott Aaronson and Avi Wigderson. Algebrization: A new barrier in complexity theory. In Pro-
+ceedings of the 40th Annual ACM Symposium on Theory of Computing (STOC ’08), 2008.
+To
+appear.
+[2] Miklos Ajtai. ⌃1
+1-formulae on ﬁnite structures. Annals of Pure and Applied Logic, 24:1–48, 1983.
+[3] James Aspnes, Richard Beigel, Merrick L. Furst, and Steven Rudich. The expressive power of voting
+polynomials. Combinatorica, 14(2):135–148, 1994.
+[4] L´aszl´o Babai, Noam Nisan, and Mario Szegedy. Multiparty protocols, pseudorandom generators for
+logspace, and time-space trade-o↵s. J. Comput. Syst. Sci., 45(2):204–232, 1992.
+[5] Theodore Baker, John Gill, and Robert Solovay. Relativizations of the P =? NP question. SIAM
+Journal on Computing, 4(4):431–442, 1975.
+[6] Richard Beigel. When do extra majority gates help? polylog(N ) majority gates are equivalent to
+one. Computational Complexity, 4:314–324, 1994.
+[7] Ruiwen Chen, Valentine Kabanets, Antonina Kolokolova, Ronen Shaltiel, and David Zuckerman.
+Mining circuit lower bound proofs for meta-algorithms. Computational Complexity, 24(2):333–392,
+2015.
+[8] Thomas M. Cover and Joy A. Thomas. Elements of Information Theory. Wiley-Interscience, New
+York, USA, 2000.
+[9] Ilias Diakonikolas, Parikshit Gopalan, Ragesh Jaiswal, Rocco A. Servedio, and Emanuele Viola.
+Bounded independence fools halfspaces. SIAM J. Comput., 39(8):3441–3462, 2010.
+[10] Ilias Diakonikolas, Prasad Raghavendra, Rocco A. Servedio, and Li-Yang Tan. Average sensitivity
+and noise sensitivity of polynomial threshold functions. SIAM J. Comput., 43(1):231–253, 2014.
+[11] Devdatt P. Dubhashi and Alessandro Panconesi.
+Concentration of Measure for the Analysis of
+Randomized Algorithms. Cambridge University Press, 2009.
+[12] W. Feller. An Introduction to Probability Theory and its Applications. John Wiley & Sons, New
+York, 3 edition, 1968.
+[13] Merrick Furst, James Saxe, and Michael Sipser. Parity, circuits, and the polynomial-time hierarchy.
+Mathematical Systems Theory, 17(1):13–27, April 1984.
+[14] Dmitry Gavinsky, Shachar Lovett, Michael E. Saks, and Srikanth Srinivasan. A tail bound for read-k
+families of functions. Random Struct. Algorithms, 47(1):99–108, 2015.
+[15] Parikshit Gopalan and Rocco A. Servedio. Learning and lower bounds for ac0 with threshold gates.
+Electronic Colloquium on Computational Complexity (ECCC), 17:74, 2010.
+[16] Craig Gotsman and Nathan Linial.
+Spectral properties of threshold functions.
+Combinatorica,
+14(1):35–50, 1994.
+[17] Kristo↵er Arnsfelt Hansen and Peter Bro Miltersen. Some meet-in-the-middle circuit lower bounds.
+In Mathematical Foundations of Computer Science 2004, 29th International Symposium, MFCS
+2004, Prague, Czech Republic, August 22-27, 2004, Proceedings, pages 334–345, 2004.
+[18] Prahladh Harsha, Adam Klivans, and Raghu Meka. Bounding the sensitivity of polynomial threshold
+functions. Theory of Computing, 10:1–26, 2014.
+[19] J. H˚astad. Almost optimal lower bounds for small depth circuits. pages 6–20, 1986.
+[20] Russell Impagliazzo, William Matthews, and Ramamohan Paturi. A satisﬁability algorithm for AC0.
+In Proceedings of 23rd Annual ACM-SIAM Symposium on Discrete Algorithms, pages 961–972, 2012.
+25
+
+[21] Russell Impagliazzo, Mohan Paturi, and Stefan Schneider.
+A satisﬁability algorithm for sparse
+depth two threshold circuits. In Proceedings of 54th Annual IEEE Symposium on Foundations of
+Computer Science, pages 479–488, 2013.
+[22] Russell Impagliazzo, Ramamohan Paturi, and Michael E. Saks. Size-depth tradeo↵s for threshold
+circuits. SIAM J. Comput., 26(3):693–707, 1997.
+[23] Daniel M. Kane. The correct exponent for the gotsman-linial conjecture. Computational Complexity,
+23(2):151–175, 2014.
+[24] Adam R. Klivans, Ryan O’Donnell, and Rocco A. Servedio. Learning intersections and thresholds
+of halfspaces. J. Comput. Syst. Sci., 68(4):808–840, 2004.
+[25] Ilan Komargodski and Ran Raz. Average-case lower bounds for formula size. In Symposium on
+Theory of Computing Conference, STOC’13, Palo Alto, CA, USA, June 1-4, 2013, pages 171–180,
+2013.
+[26] Nathan Linial, Yishay Mansour, and Noam Nisan. Constant depth circuits, Fourier transform and
+learnability. Journal of the ACM, 40(3):607–620, 1993.
+[27] Shachar Lovett and Srikanth Srinivasan. Correlation bounds for poly-size $\mbox{\rm AC}ˆ0$
+circuits with n 1 - o(1) symmetric gates. In Approximation, Randomization, and Combinatorial
+Optimization. Algorithms and Techniques - 14th International Workshop, APPROX 2011, and 15th
+International Workshop, RANDOM 2011, Princeton, NJ, USA, August 17-19, 2011. Proceedings,
+pages 640–651, 2011.
+[28] Raghu Meka and David Zuckerman. Pseudorandom generators for polynomial threshold functions.
+SIAM J. Comput., 42(3):1275–1301, 2013.
+[29] Noam Nisan. The communication compelxity of threshold gates. Combinatorics: Paul Erd¨os is
+Eighty, Bolyai Society Mathematical Studies, (1):301–315, 1993.
+[30] Noam Nisan and Avi Wigderson.
+Hardness vs randomness.
+Journal of Computer and System
+Sciences, 49(2):149–167, 1994.
+[31] Ryan O’Donnell. Hardness ampliﬁcation within np. J. Comput. Syst. Sci., 69(1):68–94, 2004.
+[32] Ryan O’Donnell. Analysis of Boolean Functions. Cambridge University Press, 2014.
+[33] Ryan O’Donnell and Rocco A. Servedio.
+The chow parameters problem.
+SIAM J. Comput.,
+40(1):165–199, 2011.
+[34] Ramamohan Paturi and Michael E. Saks. Approximating threshold circuits by rational functions.
+Inf. Comput., 112(2):257–272, 1994.
+[35] Yuval Peres. Noise stability of weighted majority, December 19 2004. Comment: six pages.
+[36] Vladimir V. Podolskii. Exponential lower bound for bounded depth circuits with few threshold
+gates. Inf. Process. Lett., 112(7):267–271, 2012.
+[37] Anup Rao.
+Extractors for low-weight aﬃne sources.
+In Proceedings of the 24th Annual IEEE
+Conference on Computational Complexity, CCC 2009, Paris, France, 15-18 July 2009, pages 95–
+101, 2009.
+[38] Alexander Razborov. Lower bounds on the size of bounded-depth networks over the complete basis
+with logical addition. Mathematical Notes of the Academy of Sciences of the USSR, 41(4):333–338,
+1987.
+[39] Alexander Razborov and Steven Rudich. Natural proofs. Journal of Computer and System Sciences,
+55(1):24–35, 1997.
+[40] Alexander A. Razborov and Avi Wigderson. nˆomega(log n) lower bounds on the size of depth-3
+threshold circuits with AND gates at the bottom. Inf. Process. Lett., 45(6):303–307, 1993.
+26
+
+[41] Michael E. Saks. Slicing the hypercube. Surveys in Combinatorics, 1993, pages 211–255, 1993.
+[42] Rahul Santhanam. Fighting perebor: New and improved algorithms for formula and QBF satisﬁa-
+bility. In Proceedings of 51st Annual IEEE Symposium on Foundations of Computer Science, pages
+183–192, 2010.
+[43] Rocco A. Servedio. Every linear threshold function has a low-weight approximator. Computational
+Complexity, 16(2):180–209, 2007.
+[44] Alexander A. Sherstov. Optimal bounds for sign-representing the intersection of two halfspaces by
+polynomials. Combinatorica, 33(1):73–96, 2013.
+[45] Kai-Yeung Siu, Vwani P. Roychowdhury, and Thomas Kailath. Rational approximation techniques
+for analysis of neural networks. IEEE Transactions on Information Theory, 40(2):455–466, 1994.
+[46] Roman Smolensky. Algebraic methods in the theory of lower bounds for boolean circuit complexity.
+In Proceedings of the 19th Annual Symposium on Theory of Computing, pages 77–82, 1987.
+[47] Ryan Williams.
+Non-uniform ACC circuit lower bounds.
+In Proceedings of 26th Annual IEEE
+Conference on Computational Complexity, pages 115–125, 2011.
+[48] Ryan Williams.
+New algorithms and lower bounds for circuits with linear threshold gates.
+In
+Symposium on Theory of Computing, STOC 2014, New York, NY, USA, May 31 - June 03, 2014,
+pages 194–202, 2014.
+[49] Andrew Yao. Separating the polynomial-time hierarchy by oracles. In Proceedings of 26th Annual
+IEEE Symposium on Foundations of Computer Science, pages 1–10, 1985.
+A
+Proof of Proposition 8
+Proof. For point 1., we know that NSp(f) = Pr(x,y)[f(x) 6= f(y)] where x and y are sampled as in
+Deﬁnition 7. Alternately, we may also think of sampling (x, y) in the following way: choose ⇢= (I, z) ⇠
+Rn
+2p and for the locations indexed by I we choose x0, y0 2 {−1, 1}|I| independently and uniformly at
+random to deﬁne strings x and y respectively. Hence, we have
+NSp(f) = Pr
+x,y[f(x) 6= f(y)] = E
+⇢[ Pr
+x0,y0[f|⇢(x0) 6= f|⇢(y0)]] = E
+⇢[1
+2Var(f|⇢)].
+We now proceed with point 2.. As NSp(f) is a decreasing function of p [32], we may assume that
+p =
+1
+n 1
+2 and hence we have NS1/n(f) = 1
+2 E⇢⇠Rn
+2/n[Var(f|⇢)]. Note that for ⇢= (I, y) chosen as
+above, the probability that I 6= ; is ⌦(1). Hence we have
+NS0
+1/n(f) := 1
+2
+E
+⇢⇠Rn
+2/n
+[Var(f|⇢) | I 6= ;] NS1/n(f)
+PrI[I 6= ;] = O(NS1/n(f)).
+Further, note that for any m ≥1 and any Boolean function g : {−1, 1}m ! {−1, 1}, its distance
+from either the constant function 1 or the constant function −1 is at most Var(g)/2. Since Parm has
+correlation 0 with any constant function, using Fact 6, we have Corr(Parm, g) Var(g)/2.
+Using Fact 6 again, we get
+Corr(Parn, f) 
+E
+⇢⇠Rn
+2/n
+[Corr(Parn|⇢, f|⇢) | I 6= ;] =
+E
+⇢⇠Rn
+2/n
+[Corr(Par|I|, f|⇢) | I 6= ;]
+
+E
+⇢⇠Rn
+2/n
+[1
+2Var(g) | I 6= ;] = NS0
+1/n(f) = O(NS1/n(f)).
+27
+
+B
+Correlation bounds for depth-2 threshold circuits
+In this section, we prove near optimal correlation bounds for depth-2 threshold circuits computing Parity.
+Theorem 59 (Main). Fix any constant " < 1
+2. Let γ = 1
+2 −". Any depth-2 threshold circuit on n
+variables with at most n1+" wires has correlation at most n−⌦(γ) with the parity function on n variables.
+Note that the above theorem is tight, since by Theorem 33, there is a depth-2 circuit with O(pn)
+gates (and hence O(n3/2) wires) that computes Parity correctly with high probability.
+The proof is based on the following two subclaims:
+Theorem 60 (Aspnes, Beigel, Furst, and Rudich [3]). Any degree-t polynomial threshold function (PTF)
+has correlation at most O(t/pm) with the parity function on m variables.
+We say that a circuit C is δ-approximated by a circuit C0 if Prx[C(x) 6= C0(x)] δ.
+Claim 61. Let ", γ be as in the statement of Theorem 59 and let ↵denote γ/3. Say C denotes a depth-2
+threshold circuit of wire complexity n1+" and let f1, . . . , ft be the LTFs computed by C at depth-1. Under
+a random restriction ⇢with ⇤-probability p =
+1
+n1−↵, with probability at least 1 −n−⌦(γ), the circuit C|⇢
+is n−⌦(γ)-approximated by a circuit ˜C⇢which is obtained from C by replacing each of the fi|⇢s by an
+O(n↵/2−⌦(γ))-junta gi.
+Assuming the above two claims, we can ﬁnish the proof of Theorem 59 easily as follows.
+Let C be a circuit of wire complexity n1+". We apply a random restriction ⇢with ⇤-probability
+p =
+1
+n1−↵as in Claim 61. Call the restriction good if there is a circuit ˜C⇢as in the Claim that n−⌦(γ)-
+approximates C|⇢and bad otherwise. The probability that we have a bad restriction is at most n−⌦(γ).
+Say ⇢is a good restriction.
+The circuit ˜C⇢can be represented by an O(n↵/2−⌦(γ))-degree PTF
+and hence by Theorem 60 has correlation at most n−⌦(γ) with parity (on the remaining n↵variables).
+Moreover, then C|⇢is well-approximated by ˜C⇢and hence has correlation at most n−⌦(γ) + n−⌦(γ) with
+parity.
+Upper bounding the correlation by 1 for bad restrictions, we see that the overall correlation is at
+most n−⌦(γ).
+We now prove Claim 61.
+Proof of Claim 61. Let f1, . . . , ft be the LTFs appearing at depth 1 in the circuit. We will divide the
+analysis based on the fan-ins of the fis (i.e. the number of variables they depend on).
+We denote by β the quantity 3
+4 + "
+2. It can be checked that we have both
+β = 1
+2 + " + ↵
+2 + ⌦(γ) and 1 −β = ↵
+2 + ⌦(γ).
+(37)
+Consider any fi of fan-in at most nβ. When hit with a random restriction with ⇤-probability n−(1−↵),
+we see that the expected number of variables of fi that survive is at most nβ−(1−↵) = n↵−(1−β) =
+n↵/2−⌦(γ) by (37) above.
+By a Cherno↵bound, the probability that this number exceeds twice its
+expectation is exponentially small. Union bounding over all the gates of small fan-in, we see that with
+probability 1 −exp(−n⌦(1)), all the low fan-in gates depend on at most 2n↵/2−⌦(γ) many variables after
+the restriction. We call this high probability event E1.
+Now, we consider the gates of fan-in at least nβ. W.l.o.g., let f1, . . . , fr be these LTFs. Since the
+total number of wires is at most n1+", we have r n1+"−β = n
+1
+2 −↵
+2 −⌦(γ) by (37).
+By Theorem 14, we know that for any fi,
+E
+⇢[Var(fi|⇢)] O(pp) = O(
+1
+n(1−↵)/2 )
+By linearity of expectation, we have
+E := E
+⇢[
+r
+X
+i=1
+Var(fi|⇢)] O(r ·
+1
+n(1−↵)/2 ) = O(n(1−↵)/2−⌦(γ) ·
+1
+n(1−↵)/2 ) = O(n−⌦(γ))
+28
+
+By Markov’s inequality, we see that the probability that Pr
+i=1 Var(fi|⇢) >
+p
+E is at most
+p
+E =
+n−⌦(γ). We let E2 denote the event that Pr
+i=1 Var(fi|⇢) 
+p
+E.
+Consider the event E = E1 ^E2. A union bound tells us that the probability of E is at least 1−n−⌦(γ).
+When this event occurs, we construct the circuit ˜C⇢from the statement of the claim as follows.
+When the event E occurs, the LTFs of low arity are already n↵/2−⌦(γ)-juntas, so there is nothing to
+be done for them.
+Now, consider the LTFs of high fan-in, which are f1, . . . , fr. For each fi|⇢(i 2 [r]), replace fi by a
+bit bi 2 {−1, 1} such that Prx[fi|⇢(x) = bi] ≥1
+2. In the circuit ˜C⇢, these gates thus become constants,
+which are 0-juntas. The circuit ˜C⇢now has the required form. We now analyze the error introduced by
+this operation.
+We know that Prx[fi|⇢(x) 6= bi] 2Var(fi|⇢) and thus the overall error introduced is at most
+2 P
+i2[r] Var(fi|⇢) O(
+p
+E) = n−⌦(γ) (since E2 is assumed to occur). Thus, the circuit ˜C⇢is an n−⌦(γ)-
+approximation to C.
+C
+Proof of Proposition 45
+Proof of Proposition 45. Let J be the set of variables being set and let y 2 {−1, 1}|J| denote the random
+assignment chosen. Let L0 =
+1
+"2 · 3 log(1/"). It can be checked that for any i < L0 −L0, we have
+kw>(i+L0)k2
+2 "2
+9 · kw>ik2 w2
+i
+9 .
+Hence, we can choose indices i1 = 1, i2 = 1+L0, · · · , ir+2 = 1+(r+1)L0 L0 such that |wij+1| 
+|wij |
+3
+and kwij+1k2
+2 "2
+9 · kwijk2
+2. Further, we have
+X
+i62J
+w2
+i kw>L0k2 kw>ir+2k2 "2
+9 · kw>ir+1k2
+2 "2
+81 · w2
+ir.
+We condition on any setting of variables other than yi1, . . . , yir. This means that the constant term
+of the restricted threshold gate ✓0 is given by
+✓0 = ✓00 −
+X
+j2[r]
+wijyij
+for some ✓00 2 R. The probability that the threshold gate is not 1
+"-imbalanced is at most
+Pr
+yi1,...,yir[|✓0| 1
+"2 ·
+sX
+i62J
+w2
+i ] 
+Pr
+yi1,...,yir[|✓0| 1
+9 · |wir|]
+=
+Pr
+yi1,...,yir[
+X
+j
+wijyij 2 [✓00 −1
+9 · |wir|, ✓00 + 1
+9 · |wir|]]
+Now, as a result of the exponentially decreasing nature of the |wij|, it follows that for any interval
+of length at most |wir|/2, there can be at most one choice of yi1, . . . , yir such that the P
+j wijyij lies in
+that interval. Thus, we have the given bound.
+29
+ 
+ECCC 
+    
+            ISSN 1433-8092 
+http://eccc.hpi-web.de 

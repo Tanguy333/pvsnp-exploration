@@ -1,0 +1,1843 @@
+39
+Non-Uniform ACC Circuit Lower Bounds
+RYAN WILLIAMS, Stanford University
+The class ACC consists of circuit families with constant depth over unbounded fan-in AND, OR, NOT, and
+MODm gates, where m > 1 is an arbitrary constant. We prove:
+— NEXP, the class of languages accepted in nondeterministic exponential time, does not have non-uniform
+ACC circuits of polynomial size. The size lower bound can be slightly strengthened to quasi-polynomials
+and other less natural functions.
+— ENP, the class of languages recognized in 2O(n) time with an NP oracle, doesn’t have non-uniform ACC
+circuits of 2no(1) size. The lower bound gives an exponential size-depth tradeoff: for every d, m there is a
+δ > 0 such that ENP doesn’t have depth-d ACC circuits of size 2nδ with MODm gates.
+Previously, it was not known whether EXPNP had depth-3 polynomial size circuits made out of only MOD6
+gates. The high-level strategy is to design faster algorithms for the circuit satisﬁability problem over ACC
+circuits, then prove that such algorithms entail the above lower bounds. The algorithms combine known
+properties of ACC with fast rectangular matrix multiplication and dynamic programming, while the second
+step requires a strengthening of the author’s prior work.
+Categories and Subject Descriptors: F.1.3 [Theory of Computation]: Complexity Measures and Classes
+General Terms: Algorithms, Theory
+Additional Key Words and Phrases: circuit complexity, lower bounds, satisﬁability, NEXP, ACC
+ACM Reference Format:
+Ryan Williams, 2013. Alternation-trading proofs, linear programming, and lower bounds. J. ACM 9, 4, Arti-
+cle 39 (March 2010), 31 pages.
+DOI:http://dx.doi.org/10.1145/0000000.0000000
+1. INTRODUCTION
+Non-uniform computation allows the sizes of programs to grow with the sizes of in-
+puts. A non-uniform computation can be naturally represented as an inﬁnite family of
+Boolean circuits, one for each possible input length. A long-term goal of complexity the-
+ory is to understand how non-uniform computations compare with the usual uniform
+models, which have ﬁxed-size programs. Non-uniform circuit families can recognize ar-
+bitrary (even undecidable) languages, by having a large enough circuit for each input
+length. Non-uniformity becomes much more interesting when we restrict the sizes of
+computations: are there interesting uniform computations that cannot be simulated by
+small non-uniform circuit families? For instance, could every exponential-time uniform
+computation be simulated using circuit families of only polynomial size? Amazingly,
+this question is still open. For another example, P ̸= NP follows if one could provide an
+This work was supported by the Josef Raviv Memorial Fellowship at IBM Almaden Research Center, and
+NSF Grant CCF 1212372 at Stanford. An earlier version of this paper appeared in the IEEE Conference on
+Computational Complexity (CCC) in 2011.
+Author’s address: R. Williams, Computer Science Department, Stanford University, Stanford, CA 94035.
+Permission to make digital or hard copies of part or all of this work for personal or classroom use is granted
+without fee provided that copies are not made or distributed for proﬁt or commercial advantage and that
+copies show this notice on the ﬁrst page or initial screen of a display along with the full citation. Copyrights
+for components of this work owned by others than ACM must be honored. Abstracting with credit is per-
+mitted. To copy otherwise, to republish, to post on servers, to redistribute to lists, or to use any component
+of this work in other works requires prior speciﬁc permission and/or a fee. Permissions may be requested
+from Publications Dept., ACM, Inc., 2 Penn Plaza, Suite 701, New York, NY 10121-0701 USA, fax +1 (212)
+869-0481, or permissions@acm.org.
+c⃝2010 ACM 0004-5411/2010/03-ART39 $15.00
+DOI:http://dx.doi.org/10.1145/0000000.0000000
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+39:2
+R. Williams
+NP problem that cannot be solved by any circuit family where the size of the nth circuit
+is at most polynomial in n. Lower bounds against non-uniform computation establish
+impossibility results for computation in the physical world: it could be that P ̸= NP, yet
+NP-complete problems can still be efﬁciently solved using “bloated” programs with suf-
+ﬁciently many lines of code for large inputs. Non-uniform circuit size lower bounds for
+NP would rule out this possibility. (However, the best known circuit size lower bound
+for any NP problem is only 5n −o(n) [Lachish and Raz 2001; Iwama and Morizumi
+2002].)
+In the early 1980’s, researchers began to carefully study the power of non-uniform
+low depth circuits. Intuitively, such circuits correspond to extremely fast parallel com-
+putations. The initial hope was that if some functions in NP were proved to require
+large, restricted circuit families, then by gradually lifting the restrictions over time,
+superpolynomial size unrestricted lower bounds for NP could be attained, proving
+P ̸= NP. Furst et al. [1984] and independently Ajtai [1983] showed that functions such
+as the parity of n bits cannot be computed by polynomial size AC0 circuits, i.e., poly-
+nomial size circuit families of constant depth over the usual basis of AND, OR, and
+NOT gates, where each AND and OR may have arbitrarily many inputs. Yao [1985]
+improved the lower bounds to exponential size, and H˚astad [1986] proved essentially
+optimal AC0 lower bounds for parity. Around the same time, Razborov [1985] proved
+superpolynomial lower bounds for solving clique with monotone circuits (i.e., general
+circuits without NOT gates), and the bound was improved to exponential size by Alon
+and Boppana [1987]. However, it was later shown [Razborov 1989] that these tech-
+niques probably would not extend to general circuits.
+Encouraged by the progress on AC0, attention turned to lower bounds for what
+seemed to be minor generalizations. The most natural generalization was to grant
+AC0 the parity function for free. Razborov [1987] proved an exponential lower bound
+for computing the majority of n bits with constant-depth circuits made up of AND,
+OR, NOT, and MOD2 gates. (A MODm gate outputs 1 iff m divides the sum of its in-
+puts.) Then Smolensky [1987] proved exponential lower bounds for computing MODq
+with constant-depth circuits made up of AND, OR, NOT, and MODp gates, for distinct
+primes p and q. Barrington [1989] suggested the next step would be to prove lower
+bounds for the class ACC, which consists of constant-depth circuit families over the ba-
+sis AND, OR, NOT, and MODm for arbitrary constant m > 1.1 It is here that progress
+on strong circuit lower bounds began to falter (although there has been progress on
+further restricted cases, cf. the Preliminaries). Although it was conjectured that the
+majority of n bits cannot have polynomial-size ACC circuits, strong ACC lower bounds
+remained elusive.
+After some years of failing to prove a superpolynomial lower bound, the primary
+questions were weakened. Rather than trying to ﬁnd simple functions that cannot be
+computed with weak circuits, perhaps we could rule out weak circuits for complicated
+functions. Could one prove that nondeterministic exponential time (NEXP) doesn’t have
+polynomial size circuits? A series of papers starting with Nisan and Wigderson [Nisan
+and Wigderson 1994; Babai et al. 1993; Klivans and van Melkebeek 2002; Impagliazzo
+et al. 2002] showed that even this sort of lower bound would imply derandomization
+results: in the case of NEXP lower bounds, it would imply that Merlin-Arthur games
+can be non-trivially simulated with nondeterministic algorithms. This indicated that
+proving good circuit lower bounds for NEXP would already require signiﬁcantly new
+ideas.
+1The class is also called ACC0 in the literature. However, as ACCi is hardly studied at all, for any i > 0, at
+the present time it makes sense to drop the superscript.
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+Non-Uniform ACC Circuit Lower Bounds
+39:3
+In this paper, we address two frontier questions concerning non-uniform circuit com-
+plexity:
+(1) Does nondeterministic 2O(n) time have non-uniform polynomial size ACC circuits?
+(Is NTIME[2O(n)] in non-uniform ACC?)
+(2) Does exponential time with an NP oracle have non-uniform polynomial size circuits?
+(Is EXPNP ⊆P/poly?)
+Over the years, these questions have turned into notorious and somewhat embar-
+rassing open problems, because it seems so obvious that the answers should be no. It
+was open if EXPNP could be recognized with depth-3 polynomial size circuits made out
+of only MOD6 gates.2 We make headway on these frontiers, giving a strong no answer
+to the ﬁrst question.
+THEOREM 1.1.
+NTIME[2n] does not have non-uniform ACC circuits of polynomial
+size.
+Stronger size lower bounds hold (e.g. quasi-polynomial size) but the results are not
+very clean; see Section 5.1 for details. For EXPNP, we can prove exponential lower
+bounds.
+THEOREM 1.2 (EXPONENTIAL SIZE-DEPTH TRADEOFF).
+For every d and m, there
+is a δ > 0 and a language in ENP that fails to have non-uniform ACC circuits of depth d
+and size 2nδ with MODm gates.
+Recall that the smallest complexity class for which we know exponential-size (un-
+restricted) circuit lower bounds is EXPNPNP, the third level of the exponential hierar-
+chy [Miltersen et al. 1999].
+Extending the approach of this paper to settle the second frontier question may be
+difﬁcult, but this prospect does not look as implausible as it did before. If polynomial
+unrestricted circuits could be simulated by subexponential ACC circuits, or if one could
+improve just a little on the running time of algorithms for the circuit satisﬁability
+problem, the second question would be settled.
+1.1. An Overview of the Proofs
+Let us sketch how these new lower bounds are proved, giving a roadmap for the rest
+of the paper. In recent work [Williams 2013], the author suggested a research program
+for proving non-uniform circuit lower bounds for NEXP. It was shown that for many
+circuit classes C, sufﬁciently faster satisﬁability algorithms for C-circuits would entail
+non-uniform lower bounds for C-circuits. The objective of this paper is to carry out the
+proposed research program in the case of ACC circuits.
+The proof of the lower bound for ENP (Theorem 1.2) is a combination of complexity-
+theoretic ideas (time hierarchies, compression by circuits, the local checkability of com-
+putation) and algorithmic ideas (fast matrix multiplication, dynamic programming,
+table lookup).
+1. First, we show that satisﬁability algorithms for subexponential size n-input ACC
+circuits with running time O(2n/nk) imply exponential size ACC lower bounds for ENP
+(Theorem 3.2), where k is sufﬁciently large. (The model of computation for the sat-
+isﬁability algorithm is ﬂexible; we may assume the multitape Turing machine or a
+random access machine. See the Preliminaries.) This step considerably strengthens
+2Note that slightly larger classes such as MAEXP and NEXPNP are known to not have polynomial size
+circuits; see the Preliminaries.
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+39:4
+R. Williams
+earlier work, which could only show that an o(2n/3) time algorithm for ACC circuit sat-
+isﬁability implies lower bounds [Williams 2013]. The idea is to prove that, if there is
+a faster algorithm for ACC Circuit SAT, and there are subexponential (2no(1)) size ACC
+circuits for ENP, then every L ∈NTIME[2n] can be accepted by a nondeterministic al-
+gorithm in O(2nn10/nk) time. (Here, 10 is a substitute for a small universal constant.)
+When k > 10 this contradicts the nondeterministic time hierarchy theorem [Seiferas
+et al. 1978; ˇZ´ak 1983], so one of the assumptions must be false.
+Two known facts are applied in the proof. First, there is a polynomial-time reduction
+from any L ∈NTIME[2n] to the NEXP-complete problem SUCCINCT 3SAT such that
+every instance x of length n (for sufﬁciently large n) is reduced to a (unrestricted, not
+ACC) circuit Cx of size O(n5) with at most n + 5 log n inputs (Fact 1). That is, the string
+obtained by evaluating Cx on its O(2nn5) possible assignments (in lex order) encodes
+a 3CNF formula FCx that is satisﬁable iff x ∈L. Informally, this says that languages
+L ∈NTIME[2n] have “succinct” reductions to exponentially long 3SAT instances.
+Second, if ENP is in subexponential-size ACC, then (given an x) there is some sat-
+isfying assignment to the formula encoded by Cx that can be described by an ACC
+circuit W of subexponential size (Fact 2). That is, the string obtained by evaluating W
+on all possible assignments encodes a satisfying assignment to the exponentially long
+FCx. Informally, this means that, if ENP has subexponential ACC circuits, then every
+“succinct” satisﬁable 3SAT instance has at least one “succinct” satisfying assignment:
+compressible satisﬁable formulas have compressible satisfying assignments.
+We can try to combine these two facts, as follows. If Cx were an ACC circuit, then any
+L ∈NTIME[2n] could be accepted in O(2nn5/nk) nondeterministic time, by guessing a
+subexponential ACC circuit W and constructing an ACC circuit satisﬁability instance
+D built of Cx and W, where D is satisﬁable if and only if W does not encode a satisfying
+assignment to FCx (as shown in the author’s prior paper [Williams 2013]). The circuit D
+has at most n+5 log n inputs and 2no(1) size, so the assumed ACC satisﬁability algorithm
+can handle D in O(2nn5/nk) time.
+The aforementioned argument does not quite work, because we do not know how
+to produce a Cx that is an ACC circuit (indeed, it may not be possible). An ACC SAT
+algorithm will not work on D, because D contains a copy of an unrestricted circuit Cx.
+However, assuming P has subexponential ACC circuits, we show how to guess and ver-
+ify an equivalent ACC circuit C′
+x in nondeterministic O(2nn10/nk) time using a slightly
+faster ACC SAT algorithm (Lemma 3.4). This makes it possible to prove ACC lower
+bounds even with weak ACC satisﬁability algorithms. Furthermore, this part of the
+proof does not use speciﬁc properties of ACC, so it may be useful for proving stronger
+lower bounds in the future.
+2. Next, we show how satisﬁability of subexponential ACC circuits of depth d and n
+inputs can be determined in 2n−Ω(nδ) time, for a δ > 0 that depends on d (Theorem 4.5).
+Given any such circuit C, replace it with C′ which is an OR of 2nδ copies of C, where
+the ﬁrst nδ inputs of each copy are substituted with a variable assignment. This ACC
+circuit C′ has n −nδ inputs, 2O(nδ) size, and C is satisﬁable if and only if C′ is. Ap-
+plying a powerful result of Yao, Beigel-Tarui, and Allender-Gore (Lemma 4.1), C′ can
+be replaced by an equivalent depth-2 circuit C′′ of 2nδ2O(d)
+size, which consists of an
+efﬁciently computable symmetric function at the output gate and AND gates below
+it. Setting δ ≪1/2O(d), and exploiting the structure of the depth-2 circuit, C′′ can be
+evaluated on all of its possible assignments in 2n−nδpoly(n) time (Lemma 4.2). This
+concludes the sketch of the ENP lower bound.
+The only use of the full assumption “ENP has ACC circuits” is in Fact 2. The lower
+bound for NEXP (Theorem 1.1) applies the result (which follows from work of Impagli-
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+Non-Uniform ACC Circuit Lower Bounds
+39:5
+azzo, Kabanets, and Wigderson [Impagliazzo et al. 2002]) that if NEXP has polyno-
+mial size (unrestricted) circuits then satisﬁable instances of SUCCINCT 3SAT already
+have polynomial size (unrestricted) circuits W encoding satisfying assignments (The-
+orem 5.2). But if P has ACC circuits, it is easy to see that these unrestricted circuits
+must have equivalent ACC circuits as well (Lemma 5.4). This helps extend the ENP
+lower bound to NEXP. However, the resulting size lower bound is not exponential: from
+S(n)-size circuits for NEXP one only obtains S(S(S(n)c)c)c-size ACC circuits encoding
+satisfying assignments. This allows for some “half-exponential” type improvements in
+the size lower bounds against NEXP.
+Perhaps the most interesting aspect of the proofs is that only the satisﬁability algo-
+rithm for ACC circuits relies on speciﬁc properties of ACC. Improved exponential-time
+algorithms for satisﬁability are the only barrier to further progress on circuit lower
+bounds for NEXP. In general, this paper weakens the algorithmic assumptions neces-
+sary to prove lower bounds, and strengthens the lower bounds obtained. Let C be a
+class of circuit families that is closed under composition (the composition of two circuit
+families from C is also a family in C) and contains AC0. Possible C include constant-
+depth threshold circuits, Boolean formulas, and unrestricted Boolean circuits. The ar-
+guments of Section 3 and Section 5 imply the following metatheorem.
+THEOREM 1.3. There is a k > 0 such that, if satisﬁability of C-circuits with n vari-
+ables and nc size can be solved in O(2n/nk) time for every c, then NTIME[2n] doesn’t
+have non-uniform polysize C-circuits.
+2. PRELIMINARIES
+We presume the reader has background in circuit complexity and complexity theory
+in general. The textbook of Arora and Barak [Arora and Barak 2009] covers all the
+necessary material; in particular, Chapter 14 gives an excellent summary of ACC and
+the frontiers in circuit complexity.
+On the machine model. An important point about this paper is that the choice
+of uniform machine model is not crucial to the arguments. We show that if large
+classes have small non-uniform ACC circuits, then NTIME[2n] ⊆NTIME[o(2n)] (in fact,
+NTIME[2n] ⊆NTIME[o(2n/nk)] for sufﬁciently large k), which is a contradiction in all
+computational models we are aware of. Moreover, Gurevich and Shelah proved that the
+nondeterministic machine models are tightly related in their time complexities. For ex-
+ample, let NTIMERT M[t(n)] be the languages recognized by nondeterministic t(n) time
+random-access Turing machines, and let NTIMET M[t(n)] be the class for multitape Tur-
+ing machines.
+THEOREM 2.1 (GUREVICH AND SHELAH [1989]).
+S
+c>0 NTIMERT M[n logc n] = S
+c>0 NTIMET M[n logc n].
+As a consequence, even if we showed NTIMET M[2n] ⊆NTIMERT M[2n/nk] for sufﬁ-
+ciently large k, we would still obtain the desired contradiction. (Note that such a result
+is not known for the deterministic setting.) A random access Turing machine can also
+simulate a standard random access machine with only constant factor overhead [Paul
+and Reischuk 1980]. Hence in our proof by contradiction, we may assume that the
+source algorithm we’re simulating is only a multitape TM, while the target algorithm
+has all the power we need to perform typical computations from the literature.
+Notation. Inside of an algorithm description, the integer n refers to the length of the
+input to the algorithm. For a function f : N →N, we use poly(f(n)) to denote a growth
+rate of the form cf(n)c for a constant c.
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+39:6
+R. Williams
+The size of a circuit refers to the number of wires in it. However, since attention
+shall be restricted to circuits with at least polynomially many gates, the distinction
+between the number of wires and gates does not matter. In this paper, an unrestricted
+circuit has gate types AND/OR/NOT, unrestricted depth, and each gate has fan-in two.
+(That is, an unrestricted circuit is the generic variety used in the deﬁnition of P/poly.)
+All circuit size functions S considered in this paper are assumed to be monotone non-
+decreasing, i.e., S(n + 1) ≥S(n) for all n.
+We say that a circuit class C is a collection of circuit families that (a) contains AC0 (for
+every circuit family in AC0, there is an equivalent circuit family in C) and (b) is closed
+under composition: if {Cn} and {Dn} are families in C, then for every c, the circuit
+family consisting of circuits which take n bits of input, feed them to nc + c copies of
+circuits from Cn, and feed the outputs to the inputs of Dnc+c, is also a circuit family in
+C. Essentially all classes studied extensively in the literature (AC0, ACC, TC0, NC1, NC2,
+P/poly, etc.) are circuit classes in this sense. For classes that allow for superpolynomial
+size circuits, the polynomial “nc + c” in the above may be relaxed appropriately.
+For a complexity class C, the class i.o.-C consists of languages L ⊆Σ⋆such that there
+is a language L′ ∈C where L ∩Σn = L′ ∩Σn holds for inﬁnitely many n.
+When the expression “O(1)” appears inside of the time bound for a complexity class,
+this is shorthand for the union of all classes where the O(1) is substituted by a ﬁxed
+constant. For example, the class TIME[2nO(1)] is shorthand for S
+c≥0 TIME[2nc].
+Other Prior Work. Kannan [1982] showed in 1982 that for any superpolynomial con-
+structible function S : N →N, the class NTIME[S(n)]NP does not have polynomial
+size circuits. Another somewhat small class known to not have unrestricted poly-
+nomial size circuits is MAEXP [Buhrman et al. 1998]. Later it was shown that the
+MAEXP lower bound can be improved to half-exponential size functions f which sat-
+isfy f(f(n)) ≥2n [Miltersen et al. 1999]. Kabanets and Impagliazzo [2004] proved that
+NEXPRP either doesn’t have polynomial size Boolean circuits (over AND, OR, NOT), or
+it doesn’t have polynomial size arithmetic circuits (over the integers, with addition and
+multiplication gates). Note that NEXPRP ⊆MAEXP.
+A line of work stemming from Toda’s Theorem [Toda 1991] has studied ways of repre-
+senting low-depth ACC circuits by certain depth-two circuits which will play a critical
+role in this paper. Deﬁne a SYM+ circuit to be a depth-two circuit which computes
+some symmetric function at the output gate, and computes ANDs of input variables
+on the second layer.3 Extending work on AC0 by Allender [1989], Yao [1990] showed
+that every ACC circuit of s size can be represented by a probabilistic SYM+ circuit of
+sO(logc s) size, where c depends on the depth, and the ANDs have poly(log s) fan-in.
+Beigel and Tarui [1994] showed how to remove the probabilistic condition. Allender
+and Gore [1991] showed that every subexponential uniform ACC circuit family can be
+simulated by subexponential uniform SYM+ circuits. This was applied to show that the
+Permanent does not have uniform ACC circuits of subexponential size. Later, Allender
+[1999] improved the Permanent lower bound to polynomial size uniform TC0 circuits.
+However, these proofs require uniformity, and the difference between uniformity and
+non-uniformity may well be vast (e.g., it is clear that P ̸= NEXP, but open whether
+NEXP ⊆P/poly). Green et al. [1995] showed that the symmetric function can be as-
+sumed to be the speciﬁc function which returns the middle bit of the sum of its inputs.
+This representation may also be used in the lower bounds of this paper.
+3Some have deﬁned SYM+ circuits differently, allowing the ANDs to take negated variables as input. In
+Appendix B we sketch why there is no essential difference between the two deﬁnitions (for our purposes, at
+least).
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+Non-Uniform ACC Circuit Lower Bounds
+39:7
+There has also been substantial work on representing ACC in other interesting
+ways [Barrington and Th´erien 1988; Agrawal et al. 2000; Hansen 2006; Hansen and
+Kouck´y 2010] as well as many lower bounds in restricted cases [Barrington et al.
+1990; Th´erien 1994; Yan and Parberry 1994; Krause and Pudl´ak 1997; Barrington
+and Straubing 1995; Caussinus 1996; Grolmusz 1998; Grolmusz and Tardos 2000;
+Chattopadhyay et al. 2006; Chattopadhyay and Wigderson 2009]. Signiﬁcant work has
+gone into understanding the constant degree hypothesis [Barrington et al. 1990] that
+a certain type of low-depth ACC circuit requires exponential size to compute the AND
+function. The hypothesis is still open.
+All prior works on non-uniform ACC lower bounds attack the problem in a “bottom-
+up” way. (The exceptions are the uniform results mentioned above [Allender and Gore
+1991; Allender 1999].) Lower bounds have been proved for highly restricted circuits
+and these restrictions have been very gradually relaxed over time. In this paper, the
+strategy is “top-down”: the goal is to ﬁnd the smallest complexity classes for which it
+is still possible to prove superpolynomial ACC lower bounds. This is in line with the
+overall goal of eventually proving large circuit lower bounds for NP.
+As mentioned before, this paper builds on the author’s prior work which showed that
+mild improvements over exhaustive search can sometimes imply lower bounds. Let us
+brieﬂy review the prior state-of-the-art for Circuit SAT algorithms. It is known that
+CNF satisﬁability can be solved in 2n−Ω(n/ ln(m/n))poly(m) time, where m is the number
+of clauses and n is the number of variables [Schuler 2005; Calabro et al. 2006; Dantsin
+and Hirsch 2009]. Recent work of Calabro-Impagliazzo-Paturi [Calabro et al. 2009]
+and Impagliazzo-Matthews-Paturi [Impagliazzo et al. 2012] has culminated in a ran-
+domized algorithm for depth-d AC0 circuit satisﬁability that runs in 2n−Ω(n/(log s)d−1)
+time on circuits with s gates. Santhanam [2010] has applied ideas inspired by formula
+size lower bounds to show that for a ﬁxed constant k, satisﬁability of formulas over
+AND, OR, and NOT can be determined in O(2n−n/ck) time on n-variable formulas of
+size cn. Very recently, Seto and Tamaki [2013] have extended Santhanam’s results to
+formulas over arbitrary two-bit Boolean-valued functions. Unfortunately, these upper
+bounds are not yet strong enough to derive new circuit lower bounds for NEXP.
+How do we avoid the barriers?. There are several well-known formal barriers to prov-
+ing lower bounds. Let us say a little about their relation to this work. Intuitively, we
+circumvent the natural proofs barrier [Razborov and Rudich 1997] because of the use
+of diagonalization. More precisely, we rely heavily on strong completeness properties of
+a speciﬁc NEXP language, namely SUCCINCT 3SAT, to prove that it cannot have small
+ACC circuits. So it looks unlikely that one may extract any P-natural or NP-natural
+properties from the proof. (Furthermore, there is little evidence that ACC contains
+pseudorandom functions, so natural proofs may not be a barrier for ACC after all.) It
+is hard to formally rule out that a proof cannot possibly be made natural, without
+showing either an algorithmic lower bound (there is no efﬁcient algorithm with cer-
+tain properties) or a circuit upper bound (the circuit class under discussion has pseu-
+dorandom functions). Nevertheless, statements like “Satisﬁability of C circuits is in
+O(2n/n10) time” do appear to be far weaker than statements like “There are no strong
+pseudorandom functions implementable with C circuits”.
+More conclusively, the approach of this work deﬁnitely avoids relativization [Baker
+et al. 1975] and algebrization [Aaronson and Wigderson 2009] because there are ora-
+cles A relative to which NEXPA ⊂ACCA, and even NEXP
+˜
+A ⊂ACCA (Scott Aaronson,
+personal communication). Here the lower bounds rely on a more efﬁcient ACC SAT
+algorithm which uses non-relativizing properties of ACC circuits. In general, the ap-
+proach of using slightly-faster SAT algorithms to prove lower bounds appears fruitful
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+39:8
+R. Williams
+for circumventing oracle-based barriers, because all known improved SAT algorithms
+break down when oracles (or algebraic extensions thereof) are added to the instance.
+That is, signiﬁcant improvements over exhaustive search necessarily exploit structure
+in instances that black-box methods cannot see.
+3. A STRENGTHENED CONNECTION BETWEEN SAT ALGORITHMS AND LOWER BOUNDS
+In this section, we prove that if one can achieve a very minor improvement over ex-
+haustive search in satisfying ACC circuits, then one can prove lower bounds for ACC.
+The required improvement is so minor that we are able to achieve it, in the next sec-
+tion. However, let us stress upfront that all the results in this section hold equally well
+for other circuit classes as well: we only require basic properties of ACC that practically
+all robust circuit classes satisfy.
+Deﬁne the ACC CIRCUIT SAT problem to be: given an ACC circuit C, is there an
+assignment of its inputs that makes C evaluate to 1? In recent prior work [Williams
+2013], the author proved a relation between algorithms for ACC CIRCUIT SAT and
+lower bounds for ACC circuits:4
+THEOREM 3.1 ([WILLIAMS 2013]).
+Let s(n) = ω(nk) for every k. If ACC CIRCUIT
+SAT instances with n variables and nk size can be solved in O(2n/3/s(n)) time for every
+k, then ENP does not have non-uniform ACC circuits of polynomial size.
+We shall sharpen this theorem considerably. Throughout the following, let S : N →N
+and d : N →N be monotone nondecreasing functions such that S(n) ≥n and d(n) ≥1.
+Let C be a circuit class as deﬁned in the Preliminaries. (C can be ACC, TC0, NC1, P/poly,
+etc.) Deﬁne the C-CIRCUIT SAT problem to be: given a circuit C from class C, is there
+an assignment of its inputs that makes C evaluate to 1?
+THEOREM 3.2.
+Let S(n) ≤2n/4. There is a c > 0 and b > 0 such that, if C-CIRCUIT
+SAT instances with at most n + c log n variables, depth at most 2 · d(3n) + b, and O(n ·
+S(2n) + S(3n)) size can be solved in O(2n/nc) time, then ENP does not have non-uniform
+C circuits of depth d(n) and S(n) size.
+The constant k depends on the model of computation in which the SAT algorithm is
+implemented, but for all typical models, c is not large (less than 10). For us, the im-
+portant corollary is this: if ACC satisﬁability has a slightly faster algorithm on circuits
+that are mildly larger than S(n), then ENP does not have ACC circuits of S(n) size. In
+what follows, we prove Theorem 3.2 only for ACC circuits, but the proof also works for
+any other circuit class. (The reader can verify that the only two properties of ACC used
+are that the class contains AC0, and the class is closed under composition of circuit
+families.)
+To understand the difﬁculty behind proving Theorem 3.2, let us recall the proof of
+Theorem 3.1 to see why it needed such a strong assumption. The generic proof idea
+in [Williams 2013] for results such as Theorem 3.1 is to derive a contradiction from
+assuming small circuits for ENP and a faster algorithm for CIRCUIT SAT. In particu-
+lar, it is shown that under the two assumptions, every language L ∈NTIME[2n] can
+be recognized in NTIME[o(2n)], which is false by the nondeterministic time hierarchy
+theorem [Seiferas et al. 1978; ˇZ´ak 1983]. The contradiction is derived from stitching
+together several facts about circuits and satisﬁability.
+Deﬁne SUCCINCT 3SAT as the problem: given a circuit C on n inputs, let FC be
+the 2n-bit instance of 3-SAT obtained by evaluating C on all of its possible inputs in
+lexicographical order. Is FC satisﬁable?
+4In fact a more general result for any circuit class was proved, which implies Theorem 3.1.
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+Non-Uniform ACC Circuit Lower Bounds
+39:9
+That is, given a compressed encoding of a 3-CNF formula, the task is to determine
+if the underlying decompressed formula is satisﬁable. For natural reasons, call FC the
+decompression of C, and call C the compression of FC. The SUCCINCT 3SAT problem
+is a canonical NEXP-complete problem [Papadimitriou and Yannakakis 1986].
+FACT 1.
+There is a constant c > 0 such that for every L ∈NTIME[2n], there is a
+reduction from L to SUCCINCT 3SAT which on input x of length n runs in poly(n) time
+and produces a circuit Cx with at most n + c log n inputs and c · nc + c size, such that
+x ∈L if and only if the decompressed formula FCx of 2n · poly(n) size is satisﬁable.
+Fact 1 follows from several prior works concerned with the complexity of the Cook-
+Levin theorem:
+THEOREM 3.3 (TOURLAKIS [2001; FORTNOW ET AL. [2005]).
+There is a c > 0
+such that for all L ∈NTIME[n], L reduces to 3SAT in c · n(log n)c time. Moreover there
+is an algorithm AL (with random access to its input) that, given an instance of L with
+length n and an integer i ∈[cn(log n)c + c] in binary, AL outputs the ith clause of the
+resulting 3SAT formula in c(log n)c + c time.
+In fact, the proofs in the above references build on even earlier work [Schnorr 1978;
+Cook 1988; Gurevich and Shelah 1989; Robson 1991]. In a nutshell, all of these proofs
+exploit the locality of computation: every nondeterministic computation running in
+linear time can be represented with a nondeterministic circuit of size O(n · poly(log n))
+which has a highly regular and efﬁciently computable structure. This circuit can be
+easily modeled as a 3-CNF formula using the Tseitin transformation [Tseitin 1968]
+that assigns a variable to each circuit wire and uses 3-CNF clauses to model the input-
+output relationships for each gate.
+The value of c in Theorem 3.3 depends on the underlying computational model; typ-
+ically one can take c to be at most 4. A standard padding argument (substituting 2n in
+place of n) yields Fact 1. In more detail, given L ∈NTIME[2n], we apply Theorem 3.3
+to the language L′ = {x012|x| | x ∈L}, which is in NTIME[n]. On an input x, this gener-
+ates an equivalent 3SAT instance of length O(2|x||x|c). As it is easy to simulate random
+accesses to an input of the form x012|x| with a uniform poly(|x|) size circuit, one can
+simulate the O((log n)c) time algorithm of Theorem 3.3 on L′, with a uniform poly(|x|c)
+size circuit.
+Using Fact 1, one can then prove that if the lower bound for ENP fails to hold, then ev-
+ery succinctly compressible satisﬁable formula that is output by the SUCCINCT 3SAT
+reduction has some succinctly compressible satisfying assignment.
+FACT 2. If ENP has ACC circuits of size S(n), then there is a ﬁxed constant c such that
+for every language L ∈NTIME[2n] and every x ∈L of length n, there is an ACC circuit
+Wx of size at most S(3n) with k ≤n + c log n inputs such that the variable assignment
+zi = W(i) for all i = 1, . . . , 2k is a satisfying assignment for the formula FCx, where Cx
+is the circuit obtained by the reduction in Fact 1.
+PROOF OF FACT 2. Consider the ENP machine:
+N(x, i): Compute the SUCCINCT 3SAT reduction from x to Cx in polyno-
+mial time. Decompress Cx, obtaining a formula F of O(2|x||x|c) size. Let k be
+the number of inputs to Cx. Binary search for the lexicographically small-
+est satisfying assignment A to F, by repeatedly querying: given (F, A) where
+|A| ≤2k, is there an assignment A′ ≤A that satisﬁes F? Then output the ith
+bit of A.
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+39:10
+R. Williams
+Note the queries can be answered in NP, and N needs O(2k) queries to the oracle.
+By assumption, N has ACC circuits of size S(n). It follows that for every x ∈L there
+is some satisfying assignment to F which is encoded by a circuit of size S(|⟨x, i⟩|) ≤
+S(3|x|), where ⟨·, ·⟩is a polynomial-time computable pairing function.
+2
+With these two facts, we may try to recognize any L ∈NTIME[2n] with a o(2n)
+nondeterministic algorithm (a contradiction), as follows. Given a string x of length
+n, compute the SUCCINCT 3SAT circuit Cx in polynomial time and nondeterministi-
+cally guess a S(3n)-size circuit W. Now the goal is to check that W succinctly encodes
+a satisfying assignment for the underlying formula FCx. To verify this condition, the
+algorithm constructs a CIRCUIT SAT instance D. The circuit D has n + c log n inputs
+fed to O(n) copies of Cx, so that when i is input to D, the copies altogether print the ith
+clause of the 3CNF formula FCx. These copies output three variable indices of length
+at most n + c log n, along with sign bits (whether or not the variables are negated in
+the clause). Then D feeds each index to a copy of W, which prints a bit. Finally D
+compares the sign bits with the three bits printed by the copies of W, and outputs
+0 iff the variable assignment encoded by W satisﬁes the ith clause. Observe D has
+poly(n) + O(S(3n)) size. Running a fast enough CIRCUIT SAT algorithm lets us deter-
+mine the satisﬁability of D in o(2n) time. Finally, this algorithm for L accepts x iff D is
+unsatisﬁable. To see that this algorithm is correct, observe there is a size-S(3n) circuit
+W such that D is an unsatisﬁable circuit, if and only if there is such a W encoding a
+satisfying assignment for FCx, if and only if x ∈L.
+The above argument cannot be carried out directly to prove ACC circuit lower bounds
+from ACC CIRCUIT SAT algorithms, because of Fact 1. Given an instance x of L, the
+resulting circuit Cx produced in the reduction from L to SUCCINCT 3SAT can be con-
+structed in polynomial time, however it looks hard (perhaps impossible) to show that
+this Cx can be assumed to be an ACC circuit. As Cx is a component of the circuit D, it
+follows that D itself would not be an ACC circuit, so an ACC CIRCUIT SAT algorithm
+would not seem to be useful for determining the satisﬁability of D.
+In the proof of Theorem 3.1 in the author’s prior work [Williams 2013], this problem
+was ﬁxed by settling for a weaker reduction from L to SUCCINCT SAT, which generates
+an AC0 circuit C′
+x with 3n + O(log n) inputs rather than n + O(log n). Unfortunately
+this constant factor makes a huge difference: to quickly determine satisﬁability of the
+resulting circuit D′ in o(2n) time, a 2n/3/nω(1) time algorithm for ACC CIRCUIT SAT is
+needed, instead of a 2n/nω(1) algorithm. Algorithms of the former type are not known
+even for 3SAT; algorithms of the latter type are much more plentiful.
+While it is unlikely that these Cx circuits can be implemented in ACC, note that we
+already assume that ACC is powerful in some sense: in a proof by contradiction, we may
+assume many functions have small ACC circuits! Since the function computed by Cx is
+computable in polynomial time, then even if we assume that only P has ACC circuits,
+there still exists a circuit C′
+x which is ACC and equivalent to Cx, but it is from a non-
+uniform family, and therefore may be arbitrarily difﬁcult to construct. However, we
+can use nondeterminism in the algorithm recognizing L in NTIME[o(2n)], so at the very
+least we can guess this elusive C′
+x. We also have a good algorithm for ACC CIRCUIT
+SAT at our disposal. By guessing two more ACC circuits to help us, it turns out that we
+can always generate a correct ACC circuit C′
+x that is equivalent to Cx in o(2n) time. We
+arrive at our main lemma:
+LEMMA 3.4.
+There is a ﬁxed c > 0 and b > 0 with the following property. Assume
+P has ACC circuits of depth d(n) and size at most S(n) ≤2n/4. Further assume there
+is some k > 2c such that ACC CIRCUIT SAT on circuits with n + k log n inputs, depth
+2 · d(3n) + b, and at most O(S(3n) + S(2n)n) size can be solved in O(2n/nk) time.
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+Non-Uniform ACC Circuit Lower Bounds
+39:11
+Then for every L ∈NTIME[2n], there is a nondeterministic algorithm A and constant
+e such that:
+— A runs in O(2n/nk + S(3n) · ne) time,
+— for every x of length n, A(x) either prints reject or it prints an ACC circuit C′
+x with
+n + c log n inputs, depth d(3n), and S(n + c log n) size, such that x ∈L if and only if
+C′
+x is the compression of a satisﬁable 3-CNF formula of 2n · ne size, and
+— there is always at least one computation path of A(x) that prints a valid circuit C′
+x.
+That is, given an instance x, the algorithm A nondeterministically generates an
+equivalent SUCCINCT 3SAT instance C′
+x which is an ACC circuit. Let us ﬁrst give a
+high-level overview of the proof. Informally, A will guess and verify C′
+x in three stages.
+(1) A guesses an ACC circuit D of depth d(2n) and O(S(2n) log n) size which encodes
+all the gate and wire information of the circuit Cx which has cnc + c size. Given a
+gate index j = 1, . . . , cnc + c, D produces the gate type of j, as well as the indices of
+gates whose outputs are the inputs for gate j. The correctness of D can be veriﬁed
+in O(ncS(2n) · poly(log S(2n))) time by simply producing the entire circuit of cnc + c
+size that is described by D, and checking that it is identical to Cx.
+(2) Next, A guesses an ACC circuit E of depth d(3n) and O(S(3n)) size which encodes
+the outputs of all gates of Cx on all inputs i: given input i and a gate index j =
+1, . . . , cnc + c, E produces the output of gate j in Cx evaluated on i. A veriﬁes that
+E is correct, using the fact that D is correct. By constructing an appropriate ACC
+CIRCUIT SAT instance that checks for all inputs and all gates that the claimed
+inputs to that gate are consistent with the output of the gate, this veriﬁcation
+takes O(2n/nk) time (for k chosen to be greater than 2c).
+(3) Then using the fact that E is correct, it is easy to verify that a guessed ACC circuit
+C′
+x is correct via a call to ACC CIRCUIT SAT that runs in O(2n/nk) time. A only
+needs to check if there is an i such that C′
+x(i) ̸= E(i, j⋆), where j⋆is the index of the
+output gate of Cx. (Alternatively, we could just print the circuit E(·, j⋆) as a valid
+ACC circuit that is equivalent to Cx(·).) If E is correct and no such i exists, then C′
+x
+is also correct.
+PROOF OF LEMMA 3.4. We describe A in detail. On input x of length n, A guesses
+an ACC circuit C′
+x of size S(n + c log n), and constructs the SUCCINCT 3SAT circuit Cx
+with n + c log n inputs and at most cnc + c size (of Fact 1) in polynomial time, for a
+ﬁxed c that is independent of L. By Fact 1, x ∈L if and only if Cx is the compression
+of a satisﬁable formula FCx of O(2nnc) length. We must verify that C′
+x and Cx compute
+exactly the same function, using only the algorithm for ACC CIRCUIT SAT.
+Without loss of generality, the unrestricted circuit Cx above has gate types AND, OR,
+NOT, and INPUT, where every AND and OR has fan-in two. By deﬁnition, an INPUT
+gate has no inputs, and the output value of an INPUT gate is the appropriate input bit
+itself. The gates are indexed by the numbers 1, . . . , cnc + c, where the ﬁrst n + c log n
+indices correspond to the n+c log n INPUT gates, and the (cnc +c)th gate is the output
+gate.
+Since the map x 7→Cx is polynomial time computable, the following function f is
+polynomial-time computable:
+Given x, and a gate index j = 1, . . . , cnc + c, f(x, j) outputs the gate type
+(AND, OR, NOT, INPUT) of the jth gate in the circuit Cx. Furthermore, if
+the gate type is NOT, then f outputs the gate index j1 in Cx whose output is
+the input to j; if the gate type is an AND or OR, then f outputs the two gate
+indices j1 and j2 in Cx whose outputs are the two inputs of j.
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+39:12
+R. Williams
+Consider the decision problem Df:
+Given x, j, and i = 1, . . . , 2c log n + O(1), decide if the ith bit of f(x, j) is 1.
+The problem Df is solvable in polynomial time and hence has O(S(n + c log n +
+O(log log n)))-size, d(n + c log n + O(log log n))-depth ACC circuits, by assumption.
+Let D(x, j) be an ACC circuit implementing the functionality of f. Note we may as-
+sume the size of D is
+O(S(n + O(log n)) log n) ≤O(S(2n) log S(n)),
+(1)
+by simply taking 2c log n + O(1) copies of the S(n + O(log n))-size circuit solving the
+decision problem Df. (By convention, let us assume that when D is printing the gate
+information for an INPUT gate, it prints all-zeroes strings in place of j1 and j2, and
+when D is printing the information for a NOT gate, it prints all-zeroes in place of j2.)
+Similarly, the depth of D can be assumed to be at most d(2n).
+The nondeterministic algorithm A guesses D, and veriﬁes that D is correct on the
+given input x in time
+O(ncS(n + O(log n)) · poly(log S(n + O(log n)))) ≤nc · S(2n) · poly(log S(2n)) ≤O(22n/3),
+by evaluating D(x, ·) on all possible j = 1, . . . , cnc + c, and checking that all outputs of
+D correspond with the relevant gates in Cx. If D does not output all the gates of Cx
+correctly, then A rejects.
+Next, consider the problem:
+Given x, an input i of n + c log n bits, and a gate index j = 1, . . . , cnc + c,
+output the bit value on the output wire of the jth gate when Cx is evaluated
+on i.
+By assumption, this problem also has ACC circuits, since Cx can be constructed and
+evaluated on any input i in polynomial time. Let E(x, i, j) be an ACC circuit with this
+functionality, of size
+S(n + (n + c log n) + c log n + O(1)) ≤S(3n),
+(2)
+and depth at most d(3n) as well.
+Now, algorithm A guesses E and wishes to verify its correctness on x. To do this,
+A constructs a circuit VALUE(i, j) built out of D and E, where i has n + c log n bits
+and j = 1, . . . , cnc + c. Intuitively, VALUE(i, j) will output 0 if and only if E produces a
+sensible output for the jth gate of Cx evaluated on input i.
+First, VALUE(i, j) feeds j to the circuit D(x, ·), producing gate indices j1, j2, and a
+gate type g. VALUE then computes v1 = E(x, i, j1), v2 = E(x, i, j2) and v = E(x, i, j).
+(Depending on g, these j1 and j2 may be all-zeroes, but this does not matter to us.)
+If g = INPUT, then VALUE outputs 0 if and only if j ∈{1, . . . , n+c log n} (j is among
+the ﬁrst n + c log n inputs) and the jth bit of i equals v. This behavior can be easily
+implemented with an AC0 circuit of size
+O(n log n).
+(3)
+If g = NOT, then VALUE outputs 0 if and only if v1 = ¬v.
+If g = AND, then VALUE outputs 0 if and only if v1 ∧v2 = v.
+If g = OR, then VALUE outputs 0 if and only if v1 ∨v2 = v.
+Note that each of the above three conditions can be implemented with a constant
+number of gates, given the values g, v1, v2, and v. It follows that VALUE can be imple-
+mented as an ACC circuit.
+Since A has not rejected, D is correct, so we know that for all i, j, the gate types
+g and input connections j1 and j2 are correct. Therefore VALUE(i, j) = 1 if and only
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+Non-Uniform ACC Circuit Lower Bounds
+39:13
+if E asserts that the output of gate j in Cx(i) equals v, and E asserts the inputs to j
+have values v1, v2, but the gate type g dictates that the output of j should be ¬v. It
+follows that VALUE is an unsatisﬁable circuit if and only if E prints correct values for
+all gates in Cx(i), over all i.
+Therefore, by calling ACC circuit satisﬁability on VALUE(·, ·), A determines whether
+E is correct. The algorithm A rejects if E is deemed incorrect. The circuit VALUE(i, j)
+has n+2c log n+O(1) inputs, depth at most d(2n)+d(3n)+b for a ﬁxed constant b, and it
+follows from (1), (2), and (3) that the circuit for VALUE has O(S(3n)+S(2n) log S(2n)+
+n log S(n)) ≤O(S(3n) + S(2n)n) size. By assumption, the assumed ACC satisﬁability
+algorithm runs in O(2n/nk) time for some k > 2c.
+After checking that E is a correct guess, the question of whether C′
+x is equivalent
+to Cx can now be veriﬁed. (Alternatively, at this point we may simply print the circuit
+E(·, cnc + c) as a valid circuit that is equivalent to Cx(·).) First note that if E is correct,
+then for all i, Cx(i) = E(x, i, cnd + c). Therefore it sufﬁces to set up an ACC circuit
+EQUIV(i) which outputs 1 if and only if C′
+x(i) ̸= E(x, i, cnc+c), and determine if EQUIV
+is satisﬁable using the algorithm for ACC CIRCUIT SAT. Since EQUIV(i) has n+c log n
+inputs, depth d(3n)+O(1), and size O(S(n+O(log n))), the circuit satisﬁability call runs
+in O(2n/nk) time, by assumption. If EQUIV is satisﬁable, then A rejects.
+Finally, A prints its guessed circuit C′
+x if the algorithm did not reject on any of the
+above steps.
+2
+Remark 3.5. The proof of the lemma does not require speciﬁc properties of ACC.
+We only need that the underlying circuit class C contains AC0 and is closed under
+composition of two circuit families. The same goes for the proof of Theorem 3.2 below.
+Remark 3.6. In fact the lemma shows that, given any circuit C and a C-circuit D, we
+can efﬁciently check if C is equivalent to D using nondeterminism (under the assump-
+tions that P has C-circuits and there are efﬁcient C-SAT algorithms). If P has C-circuits,
+then Circuit Evaluation has C-circuits. Therefore any circuit family {Cn} will have an
+equivalent C-circuit family, as well as C-circuits encoding the “gate information” and
+“gate values” of {C}.
+With Lemma 3.4 in hand, the proof of Theorem 3.2 closely follows the author’s prior
+work (Theorem 3.1), except the circuit C′
+x is substituted in place of Cx. Let us give
+the details. We use the speciﬁc example of ACC in place of a generic circuit class C;
+modiﬁcation for other classes C is straightforward.
+REMINDER OF THEOREM 3.2. Let S(n) ≤2n/4. There is a c > 0 and b > 0 such that, if
+C-CIRCUIT SAT instances with at most n + c log n variables, depth at most 2 · d(3n) + b,
+and O(n · S(2n) + S(3n)) size can be solved in O(2n/nc) time, then ENP does not have
+non-uniform C circuits of depth d(n) and S(n) size.
+PROOF OF THEOREM 3.2. Suppose ACC CIRCUIT SAT instances with n + c log n vari-
+ables, depth 2 · d(3n) + O(1), and O(n · S(2n) + S(3n)) size can be solved in O(2n/nc)
+time for a sufﬁciently large c. Further suppose that ENP has non-uniform ACC circuits
+of depth d and S(n) size. The goal is to show that NTIME[2n] ⊆NTIME[o(2n)], contra-
+dicting the nondeterministic time hierarchy [Seiferas et al. 1978; ˇZ´ak 1983].
+Let L ∈NTIME[2n]. We describe a fast nondeterministic algorithm B deciding L. As
+discussed earlier (Theorem 2.1), we may assume L has a multitape Turing machine
+implementation in O(2n) time, and we only need to simulate L on a RAM in O(2n/nc)
+time for large enough c to obtain the contradiction.
+On input x of length n, B ﬁrst runs the nondeterministic algorithm A of Lemma 3.4.
+Using the ACC CIRCUIT SAT algorithm and the fact that P has ACC circuits, A runs in
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+39:14
+R. Williams
+O(2n/nc+S(3n)·poly(n)) ≤O(2n/nc) time, and for some computation path, A produces
+an ACC circuit C′
+x of S(n + c log n) size, d(n + c log n) depth, and n + c log n inputs such
+that x ∈L if and only if C′
+x is the compression of a satisﬁable formula FC′x.
+Then B nondeterministically guesses a S(3n)-size d(3n)-depth circuit W. By Fact 2,
+there exists such a W that encodes a satisfying assignment for FC′x if and only if x ∈L.
+Next, B constructs an ACC CIRCUIT SAT instance D to verify that W is correct (just
+as in the proof of Theorem 3.1). The circuit D has n + c log n inputs fed to O(n) copies
+of C′
+x, so that when i is input to D, the ith clause of the 3CNF formula FC′x is printed
+on O(n) bits of output. The O(n) bits encode three variable indices along with sign
+bits for each variable. For the three variables, an assignment is computed for them
+by evaluating the indices on three copies of W. Finally, D compares the sign bits with
+the bits output by the copies of W, and outputs 0 iff the variable assignment encoded
+by W satisﬁes the ith clause. Now observe that our guessed W encodes a satisfying
+assignment for FC′x, if and only if every clause of FC′x is satisﬁed by the assignment
+encoded by W, if and only if D(i) = 0 for all i, if and only if D is unsatisﬁable.
+Observe that D has O(n·S(2n)+S(3n)) size, depth at most 2d(3n)+O(1), and n+c log n
+inputs. By assumption, the satisﬁability of D can be determined in O(2n/nc) time,
+hence B decides if x ∈L in O(2n/nc) time.
+2
+4. A SATISFIABILITY ALGORITHM FOR ACC CIRCUITS
+Now we present an algorithm that determines the satisﬁability of ACC circuits slightly
+faster than the 2n runtime of exhaustive search. There are two components in the
+algorithm: a nice representation of ACC circuits, and a method for evaluating this rep-
+resentation quickly on all of its inputs. This method can be implemented using either
+fast rectangular matrix multiplication, a dynamic programming approach, or a divide-
+and-conquer recursive approach.
+It follows from the work of Yao [Yao 1990], Beigel and Tarui [Beigel and Tarui 1994],
+and Allender and Gore [Allender and Gore 1991] that, given any ACC circuit of size s,
+one can produce a sO(logc s) size SYM+ circuit in poly(sO(logc s)) time that has equivalent
+functionality. (For more background, see the Preliminaries.)
+LEMMA 4.1.
+There is an algorithm and function f : N × N →N such that given an
+ACC circuit with MODm gates of depth d and size s, the algorithm outputs an equivalent
+SYM+ circuit of sO(logf(d,m) s) size, with ANDs of O(logf(d,m) s) fan-in. The algorithm
+takes at most sO(logf(d,m) s) time.
+Furthermore, given the number of ANDs in the circuit that evaluate to 1, the symmet-
+ric function itself can be evaluated in sO(logf(d,m) s) time.
+The function f(d, m) is estimated to be no more than mO(d). Technically speaking, the
+above lemma is not explicitly proved in prior work, but Allender and Gore effectively
+show it: they prove that given a uniform ACC circuit (with an efﬁciently computable
+connection language), there is a similarly uniform SYM+ circuit of the appropriate
+size. Their proof corresponds to an efﬁcient, deterministic algorithm computing the
+transformation, and this algorithm works equally well if it is simply given any ACC
+circuit as input (not necessarily uniform). Since the proof of the lemma is essentially
+identical to previous proofs already in the literature, it has been placed in Appendix A.
+We stress that the transformation from ACC to SYM+ results in a circuit with no
+negated variables: just a symmetric function of ANDs of variables. (This property is
+used in the dynamic programming algorithm below.) It is a simple exercise to trans-
+form a SYM of ANDs of polylog fan-in (with negations on some of the wires coming
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+Non-Uniform ACC Circuit Lower Bounds
+39:15
+out of input variables) to a SYM of ANDs of variables, while preserving the relevant
+parameters of Lemma 4.1. A proof sketch of this transformation is in Appendix B.
+4.1. Rapid evaluation of an ACC circuit on all of its inputs
+The other component of the ACC satisﬁability algorithm is a method for rapidly evalu-
+ating a given SYM+ circuit on all of its possible satisfying assignments:
+LEMMA 4.2 (EVALUATION LEMMA). There is an algorithm that, given a SYM+ cir-
+cuit of size s ≤2.1n and n inputs with a symmetric function that can be evaluated in
+poly(s) time, runs in (2n + poly(s)) · poly(n) time and prints a 2n-bit vector V which is
+the truth table of the function represented by the given circuit. That is, V [i] = 1 iff the
+SYM+ circuit outputs 1 on the ith variable assignment.
+That is, any SYM+ circuit can be evaluated on all 2n assignments in polynomial
+amortized time per assignment. Brute force search would take 2n ·poly(s) time, but the
+algorithm manages to use roughly 2n + poly(s) time instead.
+Lemma 4.2 can be proved in three different ways; each are appealing for different
+reasons. The ﬁrst proof, using dynamic programming, has the beneﬁt that it can be
+completely described with few technical details. For pedagogical purposes it is pre-
+ferred. The second proof uses a powerful primitive (fast matrix multiplication) that
+is common in theoretical computer science, and it is plausible that the matrix mul-
+tiplication approach could be extended further. The third proof uses a simple divide-
+and-conquer approach: we can reduce the SYM+ circuit evaluation problem to that of
+evaluating a multilinear n-variable polynomial on all 2n assignments over {0, 1}n, and
+solve that problem in O(2n · poly(n)) time. (This algorithm is discussed in the author’s
+survey article [Williams 2011], and is omitted here.)
+Proof 1: Dynamic Programming. The evaluation lemma can be proved using simple
+dynamic programming, following a conversation with Andreas Bj¨orklund.
+PROOF OF LEMMA 4.2.
+Assume we are given a SYM+ circuit C′′ with a collection
+of s′′ AND gates over some variables {x1, . . . , xn}. Let Gj ⊆[n] be the set of variable
+indices that are input to the jth AND gate. Deﬁne a function f : 2[n] →N, where f(S)
+equals the number of j = 1, . . . , s′′ such that S = Gj. The function f can be prepared
+as a lookup table in O(2n + s′′ · poly(n)) ≤O(2n) time, by building a table of 2n entries
+which are initially zero, and for each of the s′′ AND gates corresponding to a subset S,
+we increment the S-th entry in the table.
+Now consider the function g(T) = P
+S⊆T f(S) deﬁned on all T ⊆[n]. (Typically, g is
+called the zeta transform of f.) Observe that g(T) equals the number of AND gates set
+to 1 on the variable assignment obtained by setting xi = 1 for i ∈T, and xi = 0 for
+i /∈T. Therefore the table of 2n integers of size O(log s′′) representing the function g is
+equivalent to the matrix N in the previous proof. Hence if we can compute g then we
+can evaluate C′′ on all of its possible inputs.
+It remains to show how to compute g efﬁciently. Given f, the function g can be
+computed in O(2n · poly(n)) time by a dynamic programming algorithm of Yates from
+1937 (cf. [Bj¨orklund et al. 2009], Section 2.2). For i = 0, . . . , n, deﬁne gi : 2[n] →N by
+g0(T) = f(T), and
+gi(T) =
+gi−1(T) + gi−1(T \ {i})
+if i ∈T,
+gi−1(T)
+otherwise.
+It follows that each gi+1 can be obtained from gi in O(2n · poly(n)) time. Induction
+shows that gi(T) = P
+S f(S) where the sum is over all S ⊆T subject to the condition
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+39:16
+R. Williams
+that {j ∈S | j > i} = {j ∈T | j > i}. When i = n, both of these sets are always empty,
+so it follows that gn = g.
+2
+The above description is suitable for random access machines, but the algorithm can
+also be implemented on a multitape Turing machine using standard ideas. (Strictly
+speaking, a multitape implementation is not necessary to prove ACC lower bounds,
+because Lemma 2.1 shows it sufﬁces to have a fast random-access implementation of
+any L ∈NTIMET M[2n]. However, the extension to multitape may be useful for future
+work.)
+Proof 2: Matrix multiplication. An alternative way to prove Lemma 4.2 is to use
+a fast rectangular matrix multiplication algorithm of Coppersmith, building on prior
+work of Sch¨onhage [Sch¨onhage 1981]. This algorithm works in the case where the
+“middle” dimension of the matrices is polynomially smaller than the other two. In this
+case, matrix multiplication can be done nearly optimally.5
+LEMMA 4.3 (COPPERSMITH [COPPERSMITH 1982]).
+For all sufﬁciently large N,
+multiplication of an N ×N .1 matrix with an N .1×N matrix can be done in O(N 2 log2 N)
+arithmetic operations.
+More precisely, Coppersmith shows that there is a constant K such that one can
+multiply an N × N matrix with an N × N .1 matrix in K · N 2 log2 N operations with
+a bilinear algorithm, i.e., a depth-3 arithmetic circuit with additions at the top level,
+multiplications in the middle, and additions at the bottom level, where each input wire
+to an addition gate may also multiply the input by a scalar. From the duality of bilinear
+matrix multiplication algorithms [Hopcroft and Musinski 1973], a bilinear algorithm
+for multiplying N × N and N × M directly implies a bilinear algorithm for multiplying
+N × M and M × N. Furthermore, Coppersmith’s algorithm is explicit, in that it can be
+executed on typical machine model (even a multitape TM) in O(N 2 · poly(log N)) time,
+on matrices over any ﬁeld of poly(log N) elements. A discussion of implementation
+details for his construction can be found in Appendix C. For us, the relevant corollary
+is the following.
+COROLLARY 4.4.
+For all sufﬁciently large N, two 0-1 matrices of dimensions N ×
+N .1 and N .1 × N can be multiplied over the integers in O(N 2 · poly(log N)) time.
+We arrive at our second proof of Lemma 4.2.
+PROOF OF LEMMA 4.2. Suppose we are given a SYM+ circuit C′′ of size s′′ ≤2.1n.
+Partition the inputs of C′′ into two sets A and B of size at most n′ = (n + 1)/2 each.
+Set up two matrices MA and MB of dimensions 2n′ × s′′ and s′′ × 2n′ (respectively). The
+rows of MA are indexed by all possible assignments to the variables in set A, while the
+columns of MA are indexed by the AND gates of C′′. Similarly, the columns of MB are
+indexed by variable assignments in B, while the rows of MB are indexed by the ANDs
+of C′′. Deﬁne:
+MA(i, j) =
+1
+if the ith variable assignment in A doesn’t force the jth AND to be 0,
+0
+otherwise,
+5Curiously, later work on rectangular matrix multiplication from the 90’s [Coppersmith 1997; Huang and
+Pan 1998] does not provide tight enough bounds: only N2+ε for all ε > 0, rather than N2 log2 N. Note that
+a bound of N2 · 2(log N)o(1) already sufﬁces for our application.
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+Non-Uniform ACC Circuit Lower Bounds
+39:17
+and
+MB(j, k) =
+1
+if the kth variable assignment in B doesn’t force the jth AND to be 0,
+0
+otherwise.
+Note the preparation of MA and MB takes at most 2n/2 ·s′′ ·poly(n) ≤O(2n/2+.2n) time.
+Multiply MA and MB, yielding a matrix N. Note that MA(i, j) · MB(j, k) = 1 iff the
+ith assignment in A and the kth assignment in B together set the jth AND of C′′ to 1.
+(Given an assignment to all variables in A and B, the AND is forced to either 1 or 0.)
+Hence N(i, k) equals the number of ANDs set to 1 by the ith assignment in A and the
+kth assignment in B. Therefore, C′′ is satisﬁable if and only if some entry of N makes
+the symmetric function of C′′ output 1.
+Since s′′ ≤2.1n′, the fast rectangular matrix multiplication of Corollary 4.4 applies,
+and the multiplication of MA and MB can be done in 22n′poly(n) time.
+To decide whether some entry of N makes the symmetric function output 1, initialize
+a bit vector T of length s′′+1, setting T[i] to be the value of the symmetric function of C′′
+on each i = 0, 1, . . . , s′′. The construction of T takes poly(s′′) time, since the symmetric
+function can be evaluated in poly(s′′) time. Then for every pair i, k ∈{1, . . . 2n′}, if
+v[N(i, k)] = 1 then stop and report satisﬁable. If every pair has been examined without
+stopping, report unsatisﬁable. The for-loop over all pairs can be implemented in time
+22n′ · poly(n) ≤2n · poly(n) by standard table lookup or by sorting the distinct elements
+of N(i, k).
+2
+4.2. The ﬁnal algorithm
+Given the evaluation lemma, the ACC satisﬁability algorithm is relatively straightfor-
+ward.
+THEOREM 4.5. For every d > 1 and m > 1 there is an ε ∈(0, 1) such that satisﬁabil-
+ity of depth-d ACC circuits with MODm gates, n inputs, and 2nε size can be determined
+in 2n−Ω(nδ) time for some δ > ε that depends only on d and m.
+PROOF. Let ℓ, ε be parameters to set later. Suppose we are given a depth-d ACC cir-
+cuit C of s = 2nε size and n inputs. Make a circuit C′ with s · 2ℓsize and n −ℓinputs
+which is obtained by producing 2ℓcopies of C, plugging in a different possible assign-
+ment to the ﬁrst ℓinputs of C in each copy, and taking the OR of these copies. Observe
+C′ is a depth-(d + 1) ACC circuit, and C is satisﬁable if and only if C′ is satisﬁable.
+Applying the translation from ACC to SYM+ (Lemma 4.1), a circuit C′′ can be pro-
+duced which is equivalent to C′, where C′′ consists of a symmetric gate connected to
+s′′ ≤se(ℓe loge s) ANDs of variables, for some constant e that depends on the depth d
+and modulus m. Producing C′′ from C′ takes only sO(ℓe loge s) steps. When s = 2nε,
+s′′ ≤2enε(ℓenεe). Set ℓ= n1/(2e), and observe that s′′ ≤2n2/3 for all sufﬁciently large n
+and sufﬁciently small ε.
+By the evaluation lemma (Lemma 4.2) and the fact that the symmetric function
+of C′′ can be evaluated in poly(s′′) time, C′′ can be evaluated on all of its possible
+assignments in O(2n−ℓ· poly(n)) ≤2n−Ω(n1/(2e)) time, hence the satisﬁability of C can
+be determined within this time.
+Two remarks. It is worth pointing out a couple more things about the algorithm.
+First, the algorithm can be generalized in multiple ways which may be useful in the
+future. Instead of taking an OR of all partial assignments to a small number of vari-
+ables in C, one could instead take any constant number of ANDs and ORs of partial
+assignments, convert this to a SYM+ circuit, then apply the evaluation lemma. This
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+39:18
+R. Williams
+observation shows that any quantiﬁed Boolean formula with a constant number of
+quantiﬁer blocks and a predicate described by an ACC circuit of subexponential size
+can also be solved faster than exhaustive search. Second, note that the algorithm does
+not give a faster way to solve satisﬁability for the class SYM+ itself, because in the
+algorithm we need that the OR of 2ℓcircuits from the class is still a circuit in the class.
+Hence we cannot give lower bounds for SYM+ at the present time.
+5. ACC LOWER BOUNDS
+Combining the results of the previous two sections, non-uniform lower bounds for ACC
+can be proved.
+REMINDER OF THEOREM 1.2. For every d and m, there is a δ > 0 and a language in
+ENP that fails to have non-uniform ACC circuits of depth d and size 2nδ with MODm
+gates.
+PROOF. Theorem 4.5 states that for every d and m there is an ε > 0 so that sat-
+isﬁability of depth-d ACC circuits with MODm gates, n inputs, and 2O(nε) size can
+be solved in 2n−Ω(nδ) time, for some δ > ε. Theorem 3.2 says there is a c > 0 such
+that, if ACC CIRCUIT SAT instances with n + c log n variables, depth 2d + O(1),
+and at most s = n · 2O(nε) size can be solved in O(2n/nc) time, then ENP does not
+have non-uniform ACC circuits of depth d and 2nε size. The lower bound follows, as
+2(n+c log n)−Ω((n+c log n)δ) ≪O(2n/nc) for every c.
+It follows that complete problems such as SMALLEST SUCCINCT 3SAT (given a cir-
+cuit C and integer i, output the ith bit of the smallest satisfying assignment to the
+formula FC encoded by C) require exponential ACC circuits. The ENP lower bound can
+be “padded down” in a standard way to prove superpolynomial lower bounds for a class
+that is very close to PNP.
+COROLLARY 5.1. For every d and m, QuasiPNP = TIME[nlogO(1) n]NP does not have
+non-uniform ACC circuits of depth d, MODm gates, and polynomial size.
+PROOF. If there were d and m such that TIME[2(log n)c]NP had such circuits for every
+c, then by a padding argument (replacing n with 2n1/c) it would follow that ENP has
+depth-d size-2O(n1/c) circuits for every c, contradicting Theorem 1.2.
+Note it is known that NTIME[nlogO(1) n]NP does not have polynomial size (unrestricted)
+circuits [Kannan 1982].
+Superpolynomial ACC lower bounds for NEXP are also provable. First we need a theo-
+rem established in prior work: if NEXP has (unrestricted) polynomial size circuits, then
+every satisﬁable formula output by the SUCCINCT 3SAT reduction in Fact 1 has some
+satisfying assignment that can be represented with a polynomial size unrestricted cir-
+cuit.
+More precisely, say that SUCCINCT 3SAT has succinct satisfying assignments if
+there is a ﬁxed constant c such that for every language L ∈NTIME[2n] and every x ∈L
+of length n, there is a circuit Wx of poly(n) size with k ≤n + c log n inputs such that
+the variable assignment zi = W(i) for all i = 1, . . . , 2k is a satisfying assignment for
+the formula FCx, where Cx is the circuit obtained by the SUCCINCT 3SAT reduction in
+Fact 1. Say that Wx is a succinct satisfying assignment for Cx.
+THEOREM 5.2 ([WILLIAMS 2013]).
+Suppose NEXP has polynomial size circuits.
+Then SUCCINCT 3SAT has succinct satisfying assignments.
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+Non-Uniform ACC Circuit Lower Bounds
+39:19
+Theorem 5.2 is not explicitly proved in the paper, however it follows immediately
+from another theorem. Say that NEXP has universal witness circuits of polynomial size
+if for every L ∈NEXP and every correct exponential time veriﬁer for L, there is a
+c > 0 such that for every x ∈L, there is a circuit of size at most |x|c +c which encodes a
+witness for x that is accepted by the veriﬁer. (For more formal deﬁnitions, see [Williams
+2013].) The following directly implies Theorem 5.2:
+THEOREM 5.3 ([IMPAGLIAZZO ET AL. 2002; WILLIAMS 2013]).
+If NEXP ⊆P/poly
+then every language in NEXP has universal witness circuits of polynomial size.
+The proof of Theorem 5.3 follows an argument by Impagliazzo, Kabanets, and
+Wigderson [Impagliazzo et al. 2002].
+The second ingredient in the lower bound for NEXP is a simple folklore lemma:
+LEMMA 5.4 (FOLKLORE). Let C be any circuit class. If P has non-uniform C circuits
+of S(n)O(1) size, then there is a c > 0 such that every T(n)-size circuit family (uniform
+or not) has an equivalent S(n + O(T(n) log T(n)))c-size circuit family in C.
+PROOF. If P has non-uniform S(n)O(1)-size C circuits, then for some c > 0, the
+CIRCUIT EVAL problem has S(n)c-size circuits. (Recall the CIRCUIT EVAL problem
+is: given an arbitrary Boolean circuit C and input x, evaluate C on x and output the
+answer.) Let {Dn(·, ·)} be a S(n)c-size circuit family for this problem. Now let {Cn} be
+an arbitrary T(n)-size circuit family. To obtain an equivalent C-circuit family {C′
+n} of
+S(n + O(T(n) log T(n)))c size, deﬁne C′
+|x|(x) = Dn1(C|x|, x) for an appropriate length
+n1 ≤n + O(T(n) log T(n)).
+Note if S(n) and T(n) are polynomials, then S(n + O(T(n) log T(n)))c is also polyno-
+mial. Also note Lemma 5.4 implies that, if P ⊆ACC, then there are ﬁxed constants d
+and m such that every polynomial size circuit family has equivalent polynomial size
+depth-d circuits with AND, OR, NOT, and MODm gates. (Here, d and m are the con-
+stants arising in the resulting ACC circuit family for CIRCUIT EVAL.)
+REMINDER OF THEOREM 1.1. NTIME[2n] does not have non-uniform ACC circuits of
+polynomial size.
+PROOF. First, we claim that if NTIME[2n] has polysize ACC circuits, then every lan-
+guage in NEXP has polysize ACC circuits. Let us sketch this implication, for complete-
+ness. If NTIME[2n] has polysize ACC circuits, then the NEXP-complete problem SUC-
+CINCT BOUNDED HALTING has polysize ACC circuits: given a nondeterministic ma-
+chine N, string x, and t written in binary, does N(x) have an accepting computation
+path of length at most t? The reduction from any L ∈NEXP to SUCCINCT BOUNDED
+HALTING can be expressed with an AC0 circuit of size poly(n, log t). (Take any nonde-
+terministic machine N with running time 2nk that accepts L. Given an input x, the AC0
+circuit outputs the code of N as the ﬁrst input of the SUCCINCT BOUNDED HALTING
+instance, x as the second input, and 2|x|k as the third input, written in binary. This only
+needs an AC0 circuit that outputs 1 followed by |x|k −1 zeroes.) Hence every L ∈NEXP
+can be recognized by an ACC circuit family of size nℓ, for some ℓdepending on L.
+By Lemma 5.4 and Theorem 5.2, it follows that SUCCINCT 3SAT has succinct satis-
+fying assignments that are polynomial size ACC circuits. We claim that a contradiction
+can be obtained by carefully examining the proof of Theorem 1.2 (the lower bound for
+ENP). There, the only place requiring the full assumption “ENP has non-uniform ACC
+circuits of size S(n)” is inside the proof of Theorem 3.2. In particular, the assump-
+tion is needed in Fact 2, where it is shown that for every satisﬁable instance of SUC-
+CINCT 3SAT, at least one of its satisfying assignments can be encoded in a size-S(3n)
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+39:20
+R. Williams
+ACC circuit. (The only other part of Theorem 3.2 where the assumption is applied is
+Lemma 3.4, but there it is only required that P has non-uniform ACC circuits.) But from
+the above, we already have that SUCCINCT 3SAT has succinct satisfying assignments
+which are ACC circuits.
+Hence the ACC CIRCUIT SAT instance D constructed in Theorem 3.2 with the wit-
+ness circuit W has size polynomial in its n + c log n inputs. Finally, the Circuit SAT
+algorithm of Theorem 4.5 can determine satisﬁability of any n + c log n input, nc size
+ACC circuit in O(2n−log2 n) time, for every constant c. Therefore unsatisﬁability of D
+can be determined in O(2n/nc) time for every constant c, and the desired contradiction
+follows from the nondeterministic time hierarchy.
+It follows that problems complete under AC0 reductions for NEXP such as SUCCINCT
+3SAT (given a circuit C, does it encode a satisﬁable 3-CNF formula FC?) require su-
+perpolynomial size ACC circuits.
+5.1. An Extension to “Half-Exponential” Type Lower Bounds
+The NEXP lower bounds can be extended a little by studying the proof of Theorem 5.3.
+However, the results are a bit ugly, so let us only sketch the arguments. A function
+f : N →N is said to be sub-half-exponential if for every k, f(f(nk)k)k ≤2no(1). The
+following was conjectured by Russell Impagliazzo (private communication), and can be
+proved by augmenting Theorem 5.3 with other known results.
+THEOREM 5.5.
+Let S(n) be any sub-half-exponential function such that S(n) ≥n
+for all n. If NTIME[2n] has S(n) size circuits, then all languages in NEXP have universal
+witness circuits of size O(S(S(nc)c)c), for some c depending on the language.
+The proof goes along the lines of Theorem 5.3, but with S(n) substituted in place of
+polynomials: we assume (a) NEXP does not have universal witness circuits of S(S(nc)c)c
+size for any c, (b) NTIME[2n] does have S(n) circuits, and derive a contradiction from
+the two. Assumption (a) implies that in time O(2n), one can nondeterministically guess
+and verify the truth table of a Boolean function on n bits that requires S(S(nc)c)c size
+circuits for every c, for inﬁnitely many inputs. This is enough to partially derandomize
+MATIME[S(S(nO(1))O(1))O(1)] for inﬁnitely many input lengths, putting the class inside
+of i.o.-NTIME[2n]/n [Impagliazzo et al. 2002] (recall that S(S(nO(1))O(1))O(1) ≤2no(1)).
+Assumption (b) implies that NEXP has S(nO(1))O(1) circuits, hence TIME[2S(nO(1))O(1)] ⊆
+MATIME[S(S(nO(1))O(1))O(1)] [Babai et al. 1993; Miltersen et al. 1999]. It also follows
+from assumption (b) that i.o.-NTIME[2n]/n has O(S(n)) size circuits on inﬁnitely many
+input lengths. Putting these containments together, it follows that TIME[2S(n)O(1)] has
+O(S(n)) size circuits on inﬁnitely many input lengths. This is false by direct diagonal-
+ization: for all large enough n there is a function f on n variables with circuit complex-
+ity greater than S(n)2, and the lexicographically ﬁrst f can be found in 2O(S(n)3) time
+and simulated on a given input.
+Combining Theorem 5.5 and Lemma 5.4, we immediately obtain the following im-
+plication between ACC circuits for NTIME[2n] and ACC circuits which encode witnesses
+for NEXP.
+COROLLARY 5.6.
+If NTIME[2n] has S(n)-size ACC circuits, then every language in
+NEXP has universal witness ACC circuits of S(S(S(nc)c)c)c for some c depending on the
+language.
+One extra application of S comes from Theorem 5.5 which produces universal wit-
+ness circuits; the other comes from Lemma 5.4 which converts those circuits to ACC.
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+Non-Uniform ACC Circuit Lower Bounds
+39:21
+Deﬁne f : N →N to be sub-third-exponential if for every k, f(f(f(nk)k)k)k ≤2no(1). Ex-
+amples of sub-third-exponential functions are f(n) = npoly(log n) and f(n) = 22poly(log log n).
+THEOREM 5.7.
+NTIME[2n] does not have sub-third-exponential size ACC circuits.
+The argument is the same as Theorem 1.1, except we apply Corollary 5.6: if
+NTIME[2n] has such circuits, then Corollary 5.6 says that NEXP has universal witness
+circuits which are ACC and have subexponential size. This implies that SUCCINCT
+3SAT instances have subexponential size ACC circuits that encode their satisfying as-
+signments, which is enough to establish the contradiction in Theorem 1.1.
+THEOREM 5.8. Let g : N →N have the property that there is a sub-third-exponential
+function f satisfying g(f(n)) ≥2n. Then NTIME[g(n)] does not have polynomial size ACC
+circuits.
+If such circuits did exist, then by padding, NTIME[2n] ⊆NTIME[g(f(n))] would have
+ACC circuits of size f(n)O(1) for some sub-third-exponential f, contradicting Theo-
+rem 5.7. (Raising f to a constant power is still a sub-third-exponential function.) It
+follows that the polynomial size lower bound can be extended down to grotesque classes
+such as NTIME[222
+√log log n
+] ⊊NTIME[2n], since f(n) = 2(log n)log log n = 22(log log n)2
+is sub-
+third-exponential, and g(f(n)) ≥2n for functions like g(n) = 222
+√log log n
+.
+Finally, it is also straightforward to extend the lower bounds to polysize ACC circuits
+of slightly non-constant depth, as the ACC SAT algorithm still beats exhaustive search
+on polynomial size circuits of depth o(log log n) with constant moduli. The details can
+be found by studying Theorem 4.5 or by reading the paper [Wang 2011].
+6. CONCLUSION
+This paper demonstrates that the research program of proving circuit lower bounds via
+satisﬁability algorithms is a viable one. Further work will surely improve the results.
+Three natural next steps are: replace ACC with TC0 circuits in the lower bounds, or
+replace NEXP with EXP, or extend the exponential lower bounds from ENP to NEXP.
+The results of Section 3 and Lemma 5.4 show that one only has to ﬁnd a very minor
+improvement in algorithms for TC0 satisﬁability in order to establish non-uniform TC0
+lower bounds for NEXP. The author sees no serious impediment to the existence of
+such an algorithm; he can only report that the algorithms tried so far do not work. The
+evaluation lemma for SYM+ circuits is key to the ACC SAT algorithm, and it would
+be very interesting to ﬁnd similar lemmas for TC0 or NC1. It is plausible that the
+characterization of NC1 as bounded-width branching programs [Barrington 1989] could
+be applied to prove an analogous evaluation lemma for Boolean formulas, which would
+lead to nontrivial depth lower bounds for NEXP. (Note that permutation branching
+programs of width 4 can be simulated in ACC [Barrington and Th´erien 1988], while
+width 5 captures NC1.) Along the lines of the author’s prior work [Williams 2013], Oded
+Goldreich and Or Meir (personal communication) have observed that the consequence
+of Theorem 3.2 holds even when we replace C-CIRCUIT SAT with the problem: given
+an n-input S(n)-size C-circuit, approximate its probability of acceptance on a uniform
+random input to within a 1/6 additive factor. It is widely believed that this problem
+can be solved in polynomial time for any reasonable C, so the hypothesis appears easier
+to satisfy. Recent work with Santhanam has further weakened the derandomization
+hypothesis necessary for circuit lower bounds [Santhanam and Williams 2013].
+It should be possible to extend the superpolynomial lower bound for ACC down to the
+class QuasiNP = NTIME[nlogO(1) n]. This paper comes fairly close to proving this result.
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+39:22
+R. Williams
+The only step missing is a proof of the implication: “if QuasiNP has polynomial-size ACC
+circuits, then there are polynomial-size ACC circuits that encode witnesses to QuasiNP
+languages.” A couple of lemmas rely only on P having non-uniform ACC circuits, so
+they could be potentially applied in proofs of even stronger lower bounds. At any rate,
+the prospects for future circuit lower bounds look very promising.
+ACKNOWLEDGMENTS
+I am grateful to Virginia Vassilevska Williams for reading initial drafts of this work and reassuring me
+that they made sense, along with helping me understand Coppersmith’s algorithm. I also thank Miki Ajtai,
+Andreas Bj¨orklund, Ron Fagin, and Russell Impagliazzo for helpful discussions, and Eric Allender, Sanjeev
+Arora, Luke Friedman, Or Meir, Rahul Santhanam, Fengming Wang, and the anonymous referees for helpful
+comments on earlier drafts. I especially thank Andreas for suggesting the zeta transform as an alternative
+proof for Lemma 4.2.
+REFERENCES
+Scott Aaronson and Avi Wigderson. 2009. Algebrization: A New Barrier in Complexity Theory. ACM TOCT
+1 (2009). Issue 1.
+Manindra Agrawal, Eric Allender, and Samir Datta. 2000. On TC0, AC0, and Arithmetic Circuits. J. Com-
+put. Syst. Sci. 60, 2 (2000), 395–421.
+Miklos Ajtai. 1983. Σ1
+1-formulae on ﬁnite structures. Annals of Pure and Applied Logic 24 (1983), 1–48.
+Eric Allender. 1989. A Note on the Power of Threshold Circuits. In FOCS. 580–584.
+Eric Allender. 1999. The Permanent Requires Large Uniform Threshold Circuits. Chicago J. Theor. Comput.
+Sci. 1999 (1999).
+Eric Allender and Vivek Gore. 1991. On Strong Separations from AC0. Fundamentals of Computation The-
+ory 8 (1991).
+Noga Alon and Ravi B. Boppana. 1987. The monotone circuit complexity of Boolean functions. Combinatorica
+7, 1 (1987), 1–22.
+Sanjeev Arora and Boaz Barak. 2009. Computational Complexity - A Modern Approach. Cambridge Univer-
+sity Press.
+L´aszl´o Babai, Lance Fortnow, Noam Nisan, and Avi Wigderson. 1993. BPP Has Subexponential Time Simu-
+lations Unless EXPTIME has Publishable Proofs. Computational Complexity 3, 4 (1993), 307–318.
+Theodore Baker, John Gill, and Robert Solovay. 1975. Relativizations of the P =? NP Question. SIAM J.
+Comput. 4, 4 (1975), 431–442.
+David A. Mix Barrington. 1989. Bounded-Width Polynomial-Size Branching Programs Recognize Exactly
+Those Languages in NC1. J. Comput. Syst. Sci. 38, 1 (1989), 150–164.
+David A. Mix Barrington and Howard Straubing. 1995. Superlinear Lower Bounds for Bounded-Width
+Branching Programs. J. Comput. Syst. Sci. 50, 3 (1995), 374–381.
+David A. Mix Barrington, Howard Straubing, and Denis Th´erien. 1990. Non-Uniform Automata Over
+Groups. Inf. Comput. 89, 2 (1990), 109–132.
+David A. Mix Barrington and Denis Th´erien. 1988. Finite monoids and the ﬁne structure of NC1. J. ACM
+35, 4 (1988), 941–952.
+Richard Beigel and Jun Tarui. 1994. On ACC. Computational Complexity (1994), 350–366.
+Dario Bini and Victor Pan. 1994. Polynomial and matrix computations. Birkhauser.
+Andreas Bj¨orklund, Thore Husfeldt, and Mikko Koivisto. 2009. Set Partitioning via Inclusion-Exclusion.
+SIAM J. Comput. 39, 2 (2009), 546–563.
+Harry Buhrman, Lance Fortnow, and Thomas Thierauf. 1998. Nonrelativizing Separations. In Proceedings
+of 13th Annual IEEE Conf. Computational Complexity. 8–12.
+Chris Calabro, Russell Impagliazzo, and Ramamohan Paturi. 2006. A Duality between Clause Width and
+Clause Density for SAT. In IEEE Conf. Computational Complexity. 252–260.
+Chris Calabro, Russell Impagliazzo, and Ramamohan Paturi. 2009. The Complexity of Satisﬁability of Small
+Depth Circuits. In Parameterized and Exact Complexity (IWPEC). 75–85.
+John F. Canny, Erich Kaltofen, and Lakshman Yagati. 1989. Solving systems of non-linear equations faster.
+In Proc. ACM-SIGSAM International Symposium on Symbolic and Algebraic Computation. 121–128.
+Herv´e Caussinus. 1996. A Note on a Theorem of Barrington, Straubing and Th´erien. Inf. Process. Lett. 58, 1
+(1996), 31–33.
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+Non-Uniform ACC Circuit Lower Bounds
+39:23
+Arkadev Chattopadhyay, Navin Goyal, Pavel Pudl´ak, and Denis Th´erien. 2006. Lower bounds for circuits
+with MODm gates. In FOCS. 709–718.
+Arkadev Chattopadhyay and Avi Wigderson. 2009. Linear Systems over Composite Moduli. In FOCS. 43–52.
+Stephen A. Cook. 1988. Short Propositional Formulas Represent Nondeterministic Computations. Inf. Pro-
+cess. Lett. 26, 5 (1988), 269–270.
+Don Coppersmith. 1982. Rapid Multiplication of Rectangular Matrices. SIAM J. Comput. 11, 3 (1982), 467–
+471.
+Don Coppersmith. 1997. Rectangular matrix multiplication revisited. Journal of Complexity 13 (1997), 42–
+49.
+Evgeny Dantsin and Edward A. Hirsch. 2009. Worst-Case Upper Bounds. In Handbook of Satisﬁability.
+403–424.
+Lance Fortnow, Richard J. Lipton, Dieter van Melkebeek, and Anastasios Viglas. 2005. Time-space lower
+bounds for satisﬁability. J. ACM 52, 6 (2005), 835–865.
+Merrick L. Furst, James B. Saxe, and Michael Sipser. 1984. Parity, Circuits, and the Polynomial-Time Hier-
+archy. Mathematical Systems Theory 17, 1 (1984), 13–27.
+Frederic Green, Johannes Kobler, Kenneth W. Regan, Thomas Schwentick, and Jacobo Tor´an. 1995. The
+power of the middle bit of a #P function. J. Comput. System Sci. 50, 3 (1995), 456–467.
+Vince Grolmusz. 1998. A Lower Bound for Depth-3 Circuits with MOD m Gates. Inf. Process. Lett. 67, 2
+(1998), 87–90.
+Vince Grolmusz and G´abor Tardos. 2000. Lower Bounds for (MODp-MODm) Circuits. SIAM J. Comput. 29,
+4 (2000), 1209–1222.
+Yuri Gurevich and Saharon Shelah. 1989. Nearly Linear Time. In Proceedings of the Symposium on Logical
+Foundations of Computer Science (LNCS), A. R. Meyer and M. A. Taitslin (Eds.), Vol. 363. Springer,
+Berlin, 108–118.
+Kristoffer Arnsfelt Hansen. 2006. Constant Width Planar Computation Characterizes ACC0. Theory Com-
+put. Syst. 39, 1 (2006), 79–92.
+Kristoffer Arnsfelt Hansen and Michal Kouck´y. 2010. A New Characterization of ACC0 and Probabilistic
+CC0. Computational Complexity 19, 2 (2010), 211–234.
+Johan H˚astad. 1986. Almost Optimal Lower Bounds for Small Depth Circuits. In Proceedings of the 18th
+Annual ACM Symposium on Theory of Computing. 6–20.
+John E. Hopcroft and J. Musinski. 1973. Duality Applied to the Complexity of Matrix Multiplication and
+Other Bilinear Forms. SIAM J. Comput. 2, 3 (1973), 159–173.
+Xiaohan Huang and Victor Y. Pan. 1998. Fast Rectangular Matrix Multiplication and Applications. J. Com-
+plexity 14, 2 (1998), 257–299.
+Russell Impagliazzo, Valentine Kabanets, and Avi Wigderson. 2002. In search of an easy witness: Exponen-
+tial time vs. probabilistic polynomial time. J. Comput. Syst. Sci. 65, 4 (2002), 672–694.
+Russell Impagliazzo, William Matthews, and Ramamohan Paturi. 2012. A satisﬁability algorithm for AC0.
+In SODA. 961–972.
+Kazuo Iwama and Hiroki Morizumi. 2002. An Explicit Lower Bound of 5n - o(n) for Boolean Circuits. In
+MFCS. 353–364.
+Valentine Kabanets and Russell Impagliazzo. 2004. Derandomizing Polynomial Identity Tests Means Prov-
+ing Circuit Lower Bounds. Computational Complexity 13, 1-2 (2004), 1–46.
+Ravi Kannan. 1982. Circuit-Size Lower Bounds and Non-Reducibility to Sparse Sets. Information and Con-
+trol 55, 1 (1982), 40–56.
+Ravi Kannan, H. Venkateswaran, V. Vinay, and Andrew Chi-Chih Yao. 1993. A Circuit-Based Proof of Toda’s
+Theorem. Inf. Comput. 104, 2 (1993), 271–276.
+Adam Klivans and Dieter van Melkebeek. 2002. Graph Nonisomorphism has Subexponential Size Proofs
+unless The Polynomial Hierarchy Collapses. SIAM J. Comput. 31, 5 (2002), 1501–1526.
+Matthias Krause and Pavel Pudl´ak. 1997. On the Computational Power of Depth-2 Circuits with Threshold
+and Modulo Gates. Theor. Comput. Sci. 174, 1-2 (1997), 137–156.
+Oded Lachish and Ran Raz. 2001. Explicit lower bound of 4.5n - o(n) for boolena circuits. In STOC. 399–408.
+Peter Bro Miltersen, N. V. Vinodchandran, and Osamu Watanabe. 1999. Super-polynomial versus half-
+exponential circuit size in the exponential hierarchy. In COCOON (LNCS 1627). Springer, 210–220.
+Noam Nisan and Avi Wigderson. 1994. Hardness vs Randomness. J. Comput. Syst. Sci. 49, 2 (1994), 149–
+167.
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+39:24
+R. Williams
+Victor Y. Pan. 1984. How to multiply matrices faster. Springer-Verlag Lecture Notes in Computer Science
+179.
+Christos H. Papadimitriou and Mihalis Yannakakis. 1986. A Note on Succinct Representations of Graphs.
+Information and Control 71, 3 (1986), 181–185.
+Wolfgang J. Paul and R¨udiger Reischuk. 1980. On Alternation II. A Graph Theoretic Approach to Determin-
+ism Versus Nondeterminism. Acta Informatica 14, 4 (Oct. 1980), 391–403.
+Alexander Razborov and Steven Rudich. 1997. Natural Proofs. J. Comput. Syst. Sci. 55, 1 (1997), 24–35.
+Alexander A. Razborov. 1985. Lower Bounds for the Monotone Complexity of some Boolean Functions. Soviet
+Mathematics Doklady 31 (1985), 354–357.
+Alexander A. Razborov. 1987. Lower bounds on the size of bounded-depth networks over the complete basis
+with logical addition. Mathematical Notes of the Academy of Sciences of the USSR 41, 4 (1987), 333–338.
+Alexander A. Razborov. 1989. On the Method of Approximations. In Proceedings of the Twenty First Annual
+ACM Symposium on Theory of Computing. Seattle, Washington, 167–176.
+J. M. Robson. 1991. An O(T log T) Reduction from RAM Computations to Satisﬁability. Theor. Comput. Sci.
+82, 1 (1991), 141–149.
+Rahul Santhanam. 2010. Fighting Perebor: New and Improved Algorithms for Formula and QBF Satisﬁa-
+bility. In FOCS. 183–192.
+Rahul Santhanam and Ryan Williams. 2013. On Medium-Uniformity and Circuit Lower Bounds. In IEEE
+Conf. Computational Complexity. 15–23.
+Claus-Peter Schnorr. 1978. Satisﬁability Is Quasilinear Complete in NQL. J. ACM 25, 1 (1978), 136–145.
+Arnold Sch¨onhage. 1981. Partial and total matrix multiplication. SIAM J. Comput. 10, 3 (1981), 434–455.
+Rainer Schuler. 2005. An algorithm for the satisﬁability problem of formulas in conjunctive normal form. J.
+Algorithms 54, 1 (2005), 40–44.
+Joel Seiferas, Michael Fischer, and Albert Meyer. 1978. Separating Nondeterministic Time Complexity
+Classes. J. ACM 25, 1 (Jan. 1978), 146–167.
+Kazuhisa Seto and Suguru Tamaki. 2013. A satisﬁability algorithm and average-case hardness for formulas
+over the full binary basis. Computational Complexity 22, 2 (2013), 245–274.
+Roman Smolensky. 1987. Algebraic Methods in the Theory of Lower Bounds for Boolean Circuit Complexity.
+In STOC. 77–82.
+Denis Th´erien. 1994. Circuits Constructed with MODq Gates Cannot Compute AND in Sublinear Size.
+Computational Complexity 4 (1994), 383–388.
+Seinosuke Toda. 1991. PP is as hard as the polynomial-time hierarchy. 20, 5 (1991), 865–877.
+Iannis Tourlakis. 2001. Time-Space Tradeoffs for SAT on Nonuniform Machines. J. Comput. Syst. Sci. 63, 2
+(2001), 268–287.
+G. S. Tseitin. 1968. On the complexity of derivation in propositional calculus. In Studies in Constructive
+Mathematics and Mathematical Logics. 115–125.
+Leslie Valiant and Vijay Vazirani. 1986. NP Is as Easy as Detecting Unique Solutions. Theor. Comp. Sci. 47,
+3 (1986), 85–93.
+Fengming Wang. 2011. NEXP Does Not Have Non-uniform Quasipolynomial-Size ACC Circuits of o(loglogn)
+Depth. In TAMC. 164–170.
+Ryan Williams. 2011. Guest column: a casual tour around a circuit complexity bound. SIGACT News 42, 3
+(2011), 54–76.
+Ryan Williams. 2013. Improving exhaustive search implies superpolynomial lower bounds. 42, 3 (2013),
+1218–1244.
+Pei Yuan Yan and Ian Parberry. 1994. Exponential Size Lower Bounds for Some Depth Three Circuits. Inf.
+Comput. 112, 1 (1994), 117–130.
+Andrew Chi-Chih Yao. 1985. Separating the Polynomial-Time Hierarchy by Oracles (Preliminary Version).
+In FOCS. 1–10.
+Andrew Chi-Chih Yao. 1990. On ACC and threshold circuits. In FOCS. 619–627.
+Stanislav ˇZ´ak. 1983. A Turing machine time hierarchy. Theoretical Computer Science 26, 3 (1983), 327–333.
+Received May 2011; revised July 2012; accepted May 2013
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+Non-Uniform ACC Circuit Lower Bounds
+39:25
+A. APPENDIX: PROOF OF LEMMA 4.1
+REMINDER OF LEMMA 4.1. Let m and d be ﬁxed constants. There is an algorithm and
+function f : N × N →N such that given an ACC circuit with MODm gates of depth d
+and size s, the algorithm outputs an equivalent SYM+ circuit of sO(logf(d,m) s) size. The
+algorithm takes at most sO(logf(d,m) s) time.
+Furthermore, given the number of ANDs in the circuit that evaluate to 1, the symmet-
+ric function itself can be evaluated in sO(logf(d,m) s) time.
+There is absolutely nothing new in the proof below. The algorithm is described as
+a series of sO(logf(d,m) s) time transformations, closely following Allender and Gore [Al-
+lender and Gore 1991] in the appropriate places. We just need to point out that the
+relevant transformations are still efﬁciently computable when the algorithm is given
+an arbitrary input circuit.
+PROOF. Let C be the given circuit. Note that by increasing the size of C from s to
+sO(d), we may always assume at any point in the algorithm that C is a tree (i.e., all
+gates have fan-out 1).
+Transformation 1.. Let s be the size of C. We transform C into a probabilistic circuit
+C′ that has poly(log s) probabilistic inputs, such that C′ has constant depth, sO(1) size,
+C′ has no OR or MODm gates for any composite m, and C′ has AND gates of fan-in
+at most poly(log s). (The circuit C′ is said to accept an input x if it outputs 1 on the
+majority of settings to the probabilistic inputs.)
+First, note that one can replace NOT gates by MODm gates (for any m), and one
+can replace the AND and OR gates by ﬁxed-depth probabilistic circuits with having
+only MODm gates and AND gates of poly(log s) fan-in. In fact, all of the AND and OR
+gates can share the same set of poly(log s) probabilistic inputs. This is a standard trick
+that goes back to Valiant and Vazirani [Valiant and Vazirani 1986] (also found in an
+alternative proof of Toda’s theorem [Kannan et al. 1993]) that can be performed in
+sO(1) time.
+The MODm gates for composite m are eliminated as follows. Let pe1
+1 · · · pek
+k
+be the
+factorization of m. Since m divides a number x iff pei
+i divides x for all i, every MODm
+gate can be replaced by an AND of MODp
+ei
+i
+gates. (Note the factorization of m can be
+computed in at most O(√mpoly(log m)) time. Assuming for example that m ≤s and m
+has at most poly(log s) distinct primes, this does not factor into the ﬁnal running time,
+and does not create ANDs of large fan-in.) Observe that pe divides a number x iff for
+all i = 0, . . . , e −1, p divides
+  x
+pi
+
+. Using this fact, a MODpe gate can be replaced with
+a constant-fan-in AND of MODp gates of constant-fan-in ANDs, as follows. A MODpe
+gate with t inputs is replaced with an AND of fan-in e, where the inputs are MODp
+gates. For all i = 0, . . . , e −1, the ith MODp gate has fan-in
+  t
+pi
+
+, one for every subset
+of the t inputs that has cardinality pi. For all j = 1, . . . ,
+  t
+pi
+
+, the ith MODp gate has its
+jth input connected to an AND of the pi-subset of t inputs corresponding to integer j.
+All of this can be computed within tO(pe) time, and hence sO(1) time.
+Transformation 2.. We have a probabilistic circuit C′ with poly(log s) probabilistic
+inputs, constant depth, sO(1) size, no OR or MODm gates for any composite m, and
+AND gates of fan-in at most poly(log s). Now we produce a C′′ with no probabilistic
+inputs and all of the above properties except that the output gate is now a MAJORITY
+gate (which outputs the majority value of its inputs). This is easy to do, by enumerating
+through all possible values of the poly(log s) inputs, making a new copy of C′ for every
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+39:26
+R. Williams
+valuation, and taking the MAJORITY of all these copies. Certainly the new circuit C′′
+has size sO(poly(log s)) and the transformation can be performed in this much time.
+Transformation 3.. Now we have a circuit C′′ has size sO(poly(log s)) size, a MAJORITY
+gate at the output, no OR or MODm gates for any composite m, and AND gates of fan-
+in at most poly(log s). We produce another constant-depth C′′′ where all these polylog
+fan-in AND gates are at the bottom: no MODp gates are below them in C′′′.
+Take any AND gate g with f = poly(log s) fan-in. Without loss of generality, g
+has MODp gates h1, . . . , hf as input for some ﬁxed prime p, by inserting “dummy”
+MODp gates in the appropriate places, and all MODp gates have the same fan-in
+f ′ ≤sO(poly(log s)), by inserting “dummy” zeroes in the inputs. We want to show that
+this AND of MODp gates can be rewritten as a MODp of ANDs.
+Let xij represent the jth input to the MODp gate hi. Allender and Gore [Allender
+and Gore 1991] show that this AND of MODp can be rewritten as:
+f^
+i=1
+u
+vX
+j
+xij ≡0 mod p
+}
+~ =
+f
+X
+k=1
+(p−1)k−1
+X
+{i1,...,ik}⊆[f]
+X
+⟨j1,1,...,j1,p−1⟩∈[f ′]p−1
+...
+⟨jk,1,...,jk,p−1⟩∈[f ′]p−1
+k
+Y
+t=1
+p−1
+Y
+ℓ=1
+xit jit,ℓmod p,
+(4)
+where JPK = 1 if the predicate P is true, and 0 otherwise.
+The right-hand side can be represented with a MODp gate with fan-in at most
+O
+ f
+X
+k=1
+f
+k
+
+(f ′)k(p−1)
+!
+≤sO(poly(log s)),
+which is connected to ANDs of fan-in at most f · (p −1). The transformation takes
+sO(poly(log s)) time.
+Transformation 4.. We have a C′′′ of sO(poly(log s)) size with AND gates of polylog fan-
+in connected to the inputs, a MAJORITY at the output, and MODpi gates in between,
+where pi is a prime dividing m = O(1). We now show how to express C′′′ as a symmetric
+function of sO(poly(log s)) AND gates, completing the proof.
+To do this, we prove that if you have a circuit D which has a symmetric function
+at the output, ANDs at the bottom, and depth-d subcircuits of MODpi’s in between,
+then this can be turned into an equivalent D′ with quasi-polynomial size, a symmetric
+function at the top, ANDs at the bottom, and depth-(d−1) subcircuits of MODpi’s. That
+is, the topmost layer of MODpi’s can be “consumed” by choosing a different symmetric
+function.
+We may assume without loss of generality that all f gates with input to the sym-
+metric function F : [f] →{0, 1} are MODp gates, for a ﬁxed prime p, and all of the
+MODp gates have the same fan-in f ′ (by adding dummy wires and gates where neces-
+sary). Let xij be the jth input to the ith MODp gate. Note that the function we want to
+simulate is H(x1,1, . . . , xf,f ′) = F(Pf
+i=1 MODp(xi,1, . . . , xi,f ′)). We will replace H with
+a symmetric function F ′ of ANDs of polylogarithmic fan-in. Then, applying Transfor-
+mation 3 to these ANDs, the resulting circuit can be converted into one which has the
+ANDs at the bottom and only a quasi-polynomial increase in size.
+Deﬁne
+G(x1,1, . . . , xf,f ′) := F
+ f
+X
+i=1
+MODp(xi,1, . . . , xi,f ′) mod pk
+!
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+Non-Uniform ACC Circuit Lower Bounds
+39:27
+where k is the smallest integer exceeding logp f. Then pk > f, so it is clear that
+G(x1,1, . . . , xf,f ′) = H(x1,1, . . . , xf,f ′) when all xi,j are in {0, 1}. We shall show how to
+implement G as a symmetric function F ′ of ANDs.
+We use the modulus amplifying polynomials of Beigel and Tarui [Beigel and Tarui
+1994]. Deﬁne
+Pk(x) = (−1)k(x −1)k
+ k−1
+X
+i=0
+k + i −1
+i
+
+xi
+!
++ 1.
+This polynomial has the property that for all x ≥0 and p ≥1,
+x = 0 mod p =⇒Pk(x) = 0 mod pk,
+x = 1 mod p =⇒Pk(x) = 1 mod pk.
+Deﬁning Qk(x) = 1 −Pk(xp−1) and appealing to Fermat’s little theorem, it follows
+that Qk(x) = 1 mod pk if p divides x, and is equal to 0 mod pk otherwise. Therefore
+Qk(Pf ′
+i=1 yi) = MODp(y1, . . . , yf ′) mod pk, and
+G(x1,1, . . . , xf,f ′) = F
+
+
+f
+X
+i=1
+Qk
+
+
+f ′
+X
+j=1
+xi,j
+
+mod pk
+
+.
+Note that each Qk(Pf ′
+j=1 xi,j) is a symmetric multivariate polynomial of degree at most
+k(p−1). Hence Qk can be expanded into a sum of at most (f ·f ′)O(k(p−1)) ≤sO(poly(log s))
+terms. Each term is a product of poly(log s) variables and a coefﬁcient c that is repre-
+sented in O(k log k) ≤poly(log s) bits and easily computed. The product of variables can
+be directly represented by an AND. Multiplication by the coefﬁcient c can be simulated
+by taking the sum of c copies of the relevant monomials (ANDs).
+Therefore the sum of all f of these sums of monomials can be efﬁciently expressed
+as a single sum modulo pk of sO(poly(log s)) AND gates, where each AND has fan-in
+k(p−1) ≤poly(log s). Finally, we take the symmetric function F ′ to be: compute the sum
+v of the outputs of all the AND gates created, then output F(v mod pk). Observe that a
+symmetric function composed with a sum modulo pk is still a symmetric function.
+In summary, for any constant depth circuit, all the above transformations take
+at most quasi-polynomial time, increase the circuit size by only a quasi-polynomial
+amount, and the transformations are applied at most a quasi-polynomial number of
+times. (Transformation 4 is applied a constant number of times.) Moreover, the sym-
+metric function generated at the end of the process takes no more time to evaluate
+than the time it takes to build the SYM+ circuit. In more detail, the ﬁnal symmetric
+function has the form
+F(v) = MAJORITY((· · · ((v mod pk1
+1 ) mod pk2
+2 ) · · · mod pkd′
+d′ ),
+for some d′ that depends on the constant depth d and constant modulus m. Here, MA-
+JORITY outputs the high-order bit of its input, and each pki
+i
+is at most a constant
+factor larger than the size of the ﬁnal circuit.
+B. APPENDIX: TRANSFORMING TO SYM+ WITHOUT NEGATIONS
+Suppose we are given a circuit C which is a SYM of K = npoly(log s) ANDs of poly(log s)
+fan-in, where the AND gates may have some negated variables as input. Here, we
+sketch how to transform C into a circuit C′ which is a SYM of K′ = npoly(log s) ANDs of
+poly(log s) fan-in, where the ANDs are of variables only (no negations).
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+39:28
+R. Williams
+The SYM of ANDs circuit C can be represented as a function g : {0, ..., K} →{0, 1}
+composed with a poly(log n)-degree polynomial h : {0, 1}n →{0, 1}. The function g
+simulates the SYM gate, and the function h sums up the total number of ANDs which
+are true on a given assignment. That is, h is a sum of terms over all possible AND
+gates, where each term directly corresponds to the product of the literals in some AND
+gate: each negated literal ¬xi is multiplied as (1 −xi), and each positive literal xi is
+multiplied as just xi. Hence, a term evaluates to 1 on a 0 −1 assignment if and only if
+the corresponding AND outputs true.
+We can expand the polynomial h into a sum of products of variables in O(npoly(log n))
+time, since h is a sum of npoly(log n) products, each product being a poly(log n)-degree
+polynomial. Call this new arithmetic expression h′, which has the form
+h′(x1, . . . , xn) =
+X
+S⊆[n]
+cS ·
+Y
+i∈S
+xi,
+where each cS is an integer in the interval [−K′, K′], and all but O(K′) of the cS are
+zero (and K′ = npoly(log n)). Say that a subset S ⊆[n] is negative if cS < 0, and positive
+if cS > 0.
+It is easy to represent h′ as a SYM of ANDs of entirely non-negated variables (with
+a different SYM function from before). The trick is to mildly expand the domain of the
+function g so that it can keep track of the contributions from negative S and positive
+S, separately. Let ℓbe the smallest integer satisfying 2ℓ> K′. Initially our new circuit
+C′ has no AND gates. For every S which is negative, add −cS AND gates over the
+variables in S to the circuit C′. For every S which is positive, add 2ℓ· cS AND gates
+over the variables in S to the circuit C′. Now consider the sum of all AND gates in C′
+on some assignment (y1, . . . , yn) ∈{0, 1}n. This sum has the form
+AB
+in binary, where B is an ℓ-bit string and A −B (construing A and B as non-negative
+integers) equals h(y1, . . . , yn). Hence we can redeﬁne the function g to be
+g′(AB) = A −B.
+This g, combined with the above description of AND gates, represents a SYM of ANDs
+of non-negated variables that is equivalent to the original circuit C.
+C. APPENDIX: COPPERSMITH’S ALGORITHM
+Recall we are studying the following algorithm of Coppersmith:
+LEMMA C.1 (COPPERSMITH [COPPERSMITH 1982]). For all sufﬁciently large N,
+multiplication of an N ×N .1 matrix with an N .1×N matrix can be done in O(N 2 log2 N)
+arithmetic operations.
+Prima facie, it could be that Coppersmith’s algorithm is non-uniform, making it dif-
+ﬁcult to apply. For the sake of completeness, here we verify using standard ideas that
+Coppersmith’s algorithm can indeed be implemented to run (even on a multitape TM)
+in O(N 2·poly(log N)) time, on matrices over any ﬁeld of poly(N) elements. (As we work
+with 0-1 matrices A′′ and B′′ in our application, it sufﬁces for us to work over a prime
+ﬁeld of poly(N) elements.) We focus on the implementation details of his algorithm,
+without going very far into its correctness. The algorithm relies on some of the older
+tools from the matrix multiplication literature. More background on these tools can be
+found in the highly readable reference [Pan 1984].
+Coppersmith’s algorithm follows a paradigm introduced by Sch¨onhage [Sch¨onhage
+1981]. For example, suppose we wish to multiply two matrices A′′ and B′′. First we
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+Non-Uniform ACC Circuit Lower Bounds
+39:29
+preprocess A′′ and B′′ in some efﬁcient way; in our ﬁrst example, we devise highly
+structured matrices A, A′, B, B′ so that A′′·B′′ = A′·A·B·B′. The matrices A and B are
+sparse “partial” matrices with particular structure in their nonzeroes, and A′ and B′
+are explicit matrices of scalar constants which are independent of A′′ and B′′. Next, we
+recursively apply a constant-sized matrix multiplication algorithm to multiply A and
+B essentially optimally. (Recall that Strassen’s algorithm has an analogous form; such
+algorithms are known to be efﬁciently implementable on a multitape TM.) Finally,
+we postprocess the resulting product C to obtain our desired product A′′ · B′′; in the
+ﬁrst example, this means computing A′ · C · B′. Using the explicit structure of A′ and
+B′, these matrix products are also done nearly optimally. Our aim is to verify that
+each step of this process can be efﬁciently computed, for Coppersmith’s full matrix
+multiplication algorithm.
+Coppersmith begins with A′′ of dimensions 24M/5×
+ M
+4M/5
+
+24M/5 and B′′ of dimensions
+ M
+4M/5
+
+24M/5 × 2M/5 where M ≈log N, and obtains an O(5Mpoly(M)) algorithm for
+their multiplication. Later, he symmetrizes the construction to get the algorithm for
+the desired dimensions. In this ﬁrst construction, the structured matrices A′ and B′
+have dimensions 24M/5 × 2M and 2M × 2M/5, respectively. Coppersmith needs that all
+24M/5 × 24M/5 submatrices of A′ and 2M/5 × 2M/5 submatrices of B′ are non-singular.
+Following Sch¨onhage, this can be accomplished by picking A′ and B′ to be rectangular
+Vandermonde matrices. More precisely, the i, j entry of A′ is (αj)i−1, where α1, α2, . . .
+are distinct elements of the ﬁeld; B′ is deﬁned analogously. Such matrices have the
+additional advantages that they can be succinctly described (with 2M ﬁeld elements),
+and linear algebra with them can be done very efﬁciently, as described below.
+The matrices A and B have dimensions 2M ×3M and 3M ×2M, respectively. Although
+these dimensions are large, the matrices are stored in a sparse representation, and
+they have structure in their nonzeroes. In more detail, A has only O(5M) nonzeroes,
+B has only O(4M) nonzeroes, and there is an optimal algorithm for multiplying 2 ×
+3 (with 5 nonzeroes) and 3 × 2 matrices (with 4 nonzeroes) that can be recursively
+applied to multiply A and B optimally, in O(5M · poly(M)) operations. (In particular,
+the 2 × 3 and 3 × 2 matrix multiplication is an “approximate” algorithm, which can be
+recursively applied to larger matrices using O(M)-degree univariate polynomials over
+the ﬁeld; operations on such polynomials increase the overall time by only a poly(M)
+factor.) These A and B are constructed by multiplying each of the
+ M
+4M/5
+
+24M/5 columns
+in A′′ and
+ M
+4M/5
+
+24M/5 rows in B′′ by inverses of Vandermonde matrices and their
+transposes (the inverses of appropriate 24M/5×24M/5 submatrices of A′ and 2M/5×2M/5
+submatrices of B′, respectively). Due to the structure of inverse Vandermonde matrices
+and their transposes, n × n matrices of this form can be multiplied with n-vectors in
+O(n · poly(log n)) operations with explicit algorithms (for references, cf. [Canny et al.
+1989; Bini and Pan 1994]).6 Hence the inverse of a submatrix of A′ can be multiplied
+with an arbitrary vector in O(24M/5 · poly(M)) operations. It follows that constructing
+A and B takes only O(
+ M
+4M/5
+
+24M/5 · 24M/5 · poly(M)) time. Since 5M ≈
+ M
+4M/5
+
+44M/5
+(within poly(M) factors), this quantity is O(5M · poly(M)).
+By construction (using an efﬁcient correspondence between columns of A′′ and
+columns of A′ with 24M/5 nonzeroes), we have A′′·B′′ = A′·(A·B)·B′. After A and B are
+6In general, operations on Vandermonde matrices, their transposes, their inverses, and the transposes of in-
+verses can be reduced to fast multipoint computations on univariate polynomials. For example, multiplying
+an n×n Vandermonde matrix with a vector is equivalent to evaluating a polynomial (with coefﬁcients given
+by the vector) on the n elements that comprise the Vandermonde matrix, which takes O(n log n) operations.
+This translates to O(n · poly(log n)) time on multitape TMs over small ﬁelds.
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+39:30
+R. Williams
+constructed, the constant-sized algorithm for 2 × 3 and 3 × 2 mentioned above can be
+applied in the usual recursive way to multiply the sparse A and B in O(5M · poly(M))
+time; call this matrix Z. Then using the Vandermonde structure of A′ and B′, the prod-
+uct Z′ = A′ · Z can be done in o(5M · poly(M)) operations, and the ﬁnal product Z′ · B′
+can be done in o(5M ·poly(M)) operations. All in all, we have an algorithm for multiply-
+ing matrices of dimensions 24M/5 ×
+ M
+4M/5
+
+24M/5 and
+ M
+4M/5
+
+24M/5 × 2M/5 that is explicit
+and uses O(5M · poly(M)) operations. Call this ALGORITHM 1. Observe ALGORITHM 1
+also works when the entries of A′′ and B′′ are themselves matrices over the ﬁeld. (The
+running time will surely increase in proportion to the sizes of the underlying matrices,
+but the bound on the number of operations on the entries remains the same.)
+We can extract more algorithms from the above construction by exploiting the sym-
+metries of bilinear algorithms. The underlying 2 × 3 and 3 × 2 matrix multiplication
+algorithm with 5 products is a bilinear algorithm, meaning that it can be expressed in
+the so-called trilinear form
+X
+ijk
+AikBkjCji + p(x) =
+5
+X
+ℓ=1
+(
+X
+ij
+αijAij) · (
+X
+ij
+βijBij) · (
+X
+ij
+γijCij)
+(5)
+where αij, βij, and γij are constant-degree polynomials in x over the ﬁeld, and p(x)
+is a polynomial with constant coefﬁcient 0. Such an algorithm can be converted into
+one with no polynomials and minimal extra overhead (as described in Coppersmith’s
+paper). Typically one thinks of Aik and Bkj as entries in the input matrices, and Cji as
+indeterminates, so the LHS of (5) corresponds to a polynomial whose Cji coefﬁcient is
+the ij entry of the matrix product. Note the transpose of the third matrix C corresponds
+to the ﬁnal matrix product. The RHS corresponds to the special matrix multiplication
+algorithm with only 5 products. For example, Strassen’s famous 7-multiplication algo-
+rithm can be expressed in the form of (5) as follows:
+X
+i,j,k=0,1
+AikBkjCji = (A00 + A11)(B00 + B11)(C00 + C11)
+(6)
++(A10 + A11)B00(C01 −C11) + A00(B01 −B11)(C10 + C11)
++(A10 −A00)(B00 + B01)C11 + (A00 + A01)B11(C10 −C00)
++A11(B10 −B00)(C00 + C01) + (A01 −A11)(B10 + B11)C00.
+The LHS of (5) and (6) represents the trace of the product of three matrices A, B, and C
+(where the ij entry of matrix X is Xij). It is well known that every bilinear algorithm
+naturally expresses multiple algorithms through this trace representation. Since
+tr(ABC) = tr(BCA) = tr(CAB) = tr((ABC)T ) = tr((BCA)T ) = tr((CAB)T ),
+if we think of A as a symbolic matrix and consider (5), we obtain a new algorithm
+for computing a matrix A when given B and C. Similarly, we get an algorithm for
+computing a B when given A and C, and analogous statements hold for computing AT ,
+BT , and CT . So the aforementioned algorithm for multiplying a sparse 2×3 and sparse
+3 × 2 yields several other algorithms. In particular (the case of computing BT from AT
+and C) we obtain an algorithm for computing 4 entries in a 3 × 2 matrix which is the
+product of a 3 × 2 matrix (with 5 nonzeroes) and a 2 × 2 matrix.
+Using the identity tr(ABC) = tr((BCA)T ) = tr(AT CT BT ), we can treat BT as sym-
+bolic and let AT and CT correspond to input matrices in (5). Applying the resulting
+algorithm recursively, a very similar preprocessing and postprocessing can be used to
+multiply
+ M
+4M/5
+
+24M/5 × 24M/5 and 24M/5 × 2M/5 matrices using an algorithm that runs
+in O(5M · poly(M)) time over a small ﬁeld.
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.
+
+Non-Uniform ACC Circuit Lower Bounds
+39:31
+In more detail, recall in ALGORITHM 1 the matrices A′′ and B′′ were decomposed to
+satisfy A′′ · B′′ = A′ · A · B · B′. The trace identity tells us
+tr(A′′B′′ · C) = tr(A′A · BB′ · C) = tr(B · B′CA′ · A) = tr(AT · (A′)T CT (B′)T · BT ).
+This suggests the following algorithm for multiplying
+ M
+4M/5
+
+24M/5 × 24M/5 and 24M/5 ×
+2M/5 matrices. Given A′′ and C′′ of the appropriate dimensions, preprocess C′′ into
+the 2M × 2M matrix D = B′ · (C′′)T · A′, and use A′ as before to preprocess A′′ into
+a sparse 3M × 2M matrix AT having
+ M
+4M/5
+
+44M/5 ≈5M nonzeroes. Both steps can be
+done efﬁciently using the Vandermonde structure of A′ and B′. Next, multiply AT and
+DT , following the bilinear algorithm for computing a 3 × 2 (with 4 nonzeroes) from a
+3 × 2 (with 5 nonzeroes) and a 2 × 2, in O(5Mpoly(M)) time. The multiplication results
+in a 3M × 2M matrix B with O(4M) nonzeroes, which can be efﬁciently transformed to
+the output matrix using the inverses of submatrices of B′. (This postprocessing step
+is analogous to the preprocessing of B′′ in ALGORITHM 1.) Notice we have analogous
+preprocessing, multiplication, and postprocessing steps, albeit the steps are “out of
+order” from before. (Before, multiplication of the result matrix C by A′ and B′ occurred
+in postprocessing; now it occurs in preprocessing, as C is now part of the input.) Call
+this construction ALGORITHM 2.
+Next, we may “tensorize” the two algorithms in a standard way. This consists of di-
+viding the input matrices into blocks, executing ALGORITHM 1 on the blocks them-
+selves, and calling ALGORITHM 2 when the product of two blocks is needed. As
+both of these algorithms are explicit and efﬁcient, their “tensorization” is also ex-
+plicit and efﬁcient. ALGORITHM 1 multiplies 24M/5 ×
+ M
+4M/5
+
+24M/5 and
+ M
+4M/5
+
+24M/5 ×
+2M/5 matrices, and ALGORITHM 2 multiplies
+ M
+4M/5
+
+24M/5 × 24M/5 and 24M/5 × 2M/5.
+Hence their tensorization multiplies matrices of dimensions
+
+24M/5 ·
+ M
+4M/5
+
+24M/5
+×
+ M
+4M/5
+
+24M/5 · 24M/5
+and
+ M
+4M/5
+
+24M/5 · 24M/5
+×
+ 2M/5 · 2M/5
+, and the algorithm
+runs in O(52M · poly(M)) time. Since
+ M
+4M/5
+
+44M/5 ≈5M, this means we are multi-
+plying 5M × 5M and 5M × 22M/5 in O(52Mpoly(M)) time. Call this ALGORITHM 3. This
+is the algorithm obtained by Coppersmith.
+Finally, using the symmetry of ALGORITHM 3 itself, we can obtain an algorithm
+for multiplying a 5M × 22M/5 matrix with a 22M/5 × 5M matrix in O(52Mpoly(M))
+time. ALGORITHM 3 is also a bilinear algorithm that can be interpreted as an ef-
+ﬁcient way to compute tr(ABC) where A is 5M × 5M, B is 5M × 22M/5, and C is
+22M/5 × 5M. In the above version of ALGORITHM 3, we have treated A and B as in-
+put, and C as symbolic. Treating B and C as input yields an algorithm for multiply-
+ing 5M × 22M/5 and 22M/5 × 5M in O(52Mpoly(M)) time. This algorithm also has a
+preprocessing step, a product of partial matrices, then a postprocessing step, which
+involve multiplications with Vandermonde-style matrices, their transposes, their in-
+verses, and their inverse transposes. The important point is that this transformation
+does not fundamentally change the algorithm: just as ALGORITHM 2 is a “reorder-
+ing” of ALGORITHM 1, this transformation of ALGORITHM 3 only reorganizes these
+efﬁciently computable operations. It follows the ﬁnal algorithm will also be efﬁciently
+computable. (Of course, it is possible in principle to describe this algorithm directly
+as a preprocessing-multiplication-postprocessing procedure, but it is quite messy.) Let
+N = 5M. We have arrived at the following.
+COROLLARY C.2. For all sufﬁciently large N, two 0-1 matrices of dimensions N ×
+N .1 and N .1 × N can be multiplied over the integers in O(N 2 · poly(log N)) time.
+Journal of the ACM, Vol. 9, No. 4, Article 39, Publication date: March 2010.

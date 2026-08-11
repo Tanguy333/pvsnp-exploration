@@ -1,0 +1,961 @@
+Lower Bounds Against Sparse Symmetric
+Functions of ACC Circuits: Expanding the Reach
+of #SAT Algorithms
+Nikhil Vyas
+MIT, Cambridge, MA, USA
+nikhilv@mit.edu
+R. Ryan Williams
+MIT, Cambridge, MA, USA
+rrw@mit.edu
+Abstract
+We continue the program of proving circuit lower bounds via circuit satisﬁability algorithms.
+So far, this program has yielded several concrete results, proving that functions in Quasi-NP =
+NTIME[n(log n)O(1)] and NEXP do not have small circuits (in the worst case and/or on average) from
+various circuit classes C, by showing that C admits non-trivial satisﬁability and/or #SAT algorithms
+which beat exhaustive search by a minor amount.
+In this paper, we present a new strong lower bound consequence of non-trivial #SAT algorithm
+for a circuit class C. Say a symmetric Boolean function f(x1, . . . , xn) is sparse if it outputs 1 on O(1)
+values of P
+i xi. We show that for every sparse f, and for all “typical” C, faster #SAT algorithms
+for C circuits actually imply lower bounds against the circuit class f ◦C, which may be stronger
+than C itself. In particular:
+#SAT algorithms for nk-size C-circuits running in 2n/nk time (for all k) imply NEXP does not
+have f ◦C-circuits of polynomial size.
+#SAT algorithms for 2nε-size C-circuits running in 2n−nε time (for some ε > 0) imply Quasi-NP
+does not have f ◦C-circuits of polynomial size.
+Applying #SAT algorithms from the literature, one immediate corollary of our results is that
+Quasi-NP does not have EMAJ ◦ACC0 ◦THR circuits of polynomial size, where EMAJ is the
+“exact majority” function, improving previous lower bounds against ACC0 [Williams JACM’14] and
+ACC0 ◦THR [Williams STOC’14], [Murray-Williams STOC’18]. This is the ﬁrst nontrivial lower
+bound against such a circuit class.
+2012 ACM Subject Classiﬁcation Theory of computation →Circuit complexity
+Keywords and phrases #SAT, satisﬁability, circuit complexity, exact majority, ACC
+Digital Object Identiﬁer 10.4230/LIPIcs.STACS.2020.59
+Related Version A full version of the paper is available at https://arxiv.org/abs/2001.07788.
+Funding Supported by NSF CCF-1741615 and NSF CCF-1909429.
+1
+Introduction
+Currently, our knowledge of algorithms vastly exceeds our knowledge of lower bounds. Is it
+possible to bridge this gap, and use the existence of powerful algorithms to give lower bounds
+for hard functions? Over the last decade, the program of proving lower bounds via algorithms
+has been positively addressing this question. A line of work starting with Kabanets and
+Impagliazzo [15] has shown how deterministic subexponential-time algorithms for polynomial
+identity testing would imply lower bounds against arithmetic circuits. Starting around
+2010 [24, 25], it was shown that even slightly nontrivial algorithms could imply Boolean
+circuit lower bounds. For example, a circuit satisﬁability algorithm running in O(2n/nk)
+© Nikhil Vyas and R. Ryan Williams;
+licensed under Creative Commons License CC-BY
+37th International Symposium on Theoretical Aspects of Computer Science (STACS 2020).
+Editors: Christophe Paul and Markus Bläser; Article No. 59; pp. 59:1–59:17
+Leibniz International Proceedings in Informatics
+Schloss Dagstuhl – Leibniz-Zentrum für Informatik, Dagstuhl Publishing, Germany
+
+59:2
+Lower Bounds Against Sparse Symmetric Functions of ACC Circuits
+time (for all k) on nk-size circuits with n inputs would already suﬃce to yield the (infamously
+open) lower bound NEXP ̸⊂P/poly. More generally, a generic connection was found between
+non-trivial SAT algorithms and circuit lower bounds:
+▶Theorem 1 ([24, 25], Informal). Let C be a circuit class closed under AND, projections,
+and compositions.1 Suppose for all k there is an algorithm A such that, for every C-circuit
+of nk size, A determines its satisﬁability in O(2n/nk) time. Then NEXP does not have
+polynomial-size C-circuits.
+To illustrate Theorem 1 with two examples, when C is the class of general fan-in 2 circuits,
+Theorem 1 says that non-trivial Circuit SAT algorithms imply NEXP ̸⊂P/poly; when C is the
+class of Boolean formulas, it says non-trivial Formula-SAT algorithms imply NEXP ̸⊂NC1.
+Both are major open questions in circuit complexity. Theorem 1 and related results have been
+applied to prove several concrete circuit lower bounds: super-polynomial lower bounds for
+ACC0 [25], ACC0 ◦THR [21], quadratic lower bounds for depth-two symmetric and threshold
+circuits [18, 1], and average-case lower bounds as well [7, 5].
+Recently, the algorithms-to-lower-bounds connection has been extended to show a trade-
+oﬀbetween the running time of the SAT algorithm on large circuits, and the complexity of
+the hard function in the lower bound. In particular, it is even possible in principle to obtain
+circuit lower bounds against NP with this algorithmic approach.
+▶Theorem 2 ([16], Informal). Let C be a class of circuits closed under unbounded AND,
+ORs of fan-in two, and negation. Suppose there is an algorithm A and ε > 0 such that, for
+every C-circuit C of 2nε size, A solves satisﬁability for C in O(2n−nε) time. Then Quasi-NP
+does not have polynomial-size C-circuits.2
+In fact, Theorem 2 holds even if A only distinguishes between unsatisﬁable circuits from
+those with at least 2n−1 SAT assignments; we call this easier problem GAP-UNSAT.
+Intuitively, the aforementioned results show that as the circuit satisﬁability algorithms
+improve in running time and scope, they imply stronger lower bounds. In all known results,
+to prove a lower bound against C, one must design a SAT algorithm for a circuit class that
+is at least as powerful as C. Inspecting the proofs of the above theorems carefully, it is not
+hard to show that, even if C did not satisfy the desired closure properties, it would suﬃce to
+give a SAT algorithm for a slightly more powerful class than the lower bound. For example,
+in Theorem 2, a SAT algorithm running in O(2n−nε) time for 2nε-size AND of ORs of three
+(possibly negated) C circuits (on n inputs, of 2nε size) would still imply C-circuit lower bounds
+for Quasi-NP. Our key point here is that these proof methods require a SAT algorithm for
+a potentially more powerful circuit class than the class for which we can conclude a lower
+bound. A compelling question is whether this requirement is an artifact of our proof method,
+or is it inherent?
+Lower bounds for more powerful classes from SAT algorithms?
+We feel it is natural to conjecture that a SAT algorithm for a circuit class C implies a lower
+bound against a class that is more powerful than C, because checking satisﬁability is itself a
+very powerful ability. Intuitively, a non-trivial SAT algorithm for C on n-input circuits is
+computing a uniform OR of 2n C-circuits evaluated on ﬁxed inputs, in o(2n) time. (Recall
+1 It is not necessary to know precisely what these conditions mean, as we will use diﬀerent conditions in
+our paper anyway. The important point is that these conditions hold for most interesting circuit classes
+that have been studied, such as AC0, TC0, NC1, NC, and general fan-in two circuits.
+2 In this paper, we use the notation Quasi-NP := S
+k NTIME[n(log n)k].
+
+N. Vyas and R. R. Williams
+59:3
+that a “uniform” circuit informally means that any gate of the circuit can be eﬃciently
+computed by an algorithm.) If there were an algorithm to decide the outputs of uniform
+ORs of C-circuits more eﬃciently than their actual circuit size, perhaps this implies a lower
+bound against OR ◦C circuits.
+Similarly, a #SAT algorithm for C on n-input circuits can be used to compute the output
+of any circuit of the form f(C(x1), . . . , C(x2n)) where f is a uniform symmetric Boolean
+function, C is a C-circuit with n inputs, and x1, . . . , x2n is an enumeration of all n-bit strings.
+Should we therefore expect to prove lower bounds on symmetric functions of C-circuits, using
+a #SAT algorithm? This question is particularly signiﬁcant because in many of the concrete
+lower bounds proved via the program [25, 21, 16], non-trivial #SAT algorithms were actually
+obtained, not just SAT algorithms. So our question amounts to asking: how strong of a
+circuit lower bound we can prove, given the SAT algorithms we already have? We use SYM
+to denote the class of Boolean symmetric functions.
+▶Conjecture 1 (#SAT Algorithms Imply Symmetric Function Lower Bounds, Informal). Non-
+trivial #SAT algorithms for circuit classes C imply size lower bounds against SYM◦C circuits.
+In particular, all statements in Theorem 1 and Theorem 2 hold when the SAT algorithm is
+replaced by a #SAT algorithm, and the lower bound consquence for C is replaced by SYM ◦C.
+If Conjecture 1 is true, then existing #SAT algorithms would already imply super-
+polynomial lower bounds for SYM ◦ACC0 ◦THR circuits, a class that contains depth-two
+symmetric circuits (for which no lower bounds greater than n2 are presently known) [18, 1].
+More intuition for Conjecture 1 can be seen from a recent paper of the second author, who
+showed how #SAT algorithms for a circuit class C can imply lower bounds on (real-valued)
+linear combinations of C-circuits [23]. For example, known #SAT algorithms for ACC0 circuits
+imply Quasi-NP problems cannot be computed via polynomial-size linear combinations of
+polynomial-size ACC0◦THR circuits. However, the linear combination representation is rather
+constrained: the linear combination is required to always output 0 or 1. Applying PCPs of
+proximity, Chen and Williams [6] showed that the lower bound of [23] can be extended to
+“approximate” linear combinations of C-circuits, where the linear combination does not have
+to be exactly 0 or 1, but must be closer to the correct value than to the incorrect one, within
+an additive constant factor. These results show, in principle, how a #SAT algorithm for a
+circuit class C can imply lower bounds for a stronger class of representations than C.
+1.1
+Conjecture 1 Holds for Sparse Symmetric Functions
+In this paper, we take a concrete step towards realizing Conjecture 1, by proving it for
+“sparse” symmetric functions. We say a symmetric Boolean function f(x1, . . . , xn) is k-sparse
+if f is 1 on at most k values of P
+i xi. The 1-sparse symmetric functions are called the exact
+threshold (ETHR with polynomial weights) or exact majority (EMAJ) functions, which have
+been studied for years in both circuit complexity (e.g. [11, 4, 12, 13, 14]) and structural
+complexity theory, where the corresponding complexity class (computing an exact majority
+over all computation paths) is known as C=P [20].
+▶Theorem 3. Let C be closed under AND2, negation, and suppose the all-ones and parity
+function are in C. Let f = {fn} be a family of k-sparse symmetric functions for some
+k = O(1).
+If there is a #SAT algorithm for nk-size C-circuits running in 2n/nk time (for all k),
+then NEXP does not have f ◦C-circuits of polynomial size.
+If there is a #SAT algorithm for 2nε-size C-circuits running in 2n−nε time (for some
+ε > 0), then Quasi-NP does not have f ◦C-circuits of polynomial size.
+STACS 2020
+
+59:4
+Lower Bounds Against Sparse Symmetric Functions of ACC Circuits
+Applying known #SAT algorithms for AC0[m] ◦THR circuits from [22], we obtain:
+▶Corollary 4. For all constant depths d ≥2 and constant moduli m ≥2, Quasi-NP does not
+have polynomial-size EMAJ ◦AC0[m] ◦THR circuits.
+1.2
+Intuition
+Here we brieﬂy explain the new ideas that lead to our new circuit lower bounds.
+As in prior work [23, 6], the high-level idea is to show that if (for example) Quasi-NP has
+polynomial-size EMAJ ◦C, and there is a #SAT algorithm for C circuits, then we can design
+a nondeterministic algorithm for verifying GAP Circuit Unsatisﬁability (GAP-UNSAT) on
+generic circuits that beats exhaustive search. In GAP-UNSAT, we are given a generic circuit
+and are promised that it is either unsatisﬁable, or at least half of its possible assignments
+are satisfying, and we need to nondeterministically prove the unsatisﬁable case. (Note this is
+a much weaker problem than SAT.) As shown in [24, 25, 16], combining a nondeterministic
+algorithm for GAP-UNSAT with the hypothesis that Quasi-NP has polynomial-size circuits,
+we can derive that nondeterministic time 2n can be simulated in time o(2n), contradicting
+the nondeterministic time hierarchy theorem.
+Our key idea is to use probabilistically checkable proofs (PCPs) in a new way to exploit
+the power of a #SAT algorithm. First, let’s observe a task that a #SAT algorithm for C can
+compute on an EMAJ ◦C circuit. Suppose our EMAJ ◦C circuit has the form
+D(x) =
+"
+t
+X
+i=1
+Ci(x) = s
+#
+,
+where each Ci(x) is a Boolean C-circuit on n inputs, s is a threshold value, and our circuit
+outputs 1 if and only if the sum of the Ci’s equals s.3 Consider the expression
+E(x) :=
+ 
+t
+X
+i=1
+Ci(x) −s
+!2
+.
+(1)
+Treated as a function, E(x) outputs integers; E(a) = 0 when D(a) = 1, and otherwise
+E(a) ∈[1, (t + s)2]. We ﬁrst claim that the quantity
+X
+a∈{0,1}n
+E(a)
+(2)
+can be compute faster than exhaustive search using a faster #SAT algorithm. To see this,
+using distributivity, we can rewrite (1) as
+E(x) =
+X
+i,j
+(Ci ∧Cj)(x) −2s
+X
+i
+Ci(x) + s2.
+Assuming C is closed under conjunction, each Ci ∧Cj is also a C-circuit, and we can compute
+X
+a∈{0,1}n
+E(a) =
+X
+i,j
+
+
+X
+a∈{0,1}n
+(Ci ∧Cj)(a)
+
+−2s
+X
+i
+
+
+X
+a∈{0,1}n
+Ci(a)
+
++ s2 · 2n
+by making O(t2) calls to a #SAT algorithm. Thus we can compute (2) using a #SAT
+algorithm.
+3 We are using the standard Iverson bracket notation, where [P] is 1 if predicate P is true, and 0 otherwise.
+
+N. Vyas and R. R. Williams
+59:5
+How is computing (2) useful? This is where PCPs come in. We cannot use (2) to directly
+solve #SAT for D (otherwise as #SAT algorithms imply SAT algorithms we could apply
+existing work [25], and be done). But we can use (2) to obtain a multiplicative approximation
+to the number of assignments that falsify D. In particular, each satisfying assignment is
+counted zero times in (2), and each falsifying assignment is counted between 1 and (less than)
+(t + s)2 times. We want to exploit this, and obtain a faster GAP-UNSAT algorithm. Given a
+circuit which is a GAP-UNSAT instance, we start by using an eﬃcient hitting set construction
+[10] to increase the gap of GAP-UNSAT. We obtain a new circuit C(x) which is either UNSAT
+or has at least 2n −o(2n) satisfying assignments (Section 2.1). Next (Lemma 15) we apply a
+PCP of Proximity and an error correcting code to C, yielding a 3-SAT instance over x and
+extra variables, with constant gap (similar to Chen-Williams [6]), and we amplify this gap
+using standard serial repetition. Finally, we apply the FGLSS [9] reduction (Lemma 19) to
+the 3-SAT instance, obtaining Independent Set instances with a large gap between the YES
+case and NO case. In particular, for all inputs x, when C(x) = 1 there is a large independent
+set in the resulting graph, and when C(x) = 0, there are only small independent sets in
+the resulting graph (see Lemma 14). Returning to the assumption that Quasi-NP has small
+EMAJ ◦C circuits, and applying an easy witness lemma [16], it follows that the solutions
+to the independent set instance can be encoded by EMAJ ◦C circuits. Because of the large
+gap between the YES case and NO case, our multiplicative approximation to the number
+of UNSAT assignments can be used to distinguish the unsatisﬁable case and the “many
+satisfying assignments” case of GAP-UNSAT, which ﬁnishes the argument.
+One interesting bottleneck is that we cannot directly apply serial repetition and the
+FGLSS reduction in our argument; we need the PCP machinery we use to behave similarly
+on all inputs x to the original circuit C. This translates to studying the behavior of these
+reductions with respect to partial assignments. While for these two reductions we are able to
+prove that they behave “nicely” with respect to partial assignments, it is entirely unclear that
+this is true for other PCP reductions such alphabet reduction, parallel repetition, and so on.
+Our approach is very general; to handle k-sparse symmetric functions, we can simply
+modify the function E accordingly.
+2
+Preliminaries and Organization
+We assume general familiarity with basic concepts in circuit complexity and computational
+complexity [2]. In particular we assume familiarity with AC0, ACC0, P/poly, NEXP, and so on.
+Circuit Notation
+Here we deﬁne notation for the relevant circuit classes. By sizeC(h(n)) we denote circuits
+from circuit class C with size at most h(n).
+▶Deﬁnition 5. An EMAJ◦C circuit (a.k.a. “exact majority of C circuit”) has the general form
+EMAJ(C1(x), C2(x), . . . , Ct(x), u), where u is a positive integer, x are the input variables,
+Ci ∈C, and the gate EMAJ(y1, . . . , yt, u) outputs 1 if and only if exactly u of the yi’s
+output 1.
+▶Deﬁnition 6. A SUM≥0 ◦C circuit (“positive sum of C circuits”) has the form
+SUM≥0(C1(x), C2(x), . . . , Ct(x)) =
+X
+i∈[t]
+Ci(x)
+where Ci is either a C-circuit or −1 times a C-circuit and we are promised that P
+i∈[t] Ci(x) ≥0
+over all x ∈{0, 1}n.
+STACS 2020
+
+59:6
+Lower Bounds Against Sparse Symmetric Functions of ACC Circuits
+Given a set of circuits {Ci}, we say that f : {0, 1}n →{0, 1} is represented by the positive-
+sum circuit SUM≥0(C1(x), C2(x), . . . , Ct(x)) if for all x, f(x) = 1 when P
+i∈[t] Ci(x) > 0,
+and f(x) = 0 when P
+i∈[t] Ci(x) = 0.
+▶Deﬁnition 7. A circuit class C is typical if there is a k > 0 such that the following hold:
+Closure under negation. For every C circuit C, there is a circuit C′ computing the
+negation of C where size(C′) ≤size(C)k.
+Closure under AND. For every C circuits C1 and C2, there is a circuit C′ computing
+the AND of C1 and C2 where size(C′) ≤(size(C1) + size(C2))k.
+Contains all-ones. The function 1n : {0, 1}n →{0, 1} has a C circuit of size O(nk).
+The vast majority of circuit classes that are studied (AC0, ACC0, TC0, NC1, P/poly) are
+typical.4 The next lemma shows that the negation of an exact-majority of C circuit can be
+represented as a “positive-sum” of C circuit, if C is typical.
+▶Lemma 8. Let C be typical. If a function f has a EMAJ ◦C circuit D of size s, then ¬f
+can be represented by a SUM≥0 ◦C circuit D′ of size poly(s). Moreover, a description of the
+circuit D′ can be obtained from a description of D in polynomial time.
+Proof. Suppose f is computable by the EMAJ ◦C circuit D = EMAJ(D1, D2, . . . , Dt, u),
+where u ∈{0, 1, . . . , t}. Consider the expression
+E(x) := (SUM(D1, D2, . . . , Dt) −u)2.
+Note that E(x) = 0 when D(x) = 1, and E(x) > 0 when D(x) = 0. So in order to prove the
+lemma, it suﬃces to show that E can be written as a SUM≥0 ◦C circuit. Expanding the
+expression E,
+E(x) = SUM(D1, D2, . . . , Dt)2 −2u · SUM(D1, D2, . . . , Dt) + u2
+=
+t
+X
+i,j=1
+(Di ∧Dj) −
+2u
+X
+j=1
+t
+X
+i=1
+Di + u2.
+By Deﬁnition 7 AND2 ◦C = C, each Di ∧Dj is a circuit from C of size poly(s). Since the all-
+ones function is in C, the function x 7→u2 also has a SUM ◦C circuit of size O(t2). Therefore
+there are circuits D′
+i ∈C and t′ ≤O(t2) such that by deﬁning D′ := SUM≥0(D′
+1, . . . , D′
+t′)
+we have D′(x) = E(x) for all x.
+◀
+Error-Correcting Codes
+We will need a (standard) construction of binary error correcting codes with constant rate
+and constant relative distance.
+▶Theorem 9 ([17]). There are universal constants c ≥1 and δ ∈(0, 1) such that for all
+suﬃciently large n, there are linear functions ENCn : (F2)n →(F2)cn such that for all x ̸= y
+with |x| = |y| = n, the Hamming distance between ENCn(x) and ENCn(y) is at least δn.
+In what follows, we generally drop the superscript n for notational brevity. Note that each bit
+of output ENCn
+i (x) (for i = 1, . . . , cn) is a parity function on some subset of the input bits.
+4 A notable exception (as far as we know) is the class of depth-d exact threshold circuits for a ﬁxed d ≥2,
+because we do not know if such classes are closed under negation. Similarly, we do not know if the class
+of depth-d threshold circuits is typical. (In that case, the only non-trivial property to check is closure
+under AND; we can compute the AND of two threshold circuits with a quasi-polynomial blowup using
+Beigel-Reingold-Spielman [3], but not with a polynomial blowup.)
+
+N. Vyas and R. R. Williams
+59:7
+2.1
+Weak CAPP Algorithms Are Suﬃcient For Lower Bounds
+Murray and Williams [16] showed that CAPP/GAP-UNSAT algorithms, i.e., algorithms which
+distinguish between unsatisﬁable circuits and circuits with ≥2n−1 satisfying assignments are
+enough to give lower bounds. For our results, it is necessary to strengthen the “gap”, which
+can be done using known hitting set constructions.
+▶Lemma 10 (Corollary C.5 in [10], Hitting Set Construction). There is a constant ψ > 0 and a
+poly(n, log g) time algorithm S such that, given a (uniform random) string r of n+ψ·log g bits,
+S outputs t = O(log g) strings x1, x2, . . . , xt ∈{0, 1}n such that for every f : {0, 1}n →{0, 1}
+with P
+x f(x) ≥2n−1, Prr[ORt
+i=1f(xi) = 1] ≥1 −1/g.
+We will use the following “algorithms to lower bounds” connections as black box:
+▶Theorem 11 ([16]). Suppose for some constant ε ∈(0, 1) there is an algorithm A that for
+all 2nε-size circuits C on n inputs, A(C) runs in 2n−nε time, outputs YES on all unsatisﬁable
+C, and outputs NO on all C that have at least 2n−1 satisfying assignments. Then for all k,
+there is a c ≥1 such that NTIME[2logck4/ε n] ̸⊂SIZE[2logk n].
+Applying Lemma 10 to Theorem 11, we observe that the circuit lower bound consequence
+can be obtained from a signiﬁcantly weaker-looking hypothesis. This weaker hypothesis will
+be useful for our lower bound results.
+▶Theorem 12. Suppose for some constant ε ∈(0, 1) there is an algorithm A that for all 2nε-
+size circuits C on n inputs, A(C) runs in 2n/g(n)ω(1) time, outputs YES on all unsatisﬁable
+C, and outputs NO on all C that have at least 2n(1 −1/g(n)) satisfying assignments, for
+g(n) = 2n2ε. Then for all k, there is a c ≥1 such that NTIME[2logck4/ε n] ̸⊂SIZE[2logk n].
+Proof. Our starting point is Theorem 11 ([16]): we are given an m-input, 2mδ-size circuit D′
+that is either UNSAT or has at least 2m−1 satisfying assignments, and we wish to distinguish
+between the two cases with a 2m−mδ-time algorithm. We set δ = ε/2
+We create a new circuit D with n inputs, where n satisﬁes
+n = m + ψ · log g(n),
+and ψ > 0 is the constant from Lemma 10. (Note that, since g(n) is time constructible and
+g(n) ≤2o(n), such an n can be found in subexponential time.) Applying the algorithm from
+Lemma 10, D treats its n bits of input as a string of randomness r, computes t = O(log g(n))
+strings x1, x2, . . . , xt ∈{0, 1}m with a poly(m, log g)-size circuit, then outputs the OR of
+D′(xi) over all i = 1, . . . , t. Note the total size of our circuit D is poly(m, log g) + O(log g) ·
+size(D′) = poly(n) + O(n2ε) · 2mδ < 2n2δ = 2nε as ε = 2δ.
+Clearly, if D′ is unsatisﬁable, then D is also unsatisﬁable. By Lemma 10, if D′ has
+2m−1 satisfying assignments, then D has at least 2n(1 −1/g(n)) satisfying assignments. As
+size(D) ≤2nε, by our assumption we can distinguish the case where D is unsatisﬁable from
+the case where D has at least 2n(1 −1/g(n)) satisfying assignments, with an algorithm
+running in time 2n/g(n)ω(1). This yields an algorithm for distinguishing the original circuit
+D′ on m inputs and 2mδ size, running in time
+2n/g(n)ω(1) = 2mg(n)O(1)/g(n)ω(1) = 2m/g(n)ω(1) ≤2m2−n2ε ≤2m2−nδ ≤2m−mδ,
+since g(n) = 2n2ε. By Theorem 11, this implies that for all k, there is a c ≥1 such that
+NTIME[2logck4/δ n] ̸⊂SIZE[2logk n]. As, ε = 2δ we get that NTIME[2log2ck4/ε n] ̸⊂SIZE[2logk n].
+But as the constant 4 can be absorbed in the constant c hence we get that for all k, there is
+a c ≥1 such that NTIME[2logck4/ε n] ̸⊂SIZE[2logk n].
+◀
+STACS 2020
+
+59:8
+Lower Bounds Against Sparse Symmetric Functions of ACC Circuits
+2.2
+Organization
+In Section 3 we give a reduction from Circuit SAT to “Generalized” Independent Set. Section 4
+uses this reduction to prove lower bounds for EMAJ◦C assuming #SAT algorithms for C with
+running time 2n−nε. Section 4.1 uses this result to give lower bound for EMAJ◦ACC0 ◦THR.
+Section 5 generalizes these results to f ◦C lower bounds where f is a sparse symmetric
+function. In the full version of the paper [19] we give lower bounds for EMAJ ◦C assuming
+#SAT algorithms for C with running time 2n/nω(1).
+3
+From Circuit SAT to Independent Set
+The goal of this section is to give the main PCP reduction we will use in our new algorithm-to-
+lower-bound theorem. First we need a deﬁnition of “generalized” independent set instances,
+where some vertices have already been “assigned” in or out of the independent set.
+▶Deﬁnition 13. Let G = (V, E) be a graph. Let π : V →{0, 1, ∗} be a partial Boolean
+assignment to V . We deﬁne G(π) to be a graph with the label function π on its vertices
+(where each vertex gets the label 0, or 1, or no label). We construe G(π) as an generalized
+independent set instance, in which any valid independent set (vertex assignment) must
+be consistent with π: any independent set must contain all vertices labeled 1, and no vertices
+labeled 0.
+▶Lemma 14. Let k be a function of n. Given a circuit D on X with |X| = n bits and of
+size m > n, there is a poly(m, 2O(k))-time reduction from D to a generalized independent set
+instance on graph GD = (VD, ED), with the following properties.
+Each vertex v ∈VD is associated with a set of pairs Sv of the form {(i, b)} ⊆[O(n)]×{0, 1}.
+The set {Sv} is produced as part of the reduction.
+Each assignment x to X deﬁnes a partial assignment πx to VD such that
+πx(v) =
+(
+0
+if ∃(i, b) ∈Sv such that ENCi(x) ̸= b
+∗
+otherwise,
+where ENC is the error-correcting code from Theorem 9.
+If D(x) = 0, the maximum independent set in GD(πx) equals κ for an integer κ, and
+furthermore given x, it can be found in time poly(n, m, 2O(k)).
+If D(x) = 1, then the maximum independent set in GD(πx) has size at most κ/2k.
+Intuitively, the use of Lemma 14 is that we will start with a “no satisfying assignment” vs
+“most assignments are satisfying” GAP-UNSAT instance from Theorem 12. Now in the “no
+satisfying assignment” case for all x the reduced independent set instance GD(πx) has a large
+independent set instance. Counting the sum of independent sets over x gives a high value.
+On the other hand in the “most assignments are satisfying” case for most x the reduced
+independent set instance GD(πx) has a small independent set and for a very few x, GD(πx)
+can have a large independent set. Hence in this case counting the sum of independent sets
+over all x gives a low value. The diﬀerence between the high value and low value is big
+enough that even a approximate counting of these values as outlined in Section 1.2 is enough
+to distinguish and hence solve the GAP-UNSAT instance.
+The remainder of this section is devoted to the proof of Lemma 14.
+Let us set up some notation for variable assignments to a formula. Let F be a SAT
+instance on a variable set Z, and let τ : Z →{0, 1, ⋆} be a partial assignment to Z. Then we
+deﬁne F(τ) to be the formula obtained by setting the variables in F according to τ. Note
+that we do not perform further reduction rules on the clauses in F(τ): for each clause in F
+that becomes false (or true) under τ, there is a clause in F(τ) which is always false (true).
+
+N. Vyas and R. R. Williams
+59:9
+For every subsequence Y of variables from Z, and every vector y ∈{0, 1}|Y |, we deﬁne
+F(Y = y) to be the formula F in which the ith variable in Y is assigned yi, and all other
+variables are left unassigned.
+▶Lemma 15 (PCPP+ECC, [6]). There is a polynomial-time transformation that, given a
+circuit D on n inputs of size m ≥n, outputs a 3-SAT instance F on the variable set Y ∪Z,
+where |Y | ≤poly(n), |Z| ≤poly(m), and the following hold for all x ∈{0, 1}n:
+If D(x) = 0 then F(Y = ENC(x)) on variable set Z has a satisfying assignment zx.
+Furthermore, there is a poly(m)-time algorithm that given x outputs zx.
+if D(x) = 1 then there is no assignment to the Z variables in F(Y = ENC(x)) satisfying
+more than a (1 −Ω(1))-fraction of the clauses.
+where ENC : {0, 1}n →{0, 1}O(n) is the linear encoding function from Theorem 9. As it is a
+linear function, the ith bit of output ENCi(x) satisﬁes ENCi(x) = ⊕j∈Uixj for some set Ui.
+Serial Repetition [8] is a basic operation on CSPs/PCPs, in which a new CSP is created
+whose constraints are ANDs of k uniformly sampled clauses from the original CSP. Serial
+repetition is usually done for the purpose of reducing soundness, i.e., reducing the fraction of
+satisﬁable clauses. We now state a derandomized version of serial repetition.
+▶Lemma 16 (Serial repetition [8]). Given a 3-SAT instance F on n variables denoted by
+Y with m clauses we can construct a O(k)-SAT formula F ′ on the same n variables with
+m2O(k) clauses such that:
+1. If Y = y satisﬁes F then y satisﬁes F ′.
+2. If F(Y = y) is at most 1 −Ω(1) satisﬁable then F ′(Y = y) is at most 1/2k satisﬁable.
+Next we prove a stronger version of derandomized serial repetition with guarantees
+for partial assignments. The proof directly follows from the guarantees of standard Serial
+Repetition (Lemma 16).
+▶Lemma 17 (Serial repetition with partial assignments). Let k be a function of n. Given
+a 3-SAT instance F on n variables denoted by Y, Z with m clauses we can construct a
+O(k)-SAT formula F ′ on the same n variables with m · 2O(k) clauses such that:
+1. If Y, Z = y, z satisﬁes F then y, z satisﬁes F ′.
+2. If F(Y = y) is at most 1 −Ω(1) satisﬁable then F ′(Y = y) is at most 1/2k satisﬁable.
+Proof. We prove that just standard serial repetition from Lemma 16 suﬃces for proving this
+stronger property.
+Property 1 directly follows from Property 1 in Lemma 16.
+Deﬁne Fy = F(Y = y) where we treat any clauses that became FALSE or TRUE under
+Y = y as normal clauses. Let F ′
+y be the O(k)-SAT formula obtained by applying serial
+repetition to fy from Lemma 17.
+In Serial Repetition [8] it is clear that clauses in F ′ are just ANDs of clauses in F and
+which clauses are part of the “AND” is only dependent on their index.
+Due to this F ′(Y = y) i.e. ﬁrst applying serial repetition then setting Y = y is equivalent
+to ﬁrst setting Y = y and then applying serial repetition i.e. F ′
+y.
+By our assumption Fy is at most 1−Ω(1) satisﬁable and hence by Property 2 of Lemma 16
+F ′
+y is at most 1/2k satisﬁable. As F ′
+y = F ′(Y = y) we have that F ′(Y = y) is at most 1/2k
+satisﬁable.
+◀
+The FGLSS reduction [9] maps a CSP Φ to a graph GΦ such that the MAX-SAT value
+in Φ is equal to the size of the maximum independent set in GΦ.
+STACS 2020
+
+59:10
+Lower Bounds Against Sparse Symmetric Functions of ACC Circuits
+▶Lemma 18 (FGLSS [9]). Let F be a k-SAT instance on variable set Y with |Y | = n
+and m clauses. There exists a poly(n, m, 2O(k)) time reduction graph from F to a graph
+GF = (VF , EF ) such that: the size of maximum independent set in GF is exactly equal to
+maximum clauses satisﬁable in F.
+We note that a stronger version of the FGLSS reduction [9] holds with guarantees for
+partial assignments. The proof is very similar to the proof of the standard FGLSS reduction
+(Lemma 18).
+▶Lemma 19 (FGLSS with partial assignments). Let F be a k-SAT instance on variable set
+Y, Z with |Y | + |Z| = n and m clauses. There exists a poly(n, m, 2O(k)) time reduction graph
+from F to an independent set instance on graph GF = (VF , EF ). Each vertex v ∈VF is a
+associated to a set Tv of (i ∈[|Y |], b ∈{0, 1}) pairs. For each partial assignment of the form
+τ : Y →{0, 1} deﬁne a partial assignment πτ to VF such that:
+πτ(v) =
+(
+0
+if ∃(i, b) ∈Tv such that τ(Yi) ̸= b
+∗
+otherwise,
+Then the max independent set in GF (πτ) equals the max number of clauses satisﬁable in
+F(τ).
+Proof. Let w be a clause in F and wi denote the ith variable in w. Let ℓdenote a satisfying
+assignment to w. For every w, ℓpair create a vertex in VF . Let v be the vertex associated
+with a particular w, ℓ. Let Tv = {(wi, ℓi} represent the assignment wi = ℓi for 1 ≤i ≤k.
+Make an edge between vertex u and vertex v if the assignment Tu and Tv contradict each
+other. Note that this means that there is always an edge between two vertices associated to
+the same clause but diﬀerent satisfying assignments i.e. vertices associated with the same
+clause form a clique.
+Let x be a assignment for F satisfying κ clauses. We now give an independent set in GF
+of size κ. For every satisﬁed clause w and and ℓthe assignment to variables of w in x we
+choose the vertex w, ℓin the independent set. As there are κ satisﬁed clauses we choose κ
+vertices. These vertices form and independent set as if two of these vertices u, v had an edge
+between them it would mean that the assignments Tu and Tv contradict each other. This is
+not possible as all these assignments are partial assignments of x.
+Consider S to be an independent set in GF of size κ. We now give an assignment to F
+which satisﬁes κ clauses. Note that from vertices corresponding to the same clauses only 1
+vertex can be a part of independent set as they all form a clique. Hence vertices associated
+with κ diﬀerent clauses must be part of the independent set. For a vertex u associated with
+w, ℓthe partial assignment Tu satisﬁes w. For two vertices u, v in the independent set the
+partial assignments from Tv and Tu do not contradict as otherwise there would be an edge
+between u and v. Hence we can join all the partial assignments Tv for vertices v in the
+independent set to get a partial assignment which satisﬁes κ clauses in F(τ). Hence the
+maximum independent set in GF (πτ) has size at most the maximum number clauses satisﬁed
+in F(τ).
+◀
+We next present the proof of Lemma 14 which just follows by combining Lemma 15, 17,
+and 19 sequentially.
+Proof of Lemma 14. The proof follows by applying Lemma 15, 17 and 19 sequentially.
+We start from a circuit D with input variables X (|X| = n) and size m > n. Lemma 15
+transform this into a 3-SAT instance F with poly(m) clauses on the variable set Y ∪Z,
+where |Y | ≤poly(n), |Z| ≤poly(m), and the following hold for all x ∈{0, 1}n:
+
+N. Vyas and R. R. Williams
+59:11
+If D(x) = 0 then F(Y = ENC(x)) on variable set Z has a satisfying assignment zx.
+Furthermore, there is a poly(m)-time algorithm that given x outputs zx.
+if D(x) = 1 then there is no assignment to the Z variables in F(Y = ENC(x)) satisfying
+more than a (1 −Ω(1))-fraction of the clauses.
+where ENC : {0, 1}n →{0, 1}O(n) is the linear encoding function from Theorem 9.
+Applying Lemma 17 on F gives us a O(k)-SAT formula F ′ on the same Y ∪Z variables
+with poly(m) · 2O(k) clauses such that:
+1. If Y, Z = y, z satisﬁes F then y, z satisﬁes F ′.
+2. If F(Y = y) is at most 1 −Ω(1) satisﬁable then F ′(Y = y) is at most 1/2k satisﬁable.
+which implies that:
+If D(x) = 0 then F ′(Y = ENC(x)) on variable set Z has a satisfying assignment zx.
+Furthermore, there is a poly(m)-time algorithm that given x outputs zx.
+if D(x) = 1 then there is no assignment to the Z variables in F ′(Y = ENC(x)) satisfying
+more than a 1/2k-fraction of the clauses.
+Finally applying Lemma 19 to F ′ where we consider partial assignments τ which assign
+Y to ENC(x) for some x. Hence τ(Yi) = ENCi(x). As τ is ﬁxed by ﬁxing x we rename πτ
+to πx. Sv is just a renaming of Tv. Size of the graph is poly(n + m, poly(m) · 2O(k), 2O(k)) =
+poly(m, 2k) as m > n.
+◀
+4
+Main Result
+We now turn to the proof of the main result, Theorem 3. We will prove the result for
+EMAJ ◦C ﬁrst, and sketch how to extend to f ◦C for sparse symmetric f in Section 5. Below
+we prove EMAJ ◦C lower bounds for Quasi-NP when we have 2n−nε time algorithms for
+#SAT on C circuits of size 2nε. For the other parts of Theorem 3 (on #SAT algorithms with
+running time 2n/nω(1)), see the full version of the paper [19].
+We note here that in Theorem 3 we mentioned polynomial size lower bounds for EMAJ◦C
+we in fact prove quasi-polynomial size lower bounds below.
+▶Theorem 20. Suppose C is typical, and the parity function has poly(n)-sized C circuits.
+Then for every k, quasi-NP does not have EMAJ ◦C = H circuits of size O(nlogk n), if for
+some ϵ ∈(0, 1) there is a #SAT algorithm running in time 2n−nε for all circuits from class
+C of size at most 2nε.
+Proof. Let us assume that for a ﬁxed k > 0, quasi-NP has H = EMAJ ◦C circuits of size
+O(n(logk n)) which implies that quasi-NP ∈size(nO(logk n)) for general circuits. By Theorem 12,
+we obtain a contradiction if for some constant δ ∈(0, 1) and g(n) = 2n2δ we can give a
+2n/g(n)ω(1) time nondeterministic algorithm for distinguishing between:
+1. YES case: D has no satisfying assignments.
+2. NO case: D has at least 2n (1 −1/g(n)) satisfying assignments
+given a generic fan-in 2 circuit D with n inputs and size m ≤h(n) := 2nδ. Under the
+hypothesis, we will give such an algorithm for δ = ε/4.
+Using Lemma 14, we reduce the circuit D to an independent set instance GD (with
+k = log h(n)) on n2 = poly(m, 2O(k)) = poly(m, 2O(k)) = poly(m, h(n)O(1)) = poly(h(n))
+vertices. We also ﬁnd subsets Si for every vertex i ∈[n2]. Let πx be the partial assignment
+which assigns a vertex i to 0 if there exist (j′, b) ∈Si such that ENCj′(x) ̸= b. Note that πx
+does not assign any vertex to 1. By Lemma 14, GD has the following properties:
+STACS 2020
+
+59:12
+Lower Bounds Against Sparse Symmetric Functions of ACC Circuits
+1. If D(x) = 0, then GD(πx) has an independent set of size κ. Furthermore, given x we can
+ﬁnd this independent set in poly(h(n)) time.
+2. If D1(x) = 1, then in GD(πx), all independent sets have size at most κ/h(n).
+This means it suﬃces for us to distinguish between the following two cases:
+1. YES case: For all x, GD(πx) has an independent set of size κ.
+2. NO case: For at most 2n/g(n) values of x, GD(πx) has an independent set of size ≥κ/h(n).
+Guessing a succinct witness circuit: As guaranteed by Lemma 14 given an x such that
+D(x) = 0 we can ﬁnd the assignment A(x) to GD which is consistent with πx and represents
+an independent set of size κ in poly(h(n)) time. Let A(x, i) denote the assignment to the ith
+vertex in A(x). Given x and vertex i ∈[n2], in time poly(h(n)) we can produce ¬A(x, i).
+▷Claim 21.
+Under the hypothesis, there is a h(n)o(1)-sized EMAJ ◦C circuit U of size
+h(n)o(1) with x, i as input representing ¬A(x, i).
+Proof. Under the hypothesis, for some constant k, we have quasi-NP ⊆sizeH[nlogk n]. Specif-
+ically, for p(n) = nlogk+1 n we have NTIME[p(n)] ⊆sizeH[p(n)1/ log n] ⊆sizeH[p(n)o(1)].
+As h(n) = 2nε ≫p(n), a standard padding argument implies NTIME[poly(h(n))] ⊆
+sizeH[(poly(h(n)))o(1)] = sizeH[h(n)o(1)]. Since ¬A(x, i) is computable in poly(h(n)) time,
+we have that ¬A(x, i) can be represented by a h(n)o(1)-sized H = EMAJ ◦C circuit.
+◁
+Our nondeterministic algorithm for GAP-UNSAT begins by guessing U guaranteed by
+Claim 21 which is supposed to represent ¬A. Then by the reduction in Lemma 8 we can
+covert U to a SUM≥0 ◦C circuit R for A(x, i) of size poly(h(n)o(1)) = h(n)o(1). Note that if
+our guess for U is correct, i.e., U = ¬A, then R represents A.
+Let the subcircuits of R be R1, R2, . . . , Rt, so that R(x) = P
+j∈[t] Rj, where Rj ∈C and
+t ≤h(n)o(1). The number of inputs to Rj is n′ = |x| + log n2 = n + O(log h(n)), and the size
+of Rj is h(n)o(1).
+Note that R(x, i) = 0 represents that the ith vertex is not in the independent set of GD
+in a solution corresponding to x, while R(x, i) > 0 represents that it is in the independent set
+of GD in a solution corresponding to x. For all x and i we have 0 ≤R(x, i) ≤t ≤h(n)o(1).
+Verifying that R encodes valid independent sets: We can verify that the circuit R produces
+an independent set on all x by checking each edge over all x. To check the edge between
+vertices i1 and i2 we need to verify that at most one of them is in the independent set.
+Equivalently, for all x we check that R(x, i1) · R(x, i2) = 0. As R(x, i) ≥0 for all x and i we
+can just verify
+X
+x∈{0,1}n
+R(x, i1) · R(x, i2) = 0.
+Since R(x, i) = P
+j∈[t] Rj(x, i) it suﬃces to verify that
+X
+x∈{0,1}n
+X
+j1,j2∈[t]
+Rj1(x, i1) · Rj2(x, i2) = 0.
+Let Rj1,j2(x, i1, i2) = Rj1(x, i1) · Rj2(x, i2). Since C is closed under AND (upto polynomial
+factors) Rj1,j2 also has a poly(h(n)o(1)) = h(n)o(1) sized C circuit. Exchanging the order of
+summations is suﬃces for us to verify
+X
+j1,j2∈[t]
+
+
+X
+x∈{0,1}n
+Rj1,j2(x, i1, i2)
+
+= 0.
+
+N. Vyas and R. R. Williams
+59:13
+For ﬁxed i1, i2, j1, j2 the number of inputs to Rj1,j2 is |x| = n and its size is h(n)o(1) ≤2nε.
+Hence, for ﬁxed i1, i2, j1, j2 we can compute P
+x Rj1,j2(x, i1, i2) using the #SAT algorithm
+from our assumption, in time 2n−nε.
+Summing over all j1, j2 pairs only adds another
+multiplicative factor of t2 = h(n)o(1). This allows us to verify that the edge (i1, i2) is satisﬁed
+by R. Checking all edges of GD only adds another multiplicative factor of poly(h(n)). Hence
+the total running time for verifying that R encodes valid independent sets on all x is still
+2n−nεpoly(h(n)).
+Verifying consistency of independent set produced by R with πx:
+As we care about the
+sizes of independent sets in GD(πx) over all x we need to check if the assignment by R
+is consistent with πx. As πx only assigns vertices to 0, we need to verify that all vertices
+assigned to 0 in πx are in fact assigned to 0 by the assignment given by R(x, ·). From
+Lemma 14, we know that πx assigns a vertex i to 0 if for some (j′, b) ∈Si, ENCj′(x) ̸= b. To
+check this condition we need to verify that R(x, i) = 0 if for some (j′, b) ∈Si, ENCj′(x) ̸= b.
+Equivalently, we cn check (ENCj′(x) ⊕b) · R(x, i) = 0 for all x, i, (j′, b) ∈Si.
+Since
+(ENCj(x) ⊕b)R(x, i) ≥0 for all possible inputs we can just check that
+X
+x∈{0,1}n
+(ENCj′(x) ⊕b) · R(x, i) = 0
+for all i, (j′, b) ∈Si. As R(x, i) = P
+j∈[t] Rj(x, i) we can equivalently verify that
+X
+x∈{0,1}n
+X
+j∈[t]
+(ENCj′(x) ⊕b) · Rj(x, i) = 0
+for all i, (j′, b) ∈Si. Note that Rj′(x, i) has a h(n)o(1) sized C circuit. By our assumption
+parity has a poly(n)-sized C-circuit so (ENCj(x)⊕b) also has a poly(n)-sized C circuit. Hence
+(ENCj(x) ⊕b) · Rj′(x, i) has a poly(n, h(n)o(1)) = h(n)o(1)-sized C circuit, since C is closed
+under AND.
+For ﬁxed (i, j, j′), (ENCj′(x) ⊕b) · Rj(x, i) ∈C has |x| = n inputs and size h(n)o(1) < 2nε.
+Hence we can use our assumed #SAT algorithm to calculate P
+x∈{0,1}n(ENCj′(x)⊕b)·Rj(x, i)
+in time 2n−nε. Summing over all j ∈[t] introduces another multiplicative factor of h(n)o(1).
+This allows us to verify the desired condition for a ﬁxed i, (j′, b) ∈Si. To check it for all
+i, (j′, b) ∈Si (recall |Si| = O(n) by Theorem 9) only introduces another multiplicative factor
+of poly(h(n)) · O(n) = poly(h(n)) in time. Therefore the total running time for verifying
+consistency w.r.t. πx is 2n−nεpoly(h(n)).
+At this point, we now know that R represents an independent set, and that R is consistent
+with πx. We need to distinguish between:
+1. YES case: For all x, R(x, ·) represents an independent set of size κ.
+2. NO case: For at most 2n/g(n) values of x, R(x, ·) represents an independent set of size
+≥κ/h(n).
+▶Lemma 22. For all x such that R(x, ·) represents an independent set of size a. we have
+a ≤P
+i∈[n2] R(x, i) ≤at.
+Proof. For every vertex i in the independent set, 1 ≤R(x, i) ≤t. For all vertices i not in
+the independent set, we have R(x, i) = 0. Hence a ≤P
+i∈[n2] R(x, i) ≤at.
+◀
+Distinguishing between the YES and NO cases: To distinguish between the YES and NO
+cases, we now compute
+X
+x∈{0,1}n
+X
+i∈[n2]
+R(x, i)
+(3)
+STACS 2020
+
+59:14
+Lower Bounds Against Sparse Symmetric Functions of ACC Circuits
+This allows us to distinguish between the YES case and NO case as:
+1. YES case: We have for at least 2n(1 −1/g(n)) values of x we have an independent set of
+size at most κ/h(n). By Lemma 22 for such x, P
+i∈[n2] R(x, i) ≤tκ/h(n). for the rest of
+2n/g(n) values of x the independent set could be all the vertices in the graph GD. Hence
+by Lemma 22 for such values of x, P
+i∈[n2] R(x, i) ≤tn2 = poly(h(n)). Hence
+X
+x∈{0,1}n
+X
+i∈[n2]
+R(x, i) ≤(2n/g(n))poly(h(n)) + 2ntκ/h(n)
+≤o(2n) + 2ntκ/h(n)
+[As h(n) = g(n)o(1)]
+≤o(2n) + o(2nκ)
+[As t = h(n)o(1)]
+≤2nκ
+[As κ > 1]
+2. NO case: We have for all x ∈{0, 1}n the independent set is at least of size κ. Hence by
+Lemma 22 the sum is P
+x∈{0,1}n
+P
+i∈[n2] R(x, i) > 2nκ.
+All that remains is how to compute (3). As R(x, i) = P
+j∈[t] Rj(x, i), we can compute
+X
+x∈{0,1}n
+X
+i∈[n2]
+X
+j∈[t]
+Rj(x, i) =
+X
+j∈[t]
+X
+i∈[n2]
+X
+x∈{0,1}n
+Rj(x, i)
+For a ﬁxed i, j, Rj(x, i) ∈C, it has |x| = n inputs and size ≤poly(h(n)o(1)) = h(n)o(1) <
+2nε. Hence we can use the assumed #SAT algorithm to calculate P
+x∈{0,1}n Rj(x, i) in
+time 2n−nε. Summing over all j ∈[t], i ∈[n2] only introduces another h(n)o(1)poly(h(n)) =
+poly(h(n)) multiplicative factor. Thus the running time for distinguishing the two cases is
+2n−nεpoly(h(n)).
+In total our running time comes to 2n−nεpoly(h(n)) = 2n−n4δ+O(nδ) ≤2n−n3δ =
+2n/g(n)ω(1) as g(n) = 2n2δ and ε = 4δ. By Theorem 12, this gives us a contradiction
+which completes our proof.
+◀
+The above theorem when combined with known #SAT algorithms for ACC0 ◦THR gives
+an quasi-NP lower bound for EMAJ ◦ACC0 ◦THR.
+4.1
+EMAJ ◦ACC0 ◦THR Lower bound
+We will apply a known #SAT algorithm for ACC ◦THR circuits.
+▶Theorem 23 ([22]). For every pair of constants d, m, there exists a constant ε ∈(0, 1)
+such that #SAT can be solved in time 2n−nε time for AC0[m] ◦THR circuits of depth d and
+size 2nε.
+▶Theorem 24. For constants k, d, m, quasi-NP does not have size(nlogk n) EMAJ ◦ACC0 ◦
+THR circuits of depth d.
+Proof. We ﬁrst note that ACC0 ◦THR is indeed typical and can represent ENC(x) by
+poly(n)-sized circuits as ENC(x) : {0, 1}n →{0, 1}O(n) is a linear function.
+By Theorem 23 we know that for all constants d there exists some constant ϵ ∈(0, 1)
+such that there exists a #SAT algorithm running in time 2n−nε for all circuits from class
+ACC0 ◦THR of size ≤2nε and depth d.
+The above properties imply that ACC0◦THR satisﬁes the preconditions of Theorem 20 and
+hence for every pair of constant k, d, quasi-NP does not have size(nlogk n) EMAJ◦ACC0◦THR
+circuits of depth d.
+◀
+
+N. Vyas and R. R. Williams
+59:15
+The above theorem can be rewritten as: For constants k, d, m, there exists a constant e
+such that NTIME[nloge n] does not have nlogk n-size EMAJ ◦ACC0 ◦THR circuits of depth d.
+Here the constant e depends on d and m. Using a standard trick (as in [16]) this dependence
+can be removed as we show below.
+▶Corollary 25. There exists an e such that NTIME[nloge n] does not have polynomial size
+EMAJ ◦ACC0 ◦THR circuits.
+Proof. Assume for contradiction that for all e, there exists constants d, m such that
+NTIME[nloge n] has poly-sized EMAJ ◦AC0[m] ◦THR circuit of depth d.
+This implies
+that P has poly-sized EMAJ ◦AC0[m] ◦THR circuits, which further implies that CIRCUIT
+EVALUATION problem has poly-sized EMAJ ◦AC0[m0] ◦THR circuit of a ﬁxed constant
+depth d0 and ﬁxed constant m0. Hence any circuit of size s has an equivalent poly(s)-sized
+EMAJ◦AC0[m0]◦THR circuit of depth d0. Combining this with our assumption yields: For all
+e, there exists constants d, m such that NTIME[nloge n] has poly-sized EMAJ◦AC0[m0]◦THR
+circuit of depth d0. This contradicts Theorem 24 and hence our assumption was wrong,
+which completes the proof.
+◀
+5
+Extension to All Sparse Symmetric Functions
+Our lower bounds extend to circuit classes of the form f ◦C where f denotes a family of
+symmetric functions that only take the value 1 on a small number of slices of the hypercube.
+Formally, let f : {0, 1}n →{0, 1} be a symmetric function, and let g : {0, 1, . . . , n} →{0, 1}
+be its “companion” function, where for all x, f(x) = g(P
+i xi) (here, xi denotes the i-th bit
+of x). For k ∈{0, 1, . . . , n}, we say that a symmetric function f is k-sparse if |g−1(1)| = k.
+For example, the all-zeroes function is 0-sparse, the all-ones function is n-sparse, and the
+EMAJ function is 1-sparse.
+▶Theorem 26. Let k < n/2. Every k-sparse symmetric function f : {0, 1}n →{0, 1} can
+be represented as an exact majority of nO(k) ANDs on k inputs.
+Proof. Given a k-sparse f and its companion function g, consider the polynomial expression
+E(x) :=
+Y
+v∈g−1(1)
+ X
+i
+xi −v
+!
+.
+Then E(x) = 0 whenever f(x) = 1, and E(x) ̸= 0 otherwise. Expanding E into a sum of
+products, we can write E as a multilinear n-variate polynomial of degree at most k, with
+integer coeﬃcients of magnitude at most nO(k) (since each v ≤n). We can therefore write E
+as the EMAJORITY of nO(k) distinct ANDs on up to k inputs.
+◀
+The above theorem immediately implies that for every k-sparse symmetric function fm,
+any circuit with an fm at the output gate can be rewritten as a circuit with an EMAJ of
+fan-in at most mO(k) at the output gate (and ANDs of fan-in up to k below that).
+▶Corollary 27. For every ﬁxed k, and every k-sparse symmetric function family f = {fn},
+Quasi-NP does not have polynomial-size f ◦ACC0 ◦THR circuits.
+STACS 2020
+
+59:16
+Lower Bounds Against Sparse Symmetric Functions of ACC Circuits
+References
+1
+Josh Alman, Timothy M. Chan, and R. Ryan Williams. Polynomial representations of threshold
+functions and algorithmic applications. In FOCS, pages 467–476, 2016.
+2
+Sanjeev Arora and Boaz Barak. Computational Complexity - A Modern Approach. Cambridge
+University Press, 2009. URL: http://www.cambridge.org/catalogue/catalogue.asp?isbn=
+9780521424264.
+3
+Richard Beigel, Nick Reingold, and Daniel A. Spielman. PP is closed under intersection. J.
+Comput. Syst. Sci., 50(2):191–202, 1995. doi:10.1006/jcss.1995.1017.
+4
+Richard Beigel, Jun Tarui, and Seinosuke Toda. On probabilistic ACC circuits with an
+exact-threshold output gate. In Algorithms and Computation, Third International Symposium,
+ISAAC ’92, Nagoya, Japan, December 16-18, 1992, Proceedings, pages 420–429, 1992.
+5
+Lijie Chen. Non-deterministic quasi-polynomial time is average-case hard for ACC circuits. In
+60th IEEE Annual Symposium on Foundations of Computer Science, FOCS 2019, Baltimore,
+Maryland, USA, November 9-12, 2019, pages 1281–1304, 2019.
+6
+Lijie Chen and R. Ryan Williams. Stronger connections between circuit analysis and circuit
+lower bounds, via pcps of proximity. In 34th Computational Complexity Conference, CCC
+2019, July 18-20, 2019, New Brunswick, NJ, USA., pages 19:1–19:43, 2019.
+7
+Ruiwen Chen, Igor Carboni Oliveira, and Rahul Santhanam. An average-case lower bound
+against acc0. In LATIN 2018: Theoretical Informatics - 13th Latin American Symposium,
+Buenos Aires, Argentina, April 16-19, 2018, Proceedings, pages 317–330, 2018.
+8
+Irit Dinur and Omer Reingold. Assignment testers: Towards a combinatorial proof of the PCP
+theorem. SIAM J. Comput., 36(4):975–1024, 2006. doi:10.1137/S0097539705446962.
+9
+Uriel Feige, ShaﬁGoldwasser, László Lovász, Shmuel Safra, and Mario Szegedy. Approximating
+clique is almost np-complete. In 32nd Annual Symposium on Foundations of Computer Science,
+San Juan, Puerto Rico, 1-4 October 1991, pages 2–12, 1991.
+10
+Oded Goldreich. A sample of samplers: A computational perspective on sampling. In Studies
+in Complexity and Cryptography. Miscellanea on the Interplay between Randomness and
+Computation - In Collaboration with Lidor Avigad, Mihir Bellare, Zvika Brakerski, Shaﬁ
+Goldwasser, Shai Halevi, Tali Kaufman, Leonid Levin, Noam Nisan, Dana Ron, Madhu Sudan,
+Luca Trevisan, Salil Vadhan, Avi Wigderson, David Zuckerman, pages 302–332. Springer,
+2011.
+11
+Frederic Green. A complex-number fourier technique for lower bounds on the mod-m degree.
+Computational Complexity, 9(1):16–38, 2000. doi:10.1007/PL00001599.
+12
+Kristoﬀer Arnsfelt Hansen. Computing symmetric boolean functions by circuits with few exact
+threshold gates. In Computing and Combinatorics, 13th Annual International Conference,
+COCOON 2007, Banﬀ, Canada, July 16-19, 2007, Proceedings, pages 448–458, 2007. doi:
+10.1007/978-3-540-73545-8_44.
+13
+Kristoﬀer Arnsfelt Hansen. Depth reduction for circuits with a single layer of modular counting
+gates. In Computer Science - Theory and Applications, Fourth International Computer Science
+Symposium in Russia, CSR 2009, Novosibirsk, Russia, August 18-23, 2009. Proceedings, pages
+117–128, 2009. doi:10.1007/978-3-642-03351-3_13.
+14
+Kristoﬀer Arnsfelt Hansen and Vladimir V. Podolskii. Exact threshold circuits. In Proceedings
+of the 25th Annual IEEE Conference on Computational Complexity, CCC 2010, Cambridge,
+Massachusetts, USA, June 9-12, 2010, pages 270–279, 2010. doi:10.1109/CCC.2010.33.
+15
+Valentine Kabanets and Russell Impagliazzo. Derandomizing polynomial identity tests means
+proving circuit lower bounds. Computational Complexity, 13(1-2):1–46, 2004. doi:10.1007/
+s00037-004-0182-6.
+16
+Cody Murray and R. Ryan Williams. Circuit lower bounds for nondeterministic quasi-polytime:
+an easy witness lemma for NP and NQP. In Proceedings of the 50th Annual ACM SIGACT
+Symposium on Theory of Computing, STOC 2018, Los Angeles, CA, USA, June 25-29, 2018,
+pages 890–901, 2018.
+
+N. Vyas and R. R. Williams
+59:17
+17
+Daniel A. Spielman. Linear-time encodable and decodable error-correcting codes. IEEE Trans.
+Information Theory, 42(6):1723–1731, 1996. doi:10.1109/18.556668.
+18
+Suguru Tamaki. A satisﬁability algorithm for depth two circuits with a sub-quadratic number of
+symmetric and threshold gates. Electronic Colloquium on Computational Complexity (ECCC),
+23:100, 2016.
+19
+Nikhil Vyas and Ryan Williams. Lower bounds against sparse symmetric functions of acc
+circuits: Expanding the reach of #SAT algorithms, 2020. URL: https://drive.google.com/
+open?id=1NjlPk9FZPY3DHvxpbB7nWE3fz71E16mf.
+20
+Klaus W. Wagner. The complexity of combinatorial problems with succinct input representation.
+Acta Inf., 23(3):325–356, 1986. doi:10.1007/BF00289117.
+21
+R. Ryan Williams. New algorithms and lower bounds for circuits with linear threshold gates.
+Theory of Computing, 14(1):1–25, 2018.
+22
+R. Ryan Williams. New algorithms and lower bounds for circuits with linear threshold gates.
+Theory of Computing, 14(1):1–25, 2018. doi:10.4086/toc.2018.v014a017.
+23
+Richard Ryan Williams. Limits on representing boolean functions by linear combinations
+of simple functions: Thresholds, relus, and low-degree polynomials. In 33rd Computational
+Complexity Conference, CCC 2018, June 22-24, 2018, San Diego, CA, USA, pages 6:1–6:24,
+2018. doi:10.4230/LIPIcs.CCC.2018.6.
+24
+Ryan Williams. Improving exhaustive search implies superpolynomial lower bounds. SIAM
+Journal on Computing, 42(3):1218–1244, 2013.
+25
+Ryan Williams.
+Nonuniform ACC circuit lower bounds.
+J. ACM, 61(1):2:1–2:32, 2014.
+doi:10.1145/2559903.
+STACS 2020

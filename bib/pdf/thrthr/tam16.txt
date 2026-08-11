@@ -1,0 +1,899 @@
+A Satisﬁability Algorithm for Depth Two Circuits with
+a Sub-Quadratic Number of Symmetric and Threshold Gates
+Suguru Tamaki∗
+Abstract
+We consider depth 2 unbounded fan-in circuits with symmetric and linear threshold gates. We present
+a deterministic algorithm that, given such a circuit with n variables and m gates, counts the number of
+satisfying assignments in time 2
+n−Ω
+((
+n
+√m·poly(logn)
+)a)
+for some constant a > 0. Our algorithm runs in
+time super-polynomially faster than 2n if m = O(n2/logb n) for some constant b > 0. Previously, such
+algorithms were only known for bounded depth circuits with linear threshold gates and a slightly super-
+linear number of wires [Impagliazzo-Paturi-Schneider, FOCS 2013 and Chen-Santhanam-Srinivasan,
+CCC 2016].
+We also show that depth 2 circuits with O(n2/logb n) symmetric and linear threshold gates in to-
+tal cannot compute an explicit function computable by a deterministic 2O(n)-time Turing machine with
+an NP oracle. Previously, even slightly super-linear lower bounds on the number of gates were not
+known until recently Kane and Williams [STOC 2016] showed that depth 2 linear threshold circuits with
+o(n3/2/log3 n) gates cannot compute an explicit function computable in linear time.
+Key words: exponential time algorithm, circuit lower bound, polynomial method, derandomization
+∗Kyoto University tamak@kuis.kyoto-u.ac.jp. Supported in part by MEXT KAKENHI (24106003); JSPS KAKENHI
+(25240002, 26330011); the John Mung Advanced Program of Kyoto University. Part of the work performed while the author was
+at Department of Computer Science and Engineering, University of California, San Diego and the Simons Institute for the Theory
+of Computing, Berkeley.
+0
+ 
+ISSN 1433-8092 
+Electronic Colloquium on Computational Complexity, Report No. 100 (2016)
+
+1
+Introduction
+We are concerned with circuits that consist of unbounded fan-in symmetric and linear threshold gates. Let
+x1,x2,...,xn be Boolean variables and f : {0,1}n →{0,1} be a Boolean function. We say f is symmetric
+if there exists a function g : Z →{0,1} such that f(x) = g(∑n
+i=1 xi) holds. We say f is a linear threshold
+function (LTF) if there exist w0,w1,...,wn ∈Z such that f(x) = sgn(w0 +∑n
+i=1 wixi) holds, where sgn : Z →
+{0,1} is the sign function deﬁned as sgn(y) = 1 if and only if y ≥0.
+In this paper, we present satisﬁability algorithms and circuit size lower bounds for depth 2 circuits
+with symmetric and linear threshold gates as described in the next section. Note that each gate of such
+a circuit may be of a different type, e.g., g1(∑n
+i=1 xi),g2(∑n
+i=1 xi),...,sgn(w1,0 + ∑n
+i=1 w1,ixi),sgn(w2,0 +
+∑n
+i=1 w2,ixi),... etc.
+1.1
+Our contribution
+Satisﬁability algorithms
+In this paper, we present the following satisﬁability algorithms.
+Theorem 1.1 (Main 1). There exist a constant c > 0 and a deterministic algorithm that, given a depth 2
+circuit C with n variables and m gates, where each gate is either symmetric or linear threshold, runs in time
+2n−Ω
+((
+n
+√m·poly(logn)
+)c)
+and counts the number of satisfying assignments for C.
+Previously, Impagliazzo, Paturi and Schneider [33] showed that the satisﬁability of a depth 2 linear thresh-
+old circuit with n variables and m wires can be solved in randomized time 2n−µ(m/n)n, where µ(c) = 1/cO(c2).
+Chen and Santhanam [16] improved the running time as µ(c) = 1/cO(c). Chen, Santhanam and Srini-
+vasan [17] showed that the satisﬁability of a depth d linear threshold circuit with n variables and n1+εd wires
+can be solved in randomized time 2n−nεd , where εd = 1/2O(d).
+Note that a depth 2 linear threshold circuit with m gates may have O(mn) wires. We are not aware of
+satisﬁability algorithms that beat brute force search for depth 2 circuits with symmetric and linear threshold
+gates as Theorem 1.1 or even for depth 2 circuits with only symmetric gates. To summarize, our algorithm
+is deterministic, can solve a counting version of the satisﬁability problem and handle larger size circuits
+(of depth 2) with additional gate types. Our algorithm can be generalized to handle bounded depth layered
+circuits, where each layer consists of either AND/OR/XOR gates or symmetric and linear threshold gates
+and the fan-in of symmetric and linear threshold gates satisﬁes some condition.
+Circuit lower bounds
+As a byproduct of Theorem 1.1, we obtain the following circuit lower bounds.
+Theorem 1.2 (Main 2). There exist a language L ∈ENP and a constant c > 0 such that any family of depth
+2 circuits with O(n2/logc n) gates, where each gate is either symmetric or linear threshold, cannot compute
+L.
+Here ENP is the class of languages computable by deterministic 2O(n)-time NP-oracle Turing machines.
+It has been a longstanding open question whether ENP can be computed by depth 2 circuits with n1.01
+threshold gates until very recently Kane and Williams [35] showed that depth 2 circuits with o(n3/2/log3n)
+linear threshold gates cannot compute an explicit function computable in linear time.
+Again we are not aware of non-trivial lower bounds for depth 2 circuits with symmetric and linear thresh-
+old gates as Theorem 1.2 or even for depth 2 circuits with only symmetric gates. To summarize, we show
+lower bounds for larger size circuits with additional gate types computing a less explicit function.
+1
+
+1.2
+Background and Related Work
+The motivation for studying the satisﬁability problem of depth 2 linear threshold circuits is twofold: First,
+the problem contains as special cases both of the maximum satisﬁability problem and 0-1 integer linear
+programming, which have been well studied in the area of exponential time algorithms and implementations
+of practical solvers. Second, proving super-polynomial lower bounds against depth 2 linear threshold circuits
+is one of the major open questions in Boolean circuit complexity. Below we elaborate on the second point.
+Bounded depth linear threshold circuits have been studied extensively as a model of neural network. Such
+circuits are powerful enough to implement arithmetic operations such as iterated multiplication, division and
+powering, see, e.g., [41] and even candidate pseudorandom function generators [37, 42, 45]. The latter fact
+explains the difﬁculty of proving lower bounds for bounded depth linear threshold circuits by the “Natural
+Proof” barrier due to Razborov and Rudich [52, 18, 64] although it is believed that such circuits cannot
+compute some functions in NP or ever in P. There has been much effort to reveal the expressive power of
+linear threshold circuits, see, e.g., [26, 50, 32, 28, 27, 36, 39, 38, 20, 19, 22, 53, 47, 21, 25, 51, 40], to name
+a few.
+The connection between satisﬁability algorithms and circuit lower bounds, developed by Williams and
+subsequent authors [63, 67, 62, 64, 66, 9, 34], is a promising approach to avoid such barriers, see also
+[56, 49, 65] for surveys. Since the success of using the connection to actually prove new circuit lower
+bounds, i.e., super-polynomial lower bounds for ACC0 circuits computing a language in NEXP [67], many
+satisﬁability algorithms that beat brute force search have been designed for various circuit classes [48, 66,
+15, 3, 2, 44, 59]. Interestingly, some papers showed average-case circuit lower bounds directly from the
+analyses of their satisﬁability algorithms [55, 31, 4, 57, 14, 13, 12, 23, 54].
+1.3
+Techniques
+The polynomial method is a powerful technique in Boolean circuit complexity [5]. In his remarkable result,
+Williams [67] used the polynomial method to design satisﬁability algorithms beating brute force search for
+ACC0 circuits. Since then, Williams and his coauthors have developed algorithms for many interesting
+problems such as the circuit satisﬁability problem for restricted classes of circuits [66], all-pairs shortest
+paths [11] and Hamming nearest neighbors [1], see also [68].
+We follow the approach of [66] that gives satisﬁability algorithms beating brute force search for ACC0 ◦
+THR and ACC0 ◦SYM circuits. The approach is summarized as follows: (1) Given an n-variate circuit
+C ∈ACC0 ◦THR, consider a circuit C′(y) := ∨
+a∈{0,1}n′ C(y,a) for some n′ < n. (2) Represent C′ as a
+circuit in SYM ◦SYM using simulation techniques, in particular, the simulation of Beigel and Tarui [8]
+that transforms a circuit in ACC0 to a circuit in SYM◦AND. (3) Apply the “fast evaluation algorithm” for
+SYM◦SYM to obtain the truth table of C′.
+We implement the above approach, focusing on Item (2), for THR◦THR circuits. If we use the construc-
+tion of “probabilistic polynomials” for symmetric and linear threshold functions due to Srinivasan [58], we
+can represent C′ as a “probabilistic circuit” in SYM◦SYM. This implementation of Item (2) is sufﬁcient to
+obtain randomized algorithms.
+In order to design deterministic algorithms, we derandomize probabilistic polynomials of [58]. It turns
+out that pseudorandom generators for space-bounded computation due to Nisan [46] is sufﬁcient for our
+purpose. We also use modulus-amplifying polynomials [61, 69] to complete a deterministic implementation
+of Item (2) in a similar way to [8, 11].
+Our circuit lower bounds follow from the connection between satisﬁability algorithms and circuit lower
+bounds, in particular, the one due to Ben-Sasson and Viola [9].
+2
+
+2
+Preliminaries
+We use the following notations: Z is the set of integers, N is the set of natural numbers, i.e., non-negative
+integers, Zm is the quotient ring of integers modulo m, identiﬁed with {0,1,...,m−1}, F2 is the ﬁnite ﬁeld
+of order 2, identiﬁed with {0,1}.
+For a positive integer n, [n] := {1,2,...,n}. For real numbers a < b, (a,b) is the open interval between a
+and b. For y ∈Z, |y| is the absolute value of y. For a ﬁnite set S, |S| is the cardinality of S. For x ∈{0,1}n,
+|x| is the Hamming weight of x, i.e., |x| = ∑n
+i=1 xi.
+The logarithm of x to base 2 is lgx and that to base e is lnx. We use random access machines as our
+computation model.
+2.1
+Probability and derandomization
+We use the following results in Section 3.1.
+Lemma 2.1 (The Chernoff-Hoeffding bound [29]). Let X1,...,Xn be independent and identically distributeid
+Bernoulli random variables with Pr[Xi = 1] = 1−Pr[Xi = 0] = 1/m. Then, it holds that
+Pr[|n/m−
+n
+∑
+i=1
+Xi| > t] ≤2e−2t2/n.
+Lemma 2.2 (Nisan [46]). Let f : Zn
+m →{0,1} be a function computable in space O(lg(nlgm)). Then, there
+exists a function G : {0,1}ℓ→Zn
+m with ℓ= O(lg2((nlgm)/ε)) such that
+• |Pr[f(x) = 1] −Pr[f(G(y)) = 1]| ≤ε, where x and y are respectively sampled from Zn
+m and {0,1}ℓ
+uniformly at random, and
+• G is computable in time poly(nlgm).
+2.2
+Boolean circuits
+Let x1,x2,...,xn be Boolean variables and f : {0,1}n →{0,1} be a Boolean function. We say f is W-sum
+if there exist a function g : Z →{0,1} and w1,...,wn ∈N with ∑n
+i=1 wi ≤W such that f(x) = g(∑n
+i=1 wixi)
+holds. Note that we can realize a W-sum function as a W-variate symmetric function by regarding wixi as a
+sum of wi variables. In what follows, we identify Boolean functions and logic gates.
+We denote by AND,OR,XOR,SYM,SUMW,THR the set of AND gates, the set of OR gates, the set of
+XOR gates, the set of symmetric gates, the set of W-sum gates, the set of linear threshold gates, respectively.
+Let G0,G1,...,Gd−1 ∈{AND,OR,XOR,SYM,SUMW,THR} be sets of logic gates. We denote by G0 ◦
+G1 ◦···◦Gd−1 the set of depth d unbounded-fan-in layered Boolean circuits such that layer i contains gates
+from Gi and all the gates at layer i are only fed by gates at layer i+1. Layer 0 corresponds to the output gate
+and layer d consists of input variables and constants 0,1. We allow inputs and outputs of gates to be negated
+unless otherwise speciﬁed.
+We need the following upper bounds on the weights of linear threshold functions in Section 3.3.
+Lemma 2.3 (Muroga [43]). For all w0,w1,...,wn ∈Z, there exist w′
+0,w′
+1,...,w′
+n ∈Z with |w′
+i| = 2O(nlgn)
+such that sgn(w0 + ∑n
+i=1 wixi) = sgn(w′
+0 + ∑n
+i=1 w′
+ixi) holds. In addition, w′
+0,w′
+1,...,w′
+n can be efﬁciently
+obtained.
+We use the following results in Section 4.
+3
+
+Lemma 2.4 (Maciel-Th´erien [41], see also Section 2.2 in the arXiv version of Williams [66]). There exists
+a positive integer cmt such that for all n-variate f ∈THR, there exists a circuit
+C ∈OR◦AND◦XOR◦OR◦AND◦SYM
+that is equivalent to f and consists of at most ncmt wires.
+Lemma 2.5 (Beigel [6]). For all circuit C ∈AND ◦SYM whose AND gate at layer 0 has fan-in t1 and
+symmetric gates at layer 1 have fan-in at most t2, there exists a circuit C′ ∈SYM that is equivalent to C and
+whose fan-in is at most (t2 +1)t1.
+Lemma 2.6 (Williams [66]). There exists a positive constant cw and an algorithm that, given an n-variate
+circuit C ∈SYM◦SYM whose symmetric gate at layer 0 has fan-in at most t1 and symmetric gates at layer
+1 have fan-in at most t2 such that t1t2 ≤2cwn, prints the truth table of C in time poly(n)2n.
+2.3
+Polynomials
+Let x1,x2,...,xn be formal variables and K ∈{F2,Z}. In this paper, each variable always takes the values 0
+or 1, hence the identity x2
+i = xi holds. A monomial is a product of variables, i.e., ∏i∈S xi for some S ⊆[n].
+For S = /0, we regard ∏i∈S xi as 1. We can represent a K-polynomial P as a sum of terms, of the form
+P(x) = ∑S⊆[n] aS ∏i∈S xi, where aS ∈K. Whenever we consider a Z-polynomial, |aS| = 2O(n) is assumed
+unless otherwise stated. The degree of P, denoted by deg(P), is deﬁned as
+deg(P) := max{|S| | S ⊆[n],aS ̸= 0}.
+Note that we can regard an F2-polynomial P as a Boolean circuit in XOR◦AND as
+P(x) =
+⊕
+S⊆[n]
+(
+aS
+∧
+i∈S
+xi
+)
+.
+We need the following combinatorial facts in Sections 3 and 4.
+Lemma 2.7. The number of monomials of degree at most k is M(n,k) = ∑k
+i=0
+(n
+i
+)
+. If k ≤n/2, M(n,k) ≤k
+(n
+k
+)
+.
+Lemma 2.8 (Powering). Given an n-variate degree k polynomial P represented as a sum of terms, and a
+positive integer d, we can represent Pd, the dth power of P, as a sum of terms in time
+poly(n)
+d−1
+∑
+i=1
+M(n,k)M(n,ik) ≤poly(n)M(n,dk).
+Lemma 2.9 (Composition). Let p be a degree d1 polynomial in n1 variables and p1, p2,..., pn1 be degree
+d2 polynomials in the same n2 variables. Then, p(p1, p2,..., pn1) can be represented as a sum of terms in
+time poly(n1,n2)M(n1,d1)M(n2,d1d2).
+We use the following construction of polynomials approximating symmetric functions in Section 3.1.
+Lemma 2.10 (Corollary 2.7 in Bhatnagar-Gopalan-Lipton [10], Lemma 3.1 in Alman-Williams [1]). For
+all n-variate function f ∈SYM and integers s ≥0,t ≥1 with s+t ≤n, there exists an F2-polynomial p of
+degree at most O(t) such that f(x) = p(x) holds if s ≤|x| ≤s+t. In addition, p can be constructed in time
+poly(n)
+( n
+O(t)
+)
+.
+We need the following construction of modulus-amplifying polynomials [61, 69] in Section 4.
+4
+
+Lemma 2.11 (Beigel-Tarui [8]). For every positive integer ℓ, the degree (2ℓ−1) univariate Z-polynomial
+Fℓ(y) := 1−(1−y)ℓ
+ℓ−1
+∑
+j=0
+(ℓ+ j −1
+j
+)
+y j
+satisﬁes:
+• if y = 0 mod 2, then Fℓ(y) = 0 mod 2ℓ,
+• if y = 1 mod 2, then Fℓ(y) = 1 mod 2ℓ.
+In addition, for 0 ≤i ≤2ℓ−1, the coefﬁcient of yi in the polynomial Fℓhas magnitude at most 2O(ℓ).
+2.4
+Probabilistic polynomials
+For a Boolean function f : {0,1}n →{0,1}, a probability distribution P over polynomials is an ε-error
+probabilistic polynomial for f if for all x ∈{0,1}n, Prp∼P[f(x) ̸= p(x)] ≤ε holds [60]. The degree of a
+probabilistic polynomial P is the maximum degree of polynomials in the support of P, i.e., max{deg(p) |
+Prq∼P[p = q] > 0}. A probabilistic polynomial P has r-randomness if we can sample a polynomial from
+P with r uniformly random bits.
+We need the following construction of time and randomness efﬁcient probabilistic polynomials for AND/OR
+functions in Section 4.
+Lemma 2.12 (Beigel-Reingold-Spielman and Tarui [7, 60]). For every ε ∈(0,1/2), there exists an ε-error
+probabilistic O(lg2 n·lg(1/ε))-randomness probabilistic F2-polynomial P of degree d = O(lgn·lg(1/ε))
+for n-variate AND/OR functions. Furthermore, we can sample a polynomial from P in time O(poly(n)
+(n
+d
+)
+).
+3
+Randomness efﬁcient probabilistic polynomials
+In this section, we present the main technical ingredients of our satisﬁability algorithms, that is, a time
+and randomness efﬁcient version of probabilistic polynomials for weighted symmetric and linear threshold
+functions due to Srinivasan [58].
+Lemma 3.1 (Randomness efﬁcient version of Theorem 11 in [58]). For every ε ∈(0,1/2), W ∈N and an
+n-variate f ∈SUMW, f has an ε-error O(lg2((nlglgW)/ε))-randomness probabilistic F2-polynomial P of
+degree d = O(lg4W
+√
+nlg(1/ε)). Furthermore, we can sample a polynomial from P in time O(poly(n)
+(n
+d
+)
+).
+Lemma 3.2 (Randomness efﬁcient version of Theorem 12 in [58]). For every ε ∈(0,1/2) and an n-
+variate f ∈THR, f has an ε-error O(lg2(n/ε))-randomness probabilistic F2-polynomial P of degree
+d = O(lg5 n
+√
+nlg(1/ε)). Furthermore, we can sample a polynomial from P in time O(poly(n)
+(n
+d
+)
+).
+Lemma 3.3 below is the key result of this section. First we need some deﬁnitions. For m ∈N,r ∈Zm,w ∈
+Zn
+m, we deﬁne functions modn
+m,r : {0,1}n →{0,1}, modn
+m,r,w : {0,1}n →{0,1}, as follows.
+• modn
+m,r(x) = 1 if and only if ∑n
+i=1 xi ≡r mod m,
+• modn
+m,r,w(x) = 1 if and only if ∑n
+i=1 wixi ≡r mod m.
+Lemma 3.3 (Randomness efﬁcient version of Lemma 13 in [58]). For every ε ∈(0,1/2), modn
+m,r,w has
+an ε-error O(lg2((nlgm)/ε))-randomness probabilistic F2-polynomial P of degree d = O(m
+√
+nlg(1/ε)).
+Furthermore, we can sample a polynomial from P in time O(poly(n)
+(n
+d
+)
+).
+5
+
+We prove the above lemma in the next section. The proof is based on the observation that uniformly random
+bits in the construction of [58] can be replaced by the outputs of the pseudorandom generators for space-
+bounded computation due to Lemma 2.2.
+Once we establish Lemma 3.3, we can prove Lemmas 3.1 and 3.2 following the lead of [58] with careful
+calculation of parameters. The proofs are given in Sections 3.2 and 3.3 respectively.
+3.1
+Weighted modulo functions
+In this section, we prove Lemma 3.3.
+Fix integers m ≥2 and r ∈Zm and an integer vector w ∈Zn
+m. Let v ∈Zn
+m. We deﬁne functions Mm,r :
+Zm →{0,1}, Mn
+m,r,w,v : {0,1}n →{0,1}n and a set Rn
+m,r,v ⊆Zm−1
+m
+as follows.
+• Mm,r(y) = 1 if and only if y ≡r mod m,
+• (Mn
+m,r,w,v(x))i := Mm,r(wixi +vi),
+• Rn
+m,r,v := {(r1,r2,...,rm−1) ∈Zm−1
+m
+| ∑m−1
+i=1 iri ≡r +∑n
+i=1 vi mod m}.
+Note that Mm,r(wixi + vi) ∈{0,1,xi,1 −xi} holds for ﬁxed m,r,wi,vi. The following lemma shows how to
+reduce the evaluation of modn
+m,r,w(x) to the evaluation of modn
+m,r′(x′) for many pairs (r′,x′).
+Lemma 3.4 (Section 3.1 in [58]). For all v ∈Zn
+m and x ∈{0,1}n, it holds that
+modn
+m,r,w(x) = ∑
+u∈Rm,r,v
+m−1
+∧
+i=1
+modn
+m,ui(Mn
+m,r,w,v(x)).
+Let Pn
+m,r : {0,1}n →{0,1} be an F2-polynomial of degree O(t) such that Pn
+m,r(x) = modn
+m,r(x) if |x| ∈
+{⌊n/m⌋−t,...,⌊n/m⌋+t}. By Lemma 2.10, the existence of Pn
+m,r is guaranteed. In addition, Pn
+m,r can be
+constructed in time poly(n)
+( n
+O(t)
+)
+. Let us deﬁne an F2-polynomial Qn
+m,r,w,v : {0,1}n →{0,1} as follows.
+Qn
+m,r,w,v(x) := ∑
+u∈Rm,r,v
+m−1
+∏
+i=1
+Pn
+m,ui(Mn
+m,r,w,v(x)).
+The following lemma is immediate from the property of Pn
+m,r and the deﬁnition of Qn
+m,r,w,v.
+Lemma 3.5. If |Mn
+m,r,w,v(x)| ∈{⌊n/m⌋−t,...,⌊n/m⌋+t}, then Qn
+m,r,w,v(x) = modn
+m,r,w(x) holds.
+We are ready to prove Lemma 3.3.
+Proof of Lemma 3.3. If we select vi ∈Zm uniformly at random, then we have Prvi[Mm,r(wixi + vi) = 1] =
+1/m. Hence, if we select v ∈Zn
+m uniformly at random, then by Lemma 2.1, we have
+Pr
+v [|Mn
+m,r,w,v(x)| /∈{⌊n/m⌋−t,...,⌊n/m⌋+t}] ≤2e−2t2/n.
+Let ℓ= O(lg2((nlgm)/δ)) and G : {0,1}ℓ→Zn
+m be the pseudorandom generator due to Lemma 2.2. Since
+|Mn
+m,r,w,v(x)| as a function of v can be computed in space O(nlgm), if we select s ∈{0,1}ℓuniformly at
+random, then we have
+Pr
+s [|Mn
+m,r,w,G(s)(x)| /∈{⌊n/m⌋−t,...,⌊n/m⌋+t}] ≤2e−2t2/n +δ.
+This implies
+Pr
+s [Qn
+m,r,w,G(s)(x) ̸= modn
+m,r,w(x)] ≤2e−2t2/n +δ.
+If we set t =
+√
+(n/2)ln(4/ε) and δ = ε/2, then the right hand side is at most ε and the degree of Qn
+m,r,w,G(s)(x)
+is O(tm). This completes the proof.
+6
+
+3.2
+Weighted sum functions
+In this section, we prove Lemma 3.1.
+Fix a function g : Z →{0,1} and natural numbers w1,...,wn with ∑n
+i=1 wi = W. Let f(x) = g(∑n
+i=1 wixi),
+ℓ:= ⌈lgW⌉+2, p1 < ··· < pℓbe ﬁrst ℓprimes and s := ∑ℓ
+i=1 pi.
+Note that ∏ℓ
+i=1 pi > 2ℓ> 2W. By the prime number theorem, pℓ= O(lgW ·lglgW) holds and this implies
+s = O(lg2W ·lglgW).
+We deﬁne functions Mn
+m,w : {0,1}n →{0,1}m for m ∈N and Mn
+w : {0,1}n →{0,1}s as follows.
+• Mn
+m,w(x) := (modn
+m,0,w(x),...,modn
+m,m−1,w(x)),
+• Mn
+w(x) := (Mn
+p1,w(x),...,Mn
+pℓ,w(x)).
+Since we can reconstruct ∑n
+i=1 wixi from Mn
+w(x) by the Chinese remainder theorem, we have:
+Lemma 3.6 (Section 3.2 in [58]). There exists a function h : {0,1}s →{0,1} such that f(x) = h(Mn
+w(x))
+holds.
+Note that h can be written as an F2-polynomial of degree at most s and is determined by the values
+g(0),g(1),...,g(W). We are ready to prove Lemma 3.1.
+Proof of Lemma 3.1. For each pi and r ∈Zpi, there exists a δ-error O(lg2((nlg pi)/δ))-randomness proba-
+bilistic F2-polynomial Ppi,r of degree O(pi
+√
+nlg(1/δ)) by Lemma 3.3. We sample an F2-polynomial Ppi,r
+from Ppi,r, replace
+mod n
+pi,r,w by it in Mn
+w and then obtain a polynomial Q for f by composing h. Note that
+we use same random bits of length at most O(lg2((nlg pℓ)/δ)) to sample every Ppi,r.
+By the union bound, we have Pr[Q(x) ̸= f(x)] ≤sδ. If we set δ = ε/s, the degree of Q is O(spℓ
+√
+nlg(1/δ)) =
+O(lg4W
+√
+nlg(1/ε)) and the length of random bits is O(lg2((nlglgW)/ε)). This completes the proof.
+3.3
+Linear threshold functions
+In this section, we prove Lemma 3.2.
+Fix integers w0,w1,...,wn ∈N, let F(x) = w0+∑n
+i=1 wixi and consider sgn(F(x)) ∈THR. Without loss of
+generality, |wi| ≤2O(nlgn) holds due to Lemma 2.3. We assume that |F(x)| ≥n+2. Otherwise, we consider
+(n+2)(2F(x)+1) instead since for all x ∈{0,1}n, it holds that sgn(F(x)) = sgn((n+2)(2F(x)+1)) and
+|(n+2)(2F(x)+1)| ≥n+2.
+Let ℓ:= ⌈lg((n+1)maxi |wi|)⌉. We need the following deﬁnitions for 1 ≤l ≤ℓ.
+• w(l)
+i
+:=
+{
+⌊wi/2l⌋
+if wi ≥0,
+w(l)
+i
+= ⌈wi/2l⌉
+if wi < 0,
+• F(l)(x) := w(l)
+0 +∑n
+i=1 w(l)
+i xi,
+• ins(l)(x) = 1 if and only if w(l)
+0 +∑n
+i=1 w(l)
+i xi ∈{−n−1,−n,...,n,n+1},
+• pos(l)(x) = 1 if and only if w(l)
+0 +∑n
+i=1 w(l)
+i xi ∈{0,1,...,n,n+1},
+• ins(l)
+p (x) = 1 if and only if w(l)
+0 +∑n
+i=1 w(l)
+i xi ≡k mod p for some k ∈{−n−1,−n,...,n,n+1},
+• pos(l)
+p (x) = 1 if and only if w(l)
+0 +∑n
+i=1 w(l)
+i xi ≡k mod p for some k ∈{0,1,...,n,n+1},
+7
+
+Hofmeister gives the following characterization of linear threshold functions.
+Lemma 3.7 (page 139, [30]). If F(x) ≥0, then there exists a unique l such that ¬ins(l−1)(x)∧pos(l)(x) = 1
+holds. If F(x) < 0, then for all l, ¬ins(l−1)(x)∧pos(l)(x) = 0 holds.
+The following lemma implies Lemma 3.2 almost immediately.
+Lemma 3.8. For every ε ∈(0,1/2) and l, f ∈{ins(l),pos(l)} has an ε-error O(lg2(n/ε))-randomness prob-
+abilistic F2-polynomial P of degree d = O(lg4 n
+√
+nlg(1/ε)). Furthermore, we can sample a polynomial
+from P in time O(poly(n)
+(n
+d
+)
+).
+First we prove Lemma 3.2 assuming Lemma 3.8 and then prove Lemma 3.8.
+Proof of Lemma 3.2. For each l, there exist δ-error O(lg2(n/δ))-randomness probabilistic F2-polynomials
+P(l)
+ins and P(l)
+pos of degree O(lg4 n
+√
+nlg(1/δ)) for ins(l) and pos(l) respectively by Lemma 3.8. We sample
+an F2-polynomial P(l)
+ins from P(l)
+ins and an F2-polynomial P(l)
+pos from P(l)
+pos and construct an F2-polynomial
+P(x) := ∑ℓ
+l=1(1 −P(l−1)(x)
+ins
+)P(l)
+pos(x). Note that we use same random bits of length at most O(lg2(n/δ)) to
+sample every P(l)
+ins,P(l)
+pos.
+By the union bound, we have Pr[P(x) ̸= f(x)] ≤2ℓδ. If we set ε = 2ℓδ, the degree of Q is O(lg5 n
+√
+nlg(1/ε))
+and the length of random bits is O(lg2(n/ε)).
+This completes the proof of Lemma 3.2.
+Proof of Lemma 3.8. We show a proof for ins(l). The proof for pos(l) is almost identical. The main idea
+is that we compute ins(l)
+p
+instead of ins(l) for a random prime p.
+Note that ins(l)
+p ∈SUMW for W ≤
+pn. There exists an ε-error O(lg2((nlglgW)/δ))-randomness probabilistic F2-polynomial P(l)
+p
+of degree
+O(lg4W
+√
+nlg(1/δ)) for ins(l)
+p by Lemma 3.1.
+Let t := ⌈Cn2 lgn/δ⌉for a sufﬁciently large constant C > 0 and p1 < ··· < pt be ﬁrst t primes. Note that
+pt = O(t lgt) by the prime number theorem. We rely on the following lemma.
+Lemma 3.9 (Section 3.3 in [58]). If ins(l)(x) = 1, then ins(l)
+p (x) = 1. If ins(l)(x) = 0 and i is selected from
+{1,2,...,t} uniformly at random, then Pri[ins(l)
+pi (x) = 1] ≤δ.
+We construct an F2-polynomial Q for ins(l) as follows. First, select i ∈{1,2,...,t} uniformly at random.
+Then, sample a polynomial P from P(l)
+pi and let Q(x) := P(x).
+By the union bound, we have
+Pr[Q(x) ̸= ins(l)(x)] ≤Pr[ins(l)
+pi (x) ̸= ins(l)(x)]+Pr[P(x) ̸= ins(l)
+pi (x)] ≤2δ.
+If we set ε = 2δ, the degree of Q is O(lg4 n
+√
+nlg(1/ε)) and the length of random bits is O(lg2(n/ε)).
+This completes the proof of Lemma 3.8.
+4
+Satisﬁability Algorithms
+In this section, we prove the following theorem.
+Theorem 4.1. There exist a constant c > 0 and a deterministic algorithm that, given a depth 2 linear
+threshold circuit C with n variables and m gates, runs in time 2n−Ω
+((
+n
+√m·poly(lgn)
+)c)
+and counts the number of
+satisfying assignments for C.
+8
+
+Remark 4.2. The proof of Theorem 1.1 is essentially the same or even simpler and omitted, i.e., (1) we use
+Lemma 3.1 instead of 3.2 if necessary and (2) we do not have to apply Lemma 2.4 if a gate at the bottom
+layer is symmetric.
+Let C ∈THR ◦THR be an n-variate circuit whose gate at layer 0 has fan-in at most m. For a positive
+integer n′, we deﬁne a function K : {0,1}n−n′ →{0,1,...,2n′} as K(y) := ∑a∈{0,1}n′ C(y,a). Our goal is to
+construct an expression K′ = ∑i aiGi, where ai ∈Z, Gi ∈SYM, such that K ≡K′. Then ith bit of the binary
+representation of K′(y) ∈{0,1}n′+1 can be regarded as a function in SYM◦SYM. We can apply Lemma 2.6
+to obtain all the values of K(y) if we select the underlying parameters appropriately.
+Proof of Theorem 4.1. By Lemma 2.4, there exists C′ ∈THR◦OR◦AND◦XOR◦OR◦AND◦SYM that
+is equivalent to C and has at most t = mncmt wires. Let g1,g2,...,gs be symmetric gates at the bottom layer
+in C′. Let C′′ ∈THR◦OR◦AND◦XOR◦OR◦AND be an s-variate circuit with at most t wires such that
+C′′(g1,...,gs) ≡C′.
+Lemma 4.3. Let D ∈THR◦OR◦AND◦XOR◦OR◦AND be an n-variate circuit with t = poly(n) wires,
+where the threshold gate at layer 0 has fan-in at most m = O(n2). There exists an ε-error O(lgnlg2(n/ε))-
+randomness probabilistic F2-polynomial P of degree d = O(lg9 nlg5(1/ε)√m) for D. Furthermore, we
+can sample from P in time O(poly(n)
+(n
+d
+)
+).
+Proof. We replace the threshold gate at layer 0 by a δ-error probabilistic F2-polynomial from Lemma 3.2
+and replace each AND/OR gate by a δ-error probabilistic F2-polynomial from Lemma 2.12, where we set
+δ = ε/(t +1), and obtain a circuit
+D′ ∈(XOR◦AND)◦(XOR◦AND)◦(XOR◦AND)◦XOR◦(XOR◦AND)◦(XOR◦AND).
+Note that we use the same random bits to sample each probabilistic polynomial. By repeatedly using
+Lemma 2.9, we obtain a circuit D′′ ∈XOR◦AND that is equivalent to D′. By the union bound, D′ is an ε-
+error probabilistic F2-polynomial for D. The degree of D′′ is d = O(lg9 nlg5(1/ε)√m) and the randomness
+of D′ is O(lgnlg2(n/ε)) by the choice of δ. In addition, the construction of D′′ takes time O(poly(n)
+(n
+d
+)
+)
+since we apply Lemma 2.9 at most
+1. t times with d1 = d2 = O(lgnlg(1/ε)),n1 = t,n2 = n,
+2. t times with d1 = O(lgnlg(1/ε)),d2 = O(lg2 nlg2(1/ε)),n1 = t,n2 = n,
+3. m times with d1 = O(lgnlg(1/ε)),d2 = O(lg3 nlg3(1/ε)),n1 = t,n2 = n,
+4. once with with d1 = O(lg5 n
+√
+mlg(1/ε)),d2 = O(lg4 nlg4(1/ε)),n1 = m,n2 = n.
+This completes the proof.
+Let l = O(lgnlg2(n/ε) and select r ∈{0,1}l to sample a polynomial Pr for C′′ due to Lemma 4.3 in time
+poly(n)
+( s
+d1
+)
+, where d1 = O(lg9 nlg5(1/ε)√m). Then we construct a Z-polynomial Qr := Fℓ(Pr), where Fℓis
+the degree (2ℓ−1) Z-polynomial from Lemma 2.11 and we regard Pr as a Z-polynomial in the natural way.
+We can represent Qr as
+Qr =
+∑
+S⊆[s]:|S|≤d2
+aS∏
+i∈S
+gi
+9
+
+in time poly(n)
+( s
+d2
+)
+, where d2 = O(ℓlg9 nlg5(1/ε)√m) and aS = nO(d2). For each ∏i∈S gi ∈AND ◦SYM,
+we apply Lemma 2.5 and obtain a circuit gS ∈SYM with nO(d2) wires. Let Q′
+r := ∑S⊆[s]:|S|≤d aSgS. Finally
+we deﬁne R : {0,1}n−n′ →Z as
+R(y) :=
+∑
+a∈{0,1}n′,r∈{0,1}l
+Q′
+r(y,a) mod 2ℓ.
+Note that if 2ℓ> 2l, then by Lemma 2.11 and the error probability of Q′
+r, we have
+C(x′,a) = 1
+⇒
+(1−ε)2l ≤
+(
+∑
+r∈{0,1}l
+Q′
+r(y,a) mod 2ℓ
+)
+≤2l,
+C(x′,a) = 0
+⇒
+0 ≤
+(
+∑
+r∈{0,1}l
+Q′
+r(y,a) mod 2ℓ
+)
+≤ε2l.
+In addition, if 2ℓ> 2n′2l, then we have
+R(y) ∈(2l(1−ε)K(y),2l{(1−ε)K(y)+ε2n′}).
+If we set ε < 1/2n′+1 and deﬁne ˜R(y) as the nearest integer of R(y)/2l, then ˜R(y) = K(y) holds.
+We set n′ = (n/(√mlgc1 n))c2 for sufﬁciently large c1 > 0 and small c2 > 0, ε = 1/2n′+2 and ℓ= n′ +l +1.
+Then, we see that the construction of R takes time at most 2n−n′. Furthermore, for each i, the ith bit of
+the binary representation of R(y) can be represented as a circuit in SYM ◦SYM so that the condition of
+Lemma 2.6 is satisﬁed as an n−n′-variate circuit.
+This completes the proof.
+5
+Circuit Lower Bounds
+In this section, we give a proof sketch of Theorem 1.2.
+We use the connection between satisﬁability algorithms and circuit lower bounds due to Ben-Sasson and
+Viola [9]. Let Cn be a set of functions from {0,1}n to {0,1}. Cn is closed under projections if for all f ∈Cn,
+indices i, j ≤n and a bit b, it holds that
+¬f, f(x1,...,xi−1,x j ⊕b,xi+1,...,xn), f(x1,...,xi−1,b,xi+1,...,xn) ∈Cn.
+Cn is efﬁciently closed under projections if it is closed under projections and give a description of f ∈Cn,
+we can compute in poly(|f|), descriptions of
+¬f, f(x1,...,xi−1,x j ⊕b,xi+1,...,xn), f(x1,...,xi−1,b,xi+1,...,xn) ∈Cn.
+Theorem 5.1 ([9]). Let Cn be efﬁciently closed under projections. If the satisﬁability problem of the form
+f1 ∧f2 ∧f3 for f1, f2, f3 ∈Cn+O(lgn) can be deterministically solved in time 2n−ω(lgn), then there exists a
+language L ∈ENP such that Ln /∈Cn holds for inﬁnitely many n. Here Ln denotes the indicator function of
+L∩{0,1}n.
+It is easy to see that we can modify the proof of Theorem 4.1 to handle a circuit of the form C1 ∧C2 ∧C3,
+where C1,C2,C3 ∈(SYM ∪THR) ◦(SYM ∪THR), because the degree of the “ﬁnal polynomial” is larger
+by a factor of at most 3. The class of depth 2 circuits with m symmetric and linear threshold gates is clearly
+efﬁciently closed under projections. This completes the proof of Theorem 1.2.
+10
+
+Acknowledgment
+We are deeply grateful to Srikanth Srinivasan who explained us why pseudorandom generators due to [46,
+24] are sufﬁcient to obtain randomness efﬁcient versions of his constructions from [58] and kindly allowed
+us to use the idea in this paper. We would like to thank Ruiwen Chen, Ramamohan Paturi, Rahul Santhanam
+and Stefan Schneider for useful discussion and valuable comments.
+References
+[1] J. Alman and R. Williams. Probabilistic polynomials and Hamming nearest neighbors. In Proceedings
+of the IEEE 56th Annual Symposium on Foundations of Computer Science (FOCS), pages 136–150,
+2015.
+[2] K. Amano and A. Saito. A nonuniform circuit class with multilayer of threshold gates having super
+quasi polynomial size lower bounds against NEXP. In Proceedings of the 9th International Conference
+on Language and Automata Theory and Applications (LATA), pages 461–472, 2015.
+[3] K. Amano and A. Saito. A satisﬁability algorithm for some class of dense depth two threshold circuits.
+IEICE Transactions, 98-D(1):108–118, 2015.
+[4] P. Beame, R. Impagliazzo, and S. Srinivasan. Approximating AC0 by small height decision trees and
+a deterministic algorithm for #AC0 SAT. In Proceedings of the 27th Conference on Computational
+Complexity (CCC), pages 117–125, 2012.
+[5] R. Beigel. The polynomial method in circuit complexity. In Proceedings of the 8th Annual Structure
+in Complexity Theory Conference, pages 82–95, 1993.
+[6] R. Beigel. When do extra majority gates help? Polylog(n) majority gates are equivalent to one. Com-
+putational Complexity, 4:314–324, 1994.
+[7] R. Beigel, N. Reingold, and D. A. Spielman. The perceptron strikes back. In Proceedings of the Sixth
+Annual Structure in Complexity Theory Conference, pages 286–291, 1991.
+[8] R. Beigel and J. Tarui. On ACC. Computational Complexity, 4:350–366, 1994.
+[9] E. Ben-Sasson and E. Viola. Short PCPs with projection queries. In Proceedings of the 41st Inter-
+national Colloquium on Automata, Languages, and Programming (ICALP), Part I, pages 163–173,
+2014.
+[10] N. Bhatnagar, P. Gopalan, and R. J. Lipton. Symmetric polynomials over Zm and simultaneous com-
+munication protocols. J. Comput. Syst. Sci., 72(2):252–285, 2006.
+[11] T. M. Chan and R. Williams. Deterministic APSP, orthogonal vectors, and more: Quickly derandom-
+izing Razborov-Smolensky. In Proceedings of the Twenty-Seventh Annual ACM-SIAM Symposium on
+Discrete Algorithms (SODA), pages 1246–1255, 2016.
+[12] R. Chen. Satisﬁability algorithms and lower bounds for Boolean formulas over ﬁnite bases. In Pro-
+ceedings of the 40th International Symposium on Mathematical Foundations of Computer Science
+(MFCS), Part II, pages 223–234, 2015.
+11
+
+[13] R. Chen and V. Kabanets. Correlation bounds and #SAT algorithms for small linear-size circuits.
+In Proceedings of the 21st International Conference on Computing and Combinatorics (COCOON),
+pages 211–222, 2015.
+[14] R. Chen, V. Kabanets, A. Kolokolova, R. Shaltiel, and D. Zuckerman. Mining circuit lower bound
+proofs for meta-algorithms. Computational Complexity, 24(2):333–392, 2015.
+[15] R. Chen, V. Kabanets, and N. Saurabh. An improved deterministic #SAT algorithm for small De
+Morgan formulas. In Proceedings of the 39th International Symposium on Mathematical Foundations
+of Computer Science (MFCS), Part II, pages 165–176, 2014.
+[16] R. Chen and R. Santhanam. Improved algorithms for sparse MAX-SAT and MAX-k-CSP. In Proceed-
+ings of the 18th International Conference on Theory and Applications of Satisﬁability Testing (SAT),
+pages 33–45, 2015.
+[17] R. Chen, R. Santhanam, and S. Srinivasan. Average-case lower bounds and satisﬁability algorithms for
+small threshold circuits. In Proceedings of the 31th Conference on Computational Complexity (CCC),
+pages 1:1–1:35, 2016.
+[18] T. Y. Chow. Almost-natural proofs. J. Comput. Syst. Sci., 77(4):728–737, 2011.
+[19] J. Forster. A linear lower bound on the unbounded error probabilistic communication complexity. J.
+Comput. Syst. Sci., 65(4):612–625, 2002.
+[20] J. Forster, M. Krause, S. V. Lokam, R. Mubarakzjanov, N. Schmitt, and H. Simon. Relations between
+communication complexity, linear arrangements, and computational complexity. In Proceedings of the
+21st Conference on Foundations of Software Technology and Theoretical Computer Science (FSTTCS),
+pages 171–182, 2001.
+[21] M. Goldmann. On the power of a threshold gate at the top. Inf. Process. Lett., 63(6):287–293, 1997.
+[22] M. Goldmann, J. H˚astad, and A. A. Razborov. Majority gates vs. general weighted threshold gates.
+Computational Complexity, 2:277–300, 1992.
+[23] A. Golovnev, A. S. Kulikov, A. Smal, and S. Tamaki. Circuit size lower bounds and #SAT upper bounds
+through a general framework. In Proceedings of the 41st International Symposium on Mathematical
+Foundations of Computer Science (MFCS), 2016, to appear.
+[24] P. Gopalan, D. Kane, and R. Meka. Pseudorandomness via the discrete Fourier transform. In Pro-
+ceedings of the IEEE 56th Annual Symposium on Foundations of Computer Science (FOCS), pages
+903–922, 2015.
+[25] P. Gopalan and R. A. Servedio. Learning and lower bounds for AC0 with threshold gates. In Proceed-
+ings of the 13th APPROX and the 14th RANDOM, pages 588–601, 2010.
+[26] H. D. Gr¨oger and G. Tur´an. On linear decision trees computing Boolean functions. In Proceedings of
+the 18th International Colloquium on Automata, Languages and Programming (ICALP), pages 707–
+718, 1991.
+[27] A. Hajnal, W. Maass, P. Pudl´ak, M. Szegedy, and G. Tur´an. Threshold circuits of bounded depth. J.
+Comput. Syst. Sci., 46(2):129–154, 1993.
+[28] J. H˚astad and M. Goldmann. On the power of small-depth threshold circuits. Computational Com-
+plexity, 1:113–129, 1991.
+12
+
+[29] W. Hoeffding. Probability inequalities for sums of bounded random variables. Journal of the American
+Statistical Association, 58(301):13–30, 1963.
+[30] T. Hofmeister. A note on the simulation of exponential threshold weights. In Proceedings of the
+Second Annual International Conference on Computing and Combinatorics (COCOON), pages 136–
+141, 1996.
+[31] R. Impagliazzo, W. Matthews, and R. Paturi. A satisﬁability algorithm for AC0. In Proceedings of the
+23rd Annual ACM-SIAM Symposium on Discrete Algorithms (SODA), pages 961–972, 2012.
+[32] R. Impagliazzo, R. Paturi, and M. E. Saks. Size-depth tradeoffs for threshold circuits. SIAM J. Comput.,
+26(3):693–707, 1997.
+[33] R. Impagliazzo, R. Paturi, and S. Schneider. A satisﬁability algorithm for sparse depth two threshold
+circuits. In Proceedings of the 54th Annual IEEE Symposium on Foundations of Computer Science
+(FOCS), pages 479–488, 2013.
+[34] H. Jahanjou, E. Miles, and E. Viola. Local reductions. In Proceedings of the 42nd International
+Colloquium on Automata, Languages, and Programming (ICALP), Part I, pages 749–760, 2015.
+[35] D. M. Kane and R. Williams. Super-linear gate and super-quadratic wire lower bounds for depth-
+two and depth-three threshold circuits. In Proceedings of the 48th ACM Symposium on Theory of
+Computing Conference (STOC), pages 633–643, 2016.
+[36] M. Krause. Geometric arguments yield better bounds for threshold circuits and distributed computing.
+Theor. Comput. Sci., 156(1&2):99–117, 1996.
+[37] M. Krause and S. Lucks. Pseudorandom functions in TC0 and cryptographic limitations to proving
+lower bounds. Computational Complexity, 10(4):297–313, 2001.
+[38] M. Krause and P. Pudl´ak. On the computational power of depth-2 circuits with threshold and modulo
+gates. Theor. Comput. Sci., 174(1-2):137–156, 1997.
+[39] M. Krause and S. Waack. Variation ranks of communication matrices and lower bounds for depth-
+two circuits having nearly symmetric gates with unbounded fan-in. Mathematical Systems Theory,
+28(6):553–564, 1995.
+[40] S. Lovett and S. Srinivasan. Correlation bounds for poly-size AC0 circuits with n1−o(1) symmetric
+gates. In Proceedings of the 14th APPROX 2011 and the 15th RANDOM, pages 640–651, 2011.
+[41] A. Maciel and D. Th´erien. Threshold circuits of small majority-depth. Inf. Comput., 146(1):55–83,
+1998.
+[42] E. Miles and E. Viola.
+Substitution-permutation networks, pseudorandom functions, and natural
+proofs. J. ACM, 62(6):46, 2015.
+[43] S. Muroga. Threshold Logic and Its Applications. John Wiley & Sons, 1971.
+[44] A. Nagao, K. Seto, and J. Teruyama. A moderately exponential time algorithm for k-IBDD satisﬁabil-
+ity. In Proceedings of the 14th International Symposium, on Algorithms and Data Structures (WADS),
+pages 554–565, 2015.
+[45] M. Naor and O. Reingold. Number-theoretic constructions of efﬁcient pseudo-random functions. J.
+ACM, 51(2):231–262, 2004.
+13
+
+[46] N. Nisan. Pseudorandom generators for space-bounded computation. Combinatorica, 12(4):449–461,
+1992.
+[47] N. Nisan. The communication complexity of threshold gates. In Proceedings of Combinatorics, Paul
+Erd˝os is Eighty, pages 301–315, 1993.
+[48] S. Nurk. An O(20.4058m) upper bound for circuit SAT, 2009.
+[49] I. C. Oliveira. Algorithms versus circuit lower bounds. Electronic Colloquium on Computational
+Complexity (ECCC), TR13-117, 2013.
+[50] R. Paturi and M. E. Saks.
+Approximating threshold circuits by rational functions.
+Inf. Comput.,
+112(2):257–272, 1994.
+[51] V. V. Podolskii. Exponential lower bound for bounded depth circuits with few threshold gates. Inf.
+Process. Lett., 112(7):267–271, 2012.
+[52] A. A. Razborov and S. Rudich. Natural proofs. J. Comput. Syst. Sci., 55(1):24–35, 1997.
+[53] A. A. Razborov and A. Wigderson. nΩ(logn) lower bounds on the size of depth-3 threshold circuits with
+AND gates at the bottom. Inf. Process. Lett., 45(6):303–307, 1993.
+[54] T. Sakai, K. Seto, S. Tamaki, and J. Teruyama. Bounded depth circuits with weighted symmetric gates:
+Satisﬁability, lower bounds and compression. In Proceedings of the 41st International Symposium on
+Mathematical Foundations of Computer Science (MFCS), 2016, to appear.
+[55] R. Santhanam. Fighting perebor: New and improved algorithms for formula and QBF satisﬁability. In
+Proceedings of the 51th Annual IEEE Symposium on Foundations of Computer Science (FOCS), pages
+183–192, 2010.
+[56] R. Santhanam. Ironic complicity: Satisﬁability algorithms and circuit lower bounds. Bulletin of the
+EATCS, 106:31–52, 2012.
+[57] K. Seto and S. Tamaki. A satisﬁability algorithm and average-case hardness for formulas over the full
+binary basis. Computational Complexity, 22(2):245–274, 2013.
+[58] S. Srinivasan. On improved degree lower bounds for polynomial approximation. In Proceedings of
+the 33rd IARCS Annual Conference on Foundations of Software Technology and Theoretical Computer
+Science (FSTTCS), pages 201–212, 2013.
+[59] A. Tal.
+#SAT algorithms from shrinkage.
+Electronic Colloquium on Computational Complexity
+(ECCC), TR15-114, 2015.
+[60] J. Tarui. Probablistic polynomials, AC0 functions, and the polynomial-time hierarchy. Theor. Comput.
+Sci., 113(1):167–183, 1993.
+[61] S. Toda. PP is as hard as the polynomial-time hierarchy. SIAM J. Comput., 20(5):865–877, 1991.
+[62] F. Wang. NEXP does not have non-uniform quasipolynomial-size ACC circuits of o(loglogn) depth.
+In Proceedings of the 8th Annual Conference on Theory and Applications of Models of Computation
+(TAMC), pages 164–170, 2011.
+[63] R. Williams. Improving exhaustive search implies superpolynomial lower bounds. SIAM J. Comput.,
+42(3):1218–1244, 2013.
+14
+
+[64] R. Williams. Natural proofs versus derandomization. In Proceedings of the 45th ACM Symposium on
+Theory of Computing Conference (STOC), pages 21–30, 2013.
+[65] R. Williams. Algorithms for circuits and circuits for algorithms. In Proceedings of the 29th Annual
+IEEE Conference on Computational Complexity (CCC), pages 248–261, 2014.
+[66] R. Williams. New algorithms and lower bounds for circuits with linear threshold gates. In Proceedings
+of the 46th Symposium on Theory of Computing (STOC), pages 194–202, 2014. Also arXiv:1401.2444.
+[67] R. Williams. Nonuniform ACC circuit lower bounds. J. ACM, 61(1):2, 2014.
+[68] R. Williams. The polynomial method in circuit complexity applied to algorithm design (invited talk).
+In Proceedings of the 34th International Conference on Foundation of Software Technology and The-
+oretical Computer Science (FSTTCS), pages 47–60, 2014.
+[69] A. C. Yao. On ACC and threshold circuits. In Proceedings of the 31st Annual Symposium on Founda-
+tions of Computer Science (FOCS), pages 619–627, 1990.
+15
+ 
+ECCC 
+    
+            ISSN 1433-8092 
+http://eccc.hpi-web.de 
