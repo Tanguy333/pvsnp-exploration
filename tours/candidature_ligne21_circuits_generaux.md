@@ -23,6 +23,16 @@ candidature dit elle-même que son premier pas « ne peut pas blesser la
 famille » — et une mesure qui ne peut rien blesser n'est pas un premier
 pas.
 
+> **⚠ ADDENDUM MARQUÉ (2026-09-08, règle utilisateur)** : « une ligne de
+> la matrice devrait exiger au moins une flèche OUVERTE vers P vs NP ;
+> les directions à flèche EXCLUE vont au registre des éliminations ».
+> La chaîne de cette candidature n'a aucune flèche OUVERTE (flèche 1
+> ABSENTE — §3, charge 1). Conséquence : pas de ligne 21, pas d'audit
+> A-024 ; la direction entre au registre des éliminations de la matrice
+> (entrée E-1). Le verdict « LACUNE RÉPARABLE — ligne documentaire
+> possible après audit » est remplacé par « ENTRE AU REGISTRE DES
+> ÉLIMINATIONS » ; l'analyse ci-dessous est inchangée.
+
 Contexte : quatrième candidature externe ; prompt v3 (19 familles) plus
 historique PR-005/PR-006 fourni hors prompt (la candidature les cite).
 Procédure CLAUDE.md §5. Tâche PR-007 déclarée au backlog avant

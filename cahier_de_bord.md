@@ -1790,6 +1790,63 @@ calcul** du fil AS n'avaient pas atteint.
 >   Aucune direction suggérée (règle 1). Jugé à la 6e candidature.
 >   Fiche : `tasks/done/PR-008.md`.
 >
+> - [x] **PR-009 (fait, 2026-09-08)** — **CANDIDATURE N° 6 (première
+>   sous prompt v4, en-tête déclarant une dérogation à la règle 1 :
+>   « le programme de Post en complexité — autoréductibilité,
+>   mitoticité des ensembles complets ») : SURVIT SOUS CONDITIONS, la
+>   première LIGNE DOCUMENTAIRE — forme v4 à la lettre, aucun régime
+>   d'échec.** Direction absente (grep 0) ; lemmes de lecture EXÉCUTÉS
+>   sur le texte arXiv (BFvMT math/9807185, extraction + motifs
+>   tolérants) et VRAIS : la Figure 7 (cinq questions, verbatim) ne
+>   contient aucune case P ≠ NP ; « we only get the proof to work for
+>   constant k » et « failed to account for the growth of the running
+>   time when recursively computing previous players' moves » sont dans
+>   le texte (l'erreur est celle de la conférence [6]). PRISES : (1) la
+>   flèche vers P ≠ NP est EXCLUE PAR TYPE DE RESSOURCE, pas seulement
+>   absente — le transfert (Lemme 5.2/5.5) consomme une économie
+>   d'ESPACE (« coNP ⊆ NP ∩ NSPACE[log^{O(1)} n] ») que P = NP ne
+>   fournit pas ; toutes les cases opposent des ressources différentes ;
+>   (2) le « troisième mécanisme non-relativisant » = l'accès à
+>   l'oracle (HCC+93/Fortnow 1994) déjà nommé en ligne 1 pour Williams
+>   2025 — muet sur P vs NP par construction ; (3) le « type de cellule
+>   nouveau » = un win-win standard (Kannan, CHR) jamais nommé par la
+>   matrice — mécanisme transversal ; (4) Figure 7 ligne 5 corrigée
+>   (P ≠ PSPACE en colonne NON), plafond positif O(log n) (Conclusion
+>   verbatim) ; (5) Zhang et al. TCS 2020 ; Post vindiqué en 1991
+>   (Harrington-Soare, PNAS 88) après Friedberg-Muchnik. CONDITIONS :
+>   audit fondateur A-025 (dix textes + Harrington-Soare + Zhang 2020 +
+>   preuve du Lemme 3.4 + SICOMP 2000 + AW §5) ; énoncé de cellule
+>   « sépare des ressources DIFFÉRENTES ; P vs NP hors de portée par
+>   type de ressource ; verrou = plafond O(log n) contre plancher
+>   EEXPSPACE » ; mécanismes transversaux à consigner. Refusé : fil
+>   atelier. Dossier : `tours/candidature_post_autoreductibilite.md` ;
+>   lecture : `checks/pr009_lecture_bfvmt.py`,
+>   `data/pr009_lecture_bfvmt.md` ; fiche : `tasks/done/PR-009.md`.
+>
+> - [x] **RÈGLE DU 2026-09-08 (décision utilisateur, recopiée dans
+>   CLAUDE.md §8 — règle 10)** — née de la question « pourquoi
+>   écris-tu SURVIT s'il n'y a pas de flèche vers P ≠ NP ? » : « une
+>   ligne de la matrice devrait exiger au moins une flèche OUVERTE vers
+>   P vs NP ; les directions à flèche EXCLUE vont au registre des
+>   éliminations ». Le Réfuteur avait reconnu l'ambiguïté : le
+>   « SURVIT » de PR-009 portait sur la candidature (forme v4
+>   irréprochable), pas sur la voie (nulle pour la mission) ; les deux
+>   directions documentaires (PR-007, PR-009) sont également
+>   incapables d'atteindre P ≠ NP. Applications : pas de ligne 21 ni
+>   22 ; A-024 et A-025 ANNULÉS comme audits fondateurs ; création du
+>   **registre des éliminations** en dernière section de la matrice
+>   (E-1 : circuits généraux / élimination de portes — flèche
+>   ABSENTE ; E-2 : programme de Post / autoréductibilité — flèche
+>   EXCLUE par type de ressource), chaque entrée avec mécanisme,
+>   raison, mécanismes transversaux nommés (accès à l'oracle HCC+93 ;
+>   win-win) et pièces ; verdicts de PR-007 et PR-009 réétiquetés par
+>   notes MARQUÉES (« ENTRE AU REGISTRE ») ; prompt v4.1 (la règle au
+>   champ 9 et en tête ; §2 ter : candidature n° 6 ; liste des
+>   mécanismes transversaux à ne pas redécouvrir). Les deux runs
+>   redondants du palier 11 (PR-007) arrêtés par l'utilisateur,
+>   consignés NON CONCLUS dans data (le certificat « 2 NOT, sans
+>   symétries » suffit).
+>
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le
 > contredisent — « Inventaire des pièces » et « Les trois lectures » §3, dont

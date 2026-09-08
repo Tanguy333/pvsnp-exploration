@@ -229,6 +229,21 @@ Tu peux exécuter du code — utilise-le pour transformer des arguments en preuv
     - 2026-07-25 — recentrage. Fils clos : SYM∘AND versant borne inférieure ; AS (après
       écriture de la ligne 14) ; V phase théorie des nombres (registre satellite,
       `cahier_de_bord.md` §2 ter). Boucle adverse suspendue.
+    - 2026-09-08 — **règle pour la suite (décision utilisateur)** : « une
+      ligne de la matrice devrait exiger au moins une flèche OUVERTE vers
+      P vs NP ; les directions à flèche EXCLUE vont au registre des
+      éliminations ». Application : une candidature dont la chaîne (champ 3
+      du prompt) n'a aucune flèche OUVERTE — flèches ABSENTES ou EXCLUES —
+      ne devient pas une ligne et ne coûte pas d'audit fondateur ; elle
+      entre au **registre des éliminations** de `atlas/matrice_barrieres.md`
+      (dernière section), avec son mécanisme, la raison de l'exclusion et
+      les mécanismes transversaux qu'elle a fait nommer. Le verdict
+      d'instruction correspondant est « ENTRE AU REGISTRE / N'ENTRE PAS »,
+      jamais « SURVIT » (le SURVIT de PR-009 portait sur la candidature,
+      pas sur la voie — c'est l'ambiguïté que cette règle ferme). Premières
+      applications : PR-007 (circuits généraux, flèche ABSENTE → E-1) et
+      PR-009 (programme de Post, flèche EXCLUE → E-2) ; A-024 et A-025
+      annulés comme audits fondateurs.
 
 ### Réouverture d'un Tour adverse
 

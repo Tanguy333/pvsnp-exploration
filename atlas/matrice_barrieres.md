@@ -202,3 +202,98 @@ zones*, pas la zone elle-même.
 - **Archives des 25 tours** : `tours/tour_01_*.md` … `tours/tour_25_*.md`.
 - **Journal complet** : `cahier_de_bord.md` (§2 pistes, §3 lemmes,
   §4 questions q.1-q.16, §7 bibliographie).
+
+---
+
+## Registre des directions éliminées (règle du 2026-09-08)
+
+> **Règle (décision utilisateur, CLAUDE.md §8)** : « une ligne de la
+> matrice devrait exiger au moins une flèche OUVERTE vers P vs NP ; les
+> directions à flèche EXCLUE vont au registre des éliminations ». Les
+> directions instruites dont la chaîne n'a aucune flèche OUVERTE
+> (flèches ABSENTES ou EXCLUES) ne deviennent pas des lignes et ne
+> coûtent pas d'audit fondateur ; elles sont consignées ici avec leur
+> mécanisme, la raison de l'exclusion, les mécanismes transversaux
+> qu'elles ont fait nommer et leurs pièces. Le registre est une
+> élimination documentée — la mission de l'Atlas — pas une liste
+> d'attente. (Les entrées sont des listes, pas des lignes de tableau :
+> le contrôle d'intégrité 22 × 8 de la matrice reste inchangé.)
+
+- **E-1 — Bornes inférieures de circuits généraux par élimination de
+  portes** (candidature n° 5, instruction PR-007 du 2026-09-08 ;
+  dossier [tours/candidature_ligne21_circuits_generaux.md](../tours/candidature_ligne21_circuits_generaux.md)).
+  *Mécanisme* : substitutions de variables + induction (Blum 1984, 3n →
+  Find-Golovnev-Hirsch-Kulikov 2016, (3 + 1/86)n → Li-Yang 2022,
+  3,1n − o(n), sur dispersers affines « *constructible in P* »).
+  *Flèche vers P ≠ NP* : **ABSENTE** — le mécanisme produit du cn pour
+  des fonctions de P et ne distingue pas NP ; aucune flèche, même
+  conjecturale, vers « SAT ∉ SIZE(n^k) » ; « *it remains unknown whether
+  there is an explicit function (for example, a function in NP) not
+  computable by circuits of size 10n* » (Li-Yang, ECCC TR21-023).
+  *Verrou* : un théorème de limite de méthode — GHKK 2016 : « *this
+  method cannot achieve linear bounds of cn beyond a certain constant c,
+  where c depends only on the number of substitutions made at a single
+  step of the induction* » — plus l'explicité, sans avatar à échelle
+  finie (l'existence d'une fonction à > 3n portes est un comptage dès
+  n = 8, mesuré). *Barrières* : aucune ne s'applique à la frontière
+  cn → superlinéaire (RR ne mord qu'au-delà de la taille des PRF) ; la
+  route indirecte (Kannan → S₂E, lignes 1/16) est bloquée à NP par BGS
+  et AW (« *superlinear circuit lower bounds for PromiseMA but not for
+  NP* »). *Acquis versés* : instrument de synthèse exacte à trois bases
+  (`checks/pr007_synthese_exacte.py`, 222 classes NPN de B4 = la table
+  de Knuth) ; réserve PR-002 fermée — XOR₄ = 12 en NOT-payant (Red'kin
+  1970/73, 4n − 4 ; Markov 1958 + Schnorr 1974 ⟹ ≥ 11 sans solveur).
+  *Front vivant, à ne pas re-proposer comme famille* : la constructivité
+  des bornes (Chen-Jin-Santhanam-Williams 2021 ; Carmosino-Dang-Jackman,
+  arXiv 2604.23958, 2026 : « *gate elimination arguments are
+  algorithms* »). Audit A-024 annulé.
+- **E-2 — Le programme de Post en complexité : autoréductibilité et
+  mitoticité des ensembles complets** (candidature n° 6, instruction
+  PR-009 du 2026-09-08 ; dossier
+  [tours/candidature_post_autoreductibilite.md](../tours/candidature_post_autoreductibilite.md) ;
+  verbatims [data/pr009_lecture_bfvmt.md](../data/pr009_lecture_bfvmt.md)).
+  *Mécanisme* (Buhrman-Fortnow-van Melkebeek-Torenvliet, SICOMP 2000 ;
+  arXiv math/9807185 lu) : moteur positif = vérifiabilité locale des
+  calculs (Thm 4.1 : tout ≤ᵖ_T-complet pour EXP est autoréductible ;
+  Thm 4.3 : niveaux de la hiérarchie exponentielle jusqu'à O(log n)
+  alternances — « *Theorem 4.3 goes through for k(n) ∈ O(log n)* ») ;
+  moteur négatif = diagonalisation avec codage (Thm 3.1 : un
+  ≤ᵖ_{2-T}-complet pour EEXPSPACE non autoréductible) ; théorème « dans
+  les deux sens » (Thm 5.1, Figure 7 : trancher l'autoréductibilité des
+  complets de EEXP / EXPSPACE / PSPACE / EXP sépare P/PSPACE, NL/NP,
+  PH/EXP ou PH/PSPACE quelle que soit la réponse). *Flèche vers P ≠ NP* :
+  **EXCLUE par type de ressource** — aucune case de la Figure 7 ne
+  contient P ≠ NP ; le transfert (Lemmes 5.2/5.5) consomme une économie
+  d'ESPACE (« *coNP ⊆ NP ∩ NSPACE[log^{O(1)} n]* ») que P = NP ne
+  fournit pas ; le mécanisme — un écart de ressources entre la
+  réduction polynomiale et le calcul exponentiel — ne sépare que des
+  classes de ressources de natures différentes, et P vs NP oppose deux
+  classes de même ressource. *Verrou* : plafond de méthode du moteur
+  positif à O(log n) alternances (« *failed to account for the growth of
+  the running time when recursively computing previous players' moves* »)
+  contre plancher EEXPSPACE du moteur négatif ; entre les deux, la bande
+  des cinq questions ouvertes depuis 1995/2000 (dernières pièces :
+  Nguyen-Selman 2014, Hitchcock-Shafei 2016, Zhang et al. TCS 2020).
+  *Barrières* : le moteur positif ne relativise pas PAR THÉORÈME (Thm
+  4.2 : un oracle où EXP a un complet non autoréductible ; « *Issues of
+  relativization do not apply to this work because of oracle access* »)
+  — c'est le mécanisme d'accès à l'oracle (HCC+93 / Fortnow 1994) que
+  la ligne 1 nomme pour Williams 2025, ici son second exemplaire, et
+  muet sur P vs NP par construction ; RR et monotone sans objet ;
+  algébrisation non tranchée (arguée non-algébrisante : asymétrie de
+  longueur des requêtes, orthogonale à l'extension algébrique).
+  *Histoire du modèle* : Post 1944 → Friedberg-Muchnik 1956-57 (le
+  problème de Post résolu par diagonalisation) → Harrington-Soare 1991
+  (PNAS 88 : une propriété définissable garantit l'incomplétude) — pour
+  une séparation déjà acquise, la position exacte de BFvMT (« *we do
+  not separate any classes not already separable by known
+  diagonalization techniques* »). Audit A-025 annulé.
+
+**Mécanismes transversaux nommés par le registre** (à lire dans les
+lignes) : (1) **accès à l'oracle** — la preuve ne relativise pas parce
+que les deux côtés n'accèdent pas à l'oracle avec les mêmes ressources
+(HCC+93 ; Fortnow 1994) : ligne 1 (Williams 2025), E-2 (BFvMT 2000) ;
+limite intrinsèque : confiné aux écarts de ressources, inapplicable à
+P vs NP. (2) **win-win** — trancher une question, quelle que soit la
+réponse, sépare (Kannan 1982 ; Chen-Hirahara-Ren 2024 ; BFvMT Thm 5.1) :
+lignes 1, 16, E-2 ; un patron de preuve, pas un type de cellule.

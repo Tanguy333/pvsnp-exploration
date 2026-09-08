@@ -21,6 +21,18 @@ nuance est ajoutée (le plafond du moteur positif est O(log n), pas une
 constante), et la dormance est datée (2020). Entrée conditionnée à
 l'audit fondateur (précédents A-021/A-022).
 
+> **⚠ ADDENDUM MARQUÉ (2026-09-08, règle utilisateur — après la
+> question « pourquoi écris-tu SURVIT s'il n'y a pas de flèche vers
+> P ≠ NP ? »)** : « une ligne de la matrice devrait exiger au moins une
+> flèche OUVERTE vers P vs NP ; les directions à flèche EXCLUE vont au
+> registre des éliminations ». Le « SURVIT » ci-dessus portait sur la
+> CANDIDATURE (forme v4 irréprochable, lemmes vrais), pas sur la VOIE
+> (nulle pour la mission : flèche EXCLUE, prise 1). Conséquence : pas
+> de ligne, pas d'audit A-025 ; la direction entre au registre des
+> éliminations de la matrice (entrée E-2, avec les deux mécanismes
+> transversaux). Verdict réétiqueté : « ENTRE AU REGISTRE DES
+> ÉLIMINATIONS ». L'analyse ci-dessous est inchangée.
+
 Contexte : sixième candidature, première sous prompt v4 ; l'en-tête
 déclare une dérogation à la règle 1 (candidature interne, comme
 PR-005). Procédure CLAUDE.md §5 ; tâche PR-009 déclarée au backlog

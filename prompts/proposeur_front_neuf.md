@@ -15,6 +15,12 @@
 > (folklore-check, exécution du sous-lemme, barrières, réfutation). Une
 > proposition qui viole l'en-tête de recevabilité (§4) est irrecevable
 > d'office, sans examen du fond.
+> **v4.1 (2026-09-08, règle utilisateur)** : une ligne de la matrice
+> exige AU MOINS UNE flèche OUVERTE vers P vs NP ; une direction dont
+> toutes les flèches sont ABSENTES ou EXCLUES n'est pas une candidature
+> de ligne — elle peut être soumise comme ENTRÉE DU REGISTRE DES
+> ÉLIMINATIONS (§4, champ 9). Premières applications : candidatures
+> n° 5 et n° 6 (registre E-1, E-2).
 
 ---
 
@@ -184,7 +190,21 @@ elle n'en est pas un cas particulier.
   comptage dès n = 8), pas l'EXPLICITÉ, qui n'a d'avatar à aucun petit
   n ; (d) le seul morceau « contributif » du sous-lemme était un
   théorème de 1970 (Red'kin : XOR_n = 4n − 4 en {∧, ∨, ¬}) — et
-  Markov 1958 le bornait déjà.
+  Markov 1958 le bornait déjà. Sous la règle du 2026-09-08 : pas de
+  ligne (aucune flèche OUVERTE) — registre des éliminations, E-1.
+- **Candidature n° 6 (« programme de Post », autoréductibilité des
+  ensembles complets) : forme v4 à la lettre, aucun régime d'échec —
+  et pourtant pas de ligne.** Direction absente, lemmes de lecture
+  vrais sur le texte (BFvMT 2000 : la Figure 7 ne contient aucune case
+  P ≠ NP), flèche déclarée ABSENTE ; l'instruction l'a rendue EXCLUE :
+  le transfert consomme une économie d'espace (Lemme 5.5) que P = NP ne
+  fournit pas — le mécanisme ne sépare que des ressources de natures
+  différentes. Deux gains surévalués (le « théorème dans les deux
+  sens » est un win-win standard ; le « troisième mécanisme
+  non-relativisant » est celui que la ligne 1 nomme déjà, HCC+93).
+  Registre des éliminations, E-2. La leçon : une candidature peut être
+  irréprochable et n'être qu'une élimination — c'est une issue
+  honorable, à déclarer comme telle (champ 9).
 
 Le Réfuteur exécutera ton sous-lemme avec son propre instrument, fera
 le folklore-check (y compris sur la valeur que tu proposes de mesurer),
@@ -316,6 +336,20 @@ sans eux, ou avec un champ vide, est irrecevable d'office.
    passer le champ 4 comme les autres, et dire ce que la matrice GAGNE
    (une cellule d'un type nouveau, une route principale absente, un
    verrou que les lignes voisines citent sans l'écrire).
+   **Règle du 2026-09-08 (v4.1)** : quel que soit le type, une LIGNE
+   exige au moins une flèche OUVERTE vers P vs NP au champ 3. Si toutes
+   tes flèches sont ABSENTES ou EXCLUES, ne présente pas une ligne :
+   présente une **entrée du registre des éliminations** — même en-tête
+   à 9 champs, verdict « entre au registre / n'entre pas », et ce que
+   l'Atlas gagne se mesure en mécanismes transversaux nommés et en
+   directions rayées avec leur raison. Une telle entrée a sa valeur
+   (c'est la mission de l'Atlas) mais ne coûte ni audit fondateur ni
+   ligne. Mécanismes transversaux déjà consignés, à ne pas redécouvrir :
+   l'accès à l'oracle (HCC+93 / Fortnow 1994 — lignes 1 et E-2 : la
+   preuve ne relativise pas parce que les deux côtés n'accèdent pas à
+   l'oracle avec les mêmes ressources ; confiné aux écarts de
+   ressources, muet sur P vs NP) ; le win-win (Kannan 1982,
+   Chen-Hirahara-Ren 2024 — lignes 1, 16, E-2).
 
 ## 5. Les régimes d'échec interdits (le dispositif les a déjà payés)
 
