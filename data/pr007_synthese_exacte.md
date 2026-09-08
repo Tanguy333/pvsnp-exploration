@@ -79,8 +79,8 @@ g6 = NOR(x2, g5)   g7 = AND(x2, g5)   g8 = NOR(g6, g7)
 | k = 10, symétries | **UNSAT** | 603 s | réplication du théorème (Markov + Schnorr ⟹ ≥ 11) |
 | k = 11, exactement 2 NOT, symétries | **UNSAT** | 304 s | la SEULE configuration possible à 11 (b ≥ 9 par Schnorr, u ≥ 2 par Markov, b + u = 11 ⟹ (9, 2)) — donc **C = 12** modulo la validité des cassages de symétrie |
 | k = 11, exactement 2 NOT, SANS symétries | **UNSAT** | 308 s | certificat sans cassage de symétrie (817 vars, 58 740 clauses) — **C = 12 par théorème + solveur, sans hypothèse de symétrie** |
-| k = 11, sans restriction, symétries | [en cours] | — | — |
-| k = 11, sans restriction, SANS symétries | [en cours] | — | contre-épreuve complète |
+| k = 11, sans restriction, symétries | NON CONCLU — arrêté par l'utilisateur le 2026-09-08 | > 3 h | redondant avec la ligne « 2 NOT, symétries » |
+| k = 11, sans restriction, SANS symétries | NON CONCLU — arrêté par l'utilisateur le 2026-09-08 | > 3 h | redondant avec la ligne « 2 NOT, SANS symétries », qui est le certificat |
 | k = 12 | **SAT**, témoin re-vérifié sur 16 lignes | 194 s | borne supérieure de Red'kin réalisée |
 
 Témoin à 12 (3 NOT, 9 binaires — la structure en n − 1 = 3 blocs de
