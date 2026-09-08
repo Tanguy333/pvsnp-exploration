@@ -1728,6 +1728,68 @@ calcul** du fil AS n'avaient pas atteint.
 >   la ligne 7 comme acquis durable. Leçons au prompt v4 : 6e régime
 >   d'échec candidat (la confusion de mesures), champ 6 durci.
 >
+> - [x] **PR-007 (fait, 2026-09-08)** — **CANDIDATURE N° 21 (Qwen :
+>   « bornes inférieures de circuits généraux — élimination de portes,
+>   dispersers affines, pincement des barrières ») : LACUNE RÉPARABLE,
+>   sous conditions — la première candidature DOCUMENTAIRE.** Debout :
+>   le trou de l'Atlas est RÉEL (grep 0 : Blum → FGHK → Li-Yang absents
+>   de la matrice) ; folklore-check exact sur tout ce qui a été vérifié
+>   (CDJ arXiv 2604.23958 réel et fidèle — « gate elimination
+>   arguments ARE algorithms » ; CJSW ; GHKK verbatim ; Li-Yang
+>   verbatim : « 10n » ouvert, dispersers « constructible in P » ; AW
+>   déjà en bib ; Knuth n = 5 = 12 via Goucher). Constitué : (1) FAUX
+>   RACCORD — le mécanisme donne du cn pour des fonctions de P, aucune
+>   flèche vers « SAT ∉ SIZE(n^k) » ; (2) pincement mal localisé — à la
+>   frontière cn → superlinéaire aucune des 4 barrières ne s'applique,
+>   RR ne mord qu'au bout superpolynomial ; le verrou est un THÉORÈME
+>   DE LIMITE DE MÉTHODE (GHKK) + l'explicité ; (3) test de plafond
+>   hors sujet — l'existence d'une fonction à > 3n portes est un
+>   comptage dès n = 8 (mesuré), l'explicité n'a pas d'avatar atelier ;
+>   (4) folklore-check troué sur le seul morceau « contributif » :
+>   XOR₄ = 12 en NOT-payant est Red'kin 1970/73 (4n − 4, verbatim
+>   Kombarov 2011) ; Markov 1958 + Schnorr donnaient ≥ 11 sans
+>   solveur ; (5) pas de premier pas (« ne peut pas blesser la
+>   famille » — assumé). Contre-vérification (instrument INDÉPENDANT
+>   SAT/CaDiCaL, réplication déclarée) : U₂ 3/6 ; NOT-payant 4/8 ; B₂
+>   2/3 ; d(XOR_n) = ⌊n/2⌋ ; seuil de comptage n = 8 ; **la réserve
+>   PR-002 fermée : XOR₄ = 12** (10 UNSAT 603 s ; 11 UNSAT dans
+>   l'unique configuration (9 binaires, 2 NOT), avec et SANS cassage
+>   de symétrie, 304/308 s ; 12 SAT, témoin à 3 blocs) ; **B4 sur B₂ :
+>   max 7, 12 classes / 2 720 fonctions, histogramme
+>   10/60/456/2474/10624/24184/25008/2720 = la table de Knuth (de
+>   mémoire ; texte non ouvert), 222/222 conclues en 1 115 s.**
+>   Conditions : ligne 21 DOCUMENTAIRE possible après audit A-024 (RR
+>   verbatim + constructivité du disperser ; GHKK formalisation et c,
+>   position de Li-Yang ; Blum/FGHK/LY, CJSW, CDJ numérotés ; Wilson ;
+>   Red'kin/Kombarov/Knuth sur texte), énoncé RECALIBRÉ (« borne
+>   superlinéaire explicite », AUCUNE flèche vers NP), verrou =
+>   plafond de méthode + explicité. Refusé : fusion en chapeau de
+>   matrice ; tout fil atelier. Leçon prompt v4 : champ 4 = le
+>   phénomène DE LA TECHNIQUE ; catégorie « ligne documentaire » à
+>   créer. Dossier : `tours/candidature_ligne21_circuits_generaux.md` ;
+>   instrument : `checks/pr007_synthese_exacte.py` ; data :
+>   `data/pr007_synthese_exacte.md` ; fiche : `tasks/done/PR-007.md`.
+>
+> - [x] **PR-008 (fait, 2026-09-08, ordre utilisateur)** — **PROMPT
+>   PROPOSEUR v4** (`prompts/proposeur_front_neuf.md`, révisé en
+>   place) : en-tête à 9 champs — la CIBLE PROPRE du mécanisme au
+>   champ 1 (pas le problème entier) ; PROUVÉE avec numéro / OUVERTE /
+>   ABSENTE au champ 3 ; le TEST DU FAUX RACCORD au champ 4 (objet le
+>   plus dur traité aujourd'hui et sa classe ; propriété consommée ; le
+>   mécanisme distingue-t-il la classe visée ? sinon flèche absente à
+>   écrire ; cas miroir P = NP) ; le phénomène DE LA TECHNIQUE au champ
+>   5 (interdiction du phénomène d'existence — précédent « max C(f) <
+>   3n ») ; folklore-check étendu à la valeur du sous-lemme ; mesures
+>   avec définition et réplication = contrôle au champ 7 ; le TYPE
+>   (famille explorable / ligne documentaire, premier pas = audit) au
+>   champ 9. §2 : 20 familles, la ligne 21 instruite et les fils clos
+>   exclus ; §2 bis note d'état 2026-09-08 ; §2 ter les 5 candidatures
+>   avec motifs citables ; §3 précision RR + erreur type « théorème de
+>   limite pris pour une barrière » ; §5 sept régimes (+ confusion de
+>   mesures/surétiquetage ; + faux raccord, non fatal si déclaré).
+>   Aucune direction suggérée (règle 1). Jugé à la 6e candidature.
+>   Fiche : `tasks/done/PR-008.md`.
+>
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le
 > contredisent — « Inventaire des pièces » et « Les trois lectures » §3, dont
