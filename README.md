@@ -1,5 +1,7 @@
 # P vs NP — Atlas des impasses
 
+*[English version](README.en.md)*
+
 > **Mission (depuis le 2026-08-07).** Explorer le problème **P vs NP** à
 > travers différentes voies pour obtenir une avancée significative — dans
 > l'objectif d'un début de preuve ou d'une preuve de P = NP ou de P ≠ NP.
