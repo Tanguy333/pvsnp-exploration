@@ -1,4 +1,4 @@
-# Mission Proposeur — UNE famille d'approches NOUVELLE pour P vs NP, organisée autour d'un THÉORÈME DE TRANSFERT (prompt v4.4)
+# Mission Proposeur — UNE famille d'approches NOUVELLE pour P vs NP, organisée autour d'un THÉORÈME DE TRANSFERT (prompt v4.5)
 
 > Prompt généré le 2026-08-08 (PR-001) ; v2 et v3 (2026-08-08/09 :
 > candidatures n° 1-2 instruites, ligne 19 créée) ; v4 (2026-09-08,
@@ -6,7 +6,11 @@
 > ligne documentaire) ; v4.1 (règle du 2026-09-08 : une ligne exige une
 > flèche OUVERTE, sinon registre) ; v4.2 (« ouverte » = ouverte POUR LE
 > MÉCANISME) ; v4.3 (2026-09-12 : amendement du miroir) ; **v4.4
-> (2026-09-12, PR-013) : la candidature PAR THÉORÈME DE TRANSFERT.**
+> (2026-09-12, PR-013) : la candidature PAR THÉORÈME DE TRANSFERT.** ;
+> **v4.5 (2026-11-21, PR-016)** : leçons des candidatures n° 9 et n° 10 —
+> cinquième échec du schéma (le REFLET : un G plus faible que la cible,
+> que la cible implique) ; mesures d'accord calibrées sur le biais ;
+> E-5, E-6 et les mécanismes 8 à 10 au registre ; dix candidatures.
 > Huit candidatures ont été instruites ; deux sont devenues des lignes
 > (19, 20), quatre sont entrées au registre des éliminations (E-1 à
 > E-4), une a été rejetée, une close par son auteur. Ce qui distingue
@@ -120,7 +124,14 @@ complets) ; E-3 la conjecture d'isomorphisme de Berman-Hartmanis et
 l'échelle des réducibilités (Agrawal) ; E-4 les solveurs complets
 certifiants et les relaxations convexes comme recherche de preuves
 (CDCL/DPLL, Gröbner, plans coupants, SoS/Lasserre, formulations
-étendues, OBDD).
+étendues, OBDD). ; E-5 l'apprentissage de classes de circuits
+comme voie vers les bornes (LMN, Jackson, CIKK, Oliveira-Santhanam —
+son G est emprunté à ACC⁰, miroir au niveau NEXP, exclu sous crypto dès
+TC⁰) ; E-6 la voie algébrique VP vs VNP par mesures de rang (dérivées
+partielles, partielles décalées, projections multilinéaires — VP ≠ VNP
+est un REFLET : impliqué par NP ⊄ P/poly, Bürgisser 2000, il ne
+l'implique pas). La question de la flèche de la ligne 8 (GCT) est en
+instruction au dépôt : ne la propose pas.
 
 Sont exclus de surcroît : les preuves « philosophiques » ou
 informelles ; les approches par logique floue, physique quantique
@@ -206,12 +217,30 @@ elle n'en est pas un cas particulier.
   exponentielles pour DPLL, polynomiales pour CDCL). Recalibrée : seuls
   les solveurs CERTIFIANTS sont éliminés ; la colonne LP/SDP est
   aveugle à la classe (Rothvoss 2014). Le modèle d'une entrée réussie.
+- **n° 9 (apprentissage ⟹ bornes) — E-5, présentée comme entrée de
+  registre.** Quadruplet complet, TOUS les théorèmes vérifiés sur texte
+  (Oliveira-Santhanam 2017, CIKK 2016, Williams 2016). Prises : deux
+  équivalences confondues (apprentissage ⟺ distingueur à erreur
+  BORNÉE ; preuve P-naturelle ⟺ distingueur SANS erreur — le pont,
+  CIKK, n'a qu'un sens) ; une exclusion crypto citée sans ses réserves
+  (non uniforme, régime de sécurité sous-exponentiel) ; et une cellule
+  discriminante VIDE PAR DÉSÉQUILIBRE : MOD₆ vaut 1 sur 29/256 points à
+  n = 8, le polynôme constant atteint 7/8 — « degré approché ≥ 3 à
+  ε = 1/8 » était faux tel qu'écrit. Apport : la raison structurelle
+  de l'exception de la ligne 7 (une borne NEXP n'exige pas la densité ;
+  apprendre, c'est distinguer de l'aléatoire).
+- **n° 10 (VP vs VNP par mesures de rang) — E-6, présentée comme entrée
+  de registre.** Irréprochable : témoin reproduit à l'identique (19
+  valeurs), transfert de Bürgisser vérifié dans le sens annoncé, aucun
+  numéro cité de mémoire. Elle a nommé le cinquième échec du schéma :
+  le REFLET (§2 quater). Son sous-lemme fin était tranchable et l'a été
+  (écart = 2n(n − 1) relations de Laplace-Cramer du déterminant).
 
 Le Réfuteur exécutera ton sous-lemme avec son propre instrument, fera
 le folklore-check (sur ta valeur ET sur le statut de ton G), et
 attaquera le point le plus faible. Écris en conséquence.
 
-## 2 quater. Le schéma de transfert et ses quatre échecs
+## 2 quater. Le schéma de transfert et ses cinq échecs
 
 Une candidature v4.4 est le quadruplet :
 
@@ -235,7 +264,7 @@ algorithme CAPP/SAT en 2ⁿ/n^{ω(1)} pour THR∘THR poly-taille ; T =
 CW19 Thm 8 (G ⟹ NEXP ⊄ THR∘THR) ; S = ouvert (frontière n^{2.5−ε},
 CTW26), non connu équivalent (la séparation ne donne pas l'algorithme).
 
-Les quatre façons d'échouer — chacune constituée une fois, au registre :
+Les cinq façons d'échouer — chacune constituée une fois, au registre :
 
 1. **Pas de T** (E-1) : M produit des résultats sur des objets d'une
    classe plus petite (des fonctions de P) ; aucune flèche, même
@@ -258,6 +287,17 @@ Les quatre façons d'échouer — chacune constituée une fois, au registre :
    miroir même s'il a l'air d'un sous-but : « approcher MAX-3SAT à
    7/8 + ε » est NP-dur (Håstad 2001) — ce n'est pas un G, c'est
    P = NP.
+5. **Le reflet** (E-6) : T existe mais va À REBOURS — c'est la cible
+   qui implique G (sous forme non uniforme, ou par le comptage), et G
+   n'implique pas la cible. Typique des séparations de COMPTAGE :
+   NP ⊄ P/poly ⟹ VP ≠ VNP (Bürgisser 2000), P ≠ NP ⟹ FP ≠ #P — jamais
+   l'inverse. Symptôme : le théorème de transfert que tu cites conclut
+   à TON G au lieu de partir de lui. Test : « ma cible implique-t-elle
+   G ? » Si oui et que G n'implique pas la cible, G est un reflet. (Le
+   reflet est l'inverse de l'ombre de la n° 7 : l'ombre est plus forte
+   que la cible, le reflet plus faible.) Côté P = NP, le comptage
+   transfère dans le bon sens — FP = #P ⟹ P = NP — mais seulement en
+   version UNIFORME (ligne 19).
 
 Ce qu'est un BON G, direction P = NP : structuré (une forme
 d'algorithme, une représentation, un système de preuves + une
@@ -354,9 +394,13 @@ sans eux, ou avec un champ vide, est irrecevable d'office.
    problèmes dans FP), M est indifférent à la classe visée et G est
    ABSENT ou EMPRUNTÉ — écris-le. Test de l'emprunt : « si les lignes
    voisines fermaient leur verrou, G serait-il fermé sans M ? » ;
-   (d) *Le sens unique de T* : la cible implique-t-elle G ? Si oui,
-   miroir. (Modèle : NEXP ⊄ THR∘THR ne donne pas l'algorithme CAPP —
-   sens unique ; « P = NP ⟹ tout G NP-dur » — miroir.)
+   (d) *Le sens unique de T* : la cible implique-t-elle G ? Si G et la
+   cible s'impliquent mutuellement : MIROIR. Si SEULE la cible implique
+   G : REFLET (échec 5 — G est plus faible que la cible, ce n'est pas un
+   sous-but). Il faut G ⟹ cible sans réciproque connue. (Modèles :
+   NEXP ⊄ THR∘THR ne donne pas l'algorithme CAPP — sens unique, bon ;
+   « P = NP ⟺ un problème NP-dur en temps polynomial » — miroir ;
+   NP ⊄ P/poly ⟹ VP ≠ VNP — reflet.)
    Une candidature qui échoue à (b), (c) ou (d) n'est pas irrecevable ;
    elle est recevable SEULEMENT si elle l'assume au champ 9 (registre)
    avec ses mécanismes transversaux et sa raison.
@@ -386,7 +430,12 @@ sans eux, ou avec un champ vide, est irrecevable d'office.
    deux « poids » homonymes) ; (ii) **les deux issues touchent la
    famille, pas l'instrument** — une calibration seule n'est pas un
    sous-lemme (n° 5) ; (iii) la réplication d'une valeur publiée est un
-   RÉGIME DE CONTRÔLE, jamais le régime discriminant. Le format
+   RÉGIME DE CONTRÔLE, jamais le régime discriminant ; (iv) **toute
+   mesure d'accord ou d'approximation est calibrée sur le biais de la
+   fonction** — un seuil d'erreur ε n'a de sens que si ε est inférieur
+   à la fraction minoritaire (sinon le prédicteur CONSTANT le passe),
+   ou mesure l'avantage sur le meilleur constant (n° 9 : MOD₆ à n = 8,
+   biais 0,113 < ε = 0,125, cellule vide). Le format
    d'excellence : la DOUBLE CALIBRATION (n° 2, n° 3, n° 8) — deux
    sorties opposées attendues du même instrument, l'une de contrôle,
    l'autre qui teste le mécanisme.
@@ -412,7 +461,13 @@ sans eux, ou avec un champ vide, est irrecevable d'office.
    profil de relativisation d'une conjecture et de sa rivale ; (6) la
    trace est une preuve (un solveur certifiant est borné par la
    complexité des preuves de son système, dans les deux sens) ; (7)
-   l'automatisation est un miroir (Atserias-Müller 2020).
+   l'automatisation est un miroir (Atserias-Müller 2020) ; (8) le
+   triangle naturel / apprentissage / distingueur (CIKK 2016 ; OS17
+   Th. 8-9 ; Williams 2016 Th. 1.2 — flèches exactes, pas une
+   identité) ; (9) l'échelle algorithmique RR-exposée (une échelle
+   « algorithme ⟹ borne » dont le G exige la densité est soumise à RR
+   par théorème ; la ligne 7 l'esquive parce qu'une borne NEXP ne
+   l'exige pas) ; (10) le reflet de comptage (§2 quater, échec 5).
 
 ## 5. Les régimes d'échec interdits (le dispositif les a déjà payés)
 
@@ -448,6 +503,11 @@ proposition qui y retombe sera rejetée en citant ce paragraphe :
    mécanisme n'atteint pas et qu'une autre ligne fermerait (emprunt —
    n° 7). Remède : champ 4 (b), (c), (d). Déclaré, c'est une entrée de
    registre ; déguisé, c'est un rejet.
+9. **Mesure mal calibrée** : un sous-lemme dont la cellule
+   discriminante est vide parce que la mesure ne voit pas le phénomène
+   à l'échelle choisie — seuil d'accord au-dessus du biais, degré
+   approché sur une fonction déséquilibrée (n° 9). Remède : champ 7
+   (iv). C'est le pendant, côté instrument, de la confusion de mesures.
 
 Et un garde-fou de ton : n'écris jamais que la famille « pourrait
 résoudre » P vs NP. Écris ce qu'elle permettrait de prouver, à quelles
