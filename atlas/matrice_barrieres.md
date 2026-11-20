@@ -1,5 +1,7 @@
 # Atlas des impasses — matrice barrières × approches pour P vs NP
 
+*[English version](matrice_barrieres.en.md)*
+
 > **Mission de l'Atlas (décision utilisateur, 2026-08-07)** : explorer les
 > différentes voies et en éliminer pour obtenir la bonne voie de résolution
 > du problème P vs NP. Une cellule fermée = une voie éliminée avec pièces ;

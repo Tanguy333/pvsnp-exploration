@@ -1,177 +1,188 @@
-# P vs NP — Atlas des impasses
+# P vs NP — An Atlas of Dead Ends
 
-*[English version](README.en.md)*
+*[Version française](README.fr.md)*
 
-> **Mission (depuis le 2026-08-07).** Explorer le problème **P vs NP** à
-> travers différentes voies pour obtenir une avancée significative — dans
-> l'objectif d'un début de preuve ou d'une preuve de P = NP ou de P ≠ NP.
-> L'instrument central est un **atlas d'élimination** : explorer les voies,
-> éliminer celles qui meurent (preuves, contre-exemples exécutables, audits
-> sur textes — 27 tours de réfutation adverse archivés), pour faire émerger
-> la bonne voie de résolution.
+> **Mission (since 2026-08-07).** Explore the **P vs NP** problem through
+> several routes in order to make significant progress, with the aim of a
+> partial proof or a proof of P = NP or P ≠ NP. The central instrument is an
+> **elimination atlas**: explore the routes, eliminate the ones that die
+> (proofs, executable counterexamples, full-text audits, 27 archived rounds
+> of adversarial refutation), so that the right route can emerge.
 >
-> **Cadrage honnête, inchangé.** Le problème est ouvert depuis 1971 ; ce
-> dépôt ne prétend pas l'avoir résolu ni être près de le faire. Aucune
-> avancée n'y est revendiquée sans vérification exécutable, folklore-check
-> écrit et confrontation aux barrières — l'ambition est un cap, pas une
-> revendication.
+> **Honest framing, unchanged.** The problem has been open since 1971. This
+> repository does not claim to have solved it, or to be close to solving it.
+> No progress is claimed here without executable verification, a written
+> prior-work check, and a test against the known barriers. The ambition is a
+> heading, not a claim.
 
-### Ce que ce dépôt a établi (bilan au 2026-07-25)
+### What this repository has established (status as of 2026-07-25)
 
-Une chose fermée : **la Conjecture 5 de Krishan-Vishwanathan est fausse** —
-mécanisme de parité prouvé, énumération exhaustive par cellule, confirmée par
-écrit par un des auteurs. Cela ferme **un ingrédient** d'une route vers
-MAJ ∉ ACC, pas MAJ ∉ ACC. **Vingt-deux audits sur textes intégraux**, avec le
-marqueur `[NON TROUVÉ]` là où la pièce manque — c'est le format où ce dépôt rend
-le plus. **Quatre instruments exacts certifiés**, dont on publie le plafond :
-n ≤ 7-8 pour le torique et le CVP, n = 10 pour le CP-SAT. Et **un négatif de
-dispositif**, rencontré deux fois par deux chemins indépendants et chiffré :
-l'écart entre ce que l'atelier mesure et l'échelle où le phénomène commence
-(n ≤ 8 contre n ≈ 4050 ; O(n²) contre 2^{polylog n}) —
-[`atlas/echelle_instrument.md`](atlas/echelle_instrument.md). Le reste — 169
-tâches, 188 scripts, 27 tours — est du coût, et il est présenté comme tel.
-**Au 2026-07-25, rien ici n'avait fait progresser une preuve de P ≠ NP** — ce
-bilan est daté et reste exact ; depuis le 2026-08-07 la mission vise
-explicitement l'avancée (voir l'en-tête), et ce bilan est la ligne de départ
-que toute revendication future devra battre, pièces à l'appui. La table des
-erreurs du dépôt (36 auto-corrections, dont une revendication asymptotique
-fausse interceptée avant envoi à un auteur du domaine) fait partie du
-livrable au même titre que les résultats.
+One thing closed: **Conjecture 5 of Krishan-Vishwanathan is false**. The
+parity mechanism is proved, the enumeration is exhaustive cell by cell, and
+one of the authors confirmed it in writing. This closes **one ingredient** of
+a route towards MAJ ∉ ACC, not MAJ ∉ ACC itself. **Twenty-two full-text
+audits**, with the marker `[NON TROUVÉ]` ("not found") wherever a piece is
+missing; this is the format in which the repository delivers the most.
+**Four certified exact instruments**, whose ceiling is published: n ≤ 7-8 for
+the toric and CVP instruments, n = 10 for CP-SAT. And **one negative result
+about the setup itself**, met twice along two independent paths and
+quantified: the gap between what the workshop can measure and the scale at
+which the phenomenon starts (n ≤ 8 versus n ≈ 4050; O(n²) versus
+2^{polylog n}), see [`atlas/echelle_instrument.md`](atlas/echelle_instrument.md).
+The rest (169 tasks, 188 scripts, 27 rounds) is cost, and it is presented as
+such. **As of 2026-07-25, nothing here had advanced a proof of P ≠ NP.** That
+assessment is dated and still accurate. Since 2026-08-07 the mission
+explicitly aims at progress (see the header), and this assessment is the
+baseline any future claim will have to beat, with evidence. The repository's
+error log (36 self-corrections, including a false asymptotic claim caught
+before it was sent to an author in the field) is part of the deliverable, on
+the same footing as the results.
 
-## Le problème
+## The problem
 
-Tout problème dont une solution candidate est vérifiable en temps polynomial
-(classe NP) est-il aussi *résoluble* en temps polynomial (classe P) ? C'est
-l'un des sept problèmes du prix du millénaire, ouvert depuis 1971. Aucune
-preuve valide n'existe à ce jour — et ce dépôt documente, pièce par pièce,
-pourquoi les grandes familles d'attaques connues ne peuvent pas la donner.
+Is every problem whose candidate solution can be checked in polynomial time
+(the class NP) also *solvable* in polynomial time (the class P)? It is one of
+the seven Millennium Prize Problems, open since 1971. No valid proof exists
+today, and this repository documents, piece by piece, why the major known
+families of attack cannot provide one.
 
-## Le livrable central : la matrice barrières × approches
+## The central deliverable: the barriers × approaches matrix
 
-**[`atlas/matrice_barrieres.md`](atlas/matrice_barrieres.md)** — 20 familles
-d'approches (de la diagonalisation à GCT, de la méthode polynomiale modulaire
-à la hardness magnification, la méta-complexité moderne, les polynômes
-toriques, la complexité des preuves, le range avoidance, le lifting, la
-méta-complexité des classes profondeur-2 — la ligne 18 —, les algorithmes
-holographiques de Valiant-Cai — la ligne 19, première ligne en direction
-P = NP — et la recherche totale structurée TFNP — la ligne 20, la chaîne
-la plus courte de la matrice) croisées avec les 4 barrières connues
-(relativisation, preuves naturelles, algébrisation, monotone) plus une
-colonne « **verrou réel** » : ce qui bloque effectivement chaque approche
-aujourd'hui. Les cellules renvoient à leur pièce justificative — audit `bib/`
-ou fiche `tasks/done/` ; le câblage vers les scripts est en cours dans
-[`atlas/temoins.md`](atlas/temoins.md).
+**[`atlas/matrice_barrieres.en.md`](atlas/matrice_barrieres.en.md)** (English translation of the French reference [`atlas/matrice_barrieres.md`](atlas/matrice_barrieres.md)):
+20 families of approaches, from diagonalization to Geometric Complexity
+Theory (GCT), from the modular polynomial method to hardness magnification,
+modern meta-complexity, toric polynomials, proof complexity, range avoidance,
+lifting, the meta-complexity of depth-2 classes (row 18), Valiant-Cai
+holographic algorithms (row 19, the first row in the P = NP direction), and
+structured total search TFNP (row 20, the shortest chain in the matrix).
+They are crossed with the 4 known barriers (relativization, natural proofs,
+algebrization, monotone), plus a "**real lock**" column: what actually blocks
+each approach today. Each cell points to its supporting evidence, either an
+audit in `bib/` or a task record in `tasks/done/`. Wiring cells to scripts is
+in progress in [`atlas/temoins.md`](atlas/temoins.md).
 
-**Portée des mesures** — [`atlas/echelle_instrument.md`](atlas/echelle_instrument.md).
-Les instruments de ce dépôt ont un plafond chiffré (n ≤ 7-8 pour le torique et
-le CVP, n = 10 pour le CP-SAT), et plusieurs fronts de la matrice ont une
-échelle caractéristique très supérieure. Le dépôt a payé cet écart deux fois,
-par deux chemins indépendants, avant de l'écrire.
+A **register of eliminations** at the end of the matrix holds directions that
+were examined but have no open arrow towards P vs NP, so they do not become
+rows.
 
-Les trois enseignements de la matrice :
+**Scope of the measurements**: [`atlas/echelle_instrument.md`](atlas/echelle_instrument.md).
+The instruments in this repository have a quantified ceiling (n ≤ 7-8 for the
+toric and CVP instruments, n = 10 for CP-SAT), and several fronts of the
+matrix live at a much larger characteristic scale. The repository paid for
+this gap twice, along two independent paths, before writing it down.
 
-1. **Une seule ligne franchit les 4 barrières** : la méthode algorithmique de
-   Williams (NEXP ⊄ ACC⁰, 2011) — et son verrou d'extension est précis
-   (aucun algorithme SAT non-trivial au-delà d'ACC⁰).
-2. **Les barrières classiques ne sont plus le front** : chaque programme
-   vivant a réglé son rapport aux 3 barrières *par construction*, et bute
-   sur une **barrière interne propre** (modules composés depuis 1987,
-   BIP 2019 pour GCT, localité 2020 pour la magnification…).
-3. Toute stratégie assez précise pour être exécutable engendre l'analyse de
-   sa propre impossibilité.
+The three lessons of the matrix:
 
-## Les pièces
+1. **Only one row crosses all 4 barriers**: Williams' algorithmic method
+   (NEXP ⊄ ACC⁰, 2011). Its extension lock is precise: there is no
+   non-trivial SAT algorithm beyond ACC⁰.
+2. **The classical barriers are no longer the front line.** Every live
+   program has settled its relationship with the 3 classical barriers *by
+   construction*, and is stuck on an **internal barrier of its own**
+   (composite moduli since 1987, BIP 2019 for GCT, locality 2020 for
+   magnification, and so on).
+3. Any strategy precise enough to be executed generates the analysis of its
+   own impossibility.
+
+## The pieces
 
 ```
 .
-├── README.md                  ← ce fichier
-├── CLAUDE.md                  ← règles de l'agent (mode tâches + anti-esquive)
-├── cahier_de_bord.md          ← journal : pistes, lemmes, questions, registre satellite (§2 ter)
+├── README.md                  ← this file (English, default)
+├── README.fr.md               ← French readme
+├── CLAUDE.md                  ← agent rules (task mode + anti-evasion rules)
+├── cahier_de_bord.md          ← log: leads, lemmas, questions, satellite register (§2 ter)
 ├── atlas/
-│   ├── matrice_barrieres.md   ← LE livrable : matrice barrières × approches (15 lignes)
-│   ├── temoins.md             ← cellule → script → commande → sortie → durée
-│   └── echelle_instrument.md  ← note de dispositif : le plafond de l'atelier
-├── bib/                       ← 22 audits bibliographiques sur textes intégraux
-│   ├── bgs_1975.md            ← relativisation (les 2 oracles, preuves)
-│   ├── razborov_rudich_1997.md← preuves naturelles (définitions verbatim)
-│   ├── aaronson_wigderson_2008.md ← algébrisation (définition asymétrique exacte)
-│   ├── tardos_1988.md         ← barrière monotone (mécanisme θ̄ + GLS)
-│   ├── razborov_smolensky_1987.md ← méthode polynomiale modulaire
-│   ├── beigel_tarui_1994.md   ← transformation SYM+ (cœur de Williams)
-│   ├── williams_2011.md       ← le seul franchissement des 3 barrières
-│   ├── cfi_abd.md             ← CFI, FPC ⊊ P, CSP affines
-│   └── l18_status.md          ← le seul objet non recensé du dépôt
-├── barriers/                  ← 4 cellules détaillées (approche × barrière)
-├── tours/                     ← archives des 27 tours adverses (idée + réfutation)
-├── checks/                    ← 188 scripts de vérification exécutables
-├── data/                      ← 12 jeux de mesures (weight L1 des PTF sur TC⁰ d=2…)
-├── notes/                     ← synthèses et brouillons (dont satellites, cf. cahier §2 ter)
-├── roadmap/                   ← ARCHIVE 2026-05-23, pas le programme du dépôt
-└── tasks/                     ← backlog (169 faites), hors_cible/, failed/
+│   ├── matrice_barrieres.md   ← THE deliverable: barriers × approaches matrix (20 rows, French reference)
+│   ├── matrice_barrieres.en.md ← English translation of the matrix
+│   ├── temoins.md             ← cell → script → command → output → runtime
+│   └── echelle_instrument.md  ← setup note: the workshop's ceiling
+├── bib/                       ← 22 bibliographic audits on full texts
+│   ├── bgs_1975.md            ← relativization (both oracles, proofs)
+│   ├── razborov_rudich_1997.md← natural proofs (definitions verbatim)
+│   ├── aaronson_wigderson_2008.md ← algebrization (exact asymmetric definition)
+│   ├── tardos_1988.md         ← monotone barrier (θ̄ mechanism + GLS)
+│   ├── razborov_smolensky_1987.md ← modular polynomial method
+│   ├── beigel_tarui_1994.md   ← SYM+ transformation (core of Williams)
+│   ├── williams_2011.md       ← the only crossing of the 3 barriers
+│   ├── cfi_abd.md             ← CFI, FPC ⊊ P, affine CSPs
+│   └── l18_status.md          ← the only object in the repository not found in the literature
+├── barriers/                  ← 4 detailed cells (approach × barrier)
+├── tours/                     ← archives of the 27 adversarial rounds (idea + refutation)
+├── checks/                    ← 188 executable verification scripts
+├── data/                      ← 12 measurement datasets (L1 weight of PTFs on depth-2 TC⁰, …)
+├── notes/                     ← summaries and drafts (including satellites, see log §2 ter)
+├── roadmap/                   ← ARCHIVE 2026-05-23, not the repository's program
+└── tasks/                     ← backlog (169 done), hors_cible/ (off-target), failed/
 ```
 
-*(Les chiffres ci-dessus sont des comptes réels au 2026-07-25, pas des
-estimations — le README précédent en annonçait 12, 9, ~30 et 25.)*
+*(The counts above are real counts as of 2026-07-25, not estimates. The
+previous readme announced 12, 9, ~30 and 25.)*
 
-## Comment ce dépôt a été construit
+## How this repository was built
 
-**Phase adverse (Tours 1-25).** Deux LLM en rôles adverses : un *Proposeur*
-génère une idée, un *Réfuteur* la démolit — avec obligation de contre-exemple
-exécutable quand c'est calculable. Résultat : 25 archives de réfutation, et
-un diagnostic net de **4 régimes d'échec** des LLM sur ce problème
-(spéculation tuée par les barrières, dérive hors-sujet, re-démonstration de
-folklore, pivot d'esquive).
+This is a spare-time project, carried out with LLMs (mainly Claude).
 
-**Phase atlas (depuis 2026-06).** La boucle adverse est suspendue, remplacée
-par des **tâches atomiques anti-esquive** (CLAUDE.md §8) : audits de papiers
-sur texte intégral, mesures ILP, cellules de matrice — chaque tâche avec
-output spécifié à l'avance, échec honnête autorisé, invention interdite.
-Deux tours adverses ont été rouverts (26 et 27) sur une cible née de l'Atlas ;
-le fil qui en est issu a été **clos le 2026-07-25**, et la boucle re-suspendue.
+**Adversarial phase (Rounds 1-25).** Two LLMs in opposing roles: a
+*Proposer* generates an idea, a *Refuter* demolishes it, with an obligation
+to produce an executable counterexample whenever one is computable. Result:
+25 refutation archives, and a clear diagnosis of **4 failure modes** of LLMs
+on this problem (speculation killed by the barriers, off-topic drift,
+re-proving folklore, evasive pivoting).
 
-**Recentrage (2026-07-25).** Un audit interne a mesuré que **160 des 169
-tâches livrées n'avaient jamais touché le livrable** : le travail était absorbé
-par le journal, pas par l'Atlas. Diagnostic : les six règles anti-esquive
-régulaient toutes la *forme* d'une tâche, **aucune ne régulait sa direction**.
-Quatre règles ont été ajoutées (CLAUDE.md §8, règles 7 à 10) : rattachement
-obligatoire à une cellule nommée et **relu à la clôture**, test de plafond
-(« à quelle échelle le phénomène commence-t-il, est-elle sous mon plafond ? »),
-bilan par fil défini par sa *cible*, et obligation que tout recadrage s'écrive
-dans les règles elles-mêmes. Le régime d'échec n°5 est ainsi documenté :
-**une dérive lente que la rigueur locale ne détecte pas** — chaque tâche
-irréprochable, la trajectoire hors sujet.
+**Atlas phase (since 2026-06).** The adversarial loop is suspended, replaced
+by **atomic anti-evasion tasks** (CLAUDE.md §8): full-text paper audits, ILP
+measurements, matrix cells. Each task has its output specified in advance;
+honest failure is allowed, invention is forbidden. Two adversarial rounds
+were reopened (26 and 27) on a target that came from the Atlas; the thread
+they produced was **closed on 2026-07-25**, and the loop suspended again.
 
-## Acquis vérifiables (et leur statut honnête)
+**Refocusing (2026-07-25).** An internal audit measured that **160 of the 169
+delivered tasks had never touched the deliverable**: the work was being
+absorbed by the log, not by the Atlas. Diagnosis: the six anti-evasion rules
+all regulated the *form* of a task, **none regulated its direction**. Four
+rules were added (CLAUDE.md §8, rules 7 to 10): a mandatory link to a named
+cell, **re-read at closing time**; a ceiling test ("at what scale does the
+phenomenon start, and is it below my ceiling?"); a review per thread, where a
+thread is defined by its *target*; and the requirement that any refocusing be
+written into the rules themselves. Failure mode no. 5 is thus documented:
+**a slow drift that local rigor does not detect**, where every task is
+impeccable and the trajectory is off-topic.
 
-- **9 mini-théorèmes de combinatoire booléenne** (profondeur 2) prouvés et
-  vérifiés par calcul — dont l'audit bibliographique a établi que 8 sont du
-  folklore (Quine 1952 → Hellerstein-Kletenik 2011). Le 9e,
-  `DNF_min(IP_{2n}) = (3^n−1)/2`, est **non recensé après deux campagnes de
-  recherche** ([`bib/l18_status.md`](bib/l18_status.md)) et fait l'objet d'un
-  brouillon de note ([`notes/dnf_min_ip.md`](notes/dnf_min_ip.md)).
-- **Une mesure neuve** ([`tasks/done/F-001.md`](tasks/done/F-001.md)) : la
-  weight L1 des représentations PTF sur TC⁰ d=2 — EXACT_k est poly-weight
-  (O(n²), structurel), IP est exponentielle (20 → 119 → 640) ; la sous-classe
-  poly-weight ne couvre pas TC⁰ d=2, quantification de l'obstacle à
-  l'extension de Williams.
-- **Une observation ouverte** : `min_D W(IP_{2k}) = (3^k−1)/2 = DNF_min(IP)`
-  aux 3 points mesurés — la constante 3^{n/2} gouverne la profondeur 2 d'IP
-  dans trois modèles distincts (DNF, 2-CNF, PTF).
+## Verifiable results (and their honest status)
 
-## Réouverture de la boucle adverse
+- **9 small theorems in Boolean combinatorics** (depth 2), proved and checked
+  by computation. The bibliographic audit established that 8 of them are
+  folklore (Quine 1952 → Hellerstein-Kletenik 2011). The 9th,
+  `DNF_min(IP_{2n}) = (3^n−1)/2`, was **not found in the literature after two
+  search campaigns** ([`bib/l18_status.md`](bib/l18_status.md)) and has a
+  draft note ([`notes/dnf_min_ip.md`](notes/dnf_min_ip.md)).
+- **A new measurement** ([`tasks/done/F-001.md`](tasks/done/F-001.md)): the L1
+  weight of PTF representations on depth-2 TC⁰. EXACT_k has polynomial weight
+  (O(n²), structural), IP has exponential weight (20 → 119 → 640); the
+  polynomial-weight subclass does not cover depth-2 TC⁰, which quantifies the
+  obstacle to extending Williams' method.
+- **An open observation**: `min_D W(IP_{2k}) = (3^k−1)/2 = DNF_min(IP)` at the
+  3 measured points. The constant 3^{n/2} governs the depth-2 complexity of IP
+  in three distinct models (DNF, 2-CNF, PTF).
 
-Un Tour 26+ ne peut être ouvert que sur un **sous-lemme vérifiable** de
-l'une des 5 zones génératrices identifiées en fin d'Atlas (extension TC⁰,
-modules composés, technique non-localisante, borne CPT, multiplicity
-obstructions) — pas sur une « grande idée ». L'Atlas est le générateur de
-cibles, pas l'imagination du modèle.
+## Reopening the adversarial loop
 
-## Avertissement
+A Round 26+ can only be opened on a **verifiable sub-lemma** from one of the
+5 generating zones identified at the end of the Atlas (TC⁰ extension,
+composite moduli, non-localizing technique, CPT bound, multiplicity
+obstructions), not on a "big idea". The Atlas generates targets, not the
+model's imagination.
 
-Ce projet est un exercice de méthode : faire produire à des LLM de la
-compréhension *vérifiable* sur un problème qui les dépasse (et qui dépasse
-tout le monde depuis 1971). Les preuves internes ont été auditées par boucle
-adverse et vérification exécutable, pas par des referees humains. Ne citez
-aucun contenu de ce dépôt comme résultat établi sans vérification
-indépendante — y compris l'Atlas, dont chaque cellule indique précisément
-sur quoi elle repose.
+## Disclaimer
+
+This project is an exercise in method: getting LLMs to produce *verifiable*
+understanding on a problem that is beyond them (and beyond everyone since
+1971). Internal proofs were audited by the adversarial loop and by executable
+verification, not by human referees. Do not cite any content of this
+repository as an established result without independent verification,
+including the Atlas, where each cell states exactly what it rests on.
+
+Most of the repository (the log, the audits, the task files) is written
+in French. The Atlas has an English translation:
+[`atlas/matrice_barrieres.en.md`](atlas/matrice_barrieres.en.md).
