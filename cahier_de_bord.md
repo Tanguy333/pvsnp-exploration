@@ -2003,6 +2003,25 @@ calcul** du fil AS n'avaient pas atteint.
 >   ligne 8 inscrite au backlog (`ATLAS-L8-fleche [auto]`, décision
 >   utilisateur). Dossier : `tours/candidature_vp_vnp_rangs_registre.md`.
 >
+> - [x] **PR-016 (fait, 2026-11-21, ordre utilisateur)** — **PROMPT
+>   PROPOSEUR v4.5** : cinquième échec du schéma de transfert, le REFLET
+>   (un G plus faible que la cible, que la cible implique — E-6) ; champ
+>   4 (d) distingue miroir (équivalence) et reflet (implication de la
+>   cible vers G seulement) ; champ 7 (iv) : toute mesure d'accord
+>   calibrée sur le biais (leçon n° 9) ; régime 9 « mesure mal
+>   calibrée » ; exclusions E-5, E-6, ligne 8 en instruction ; dix
+>   candidatures ; mécanismes 8 à 10. Fiche : `tasks/done/PR-016.md`.
+>
+> - [x] **PR-017 (fait, 2026-11-21)** — **CANDIDATURE N° 11
+>   (« classification algébrique des CSP », entrée de registre) : ENTRE
+>   AU REGISTRE (E-7).** Témoin reproduit (Siggers 9/9 conformes à
+>   Schaefer/Hell-Nešetřil ; Olšák K₃⁶ → K_c absent pour c ≤ 5, présent
+>   pour c = 6, 7). La dichotomie Bulatov-Zhuk vide l'espace des G des
+>   CSP finis ; PCSP(K₃, K₆) est miroir ou sans transfert. Mécanisme (11)
+>   « classifier n'est pas séparer », au statut d'observation (transferts
+>   non réductifs : Valiant-Vazirani → RP, Kabanets-Cai → pas d'OWF).
+>   Dossier : `tours/candidature_csp_dichotomie_registre.md`.
+>
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le
 > contredisent — « Inventaire des pièces » et « Les trois lectures » §3, dont

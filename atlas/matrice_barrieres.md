@@ -473,6 +473,26 @@ zones*, pas la zone elle-même.
   OUVERTE vers P ≠ NP ? (formulation booléenne de Mulmuley à lire) —
   backlog `ATLAS-L8-fleche [auto]`.
 
+- **E-7 — La classification algébrique des CSP : quand classifier épuise
+  l'espace des G** (candidature n° 11, instruction PR-017 du 2026-11-21 ;
+  dossier [tours/candidature_csp_dichotomie_registre.md](../tours/candidature_csp_dichotomie_registre.md) ;
+  témoin [data/pr017_polymorphismes.md](../data/pr017_polymorphismes.md)).
+  *Mécanisme* : clones et minions de polymorphismes, conditions de mineur
+  (Taylor, Siggers, Olšák), réductions par homomorphismes de minions
+  (BBKO 2021). *Pourquoi rien ne s'ouvre* : pour les CSP à gabarit fini,
+  la dichotomie (Bulatov 2017 ; Zhuk 2020) classe tout CSP(Γ) dans P ou
+  NP-complet — un G « CSP(Γ) ∈ P » est déjà vrai sans conséquence, ou
+  miroir ; pour les PCSP, la frontière du coloriage approché est ouverte
+  ((K₃, K₅) NP-dur, BBKO 2021 ; (K₃, K₆) ouvert à notre connaissance —
+  la dureté de (3,5) n'implique pas celle de (3,6), le problème relâché
+  est plus facile), mais un tel G est miroir s'il est NP-dur et sans
+  transfert sinon. *Témoin* : Siggers 9/9 conformes à Schaefer et
+  Hell-Nešetřil ; Olšák K₃⁶ → K_c absent pour c ≤ 5, présent pour
+  c = 6, 7 — seuil coïncidant avec la frontière de dureté connue, sans
+  portée démontrée. *Face P ≠ NP* : bornes contre Datalog / largeur
+  bornée (monotones ; les équations linéaires en sont le Tardos) et SoS
+  (E-4).
+
 **Mécanismes transversaux nommés par le registre** (à lire dans les
 lignes) : (1) **accès à l'oracle** — la preuve ne relativise pas parce
 que les deux côtés n'accèdent pas à l'oracle avec les mêmes ressources
@@ -524,3 +544,10 @@ comptage est plus fort que P = NP : le comptage transfère vers P = NP
 en version uniforme (ligne 19), jamais vers P ≠ NP. Distinct de
 l'ombre (3) : le reflet est un énoncé plus FAIBLE que la cible : E-6,
 lignes 8, 19.
+(11) **classifier n'est pas séparer** (observation, pas théorème) — un
+G de la forme « Π ∈ P » n'a de transfert connu vers P = NP que par
+réduction, ce qui le rend miroir ; un théorème de dichotomie épuise
+l'espace des G de son univers ; les transferts non réductifs connus
+atterrissent en deçà de P = NP (Valiant-Vazirani : RP ; Kabanets-Cai :
+MCSP ∈ P ⟹ pas d'OWF). Falsificateur : un transfert « Π ∈ P ⟹ P = NP »
+prouvé pour un Π non NP-dur : E-7, lignes 13, 19.
