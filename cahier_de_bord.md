@@ -1847,6 +1847,162 @@ calcul** du fil AS n'avaient pas atteint.
 >   consignés NON CONCLUS dans data (le certificat « 2 NOT, sans
 >   symétries » suffit).
 >
+> - [x] **PR-010 (fait, 2026-09-10)** — **CANDIDATURE N° 7 (prompt
+>   v4.1, dérogation déclarée à la règle 1 : « la structure des degrés
+>   NP-complets — conjecture d'isomorphisme de Berman-Hartmanis et
+>   échelle des réducibilités, Agrawal ») : N'ENTRE PAS COMME LIGNE —
+>   REGISTRE E-3.** La première candidature à satisfaire la règle du
+>   2026-09-08 à la lettre (flèche 1 OUVERTE, flèches 2-3 PROUVÉES
+>   numérotées — tous les numéros vérifiés sur le survey ouvert, 23
+>   pages) et à déclarer elle-même l'ambiguïté. Prise décisive : **la
+>   flèche ouverte est EMPRUNTÉE** — chaque barreau r ⟹ NP ⊄ r (Prop.
+>   3.5 relativisée ; cas L verbatim), l'échelle n'est prouvée qu'où la
+>   séparation est acquise (1-L, NC⁰, AC⁰) et par les outils des
+>   bornes, elle s'arrête où la séparation est ouverte (L) ou
+>   connue-sans-structure (AC⁰[2], 2009, [NON TROUVÉ] depuis) ; son
+>   auteur prend P ≠ NP pour obstacle puis hypothèse (« Can one prove
+>   the conjecture assuming a reasonable hypothesis such as P ≠ NP? »),
+>   le mécanisme du sommet consomme une OWF et n'atteint que P/poly
+>   (§8). Le contenu utile à la cible appartient aux lignes 4/11/7 —
+>   « l'ombre de l'échelle des bornes », mot de la candidature. Autres
+>   prises : la rivale (ECSC) n'implique P ≠ NP que parce qu'elle
+>   affirme une OWF ; barreau TC⁰ = construction de la candidature (0
+>   occurrence dans le survey), « RR sur les réductions » = RR héritée
+>   par implication ; Rogers 1997 absent du survey (existe) ; profil à
+>   quatre mondes exact, sans atout. Registre E-3 + trois mécanismes
+>   transversaux (l'ombre ; la barrière héritée par implication ; le
+>   profil conjecture/rivale). INTERPRÉTATION DE LA RÈGLE, à valider :
+>   « ouverte » = ouverte pour le mécanisme de la famille (champ 4b) ;
+>   lecture littérale possible → ligne sous audit A-026 (non
+>   recommandé). Dossier :
+>   `tours/candidature_isomorphisme_berman_hartmanis.md` ; lecture :
+>   `checks/pr010_lecture_agrawal.py`, `data/pr010_lecture_agrawal.md` ;
+>   fiche : `tasks/done/PR-010.md`.
+>
+> - [x] **PR-011 (fait, 2026-09-12)** — **CANDIDATURE N° 8 (prompt
+>   v4.2, dérogation déclarée à la règle 1 ; présentée d'emblée comme
+>   ENTRÉE DE REGISTRE : « les solveurs comme recherche de preuves — la
+>   direction P = NP par les algorithmes SAT et les relaxations
+>   convexes, éliminée par théorème famille par famille ») : ENTRE AU
+>   REGISTRE (E-4) — la première entrée du versant P = NP, périmètre
+>   RECALIBRÉ.** Direction absente de la matrice (grep 0 sur CDCL, DPLL,
+>   Lasserre, SoS, Urquhart, Schoenebeck ; Haken en bib seulement) ;
+>   folklore-check exact (Atserias-Müller : NP-dureté sous P ≠ NP ;
+>   Rothvoss 2014 — vérifiés). **Double calibration exécutée avec un
+>   instrument indépendant et CONFORME** : PHP_n — DPLL ×9,3 et CaDiCaL
+>   ×6,55 par pigeon (PHP₁₁ : 14,4 M conflits, 508 s) ; pyramides de
+>   pebbling — DPLL ×243 par niveau (budget dépassé dès h = 6) contre
+>   CaDiCaL ≤ 2 004 conflits jusqu'à h = 40 (pente log-log 1,9) — les
+>   deux sens de « la trace est une preuve » (Haken en borne inférieure,
+>   BKS04 en borne supérieure) lus dans un solveur de 2026 ; plateau à
+>   ~2 000 conflits = artefact d'ordonnanceur consigné. PRISES : le
+>   mécanisme borne un algorithme PAR LA PREUVE QU'IL PRODUIT — les
+>   algorithmes non certifiants (Schöning décide au sens BPP), les
+>   traces Frege/EF et les corrections hors trace échappent : le titre
+>   surestime, l'entrée porte « solveurs complets certifiants » ; la
+>   colonne LP/SDP est aveugle à la classe (Rothvoss : couplage ∈ P,
+>   extension 2^{Ω(n)}) ; les solveurs modernes (PR/SDCL/DRAT, HKB17)
+>   vivent à la frontière ouverte — elle passe à l'intérieur des
+>   solveurs actuels ; « formulations étendues rejetée le 2026-09-08 »
+>   [NON TROUVÉ]. Mécanismes transversaux (6) la trace est une preuve,
+>   (7) l'automatisation est un miroir. QUESTION DE RÈGLE transmise à
+>   l'utilisateur : le miroir du champ 4c interdit toute ligne
+>   algorithmique (exact) ; recommandation — critère de transfert
+>   symétrique de la ligne 7 ; sous ce critère E-4 reste au registre.
+>   Dossier : `tours/candidature_solveurs_traces_registre.md` ;
+>   instrument : `checks/pr011_solveurs_traces.py` ; données :
+>   `data/pr011_solveurs_traces.md` ; fiche : `tasks/done/PR-011.md`.
+>
+> - [x] **PR-012 (fait, 2026-09-12, décision utilisateur « fais ta
+>   recommandation »)** — **AMENDEMENT DU TEST MIROIR (v4.3), recopié
+>   dans CLAUDE.md règle 10** : pour la direction P = NP, une flèche est
+>   OUVERTE POUR LE MÉCANISME ssi il existe un théorème de transfert
+>   prouvé et numéroté « sous-but G ⟹ P = NP » (à défaut : dérivation
+>   intégrale, jamais de numéro fantôme), G réussite algorithmique
+>   STRUCTURÉE non connue équivalente à P = NP et visée par le
+>   mécanisme — le symétrique exact de la ligne 7. L'ancien miroir
+>   (« objet le plus dur résolu NP-dur ») retiré : il interdisait toute
+>   ligne algorithmique par construction. Conséquences : E-4 inchangée
+>   (chaque colonne avait un G, réfuté ; sommet miroir) ; la ligne 19
+>   tient par ses dichotomies, pas par ses îles ; la lecture
+>   algorithmique du verrou Frege/EF de la ligne 15 (G_EF = « EF
+>   p-borné et automatisable » ⟹ SAT ∈ P) est la première flèche
+>   non-miroir candidate du versant P = NP — inscrite au backlog comme
+>   refondation de cellule à décider (`ATLAS-L15-alg [auto]`, la seule
+>   ligne auto de la session), pas une ligne. Prompt v4.3 : champ 4c
+>   réécrit, en-tête, §2 ter. Fiche : `tasks/done/PR-012.md`.
+>
+> - [x] **PR-013 (fait, 2026-09-12, ordre utilisateur)** — **PROMPT
+>   PROPOSEUR v4.4 : la candidature PAR THÉORÈME DE TRANSFERT**
+>   (`prompts/proposeur_front_neuf.md`, révisé en place). Une
+>   candidature est désormais le quadruplet (M mécanisme et ce qu'il
+>   consomme ; G sous-but structuré = cible propre ; T transfert
+>   « G ⟹ cible » PROUVÉ ET NUMÉROTÉ, ou dérivation intégrale sans
+>   numéro fantôme ; S statut de G : ouvert, non connu équivalent,
+>   atteint par M) — dans les deux directions, la ligne 7 (CW19 Thm 8 :
+>   transfert prouvé, algorithme ouvert, sens unique) servant de modèle.
+>   §2 quater nouveau : les quatre entrées du registre sont les quatre
+>   façons de manquer la structure — pas de T (E-1), T hors cible
+>   (E-2), G emprunté (E-3, test : « si les lignes voisines fermaient
+>   leur verrou, G serait-il fermé sans M ? »), G réfuté ou miroir
+>   (E-4 ; Håstad 2001 comme miroir type : « approcher MAX-3SAT à
+>   7/8 + ε » est NP-dur, ce n'est pas un G). Champ 3 à six étiquettes
+>   (PROUVÉE / OUVERT POUR LE MÉCANISME / OUVERTE PAR EMPRUNT / MIROIR /
+>   EXCLUE / ABSENTE) ; champ 4 = test de G (énoncé structuré, statut,
+>   atteinte par M, sens unique de T) ; exclusions à jour (la lecture
+>   algorithmique du verrou Frege/EF réservée ; E-1..E-4) ; huit
+>   candidatures relues par le transfert ; sept mécanismes transversaux ;
+>   régime 8 (G miroir ou emprunté). Aucune direction suggérée
+>   (règle 1). Fiche : `tasks/done/PR-013.md`.
+>
+> - [x] **PR-014 (fait, 2026-09-12)** — **CANDIDATURE N° 9 (première
+>   sous prompt v4.4 ; dérogation déclarée à la règle 1 ; présentée
+>   d'emblée comme entrée de registre : « l'apprentissage de classes de
+>   circuits ⟹ bornes inférieures — la face algorithmique des preuves
+>   naturelles ») : ENTRE AU REGISTRE (E-5).** Le quadruplet (M, G, T,
+>   S) est complet et TOUS ses théorèmes sont vérifiés sur texte (OS17
+>   Th. 2, 3, 8, 9, 12, 13, 16, 17 ; CIKK Th. 1.1, 1.2 et la phrase
+>   ACC⁰ verbatim ; Williams 2016 Th. 1.1, 1.2, 1.7 — trois textes
+>   extraits et grepés). Statut de G à trois étages TENU : emprunté à
+>   ACC⁰ (CIKK Th. 1.1 : une preuve naturelle de la ligne 4 le
+>   fermerait), miroir au niveau NEXP (Williams Th. 1.2), exclu sous
+>   crypto dès TC⁰ (OS17 Th. 2 + Naor-Reingold). PRISES : (1) « G est
+>   une propriété naturelle par théorème » confond Th. 8 (apprentissage
+>   ⟺ distingueurs à erreur bornée) et Th. 9 (P-naturel ⟺ distingueurs
+>   sans erreur) — le pont est CIKK Th. 1.1, un seul sens ; (2) le
+>   Th. 2 porte ses réserves (« requires non-uniformity […] exponential
+>   security regime ») ; (3) la cellule discriminante du sous-lemme est
+>   VIDE PAR DÉSÉQUILIBRE : MOD₆ vaut 1 sur 29/256 points à n = 8, le
+>   polynôme constant atteint 227/256 ≥ 7/8 — adeg_{F,1/8}(MOD₆) = 0,
+>   « ≥ 3 » faux tel qu'écrit ; correction ε = 1/16 sans certificat, run
+>   ciblé en cours ; le régime de contrôle (n = 12 : trois îles nettes,
+>   MOD₆ hors de toutes ; n = 8 : PARITY/F₂ = 1, MOD₃/F₃ = 2) est
+>   conforme au pré-calcul de la candidature. La pièce utile : le
+>   mécanisme (9), l'échelle algorithmique RR-exposée — la raison
+>   structurelle de l'exception de la ligne 7 (une borne NEXP n'exige
+>   que constructivité et utilité ; apprendre, c'est distinguer de
+>   l'aléatoire, la densité est dans G), généralisant D-005. Mécanisme
+>   (8) : le triangle naturel/apprentissage/distingueur avec ses flèches
+>   exactes. Leçon prompt v4.5 : toute mesure d'accord calibrée sur le
+>   biais. Bilan du schéma v4.4 : l'auto-classement attendu s'est
+>   produit ; les prises ont porté sur la précision et l'instrument, pas
+>   sur la structure. Dossier :
+>   `tours/candidature_apprentissage_registre.md` ; instrument :
+>   `checks/pr014_apprentissage_degres.py` ; données :
+>   `data/pr014_apprentissage_degres.md` ; fiche : `tasks/done/PR-014.md`.
+>
+> - [x] **PR-015 (fait, 2026-11-20)** — **CANDIDATURE N° 10 (« la voie
+>   algébrique par mesures de rang, VP vs VNP », présentée comme entrée
+>   de registre) : ENTRE AU REGISTRE (E-6).** Témoin reproduit par
+>   instrument indépendant (19 valeurs identiques : PD_k = C(n,k)², SPD
+>   det < perm) ; Bürgisser 2000 confirmé sur abstract — VP = VNP ⟹
+>   NC/poly = PH/poly : la séparation algébrique est un REFLET, plus
+>   faible que la forme non uniforme de P ≠ NP ; sous-lemme fin : écart
+>   SPD_{1,1} = 2n(n − 1) = relations de Laplace-Cramer hors diagonale
+>   de det. Mécanisme (10) le reflet de comptage. Conséquence pour la
+>   ligne 8 inscrite au backlog (`ATLAS-L8-fleche [auto]`, décision
+>   utilisateur). Dossier : `tours/candidature_vp_vnp_rangs_registre.md`.
+>
 > **Suite immédiate (aucune ne demande de solveur)** : (a) l'en-tête de la
 > matrice signale lui-même deux passages restés au 2026-06-09 qui le
 > contredisent — « Inventaire des pièces » et « Les trois lectures » §3, dont

@@ -291,6 +291,188 @@ zones*, pas la zone elle-même.
   not separate any classes not already separable by known
   diagonalization techniques* »). Audit A-025 annulé.
 
+- **E-3 — La structure des degrés NP-complets : conjecture
+  d'isomorphisme de Berman-Hartmanis et échelle des réducibilités
+  (Agrawal)** (candidature n° 7, instruction PR-010 du 2026-09-10 ;
+  dossier [tours/candidature_isomorphisme_berman_hartmanis.md](../tours/candidature_isomorphisme_berman_hartmanis.md) ;
+  verbatims [data/pr010_lecture_agrawal.md](../data/pr010_lecture_agrawal.md)).
+  *Mécanisme* (Agrawal, survey IITK 2009 / Computability in Context
+  2011, lu) : gravir l'échelle des réducibilités r en prouvant que la
+  complétude force la structure — le r-Complete Degree Conjecture
+  (réductions 1-1, croissantes, inversibles sur l'image) — par un
+  théorème de structure des fonctions r-calculables (réductions
+  oublieuses pour 1-L, Thm 6.3 ; « gap » AC⁰ → NC⁰ par lemme de
+  switching, Thm 6.16 ; Cantor-Bernstein polynomial) ; prouvé pour
+  r ∈ {1-L, 1-NL, 2-DFA, NC⁰, AC⁰} (Thm 6.20) ; au sommet r = P,
+  équivalent à la conjecture d'isomorphisme (Prop. 6.19), qui implique
+  P ≠ NP (Prop. 3.5 : ensembles finis contre infinis) ; mécanisme
+  conjecturé du sommet : OWF 2^{n^ε}-sûre + conjecture du cylindre
+  facile ⟹ isomorphisme P/poly (Thm 7.1, Cor. 7.5 ; objection de
+  Goldreich). *Flèche vers P ≠ NP* : **OUVERTE PAR EMPRUNT** — chaque
+  barreau r implique NP ⊄ r (argument de la Prop. 3.5 relativisé ; le
+  survey l'écrit pour L : « *any such result will separate NP from
+  L* ») ; l'échelle n'est prouvée qu'où la séparation est acquise, par
+  les outils des bornes, et s'arrête où elle est ouverte (L) ou
+  connue-sans-structure (AC⁰[2], question du §8, ouverte depuis 2009) ;
+  son auteur prend P ≠ NP pour obstacle puis hypothèse (« *proving the
+  conjecture is hard because the problem of separating P from NP has
+  resisted all efforts* […] *Can one prove the conjecture assuming a
+  reasonable hypothesis such as P ≠ NP?* ») et le mécanisme du sommet
+  consomme une OWF sans dépasser P/poly (§8). Le contenu utile à la
+  cible est la borne inférieure de chaque barreau — lignes 4, 11, 7 ;
+  la famille n'y ajoute que de la force. *Verrou* : pas de théorème de
+  structure pour AC⁰[2] (« gap » inexistant) ; au-delà, le verrou des
+  lignes 4/11/7. *Barrières* : héritées par implication — RR au-delà du
+  seuil PRF (TC⁰ : construction de la candidature, absent du survey),
+  AW au sommet ; profil de relativisation à quatre mondes (HH : les
+  deux conjectures fausses ; KMR : la rivale vraie sous oracle
+  aléatoire ; FFK : IC vraie ; Rogers 1997 : IC vraie + OWF) — la
+  conséquence attendue de BGS pour toute conjecture impliquant P ≠ NP ;
+  monotone sans objet. *Précisions* : la rivale (Encrypted Complete Set
+  Conjecture) n'implique P ≠ NP que parce qu'elle affirme une OWF
+  (Prop. 4.1) ; dormance depuis 2011 ([NON TROUVÉ] 2012-2026) ; la
+  majorité tient IC pour fausse. Interprétation de la règle du
+  2026-09-08 appliquée ici, à valider : « ouverte » = ouverte pour le
+  mécanisme de la famille.
+
+- **E-4 — Les solveurs comme recherche de preuves : la direction P = NP
+  par les solveurs complets CERTIFIANTS et les relaxations convexes,
+  éliminée par théorème colonne par colonne** (candidature n° 8,
+  instruction PR-011 du 2026-09-12 — la première entrée du versant
+  P = NP ; dossier [tours/candidature_solveurs_traces_registre.md](../tours/candidature_solveurs_traces_registre.md) ;
+  témoin exécutable [data/pr011_solveurs_traces.md](../data/pr011_solveurs_traces.md)).
+  *Mécanisme* (dictionnaire solveur ↔ système de preuves, Buss-Nordström
+  Handbook ch. 7) : sur toute entrée insatisfaisable, l'exécution d'un
+  solveur complet est une réfutation dans un système S fixé — CDCL/DPLL
+  → résolution générale/arborescente (BKS04 ; Pipatsrisawat-Darwiche
+  2011 ; AFT11), Gröbner → calcul polynomial, pseudo-booléen et
+  branch-and-cut → plans coupants, Lasserre → SoS de degré borné
+  (modulo la complexité en bits, O'Donnell 2017), LP/SDP compacts →
+  formulations étendues, BDD → OBDD — donc temps ≥ taille de la plus
+  courte réfutation dans S, et réciproquement le solveur atteint les
+  bornes supérieures de S à branchement près. *Flèche vers P = NP* :
+  **EXCLUE PAR THÉORÈME** pour chaque colonne à borne inférieure connue
+  (résolution : Haken 1985, Urquhart 1987, Chvátal-Szemerédi 1988 ; PC :
+  Razborov 1998 ; CP : Pudlák 1997 ; SoS : Grigoriev 2001, Schoenebeck
+  2008 ; formulations étendues : FMPTW 2012, LRS 2015 ; OBDD : Krajíček
+  2008) et **OUVERTE PAR MIROIR** au sommet (Frege/EF : pas de borne ;
+  la recherche de preuve y est NP-dure dès la résolution —
+  Atserias-Müller JACM 2020, « *finding a Resolution refutation that is
+  at most polynomially longer than a shortest one is NP-hard* » ; CP :
+  GKMP 2020 ; NS/PC/SA : dRGNPRS 2021 ; OBDD : IR 2022 ; Frege/EF sous
+  crypto : BPR 2000, KP 1998) — « rechercher dans un système fort »
+  n'est pas une voie vers P = NP, c'est P = NP. *Périmètre exact
+  (instruction)* : sont éliminés les solveurs complets CERTIFIANTS dont
+  la trace vit dans un S à borne connue — et rien au-delà : les
+  algorithmes non certifiants (randomisés à erreur bornée, correction
+  hors trace) et les traces dans Frege/EF échappent au mécanisme (si
+  P = NP par un algorithme A, « les traces de A » forment un système
+  p-borné, sans contradiction connue) ; les solveurs de 2017-2026 (PR,
+  SDCL, DRAT à extension — HKB17 : PHP et Tseitin en temps polynomial)
+  vivent à cette frontière, qui passe donc À L'INTÉRIEUR des solveurs
+  actuels ; la colonne LP/SDP est AVEUGLE À LA CLASSE (Rothvoss 2014 :
+  le polytope des couplages parfaits, problème de P, a une complexité
+  d'extension 2^{Ω(n)}) — son théorème élimine une représentation, pas
+  une route vers NP. *Verrou* : théorèmes de limite de méthode, un par
+  colonne, plus le miroir au sommet — la frontière est celle de la
+  ligne 15 (Frege/EF) lue du côté algorithmique ; la cellule 15 ne lit
+  ses bornes faibles que vers NP ≠ coNP. *Barrières* : sans objet
+  structurel (famille algorithmique ; une preuve de P = NP doit lire
+  la formule — les solveurs le font, ce n'est pas là qu'ils meurent) ;
+  monotone : dépendance — l'interpolation faisable (colonne monotone
+  de la ligne 15) est l'outil des bornes CP. *Témoin exécutable* (PR-011,
+  instrument indépendant, réplication déclarée de BKS04 §5) : PHP_n —
+  DPLL ×9,3 et CaDiCaL ×6,55 par pigeon (PHP₁₁ : 14,4 M conflits) ;
+  pyramides de pebbling — DPLL ×243 par niveau (budget dépassé dès
+  h = 6) contre CaDiCaL ≤ 2 004 conflits jusqu'à h = 40 (pente log-log
+  1,9) : les deux sens de « la trace est une preuve » lus dans un
+  solveur de 2026. *Sans suite* : l'entrée n'a pas de sous-famille
+  survivante — c'est sa valeur. Question de règle (miroir du champ 4c)
+  transmise à l'utilisateur et TRANCHÉE le 2026-09-12 (PR-012, CLAUDE.md
+  règle 10) : le miroir est remplacé par un critère de transfert
+  symétrique de la ligne 7 ; E-4 inchangée — chaque colonne avait un
+  sous-but G structuré, réfuté par théorème, et le sommet est miroir.
+
+- **E-5 — L'apprentissage de classes de circuits ⟹ bornes inférieures :
+  la face algorithmique des preuves naturelles** (candidature n° 9,
+  instruction PR-014 du 2026-09-12 — première sous le schéma v4.4 ;
+  dossier [tours/candidature_apprentissage_registre.md](../tours/candidature_apprentissage_registre.md) ;
+  témoin [data/pr014_apprentissage_degres.md](../data/pr014_apprentissage_degres.md)).
+  *Mécanisme M* : apprendre C à partir de requêtes d'appartenance, par
+  concentration de Fourier (LMN 1993 pour AC⁰, Jackson 1997 pour les
+  DNF) ou par approximation polynomiale sur F_p (CIKK 2016 : la preuve
+  de Razborov-Smolensky lue comme un algorithme — AC⁰[p] en temps
+  quasi-polynomial, Th. 1.2) ; ce qu'il consomme : toute fonction de C
+  est proche d'un polynôme de bas degré sur un corps. *Sous-but G* : un
+  apprenant non trivial (2ⁿ/n^{ω(1)}) pour ACC⁰, puis TC⁰, P/poly.
+  *Transfert T, verbatim* : OS17 Th. 12 « *If for each k, C[n^k] has
+  non-trivial learning algorithms, then for each k, BPTIME(2^{O(n)}) ⊄
+  C[n^k]* » (via la fonction PSPACE-complète auto-réductible de TV07,
+  Th. 13 — pas l'easy witness) ; Th. 16 : ACC⁰ sous-exponentiel
+  apprenable ⟹ REXP ⊄ ACC⁰. *Statut S — aucun étage ouvert pour M* :
+  **EMPRUNTÉ** à ACC⁰ — CIKK Th. 1.1 « *Natural proofs of circuit lower
+  bounds imply learning algorithms for the same circuit class* », et
+  « *A logical next step would be ACC⁰: if one can get a natural
+  property useful against ACC⁰, for example by naturalizing Williams's
+  proof, then a learning algorithm for ACC⁰ would follow* » — une
+  preuve naturelle de la ligne 4 fermerait G sans M ; **MIROIR** au
+  niveau NEXP — Williams 2016 Th. 1.2 « *NEXP ⊄ C if and only if there
+  is a polynomial-time algorithm that is useful against C* » (la
+  version constructive + utile de G, la densité en moins) ; **EXCLU sous
+  crypto** dès TC⁰ — OS17 Th. 2 (dichotomie : PRF de C sûres contre des
+  circuits sous-exponentiels ⟺ C non apprenable non-uniformément en
+  temps sous-exponentiel ; réserves verbatim : « *requires
+  non-uniformity, and is established only in the exponential security
+  regime* »), avec les PRF de Naor-Reingold dans TC⁰ (le seuil que la
+  cellule 7 nomme) ; Kearns-Valiant 1994 pour l'apprenant polynomial.
+  *Précision d'instruction* : « G est une propriété naturelle par
+  théorème » confond OS17 Th. 8 (apprentissage ⟺ distingueurs à erreur
+  BORNÉE) et Th. 9 (P-naturel ⟺ distingueurs SANS erreur) — le pont est
+  CIKK Th. 1.1, un seul sens. *Verrou* : à ACC⁰, l'absence de propriété
+  naturelle (le gap de la ligne 4 — pas de corps pour les modules
+  composés : témoin n = 12, MOD₆ de degré 11 sur F₂, 12 sur F₃, masse
+  de Fourier ≤ 4 de 0,51, contre PARITY linéaire sur F₂, MOD₃ de degré
+  2 sur F₃, DNF à 0,94) ; au-delà, RR par théorème. *Témoin* : régime de
+  contrôle conforme ; régime discriminant en degré approché
+  MIS-SPÉCIFIÉ par la candidature (ε = 1/8 vide par déséquilibre : MOD₆
+  vaut 1 sur 29/256 points à n = 8, le constant atteint 88,7 %) — leçon
+  d'instrument versée au prompt. *Barrières* : relativisation et
+  algébrisation sans objet structurel pour M (T repose sur TV07 —
+  arithmétisation, à auditer) ; RR = le contenu de l'entrée ; monotone
+  sans objet. *Sans suite* : aucun étage ouvert ; la seule sortie (un
+  apprenant d'ACC⁰ ni Fourier ni F_p) n'a pas de piste publiée
+  [NON TROUVÉ 2016-2026].
+
+- **E-6 — La voie algébrique par mesures de rang (VP vs VNP)**
+  (candidature n° 10, instruction PR-015 du 2026-11-20 ; dossier
+  [tours/candidature_vp_vnp_rangs_registre.md](../tours/candidature_vp_vnp_rangs_registre.md) ;
+  témoin [data/pr015_rangs_det_perm.md](../data/pr015_rangs_det_perm.md)).
+  *Mécanisme* : borner une mesure linéaire-algébrique (dimension d'un
+  espace de dérivées : Nisan-Wigderson 1997 ; partielles décalées,
+  Kayal 2012, GKKS 2013 ; projections multilinéaires par ensembles,
+  LST 2021) sur un modèle restreint et l'évaluer sur le permanent.
+  *G* : perm hors de ΣΠ^{[√d]}ΣΠ^{[√d]} homogène de taille n^{O(√d)} ⟹
+  VP ≠ VNP (réduction de profondeur, Agrawal-Vinay / Koiran / Tavenas).
+  *Flèche vers P ≠ NP* : **ABSENTE, et les transferts prouvés vont à
+  rebours** — Bürgisser, TCS 235 (2000), abstract : si VP = VNP, « *the
+  nonuniform versions of NC and PH would coincide, and the polynomial
+  hierarchy would collapse to the second level* » (corps finis ;
+  caractéristique 0 sous GRH) ; donc NP ⊄ P/poly ⟹ VP ≠ VNP : la
+  séparation algébrique est PLUS FAIBLE que la cible. Côté P = NP,
+  VP = VNP ne donne que NP ⊆ P/poly (EXCLUE par uniformité). *Statut de
+  G* : ouvert ; la méthode plafonne au seuil n^{Ω(√d)}, déjà atteint pour
+  l'IMM ∈ VP — indifférente à la classe (symptôme d'E-1 en algèbre).
+  *Témoin* (instrument indépendant, 19 valeurs de la candidature
+  reproduites) : PD_k(det_n) = PD_k(perm_n) = C(n,k)² (n ≤ 5) ; SPD sépare
+  det de perm (n = 4, (k,ℓ) = (2,2) : 2 651 contre 3 287) ; l'écart
+  SPD_{1,1} = 2n(n − 1) (12 ; 24) = exactement les relations de
+  Laplace-Cramer hors diagonale de det — la mesure voit une identité du
+  déterminant, pas la classe VP. Ombres booléennes de perm dans P
+  (perm(A) > 0 = couplage parfait ; perm ≡ det mod 2). *Conséquence à
+  décider* : la cellule 8 (GCT, perm contre det) porte-t-elle une flèche
+  OUVERTE vers P ≠ NP ? (formulation booléenne de Mulmuley à lire) —
+  backlog `ATLAS-L8-fleche [auto]`.
+
 **Mécanismes transversaux nommés par le registre** (à lire dans les
 lignes) : (1) **accès à l'oracle** — la preuve ne relativise pas parce
 que les deux côtés n'accèdent pas à l'oracle avec les mêmes ressources
@@ -299,3 +481,46 @@ limite intrinsèque : confiné aux écarts de ressources, inapplicable à
 P vs NP. (2) **win-win** — trancher une question, quelle que soit la
 réponse, sépare (Kannan 1982 ; Chen-Hirahara-Ren 2024 ; BFvMT Thm 5.1) :
 lignes 1, 16, E-2 ; un patron de preuve, pas un type de cellule.
+(3) **l'ombre** — une conjecture de structure au-dessus d'une
+séparation (barreau r ⟹ NP ⊄ r ; IC ⟹ P ≠ NP) dont le programme prend
+la séparation pour hypothèse : E-3 ; une telle conjecture est plus
+forte que la cible sans lui offrir de chemin — sa flèche est ouverte
+par emprunt. (4) **la barrière héritée par implication** — un énoncé
+structurel qui implique une borne inférieure hérite des barrières de
+cette borne (RR au-delà du seuil PRF, AW pour NP) : E-3, lignes 11/7.
+(5) **le profil de relativisation d'une conjecture et de sa rivale** —
+quand les deux impliquent P ≠ NP, aucune n'est décidable par
+relativisation (quatre mondes) : E-3 ; un constat, pas un atout.
+(6) **la trace est une preuve** — un solveur complet certifiant est
+borné par la complexité des preuves du système où vit sa trace, dans
+les deux sens (borne inférieure inconditionnelle ; borne supérieure
+atteinte à branchement près) : E-4, ligne 15 ; limite : ne dit rien
+d'un algorithme qui ne produit pas de preuve dans ce système.
+(7) **l'automatisation est un miroir** — trouver une preuve à un facteur
+polynomial de l'optimum est NP-dur dès la résolution (Atserias-Müller
+2020) : là où un système n'a pas de borne, la recherche de preuve
+n'est pas une voie vers P = NP, c'est P = NP : E-4, ligne 15.
+(8) **le triangle naturel / apprentissage / distingueur** — avec ses
+flèches exactes : une preuve naturelle utile contre C ⟹ un apprenant de
+C (CIKK 2016 Th. 1.1, un sens) ; apprenant non trivial ⟺ distingueur de
+complexité à erreur bornée (OS17 Th. 8) ; preuve P-naturelle ⟺
+distingueur sans erreur (OS17 Th. 9) ; constructif + utile ⟺ NEXP ⊄ C
+(Williams 2016 Th. 1.2) : E-5, lignes 4, 7, 13.
+(9) **l'échelle algorithmique RR-exposée** — deux échelles « algorithme
+⟹ borne uniforme » ont les mêmes conclusions (des barreaux de
+Williams) et des sorts opposés face à RR : une borne NEXP n'exige que
+constructivité et utilité (Williams 2016 : « *two of the three
+conditions of Natural Proofs* ») — la ligne 7 esquive RR ; apprendre,
+c'est distinguer les fonctions de C des fonctions aléatoires (OS17
+Th. 8), la densité est dans la définition de G, et une PRF dans C
+l'interdit (OS17 Th. 2) — E-5 y est soumise par théorème. C'est la
+raison structurelle de l'exception de la ligne 7, généralisant D-005 :
+la double sortie de Williams ne se transmet à aucune échelle dont le G
+est un distingueur contre l'aléatoire : E-5, ligne 7.
+(10) **le reflet de comptage** — une séparation de comptage
+(VP ≠ VNP, FP ≠ #P) est impliquée par la forme non uniforme de P ≠ NP et
+ne l'implique pas (Bürgisser 2000) ; symétriquement, un algorithme de
+comptage est plus fort que P = NP : le comptage transfère vers P = NP
+en version uniforme (ligne 19), jamais vers P ≠ NP. Distinct de
+l'ombre (3) : le reflet est un énoncé plus FAIBLE que la cible : E-6,
+lignes 8, 19.
