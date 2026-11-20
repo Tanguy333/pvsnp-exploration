@@ -244,6 +244,30 @@ Tu peux exécuter du code — utilise-le pour transformer des arguments en preuv
       applications : PR-007 (circuits généraux, flèche ABSENTE → E-1) et
       PR-009 (programme de Post, flèche EXCLUE → E-2) ; A-024 et A-025
       annulés comme audits fondateurs.
+    - 2026-09-12 — **amendement du test miroir (décision utilisateur, sur
+      recommandation PR-011 ; appliqué par PR-012)** : pour la direction
+      P = NP, une flèche est OUVERTE POUR LE MÉCANISME si et seulement s'il
+      existe un théorème de transfert PROUVÉ ET NUMÉROTÉ « sous-but G ⟹
+      P = NP » (ou, à défaut de numéro, une dérivation écrite intégralement
+      à partir de définitions citées — jamais de numéro fantôme, précédent
+      PR-004), où G est une réussite algorithmique STRUCTURÉE (un
+      algorithme d'une forme précise, une représentation, un système de
+      preuves p-borné et automatisable…), NON connue équivalente à P = NP,
+      et que le mécanisme de la famille vise. C'est le symétrique exact de
+      la ligne 7 (transfert prouvé « algorithme ⟹ séparation », algorithme
+      ouvert). « Résoudre un problème NP-dur en temps polynomial » n'est
+      pas un G — c'est P = NP, et la flèche est alors MIROIR. L'ancien
+      miroir du champ 4c (« l'objet le plus dur résolu doit être NP-dur »)
+      est RETIRÉ : il interdisait toute ligne algorithmique par
+      construction (constat de la candidature n° 8, exact). Conséquences :
+      E-4 reste au registre (chaque colonne avait un G — réfuté par
+      théorème, ou miroir au sommet) ; la ligne 19 tient par ses
+      dichotomies (tout accident hors des îles tractables ⟹ FP = #P), pas
+      par ses îles ; la première flèche non-miroir candidate du versant
+      P = NP est la lecture algorithmique du verrou Frege/EF de la ligne 15
+      (G_EF = « EF p-borné et automatisable » ⟹ SAT ∈ P, dérivation
+      standard) — une refondation de la cellule 15 à décider par
+      l'utilisateur (backlog `ATLAS-L15-alg [auto]`), pas une ligne.
 
 ### Réouverture d'un Tour adverse
 
