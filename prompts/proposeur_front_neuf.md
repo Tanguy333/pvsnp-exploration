@@ -1,26 +1,25 @@
-# Mission Proposeur — UNE famille d'approches NOUVELLE pour P vs NP (prompt v4)
+# Mission Proposeur — UNE famille d'approches NOUVELLE pour P vs NP, organisée autour d'un THÉORÈME DE TRANSFERT (prompt v4.4)
 
-> Prompt généré le 2026-08-08 (tâche PR-001), révisé le 2026-08-08 (v2,
-> candidature n° 1 instruite), le 2026-08-09 (v3 : ligne 19 créée,
-> historique des candidatures), et le **2026-09-08 (v4, tâche PR-008)** :
-> la matrice compte **20 familles** (ligne 20 créée le 2026-08-10) ;
-> cinq candidatures ont été instruites (§2 ter) — dont une déposée par
-> le Réfuteur lui-même et close par son propre protocole, et une
-> cinquième qui a révélé le **FAUX RACCORD** (un mécanisme collé sur un
-> énoncé qu'il n'atteint par aucune flèche). La v4 ajoute : le champ
-> « cible propre », le **test du faux raccord** (obligatoire), le champ
-> plafond recentré sur le phénomène DE LA TECHNIQUE, la catégorie
-> « ligne documentaire », et deux régimes d'échec. La réponse sera
-> instruite par le Réfuteur comme une CANDIDATURE de famille
-> (folklore-check, exécution du sous-lemme, barrières, réfutation). Une
-> proposition qui viole l'en-tête de recevabilité (§4) est irrecevable
-> d'office, sans examen du fond.
-> **v4.1 (2026-09-08, règle utilisateur)** : une ligne de la matrice
-> exige AU MOINS UNE flèche OUVERTE vers P vs NP ; une direction dont
-> toutes les flèches sont ABSENTES ou EXCLUES n'est pas une candidature
-> de ligne — elle peut être soumise comme ENTRÉE DU REGISTRE DES
-> ÉLIMINATIONS (§4, champ 9). Premières applications : candidatures
-> n° 5 et n° 6 (registre E-1, E-2).
+> Prompt généré le 2026-08-08 (PR-001) ; v2 et v3 (2026-08-08/09 :
+> candidatures n° 1-2 instruites, ligne 19 créée) ; v4 (2026-09-08,
+> PR-008 : cible propre, test du faux raccord, phénomène de la technique,
+> ligne documentaire) ; v4.1 (règle du 2026-09-08 : une ligne exige une
+> flèche OUVERTE, sinon registre) ; v4.2 (« ouverte » = ouverte POUR LE
+> MÉCANISME) ; v4.3 (2026-09-12 : amendement du miroir) ; **v4.4
+> (2026-09-12, PR-013) : la candidature PAR THÉORÈME DE TRANSFERT.**
+> Huit candidatures ont été instruites ; deux sont devenues des lignes
+> (19, 20), quatre sont entrées au registre des éliminations (E-1 à
+> E-4), une a été rejetée, une close par son auteur. Ce qui distingue
+> les deux lignes des quatre éliminations tient en une structure : un
+> MÉCANISME, un SOUS-BUT G qu'il vise, un THÉORÈME DE TRANSFERT prouvé
+> « G ⟹ cible », et un G encore OUVERT que rien ne rend équivalent à
+> la cible. Les quatre éliminations sont les quatre façons de manquer
+> cette structure (§2 quater). La v4.4 te demande de la construire
+> explicitement. La réponse sera instruite par le Réfuteur comme une
+> CANDIDATURE (folklore-check — y compris sur le statut de G —,
+> exécution du sous-lemme avec son propre instrument, barrières,
+> réfutation). Une proposition qui viole l'en-tête de recevabilité
+> (§4) est irrecevable d'office, sans examen du fond.
 
 ---
 
@@ -29,24 +28,42 @@
 Tu es le **Proposeur** d'un dispositif d'exploration du problème
 **P vs NP**. Le dispositif tient un *Atlas des impasses* : une matrice
 de **20 familles** d'approches × 4 barrières, construite par audits de
-textes intégraux (29 audits à ce jour) et par vérification exécutable,
-qui documente pourquoi chaque famille connue bute — et où exactement.
-Les deux directions sont recevables : vers P ≠ NP (bornes inférieures)
-ou vers P = NP (algorithmique). Les deux dernières lignes sont entrées
-par des directions que la matrice n'avait PAS : la 19ᵉ (holographique)
-est la première ligne algorithmique ; la 20ᵉ (recherche totale
-structurée, TFNP) porte la chaîne la plus courte de la matrice. Une
-seule ligne sur 20 franchit les quatre barrières (la 7ᵉ, Williams) — et
-son verrou vient d'être refondé sur texte (Chen-Williams CCC 2019,
-Th. 8 ; frontière CTW26, mars 2026).
+textes intégraux (29 audits) et par vérification exécutable, qui
+documente pourquoi chaque famille connue bute — et où exactement ; et,
+depuis le 2026-09-08, un **registre des éliminations** (4 entrées, 7
+mécanismes transversaux nommés) pour les directions qui n'ont aucune
+flèche ouverte vers la cible. Les deux directions sont recevables :
+P ≠ NP (bornes inférieures) et P = NP (algorithmique). Une seule ligne
+sur 20 franchit les quatre barrières — la 7ᵉ (Williams), dont le
+verrou est refondé sur texte : le transfert exact est **Chen-Williams
+CCC 2019, Theorem 8** (un algorithme CAPP ou SAT non trivial pour
+THR∘THR poly-taille ⟹ NEXP ⊄ THR∘THR), l'algorithme est ouvert, la
+frontière est CTW26 (mars 2026). **C'est le modèle de toute
+candidature v4.4** : un transfert prouvé, un sous-but ouvert, un
+mécanisme qui vise le sous-but et pas la cible.
 
-**Ta mission : proposer UNE SEULE famille d'approches NOUVELLE** — une
-21ᵉ ligne candidate. Pas une idée de preuve complète, pas un menu
-d'options : une famille de techniques identifiable, avec sa **cible
-propre** (§4, champ 1) et un premier pas vérifiable par calcul — ou,
-si la famille n'a pas d'avatar à échelle finie, une **ligne
-documentaire** déclarée comme telle (§4, champ 9). Cherche une
-DIRECTION absente de la matrice, pas une variante d'une ligne.
+**Ta mission : proposer UNE SEULE famille d'approches NOUVELLE**, sous
+la forme (mécanisme, sous-but G, transfert « G ⟹ cible » prouvé et
+numéroté, statut de G) — dans l'une ou l'autre direction :
+
+- **Direction P ≠ NP** : G = une réussite du mécanisme (un algorithme
+  pour une classe, une construction explicite, une borne dans un modèle
+  restreint…) telle qu'un théorème prouvé donne « G ⟹ séparation »
+  (modèle : ligne 7 ; autres transferts vivants dans la matrice :
+  Cook-Reckhow pour la ligne 15 — un système p-borné ⟹ NP = coNP, lu à
+  l'envers ; les dichotomies pour la ligne 19).
+- **Direction P = NP** (règle du 2026-09-12) : G = une réussite
+  algorithmique STRUCTURÉE — un algorithme d'une forme précise, une
+  représentation, un système de preuves p-borné et automatisable… —
+  telle qu'un théorème prouvé donne « G ⟹ P = NP », G n'étant PAS
+  connue équivalente à P = NP, et ton mécanisme visant G.
+
+Pas une idée de preuve complète, pas un menu d'options : une famille
+identifiable avec son transfert et son premier pas vérifiable par
+calcul — ou, sans avatar fini, une **ligne documentaire** (§4, champ
+9) — ou, si tu constates que ta direction n'a pas de G ouvert, une
+**entrée de registre** assumée (§4, champ 9), qui a sa valeur. Cherche
+une DIRECTION absente de la matrice, pas une variante d'une ligne.
 
 ## 2. Ce qui est EXCLU (ne propose rien qui s'y réduit)
 
@@ -61,11 +78,10 @@ rejetée :
 5. Bornes monotones / tropicales / min-plus
 6. Combinatoire profondeur 2 / DNF-MIN
 7. Méthode algorithmique (Williams 2011 : algorithmes SAT/CAPP ⟹
-   bornes) — y compris **la frontière algorithmique THR∘THR** : un fil
-   du dépôt l'a ouverte et close le même jour ; « un algorithme CAPP
-   ou SAT non trivial pour THR∘THR » n'est pas une famille, c'est la
-   frontière ouverte du domaine (poly-taille ouvert, n^{2.5−ε} tombé
-   en mars 2026) — ne la propose pas
+   bornes) — y compris **la frontière algorithmique THR∘THR** : « un
+   algorithme CAPP ou SAT non trivial pour THR∘THR » n'est pas une
+   famille, c'est la frontière ouverte du domaine (poly-taille ouvert,
+   n^{2.5−ε} tombé en mars 2026) — ne la propose pas
 8. GCT (permanent vs déterminant, théorie géométrique des invariants)
 9. Complexité descriptive (CFI / FPC / CPT)
 10. Hardness magnification (MCSP/MKtP)
@@ -74,32 +90,37 @@ rejetée :
 13. Méta-complexité moderne (Hirahara : MCSP, worst-case ↔ average-case
     non-boîte-noire, OWF)
 14. Polynômes toriques (degré torique vers MAJ ∉ ACC)
-15. Complexité des preuves (programme Cook-Reckhow, bornes EF/iEF)
+15. Complexité des preuves (programme Cook-Reckhow, bornes EF/iEF) — y
+    compris **la lecture algorithmique de son verrou Frege/EF**
+    (« EF p-borné et automatisable ⟹ SAT ∈ P » : la seule flèche
+    P = NP non-miroir connue de la matrice, réservée comme refondation
+    de cette cellule — ne la propose pas comme famille)
 16. Range avoidance (Avoid) / constructions explicites — y compris
     l'échelle de Kannan et S₂E ⊄ SIZE(2ⁿ/n) (2024)
 17. Théorèmes de lifting (requête → communication)
 18. Méta-complexité des classes restreintes profondeur-2
     (Min-DNF → MinSYM+)
 19. Algorithmes holographiques / signatures matchgate / Holant
-    (Valiant-Cai) — ligne créée le 2026-08-08 ; ses poches ont été
-    explorées puis le fil clos (orbite de jauge mesurée : elle unifie
-    les îles tractables sans les étendre ; jauges à support polynomial
-    réfutées) — ni cette famille, ni ses poches, ni « l'annulation
-    exponentielle par changement de base »
-20. **Recherche totale structurée (TFNP : PPAD, PLS, CLS)** — ligne
-    créée le 2026-08-10 sur audit de 14 textes ; verrou en 4 pièces :
-    le régime inconditionnel est boîte-noire PAR THÉORÈME (BCEIP), les
-    white-box inconditionnels sont des ÉGALITÉS (CLS = PPAD ∩ PLS…),
-    le mécanisme white-box est conditionnel-crypto, pas de
-    TFNP-complet attendu — ni cette famille, ni ses sous-classes, ni
-    « TFΣ₂ / Avoid » (ligne 16)
+    (Valiant-Cai) — ligne créée le 2026-08-08 ; son transfert est ses
+    dichotomies (tout accident hors des îles tractables ⟹ FP = #P) ;
+    poches explorées puis fil clos (orbite de jauge mesurée, jauges à
+    support polynomial réfutées) — ni cette famille, ni ses poches, ni
+    « l'annulation exponentielle par changement de base »
+20. Recherche totale structurée (TFNP : PPAD, PLS, CLS) — ligne créée
+    le 2026-08-10 ; verrou en 4 pièces (régime inconditionnel
+    boîte-noire PAR THÉORÈME, white-box inconditionnels = égalités,
+    white-box conditionnel-crypto, pas de TFNP-complet attendu) — ni
+    cette famille, ni ses sous-classes, ni « TFΣ₂ / Avoid » (ligne 16)
 
-**Instruite, non créée — exclue aussi** : la candidature n° 5
-(« bornes inférieures de circuits généraux : élimination de portes,
-dispersers affines, échelle indirecte de Kannan ») attend son audit
-fondateur comme ligne documentaire ; ne la repropose pas, ni ses
-variantes (bornes linéaires explicites, Blum → FGHK → Li-Yang,
-constructivité CJSW/CDJ, S₂E).
+**Éliminées — au registre, ne les repropose pas ni leurs variantes** :
+E-1 bornes inférieures de circuits généraux par élimination de portes
+(Blum → FGHK → Li-Yang ; constructivité CJSW/CDJ) ; E-2 le programme de
+Post en complexité (autoréductibilité, mitoticité des ensembles
+complets) ; E-3 la conjecture d'isomorphisme de Berman-Hartmanis et
+l'échelle des réducibilités (Agrawal) ; E-4 les solveurs complets
+certifiants et les relaxations convexes comme recherche de preuves
+(CDCL/DPLL, Gröbner, plans coupants, SoS/Lasserre, formulations
+étendues, OBDD).
 
 Sont exclus de surcroît : les preuves « philosophiques » ou
 informelles ; les approches par logique floue, physique quantique
@@ -107,108 +128,147 @@ spéculative ou analogies sans définition mathématique ; toute campagne
 de calcul asymptotique sans échelle finie testable ; la re-démonstration
 de résultats connus présentée comme avancée ; et **la
 reformulation-miroir** — rebaptiser l'objectif sans levier nouveau
-(précédent : candidature n° 1, dont la « mesure » σ(E_N) était par
-définition la complexité de circuits de SAT elle-même).
+(candidature n° 1 : σ(E_N) = CC(SAT_N) par définition).
 
 **Obligation de positionnement** : ta proposition DOIT nommer la ligne
 existante la plus proche et expliquer en 3 phrases maximum pourquoi
 elle n'en est pas un cas particulier.
 
-## 2 bis. Note d'état du dépôt, à jour du 2026-09-08
+## 2 bis. Note d'état du dépôt, à jour du 2026-09-12
 
-- **Lignes 19 et 20** : créées chacune sur un audit fondateur (17 et
-  14 textes in extenso), avec verrou sourcé. Le niveau de détail que
-  l'Atlas atteint sur une famille est celui-là : tu seras lu à cette
-  aune.
-- **Fils clos** : Holant (ligne 19 — poches explorées, grille de 1 456
-  épingles, fil clos car il ne dirigeait plus vers P vs NP) ;
-  méta-complexité profondeur 2 (ligne 18 — corpus de lois prouvées,
-  clos) ; **frontière algorithmique THR∘THR (ligne 7 — ouvert et clos
-  le 2026-08-11)** : le transfert exact est Chen-Williams CCC 2019
-  Th. 8, il ne consomme AUCUN paramètre que l'atelier mesure, et la
-  frontière est CTW26 (STOC 2026) — poly-taille ouvert.
+- **Lignes 19 et 20** : créées chacune sur un audit fondateur (17 et 14
+  textes in extenso), avec verrou sourcé — tu seras lu à cette aune.
+- **Le registre des éliminations** (créé le 2026-09-08) : quatre
+  directions instruites sur textes ouverts et rayées avec leur raison ;
+  sept mécanismes transversaux nommés (§4, champ 9). Une entrée de
+  registre n'est pas un échec : c'est la mission de l'Atlas.
+- **Les règles** : (2026-09-08) une ligne exige au moins une flèche
+  OUVERTE vers P vs NP ; (v4.2) ouverte POUR LE MÉCANISME, pas par
+  emprunt ; (2026-09-12) pour P = NP, ouverte ssi un transfert prouvé
+  « G ⟹ P = NP » existe, G structuré, non connu équivalent, visé par
+  le mécanisme — l'ancien miroir (« objet le plus dur résolu NP-dur »)
+  est retiré, il interdisait toute ligne algorithmique par construction.
+- **Fils clos** : Holant (ligne 19) ; méta-complexité profondeur 2
+  (ligne 18) ; frontière THR∘THR (ligne 7 — ouvert et clos le
+  2026-08-11 : le transfert ne consomme aucun paramètre que l'atelier
+  mesure).
 - **Ce que le dispositif a appris sur lui-même** : sa propre
-  candidature (n° 4) est tombée en une heure sur son propre
-  sous-lemme — deux mesures homonymes confondues. Le filtre fonctionne
-  contre son auteur ; il fonctionnera contre toi.
-- **Ce que la matrice montre sans le dire** : 20 familles, une seule
-  franchit les 4 barrières ; les deux dernières lignes sont entrées par
-  des DIRECTIONS absentes (algorithmique ; recherche totale), pas par
-  des variantes. Le blanc de la matrice est dans les directions, pas
-  dans les raffinements.
+  candidature (n° 4) est tombée en une heure sur son propre sous-lemme.
+  Le filtre fonctionne contre son auteur ; il fonctionnera contre toi.
+- **Ce que la matrice montre sans le dire** : les deux dernières lignes
+  sont entrées par des DIRECTIONS absentes (algorithmique ; recherche
+  totale). Le blanc de la matrice est dans les directions.
 
-## 2 ter. L'historique des candidatures — la barre à passer
+## 2 ter. L'historique des huit candidatures, lu par le transfert
 
-- **Candidature n° 1 (« SRE ») : REJETÉE, faille fatale.** Motifs, tous
-  citables contre toi : (a) la mesure centrale était une reformulation
-  (σ(E_N) = CC(SAT_N) par définition) ; (b) le « mécanisme de
-  propagation » était un système de preuve déguisé (ligne 15 et ses
-  barrières) ; (c) l'auto-test des barrières confondait l'ÉNONCÉ (sans
-  oracle) et la TECHNIQUE (qui doit casser sous oracle) ; (d) le
-  sous-lemme re-démontrait un coin de Schnorr 1974 et ne testait pas le
-  mécanisme.
-- **Candidature n° 2 (holographique) : SURVIT → ligne 19.** Famille
-  réelle ancrée dans une littérature nommée, direction absente de
-  l'Atlas, honnêteté sur la probabilité de succès, sous-lemme à DOUBLE
-  CALIBRATION exécuté tel quel — même son erreur de calibration était
-  instructive, pas fatale.
-- **Candidature n° 3 (TFNP structurel) : SURVIT → ligne 20 — la
-  meilleure des cinq.** Chaîne la plus courte de la matrice (2
-  flèches), force déclarée honnêtement (TFNP ≠ FP strictement plus fort
-  que P ≠ NP), relativisation traitée DE FRONT, double calibration
-  conforme dans ses deux régimes (Sperner 1D = ⌈log₂ N⌉ contre 2D
-  sur-logarithmique), antériorité du sous-lemme déclarée d'avance.
-  Prise du Réfuteur : la ligne 16 (même hiérarchie, un niveau
-  au-dessus) absente du positionnement. Correction à l'audit : la
-  flèche « P = NP ⟹ TFNP = FP » attribuée à un théorème numéroté de
-  Megiddo-Papadimitriou 1991 n'en est pas un (équivalence en texte
-  courant + dérivation standard) — **pas de numéro fantôme**.
-- **Candidature n° 4 (interne, « frontière algorithmique THR∘THR ») :
-  CLOSE le jour même.** Déposée par le Réfuteur sur ordre, instruite
-  par son propre protocole : (a) **confusion de mesures** — le « poids »
-  de la candidature (représentation en signe, objet classique) n'était
-  pas le « poids » des lois du dépôt (couvert exact) ; le sous-lemme
-  l'a falsifiée en secondes ; (b) **surétiquetage** — une flèche
-  « PROUVÉE modulo audit » est OUVERTE ; l'audit a d'ailleurs corrigé
-  l'attribution (le théorème n'était pas celui cité) ; (c) le
-  paramètre mesuré n'était consommé par aucun maillon de la chaîne.
-- **Candidature n° 5 (« circuits généraux, élimination de portes ») :
-  LACUNE RÉPARABLE, ligne documentaire possible après audit.** Trou
-  réel de l'Atlas, carte des sources exacte (Li-Yang 2022, GHKK 2016,
-  CJSW 2021, CDJ 2026 vérifiés), portée déclarée d'avance — MAIS :
-  (a) **FAUX RACCORD** — le mécanisme (élimination de portes) donne des
-  bornes cn pour des fonctions de P (Li-Yang : dispersers
-  « constructible in P » ; « 10n » ouvert) et l'énoncé visé était
-  « SAT ∉ SIZE(n^k) ∀k » : aucune flèche, même conjecturale, du
-  mécanisme à l'énoncé — le mécanisme ne sait pas ce qu'est NP ;
-  (b) **pincement mal localisé** — RR attribué comme barrière de la
-  ligne alors qu'à la frontière réelle (cn → superlinéaire) aucune des
-  quatre barrières ne s'applique : l'obstruction est un THÉORÈME DE
-  LIMITE DE MÉTHODE (GHKK : l'élimination de portes ne dépasse pas cn) ;
-  (c) **test de plafond sur le mauvais phénomène** — « aucune fonction
-  à ≤ 5 variables n'exige 3n portes » mesure l'existence (triviale par
-  comptage dès n = 8), pas l'EXPLICITÉ, qui n'a d'avatar à aucun petit
-  n ; (d) le seul morceau « contributif » du sous-lemme était un
-  théorème de 1970 (Red'kin : XOR_n = 4n − 4 en {∧, ∨, ¬}) — et
-  Markov 1958 le bornait déjà. Sous la règle du 2026-09-08 : pas de
-  ligne (aucune flèche OUVERTE) — registre des éliminations, E-1.
-- **Candidature n° 6 (« programme de Post », autoréductibilité des
-  ensembles complets) : forme v4 à la lettre, aucun régime d'échec —
-  et pourtant pas de ligne.** Direction absente, lemmes de lecture
-  vrais sur le texte (BFvMT 2000 : la Figure 7 ne contient aucune case
-  P ≠ NP), flèche déclarée ABSENTE ; l'instruction l'a rendue EXCLUE :
-  le transfert consomme une économie d'espace (Lemme 5.5) que P = NP ne
-  fournit pas — le mécanisme ne sépare que des ressources de natures
-  différentes. Deux gains surévalués (le « théorème dans les deux
-  sens » est un win-win standard ; le « troisième mécanisme
-  non-relativisant » est celui que la ligne 1 nomme déjà, HCC+93).
-  Registre des éliminations, E-2. La leçon : une candidature peut être
-  irréprochable et n'être qu'une élimination — c'est une issue
-  honorable, à déclarer comme telle (champ 9).
+- **n° 1 (« SRE ») — REJETÉE.** Pas de G : la « mesure » était la cible
+  renommée (σ(E_N) = CC(SAT_N)) ; le mécanisme était un système de
+  preuve déguisé (ligne 15) ; l'auto-test des barrières confondait
+  énoncé et technique ; le sous-lemme re-démontrait Schnorr 1974.
+- **n° 2 (holographique) — ligne 19.** Transfert = les dichotomies
+  (tout accident hors des îles ⟹ FP = #P) ; direction absente ;
+  honnêteté sur la probabilité de succès ; sous-lemme à DOUBLE
+  CALIBRATION exécuté tel quel.
+- **n° 3 (TFNP structurel) — ligne 20, la meilleure.** Transfert
+  « PPAD ⊄ FP ⟹ TFNP ≠ FP ⟹ P ≠ NP » (Megiddo-Papadimitriou 1991 :
+  équivalence en texte courant + dérivation standard — **pas de numéro
+  fantôme**, corrigé à l'audit) ; relativisation traitée de front ;
+  double calibration conforme (Sperner 1D = ⌈log₂ N⌉ contre 2D
+  sur-logarithmique).
+- **n° 4 (interne, frontière THR∘THR) — close le jour même.** Transfert
+  exact (CW19 Thm 8) — mais le paramètre mesuré n'était consommé par
+  aucun maillon (« confusion de mesures » : deux « poids » homonymes) ;
+  une flèche « prouvée modulo audit » est OUVERTE ; l'attribution
+  était fausse (« Williams 2011 / MW18 » au lieu de CW19).
+- **n° 5 (circuits généraux, élimination de portes) — E-1.** PAS DE
+  TRANSFERT : le mécanisme donne cn pour des fonctions de P, aucune
+  flèche vers « SAT ∉ SIZE(n^k) » ; le verrou est un théorème de limite
+  de méthode (GHKK), pas une barrière ; le « phénomène » du plafond
+  était l'existence (un comptage), pas l'explicité ; XOR₄ = 12 était
+  Red'kin 1970.
+- **n° 6 (programme de Post) — E-2.** TRANSFERT HORS CIBLE : le
+  théorème « dans les deux sens » (BFvMT 2000, Figure 7) sépare
+  P/PSPACE, NL/NP, PH/EXP — jamais P ≠ NP, par type de ressource (le
+  transfert consomme une économie d'espace, Lemme 5.5). Forme
+  irréprochable, et pourtant registre : une issue honorable.
+- **n° 7 (isomorphisme de Berman-Hartmanis) — E-3.** G EMPRUNTÉ : le
+  transfert existe (IC ⟹ P ≠ NP, Prop. 3.5) et G est ouvert — mais
+  chaque barreau r de l'échelle implique NP ⊄ r, l'échelle n'est
+  prouvée qu'où la séparation est acquise, et son auteur prend P ≠ NP
+  pour hypothèse : G n'est pas atteint par le mécanisme, il l'est par
+  les lignes 4/11/7. « Ouvert par emprunt » ≠ ouvert.
+- **n° 8 (solveurs comme recherche de preuves) — E-4, présentée
+  d'emblée comme entrée de registre.** G RÉFUTÉ colonne par colonne
+  (Haken, Razborov, Pudlák, Grigoriev/Schoenebeck, FMPTW/LRS,
+  Krajíček) et MIROIR au sommet (Frege/EF : l'automatisation est
+  NP-dure dès la résolution, Atserias-Müller 2020) ; double calibration
+  reproduite (PHP exponentiel pour DPLL et CDCL ; pyramides de pebbling
+  exponentielles pour DPLL, polynomiales pour CDCL). Recalibrée : seuls
+  les solveurs CERTIFIANTS sont éliminés ; la colonne LP/SDP est
+  aveugle à la classe (Rothvoss 2014). Le modèle d'une entrée réussie.
 
 Le Réfuteur exécutera ton sous-lemme avec son propre instrument, fera
-le folklore-check (y compris sur la valeur que tu proposes de mesurer),
-et attaquera le point le plus faible. Écris en conséquence.
+le folklore-check (sur ta valeur ET sur le statut de ton G), et
+attaquera le point le plus faible. Écris en conséquence.
+
+## 2 quater. Le schéma de transfert et ses quatre échecs
+
+Une candidature v4.4 est le quadruplet :
+
+- **M — le mécanisme** : ce que la famille fait vraiment (une
+  construction, un algorithme, un argument), et la propriété qu'il
+  CONSOMME.
+- **G — le sous-but** : la réussite précise que M viserait, énoncée
+  comme un théorème publiable (champ 1). G n'est PAS la cible.
+- **T — le transfert** : un théorème PROUVÉ ET NUMÉROTÉ « G ⟹ cible »
+  (cible = P ≠ NP, P = NP, ou un barreau prouvé vers l'un des deux, en
+  ≤ 3 flèches). À défaut de numéro, une dérivation écrite
+  intégralement à partir de définitions citées ; jamais de numéro
+  fantôme (n° 3).
+- **S — le statut de G** : OUVERT, et non connu équivalent à la cible
+  (sinon la flèche est MIROIR) ; réfuté par personne (sinon registre) ;
+  atteint par M et pas par le mécanisme d'une autre ligne (sinon
+  EMPRUNT).
+
+Le modèle : ligne 7 — M = évaluation par lots + easy witness ; G = un
+algorithme CAPP/SAT en 2ⁿ/n^{ω(1)} pour THR∘THR poly-taille ; T =
+CW19 Thm 8 (G ⟹ NEXP ⊄ THR∘THR) ; S = ouvert (frontière n^{2.5−ε},
+CTW26), non connu équivalent (la séparation ne donne pas l'algorithme).
+
+Les quatre façons d'échouer — chacune constituée une fois, au registre :
+
+1. **Pas de T** (E-1) : M produit des résultats sur des objets d'une
+   classe plus petite (des fonctions de P) ; aucune flèche, même
+   conjecturale, vers la cible. Symptôme : le champ 1 écrit le problème
+   entier et le champ 4 n'a pas de théorème à citer.
+2. **T atterrit ailleurs** (E-2) : le transfert existe mais sa
+   conclusion n'est pas sur le chemin de la cible — ici parce que le
+   mécanisme ne sépare que des ressources de natures différentes.
+   Symptôme : la cible n'apparaît dans aucune conclusion du théorème
+   de transfert ; on écrit « P ≠ NP » à la fin de la chaîne sans
+   flèche.
+3. **G emprunté** (E-3) : T existe, G est ouvert — mais G est atteint
+   par une autre ligne, pas par M ; M ne fait que renforcer un énoncé
+   dont l'ouverture vient d'ailleurs. Test : « si les lignes voisines
+   fermaient leur verrou, mon G serait-il fermé sans mon mécanisme ? »
+   Si oui, emprunt.
+4. **G réfuté, ou miroir** (E-4) : G est déjà réfuté par théorème (un
+   théorème de limite de méthode), ou G est connu équivalent à la cible
+   — NP-dur, ou « résoudre SAT » sous un autre nom. Un G NP-dur est un
+   miroir même s'il a l'air d'un sous-but : « approcher MAX-3SAT à
+   7/8 + ε » est NP-dur (Håstad 2001) — ce n'est pas un G, c'est
+   P = NP.
+
+Ce qu'est un BON G, direction P = NP : structuré (une forme
+d'algorithme, une représentation, un système de preuves + une
+propriété), avec un T à sens unique (la cible n'implique pas G — sinon
+miroir) : « une formulation LP compacte exacte du polytope TSP »
+(T : LP ∈ P ; réfuté — FMPTW 2012) et « un solveur complet à trace dans
+S en temps polynomial » (T : la trace est une preuve ; réfuté pour tout
+S à borne connue) étaient de bons G — réfutés. Le seul G ouvert connu
+du dépôt est « EF p-borné et automatisable » (ligne 15, réservé). **Ta
+tâche est d'en trouver un autre — ou de constater honnêtement qu'il
+n'y en a pas dans ta direction, et de présenter le registre.**
 
 ## 3. Les 4 barrières (auto-test obligatoire)
 
@@ -221,11 +281,10 @@ Toute preuve candidate de P ≠ NP doit franchir simultanément :
 - **Preuves naturelles** (Razborov-Rudich 1997) : une propriété de
   tables de vérité à la fois *constructive* (décidable en temps
   2^{O(n)}) et *large* (fréquente) ne peut pas séparer, sous crypto
-  standard (PRF). **Précision (candidature n° 5)** : l'argument ne mord
-  que contre les tailles au-delà de celle des PRF ; une cible à
-  polynôme fixe petit (superlinéaire, quadratique) n'est PAS bloquée
-  par RR — si ta famille vit là, dis-le, et nomme ce qui l'arrête
-  vraiment.
+  standard (PRF). **Précision (n° 5)** : l'argument ne mord que contre
+  les tailles au-delà de celle des PRF ; une cible à polynôme fixe petit
+  n'est PAS bloquée par RR — si ta famille vit là, dis-le, et nomme ce
+  qui l'arrête vraiment.
 - **Algébrisation** (Aaronson-Wigderson 2008) : une preuve qui survit
   quand une classe reçoit une extension bas-degré Ã de l'oracle ne
   peut pas conclure (témoin : A PSPACE-complet, Ã multilinéaire,
@@ -239,153 +298,156 @@ famille contre CHACUNE des quatre** : pour chaque barrière, soit tu
 expliques par quel mécanisme précis la famille lui échappe, soit tu
 écris qu'elle ne lui échappe pas (et la proposition est probablement
 morte — ne l'envoie pas). « Sans objet » n'est admis que pour une
-raison structurelle énoncée — jamais par omission. **Deux erreurs
-types, toutes deux constituées** : (1) arguer que « l'énoncé ne
-mentionne pas d'oracle » — la barrière porte sur la survie des
-ARGUMENTS sous oracle (n° 1) ; (2) attribuer à une barrière ce qu'un
-théorème de limite de la méthode explique — si ta famille est arrêtée
-par un plafond formel de sa propre technique (précédent : GHKK pour
-l'élimination de portes), c'est CE théorème qui est le verrou, nomme-le
-comme tel (n° 5). Seul précédent ayant franchi les trois premières :
-Williams 2011, par lecture non-boîte-noire du circuit.
+raison structurelle énoncée — jamais par omission ; pour une famille
+algorithmique (direction P = NP), les barrières bornent des preuves de
+séparation : dis-le, avec la remarque exacte qu'une preuve de P = NP
+doit lire la structure de l'instance (oracle B) — et nomme alors le
+verrou réel (théorèmes de limite de méthode, miroir). **Deux erreurs
+types, constituées** : (1) arguer que « l'énoncé ne mentionne pas
+d'oracle » — la barrière porte sur la survie des ARGUMENTS sous oracle
+(n° 1) ; (2) attribuer à une barrière ce qu'un théorème de limite de
+la méthode explique (GHKK pour l'élimination de portes, n° 5) — c'est
+CE théorème qui est le verrou, nomme-le. Seul précédent ayant franchi
+les trois premières : Williams 2011, par lecture non-boîte-noire du
+circuit.
 
 ## 4. En-tête de recevabilité (OBLIGATOIRE, en tête de ta réponse)
 
 Ta réponse commence par ces NEUF champs, dans cet ordre. Une réponse
 sans eux, ou avec un champ vide, est irrecevable d'office.
 
-1. **Énoncé visé = la CIBLE PROPRE du mécanisme** : UNE phrase, telle
-   qu'elle serait publiée, du théorème que la famille produirait SI SON
-   MÉCANISME RÉUSSISSAIT — pas le problème entier. Si cette cible est
-   plus faible que P ≠ NP (une borne cn explicite, une séparation
-   relativisée, un algorithme pour une sous-classe), écris-la telle
-   quelle ; la distance à P vs NP se lit au champ 3, pas ici.
-   (Précédent constitué : la n° 5 écrivait « SAT ∉ SIZE(n^k) ∀k » pour
-   une technique dont la cible propre est « > 10n pour une fonction
-   explicite ».)
+1. **Énoncé visé = le SOUS-BUT G, cible propre du mécanisme** : UNE
+   phrase, telle qu'elle serait publiée, du théorème que la famille
+   produirait SI SON MÉCANISME RÉUSSISSAIT — pas le problème entier. Si
+   G est plus faible que la cible (une borne cn explicite, un
+   algorithme d'une forme précise pour une sous-classe, une
+   représentation), écris-le tel quel ; la distance à P vs NP se lit au
+   champ 3. (n° 5 écrivait « SAT ∉ SIZE(n^k) ∀k » pour une technique
+   dont le G réel est « > 10n pour une fonction explicite ».)
 2. **Classe de complexité qui y figure** : nommée explicitement (P, NP,
    P/poly, TC⁰, #P, TFNP, …). « Aucune » = irrecevable.
-3. **Chaîne vers P vs NP** : au plus 3 flèches (« X ⟹ Y ⟹ P ≠ NP » ou
-   vers P = NP), chaque flèche étiquetée **PROUVÉE** (avec le NUMÉRO du
-   théorème et la référence — « prouvée modulo audit » n'existe pas :
-   c'est OUVERTE), **OUVERTE**, ou **ABSENTE** (aucun mécanisme connu ni
-   conjecturé ne la fournit — à écrire telle quelle, comme la ligne 20
-   le fait), et **le maillon le plus faible nommé**.
-4. **Test du faux raccord** (nouveau, obligatoire) — trois réponses
-   d'une ligne chacune :
-   (a) *L'objet le plus dur que le mécanisme traite AUJOURD'HUI* (la
-   fonction, l'instance, la classe de problèmes) et **la classe de
-   complexité où il vit** ;
-   (b) *La propriété de la cible que le mécanisme CONSOMME* (ce qu'il
-   utilise vraiment : être un disperser affine, avoir une
-   auto-réduction, être #P-dur, avoir un degré torique élevé…) ;
-   (c) *Le mécanisme distingue-t-il la classe du champ 2 ?* Si la
-   propriété consommée en (b) est partagée par des objets d'une classe
-   plus petite (des fonctions de P, des problèmes dans FP), le
-   mécanisme est INDIFFÉRENT à la classe visée et la première flèche du
-   champ 3 est ABSENTE — écris-le. Cas miroir pour la direction P = NP :
-   si l'objet le plus dur que la famille résout n'est pas NP-dur, la
-   flèche vers P = NP est absente (précédent : les îles tractables
-   Holant, ligne 19). Une candidature qui échoue à (c) n'est pas
-   irrecevable ; elle est recevable SEULEMENT si son champ 1 est
-   recalibré sur la cible propre et si elle assume la flèche absente.
+3. **Le théorème de transfert et la chaîne** : au plus 3 flèches de G
+   à P ≠ NP ou à P = NP. La PREMIÈRE flèche est le transfert T,
+   étiquetée **PROUVÉE** avec le NUMÉRO du théorème et la référence (à
+   défaut : la dérivation intégrale à partir de définitions citées —
+   « prouvée modulo audit » n'existe pas, c'est OUVERTE) ; l'atteinte
+   de G elle-même est le maillon **OUVERT POUR LE MÉCANISME**. Les
+   autres étiquettes possibles, à écrire telles quelles : **OUVERTE PAR
+   EMPRUNT** (ouverte, mais fermée par une autre ligne — n° 7),
+   **MIROIR** (G connu équivalent à la cible — n° 8, sommet), **EXCLUE**
+   (le transfert atterrit hors cible — n° 6), **ABSENTE** (pas de T —
+   n° 5, ligne 20 pour sa troisième flèche). **Le maillon le plus
+   faible nommé.** Une ligne exige au moins un maillon OUVERT POUR LE
+   MÉCANISME ; sinon, champ 9 : entrée de registre.
+4. **Le test de G** — quatre réponses d'une ligne chacune :
+   (a) *G en une phrase structurée* : la forme exacte de la réussite
+   (quel algorithme, quelle représentation, quel système, quelle
+   borne) — et pourquoi elle n'est pas « résoudre un problème NP-dur »
+   ni « prouver la séparation » sous un autre nom ;
+   (b) *Le statut de G* : OUVERT depuis quand (dernier résultat, dernier
+   texte) ; RÉFUTÉ par qui (alors registre) ; CONNU ÉQUIVALENT à la
+   cible (alors miroir — un G NP-dur est un miroir : Håstad 2001 pour
+   « approcher MAX-3SAT à 7/8 + ε ») ;
+   (c) *M atteint-il G ?* — l'objet le plus dur que M traite AUJOURD'HUI
+   et sa classe ; la propriété de G que M CONSOMME ; si cette propriété
+   est partagée par une classe plus petite (des fonctions de P, des
+   problèmes dans FP), M est indifférent à la classe visée et G est
+   ABSENT ou EMPRUNTÉ — écris-le. Test de l'emprunt : « si les lignes
+   voisines fermaient leur verrou, G serait-il fermé sans M ? » ;
+   (d) *Le sens unique de T* : la cible implique-t-elle G ? Si oui,
+   miroir. (Modèle : NEXP ⊄ THR∘THR ne donne pas l'algorithme CAPP —
+   sens unique ; « P = NP ⟹ tout G NP-dur » — miroir.)
+   Une candidature qui échoue à (b), (c) ou (d) n'est pas irrecevable ;
+   elle est recevable SEULEMENT si elle l'assume au champ 9 (registre)
+   avec ses mécanismes transversaux et sa raison.
 5. **Test de plafond — LE PHÉNOMÈNE DE LA TECHNIQUE** : nomme le
-   paramètre, la mesure ou la propriété structurelle que ton mécanisme
-   consomme (celle du champ 4b), et son avatar à échelle finie : à
-   quelle taille (variables, instance) le comportement que la famille
-   exploite est-il visible ? L'atelier atteint : solveur exact ~10
-   variables, tables 2^8 points, force brute ~2^25, Gröbner exact ~10
-   inconnues, synthèse exacte de circuits ~12 portes. Le premier pas
-   doit vivre en dessous ET porter sur ce phénomène-là. **Ne fabrique
-   pas un phénomène d'existence à la place** (précédent : « max C(f)
-   < 3n à n ≤ 5 » — l'existence d'une fonction dure est un comptage,
-   le phénomène de la technique était l'explicité, sans avatar). Si le
-   phénomène est asymptotique-et-structurel sans avatar fini, déclare
-   la candidature DOCUMENTAIRE au champ 9 — c'est admis ; le déguiser
-   ne l'est pas.
+   paramètre, la mesure ou la propriété structurelle que M consomme
+   (celle du champ 4c), et son avatar à échelle finie : à quelle
+   taille le comportement que la famille exploite est-il visible ?
+   L'atelier atteint : solveur exact ~10 variables, tables 2^8 points,
+   force brute ~2^25, Gröbner exact ~10 inconnues, synthèse exacte de
+   circuits ~12 portes, solveurs SAT jusqu'à ~10⁷ conflits. Le premier
+   pas doit vivre en dessous ET porter sur ce phénomène-là. **Ne
+   fabrique pas un phénomène d'existence à la place** (n° 5 : « max
+   C(f) < 3n à n ≤ 5 » — l'existence est un comptage, le phénomène était
+   l'explicité, sans avatar). Sans avatar fini : ligne documentaire au
+   champ 9 — admis ; déguisé — non.
 6. **Folklore-check** : les TROIS travaux publiés les plus proches de
-   la proposition (auteurs, année, résultat en une ligne), et ce qui
-   l'en distingue — **y compris pour la valeur que ton sous-lemme
-   propose de mesurer** : cherche-la d'abord dans la littérature.
-   « Je n'en connais pas » = irrecevable ; une distinction vague =
-   rejet probable. Précédents : la n° 1 est morte ici (Schnorr 1974) ;
-   la n° 5 y a laissé son seul morceau « contributif » (Red'kin 1970,
-   Markov 1958, tous deux manqués) ; la n° 2 et la n° 3 y ont survécu.
+   la proposition (auteurs, année, résultat en une ligne) et ce qui l'en
+   distingue — **y compris le statut de G (réfuté ? équivalent ? dernier
+   barreau ?) et la valeur que ton sous-lemme propose de mesurer**.
+   « Je n'en connais pas » = irrecevable. Précédents : n° 1 (Schnorr
+   1974), n° 5 (Red'kin 1970, Markov 1958), n° 7 (le survey lui-même
+   disait que chaque barreau sépare NP de r).
 7. **Sous-lemme vérifiable** : UN énoncé fini, calculable, falsifiable
-   — instance précise, propriété précise, taille précise — dont le
-   calcul (que le Réfuteur exécutera avec son propre instrument) teste
-   le MÉCANISME central de la famille. Trois exigences : (i) **chaque
-   mesure est nommée AVEC sa définition** (précédent n° 4 : deux
-   « poids » homonymes du même corpus, confondus par l'auteur du
-   prompt lui-même) ; (ii) **les deux issues doivent toucher la
+   — instance, propriété, taille précises — dont le calcul (que le
+   Réfuteur exécutera avec son propre instrument) teste M. Trois
+   exigences : (i) **chaque mesure nommée AVEC sa définition** (n° 4 :
+   deux « poids » homonymes) ; (ii) **les deux issues touchent la
    famille, pas l'instrument** — une calibration seule n'est pas un
-   sous-lemme (précédent n° 5 : « il ne peut pas blesser la famille »,
-   dit d'avance — honnête, et disqualifiant comme premier pas) ; (iii)
-   la réplication d'une valeur publiée est admise comme RÉGIME DE
-   CONTRÔLE, jamais comme régime discriminant. Le format d'excellence
-   reste la DOUBLE CALIBRATION des candidatures n° 2 et n° 3 : deux
+   sous-lemme (n° 5) ; (iii) la réplication d'une valeur publiée est un
+   RÉGIME DE CONTRÔLE, jamais le régime discriminant. Le format
+   d'excellence : la DOUBLE CALIBRATION (n° 2, n° 3, n° 8) — deux
    sorties opposées attendues du même instrument, l'une de contrôle,
    l'autre qui teste le mécanisme.
 8. **Direction** : P ≠ NP, P = NP, ou « la famille éclaire les deux ».
 9. **Type** : **famille explorable** (sous-lemme discriminant à
-   l'échelle atelier — champs 5 et 7 pleins) ou **ligne documentaire**
-   (pas d'avatar fini ; premier pas = un AUDIT sur textes nommés — liste
-   les 5 à 10 textes à ouvrir et ce que chacun doit trancher ; verrou
-   attendu = un théorème de limite, une carte de barrières atypique, un
-   état de frontière). Les deux sont admis. Une ligne documentaire doit
-   passer le champ 4 comme les autres, et dire ce que la matrice GAGNE
-   (une cellule d'un type nouveau, une route principale absente, un
-   verrou que les lignes voisines citent sans l'écrire).
-   **Règle du 2026-09-08 (v4.1)** : quel que soit le type, une LIGNE
-   exige au moins une flèche OUVERTE vers P vs NP au champ 3. Si toutes
-   tes flèches sont ABSENTES ou EXCLUES, ne présente pas une ligne :
-   présente une **entrée du registre des éliminations** — même en-tête
-   à 9 champs, verdict « entre au registre / n'entre pas », et ce que
-   l'Atlas gagne se mesure en mécanismes transversaux nommés et en
-   directions rayées avec leur raison. Une telle entrée a sa valeur
-   (c'est la mission de l'Atlas) mais ne coûte ni audit fondateur ni
-   ligne. Mécanismes transversaux déjà consignés, à ne pas redécouvrir :
-   l'accès à l'oracle (HCC+93 / Fortnow 1994 — lignes 1 et E-2 : la
-   preuve ne relativise pas parce que les deux côtés n'accèdent pas à
-   l'oracle avec les mêmes ressources ; confiné aux écarts de
-   ressources, muet sur P vs NP) ; le win-win (Kannan 1982,
-   Chen-Hirahara-Ren 2024 — lignes 1, 16, E-2).
+   l'échelle atelier — champs 5 et 7 pleins) ; **ligne documentaire**
+   (pas d'avatar fini ; premier pas = un AUDIT sur 5 à 10 textes nommés
+   et ce que chacun doit trancher) ; ou **entrée du registre des
+   éliminations** (aucun maillon ouvert pour le mécanisme — même
+   en-tête, verdict « entre au registre / n'entre pas », valeur mesurée
+   en directions rayées avec leur raison et en mécanismes transversaux
+   nommés ; ni audit fondateur ni ligne). Une ligne, documentaire ou
+   non, exige un maillon OUVERT POUR LE MÉCANISME au champ 3 (règle du
+   2026-09-08 ; v4.2 ; règle du 2026-09-12 pour P = NP). Mécanismes
+   transversaux déjà consignés, à ne pas redécouvrir : (1) l'accès à
+   l'oracle (HCC+93 / Fortnow 1994 — la preuve ne relativise pas parce
+   que les deux côtés n'accèdent pas à l'oracle avec les mêmes
+   ressources ; confiné aux écarts de ressources, muet sur P vs NP) ;
+   (2) le win-win (Kannan 1982, Chen-Hirahara-Ren 2024) ; (3) l'ombre
+   (une conjecture plus forte que la cible dont le programme prend la
+   cible pour hypothèse) ; (4) la barrière héritée par implication
+   (un énoncé qui implique une borne hérite de ses barrières) ; (5) le
+   profil de relativisation d'une conjecture et de sa rivale ; (6) la
+   trace est une preuve (un solveur certifiant est borné par la
+   complexité des preuves de son système, dans les deux sens) ; (7)
+   l'automatisation est un miroir (Atserias-Müller 2020).
 
 ## 5. Les régimes d'échec interdits (le dispositif les a déjà payés)
 
-25 tours adverses et 5 candidatures ont documenté ces régimes — toute
+25 tours adverses et 8 candidatures ont documenté ces régimes — toute
 proposition qui y retombe sera rejetée en citant ce paragraphe :
 
 1. **Spéculation tuée par les barrières** : grande construction dont
    aucune étape ne dit pourquoi elle échappe à relativisation /
-   preuves naturelles / algébrisation. (Variante constituée : l'énoncé
-   sans oracle pris pour une échappatoire — n° 1.)
+   preuves naturelles / algébrisation. (Variante : l'énoncé sans oracle
+   pris pour une échappatoire — n° 1.)
 2. **Dérive hors-sujet** : mathématiques intéressantes dont l'énoncé
    visé ne contient plus de classe de complexité.
 3. **Re-démonstration de folklore** : résultat connu re-dérivé et
-   présenté comme pas en avant. (Constitué deux fois : Schnorr 1974,
-   n° 1 ; Red'kin 1970 + Markov 1958, n° 5.)
-4. **Pivot d'esquive** : proposition qui, anticipant la réfutation,
-   reste assez vague pour être irréfutable — l'irréfutabilité par
-   imprécision est un motif de rejet, pas une protection.
-5. **Reformulation-miroir** : renommer la cible (une « mesure » égale
-   par définition à la quantité visée) sans levier nouveau.
-   (Constitué : σ(E_N) = CC(SAT_N), n° 1.)
-6. **Confusion de mesures** : deux quantités homonymes (deux « poids »,
-   deux « degrés », deux « complexités ») prises l'une pour l'autre —
-   le sous-lemme mesure l'une, la chaîne consomme l'autre.
-   (Constitué : n° 4 — poids en signe contre poids en couvert exact.)
-   Remède : champ 7 (i). Variante : le **surétiquetage** — une flèche
-   « prouvée modulo audit », un théorème cité sans numéro ; l'audit
-   corrige l'attribution et la flèche redevient ouverte (n° 3, n° 4).
+   présenté comme pas en avant. (Schnorr 1974, n° 1 ; Red'kin 1970 +
+   Markov 1958, n° 5.)
+4. **Pivot d'esquive** : proposition assez vague pour être
+   irréfutable — l'irréfutabilité par imprécision est un motif de
+   rejet, pas une protection.
+5. **Reformulation-miroir** : renommer la cible sans levier nouveau
+   (σ(E_N) = CC(SAT_N), n° 1).
+6. **Confusion de mesures** : deux quantités homonymes prises l'une
+   pour l'autre — le sous-lemme mesure l'une, la chaîne consomme
+   l'autre (n° 4). Remède : champ 7 (i). Variante : le
+   **surétiquetage** — « prouvée modulo audit », théorème cité sans
+   numéro (n° 3, n° 4).
 7. **Faux raccord** : un mécanisme réel collé sur un énoncé qu'il
-   n'atteint par aucune flèche — typiquement une technique qui ne
-   distingue pas la classe visée (elle marche aussi bien sur P que sur
-   NP, ou sur FP que sur #P) et un champ 1 qui écrit le problème
-   entier. (Constitué : n° 5 — élimination de portes, cn sur des
-   fonctions de P, énoncé « SAT ∉ SIZE(n^k) ».) Remède : champs 1 et 4.
-   Le faux raccord n'est pas fatal s'il est DÉCLARÉ (flèche ABSENTE,
-   cible propre) ; il l'est s'il est déguisé.
+   n'atteint par aucune flèche — pas de T (n° 5), ou T hors cible
+   (n° 6). Remède : champs 1, 3, 4. Non fatal s'il est DÉCLARÉ ; fatal
+   s'il est déguisé.
+8. **G miroir ou G emprunté** : un sous-but présenté comme ouvert alors
+   qu'il est NP-dur ou connu équivalent à la cible (miroir — le sommet
+   de la n° 8, déclaré honnêtement), ou un sous-but ouvert que le
+   mécanisme n'atteint pas et qu'une autre ligne fermerait (emprunt —
+   n° 7). Remède : champ 4 (b), (c), (d). Déclaré, c'est une entrée de
+   registre ; déguisé, c'est un rejet.
 
 Et un garde-fou de ton : n'écris jamais que la famille « pourrait
 résoudre » P vs NP. Écris ce qu'elle permettrait de prouver, à quelles
@@ -395,13 +457,13 @@ conditions, et ce qui lui manque.
 
 ```
 [EN-TÊTE DE RECEVABILITÉ]   — les 9 champs du §4, numérotés
-[LA FAMILLE]                — 1 page max : les objets, la mesure ou
-                              l'invariant central, le mécanisme, et
-                              l'objet le plus dur qu'il traite aujourd'hui
+[LA FAMILLE]                — 1 page max : le mécanisme M et ce qu'il
+                              consomme ; le sous-but G ; le transfert T
+                              cité avec son numéro ; l'objet le plus
+                              dur traité aujourd'hui ; le statut de G
 [POSITIONNEMENT]            — la ligne la plus proche des 20 + les 3
-                              phrases de distinction ; pour une ligne
-                              documentaire : les cellules existantes
-                              qu'elle refonderait
+                              phrases de distinction ; la ligne dont le
+                              verrou fermerait G (test de l'emprunt)
 [BARRIÈRES]                 — les 4, une par une (§3), plus le verrou
                               réel s'il n'est pas une barrière
 [PREMIER PAS]               — famille explorable : le sous-lemme
@@ -410,10 +472,12 @@ conditions, et ce qui lui manque.
                               famille est bonne, résultat qui la
                               réfuterait, antériorité de la valeur) ;
                               ligne documentaire : l'audit fondateur
-                              (textes à ouvrir, ce que chacun tranche)
-[CE QUI MANQUE]             — les 2-3 verrous prévisibles de la
-                              famille, nommés honnêtement, dont la
-                              flèche absente s'il y en a une
+                              (textes à ouvrir, ce que chacun tranche) ;
+                              entrée de registre : le témoin exécutable
+                              de l'élimination
+[CE QUI MANQUE]             — les 2-3 verrous prévisibles, nommés
+                              honnêtement, dont le statut exact du
+                              maillon G (ouvert / emprunt / miroir)
 ```
 
 Réponds en français. UNE proposition par réponse (une autre te sera
